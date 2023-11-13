@@ -1,0 +1,231 @@
+<html>
+<head>
+<title>Acceso a bases de datos con JDBC</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+
+</head>
+
+<body>
+<h1>Tema 2: Consulta a una base de datos con JDBC</h1>
+<h2>2.3 Sentencias de actualizaci&oacute;n</h2>
+<p>La clase <b>statement</b> dispone de un m&eacute;todo llamado <b>executeUpdate</b> 
+  el cual recibe como par&aacute;metro la cadena de caracteres que contiene la 
+  sentencia SQL a ejecutar. Este m&eacute;todo &uacute;nicamente permite realizar 
+  sentencias de actualizaci&oacute;n de la BD: creaci&oacute;n de tablas (CREATE), 
+  inserci&oacute;n (INSERT) y borrado de datos (DELETE). El m&eacute;todo a utilizar 
+  es el siguiente:</p>
+ 
+  <pre class="codigo">stmt.<b>executeUpdate</b>(sentencia);</pre>
+
+<p>Vamos a ver a continuación un ejemplo de estas operaciones. Crearemos una tabla 
+  ALUMNOS en nuestra base de datos y añadiremos datos a la misma. La sentencia 
+  para la creación de la tabla será la siguiente:</p>
+
+  
+<pre class="codigo">String st_crea = &quot;<b>CREATE TABLE</b> ALUMNOS (
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; exp <b>INTEGER</b>,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; nombre <b>VARCHAR</b>(32),
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sexo <b>CHAR</b>(1),
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>PRIMARY</b> <b>KEY</b> (exp)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&quot;;
+
+<span class="codigo">stmt.<b>executeUpdate</b>(st_crea);</span>
+</pre>
+  <p>Una vez creada la tabla podremos insertar datos en ella como se muestra a
+continuación:</p>
+
+  
+<pre class="codigo">String st_inserta = &quot;<b>INSERT</b> <b>INTO</b> ALUMNOS(exp, nombre) 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>VALUES</b>(1285, 'Manu', 'M')&quot;;
+
+stmt.<b>executeUpdate</b>(st_inserta);</pre>
+  
+<p>Cuando tengamos datos dentro de la tabla, podremos modificarlos utilizando
+para ello una sentencia UPDATE:</p>
+
+  
+<pre class="codigo">String st_actualiza = &quot;<b>UPDATE FROM</b> ALUMNOS
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>SET</b> sexo = 'H'
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>WHERE</b> exp = 1285&quot;;
+
+stmt.<b>executeUpdate</b>(st_actualiza);</pre>
+  
+<p>Si queremos eliminar un registro de la tabla utilizaremos una sentencia
+DELETE como se muestra a continuación:</p>
+
+  
+<pre class="codigo">String st_borra = &quot;<b>DELETE FROM</b> ALUMNOS
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>WHERE</b> exp = 1285&quot;;
+
+stmt.<b>executeUpdate</b>(st_borra);</pre>
+ 
+<p>El método <b>executeUpdate </b>nos devuelve un entero que nos dice el n&uacute;mero 
+  de registros a los que ha afectado la operaci&oacute;n, en caso de sentencias 
+  INSERT, UPDATE y DELETE. La creaci&oacute;n de tablas nos devuelve siempre 0.</p>
+
+<h2>2.4 Otras llamadas a la BD</h2>
+<p>En la interfaz <b>Statement</b> podemos observar un tercer m&eacute;todo que 
+  podemos utilizar para la ejecuci&oacute;n de sentencias SQL. Hasta ahora hemos 
+  visto como para la ejecuci&oacute;n de sentencias que devuelven datos (consultas) 
+  debemos usar <b>executeQuery</b>, mientras que para las sentencias INSERT, DELETE, 
+  UPDATE e instrucciones DDL utilizamos <b>executeUpdate</b>. Sin embargo, puede 
+  haber ocasiones en las que no conozcamos de antemano el tipo de la sentencia 
+  que vamos a utilizar (por ejemplo si la sentencia la introduce el usuario). 
+  En este caso podemos usar el m&eacute;todo <b>execute</b>.</p>
+
+  <pre class="codigo">boolean hay_result = stmt.<b>execute</b>(sentencia);</pre>
+
+<p>Podemos ver que el m&eacute;todo devuelve un valor <i>booleano</i>. Este valor 
+  ser&aacute; <i>true</i> si la sentencia ha devuelto resultados (uno o varios 
+  objetos <b>ResultSet</b>), y <i>false</i> en el caso de que s&oacute;lo haya 
+  devuelto el n&uacute;mero de registros afectados. Tras haber ejecutado la sentencia 
+  con el m&eacute;todo anterior, para obtener estos datos devueltos proporciona 
+  una serie de m&eacute;todos:</p>
+
+  <pre class="codigo">int n = stmt.<b>getUpdateCount</b>();</pre>
+
+<p>El m&eacute;todo <b>getUpdateCount</b> nos devuelve el n&uacute;mero de registros 
+  a los que afecta la actualizaci&oacute;n, inserci&oacute;n o borrado, al igual 
+  que el resultado que devolv&iacute;a <b>executeUpdate</b>.</p>
+
+  <pre class="codigo">ResultSet rs = stmt.<b>getResultSet</b>();</pre>
+
+<p>El m&eacute;todo <b>getResultSet</b> nos devolver&aacute; el objeto <b>ResultSet</b> 
+  que haya devuelto en el caso de ser una consulta, al igual que hac&iacute;a 
+  <b>executeQuery</b>. Sin embargo, de esta forma nos permitir&aacute; adem&aacute;s 
+  tener m&uacute;ltiples objetos <b>ResultSet</b> como resultado de una llamada. 
+  Eso puede ser necesario por ejemplo en el caso de una llamada a un procedimiento, 
+  que nos puede devolver varios resultados como veremos m&aacute;s adelante. Para 
+  movernos al siguiente <b>ResultSet</b> utilizaremos el siguiente m&eacute;todo:</p>
+
+  <pre class="codigo">boolean hay_mas_results = stmt.<b>getMoreResults</b>();</pre>
+
+<p>La llamada a este m&eacute;todo nos mover&aacute; al siguiente <b>ResultSet</b> 
+  devuelto, devolvi&eacute;ndonos <i>true</i> en el caso de que exista, y <i>false</i> 
+  en el caso de que no haya m&aacute;s resultados. Si existe, una vez nos hayamos 
+  movido podremos consultar el nuevo <b>ResultSet</b> llamando nuevamente al m&eacute;todo 
+  <b>getResultSet</b>.</p>
+<p>Otra llamada disponible es el m&eacute;todo <b>executeBatch</b>. Este m&eacute;todo 
+  nos permite enviar varias sentencias SQL a la vez. No puede contener sentencias 
+  SELECT. Devuelve un array de enteros que indicar&aacute; el n&uacute;mero de 
+  registros afectados por las sentencias SQL. Para a&ntilde;adir sentencias haremos 
+  uso del m&eacute;todo <b>addBatch</b>. Un ejemplo de ejecuci&oacute;n es el 
+  siguiente: </p>
+ 
+  
+<pre class="codigo">stmt.<b>addBatch</b>(&quot;INSERT INTO ALUMNOS(exp, nombre) 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>VALUES</b>(1285, 'Manu', 'M')&quot;);
+stmt.<b>addBatch(</b>&quot;INSERT INTO ALUMNOS(exp, nombre) 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>VALUES</b>(1299, 'Miguel', 'M')&quot;);
+int[] res = stmt.<b>executeBatch</b>();</pre>
+
+  
+<h2>2.4 Restricciones, movimientos y actualizaciones en el <i>ResultSet</i></h2>
+<p>Cuando realizamos llamadas a BD de gran tama&ntilde;o el resultado de la consulta 
+  puede ser demasiado grande y no deseable en t&eacute;rminos de eficiencia y 
+  memoria. JDBC permite restringir el n&uacute;mero de filas que se devolver&aacute;n 
+  en el <b>ResultSet</b>. La clase <b>Statement</b> incorpora dos m&eacute;todos, 
+  <b>getMaxRows</b> y <b>setMaxRows</b>, que permiten obtener e imponer dicha 
+  restricci&oacute;n. Por defecto, el l&iacute;mite es cero, indicando que no 
+  se impone la restricci&oacute;n. Si, por ejemplo, antes de ejecutar la consulta 
+  imponemos un l&iacute;mite de 30 usando el m&eacute;todo <b>setMaxRows(30)</b>, 
+  el resultado devuelto s&oacute;lo contendr&aacute; las 30 primeras filas que 
+  cumplan con los criterios de la consulta.</p>
+<p>Hasta ahora, el manejo de los datos devueltos en una consulta se realizaba 
+  con el m&eacute;todo <b>next</b> de <b>ResultSet</b>. Podemos manejar otros 
+  m&eacute;todos para realizar un movimiento no lineal por el <b>ResultSet</b>. 
+  Es lo que se conoce como <b>ResultSet</b> arrastable. Para que esto sea posible 
+  debemos utilizar el siguiente m&eacute;todo en la creaci&oacute;n del <b>Statement</b>:</p>
+ 
+  <pre class="codigo">Statement createStatement (int <b>resultSetType</b>, int <b>resultSetConcurrency</b>)</pre>
+
+<p>Los posibles valores que puede tener <b>resultSetType</b> son: <b>ResultSet.TYPE_FORWARD_ONLY</b>, 
+  <b>ResultSet.TYPE_SCROLL_INSENSITIVE</b>, <b>ResultSet.TYPE_SCROLL_SENSITIVE</b>. 
+  El primer valor es el funcionamiento por defecto: el <b>ResultSet</b> s&oacute;lo 
+  se mueve hacia adelante. Los dos siguientes permiten que el resultado sea arrastable. 
+  Una caracter&iacute;stica importante en los resultados arrastables es que los 
+  cambios que se produzcan en la BD se reflejan en el resultado, aunque dichos 
+  cambios se hayan producido despu&eacute;s de la consulta. <i>Esto depender&aacute; 
+  de si el driver y/o la BD soporta este tipo de comportamiento</i>. En el caso 
+  de <b>INSENSITIVE</b>, el resultado no es sensible a dichos cambios y en el 
+  caso de <b>SENSITIVE</b>, s&iacute;. Los m&eacute;todos que podemos utilizar 
+  para movernos por el <b>ResultSet</b> son:</p>
+<table border="1" width="463">
+  <tr> 
+    <td width="142"><b>next</b></td>
+    <td width="258">Pasa a la siguiente fila</td>
+  </tr>
+  <tr> 
+    <td width="142"><b>previous</b></td>
+    <td width="258">&Iacute;dem fila anterior</td>
+  </tr>
+  <tr> 
+    <td width="142"><b>last</b></td>
+    <td width="258">&Iacute;dem &uacute;ltima fila</td>
+  </tr>
+  <tr> 
+    <td width="142"><b>first</b></td>
+    <td width="258">&Iacute;dem primera fila</td>
+  </tr>
+  <tr> 
+    <td width="142"><b>absolute(int fila)</b></td>
+    <td width="258">Pasa a la fila n&uacute;mero fila</td>
+  </tr>
+  <tr> 
+    <td width="142"><b>relative(int fila)</b></td>
+    <td width="258">Pasa a la fila n&uacute;mero fila desde la actual</td>
+  </tr>
+  <tr> 
+    <td width="142"><b>getRow</b></td>
+    <td width="258">Devuelve la n&uacute;mero de fila actual</td>
+  </tr>
+  <tr> 
+    <td width="142"><b>isLast</b></td>
+    <td width="258">Devuelve si la fila actual es la &uacute;ltima</td>
+  </tr>
+  <tr> 
+    <td width="142"><b>isFirst</b></td>
+    <td width="258">&Iacute;dem la primera</td>
+  </tr>
+</table>
+<p>El otro par&aacute;metro, <b>resultSetConcurrency</b>, puede ser uno de estos 
+  dos valores: <b>ResultSet.CONCUR_READ_ONLY</b> y <b>ResultSet.CONCUR_UPDATABLE</b>. 
+  El primero es el utilizado por defecto y no permite actualizar el resultado. 
+  El segundo permite que los cambios realizados en el <b>ResultSet</b> se actualicen 
+  en la base de datos. Si queremos modificar los datos obtenidos en una consulta 
+  y queremos reflejar esos cambios en la BD debemos crear una sentencia con, al 
+  menos, <b>TYPE_FORWARD_SENSITIVE</b> y <b>CONCUR_UPDATABLE</b>. MySQL y PostGres 
+  soportan este tipo de actualizaci&oacute;n. </p>
+<p>Para actualizar un campo disponemos de m&eacute;todos <b>updateXXXX</b>, de 
+  la misma forma que ten&iacute;amos m&eacute;todos <b>getXXXX</b>. Estos m&eacute;todos 
+  reciben dos par&aacute;metros: el primero indica el nombre del campo (o n&uacute;mero 
+  de orden dentro del <b>ResultSet</b>); el segundo indica el nuevo valor que 
+  tomar&aacute; el campo del registro actual. Para que los cambios tengan efecto 
+  en la BD debemos llamar al m&eacute;todo <b>updateRow</b>. El siguiente c&oacute;digo 
+  es un ejemplo de modificaci&oacute;n de datos:</p>
+<pre class="codigo">rs.<b>updateString</b>(&quot;nombre&quot;,&quot;manolito&quot;);<br>rs.<b>updateRow</b>();</pre>
+<p>Si queremos desechar los cambios producidos en la fila actual (antes de llamar 
+  a <b>updateRow</b>) podemos llamar a <b>cancelRowUpdates</b>. Para borrar la 
+  fila actual tenemos el m&eacute;todo <b>deleteRow</b>. La llamada a este m&eacute;todo 
+  deja una fila vac&iacute;a en el <b>ResultSet</b>. Si intentamos acceder a los 
+  datos de esa fila nos dar&aacute; una excepci&oacute;n. Podemos llamar al m&eacute;todo 
+  <b>rowDeleted</b> el cual devuelve cierto si la fila actual ha sido eliminada 
+  (m&eacute;todo no implementado en MySQL).</p>
+<p>Debemos tener en cuenta varias restricciones a la hora de actualizar un <b>ResultSet</b>: 
+  la sentencia SELECT que ha generado el <b>ResultSet</b> debe:</p>
+<ul>
+  <li>Referenciar s&oacute;lo una tabla.</li>
+  <li>No contener una clas&uacute;sula <i>join</i> o <i>group by</i>.</li>
+  <li>Seleccionar la clave primaria de la tabla.</li>
+</ul>
+<p>Existe un registro especial al que no se puede acceder como hemos visto anteriormente, 
+  que es el registro de inserción. Este registro se utiliza para insertar nuevos 
+  registros en la tabla. Para situarnos en él deberemos llamar al método <b>moveToInsertRow</b>. 
+  Una vez situados en él deberemos asignar los datos con los m&eacute;todos <b>updateXXXX</b> 
+  anteriormente descritos y una vez hecho esto llamar a <b>insertRow </b>para 
+  que el registro se inserte en la BD. Podemos volver al registro donde nos encontrábamos 
+  antes de movernos al registro de inserción llamando a <b>moveToCurrentRow</b>. 
+</p>
+</body>
+</html>

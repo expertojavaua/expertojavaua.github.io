@@ -1,0 +1,43 @@
+import java.io.*;
+import java.net.*;
+
+/**
+ *	ClienteHTTPS
+ *
+ *      Esta clase accede a una url con HTTPS  e
+ *      imprime su contenido en la salida standard.
+ *
+ */
+public class ClienteHTTPS {
+
+	public static void main (String[] args) throws Exception {
+
+                /**     Primero inicializar el manejador de URLs para que pueda 
+                 *      encontrar las clases HTTPS. Esto puede hacerse en tiempo de ejecución: 
+		 *
+		 *	java -Djava.protocol.handler.pkgs=com.sun.net.ssl.internal.www.protocol
+		 */
+                // O bien desde 
+
+		System.setProperty("java.protocol.handler.pkgs",
+			"com.sun.net.ssl.internal.www.protocol");
+
+		// URL por defecto
+		String urlString = "https://www.verisign.com/";
+
+                // Si se pasa un argumento, sustituye a la URL por defecto
+		if (args.length > 0) {
+			urlString = args[0];
+		}
+
+		URL url = new URL(urlString);
+		BufferedReader in = new BufferedReader(
+			new InputStreamReader(url.openStream()));
+
+		String line;
+		while ((line = in.readLine()) != null) {
+			System.out.println(line);
+		}
+		in.close();
+	}
+}

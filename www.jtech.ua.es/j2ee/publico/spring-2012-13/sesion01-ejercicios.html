@@ -1,0 +1,345 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.7">
+<meta name="Forrest-skin-name" content="pelt">
+<title>Ejercicios del contenedor de beans de Spring</title>
+<link type="text/css" href="skin/highlight/shCore.css" rel="stylesheet">
+<link type="text/css" href="skin/highlight/shThemeEclipse.css" rel="stylesheet">
+<script src="skin/highlight/shCore.js" type="text/javascript"></script><script src="skin/highlight/shAutoloader.js" type="text/javascript"></script>
+<link type="text/css" href="skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="skin/print.css" rel="stylesheet">
+<link type="text/css" href="skin/profile.css" rel="stylesheet">
+<script src="skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<div class="header">
+<div class="grouplogo">
+<a href="http://web.ua.es/especialistajava"><img class="logoImage" alt="jtech" src="images/baner_j2ee_izq.gif" title="Experto Universitario Java Enterprise"></a>
+</div>
+<div class="projectlogoA1">
+<a href="http://www.dccia.ua.es/"><img class="logoImage" alt="Spring" src="images/baner_j2ee_der.gif" title="Spring"></a>
+</div>
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="javascript:location.href='../index.html'">Home</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../aplic-web.html'">Aplicaciones Web</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../aplic-ent.html'">Aplicaciones Enterprise</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../charlas.html'">Charlas</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../proy-int/index.html'">Proyecto</a>
+</li>
+<li>
+<a class="base-not-selected" href="index.html">Spring</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<div id="level2tabs"></div>
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<div id="menu">
+<div onclick="SwitchMenu('menu_1.1', 'skin/')" id="menu_1.1Title" class="menutitle">Spring</div>
+<div id="menu_1.1" class="menuitemgroup">
+<div class="menuitem">
+<a href="index.html" title="Spring">Indice</a>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<div id="credit2"></div>
+</div>
+<div id="content">
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="sesion01-ejercicios.pdf"><img alt="PDF -icon" src="skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1>Ejercicios del contenedor de beans de Spring</h1>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#Configuraci%C3%B3n+del+proyecto">Configuraci&oacute;n del proyecto</a>
+</li>
+<li>
+<a href="#Estructura+de+la+aplicaci%C3%B3n">Estructura de la aplicaci&oacute;n</a>
+</li>
+<li>
+<a href="#Crear+la+capa+de+negocio+%281+punto%29">Crear la capa de negocio (1 punto)</a>
+</li>
+<li>
+<a href="#Crear+la+capa+de+acceso+a+datos+y+enlazarla+con+la+de+negocio+%281.5+puntos%29">Crear la capa de acceso a datos y enlazarla con la de negocio (1.5 puntos)</a>
+</li>
+<li>
+<a href="#Configurar+beans+en+el+XML+%280.5+puntos%29">Configurar beans en el XML (0.5 puntos)</a>
+</li>
+</ul>
+</div>
+
+<a name="N1000C"></a><a name="Configuraci%C3%B3n+del+proyecto"></a>
+<h2 class="underlined_10">Configuraci&oacute;n del proyecto</h2>
+<div class="section">
+<div class="frame note">
+<div class="label">SpringSource Tool Suite</div>
+<div class="content">En el m&oacute;dulo de Spring usaremos como IDE SpringSource Tool Suite, que es una versi&oacute;n de Eclipse
+ con un conjunto de plugins instalados que facilitan bastante el trabajo con Spring. Os pod&eacute;is bajar la versi&oacute;n actual de STS de <a href="http://www.springsource.com/products/springsource-tool-suite-download">la web de SpringSource</a> (en la m&aacute;quina virtual no es necesario, ya la ten&eacute;is 
+ preinstalada). Como en el m&oacute;dulo vamos a desarrollar b&aacute;sicamente aplicaciones web necesitamos un servidor donde desplegarlas. STS viene ya con una instancia preconfigurada del "VMWare vFabric tc server" que es una versi&oacute;n de Tomcat modificada por SpringSource. No obstante, vamos a usar Tomcat tal cual ya que es algo m&aacute;s ligero. Por tanto tendr&eacute;is que crea una nueva instancia del servidor <span class="codefrag">File &gt; New &gt; Other... &gt; Server</span>. Recordad que Tomcat est&aacute; instalado en <span class="codefrag">/opt/apache-tomcat-7.0.29</span>
+</div>
+</div>
+<ol>
+ 
+<li>
+ En las plantillas de la sesi&oacute;n hay un proyecto Spring ya creado que usa Maven. Para importarlo en STS usar (como siempre) <span class="codefrag">File &gt; Import... &gt; Existing Maven Projects</span>. En el "pom.xml" se incluye una dependencia del m&oacute;dulo "spring-context" porque &eacute;ste, a su vez, depende del resto de m&oacute;dulos b&aacute;sicos de Spring, que as&iacute; Maven incluir&aacute; autom&aacute;ticamente. Adem&aacute;s, para poder instanciar beans desde la capa web necesitamos el m&oacute;dulo "spring-web".
+ </li>
+ 
+<li>Lo primero que vamos a hacer es <strong>Crear el fichero XML de configuraci&oacute;n de Spring</strong>. La localizaci&oacute;n del fichero es libre, pero nosotros vamos a colocarlo en la carpeta "src/main/resources".  Hacer clic con bot&oacute;n derecho sobre esta carpeta, y en el men&uacute; contextual, seleccionar "New &gt; Spring Bean Configuration File".  Darle como nombre "beans.xml". Asegurarse de que est&aacute; marcada la casilla de "Add Spring Project Nature if required", que
+  activar&aacute; el soporte de Spring para el proyecto. <strong>No pulsar sobre Finish, sino sobre Next</strong>, para poder ir
+  al siguiente paso del asistente. 
+  <p>
+  
+<img alt="Crear beans.xml. Paso 1" content-width="10cm" src="imagenes/sesion01/crear_beans_xml_1.jpg" width="400">
+  </p>
+  
+ 
+<p> En el segundo paso marcamos los espacios de nombres que necesitamos: "context", "jee" y "p".
+</p>
+
+<p>
+  
+<img alt="Crear beans.xml. Paso 2" content-width="10cm" src="imagenes/sesion01/crear_beans_xml_2.jpg" width="400">
+</p>
+
+ 
+</li>
+
+<li>Ahora tenemos que <strong>referenciar el fichero de configuraci&oacute;n de Spring en el web.xml </strong> (recordad que est&aacute; en  src/main/webapp/WEB-INF), para que Spring arranque cuando arranque la aplicaci&oacute;n web. Introduciremos en el web.xml el siguiente c&oacute;digo:
+<pre class="brush:xml;">
+
+    &lt;context-param&gt;
+        &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;
+        &lt;param-value&gt;classpath:beans.xml&lt;/param-value&gt;
+    &lt;/context-param&gt;
+
+    &lt;listener&gt;
+        &lt;listener-class&gt;
+        org.springframework.web.context.ContextLoaderListener
+        &lt;/listener-class&gt;
+    &lt;/listener&gt;
+
+</pre>
+
+</li>
+
+</ol>
+<p>Vamos a hacer una peque&ntilde;a aplicaci&oacute;n con acceso a base de datos, por lo que tenemos que preparar la conexi&oacute;n y la propia base de datos:</p>
+<ol>
+
+<li>Asegurarse de que el .jar con el driver de mysql est&aacute; en el directorio "lib" de Tomcat (/opt/apache-tomcat-7.0.29/lib). Si no lo est&aacute;, copiarlo all&iacute; (se incluye en las plantillas de la sesi&oacute;n).</li>
+
+<li>Recuerda que en Tomcat la configuraci&oacute;n del DataSource se hace en el context.xml (en <span class="codefrag">src/main/webapp/META-INF</span>). Este archivo ya est&aacute; creado, no tienes que modificar nada.
+</li>
+
+<li>Crear la propia base de datos: en las plantillas de la sesi&oacute;n se incluye un script SQL con la base de datos. Se puede ejecutar con el programa "MySQL Query Browser" o bien desde un terminal con la orden
+<pre class="code">
+
+<em>(nos pedir&aacute; el password de root de mysql)</em>
+mysql -u root -p &lt; pedidos.sql
+</pre>
+
+</li>
+
+</ol>
+</div>
+
+<a name="N1006B"></a><a name="Estructura+de+la+aplicaci%C3%B3n"></a>
+<h2 class="underlined_10">Estructura de la aplicaci&oacute;n</h2>
+<div class="section">
+<p>La aplicaci&oacute;n servir&aacute; para hacer pedidos de productos, funcionando seg&uacute;n las siguientes reglas:</p>
+<ul>
+ 
+<li>La capa de negocio debe chequear que el n&uacute;mero de unidades pedidas no supere un cierto l&iacute;mite. Si lo hace, el pedido
+  no se puede procesar autom&aacute;ticamente, por lo que se genera una excepci&oacute;n.</li>
+ 
+<li>En la capa de acceso a datos cuando se haga un pedido correctamente se insertar&aacute; la informaci&oacute;n en la tabla "pedidos".</li>
+ 
+</ul>
+<p>
+<img alt="diagrama UML de la aplicaci&oacute;n de pedidos" content-width="14cm" src="imagenes/sesion01/diagrama_UML.jpg" width="700"></p>
+<p>En la figura anterior se muestra el diagrama UML de la aplicaci&oacute;n</p>
+</div>
+ 
+<a name="N10088"></a><a name="Crear+la+capa+de+negocio+%281+punto%29"></a>
+<h2 class="underlined_10">Crear la capa de negocio (1 punto)</h2>
+<div class="section">
+<p>Vamos a empezar por crear la capa de negocio, aunque de momento no funcionar&aacute; del todo al faltar el DAO.</p>
+<ol>
+ 
+<li>Crear el interfaz <span class="codefrag">IPedidosBO</span> y la clase que lo implementa <span class="codefrag">PedidosBOSimple</span>
+ en el paquete <span class="codefrag">es.ua.jtech.spring.negocio</span>. Usad como gu&iacute;a el diagrama UML para ver la signatura de los m&eacute;todos.
+ <ul>
+ 
+  
+<li>Por el momento no hay DAO, as&iacute; que no es necesario que definas el campo "pdao" del objeto.</li>
+  
+<li>Define el campo "cantidadMaxima" como static con un valor de 50.</li>
+ 	
+<li>Define un constructor y en &eacute;l simplemente imprime un mensaje en la consola. As&iacute; podr&aacute;s ver el momento en que Spring crea el bean
+    y si lo crea m&aacute;s de una vez.</li>
+  
+<li>Implementa el m&eacute;todo "insertarPedido": debe comprobar que la cantidad pedida no supera "cantidadMaxima". Si se supera, se
+ 	lanzar&aacute; una <span class="codefrag">PedidosException</span> (ya incluida en la plantilla). En caso contrario se llamar&iacute;a al DAO, pero esta parte todav&iacute;a no la vamos a hacer, simplemente si no se supera la cantidad m&aacute;xima imprime un mensaje en la consola con "Pedido realizado".</li>
+ 
+ 
+</ul> 
+</li>
+ 
+<li>Convertir la clase <span class="codefrag">PedidosBOSimple</span> en un bean de Spring a&ntilde;adi&eacute;ndole la anotaci&oacute;n <span class="codefrag">@Service</span>.</li>
+ 
+<li>Modificar el fichero de configuraci&oacute;n XML de Spring (beans.xml) para que busque las anotaciones Spring en el paquete
+  que queremos, y en sus subpaquetes (es decir, en <span class="codefrag">es.ua.jtech.spring</span>). Recuerda que se usa la etiqueta &lt;context-component-scan/&gt;.
+  <div class="frame note">
+<div class="label">Ayudas del STS</div>
+<div class="content">
+  Usa el autocompletar de STS siempre que puedas, por ejemplo en el valor del atributo "base-package", para no tener que teclear manualmente el nombre del 
+  paquete y no cometer errores. Es posible que tengas que introducir la primera letra del nombre del paquete para que el autocompletar funcione.
+  </div>
+</div>
+  
+  
+</li>
+  
+<li>En el servlet <span class="codefrag">HacerPedido</span> del paquete <span class="codefrag">es.ua.jtech.spring.web</span> hay que obtener un bean de tipo <span class="codefrag">IPedidosBO</span> y llamar al m&eacute;todo insertarPedido con los valores de idCliente, idProducto y unidades.</li>
+  
+<li>Comprueba que cada vez que insertas un pedido de menos de 50 unidades el servlet muestra el mensaje, y que cuando se piden m&aacute;s salta la excepci&oacute;n. Finalmente comprueba que Spring solo crea una instancia del bean (solo se llama una vez al constructor),  aunque obtengas varias veces el bean haciendo varios pedidos. Esto sucede porque usamos el &aacute;mbito por defecto, o sea "singleton". Adem&aacute;s la creaci&oacute;n se hace por defecto cuando se arranca el contenedor de Spring, no cuando se hace el primer pedido.</li> 	
+ 
+</ol>
+</div>
+ 
+<a name="N100D7"></a><a name="Crear+la+capa+de+acceso+a+datos+y+enlazarla+con+la+de+negocio+%281.5+puntos%29"></a>
+<h2 class="underlined_10">Crear la capa de acceso a datos y enlazarla con la de negocio (1.5 puntos)</h2>
+<div class="section">
+<ol>
+
+<li>en el "beans.xml", configura el Datasource para acceder a la BD con Spring. Consulta los apuntes o transparencias
+para ver el uso de la etiqueta "jee:jndi-lookup". El id que le des al bean es indiferente si luego usas @Autowired para
+acceder a &eacute;l.</li>
+
+<li>Crea el interface <span class="codefrag">IPedidosDAO</span> y la clase <span class="codefrag">PedidosDAOJDBC</span> en el paquete <span class="codefrag">es.ua.jtech.spring.datos</span>.
+<ul>
+
+<li>Debes convertir la clase <span class="codefrag">PedidosDAOJDBC</span> en un bean de Spring anot&aacute;ndola con <span class="codefrag">@Repository</span>
+</li>
+
+<li>Anota la variable miembro <span class="codefrag">ds</span> con <span class="codefrag">@Autowired</span> para que
+Spring busque el DataSource en el "beans.xml".</li>
+
+<li>El codigo del m&eacute;todo <span class="codefrag">insertarPedido</span> de <span class="codefrag">PedidosDAOJDBC</span> lo pod&eacute;is tomar de las plantillas de la sesi&oacute;n para ahorrar tiempo</li>
+
+</ul>
+
+</li>
+
+<li>Modifica el <span class="codefrag">PedidoBOSimple</span> para que haga uso del DAO
+<ul>
+
+<li>Debes definir en <span class="codefrag">PedidoBOSimple</span> un campo
+de tipo IPedidosDAO y anotarlo con @Autowired, para que Spring resuelva e instancie autom&aacute;ticamente la dependencia
+<pre class="brush:java;">
+@Autowired
+IPedidosDAO pdao;
+</pre>
+
+</li>
+
+<li>Haz uso de este DAO en el insertarPedido. Es decir, el gestor de pedidos debe hacer uso del objeto "pdao" para insertar
+el pedido en la BD. Aunque el DAO devuelve el id del pedido, por el momento no es necesario que hagas nada con &eacute;l. <strong>No hagas un new() para inicializar "pdao"</strong>. Si todo est&aacute; correctamente configurado Spring
+inicializar&aacute; esta variable, ya que la has marcado con @Autowired.</li>
+
+</ul>
+
+</li>
+
+<li>Finalmente, comprueba que ahora cuando haces un pedido a trav&eacute;s del servlet <span class="codefrag">HacerPedido</span> &eacute;ste se inserta en la base de datos.</li>
+
+</ol>
+</div>
+ 
+<a name="N1012D"></a><a name="Configurar+beans+en+el+XML+%280.5+puntos%29"></a>
+<h2 class="underlined_10">Configurar beans en el XML (0.5 puntos)</h2>
+<div class="section">
+<p>Tal y como est&aacute; el c&oacute;digo de <span class="codefrag">PedidoBOSimple</span>, hay que cambiar el c&oacute;digo fuente para cambiar la cantidad
+ m&aacute;xima de unidades por pedido (50). Es mucho mejor usar Spring para externalizar este valor a trav&eacute;s del "beans.xml" y poder
+ cambiar la cantidad sin recompilar el c&oacute;digo. El problema
+ es que entonces la anotaci&oacute;n @Service de <span class="codefrag">PedidoBOSimple</span> debe ser sustituida por una configuraci&oacute;n completa del 
+ bean en el XML.</p>
+<ol>
+ 
+<li>Comenta la anotaci&oacute;n @Service de <span class="codefrag">PedidoBOSimple</span>.</li>
+ 
+<li>Usando la etiqueta "bean", configura en el "beans.xml" un bean de la clase <span class="codefrag">PedidoBOSimple</span>. Cuidado: debes poner
+ el nombre completo de la clase, incluyendo "packages".</li>
+ 
+<li>Consulta los apuntes o transparencias para ver c&oacute;mo fijar en el XML el valor de la propiedad "cantidadMaxima".</li>
+ 
+<li>Comprueba que se inicializa la propiedad correctamente imprimiendo un mensaje desde el m&eacute;todo "setCantidadMaxima", al que Spring
+ llamar&aacute; autom&aacute;ticamente para darle valor a la propiedad.</li>
+ 
+</ol>
+</div>
+
+<p class="pageBreakAfter"></p>
+
+</div>
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+        Copyright &copy;
+         2012-2013 Depto. Ciencia de la computaci&oacute;n e IA</div>
+</div>
+<script type="text/javascript">
+     
+         SyntaxHighlighter.defaults['toolbar'] = false;
+         SyntaxHighlighter.autoloader(
+  		     'java                   skin/highlight/shBrushJava.js',
+  		     'xml xhtml xslt html    skin/highlight/shBrushXml.js',
+  		     'js jscript javascript  skin/highlight/shBrushJScript.js',
+  		     'groovy                 skin/highlight/shBrushGroovy.js',
+  		     'bash shell             skin/highlight/shBrushBash.js',
+  		     'php                    skin/highlight/shBrushPhp.js',
+  		     'css                    skin/highlight/shBrushCss.js',
+  		     'sql                    skin/highlight/shBrushSql.js',
+  		     'objc                   skin/highlight/shBrushObjC.js',
+  		     'cpp c                  skin/highlight/shBrushCpp.js',
+  		     'text plain             skin/highlight/shBrushPlain.js'
+         );
+         SyntaxHighlighter.all();
+     </script><a href="skin/highlight/shBrushJava.js"></a><a href="skin/highlight/shBrushXml.js"></a><a href="skin/highlight/shBrushJScript.js"></a><a href="skin/highlight/shBrushGroovy.js"></a><a href="skin/highlight/shBrushBash.js"></a><a href="skin/highlight/shBrushPhp.js"></a><a href="skin/highlight/shBrushCss.js"></a><a href="skin/highlight/shBrushSql.js"></a><a href="skin/highlight/shBrushObjC.js"></a><a href="skin/highlight/shBrushCpp.js"></a><a href="skin/highlight/shBrushPlain.js"></a>
+</body>
+</html>

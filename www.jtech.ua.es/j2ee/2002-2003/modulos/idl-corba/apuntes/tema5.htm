@@ -1,0 +1,235 @@
+<html>
+<head>
+<title>Tema 5: Servicio de Nombres</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<h1><span class="section">5. </span>Servicio de Nombres</h1>
+<p>El est&aacute;ndar CORBA, adem&aacute;s de la arquitectura b&aacute;sica de 
+  objetos remotos y la sintaxis de IDL, incluye especificaciones para varios servicios 
+  distribuidos de objetos, como por ejemplo el servicio de nombrado de objetos, 
+  el servicio de pol&iacute;tica de seguridad, y los servicios de objetos persistentes. 
+  El servicio de nombrado de objetos es fundamental para las aplicaciones CORBA 
+  debido a que proporciona una forma est&aacute;ndar de encontrar objetos CORBA 
+  remotos en la red. Se proporcionan dos servicios CORBA para localizar objetos: 
+  el <i>Naming service</i>, que encuentra objetos mediante el nombre, y el <i>Trading 
+  service</i>, que encuentra objetos por tipo y propiedades.</p>
+<p>El <i>Naming service</i> funciona como una gu&iacute;a de tel&eacute;fonos 
+  y permite encontrar una &uacute;nica referencia usando un identificador que 
+  funciona como una clave. El <i>Trading service</i>, por otro lado, permite recuperar 
+  un conjunto de referencias que cumplen un criterio de b&uacute;squeda, con un 
+  funcionamiento muy parecido al de las p&aacute;ginas amarillas.</p>
+<h2 class="subsection">5.1. Localizaci&oacute;n de objetos</h2>
+<p>Antes de invocar operaciones sobre un objeto CORBA, el cliente debe obtener 
+  primero la referencia al objeto CORBA. La arquitectura CORBA proporciona varios 
+  mecanismos para que los objetos CORBA y sus aplicaciones servidor pueden usar 
+  para que sus referencias a objetos puedan estar disponibles para potenciales 
+  clientes:</p>
+<ul>
+  <li>Uso de un servicio de localización de objetos, como por ejemplo el <i>Naming 
+    service</i> o <i>Trading service</i></li>
+  <li>Recreando una referencia a objeto a partir de su forma en formato String 
+    (<i>stringfied form</i>)</li>
+  <li>Recibiendo una referencia a objeto desde otro objeto CORBA, referido normalmente 
+    como objeto <i>factory</i></li>
+</ul>
+<p>En este tema nos vamos a referir al primero de ellos.</p>
+
+<h2 class="subsection">5.2. Servicio <i>Naming</i></h2>
+<p>El servicio <i>Naming</i> proporciona una correspondencia entre un nombre y 
+  una referencia a un objeto. El almacenamiento de dicha correspondencia se denomina 
+  como enlace (<i>binding)</i> de una objeto a un nombre, y la eliminaci&oacute;n 
+  de la misma se denomina <i>desenlazar</i> (<i>unbinding</i>) el nombre. Por 
+  otro lado, obtener una referencia a objeto que se ha enlazado con un nombre 
+  se conoce como <i>resolver</i> (<i>resolve</i>) el nombre.</p>
+<p>Los nombres pueden estructurarse jer&aacute;rquicamente unsando <i>contexts</i>. 
+  Los <i>contexts</i> son similiares a los directorios de los sistemas de ficheros, 
+  y pueden contener enclaces a nombres, as&iacute; como <i>subcontexts.</i></p>
+<p>El uso &uacute;nicamente de referencias a objetos para identificar objetos 
+  tiene dos problemas para los usuarios humanos. Primero, las referencias a objetos 
+  son tipos de datos opacos, y segundo, su forma <i>String</i> es una secuencia 
+  muy larga de n&uacute;meros. Cuando se reinicia un servidor, sus objetos t&iacute;picamtne 
+  tienen nuevas referencias de objetos. En muchos casos, sin embargto, los clientes 
+  queiren usar el servidor de forma repetida sin necesidad de tener en cuenta 
+  que el servidor se ha vuelto a iniciar.</p>
+<p>El servicio <i>Naming</i> soluciona estos problemas proporcionando una capa 
+  de abstracci&oacute;n extra para la identificaci&oacute;n de los objetos. Proporciona 
+  identificadores de objetos legibles para los usuarios humanos; los usuarios 
+  pueden asignar nombres que se asemejan a nombres estructurados de ficheros, 
+  un mecanismo de identificaci&oacute;n persistente, y los objetos pueden enlazarse 
+  ellos mismos con el mismo nombre con independencia de su referencia. Podemos 
+  decir que el servicio <i>Naming</i> es un repositorio para almacenar referencias 
+  a objetos CORBA.</p>
+<p>El servicio <i>Naming</i> usa una estructura de nombres definida en IDL para 
+  representar nombres, pero tambi&eacute;n define un formato de cadenas de caracteres 
+  est&aacute;ndar para nombres y conversi&oacute;n de operaciones entre los formatos 
+  de nombres internos y externos. De esta forma los nombres, as&iacute; como las 
+  referencias a objetos, pueden ser convertidas en cadenas de caracteres y exportadas.</p>
+<p>Cuando una aplicaci&oacute;n servidor inserta una referencia a objeto en el 
+  servicio <i>Naming</i>, es necesario proporcionar un nombre que usar&aacute; 
+  para identificar dichar referencia a objeto. Esta asociaci&oacute;n referencia 
+  a objeto-nombre se denomina <i>binding</i>.</p>
+<p>El uso t&iacute;pico del servicio <i>Naming</i> consiste en enlazar <i>(bind</i>) 
+  implementaciones de objetos con nombres del servicio <i>Naming</i> y desenlazarlos 
+  (<i>unbind</i>) cuando &eacute;stos terminan. Los clientes &quot;interrogan&quot; 
+  al servicio <i>Naming</i>, proporcionando un nombre, y reciben la referencia 
+  al objeto asociada, si existe. Una vez obtenida dicha referencia, invocan sobre 
+  ella las operaciones. La figura 5.1 ilustra este escenario t&iacute;pico.</p>
+
+<center>
+  <img border="0" src="Fig5-1.gif"> 
+</center>
+<p class="caption">Figura 5.1. Uso típico del servicio de nombres CORBA.</p>
+<p>El servicio <i>Naming</i> almacena los enlaces a referencias a objetos en <i>naming 
+  contexts. Un naming context</i> es un objeto CORBA que mantiene una colecci&oacute;n 
+  de cero o m&aacute;s enlaces a referencias de objetos. La naturaleza recursiva 
+  de los <i>naming</i> <i>contexts</i> permite la creaci&oacute;n de una jerarqu&iacute;a 
+  de <i>naming contexts</i>, similar a la de una estructura de directorios de 
+  un sistema de ficheros. Mediante la creaci&oacute;n de nuevos <i>naming contexts</i> 
+  dentro de otros ya existentes se consigue segmentar el espacio de nombres de 
+  objetos global, y paliar el problema de la colisi&oacute;n de nombres. El <i>Naming 
+  service </i>contiene un <i>naming context</i> inicial, denominado <i>raiz</i>, 
+  o <i>initial context</i>. Para insertar una referencia en el servicio <i>Naming</i>, 
+  la aplicaci&oacute;n servidor debe primero obtener la referencia al objeto que 
+  constituye la raiz o <i>initial context</i>. Para ello utiliza el m&eacute;todo 
+  <code>resolve_initial_references()</code>.</p>
+<pre class="codigo">//Conexi&oacute;n con el Servicio de Nombres
+org.omgCORBA.Object contextObj = orb.resolve_initial_references(&quot;NameService&quot;);
+NamingContext rootContext = NamingContextHelper.narrow(contextObj);</pre>
+<p>El m&oacute;dulo <code>CosNaming</code> proporciona definiciones de tipo usadas 
+  para identificar objetos por nombre. La interfaz principal se denomina <code>NamingContext</code>, 
+  y contiene operaciones para enlazar nombres a referencias a objetos y para crear 
+  subcontextos (<code>new_context()</code> y <code>bind_new_context()</code>, 
+  este &uacute;ltimo crea un subcontexto y lo enlaza en una &uacute;nica operaci&oacute;n). 
+  Hay dos operaciones para enlazar un objeto a un nombre en un contexto, y otras 
+  dos para enlazar otro contexto a un nombre. Las operaciones <code>bind()</code> 
+  y <code>bind_context() </code>asocian un nuevo nombre con un objeto. En el caso 
+  de <code>bind_context()</code> el objeto debe ser del tipo <code>NamingContext</code>. 
+  Las operaciones <code>rebind()</code> y <code>rebind_context()</code> funcionan 
+  de forma similar a las anteriores pero en lugar de provocar una excepci&oacute;n 
+  si el nombre ya existe, simplemente reemplazan la referencia al objeto existente. 
+  La operaci&oacute;n <code>unbind()</code> eliminar&aacute; un nombre y su referencia 
+  a objeto asociada de un contexto o uno de sus subcontextos.</p>
+<p>Los nombres son secuencias de <code>NameComponents</code>. Un <code>NameComponent</code> 
+  tiene dos campos: <code>id</code> contiene el <code>string</code> con el que 
+  se har&aacute; matching cuando se resuelva un nombre; y <code>kind</code>, disponible 
+  par prop&oacute;sitos espec&iacute;ficos de la aplicaci&oacute;n. Ambos campos 
+  se interpretan por el servicio de nombres, de forma que nombres con campos <code>id</code> 
+  id&eacute;nticos, pero con valores diferentes en el campo <code>kind</code> 
+  se consideran distintos. El siguiente c&oacute;digo inserta en el servicio de 
+  nombres la referencia al objeto Muestra, dentro del contexto Modulos, que a 
+  su vez est&aacute; dentro del contexto ra&iacute;z.</p>
+<pre class="codigo">NameComponent mod = new NameComponent(&quot;Modulos&quot;,&quot;&quot;);
+NameComponent mue = new NameComponent(&quot;Muestra&quot;,&quot;&quot;);
+NameComponent path[] = {mod,mue};
+rootContext.rebind(path,obj); //obj es una instancia del objeto remoto</pre>
+<p>Los <code>NamingContexts</code> pueden resolver nombres con una &uacute;nica 
+  componente y devolver una referencia a un objeto. El efecto de resolver nombres 
+  con m&aacute;s de una componente es el mismo que el de resolver la primera componente 
+  en un subcontexto y dejar el resto del nombre a dicho subcontexto para su resoluci&oacute;n. 
+</p>
+<pre class="codigo">
+//recuperamos la referencia al objeto CORBA del servicio de nombres correspondiente a &quot;path&quot;
+org.omg.CORBA.object obj = rootContext.resolve(path);</pre>
+<p>El servicio de nombres se lanza desde l&iacute;nea de comandos mediante la 
+  orden:</p>
+<pre class="codigo">tnameserv -ORBInitialPort x</pre>
+<p>En donde x es el puerto que se quiere usar. Si no se especifica un n&uacute;mero 
+  de puerto, por defecto, el servicio de nombres se ejecuta sobre el puerto 900.</p>
+<p>El siguiente ejemplo muestra el uso del <i>Naming</i> service desde un cliente 
+  Java. Implementamos la clase <code>ContextLister</code> que permite imprimir 
+  todos los enlaces <i>(bindings</i>) de un <code>NamingContext</code> en un <i>stream</i> 
+  Java. </p>
+<pre class="codigo">import org.omg.cosNaming.*;
+import org.omg.CosNaming.NamingContextPackage.*;
+import java.io.*;
+import java.util.*;
+ 
+public class ContextLister {
+  private NamingContextExt <b>root_context</b>;
+ 
+  public contextLister(org.omg.CORBA.ORB orb) {
+     //inicializa el servicio <i>Naming</i> mediante el ORB
+    try {
+     System.out.println(&quot;Servicios iniciales: &quot;);
+     String[] services = orb.list_initial_services();
+ 
+     if (services.length==0)
+       System.out.println(&quot;No hay servicios disponibles&quot;);
+ 
+     for (int i=0; i&lt; services.length; i++)
+       System.out.println(services[i]);
+
+     org.omg.CORBA.object obj =
+       orb.<b>resolve_initial_references</b>(&quot;NameService&quot;);
+     <b>root_context</b>= NamingContextExtHelper.narrow(obj);     
+    }
+    catch(org.omg.CORBA.ORBPackage.InvalidName inex) {
+      inex.printStackTrace();
+    }
+    catch(org.omg.CORBA.SystemException corba_exception) {
+      System.err.println(corba_exception);
+    }
+    if (root_context== null) {
+      System.err.println(&quot;No se encuentra el servicio <i>Naming&quot;</i>);<i>
+      </i>System.exit(1); 
+    }
+  }
+}</pre>
+<p>De forma alternativa se puede utilizar un constructor que inicializa el objeto 
+  ContextLister con una referencia a objeto como cadena de caracteres (<i>stringfied</i>) 
+  para el <i>root context</i>. </p>
+<pre class="codigo">public ContextLister(org.omg.CORBA.ORB orb, String str) {
+  //inicializa el servicio <i>Naming</i> mediante un <i>stringfied</i> ORB
+  try {
+    org.omb.CORBA.Object obj = orb.string_to_object(str);
+    root_context = NamingContextExtHelper.narrow(obj);
+  }
+  catch(org.omg.CORBA.SystemException corba_exception) {
+      System.err.println(corba_exception);
+  }
+  if (root_context== null) {
+      System.err.println(&quot;No se encuentra el servicio <i>Naming&quot;</i>);<i>
+      </i>System.exit(1); 
+  }
+}</pre>
+<p>Para ejecutar el código <b>cliente</b> se utiliza la orden:</p>
+<pre class="codigo">java Cliente [ -ORBInitialPort x] [-ORBInitialHost host]</pre>
+<p>En donde x es el puerto y host es la m&aacute;quina en la que se est&aacute; 
+  ejecutando el servicio de nombres.</p>
+<p>Para ejecutar el c&oacute;digo de la aplicacion <b>servidor</b>, se utiliza 
+  la orden:</p>
+<pre class="codigo">java Servidor [ -ORBInitialPort x] [-ORBInitialHost host]</pre>
+<p>En donde x es el puerto y host es la m&aacute;quina en la que se est&aacute; 
+  ejecutando el servicio de nombres.</p>
+<h2 class="subsection">5.3. Servicio <i>Trading</i></h2>
+<p>El servicio <i>Trading</i> tiene su base en los est&aacute;ndares ISO <i>Open 
+  Distributed Processing (ODP</i>). En este caso simplemente vamos a ilustrar 
+  la idea general, sin proporcionar ning&uacute;n ejemplo pr&aacute;ctico de uso.</p>
+<p>Los <i>traders</i> son repositorios de referencias a objetos que son descritas 
+  por un tipo de interfaz y por un conjunto de valores de propiedades. Tal descripci&oacute;n 
+  de la interfaz se conoce como oferta de servicio <i>(service offer</i>). Cada 
+  oferta de servicio tiene un tipo de servicio (<i>service type</i>), consistente 
+  en una combinaci&oacute;n del tipo de interfaz del objeto correspondiente y 
+  una lista de propiedades para las que la oferta de servicio deber&iacute;a proporcionar 
+  valores.</p>
+<p>Un <i>exporter</i> es un servicio que act&uacute;a como un agente que proporciona 
+  un <i>service offer</i> en un <i>trader</i>. </p>
+<p>Un cliente que requiera de un <i>trader</i> para encontrar un servicio se denomina 
+  <i>importer</i>. Un <i>importer</i> proporciona una especificaci&oacute;n al 
+  <i>trader </i>de un tipo de servicio y unas restricciones sobre las propiedades 
+  que oferta dicho tipo. Las restricciones se indican mediante una expresi&oacute;n 
+  que describe los requerimientos del <i>importer</i>. Un uso t&iacute;pico del 
+  <i>trader service </i>se ilustra en la Figura 5.2</p>
+<center>
+  <img border="0" src="Fig5-2.gif"> 
+</center>
+<p class="caption">Figura 5.2. Uso de un <i>Trading service</i> de CORBA.</p>
+<p>Un servidor, el <i>exporter</i>, puede registrar un servicio utilizando el 
+  interfaz Register. Los clientes que pueden ser <i>applets</i> o aplicaciones, 
+  pueden actuar como <i>importers</i> y buscar servicios usando la interfaz <code>Lookup</code>.</p>
+<p>&nbsp;</p>
+</body>
+</html>

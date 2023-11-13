@@ -1,0 +1,837 @@
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=iso-8859-1">
+  <meta name="Author" content="Domingo">
+  <title>Sesi&oacute;n 1: Introducci&oacute;n a la tecnolg&iacute;a EJB</title>
+  <link rel="stylesheet" href="../apuntes.css" type="text/css">
+</head>
+<body>
+<h1> 1 Introducci&oacute;n a la tecnolog&iacute;a EJB</h1>
+<p>Los contenidos que vamos a ver en el tema son:</p>
+<ul>
+  <li>Desarrollo basado en componentes</li>
+  <li>Servicios proporcionados por el contenedor EJB</li>
+  <li>Funcionamiento de componentes EJB</li>
+  <li>Tipos de beans</li>
+  <li>Desarrollo de beans</li>
+  <li>Clientes de los beans</li>
+  <li>Roles EJB</li>
+  <li>Evoluci&oacute;n de la especificaci&oacute;n EJB</li>
+  <li>Ventajas de la tecnolog&iacute;a EJB</li>
+</ul>
+<h2>1.1 Desarrollo basado en componentes</h2>
+<p>Con la tecnolog&iacute;a J2EE Enterprise JavaBeans es posible desarrollar componentes 
+  (<em>enterprise beans</em>) que luego puedes reutilizar y ensamblar en distintas 
+  aplicaciones que tengas que hacer para la empresa. Por ejemplo, podr&iacute;as 
+  desarrollar un bean <code>Cliente</code> que represente un cliente en una base 
+  de datos. Podr&iacute;as usar despu&eacute;s ese bean <code>Cliente</code> en 
+  un programa de contabilidad o en una aplicaci&oacute;n de comercio electr&oacute;nico 
+  o virtualmente en cualquier programa en el que se necesite representar un cliente. 
+  De hecho, incluso ser&iacute;a posible que el desarrollador del bean y el ensamblador 
+  de la aplicaci&oacute;n no fueran la misma persona, o ni siquiera trabajaran 
+  en la misma empresa.</p>
+<p>El desarrollo basado en componentes promete un paso m&aacute;s en el camino 
+  de la programaci&oacute;n orientada a objetos. Con la programaci&oacute;n orientada 
+  a objetos puedes reutilizar clases, pero con componentes es posible reutilizar 
+  n mayor nivel de funcionalidades e incluso es posible modificar estas funcionalidades 
+  y adaptarlas a cada entorno de trabajo particular sin tocar el c&oacute;digo 
+  del componente desarrollado. Aunque veremos el tema con mucho m&aacute;s detalle, 
+  en este momento puedes ver un componente como un objeto tradicional con un conjunto 
+  de servicios adicionales soportados en tiempo de ejecuci&oacute;n por el contenedor 
+  de componentes. El contenedor de componentes se denomina <em>contenedor EJB</em> 
+  y es algo as&iacute; como el sistema operativo en el que &eacute;stos residen. 
+  Recuerda que en Java existe un modelo de programaci&oacute;n de objetos remotos 
+  denominado RMI. Con RMI es posible enviar peticiones a objetos que est&aacute;n 
+  ejecut&aacute;ndose en otra m&aacute;quina virtual Java. Podemos ver un componente 
+  EJB como un objeto remoto RMI que reside en un contenedor EJB que le proporciona 
+  un conjunto de servicios adicionales.</p>
+<p>Cuando est&eacute;s trabajando con componentes tendr&aacute;s que dedicarle 
+  tanta atenci&oacute;n al despliegue (<em>deployment</em>) del componente como 
+  a su desarrollo. Entendemos por despliegue la incorporaci&oacute;n del componente 
+  a nuestro contenedor EJB y a nuestro entorno de trabajo (bases de datos, arquitectura 
+  de la aplicaci&oacute;n, etc.). El despliegue se define de forma declarativa, 
+  mediante un fichero XML (descriptor del despliegue, <em>deployment descriptor</em>) 
+  en el que se definen todas las caracter&iacute;sticas del bean.</p>
+<p>El desarrollo basado en componentes ha creado expectativas sobre la aparici&oacute;n 
+  de una serie de empresas dedicadas a implementar y vender componentes espec&iacute;ficos 
+  a terceros. Este mercado de componentes nunca ha llegado a tener la suficiente 
+  masa cr&iacute;tica como para crear una industria sostenible. Esto es debido 
+  a distintas razones, como la dificultad en el dise&ntilde;o de componentes gen&eacute;ricos 
+  capaces de adaptarse a distintos dominios de aplicaci&oacute;n, la falta de 
+  estandarizaci&oacute;n de los dominios de aplicaci&oacute;n o la diversidad 
+  de estos dominios. Aun as&iacute;, existe un campo creciente de negocio en esta 
+  &aacute;rea (puedes ver, como ejemplo, <a href="http://www.componentsource.com">www.componentsource.com</a>).</p>
+<h2>1.2 Servicios proporcionados por el contenedor EJB</h2>
+<p>En el apartado anterior hemos comentado que la diferencia fundamental entre 
+  los componentes y los objetos cl&aacute;sicos reside en que los componentes 
+  <em>viven</em> en un contenedor EJB que los envuelve proporcionando una capa 
+  de servicios a&ntilde;adidos. &iquest;Cu&aacute;les son estos servicios? Los 
+  m&aacute;s importantes son los siguientes:</p>
+<ul>
+  <li>Manejo de transacciones: apertura y cierre de transacciones asociadas a 
+    las llamadas a los m&eacute;todos del bean.</li>
+  <li>Seguridad: comprobaci&oacute;n de permisos de acceso a los m&eacute;todos 
+    del bean.</li>
+  <li>Concurrencia: llamada simult&aacute;nea a un mismo bean desde m&uacute;ltiples 
+    clientes. </li>
+  <li>Servicios de red: comunicaci&oacute;n entre el cliente y el bean en m&aacute;quinas 
+    distintas. </li>
+  <li>Gesti&oacute;n de recursos: gesti&oacute;n autom&aacute;tica de m&uacute;ltiples 
+    recursos, como colas de mensajes, bases de datos o fuentes de datos en aplicaciones 
+    heredadas que no han sido traducidas a nuevos lenguajes/entornos y siguen 
+    us&aacute;ndose en la empresa.</li>
+  <li>Persistencia: sincronizaci&oacute;n entre los datos del bean y tablas de 
+    una base de datos.</li>
+  <li>Gesti&oacute;n de mensajes: manejo de Java Message Service (JMS).</li>
+  <li>Escalabilidad: posibilidad de constituir clusters de servidores de aplicaciones 
+    con m&uacute;ltiples hosts para poder dar respuesta a aumentos repentinos 
+    de carga de la aplicaci&oacute;n con s&oacute;lo a&ntilde;adir hosts adicionales.</li>
+  <li>Adaptaci&oacute;n en tiempo de despliegue: posibilidad de modificaci&oacute;n 
+    de todas estas caracter&iacute;sticas en el momento del despliegue del bean.</li>
+</ul>
+<p>Pensad en lo complicado que ser&iacute;a programar una clase &quot;a mano&quot; 
+  que implementara todas estas caracter&iacute;sticas. Como se suele decir, la 
+  programaci&oacute;n de EJB es sencilla si la comparamos con lo que habr&iacute;a 
+  que implementar de hacerlo todo por uno mismo. Evidentemente, si en la aplicaci&oacute;n 
+  que est&aacute;s desarrollando no vas a necesitar estos servicios y va a tener 
+  un interfaz web, podr&iacute;as utilizar simplemente p&aacute;ginas JSP y JDBC.</p>
+<h2>1.3 Funcionamiento de los componentes EJB</h2>
+<p>El funcionamiento de los componentes EJB se basa fundamentalmente en el trabajo 
+  del contenedor EJB. El contenedor EJB es un programa Java que corre en el servidor 
+  y que contiene todas las clases y objetos necesarios para el correcto funcionamiento 
+  de los enterprise beans.</p>
+<p>En la figura siguiente puedes ver una representaci&oacute;n de muy alto nivel 
+  del funcionamiento b&aacute;sico de los enterprise beans. En primer lugar, puedes 
+  ver que el cliente que realiza peticiones al bean y el servidor que contiene 
+  el bean est&aacute;n ejecut&aacute;ndose en m&aacute;quinas virtuales Java distintas. 
+  Incluso pueden estar en distintos hosts. Otra cosa a resaltar es que el cliente 
+  <em>nunca</em> se comunica directamente con el enterprise bean, sino que el 
+  contenedor EJB proporciona un <em> EJBObject </em>que hace de interfaz. Cualquier 
+  petici&oacute;n del cliente (una llamada a un <em>m&eacute;todo de negocio</em> 
+  del enterprise bean) se debe hacer a trav&eacute;s del objeto EJB, el cual solicita 
+  al contenedor EJB una serie de servicios y se comunica con el enterprise bean. 
+  Por &uacute;ltimo, el bean realiza las peticiones correspondientes a la base 
+  de datos.</p>
+<p>El contenedor EJB se preocupa de cuestiones como:</p>
+<ul>
+  <li>&iquest;Tiene el cliente permiso para llamar al m&eacute;todo?</li>
+  <li>Hay que abrir la transacci&oacute;n al comienzo de la llamada y cerrarla 
+    al terminar.</li>
+  <li>&iquest;Es necesario refrescar el bean con los datos de la base de datos?</li>
+</ul>
+<div align="center">
+<img src="imagenes/arquitecturaEJB.png" width="510" height="200">
+</div>
+<p class="caption">Figura 1.1: representaci&oacute;n de alto nivel del funcionamiento 
+  de los enterprise beans.</p>
+<p>Vamos a ver un ejemplo para que puedas entender mejor el flujo de llamadas. 
+  Supongamos que tenemos una aplicaci&oacute;n de bolsa y el bean proporciona 
+  una implementaci&oacute;n de un Broker. La interfaz de negocio del Broker est&aacute; 
+  compuesta de varios m&eacute;todos, entre ellos, por ejemplo, los m&eacute;todos 
+  <code>compra</code> o <code>vende</code>. Supongamos que desde el objeto cliente 
+  queremos llamar al m&eacute;todo <code>compra</code>. Esto va a provocar la 
+  siguiente secuencia de llamadas:</p>
+<ol>
+  <li><em>Cliente</em>: &quot;Necesito realizar una petici&oacute;n de compra 
+    al bean Broker.&quot;</li>
+  <li> <em>EJBObject</em>: &quot;Espera un momento, necesito comprobar tus permisos.&quot;</li>
+  <li><em>Contenedor EJB</em>: &quot;S&iacute;, el cliente tiene permisos suficientes 
+    para llamar al m&eacute;todo compra.&quot;</li>
+  <li><em>Contenedor EJB</em>: &quot;Necesito un bean Broker para realizar una 
+    operaci&oacute;n de compra. Y no olvid&eacute;is comenzar la transacci&oacute;n 
+    en el momento de instanciaros.&quot;</li>
+  <li><em>Pool de beans</em>: &quot;A ver... &iquest;a qui&eacute;n de nosotros 
+    le toca esta vez?&quot;.</li>
+  <li><em>Contenedor EJB</em>: &quot;Ya tengo un bean Broker. P&aacute;sale la 
+    petici&oacute;n del cliente.&quot;</li>
+</ol>
+<p>Por cierto, la idea de usar este tipo de di&aacute;logos para describir el 
+  funcionamiento de un proceso o una arquitectura de un sistema inform&aacute;tico 
+  es de Kathy Sierra en sus libros <em>&quot;Head First Java&quot;</em> y &quot;<em>Head 
+  First EJB&quot;</em>. Se trata de un tipo de libros radicalmente distintos a 
+  los habituales manuales de Java que consiguen que realmente aprendas este lenguaje 
+  cuando los sigues. &Eacute;chales un vistazo si tienes oportunidad.</p>
+<h2>1.4 Tipos de beans</h2>
+<p>La tecnolog&iacute;a EJB define tres tipos de beans: beans de sesi&oacute;n, 
+  beans de entidad y beans dirigidos por mensajes.</p>
+<p>Los <strong>beans de entidad</strong> representan un objeto concreto que tiene 
+  existencia en alguna base de datos de la empresa. Una instancia de un bean de 
+  entidad representa una fila en una tabla de la base de datos. Por ejemplo, podr&iacute;amos 
+  considerar el bean Cliente, con una instancia del bean siendo Eva Mart&iacute;nez 
+  (ID# 342) y otra instancia Francisco G&oacute;mez (ID# 120).</p>
+<p>Los <strong>beans dirigidos por mensajes</strong> pueden escuchar mensajes 
+  de un servicio de mensajes JMS. Los clientes de estos beans nunca los llaman 
+  directamente, sino que es necesario enviar un mensaje JMS para comunicarse con 
+  ellos. Los beans dirigidos por mensajes no necesitan objetos EJBObject porque 
+  los clientes no se comunican nunca con ellos directamente. Un ejemplo de bean 
+  dirigido por mensajes podr&iacute;a ser un bean ListenerNuevoCliente que se 
+  activara cada vez que se env&iacute;a un mensaje comunicando que se ha dado 
+  de alta a un nuevo cliente.</p>
+<p>Por &uacute;ltimo, un <strong>bean de sesi&oacute;n</strong> representa un 
+  proceso o una acci&oacute;n de negocio. Normalmente, cualquier llamada a un 
+  servicio del servidor deber&iacute;a comenzar con una llamada a un bean de sesi&oacute;n. 
+  Mientras que un bean de entidad representa una cosa que se puede representar 
+  con un nombre, al pensar en un bean de sesi&oacute;n deber&iacute;as pensar 
+  en un verbo. Ejemplos de beans de sesi&oacute;n podr&iacute;an ser un carrito 
+  de la compra de una aplicaci&oacute;n de negocio electr&oacute;nico o un sistema 
+  verificador de tarjetas de cr&eacute;dito.</p>
+<p>Vamos a describir con algo m&aacute;s de detalle estos tipos de bean. Comenzamos 
+  con los beans de sesi&oacute;n para continuar con los de entidad y terminar 
+  con los dirigidos por mensajes.</p>
+<h3>1.4.1 Beans de sesi&oacute;n</h3>
+<p>Los beans de sesi&oacute;n representan sesiones interactivas con uno o m&aacute;s 
+  clientes. Los bean de sesi&oacute;n pueden mantener un estado, pero s&oacute;lo 
+  durante el tiempo que el cliente interact&uacute;a con el bean. Esto significa 
+  que los beans de sesi&oacute;n no almacenan sus datos en una base de datos despu&eacute;s 
+  de que el cliente termine el proceso. Por ello se suele decir que los beans 
+  de sesi&oacute;n no son persistentes.</p>
+<p>A diferencia de los bean de entidad, los beans de sesi&oacute;n no se comparten 
+  entre m&aacute;s de un cliente, sino que existe una correspondencia uno-uno 
+  entre beans de sesi&oacute;n y clientes. Por esto, el contenedor EJB no necesita 
+  implementar mecanismos de manejo de concurrencia en el acceso a estos beans.</p>
+<p>Existen dos tipos de beans de sesi&oacute;n: con estado y sin &eacute;l.</p>
+<h4>Beans de sesi&oacute;n sin estado</h4>
+<p>Los beans de sesi&oacute;n sin estado no se modifican con las llamadas de los 
+  clientes. Los m&eacute;todos que ponen a disposici&oacute;n de las aplicaciones 
+  clientes son llamadas que reciben datos y devuelven resultados, pero que no 
+  modifican internamente el estado del bean. Esta propiedad permite que el contenedor 
+  EJB pueda crear una reserva (<em>pool</em>) de instancias, todas ellas del mismo 
+  bean de sesi&oacute;n sin estado y asignar cualquier instancia a cualquier cliente. 
+  Incluso un &uacute;nico bean puede estar asignado a m&uacute;ltiples clientes, 
+  ya que la asignaci&oacute;n s&oacute;lo dura el tiempo de invocaci&oacute;n 
+  del m&eacute;todo solicitado por el cliente.</p>
+<p>Una de las ventajas del uso de beans de sesi&oacute;n, frente al uso de clases 
+  Java u objetos RMI es que no es necesario escribir los m&eacute;todos de los 
+  beans de sesi&oacute;n de una forma segura para threads (<em>thread-safe</em>), 
+  ya que el contenedor EJB se va a encargar de que nunca haya m&aacute;s de un 
+  thread accediendo al objeto. Para ello usa m&uacute;ltiples instancias del bean 
+  para responder a peticiones de los clientes.</p>
+<p>Cuando un cliente invoca un m&eacute;todo de un bean de sesi&oacute;n sin estado, 
+  el contenedor EJB obtiene una instancia de la reserva. Cualquier instancia servir&aacute;, 
+  ya que el bean no puede guardar ninguna informaci&oacute;n referida al cliente. 
+  Tan pronto como el m&eacute;todo termina su ejecuci&oacute;n, la instancia del 
+  bean est&aacute; disponible para otros clientes. Esta propiedad hace que los 
+  beans de sesi&oacute;n sin estado sean muy escalables para un gran n&uacute;mero 
+  de clientes. El contenedor EJB no tiene que mover sesiones de la memoria a un 
+  almacenamiento secundario para liberar recursos, simplemente puede obtener recursos 
+  y memoria destruyendo las instancias.</p>
+<p>Los beans de sesi&oacute;n sin estado se usan en general para encapsular procesos 
+  de negocio, m&aacute;s que datos de negocio (tarea de los entity beans). Estos 
+  beans suelen recibir nombres como <code>ServicioBroker</code> o <code>GestorContratos</code> 
+  para dejar claro que proporcionan un conjunto de procesos relacionados con un 
+  dominio espec&iacute;fico del negocio.</p>
+<p>Es apropiado usar beans de sesi&oacute;n sin estado cuando una tarea no est&aacute; 
+  ligada a un cliente espec&iacute;fico. Por ejemplo, se podr&iacute;a usar un 
+  bean sin estado para enviar un e-mail que confirme un pedido on-line o calcular 
+  unas cuotas de un pr&eacute;stamo.</p>
+<p>Tambi&eacute;n puede usarse un bean de sesi&oacute;n sin estado como un puente 
+  de acceso a una base de datos o a un bean de entidad. En una arquitectura cliente-servidor, 
+  el bean de sesi&oacute;n podr&iacute;a proporcionar al interfaz de usuario del 
+  cliente los datos necesarios, as&iacute; como modificar objetos de negocio (base 
+  de datos o bean de entidad) a petici&oacute;n de la interfaz. Este uso de los 
+  beans de sesi&oacute;n sin estado es muy frecuente y constituye el denominado 
+  patr&oacute;n de dise&ntilde;o <em>session facade</em>.</p>
+<p>Algunos ejemplos de bean de sesi&oacute;n sin estado podr&iacute;an ser:</p>
+<UL>
+  <li>Un componente que comprueba si un s&iacute;mbolo de compa&ntilde;&iacute;a 
+    est&aacute; disponible en el mercado de valores y devuelve la &uacute;ltima 
+    cotizaci&oacute;n registrada. 
+  <li class="sep">Un componente que calcula la cuota del seguro de un cliente, 
+    bas&aacute;ndose en los datos que se le pasa del cliente. 
+</UL>
+<h4>Beans de sesi&oacute;n con estado</h4>
+<p>En un bean de sesi&oacute;n con estado, las <i>variables de instancia</i> del 
+  bean almacenan datos espec&iacute;ficos obtenidos durante la conexi&oacute;n 
+  con el cliente. Cada bean de sesi&oacute;n con estado, por tanto, almacena el 
+  estado conversacional de un cliente que interact&uacute;a con el bean. Este 
+  estado conversacional se modifica conforme el cliente va realizando llamadas 
+  a los m&eacute;todos de negocio del bean. El estado conversacional no se guarda 
+  cuando el cliente termina la sesi&oacute;n. </p>
+<p>La interacci&oacute;n del cliente con el bean se divide en un conjunto de pasos. 
+  En cada paso se a&ntilde;ade nueva informaci&oacute;n al estado del bean. Cada 
+  paso de interacci&oacute;n suele denominarse con nombres como <code>setNombre</code> 
+  o <code>setDireccion</code>, siendo <code>nombre</code> y <code>direccion</code> 
+  dos variables de instancia del bean.</p>
+<p>Algunos ejemplos de beans de sesi&oacute;n con estado podr&iacute;an ser:</p>
+<UL>
+  <li>Un ejemplo t&iacute;pico es un carrito de la compra, en donde el cliente 
+    va guardando uno a uno los &iacute;tem que va comprando. 
+  <li class="sep">Un enterprise bean que reserva un vuelo y alquila un coche en 
+    un sitio Web de una agencia de viajes. 
+</UL>
+<p>El estado del bean persiste mientras que existe el bean. A diferencia de los 
+  beans de entidad, no existe ning&uacute;n recurso exterior al contenedor EJB 
+  en el que se almacene este estado.</p>
+<p>Debido a que el bean guarda el estado conversacional con un cliente determinado, 
+  no le es posible al contenedor crear un almac&eacute;n de beans y compartirlos 
+  entre muchos clientes. Por ello, el manejo de beans de sesi&oacute;n con estado 
+  es m&aacute;s pesado que el de beans de sesi&oacute;n sin estado.</p>
+<p>En general, se deber&iacute;a usar un bean de sesi&oacute;n con estado si se 
+  cumplen las siguientes circunstancias: </p>
+<UL>
+  <li>El estado del bean representa la interacci&oacute;n entre el bean y un cliente 
+    espec&iacute;fico. 
+  <li>El bean necesita mantener informaci&oacute;n del cliente a lo largo de un 
+    conjunto de invocaciones de m&eacute;todos. 
+  <li>El bean hace de intermediario entre el cliente y otros componentes de la 
+    aplicaci&oacute;n, presentando una vista simplificada al cliente. 
+</UL>
+<h3>1.4.2 Beans de entidad</h3>
+<p>Los beans de entidad modelan conceptos o datos de negocio que puede expresarse 
+  como nombres. Esto es una regla sencilla m&aacute;s que un requisito formal, 
+  pero ayuda a determinar cu&aacute;ndo un concepto de negocio puede ser implementado 
+  como un bean de entidad. Los beans de entidad representan &#147;cosas&#148;: 
+  objetos del mundo real como hoteles, habitaciones, expedientes, estudiantes, 
+  y dem&aacute;s. Un bean de entidad puede representar incluso cosas abstractas 
+  como una reserva. Los beans de entidad describen tanto el estado como la conducta 
+  de objetos del mundo real y permiten a los desarrolladores encapsular las reglas 
+  de datos y de negocio asociadas con un concepto espec&iacute;fico. Por ejemplo 
+  un bean de entidad <code>Estudiante</code> encapsula los datos y reglas de negocio 
+  asociadas a un estudiante. Esto hace posible manejar de forma consistente y 
+  segura los datos asociados a un concepto.</p>
+<p>Los beans de entidad se corresponden con datos en un almacenamiento persistente 
+  (base de datos, sistema de ficheros, etc.). Las variables de instancia del bean 
+  representan los datos en las columnas de la base de datos. El contenedor debe 
+  sincronizar las variables de instancia del bean con la base de datos. Los beans 
+  de entidad se diferencian de los beans de sesi&oacute;n en que las variables 
+  de instancia se almacenan de forma persistente. </p>
+<p>Aunque entraremos en detalle m&aacute;s adelante, es interesante adelantar 
+  que el uso de los beans de entidad desde un cliente conlleva los siguientes 
+  pasos:</p>
+<ol>
+  <li>Primero el cliente debe obtener una referencia a la instancia concreta del 
+    bean de entidad que se est&aacute; buscando (el estudiante &quot;Francisco 
+    L&oacute;pez&quot;) mediante un m&eacute;todo <em>finder</em>. Estos m&eacute;todos 
+    finder se encuentran definidos en la interfaz home e implementados en la clase 
+    bean. Los m&eacute;todos finder pueden devolver uno o varios beans de entidad.</li>
+  <li>El cliente interact&uacute;a con la instancia del bean usando sus m&eacute;todos 
+    <em>get</em> y <em>set</em>. El estado del bean se carga de la base de datos 
+    antes de procesar las llamadas a los m&eacute;todos. Esto se encarga de hacerlo 
+    el contenedor de forma autom&aacute;tica o el propio bean en la funci&oacute;n 
+    <code>ejbLoad()</code>.</li>
+  <li>Por &uacute;ltimo, cuando el cliente termina la interacci&oacute;n con la 
+    instancia del bean sus contenidos se vuelcan en el almacen persistente. O 
+    bien lo hace de forma autom&aacute;tica el contenedor o bien &eacute;ste llama 
+    al m&eacute;todo <code>ejbStore()</code>.</li>
+</ol>
+<p>Son muchas las ventajas de usar beans de entidad en lugar de acceder a la base 
+  de datos directamente. El uso de beans de entidad nos da una perspectiva orientada 
+  a objetos de los datos y proporciona a los programadores un mecanismo m&aacute;s 
+  simple para acceder y modificar los datos. Es mucho m&aacute;s f&aacute;cil, 
+  por ejemplo, cambiar el nombre de un estudiante llamando a <code>student.setName()</code> 
+  que ejecutando un comando SQL contra la base de datos. Adem&aacute;s, el uso 
+  de objetos favorece la reutilizaci&oacute;n del software. Una vez que un bean 
+  de entidad se ha definido, su definici&oacute;n puede usarse a lo largo de todo 
+  el sistema de forma consistente. Un bean <code>Estudiante</code> proporciona 
+  un forma completa de acceder a la informaci&oacute;n del estudiante y eso asegura 
+  que el acceso a la informaci&oacute;n es consistente y simple.</p>
+<p>La representaci&oacute;n de los datos como beans de entidad puede hacer que 
+  el desarrollo sea m&aacute;s sencillo y menos costoso.</p>
+<h4>Diferencias con los beans de sesi&oacute;n</h4>
+<p>Los beans de entidad se diferencian de los beans de sesi&oacute;n, principalmente, 
+  en que son persistentes, permiten el acceso compartido, tienen clave primaria 
+  y pueden participar en relaciones con otros beans de entidad:</p>
+<p><B>Persistencia</B></p>
+<BLOCKQUOTE> 
+  <p>Debido a que un bean de entidad se guarda en un mecanismo de almacenamiento 
+    se dice que es persistente. Persistente significa que el estado del bean de 
+    entidad existe m&aacute;s tiempo que la duraci&oacute;n de la aplicaci&oacute;n 
+    o del proceso del servidor J2EE. Un ejemplo de datos persistentes son los 
+    datos que se almacenan en una base de datos. </p>
+  <p>Los beans de entidad tienen dos tipos de persistencia: <b>Persistencia Gestionada 
+    por el Bean</b> (BMP, <i>Bean-Managed Persistence</i>) y <b>Persistencia Gestionada 
+    por el Contenedor</b> (CMP, <i>Container-Managed Persistence</i>). En el primer 
+    caso (BMP) el bean de entidad contiene el c&oacute;digo que accede a la base 
+    de datos. En el segundo caso (CMP) la relaci&oacute;n entre las columnas de 
+    la base de datos y el bean se describe en el fichero de propiedades del bean, 
+    y el contenedor EJB se ocupa de la implementaci&oacute;n.</p>
+</BLOCKQUOTE>
+<B>Acceso compartido</B><BR>
+<BLOCKQUOTE> 
+  <p>Los clientes pueden compartir beans de entidad, con lo que el contenedor 
+    EJB debe gestionar el acceso concurrente a los mismos y por ello debe usar 
+    transacciones. La forma de hacerlo depender&aacute; de la pol&iacute;tica 
+    que se especifique en los descriptores del bean.</p>
+</BLOCKQUOTE>
+<B>Clave primaria</B><BR>
+<BLOCKQUOTE> 
+  <p>Cada bean de entidad tiene un identificador &uacute;nico. Un bean de entidad 
+    alumno, por ejemplo, puede identificarse por su n&uacute;mero de expediente. 
+    Este identificador &uacute;nico, o <I>clave primaria</I>, permite al cliente 
+    localizar a un bean de entidad particular.</p>
+</BLOCKQUOTE>
+<p><B>Relaciones</B></p>
+<BLOCKQUOTE> 
+  <p>De la misma forma que una tabla en una base de datos relacional, un bean 
+    de entidad puede estar relacionado con otros EJB. Por ejemplo, en una aplicaci&oacute;n 
+    de gesti&oacute;n administrativa de una universidad, el bean <code>alumnoEjb</code> 
+    y el bean <code>actaEjb</code> estar&iacute;an relacionados porque un alumno 
+    aparece en un acta con una calificaci&oacute;n determinada. </p>
+  <p>Las relaciones se implementan de forma distinta seg&uacute;n se est&eacute; 
+    usando la persistencia manejada por el bean o por el contenedor. En el primer 
+    caso, al igual que la persistencia, el desarrollador debe programar y gestionar 
+    las relaciones. En el segundo caso es el contenedor el que se hace cargo de 
+    la gesti&oacute;n de las relaciones. Por ello, estas &uacute;ltimas se denominan 
+    a veces relaciones gestionadas por el contenedor.</p>
+</BLOCKQUOTE>
+<h3>1.4.3 Beans dirigidos por mensajes</h3>
+<p>Son el tercer tipo de beans propuestos por la &uacute;ltima especificaci&oacute;n 
+  de EJB. Estos beans permiten que las aplicaciones J2EE reciban mensajes JMS 
+  de forma as&iacute;ncrona. As&iacute;, el hilo de ejecuci&oacute;n de un cliente 
+  no se bloquea cuando est&aacute; esperando que se complete alg&uacute;n m&eacute;todo 
+  de negocio de otro enterprise bean. Los mensajes pueden enviarse desde cualquier 
+  componente J2EE (una aplicaci&oacute;n cliente, otro enterprise bean, o un componente 
+  Web) o por una aplicaci&oacute;n o sistema JMS que no use la tecnolog&iacute;a 
+  J2EE.</p>
+<h4>Diferencias con los beans de sesi&oacute;n y de entidad</h4>
+<p>La diferencia m&aacute;s visible es que los clientes no acceden a los beans 
+  dirigidos por mensajes mediante interfaces (explicaremos esto con m&aacute;s 
+  detalle m&aacute;s adelante), sino que un bean dirigido por mensajes s&oacute;lo 
+  tienen una clase bean.</p>
+<p>En muchos aspectos, un bean dirigido por mensajes es parecido a un bean de 
+  sesi&oacute;n sin estado.</p>
+<UL>
+  <li>Las instancias de un bean dirigido por mensajes no almacenan ning&uacute;n 
+    estado conversacional ni datos de clientes.
+  <li class="sep">Todas las instancias de los beans dirigidos por mensajes son equivalentes, 
+    lo que permite al contenedor EJB asignar un mensaje a cualquier instancia. 
+    El contenedor puede almacenar estas instancias para permitir que los streams 
+    de mensajes sean procesados de forma concurrente.
+  <li class="sep">Un &uacute;nico bean dirigido por mensajes puede procesar mensajes 
+    de m&uacute;ltiples clientes.
+</UL>
+<p>Las variables de instancia de estos beans pueden contener alg&uacute;n estado 
+  referido al manejo de los mensajes de los clientes. Por ejemplo, pueden contener 
+  una conexi&oacute;n JMS, una conexi&oacute;n de base de datos o una referencia 
+  a un objeto enterprise bean.</p>
+<p>Cuando llega un mensaje, el contenedor llama al m&eacute;todo <code>onMessage</code> 
+  del bean. El m&eacute;todo <code>onMessage</code> suele realizar un casting 
+  del mensaje a uno de los cinco tipos de mensajes de JMS y manejarlo de forma 
+  acorde con la l&oacute;gica de negocio de la aplicaci&oacute;n. El m&eacute;todo 
+  onMessage puede llamar a m&eacute;todos auxiliares, o puede invocar a un bean 
+  de sesi&oacute;n o de entidad para procesar la informaci&oacute;n del mensaje 
+  o para almacenarlo en una base de datos. </p>
+<p>Un mensaje puede enviarse a un bean dirigido por mensajes dentro de un contexto 
+  de transacci&oacute;n, por lo que todas las operaciones dentro del m&eacute;todo 
+  onMessage son parten de un &uacute;nica transacci&oacute;n. </p>
+<h2>1.5 Desarrollo de beans</h2>
+<p>El desarrollo y programaci&oacute;n de los beans suele ser un proceso bastante 
+  similar sea cual sea el tipo de bean. Consta de los siguientes 5 pasos:</p>
+<ol>
+  <li>Escribe y compila la clase <em>bean</em> que contiene a todos los m&eacute;todos 
+    de negocio.</li>
+  <li>Escribe y compila las dos interfaces del bean: <em>home</em> y <em>componente</em>.</li>
+  <li>Crea un descriptor XML del despliegue en el que se describa qu&eacute; es 
+    el bean y c&oacute;mo debe manejarse. Este fichero debe llamarse <code>ejb-jar.xml</code>.</li>
+  <li>Pon la clase bean, los interfaces y el descriptor XML del despliegue en 
+    un fichero EJB JAR . Podr&iacute;a haber m&aacute;s de un bean el mismo fichero 
+    EJB JAR, pero nunca habr&aacute; m&aacute;s de un descriptor de despliegue.</li>
+  <li>Despliega el bean en el servidor usando las herramientas proporcionadas 
+    por el servidor de aplicaciones.</li>
+</ol>
+<p>Vamos a ver con algo m&aacute;s de detalle estos cinco pasos, usando un ejemplo 
+  sencillo de un bean de sesi&oacute;n sin estado que implementa el m&eacute;todo 
+  de negocio <code>saluda()</code> que devuelve un string con un saludo.</p>
+<h3>1.5.1 Clase bean</h3>
+<p>En la clase bean se encuentran los denominados m&eacute;todos de negocio. Son 
+  los m&eacute;todos finales a los que el cliente quiere acceder y los que debes 
+  programar. Son tambi&eacute;n los m&eacute;todos definidos en la interfaz componente. 
+</p>
+<p>Lo primero que debes hacer es decidir qu&eacute; tipo de bean necesitas implementar: 
+  un bean de sesi&oacute;n, de entidad o uno dirigido por mensajes. Estos tres 
+  tipos se definen con tres interfaces distintas: <code>SessionBean</code>, <code>EntityBean</code> 
+  y <code>MessageBean</code>. La clase bean que vas a escribir debe implementar 
+  una de ellas. En nuestro caso, vamos a definir un bean de sesi&oacute;n sin 
+  estado, por lo que la clase <code>SaludoBean</code> implementar&aacute; la interfaz 
+  <code>SessionBean</code>.</p>
+<pre class="codigo">package especialista;
+import javax.ejb.*;
+   
+public class SaludoBean implements SessionBean {
+   private String[] saludos = {"Hola", "Que tal?", "Como estas?",
+   "Cuanto tiempo sin verte!", "Que te cuentas?", "Que hay de nuevo?"};
+	  
+   // Los cuatro metodos siguientes son los de la interfaz
+   // SessionBean
+   public void ejbActivate() {
+      System.out.println("ejb activate");
+   }
+   
+   public void ejbPassivate() {
+      System.out.println("ejb pasivate");
+   }
+   
+   public void ejbRemove() {
+      System.out.println("ejb remove");
+   }
+   
+   public void setSessionContext(SessionContext cntx) {
+      System.out.println("set session context");
+   }
+  
+   // El siguiente es el metodo de negocio, al que
+   // van a poder llamar los clientes del bean
+   public String saluda() {
+      System.out.println("estoy en saluda");
+      int random = (int) (Math.random() * saludos.length);
+      return saludos[random];
+   }
+   
+   // Por ultimo, el metodo ejbCreate que no es de
+   // la interfaz sessionBean sino que corresponde al
+   // metodo de creacion de beans de la interfaz Home del EJB
+   public void ejbCreate() {
+      System.out.println("ejb create");
+   }
+}</pre>
+<div class="innerbox"> 
+  <p>Pregunta: </p>
+<ul>
+    <li> &iquest;Por qu&eacute; los m&eacute;todos de la clase bean, a diferencia 
+      de los m&eacute;todos de las interfaces <em>componente</em> y <em>home</em>, 
+      no definen la excepci&oacute;n <code>RemoteException</code>? </li>
+</ul>
+</div>
+
+<h3>1.5.2 Interfaces <em>componente</em> y <em>home</em></h3>
+<p>Una vez implementado el fichero <code>SaludoBean.java</code>, en el que se 
+  define el enterprise bean, debes pasar a definir las interfaces <em>componente</em> 
+  y <em>home</em> del bean. Vamos a llamar a estas interfaces <code>Saludo</code> 
+  y <code>SaludoHome</code>. Estas interfaces son las que deber&aacute; usar el 
+  cliente para comunicarse con el bean.</p>
+<p>La interfaz <em>componente</em> hereda de la interfaz <code>EJBObject</code> 
+  y en ella se definen los m&eacute;todos de negocio del bean, los que va a poder 
+  llamar el cliente para pedir al bean que realice sus funciones:</p>
+<pre class="codigo">package especialista;<br>
+import javax.ejb.*;<br>import java.rmi.RemoteException;<br>
+public interface Saludo extends EJBObject {<br>   public String saluda() throws RemoteException;<br>}
+</pre>
+<p>Todos los m&eacute;todos definidos en esta interfaz se corresponden con los 
+  m&eacute;todos de negocio del bean y todos van a ser m&eacute;todos remotos 
+  (&iquest;recuerdas RMI?), ya que van a implementarse en una m&aacute;quina virtual 
+  Java distinta de la m&aacute;quina. Por ello, todos estos m&eacute;todos deben 
+  declarar la excepci&oacute;n <code>RemoteException</code>.</p>
+<p>La interfaz <em>home</em> hereda de la interfaz <code>EJBHome</code>. El cliente 
+  usa los m&eacute;todos de esta interfaz para obtener una referencia a la interfaz 
+  componente. Puedes pensar en el home como en una especie de f&aacute;brica que 
+  construye referencias a los beans y las distribuye entre los clientes.</p>
+<pre class="codigo">package especialista;<br> 
+import javax.ejb.*;<br>import java.rmi.RemoteException;<br>
+public interface SaludoHome extends EJBHome {<br>   public Saludo create() throws CreateException, RemoteException;<br>}
+</pre>
+<p>El m&eacute;todo <code>create()</code> se corresponde con el m&eacute;todo 
+  <code>ejbCreate()</code> definido en la clase <code>SaludoBean</code>, y debe 
+  devolver el tipo <code>Saludo</code> de la interfaz <em>componente</em>. La 
+  interfaz tambi&eacute;n va a ser una interfaz remota y, por tanto, debe declarar 
+  la excepci&oacute;n <code>RemoteException</code>. Adem&aacute;s, el m&eacute;todo 
+  <code>create</code> debe declarar la excepci&oacute;n <code>CreateException</code>.</p>
+<p>Cuando se despliega un bean en el contenedor EJB, &eacute;ste crea dos objetos 
+  que llamaremos EJBObject y EJBHome que implementar&aacute;n estas interfaces. 
+  Estos objetos separan el bean del cliente, de forma que el cliente nunca accede 
+  directamente al bean. As&iacute; el contenedor puede incorporar sus servicios 
+  a los m&eacute;todos de negocio.</p>
+<div class="innerbox"> 
+  <p> Preguntas:</p>
+  <ul>
+    <li>&iquest;D&oacute;nde se deber&aacute;n instalar los ficheros <code>.class</code> 
+      resultantes de las compilaciones de estas interfaces: en el servidor, en 
+      el cliente o en ambos? </li>
+    <li>&iquest;Qu&eacute; sucede si definimos alg&uacute;n m&eacute;todo en la 
+      clase bean que despu&eacute;s no lo definimos en la interfaz <em>componente</em>?</li>
+  </ul>
+</div>
+<h3>1.5.3 Descriptor del despliegue</h3>
+<p>Los tres ficheros Java anteriores son todo lo que tienes que escribir en Java. 
+  Recuerda: una clase (<code>SaludoBean</code>) y dos interfaces (<code>SaludoHome</code> 
+  y <code>Saludo</code>). Ya queda poco para terminar. El cuarto y &uacute;ltimo 
+  elemento es tan importante como los anteriores. Se trata del descriptor de despliegue 
+  (<em>deployment descriptor</em>, DD) del bean. El descriptor de despliegue es 
+  un fichero XML en el que se detalla todo lo que el servidor necesita saber para 
+  gestionar el bean. El nombre de este fichero siempre debe ser <code>ejb-jar.xml</code>.</p>
+<pre class="codigo">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;<br>
+&lt;!DOCTYPE ejb-jar PUBLIC<br>'-//Sun Microsystems, Inc.//DTD Enterprise JavaBeans 1.1//EN'<br>'http://java.sun.com/j2ee/dtds/ejb-jar_1_1.dtd'&gt;<br> <br>&lt;ejb-jar&gt;<br>  &lt;display-name&gt;Ejb1&lt;/display-name&gt;<br>  &lt;enterprise-beans&gt;<br><br>    &lt;session&gt;<br>      &lt;display-name&gt;SaludoBean&lt;/display-name&gt;<br>      &lt;ejb-name&gt;SaludoBean&lt;/ejb-name&gt;<br>      <strong>&lt;home&gt;especialista.SaludoHome&lt;/home&gt;<br>      &lt;remote&gt;especialista.Saludo&lt;/remote&gt;<br>      &lt;ejb-class&gt;especialista.SaludoBean&lt;/ejb-class&gt;<br>      &lt;session-type&gt;Stateless&lt;/session-type&gt;</strong><br>      &lt;transaction-type&gt;Container&lt;/transaction-type&gt;<br>    &lt;/session&gt;<br><br>  &lt;/enterprise-beans&gt;<br>&lt;/ejb-jar&gt;</pre>
+<p>En este caso, dado que el ejemplo es muy sencillo, tenemos que definir pocos 
+  elementos. Le estamos diciendo al servidor cu&aacute;les son las clases bean 
+  y las interfaces home y componente (en el fichero XML la llaman <em>remote</em>) 
+  del bean. Debes saber que no existe ninguna norma en la arquitectura EJB sobre 
+  los nombres de las distintas clases Java que conforman el bean. Por eso es necesario 
+  indicarle al servidor cu&aacute;les son &eacute;stas mediantes los correspondientes 
+  elementos en el DD. Tambi&eacute;n le decimos qu&eacute; tipo de bean queremos 
+  utilizar (un bean se sesi&oacute;n sin estado). </p>
+<p>Existen muchos m&aacute;s elementos que podemos definir en el DD. Los iremos 
+  viendo poco a poco a lo largo de las siguientes sesiones.</p>
+<h3>1.5.4 Fichero ejb-jar</h3>
+<p>Una vez escritas las clases e interfaces y el descriptor del despliegue, debemos 
+  compactar todos los ficheros resultantes (los ficheros .class y el fichero XML) 
+  en un &uacute;nico fichero JAR. </p>
+<p>La estructura de este fichero JAR es:</p>
+<pre class="codigo">/META-INF/ejb-jar.xml
+
+/especialista/Saludo.class
+/especialista/SaludoHome.class
+/especialista/SaludoBean.class</pre>
+<p>En el directorio META-INF se incluye el DD. El resto del fichero JAR corresponde 
+  al directorio definido por el package <code>especialista</code> y a los tres 
+  ficheros <code>.class</code> que definen el bean. </p>
+<p>La mayor&iacute;a de servidores de aplicaciones proporcionan herramientas gr&aacute;ficas 
+  que crean el fichero de descripci&oacute;n y empaquetan el bean de forma autom&aacute;tica.</p>
+<p>Este fichero es el que se desplegar&aacute; en el servidor de aplicaciones. 
+  Puedes nombrar a este fichero con el nombre que quieras. Una costumbre bastante 
+  usada es llamarlo &lt;nombre&gt;-ejb.jar, siendo &lt;nombre&gt; el nombre del 
+  bean o de la aplicaci&oacute;n. En nuestro caso, podr&iacute;amos llamarlo <code>saludo-ejb.jar</code>. 
+</p>
+<h3>1.5.5 Despliegue del bean</h3>
+<p>Una vez construido el fichero EJB JAR es necesario desplegarlo en el servidor 
+  de aplicaciones. El despliegue conlleva dos acciones: la primera es darle al 
+  bean un nombre externo (un nombre JNDI, hablando m&aacute;s t&eacute;cnicamente) 
+  para que los clientes y otros beans puedan referirse a &eacute;l. En nuestro 
+  caso, le daremos como nombre &quot;SaludoBean&quot;. La segunda acci&oacute;n 
+  es la de llevar al servidor de aplicaciones el fichero EJB JAR. </p>
+<p>Existen dos escenarios diferenciados para la realizaci&oacute;n del despliegue, 
+  dependiendo de si has desarrollado el bean en el mismo host que se encuentra 
+  el servidor de aplicaciones o en un host distinto. El primer caso suele suceder 
+  cuando est&aacute;s trabajando en modo de prueba y est&aacute;s depurando el 
+  desarrollo. El segundo caso suele suceder cuando ya has depurado el bean y quieres 
+  desplegarlo en modo de producci&oacute;n: &iexcl;es recomendable no desarrollar 
+  y depurar en el mismo host en el que se encuentra el servidor de aplicaciones 
+  en producci&oacute;n!.</p>
+<p>El proceso de despliegue no est&aacute; definido en la especificaci&oacute;n 
+  J2EE y cada servidor de aplicaciones tiene unas caracter&iacute;sticas propias. 
+  En general, la mayor&iacute;a de servidores de aplicaciones proporcionan un 
+  interfaz gr&aacute;fico de administraci&oacute;n para gestionar el despliegue. 
+  Tambi&eacute;n la mayor&iacute;a de servidores proporcionan una tarea de ant 
+  para poder realizar el despliegue usando esta herramienta desde la l&iacute;nea 
+  de comando.</p>
+<p>En el la sesi&oacute;n pr&aacute;ctica veremos un ejemplo de cada tipo con 
+  el servidor de aplicaciones weblogic de BEA.</p>
+<p>Por &uacute;ltimo, hay un elemento previo al despliegue que, por simplificar, 
+  no hemos comentado. Se trata del proceso de ensamblaje de la aplicaci&oacute;n 
+  (Application Assembly). En este proceso se construye, a partir de uno o m&aacute;s 
+  ficheros EJB JAR con beans, un &uacute;nico fichero de aplicaci&oacute;n EAR 
+  en el que adem&aacute;s se pueden asignar valores a ciertas constantes que ser&aacute;n 
+  utilizadas por los beans. Todo ello se hace sin necesidad de recompilar las 
+  clases e interfaces de cada uno de los beans.</p>
+<h2>1.6 Clientes de los beans</h2>
+<p>Una vez que el bean est&aacute; desplegado en el contenedor, ya podemos usarlo 
+  desde un cliente. El cliente puede ser una clase Java cualquiera, ya sea un 
+  cliente aislado o un servlet que se est&aacute; ejecutando en el contenedor 
+  web del servidor de aplicaciones. El c&oacute;digo que deben ejecutar los clientes 
+  del bean es b&aacute;sicamente el mismo en cualquier caso.</p>
+<p>Puedes ver a continuaci&oacute;n el c&oacute;digo de un cliente que usa el 
+  bean.</p>
+<pre class="codigo"> 1. import java.io.*;<br> 2. import java.text.*;<br> 3. import java.util.*;<br> 4. import javax.servlet.*;<br> 5. import javax.servlet.http.*;<br> 6. import javax.naming.*;<br> 7. import javax.rmi.*;
+ 8. import especialista.*;<br> 9.<br>10. public class SaludoClient {    
+11.
+12.   public static void main(String [] args) {<br>13.      try {
+14.         Context jndiContext = getInitialContext();
+15.         Object ref = jndiContext.lookup(&quot;SaludoBean&quot;);
+16.         SaludoHome home = (SaludoHome)<br>17.            PortableRemoteObject.narrow(ref, SaludoHome.class);
+18.         Saludo sal = (Saludo) 
+19.            PortableRemoteObjet.narrow(home.create(), Saludo.class);<br>20.         System.out.println(&quot;Voy a llamar al bean&quot;);<br>21.         <strong>System.out.println(sal.saluda());</strong><br>22.         System.out.println(&quot;Ya he llamado al bean&quot;);<br>23.      } catch (Exception e) {e.printStackTrace();}<br>24.   }
+25. 
+26.   public static Context getInitialContext() <br>27.     throws javax.naming.NamingException {<br>28.        Properties p = new Properties();<br>29.        p.put(Context.INITIAL_CONTEXT_FACTORY, <br>30.                &quot;weblogic.jndi.WLInitialContextFactory&quot;);<br>31.        p.put(Context.PROVIDER_URL, &quot;t3://localhost:7001&quot;);<br>32.        return new javax.naming.InitialContext(p);<br>33.   }<br>34. }
+</pre>
+<p>B&aacute;sicamente, el cliente debe realizar siempre las siguientes tareas:</p>
+<ol>
+  <li>Acceder al servicio JNDI (l&iacute;nea 14 y l&iacute;neas 26-34), obteniendo 
+    el contexto JNDI inicial. Para ello se llama a la funci&oacute;n <code>javax.naming.InitialContext()</code>, 
+    pas&aacute;ndole como argumento unas propiedades dependientes del servidor 
+    que implementa el JNDI. En este caso estamos asumiendo que el servicio JNDI 
+    lo proporciona un servidor de aplicaciones BEA weblogic que est&aacute; ejecut&aacute;ndose 
+    en el localhost.</li>
+  <li>Localizar el bean proporcionando a JNDI su nombre l&oacute;gico (l&iacute;nea 
+    15). En este caso, el nombre JNDI del bean es <code>SaludoBean</code>.</li>
+  <li>Hacer un casting del objeto que devuelve JNDI para convertirlo en un objeto 
+    de la clase <code>SaludoHome</code> (l&iacute;neas 16 y 17). La forma de hacer 
+    el casting es especial, ya que antes de hacer el casting hay que obtener un 
+    objeto Java llamando al m&eacute;todo <code>PotableRemoteObject.narrow()</code> 
+    porque estamos recibiendo de JNDI un objeto que ha sido serializado usando 
+    el protocolo IIOP.</li>
+  <li>Llamar al m&eacute;todo <code>create()</code> del objeto home para crear 
+    un objeto de tipo <code>Saludo</code> (l&iacute;nea 19). Lo que se obtiene 
+    es un stub (ya hablaremos m&aacute;s de ello en la siguiente sesi&oacute;n) 
+    y hay que llamar otra vez a narrow para asegurarse de que el objeto devuelto 
+    satisface </li>
+  <li>Llamar a los m&eacute;todos de negocio del bean (l&iacute;nea 21).</li>
+</ol>
+<h2>1.7 Roles EJB</h2>
+<p>La arquitectura EJB define seis papeles principales. Brevemente, son:</p>
+<ul>
+  <li> <B>Desarrollador de beans</b>: desarrolla los componentes enterprise beans.<BR>
+  <li class="sep"><B>Ensamblador de aplicaciones</b>: compone los enterprise beans 
+    y las aplicaciones cliente para conformar una aplicaci&oacute;n completa <BR>
+  <li class="sep"><B>Desplegador</b>: despliega la aplicaci&oacute;n en un entorno 
+    operacional particular (servidor de aplicaciones)<BR>
+  <li class="sep"><B>Administrador del sistema</b>: configura y administra la 
+    infraestructura de computaci&oacute;n y de red del negocio<BR>
+  <li class="sep"><B>Proporcionador del Contenedor EJB y Proporcionador del Servidor 
+    EJB</b>: un fabricante (o fabricantes) especializado en manejo de transacciones 
+    y de aplicaciones y otros servicios de bajo nivel. Desarrollan el servidor 
+    de aplicaciones.
+</ul>
+<h2>1.8 Evoluci&oacute;n de la especificaci&oacute;n EJB</h2>
+<p>En Marzo de 1998 Sun Microsystems propone la especificaci&oacute;n 1.0 de la 
+  arquitectura Enterprise JavaBeans. Esta especificaci&oacute;n comienza con la 
+  siguiente definici&oacute;n:</p>
+<blockquote> 
+  <p><cite>La arquitectura Enterprise JavaBeans es una arquitectura de componentes 
+    para el desarrollo y despliegue de aplicaciones de empresa distribuidas y 
+    orientadas a objetos. Las aplicaciones escritas usando la arquitectura Enterprise 
+    JavaBeans son escalables, transaccionales y seguras para multi usuarios. Estas 
+    aplicaciones pueden escribirse una vez, y luego desplegarse en cualquier servidor 
+    que soporte la especificaci&oacute;n Enterprise JavaBeans.</cite></p>
+</blockquote>
+<p>Aunque se han introducido nuevas versiones de la especificaci&oacute;n, que 
+  incorporan muchas mejoras a la propuesta inicial, la definici&oacute;n de la 
+  arquitectura sigue siendo la misma. La siguiente tabla muestra las distintas 
+  revisiones que ha sufrido la especificaci&oacute;n de la arquitectura EJB.</p>
+<div align="center"> 
+  <table border="1" cellpadding="5" width=423 height=312>
+    <TR> 
+      <TD align=left VALIGN=TOP> <p></P>
+        <P ALIGN=CENTER>Espeficiaci&oacute;n EJB</P></TD>
+      <TD align=left VALIGN=TOP> <P ALIGN=CENTER>Fecha</P></TD>
+      <TD align=left VALIGN=TOP> <P ALIGN=CENTER>Principales novedades</P></TD>
+    </TR>
+    <TR> 
+      <TD align=left VALIGN=TOP> <P>EJB 1.0 </TD>
+      <TD align=left VALIGN=TOP> Marzo 1998 </TD>
+      <TD align=left VALIGN=TOP> Propuesta inicial de la arquitectura EJB. Se 
+        introducen los beans de sesi&oacute;n y los de entidad (de implementaci&oacute;n 
+        opcional). Persistencia manejada por el contendedor en los beans de entidad. 
+        Manejo de transacciones. Manejo de seguridad. </TD>
+    </TR>
+    <TR> 
+      <TD align=left VALIGN=TOP> EJB 1.1 </TD>
+      <TD align=left VALIGN=TOP> Diciembre 1999 </TD>
+      <TD align=left VALIGN=TOP> Implementaci&oacute;n obligatoria de los beans 
+        de entidad. Acceso al entorno de los beans mediante JNDI. </TD>
+    </TR>
+    <TR> 
+      <TD align=left VALIGN=TOP> EJB 2.0 </TD>
+      <TD align=left VALIGN=TOP> Agosto 2001 </TD>
+      <TD align=left VALIGN=TOP> Manejo de mensajes con los beans dirigidos por 
+        mensajes. Relaciones entre beans manejadas por el contenedor. Uso de interfaces 
+        locales entre beans que se encuentran en el mismo servidor. Consultas 
+        de beans declarativas, usando el EJB QL. </TD>
+    </TR>
+    <TR> 
+      <TD align=left VALIGN=TOP> EJB 2.1 </TD>
+      <TD align=left VALIGN=TOP> Agosto 2002 </TD>
+      <TD align=left VALIGN=TOP> Soporte para servicios web. Temporizador manejado 
+        por el contenedor de beans. Mejora en el EJB QL. </TD>
+  </TABLE>
+</div>
+<p class="caption"> Tabla 1: Evoluci&oacute;n de las especificaciones de la arquitectura 
+  Enterprise JavaBeans 
+<h2>1.9 Ventajas de la tecnolog&iacute;a EJB</h2>
+<p>La arquitectura EJB proporciona beneficios a todos los papeles que hemos mencionado 
+  previamente (desarrolladores, ensambladores de aplicaciones, administradores, 
+  desplegadores, fabricantes de servidores). Vamos en enumerar las ventajas que 
+  obtendr&aacute;n los desarrolladores de aplicaciones y los clientes finales.</p>
+<p>Las ventajas que ofrece la arquitectura Enterprise JavaBeans a un desarrollador 
+  de aplicaciones se listan a continuaci&oacute;n.</p>
+<ul>
+  <li> <B>Simplicidad</b>. Debido a que el contenedor de aplicaciones libera al 
+    programador de realizar las tareas del nivel del sistema, la escritura de 
+    un enterprise bean es casi tan sencilla como la escritura de una clase Java. 
+    El desarrollador no tiene que preocuparse de temas de nivel de sistema como 
+    la seguridad, transacciones, multi-threading o la programaci&oacute;n distribuida. 
+    Como resultado, el desarrollador de aplicaciones se concentra en la l&oacute;gica 
+    de negocio y en el dominio espec&iacute;fico de la aplicaci&oacute;n.<BR>
+  <li class="sep"><B>Portabilidad de la aplicaci&oacute;n</b>. Una aplicaci&oacute;n 
+    EJB puede ser desplegada en cualquier servidor de aplicaciones que soporte 
+    J2EE. <BR>
+  <li class="sep"><B>Reusabilidad de componentes</b>. Una aplicaci&oacute;n EJB 
+    est&aacute; formada por componentes enterprise beans. Cada enterprise bean 
+    es un bloque de construcci&oacute;n reusable. Hay dos formas esenciales de 
+    reusar un enterprise bean a nivel de desarrollo y a nivel de aplicaci&oacute;n 
+    cliente. Un bean desarrollado puede desplegarse en distintas aplicaciones, 
+    adaptando sus caracter&iacute;sticas a las necesidades de las mismas. Tambi&eacute;n 
+    un bean desplegado puede ser usado por m&uacute;ltiples aplicaciones cliente.<BR>
+  <li class="sep"><B>Posibilidad de construcci&oacute;n de aplicaciones complejas</b>. 
+    La arquitectura EJB simplifica la construcci&oacute;n de aplicaciones complejas. 
+    Al estar basada en componentes y en un conjunto claro y bien establecido de 
+    interfaces, se facilita el desarrollo en equipo de la aplicaci&oacute;n.<BR>
+  <li class="sep"><B>Separaci&oacute;n de la l&oacute;gica de presentaci&oacute;n 
+    de la l&oacute;gica de negocio</b>. Un enterprise bean encapsula t&iacute;picamente 
+    un proceso o una entidad de negocio. (un objeto que representa datos del negocio), 
+    haci&eacute;ndolo independiente de la l&oacute;gica de presentaci&oacute;n. 
+    El programador de gesti&oacute;n no necesita de preocuparse de c&oacute;mo 
+    formatear la salida; ser&aacute; el programador que desarrolle la p&aacute;gina 
+    Web el que se ocupe de ello usando los datos de salida que proporcionar&aacute; 
+    el bean. Esta separaci&oacute;n hace posible desarrollar distintas l&oacute;gicas 
+    de presentaci&oacute;n para la misma l&oacute;gica de negocio o cambiar la 
+    l&oacute;gica de presentaci&oacute;n sin modificar el c&oacute;digo que implementa 
+    el proceso de negocio.<BR>
+  <li class="sep"><B>Despliegue en muchos entornos operativos</b>. Entendemos 
+    por entornos operativos el conjunto de aplicaciones y sistemas (bases de datos, 
+    sistemas operativos, aplicaciones ya en marcha, etc.) que est&aacute;n instaladas 
+    en una empresa. Al detallarse claramente todas las posibilidades de despliegue 
+    de las aplicaciones, se facilita el desarrollo de herramientas que asistan 
+    y automaticen este proceso. La arquitectura permite que los beans de entidad 
+    se conecten a distintos tipos de sistemas de bases de datos.<BR>
+  <li class="sep"><B>Despliegue distribuido</b>. La arquitectura EJB hace posible 
+    que las aplicaciones se desplieguen de forma distribuida entre distintos servidores 
+    de una red. El desarrollador de beans no necesita considerar la topolog&iacute;a 
+    del despliegue. Escribe el mismo c&oacute;digo independientemente de si el 
+    bean se va a desplegar en una m&aacute;quina o en otra (cuidado: con la especificaci&oacute;n 
+    2.0 esto se modifica ligeramente, al introducirse la posibilidad de los interfaces 
+    locales).<BR>
+  <li class="sep"><B>Interoperabilidad entre aplicaciones</b>. La arquitectura 
+    EJB hace m&aacute;s f&aacute;cil la integraci&oacute;n de m&uacute;ltiples 
+    aplicaciones de diferentes vendedores. El interfaz del enterprise bean con 
+    el cliente sirve como un punto bien definido de integraci&oacute;n entre aplicaciones.<BR>
+  <li class="sep"><B>Integraci&oacute;n con sistemas no-Java</b>. Las APIs relacionadas, 
+    como las especificaciones Connector y Java Message Service (JMS), as&iacute; 
+    como los beans manejados por mensajes, hacen posible la integraci&oacute;n 
+    de los enterprise beans con sistemas no Java, como sistemas ERP o aplicaciones 
+    mainframes.<BR>
+  <li class="sep"><B>Recursos educativos y herramientas de desarrollo</b>. El 
+    hecho de que la especificaci&oacute;n EJB sea un est&aacute;ndar hace que 
+    exista una creciente oferta de herramientas y formaci&oacute;n que facilita 
+    el trabajo del desarrollador de aplicaciones EJB.<BR>
+</ul>
+<p>Entre las ventajas que aporta esta arquitectura al cliente final, destacamos 
+  la posibilidad de elecci&oacute;n del servidor, la mejora en la gesti&oacute;n 
+  de las aplicaciones, la integraci&oacute;n con las aplicaciones y datos ya existentes 
+  y la seguridad.</p>
+<ul>
+  <li> <B>Elecci&oacute;n del servidor</b>. Debido a que las aplicaciones EJB 
+    pueden ser ejecutadas en cualquier servidor J2EE, el cliente no queda ligado 
+    a un vendedor de servidores. Antes de que existiera la arquitectura EJB era 
+    muy dif&iacute;cil que una aplicaci&oacute;n desarrollada para una determinada 
+    capa intermedia (Tuxedo, por ejemplo) pudiera portarse a otro servidor. Con 
+    la arquitectura EJB, sin embargo, el cliente deja de estar atado a un vendedor 
+    y puede cambiar de servidor cuando sus necesidades de escalabilidad, integraci&oacute;n, 
+    precio, seguridad, etc.lo requieran. <BR>
+    Existen en el mercado algunos servidores de aplicaciones gratuitos (JBOSS, 
+    el servidor de aplicaciones de Sun, etc.) con los que ser&iacute;a posible 
+    hacer unas primeras pruebas del sistema, para despu&eacute;s pasar a un servidor 
+    de aplicaciones con m&aacute;s funcionalidades.<BR>
+  <li class="sep"><B>Gesti&oacute;n de las aplicaciones</b>. Las aplicaciones 
+    son mucho m&aacute;s sencillas de manejar (arrancar, parar, configurar, etc.) 
+    debido a que existen herramientas de control m&aacute;s elaboradas.<BR>
+  <li class="sep"><B>Integraci&oacute;n con aplicaciones y datos ya existentes</b>. 
+    La arquitectura EJB y otras APIs de J2EE simplifican y estandarizan la integraci&oacute;n 
+    de aplicaciones EJB con aplicaciones no Java y sistemas en el entorno operativo 
+    del cliente. Por ejemplo, un cliente no tiene que cambiar un esquema de base 
+    de datos para encajar en una aplicaci&oacute;n. En lugar de ello, se puede 
+    construir una aplicaci&oacute;n EJB que encaje en el esquema cuando sea desplegada.<BR>
+  <li class="sep"><B>Seguridad</b>. La arquitectura EJB traslada la mayor parte 
+    de la responsabilidad de la seguridad de una aplicaci&oacute;n de el desarrollador 
+    de aplicaciones al vendedor del servidor, el Administrador de Sistemas y al 
+    Desplegador (papeles de la especificaci&oacute;n EJB) La gente que ejecuta 
+    esos papeles est&aacute;n m&aacute;s cualificados que el desarrollador de 
+    aplicaciones para hacer segura la aplicaci&oacute;n. Esto lleva a una mejor 
+    seguridad en las aplicaciones operacionales. 
+</ul>
+  
+<h2>&nbsp;</h2>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</body>
+</html>

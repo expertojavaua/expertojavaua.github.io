@@ -1,0 +1,1067 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Framework de test Spock.</title>
+
+		<meta name="description" content="Experto en desarrollo de aplicaciones web con JavaEE y Javascript">
+		<meta name="author" content="Francisco José García Rico">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/experto.css" id="theme">
+		
+    	<!-- coloreado de sintaxis con highlight.js -->
+    	<link rel="stylesheet" type="text/css" href="lib/css/github.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+
+	</head>
+
+<body>
+	<div class="reveal">
+	<div class="slides">
+		<!-- todo lo que se ponga aqui (que no sea un <section>) aparecerá
+		en todas las diapositivas -->
+		<div class="header">
+			<div class="logo">
+			 <img src="css/images/logo_small.png">
+			</div>
+			<div class="bar">Experto en desarrollo de aplicaciones web con JavaEE y Javascript</div>
+		</div>
+		<div class="footer">
+			<div class="left">
+				Framework Grails
+			</div>
+			<div class="center">
+				&copy; 2014-15 Dpto. Ciencia de la Computación e I.A.
+			</div>
+			<div class="right">
+				Sesión 6
+			</div>	
+		</div>	
+		<!-- Cada <section> es una slide -->	
+		
+		<section>
+			<!-- al poner el <h1> automáticamente aparece el logo del curso-->
+			<h1>Framework Grails</h1>
+			<h2>Sesión 6: Framework de test Spock.</h2>
+		</section>
+		
+		<section>
+			<h2>Índice</h2>
+			<ul>
+				<li>Introducción a los tests</li>
+				<li>Framework de test Spock</li>
+				<li>Spock en Grails</li>
+			</ul>
+		</section>
+
+		<section>			
+			<h2>Introducción a los tests</h2>
+			<ul>
+				<li>¿Qué son los tests?</li>
+				<li>Tipos de tests de software</li>
+				<li>Otros frameworks de tests</li>
+			</ul>		 
+		</section>
+
+		<section>			
+			<h2>¿Qué son los tests?</h2>
+			<p align="left">
+				Los tests de software se pueden definir como el proceso empleado para comprobar la corrección de un programa informático y se puede considerar como una parte más en el proceso del control de calidad.
+			</p>			
+		</section>		
+
+		<section>			
+			<h2>Tipos de tests de software</h2>
+			<ul>
+				<li><em>Tests unitarios</em></li>
+				<li><em>Tests de integración</em></li>
+				<li><em>Tests funcionales</em></li>
+			</ul>			
+		</section>
+
+		<section>			
+			<h2>Otros frameworks de tests</h2>
+			<ul>
+				<li><em>JUnit</em></li>
+				<li><em>TestNG</em></li>
+			</ul>			
+		</section>
+
+		<section>			
+			<h2>Características de Spock</h2>
+			<ul>
+				<li><em>Fácil de aprender</em></li>
+				<li><em>Integración con Groovy</em></li>
+				<li><em>Eliminación aserciones innecesarias</em></li>
+				<li><em>Información detallada en las salidas de los tests</em></li>
+				<li><em>Diseñado desde el punto de vista del usuario</em></li>
+				<li><em>TDD, BDD, etc</em></li>
+				<li><em>Lenguaje altamente expresivo</em></li>
+				<li><em>Compatible con JUnit</em></li>
+				<li><em>Combina ideas de otros frameworks como JUnit o jMock</em></li>
+			</ul>			
+		</section>
+
+		<section>			
+			<h2>Instalación de Spock en Grails</h2>
+			<p>BuildConfig.groovy</p>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+grails.project.dependency.resolution = {
+  repositories {
+    grailsCentral()
+    mavenCentral()
+  }
+  dependencies {
+    test "org.spockframework:spock-grails-support:0.7-groovy-2.0"
+  }
+  plugins {
+    test(":spock:0.7") {
+      exclude "spock-grails-support"
+    }
+  }
+}
+				</code>
+			</pre>		
+		</section>	
+
+		<section>			
+			<h2>Instalación de Spock en Grails</h2>
+			<pre>
+				<code class="bash" data-trim style="font-size: 18px;">
+grails test-app
+				</code>
+			</pre>		
+		</section>
+
+		<section>			
+			<h2>Tests en Spock</h2>
+			<p>Extienden <em>spock.lang.Specification</em></p>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+package es.ua.expertojava.todo
+
+import spock.lang.Specification
+
+class MyFirstTest extends Specification {
+	
+    def "El operador suma funciona correctamente"() {
+        expect:
+            10 == 2 + 8
+        and:
+            10 == 0 + 10
+        and:
+            10 == 10 + 0
+    }
+}
+				</code>
+			</pre>				
+		</section>
+
+		<section>
+			<h2>A tener en cuenta</h2>
+			<ul>
+				<li>Sintaxis muy sencilla de leer</li>
+				<li>Nombre de los métodos entrecomillados</li>
+				<li>No son necesarias las aserciones</li>
+			</ul>
+		</section>
+
+		<section>			
+			<h2>Tests en Spock</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def "El método plus de los números funciona correctamente"() {
+    when:
+        def result = 10.plus(2)
+    then:
+        result == 12
+}
+				</code>
+			</pre>				
+		</section>			
+
+		<section>
+			<h2>A tener en cuenta</h2>
+			<ul>
+				<li>Bloque <em>when</em> lanza el método a probar</li>
+				<li>Bloque <em>then</em> comprueba la respuesta</li>
+			</ul>
+		</section>
+
+		<section>			
+			<h2>Tests en Spock</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+@Unroll
+def "El método plus funciona con el sumador #sumador y el sumando #sumando"() {
+    when:
+        def result = sumador.plus(sumando)
+    then:
+        result == resultadoEsperado
+    where:
+        sumador |   sumando     |   resultadoEsperado
+        0       |   0           |   0
+        0       |   1           |   1
+        1       |   1           |   2
+        -1      |   0           |   -1
+        0       |   -1          |   -1
+        -1      |   -1          |   -2
+        2       |   1           |   3
+}
+				</code>
+			</pre>				
+		</section>
+
+		<section>
+			<h2>A tener en cuenta</h2>
+			<ul>
+				<li>Tenemos una batería de pruebas con datos diferentes</li>
+				<li>Utilizamos <em>placeholders</em> en el nombre del test</li>
+				<li><em>Unroll</em> despliega cada conjunto de datos como un test nuevo</li>
+			</ul>
+		</section>
+
+
+		<section>
+			<h2>Resultado sin @Unroll</h2>
+			<p align=center><img style="border: 0;" src="../images/grails06/resultadotestsconbloquewheresinunroll.png"></p>
+			<p align=center class="fragment"><img style="border: 0;" src="../images/grails06/resultadotestsconbloquewhereconunroll.png"></p>
+		</section>
+				
+		<section>			
+			<h2>Tests en Spock</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+@Unroll
+def "El método plus funciona con el sumador #sumador y el sumando #sumando utilizando listas"() {
+    when:
+        def result = sumador.plus(sumando)
+    then:
+        result == resultadoEsperado
+    where:
+        sumador << [0,0,1,-1,0,-1,2]
+        sumando << [0,1,1,0,-1,-1,1]
+        resultadoEsperado << [0,1,2,-1,-1,-2,3]
+}
+				</code>
+			</pre>				
+		</section>
+
+		<section>			
+			<h2>Tests en Spock</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def "El método para concatenar cadenas añade un signo + entre las cadenas concatenadas"() {
+    given:
+        String.metaClass.concat = { String c ->
+            "${delegate}+${c}"
+        }
+    expect:
+        "cadena1".concat("cadena2") == "cadena1+cadena2"
+    cleanup:
+        String.metaClass = null
+}
+				</code>
+			</pre>				
+		</section>
+
+		<section>
+			<h2>A tener en cuenta</h2>
+			<ul>
+				<li>Bloque <em>given</em> para preparar el test</li>
+				<li>Bloque <em>cleanup</em> para dejar las cosas como estaban</li>
+			</ul>
+		</section>		
+
+		<section>
+			<h2>Spock en Grails</h2>
+			<ul>
+				<li>Tests sobre clases de dominio</li>
+				<li>Tests sobre contraladores</li>
+				<li>Tests sobre librerías de etiquetas, vistas y plantillas</li>
+				<li>Tests sobre servicios</li>
+				<li>Tests mockeando objetos</li>
+				<li>Algunas anotaciones interesantes</li>
+			</ul>
+		</section>	
+
+		<section>
+			<h2>Métodos predefinidos</h2>
+			<ul>
+				<li><em>setupSpec()</em>, se ejecuta antes del primer test de una determinada clase de tests con Spock</li>
+				<li><em>cleanupSpec()</em>, se ejecuta después del último test de una determinada clase de tests con Spock</li>
+				<li><em>setup()</em>, se ejecuta antes de cada test de una determinada clase de tests con Spock</li>
+				<li><em>setupSpec()</em>, se ejecuta después de cada test de una determinada clase de tests con Spock</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Tests sobre clases de dominio en Grails</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+package es.ua.expertojava.todo
+
+class Category {
+
+    String name
+    String description
+
+    static hasMany = [todos:Todo]
+
+    static constraints = {
+        name(blank:false)
+        description(blank:true, nullable:true, maxSize:1000)
+    }
+
+    String toString(){
+        name
+    }
+}
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Tests sobre clases de dominio en Grails</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+package es.ua.expertojava.todo
+
+import grails.test.mixin.TestFor
+import spock.lang.Specification
+import spock.lang.Unroll
+
+/**
+ * See the API for {@link grails.test.mixin.domain.DomainClassUnitTestMixin} for usage instructions
+ */
+@TestFor(Category)
+class CategorySpec extends Specification {
+
+    def setup() {
+    }
+
+    def cleanup() {
+    }
+
+    ...
+}
+				</code>
+			</pre>			
+		</section>
+
+<section>
+			<h2>Tests sobre clases de dominio en Grails</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+    def "El nombre de la categoría no puede ser la cadena vacía"() {
+        given:
+            def c1 = new Category(name:"")
+        when:
+            c1.validate()
+        then:
+            c1?.errors['name']
+    }
+				</code>
+			</pre>			
+		</section>
+		
+		<section>
+			<h2>Tests sobre clases de dominio en Grails</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+    def "Si el nombre no es la cadena vacía, este campo no dará problemas"() {
+        given:
+            def c1 = new Category(name:"algo")
+        when:
+            c1.validate()
+        then:
+            !c1?.errors['name']
+    }
+				</code>
+			</pre>			
+		</section>	
+
+		<section>
+			<h2>Tests sobre clases de dominio en Grails</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+    def "Si la descripción es la cadena vacía, este campo no dará problemas"() {
+        given:
+            def c1 = new Category(description:"")
+        when:
+            c1.validate()
+        then:
+            !c1?.errors['description']
+    }
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Tests sobre clases de dominio en Grails</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+    def "La descripción de la categoría puede ser null"() {
+        given:
+            def c1 = new Category(description: null)
+        when:
+            c1.validate()
+        then:
+            !c1?.errors['description']
+    }
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Tests sobre clases de dominio en Grails</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+    @Unroll
+    def "Si la descripción tiene menos de 1001 caracteres, no dará problemas"() {
+        given:
+            def c1 = new Category(description: "a"*characters)
+        when:
+            c1.validate()
+        then:
+            !c1?.errors['description']
+        where:
+            characters << [0,1,999,1000]
+    }
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Tests sobre clases de dominio en Grails</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+    @Unroll
+    def "Si la descripción tiene más 1000 caracteres, dará problemas"() {
+        given:
+            def c1 = new Category(description: "a"*characters)
+        when:
+            c1.validate()
+        then:
+            c1?.errors['description']
+        where:
+            characters << [1001,1002]
+    }
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Tests sobre clases de dominio en Grails</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+    def "La instancia de Categoría devuelve su nombre por defecto"() {
+        expect:
+            new Category(name:"The category name").toString() == "The category name"
+    }
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Tests sobre controladores en Grails</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+package es.ua.expertojava.todo
+
+import grails.test.mixin.*
+import spock.lang.*
+
+@TestFor(CategoryController)
+@Mock(Category)
+class CategoryControllerSpec extends Specification {
+
+    def populateValidParams(params) {
+        assert params != null
+        // TODO: Populate valid properties like...
+        //params["name"] = 'someValidName'
+    } 
+...
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Tests sobre controladores en Grails</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def populateValidParams(params) {
+    assert params != null
+    params["name"] = 'Category name'
+}
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Tests sobre controladores en Grails</h2>
+			<pre>
+				<code class="bash" data-trim style="font-size: 18px;">
+grails test-app CategoryControllerSpec unit:
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Tests sobre controladores en Grails</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+package es.ua.expertojava.todo
+
+import grails.test.mixin.*
+import spock.lang.*
+
+@TestFor(CategoryController)
+@Mock(Category)
+class CategoryControllerSpec extends Specification {
+
+    def populateValidParams(params) {
+        assert params != null
+        params["name"] = 'Category name'
+    }
+    ...
+}
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Tests sobre controladores en Grails</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+    void "Test the index action returns the correct model"() {
+
+        when:"The index action is executed"
+            controller.index()
+
+        then:"The model is correct"
+            !model.categoryInstanceList
+            model.categoryInstanceCount == 0
+    }
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Tests sobre controladores en Grails</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+    void "Test the create action returns the correct model"() {
+        when:"The create action is executed"
+            controller.create()
+
+        then:"The model is correctly created"
+            model.categoryInstance!= null
+    }
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Tests sobre controladores en Grails</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+    void "Test the save action correctly persists an instance"() {
+
+        when:"The save action is executed with an invalid instance"
+            request.contentType = FORM_CONTENT_TYPE
+            request.method = 'POST'
+            def category = new Category()
+            category.validate()
+            controller.save(category)
+
+        then:"The create view is rendered again with the correct model"
+            model.categoryInstance!= null
+            view == 'create'
+
+        when:"The save action is executed with a valid instance"
+            response.reset()
+            populateValidParams(params)
+            category = new Category(params)
+
+            controller.save(category)
+
+        then:"A redirect is issued to the show action"
+            response.redirectedUrl == '/category/show/1'
+            controller.flash.message != null
+            Category.count() == 1
+    }
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Tests sobre controladores en Grails</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+    void "Test that the show action returns the correct model"() {
+        when:"The show action is executed with a null domain"
+            controller.show(null)
+
+        then:"A 404 error is returned"
+            response.status == 404
+
+        when:"A domain instance is passed to the show action"
+            populateValidParams(params)
+            def category = new Category(params)
+            controller.show(category)
+
+        then:"A model is populated containing the domain instance"
+            model.categoryInstance == category
+    }
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Tests sobre controladores en Grails</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+    void "Test that the edit action returns the correct model"() {
+        when:"The edit action is executed with a null domain"
+            controller.edit(null)
+
+        then:"A 404 error is returned"
+            response.status == 404
+
+        when:"A domain instance is passed to the edit action"
+            populateValidParams(params)
+            def category = new Category(params)
+            controller.edit(category)
+
+        then:"A model is populated containing the domain instance"
+            model.categoryInstance == category
+    }
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Tests sobre controladores en Grails</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+    void "Test that the delete action deletes an instance if it exists"() {
+        when:"The delete action is called for a null instance"
+            request.contentType = FORM_CONTENT_TYPE
+            request.method = 'DELETE'
+            controller.delete(null)
+
+        then:"A 404 is returned"
+            response.redirectedUrl == '/category/index'
+            flash.message != null
+
+        when:"A domain instance is created"
+            response.reset()
+            populateValidParams(params)
+            def category = new Category(params).save(flush: true)
+
+        then:"It exists"
+            Category.count() == 1
+
+        when:"The domain instance is passed to the delete action"
+            controller.delete(category)
+
+        then:"The instance is deleted"
+            Category.count() == 0
+            response.redirectedUrl == '/category/index'
+            flash.message != null
+    }
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>A tener en cuenta</h2>
+			<ul>
+				<li>Variables inyectadas: <em>controller</em>, <em>model</em>, <em>view</em>, <em>response</em>, <em>request</em> y <em>flash</em> </li>
+				<li>Anotación <em>@Mock</em></li>
+				<li>Ejecutar <em>controller.method()</em></li>
+				<li>Variable <em>model</em> para comprobar el modelo devuelto</li>
+				<li>Redirecciones con <em>response.redirectedUrl</em></li>
+			</ul>
+		</section>
+		
+		<section>
+			<h2>Tests sobre librerías de etiquetas, vistas y plantillas</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def includeJs = {attrs ->
+    out << "<script src="scripts/${attrs['script']}.js"></script>"
+}
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Tests sobre librerías de etiquetas, vistas y plantillas</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+void "La etiqueta includeJs devuelve una referencia a la librería javascript pasada por parámetro"() {
+    expect:
+        applyTemplate('<todo:includeJs script="" ></todo:includeJs>') == "<script src='http://expertojava.ua.es/experto/restringido/2014-15/grails/slides/scripts/.js'></script>"
+        applyTemplate('<todo:includeJs script="myfile"></todo:includeJs>') == "<script src='http://expertojava.ua.es/experto/restringido/2014-15/grails/slides/scripts/myfile.js'></script>"
+}
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Tests sobre librerías de etiquetas, vistas y plantillas</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+void "El pie de página se renderiza correctamente"() {
+    when:
+        def result = render(template: '/common/footer')
+
+    then:
+        result == "<div class=\"footer\" role=\"contentinfo\">\n" +
+            "    &copy; 2015 Experto en Desarrollo de Aplicaciones Web con JavaEE y Javascript<br/>\n" +
+            "    Aplicación Todo creada por Francisco José García Rico (21.542.334F)\n" +
+            "</div>"
+}
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Tests sobre servicios en Grails</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+package es.ua.expertojava.todo
+
+import grails.test.mixin.TestFor
+import spock.lang.Specification
+
+/**
+ * See the API for {@link grails.test.mixin.services.ServiceUnitTestMixin} for usage instructions
+ */
+@TestFor(TodoService)
+class TodoServiceSpec extends Specification {
+
+    def setup() {
+    }
+
+    def cleanup() {
+    }
+
+    void "test something"() {
+    }
+}
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Tests sobre servicios en Grails</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def getNextTodos(Integer days, params) {
+    Date now = new Date(System.currentTimeMillis())
+    Date to = now + days
+    Todo.findAllByDateBetween(now, to, params)
+}
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Tests sobre servicios en Grails</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+void "El método getNextTodos devuelve los siguientes todos de los días pasado por parámetro"() {
+    given:
+        def todoDayBeforeYesterday = new Todo(title:"Todo day before yesterday", date: new Date() - 2 )
+        def todoYesterday = new Todo(title:"Todo yesterday", date: new Date() - 1 )
+        def todoToday = new Todo(title:"Todo today", date: new Date())
+        def todoTomorrow = new Todo(title:"Todo tomorrow", date: new Date() + 1 )
+        def todoDayAfterTomorrow = new Todo(title:"Todo day after tomorrow", date: new Date() + 2 )
+        def todoDayAfterDayAfterTomorrow = new Todo(title:"Todo day after tomorrow", date: new Date() + 3 )
+    and:
+        mockDomain(Todo,[todoDayBeforeYesterday, todoYesterday, todoToday, todoTomorrow, todoDayAfterTomorrow, todoDayAfterDayAfterTomorrow])
+    and:
+        def nextTodos = service.getNextTodos(2,[:])
+    expect:
+        Todo.count() == 6
+    and:
+        nextTodos.containsAll([todoTomorrow, todoDayAfterTomorrow])
+        nextTodos.size() == 2
+    and:
+        !nextTodos.contains(todoDayBeforeYesterday)
+        !nextTodos.contains(todoToday)
+        !nextTodos.contains(todoYesterday)
+        !nextTodos.contains(todoDayAfterDayAfterTomorrow)
+}
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Tests con Spock mockeando objetos</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+@Unroll
+void "El método printIconFromBoolean devuelve una ruta a una imagen"() {
+    when:
+        def output = applyTemplate('<todo:printIconFromBoolean value="${value}" ></todo:printIconFromBoolean>', [value:value])
+    then:
+        output == expectedOutput
+    where:
+        value   |   expectedOutput
+        true    |   "icontrue.png"
+        false   |   "iconfalse.png"
+}
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Tests con Spock mockeando objetos</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+@Unroll
+void "El método printIconFromBoolean devuelve una ruta a una imagen"() {
+    given:
+        def assetsTagLib = Mock(AssetsTagLib)
+        tagLib.metaClass.asset = assetsTagLib
+    when:
+        def output = applyTemplate('<todo:printIconFromBoolean value="${value}" ></todo:printIconFromBoolean>', [value:value])
+    then:
+        output == expectedOutput
+    and:
+        1 * assetsTagLib.image(_) >> { value ? "icontrue.png" : "iconfalse.png" }
+    where:
+        value   |   expectedOutput
+        true    |   "icontrue.png"
+        false   |   "iconfalse.png"
+}
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>A tener en cuenta</h2>
+			<ul>
+				<li>Mockeamos la librería <em>AssetsTagLib</em></li>
+				<li>Indicamos cuantas interacciones se van a producir con nuestro objecto mockeado</li>
+				<li>Utilizamos placeholder para los parámetros</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Algunas anotaciones interesantes</h2>
+			<h2>@Ignore</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+@Ignore
+def "my feature"() { ... }
+
+@Ignore
+class MySpec extends Specification { ... }
+
+@Ignore(reason = "TODO")
+def "my feature"() { ... }
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Algunas anotaciones interesantes</h2>
+			<h2>@IgnoreRest</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def "I'll be ignored"() { ... }
+
+@IgnoreRest
+def "I'll run"() { ... }
+
+def "I'll also be ignored"() { ... }
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Algunas anotaciones interesantes</h2>
+			<h2>@IgnoreIf</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+@IgnoreIf({ System.getProperty("os.name").contains("windows") })
+def "I'll run everywhere but on Windows"() { ... }
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Algunas anotaciones interesantes</h2>
+			<h2>@IgnoreIf</h2>
+			<ul>
+				<li><em>sys</em>, un mapa con todas las propiedades del sistema</li>
+				<li><em>env</em>, un mapa con todas las variables de entorno</li>
+				<li><em>os</em>, información acerca del sistema operativo</li>
+				<li><em>jvm</em>, información sobre la máquina virtual de Java</li>
+			</ul>		
+		</section>
+
+		<section>
+			<h2>Algunas anotaciones interesantes</h2>
+			<h2>@Requires</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+@Requires({ os.windows })
+def "I'll only run on Windows"() { ... }
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Algunas anotaciones interesantes</h2>
+			<h2>@Stepwise</h2>
+			<p>Respeta el orden de los tests</p>			
+		</section>
+
+		<section>
+			<h2>Algunas anotaciones interesantes</h2>
+			<h2>@Timeout</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+@Timeout(5)
+def "I fail if I run for more than five seconds"() { ... }
+
+@Timeout(value = 100, unit = TimeUnit.MILLISECONDS)
+def "I better be quick" { ... }
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Algunas anotaciones interesantes</h2>
+			<h2>@Timeout</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+@Timeout(10)
+class TimedSpec extends Specification {
+  def "I fail after ten seconds"() { ... }
+  def "Me too"() { ... }
+
+  @Timeout(value = 250, unit = MILLISECONDS)
+  def "I fail much faster"() { ... }
+}
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Algunas anotaciones interesantes</h2>
+			<h2>@ConfineMetaClassChanges</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+@Stepwise
+class FooSpec extends Specification {
+  @ConfineMetaClassChanges
+  def "I run first"() {
+    when:
+    String.metaClass.someMethod = { delegate }
+
+    then:
+    String.metaClass.hasMetaMethod('someMethod')
+  }
+
+  def "I run second"() {
+    when:
+    "Foo".someMethod()
+
+    then:
+    thrown(MissingMethodException)
+  }
+}
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Algunas anotaciones interesantes</h2>
+			<h2>@ConfineMetaClassChanges</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+@Title("This is easy to read")
+class ThisIsHarderToReadSpec extends Specification {
+  ...
+}
+
+@Narrative(""""
+As a user
+I want foo
+So that bar
+""")
+class GiveTheUserFooSpec() { ... } 
+				</code>
+			</pre>			
+		</section>				
+		<section>
+			<h1>¿Preguntas...?</h1>
+		</section>
+
+		<section>
+			<h1>Ejercicios</h1>
+		</section>
+	</div>
+</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+				slideNumber: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Parallax scrolling
+				// parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+				// parallaxBackgroundSize: '2100px 900px',
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+
+				]
+			});
+
+		</script>
+
+	</body>
+</html>

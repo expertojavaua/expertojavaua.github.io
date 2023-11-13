@@ -1,0 +1,541 @@
+
+package examples.jms.drawdemo;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.image.*;
+import java.net.*;
+import java.applet.*;
+import java.util.*;
+import javax.jms.*;
+import javax.naming.*;
+
+/**
+ * This graphical example illustrates key concepts of the
+ * JMS publish/subscribe model. Run the example to observe
+ * the behavior of
+ * transacted sessions, persistent messages, and durable subscribers.
+ */
+
+public class JMSDrawDemo extends JPanel
+  implements MouseListener,  MessageListener, ActionListener
+{
+
+  // CONSTANTS
+/**
+  * Defines the JNDI context factory.
+  */
+  public final static String JNDI_FACTORY="weblogic.jndi.WLInitialContextFactory";
+/**
+  * Defines the JMS connection factory for the topic.
+  */
+  public final static String JMS_FACTORY="weblogic.examples.jms.TopicConnectionFactory";
+/**
+  * Defines the topic.
+  */
+  public final static String TOPIC="weblogic.examples.jms.exampleTopic";
+/**
+  * Defines the icon image.
+  */
+  public final static String IMAGE="rbrs.gif";
+
+
+  // JMS MEMBER DATA
+  private TopicConnectionFactory connectionFactory;
+  private TopicConnection connection;
+  private TopicSession session, sessionTX;
+  private TopicPublisher publisher, publisherTX;
+  private TopicSubscriber subscriber;
+  private Topic topic;
+  private Message msg;
+  private boolean isTransacted;
+
+  // UI MEMBER DATA
+  private Image image;
+  private boolean imageLoaded;
+  private int imageWidth, imageHeight;
+  private Vector points = new Vector();
+  private Vector pointsSent = new Vector();
+  private Image offScreenImage;
+  private Graphics offScreenGraphics;
+  private JButton commitButton, rollbackButton, clearButton, quitButton;
+  private JCheckBox transactedCheckBox, persistentCheckBox;
+  private Dimension d;
+
+
+  public JMSDrawDemo(JFrame frame, String url, String durableSubscriberID)
+       throws NamingException, JMSException
+  {
+    frame.getContentPane().add(this, "Center");
+    frame.getContentPane().add(makeControlPanel(), "South");
+    image = loadImage(IMAGE);
+    initJMS(url, durableSubscriberID);
+    addMouseListener(this);
+  }
+
+
+  /*******************************************************************
+   * Creates all the necessary objects for sending and receiving messages
+   * from a topic.
+   *******************************************************************/
+
+  private void initJMS(String url, String durableSubscriberID)
+       throws NamingException, JMSException
+  {
+    boolean noLocal = false; // do not suppress messages from self.
+
+    InitialContext ctx = getInitialContext(url);
+
+    connectionFactory = (TopicConnectionFactory) ctx.lookup(JMS_FACTORY);
+    connection = connectionFactory.createTopicConnection();
+    if (durableSubscriberID != null) {
+      connection.setClientID("JMSDrawDemo" + durableSubscriberID);
+    }
+    session = connection.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
+    sessionTX = connection.createTopicSession(true, Session.AUTO_ACKNOWLEDGE);
+    topic = (Topic) ctx.lookup(TOPIC);
+    publisher = session.createPublisher(topic);
+    publisherTX = sessionTX.createPublisher(topic);
+
+    if (durableSubscriberID == null) {
+      subscriber = session.createSubscriber(topic, "TRUE", noLocal);
+    } else {
+      subscriber = session.createDurableSubscriber(topic, durableSubscriberID);
+    }
+    subscriber.setMessageListener(this);
+    msg = session.createMessage();
+    connection.start();
+  }
+
+
+
+  /*******************************************************************
+   *  Publishes a JMS message with X/Y coordinates
+   *  @param x  X coordinate
+   *  @param y  Y coordinate
+   *******************************************************************/
+
+  private void publishPoint(int x, int y)
+  {
+    try {
+      msg.setIntProperty("x", x);
+      msg.setIntProperty("y", y);
+      pointsSent.addElement(new Point(x, y));
+      if (isTransacted) {
+        publisherTX.publish(msg, deliveryMode(), 5, 0);
+      } else {
+        publisher.publish(msg, deliveryMode(), 5, 0);
+      }
+    } catch (JMSException jmse) {
+      jmse.printStackTrace();
+    }
+  }
+
+
+  /*******************************************************************
+   *  Publishes a JMS "clearScreen" message.
+   *******************************************************************/
+
+  private void publishClear()
+  {
+    try {
+      Message clearMsg = session.createMessage();
+      clearMsg.setStringProperty("command", "clearScreen");
+      publisher.publish(clearMsg, deliveryMode(), 5, 0);
+    } catch (JMSException jmse) {
+      jmse.printStackTrace();
+    }
+  }
+
+
+  /*******************************************************************
+   * Receives a JMS message with X/Y coordinates, or a "clearScreen" message.
+   * @param msg	message
+   *******************************************************************/
+
+  public void onMessage(Message msg)
+  {
+    try {
+      String command = msg.getStringProperty("command");
+      if (command != null && command.equals("clearScreen")) {
+        clearScreen();
+      } else {
+        int x = msg.getIntProperty("x");
+        int y = msg.getIntProperty("y");
+        Point p = new Point(x,y);
+        updateImage(p);
+      }
+    } catch (JMSException e) {
+      e.printStackTrace();
+    }
+  }
+
+
+  /*******************************************************************
+   *  Closes JMS objects, and exits.
+   *******************************************************************/
+
+  private void exit()
+  {
+    try {
+      publisher.close();
+      publisherTX.close();
+      subscriber.close();
+      session.close();
+      sessionTX.close();
+      connection.close();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    System.exit(0);
+  }
+
+
+
+
+  /*******************************************************************
+   *  Makes the User Interface.
+   *******************************************************************/
+
+  private JPanel makeControlPanel()
+  {
+    JPanel controlPanel = new JPanel();
+
+    persistentCheckBox = new JCheckBox("Persistent");
+    persistentCheckBox.addActionListener(this);
+    controlPanel.add(persistentCheckBox);
+
+    transactedCheckBox = new JCheckBox("Transacted");
+    transactedCheckBox.addActionListener(this);
+    controlPanel.add(transactedCheckBox);
+
+    commitButton = new JButton("Commit");
+    commitButton.setEnabled(false);
+    commitButton.addActionListener(this);
+    controlPanel.add(commitButton);
+
+    rollbackButton = new JButton("Rollback");
+    rollbackButton.setEnabled(false);
+    rollbackButton.addActionListener(this);
+    controlPanel.add(rollbackButton);
+
+    clearButton = new JButton("Clear");
+    clearButton.addActionListener(this);
+    controlPanel.add(clearButton);
+
+    quitButton = new JButton("Quit");
+    quitButton.addActionListener(this);
+    controlPanel.add(quitButton);
+
+    return controlPanel;
+  }
+
+
+  /*******************************************************************
+   *  Paints the user interface.
+   *  @param g	user interface
+   *******************************************************************/
+
+  public void paint(Graphics g) {
+    g.setColor(Color.black);
+
+    d = getSize();
+
+    if (offScreenImage==null ||
+        d.width != offScreenImage.getWidth(null) ||
+        d.height != offScreenImage.getHeight(null)) {
+      offScreenImage = createImage(d.width, d.height);
+      offScreenGraphics = offScreenImage.getGraphics();
+      Enumeration pts = points.elements();
+      while(pts.hasMoreElements()) {
+        Point pt = (Point) pts.nextElement();
+        offScreenGraphics.drawImage(image, ((pt.x * d.width) / 1000) - (imageWidth/2),
+                                    ((pt.y * d.height) / 1000) -(imageHeight/2), this);
+      }
+
+      pts = pointsSent.elements();
+      while(pts.hasMoreElements()) {
+        Point pt = (Point) pts.nextElement();
+        offScreenGraphics.setColor(Color.darkGray);
+        offScreenGraphics.fillOval(((pt.x * d.width) / 1000)-5, ((pt.y * d.height) / 1000)-5, 10, 10);
+      }
+    }
+
+    g.drawImage(offScreenImage, 0, 0, this);
+
+  }
+ /**
+   * Gets the dimensions.
+   */
+
+  public Dimension getPreferredSize()
+  {
+    return new Dimension(300,300);
+  }
+
+
+  /*******************************************************************
+   *  Responds to JMS messages.
+   *******************************************************************/
+  private void updateImage(Point pt)
+  {
+    points.addElement(pt);
+    pointsSent.removeElement(pt);
+    if (offScreenGraphics != null) {
+      offScreenGraphics.drawImage(image, ((pt.x * d.width) / 1000) - (imageWidth/2),
+                                  ((pt.y * d.height) / 1000) -(imageHeight/2), this);
+    }
+    repaint();
+  }
+
+
+
+  /*******************************************************************
+   *   Responds to mouse being pressed.
+   *   @param e mouse event
+   *******************************************************************/
+
+  public void mousePressed(MouseEvent e) {}
+  /*******************************************************************
+   *   Responds to mouse being clicked.
+   *   @param e mouse event
+   *******************************************************************/
+  public void mouseClicked(MouseEvent e) {}
+  /*******************************************************************
+   *   Responds to mouse enter.
+   *   @param e mouse event
+   *******************************************************************/
+  public void mouseEntered(MouseEvent e) {}
+  /*******************************************************************
+   *   Responds to mouse exit.
+   *   @param e mouse event
+   *******************************************************************/
+  public void mouseExited(MouseEvent e) {}
+  /**
+   * Sends an event with the
+   * mouse coordinates (as a scaled percentage of the screen size) when
+   * the user clicks in the canvas.
+   *   @param e mouse event
+   */
+  public void mouseReleased(MouseEvent e)
+  {
+    int x = (e.getX() * 1000) / d.width;
+    int y = (e.getY() * 1000) / d.height;
+
+    if (isTransacted) {
+      commitButton.setEnabled(true);
+      rollbackButton.setEnabled(true);
+    }
+    offScreenGraphics.setColor(Color.darkGray);
+    offScreenGraphics.fillOval(e.getX() - 5, e.getY()-5, 10, 10);
+    publishPoint(x, y);
+    repaint();
+  }
+
+  private void setTransacted(boolean transacted)
+  {
+    if (transacted != isTransacted) {
+      if (! transacted) {
+        doRollback();
+      }
+      isTransacted = transacted;
+    }
+  }
+
+
+  /*******************************************************************
+   *   Listens for and responds to button presses.
+   *   @param ev action event
+   *******************************************************************/
+
+  public void actionPerformed(ActionEvent ev)
+  {
+    if (ev.getSource() == transactedCheckBox) {
+      setTransacted(transactedCheckBox.isSelected());
+      return;
+    }
+    if (ev.getSource() == commitButton) {
+      doCommit();
+      return;
+    }
+    if (ev.getSource() == rollbackButton) {
+      doRollback();
+      return;
+    }
+    if (ev.getSource() == clearButton) {
+      publishClear();
+      return;
+    }
+    if (ev.getSource() == quitButton) {
+      exit();
+    }
+  }
+
+  private void doCommit()
+  {
+    try {
+      sessionTX.commit();
+      commitButton.setEnabled(false);
+      rollbackButton.setEnabled(false);
+      repaint();
+    } catch (JMSException jmse) {
+      jmse.printStackTrace();
+    }
+  }
+
+  private void doRollback()
+  {
+    try {
+      sessionTX.rollback();
+      pointsSent.removeAllElements();
+      commitButton.setEnabled(false);
+      rollbackButton.setEnabled(false);
+      offScreenImage = null;
+      repaint();
+    } catch (JMSException jmse) {
+      jmse.printStackTrace();
+    }
+  }
+
+
+  private void clearScreen()
+  {
+    if (isTransacted) {
+      doRollback();
+    }
+    pointsSent.removeAllElements();
+    points.removeAllElements();
+    offScreenImage = null;
+    repaint();
+  }
+
+
+  private int deliveryMode()
+  {
+    return persistentCheckBox.isSelected()
+      ? DeliveryMode.PERSISTENT
+      : DeliveryMode.NON_PERSISTENT;
+  }
+
+
+  /*******************************************************************
+   *  Loads images.
+   *  @param resourceName	name of resource
+   *******************************************************************/
+  public Image loadImage(String resourceName)
+  {
+    try {
+      java.net.URL url = getClass().getResource(resourceName);
+      java.awt.Toolkit tk = java.awt.Toolkit.getDefaultToolkit();
+      image = tk.createImage((java.awt.image.ImageProducer) url.getContent());
+      synchronized(this) {
+        imageWidth = image.getWidth(this);
+        imageHeight = image.getHeight(this);
+        if (imageWidth <= 0 || imageHeight <= 0) {
+          imageLoaded = false;
+          while(!imageLoaded) {
+            wait();
+          }
+        }
+        imageWidth = image.getWidth(this);
+        imageHeight = image.getHeight(this);
+      }
+      return image;
+    } catch(Exception e) {
+      e.printStackTrace();
+      return null;
+    }
+  }
+
+  // ImageObserver Interface
+  /**
+    * Update images.
+    * @param image	image to update
+    * @param infoFlags  informational flags
+    * @param x 		X coordinate
+    * @param y	Y coordinate
+    * @param width	width
+    * @param width	height
+    */
+  public boolean imageUpdate(Image image, int infoFlags,
+                             int x, int y, int width, int height)
+  {
+    if(image == this.image &&
+       (infoFlags & ImageObserver.ALLBITS) == ImageObserver.ALLBITS) {
+      synchronized(this) {
+        imageLoaded = true;
+        notify();
+      }
+      return false;
+    }
+    return true;
+  }
+
+
+
+  /*******************************************************************
+   *  main() method.
+   *  @param argv[]	WebLogic Server URL
+   *******************************************************************/
+  public static void main(String argv [])
+  {
+    String url = null;
+    String durableSubscriberID = null;
+    String frameTitle = "JMSDrawDemo";
+
+    if (argv.length > 0) {
+      url = argv[0];
+    } else {
+      System.out.println("Usage: java examples.jms.drawdemo.JMSDrawDemo <url> [DurableSubscriberID]");
+      System.exit(1);
+    }
+
+    if (argv.length > 1) {
+      durableSubscriberID = argv[1];
+      frameTitle += " ("+durableSubscriberID + ")";
+    }
+
+    final JFrame frame = new JFrame(frameTitle);
+    frame.setForeground(Color.black);
+    frame.setBackground(Color.lightGray);
+    frame.getContentPane().setLayout(new BorderLayout());
+
+    try {
+      final JMSDrawDemo demo =
+        new JMSDrawDemo(frame, url, durableSubscriberID);
+
+      WindowListener l = new WindowAdapter() {
+        public void windowClosing(WindowEvent e) {
+          demo.exit();
+        }
+      };
+      frame.addWindowListener(l);
+    } catch (NamingException ne) {
+      System.out.println("Error attaching to server, url=" + url);
+      System.exit(0);
+    } catch (JMSException jmse) {
+      jmse.printStackTrace();
+      System.exit(0);
+    }
+
+    frame.pack();
+    frame.setVisible(true);
+  }
+
+  // Return a JNDI Initial Context
+
+  private static InitialContext getInitialContext(String url)
+       throws NamingException
+  {
+    Hashtable env = new Hashtable();
+    env.put(Context.INITIAL_CONTEXT_FACTORY, JNDI_FACTORY);
+    env.put(Context.PROVIDER_URL, url);
+    return new InitialContext(env);
+  }
+
+}
+
+
+
+

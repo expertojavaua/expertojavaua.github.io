@@ -1,0 +1,296 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+	<title>Untitled</title>
+	<link href="../../../apuntes.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<h1> Tema 4: Arquitectura de aplicaciones JSP</h1>
+
+<p>En los temas anteriores, se han visto los componentes b&aacute;sicos de una 
+  aplicaci&oacute;n JSP:</p>
+<ul>
+  <li>C&oacute;digo Java <em>(Scripts)</em></li>
+  <li><em>Beans</em></li>
+  <li>Etiquetas definidas por el usuario</li>
+</ul>
+<p>En la fase de dise&ntilde;o de una aplicaci&oacute;n JSP, el problema principal 
+  es c&oacute;mo combinar estos componentes de modo que consigamos una aplicaci&oacute;n 
+  modular y f&aacute;cilmente mantenible y extensible. Adem&aacute;s, a estos 
+  componentes habr&iacute;a que a&ntilde;adir los <b>servlets</b>, ya que, como 
+  se vio en el Tema 1, aunque JSP y servlets comparten el mismo API, cada uno 
+  es apropiado para distintos tipos de tareas: servlets para procesamiento de 
+  informaci&oacute;n y JSPs para presentaci&oacute;n de datos, por lo que pueden 
+  combinarse.</p>
+<h2>4.1. Modelos para una aplicación JSP</h2>
+<p>Las especificaciones de JSP hablan de dos enfoques distintos a la hora de construir 
+  aplicaciones con esta tecnolog&iacute;a: los denominados <b>modelo 1</b> y <b>modelo 
+  2</b>. Ambos enfoques difieren fundamentalmente en qui&eacute;n lleva a cabo 
+  el procesamiento de la informaci&oacute;n: en el modelo 1 lo realizan las p&aacute;ginas 
+  JSP, mientras que en el modelo 2 hacen esta tarea los servlets. En ambos modelos 
+  se emplean <em>JavaBeans</em> para almacenar temporalmente datos y aislar a 
+  la aplicaci&oacute;n de los detalles de la fuente original de donde proceden 
+  (una base de datos, un sistema que no utilice tecnolog&iacute;a J2EE,...).</p>
+<h3>4.1.1. Modelo 1</h3>
+<p>En la figura 1 se muestra un esquema de un sistema que utiliza la arquitectura 
+  modelo 1.</p>
+<p>
+<center>
+    <img src="modelo1.gif" width="521" height="249"> <br>
+    <b>Figura 1</b>: Modelo 1 de aplicación JSP 
+  </center>
+</p>
+<p> Como se ha visto, los beans a&iacute;slan a las p&aacute;ginas JSP de cambios 
+  en las fuentes de datos, pero los JSP son responsables tanto de <em>generaci&oacute;n 
+  de contenido</em> (b&uacute;squedas, c&aacute;lculos, ...) como de <em>presentaci&oacute;n 
+  de datos</em>. Esto hace que sea necesario introducir gran cantidad de c&oacute;digo 
+  Java en las p&aacute;ginas, lo que reduce la modularidad del sistema.</p>
+<h2>4.1.2. Modelo 2: arquitectura MVC</h2>
+<p>El modelo 2 separa la <em>generaci&oacute;n de contenido</em> de su <em>presentaci&oacute;n</em>. 
+  En la figura 2 se muestra un esquema.</p>
+<p>
+<center>
+<img src="modelo2.gif" width="543" height="254"> <br>
+    <b>Figura 2:</b> Modelo 2 de aplicación JSP 
+  </center>
+</p>
+<p> En este modelo, los servlets son los responsables de la generaci&oacute;n 
+  de contenido, y las p&aacute;ginas JSP de la presentaci&oacute;n. Esto elimina 
+  gran parte del c&oacute;digo Java de las p&aacute;ginas JSP, lo que permite 
+  que se puedan dividir las tareas: los programadores Java implementan los servlets, 
+  mientras que los desarrolladores de p&aacute;ginas web se ocupan de los JSP, 
+  que tienen un m&iacute;nimo de c&oacute;digo Java o incluso ninguno si se utilizan 
+  beans y etiquetas propias.</p>
+<p>El modelo 2 es un ejemplo de lo que se denomina gen&eacute;ricamente <b>arquitectura 
+  MVC</b> (Modelo-Vista-Controlador). Esta arquitectura es originaria del lenguaje 
+  Smalltalk en los a&ntilde;os 80 y se ha usado en muchos sistemas (la librer&iacute;a 
+  Java <b>Swing</b> es un ejemplo de este enfoque). Los componentes de esta arquitectura 
+  son:</p>
+<ul>
+  <li><b>Modelo</b>: tiene dos partes</li>
+  <ul>
+    <li><b>Estado</b>: o sea, los datos. Los implementaremos mediante beans. </li>
+    <li><b>Acciones</b>: la &quot;l&oacute;gica de negocio&quot; necesaria para 
+      procesar los datos. En nuestro caso, utilizaremos beans y clases Java auxiliares.</li>
+  </ul>
+  <li><b>Vista</b>: es el interfaz de usuario, que muestra los datos del modelo. 
+    Para implementar las vistas, utilizaremos JSPs.</li>
+  <li><b>Controlador</b>: recibe las peticiones del usuario, desencadena las acciones 
+    adecuadas en el modelo y muestra la vista correspondiente. Nuestro controlador 
+    se implementar&aacute; mediante un servlet.</li>
+</ul>
+<h2>4.2. La arquitectura MVC del servidor de FAQs</h2>
+<p> El servidor de FAQs sobre el que se ha venido trabajando emplea la arquitectura 
+  MVC:</p>
+<ul>
+  <li><b>Modelo</b>:</li>
+  <ul>
+    <li><b>Estado</b>: los datos sobre un FAQ se encapsulan en el bean <b>FAQBean</b>.</li>
+    <li><b>Acciones</b>: para acceso a la base de datos se utiliza la clase auxiliar 
+      <b>FAQBD</b>. Para realizar cada una de las acciones de la aplicaci&oacute;n 
+      (insertar, borrar,...) se utilizan las clases <b>FAQComandoXXX</b>.</li>
+  </ul>
+  <li> <b>Vista</b>: la constituyen las distintas p&aacute;ginas JSP de la aplicaci&oacute;n.</li>
+  <li><b>Controlador</b>: en nuestra aplicaci&oacute;n hay dos controladores: 
+    uno del m&oacute;dulo de acceso web (<b>FAQServlet</b>) y otro del m&oacute;dulo 
+    de administraci&oacute;n (<b>FAQCentralServlet</b>). Ambos son servlets que 
+    se encargan de recibir los par&aacute;metros de la petici&oacute;n HTTP, llamar 
+    a las acciones necesarias y mostrar la vista JSP correspondiente a la acci&oacute;n.</li>
+</ul>
+<h3> 4.2.1. El modelo</h3>
+<p> El componente que implementa el <b>estado</b> ya lo hemos visto en temas anteriores: 
+  el bean <b>FAQBean</b> permite almacenar los datos de un FAQ de manera independiente 
+  de la fuente original de los mismos.</p>
+<p>Cada una de las <b>acciones</b> se implementa mediante una clase de nombre 
+  <b>FAQComandoXXX</b>. Estas clases tienen dos caracter&iacute;sticas principales:</p>
+<ul>
+  <li>Implementan el interfaz <b>Comando</b>. Este interfaz es muy sencillo y 
+    solo obliga a que cada comando tenga un m&eacute;todo <b>ejecutar()</b>:
+
+<pre class="codigo">package faqs.comandos;
+
+import javax.servlet.*;
+import javax.servlet.http.*;
+
+public interface FAQComando
+{	
+<b>   // Ejecuta el comando
+</b>   public String <b>ejecutar</b>(HttpServletRequest req) throws FAQComandoException;
+}
+</pre>
+<p>El m&eacute;todo <b>ejecutar()</b> utiliza la petici&oacute;n HTTP (el objeto 
+  <i>HttpServletRequest</i>) para extraer los par&aacute;metros de la acci&oacute;n 
+  y para almacenar sus resultados.</p> </li>
+  <li> Tienen un constructor en el que se especifica cu&aacute;l es la p&aacute;gina 
+    JSP que implementa la vista asociada al comando.</li>
+</ul>
+<p>A modo de ejemplo de comando se muestra la clase <b>FAQComandoGet</b>, que 
+  obtiene los datos de un FAQ a partir de su c&oacute;digo (que se toma del par&aacute;metro 
+  HTTP <code>id</code>). Esta clase busca el FAQ en la base de datos (utilizando 
+  para ello la clase FAQBD) y lo guarda como un atributo de la petici&oacute;n 
+  HTTP, para que las p&aacute;ginas JSP u otros servlets puedan acceder a &eacute;l.</p>
+<pre class="codigo">
+package faqs.comandos;
+
+import javax.servlet.*;
+import javax.servlet.http.*;
+
+import faqs.bd.*;
+import faqs.*;
+
+public class FAQComandoGet implements FAQComando
+{	
+   <b>// Siguiente pagina a mostrar
+</b>   private String siguiente;
+	
+   <b>// Constructor
+</b>   public FAQComandoGet(String siguiente)
+   {
+	this.siguiente = siguiente;
+   }
+	
+   <b>// Ejecuta el comando
+</b>   public String ejecutar(HttpServletRequest req) throws FAQComandoException
+   {
+	try
+	{
+		FAQBD faqs = FAQBD.getInstancia();
+		int id = Integer.parseInt(<b>req.getParameter(&quot;id&quot;)</b>);
+		FAQBean faq = faqs.getFAQ(id);
+		<b>req.setAttribute(&quot;faq&quot;, faq)</b>;
+		return siguiente;
+	} catch (NumberFormatException e1) {
+		throw new FAQComandoException(&quot;FAQComandoGet: &quot; + 
+					      e1.getMessage());
+	} catch (FAQDesconocidoException e2) {
+		throw new FAQComandoException(&quot;FAQComandoGet: &quot; + 
+					      e2.getMessage());
+	} catch (FAQBDException e3) {
+		throw new FAQComandoException(&quot;FAQComandoGet: &quot; + 
+					      e3.getMessage());
+	}
+   }
+}
+</pre>
+<h3>4.2.2. La vista</h3>
+<p>Como ya se ha comentado, se implementa mediante p&aacute;ginas JSP. Cada comando 
+  tiene una vista asociada, que debe mostrarse tras su ejecuci&oacute;n. La p&aacute;gina 
+  JSP puede acceder a los datos almacenados en la petici&oacute;n por el comando 
+  ejecutado, tom&aacute;ndolos como beans con &aacute;mbito de petici&oacute;n 
+  (<code>scope = request</code>).</p>
+<h3>4.2.3. El controlador</h3>
+<p>Es un servlet (en realidad hay dos, uno para acceso a las FAQs y otro para 
+  su administraci&oacute;n) que recoge los par&aacute;metros de la petici&oacute;n, 
+  llama a la acci&oacute;n correspondiente (clase FAQComandoXXX) y redirige la 
+  petici&oacute;n hacia la p&aacute;gina JSP apropiada. A modo de ejemplo, se 
+  muestra el c&oacute;digo del controlador de la parte de administraci&oacute;n 
+  (clase <b>FAQCentralServlet</b>):</p>
+<pre class="codigo">
+package faqs.servlets;
+
+import java.io.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
+import java.util.*;
+
+import faqs.comandos.*;
+
+public class FAQCentralServlet extends HttpServlet
+{
+<b>	// Comandos que se pueden solicitar
+</b>	private HashMap comandos;
+	
+<b>	// Pagina de error
+</b>	private String error = &quot;error.jsp&quot;;
+
+<b>	// Directorio de las paginas JSP
+</b>	private String dirJSP = &quot;/jsp/&quot;;
+
+<b>	// ============== METODOS PRINCIPALES DEL SERVLET ==============
+</b>		
+<b>	// Metodo de inicializacion
+
+</b>	public void init(ServletConfig config) throws ServletException
+	{
+		super.init(config);
+		
+		comandos = new HashMap();
+		comandos.put(&quot;menu&quot;, new FAQComandoNull(&quot;menu.jsp&quot;));
+		comandos.put(&quot;abortar&quot;, new FAQComandoAbortar(&quot;menu.jsp&quot;));
+		comandos.put(&quot;insert&quot;, new FAQComandoNull(&quot;insert.jsp&quot;));
+		comandos.put(&quot;exe-insert&quot;, new FAQComandoInsert(&quot;menu.jsp&quot;));
+		comandos.put(&quot;menu-update&quot;, new FAQComandoGetAll(&quot;update_menu.jsp&quot;));
+		comandos.put(&quot;update&quot;, new FAQComandoGet(&quot;update.jsp&quot;));
+		comandos.put(&quot;exe-update&quot;, new FAQComandoUpdate(&quot;menu.jsp&quot;));
+		comandos.put(&quot;menu-delete&quot;, new FAQComandoGetAll(&quot;delete_menu.jsp&quot;));
+		comandos.put(&quot;delete&quot;, new FAQComandoGet(&quot;delete.jsp&quot;));
+		comandos.put(&quot;exe-delete&quot;, new FAQComandoDelete(&quot;menu.jsp&quot;));		
+	}
+
+<b>	// Metodo de procesamiento de peticion
+
+</b>	public void service(HttpServletRequest req, HttpServletResponse res) 
+	throws ServletException, IOException
+	{
+		String siguiente;
+		
+		try
+		{
+			FAQComando cmd = getComando(req.getParameter(&quot;cmd&quot;));
+			siguiente = cmd.ejecutar(req);
+			FAQComandoToken.set(req);
+		} catch (FAQComandoException e) {
+			req.setAttribute(&quot;javax.servlet.jsp.jspException&quot;, e);
+			siguiente = error;
+		}
+		
+		RequestDispatcher rd = 
+			getServletContext().getRequestDispatcher(dirJSP + siguiente);
+		rd.forward(req, res);
+	}
+	
+
+<b>	// ============== METODOS AUXILIARES ==============
+</b>	
+<b>	// Obtiene un comando indicado por un nombre
+
+</b>	private FAQComando getComando(String cmd) throws FAQComandoException
+	{
+		if (cmd == null)
+			cmd = &quot;menu&quot;;
+		if (comandos.containsKey(cmd.toLowerCase()))
+			return (FAQComando)comandos.get(cmd.toLowerCase());
+		else
+			throw new FAQComandoException(&quot;Comando invalido&quot;);
+	}
+}
+</pre>
+<p>El servlet &quot;sabe&quot; cu&aacute;l es el par&aacute;metro que hay que 
+  ejecutar porque lo toma del par&aacute;metro de la petici&oacute;n HTTP denominado 
+  <code>cmd</code>. Vemos cada método del servlet: </p>
+<ul>
+  <li><b>init()</b>: crea una lista (en realidad, una tabla <em>hash</em>) con 
+    los comandos que admite el controlador. Cada comando lleva asociado:</li>
+  <ul>
+    <li>Un nombre simb&oacute;lico para el comando, que ser&aacute; utilizado 
+      como valor del par&aacute;metro <b>cmd</b>.</li>
+    <li>Una clase <b>FAQComandoXXX</b> que es la que implementa el comando en 
+      s&iacute;</li>
+    <li>Una p&aacute;gina JSP, que es la vista asociada, y que se le pasa a la 
+      clase <b>FAQComandoXXX</b> en el constructor.</li>
+  </ul>
+  <li><b>service()</b>: al recibir una petición, se obtiene el comando que se 
+    ha pasado como parámetro, se obtiene luego la clase que lo implementa, y se 
+    llama a su método <b>ejecutar()</b>, que devuelve el nombre de la siguiente 
+    página que hay que cargar. Este nombre de página es gestionado por el servlet, 
+    que redirige el control a dicha página.</li>
+  <li><b>getComando()</b>: obtiene la clase que implementa el comando que se le 
+    pasa como parámetro. </li>
+</ul>
+      </body>
+</html>

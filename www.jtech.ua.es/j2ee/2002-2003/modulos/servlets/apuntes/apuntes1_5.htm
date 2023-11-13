@@ -1,0 +1,665 @@
+<!-- saved from url=(0022)http://internet.e-mail -->
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+                                                            
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+                                                            
+  <meta name="Author" content="Nacho">
+                                                            
+  <meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+                                                        
+  <link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+  <title>Tema 1: Conceptos b&aacute;sicos de Servlets</title>
+</head>
+  <body>
+           
+      <b>      
+<h2>1.5. Cabeceras y Códigos</h2>
+      </b>
+           
+      <p>Veremos a continuación cómo tratar las cabeceras HTTP de una
+      petición y de una respuesta. Las cabeceras más comúnmente usadas se
+      encuentran en la <a href="http.htm">explicación del protocolo HTTP</a>. </p>
+           
+      <h4>1.5.1. Cabeceras de petición</h4>
+           
+      <p> Cuando se envía una petición HTTP, se pueden enviar, entre otras
+      cosas, unas cabeceras con información sobre el navegador. Para leer estas cabeceras de una petición desde un servlet, se utiliza
+      el método <b>getHeader()</b> del objeto <b>HttpServletRequest</b>.&nbsp; </p>
+           
+      <pre class="codigo">String getHeader(String nombre)</pre>
+           
+      <p>El parámetro indica el nombre de la cabecera cuyo valor se quiere
+      obtener. Devuelve el valor de la cabecera, o <i>null</i> si la cabecera no
+      ha sido enviada en la petición. </p>
+           
+      <p>Se tienen otros métodos, como: </p>
+           
+      <pre class="codigo">String[] getHeaderNames()
+String[] getHeaders(String nombre)
+int getIntHeader(String nombre)
+...</pre>
+           
+      <p>Con <b>getHeaderNames()</b> obtendremos todos los nombres de las
+      cabeceras enviadas. Con <b>getHeaders()</b> obtendremos todos los valores de
+      la cabecera de nombre dado. También hay métodos como <b>getIntHeader()</b> que devuelve el
+      valor de una cabecera con un tipo de dato específico (entero, en este
+      caso). Los nombres de las cabeceras normalmente no distinguen mayúsculas
+      de minúsculas. </p>
+           
+      <p>Algunas cabeceras son de uso común, y tienen métodos específicos
+      para obtener sus valores, como: </p>
+           
+      <pre class="codigo">Cookie[] getCookies()
+String getContentLength()
+String getContentType()
+...</pre>
+           
+      <p>Con <b>getCookies()<i> </i></b>obtendremos todas las cookies de la
+      petición (veremos las cookies con más detalle en otro tema). Con <b>getContentLength()</b>
+      obtenemos el valor de la cabecera <i>Content-Length</i>, y con <b>getContentType()</b>
+      el de la cabecera <i>Content-Type</i>. </p>
+           
+      <h4>1.5.2. Cabeceras de respuesta</h4>
+           
+      <p>En la respuesta de un servidor web a una petición también pueden
+      aparecer cabeceras que informan sobre el documento servido o sobre el
+      propio servidor. Podemos definir cabeceras de respuesta para
+      enviar cookies, indicar la fecha de modificación, etc. Estas cabeceras
+      deben establecerse ANTES de enviar cualquier documento, o antes de
+      obtener el <i>PrintWriter</i> si es el caso. </p>
+           
+      <p>Para enviar cabeceras, el método más general es <b>setHeader()</b> del objeto <b>HttpServletResponse</b>.&nbsp; </p>
+           
+      <pre class="codigo">void setHeader(String nombre, String valor)</pre>
+           
+      <p>Al que se le pasan el nombre de la cabecera y el valor. Hay
+      otros métodos útiles: </p>
+           
+      <pre class="codigo">void setIntHeader(String nombre, int valor)
+void addHeader(String nombre, String valor)
+void addIntHeader(String nombre, int valor)
+...</pre>
+           
+      <p> <b>setIntHeader()</b> o <b>setDateHeader()</b>
+      se utilizan para enviar cabeceras de tipo entero o fecha. Los métodos <b>add...()</b>
+      se emplean para añadir múltiples valores a una cabecera con el mismo nombre. </p>
+           
+      <p>Algunas cabeceras tienen métodos específicos de envío, como:</p>
+           
+      <pre class="codigo">void setContentType(String tipo)
+void setContentLength(int tamaño)
+void sendRedirect(String url)
+void addCookie(Cookie cookie)</pre>
+           
+      <p>Con <b>setContentType()</b> se establece la cabecera <i>Content-Type</i>
+      con el tipo MIME del documento. Con <b>setContentLength()</b> se indican
+      los bytes enviados. Con <b>sendRedirect()</b> se selecciona la cabecera <i>Location</i>.
+      Finalmente, con <b>addCookie()</b> se establecen cookies (esto último ya
+      lo veremos con más detalle en otro tema). Es recomendable utilizar estos
+      métodos en lugar del método <i>setHeader()</i> para la cabecera en
+      cuestión.</p>
+           
+      <b>      
+           
+      <h4>1.5.3. Variables CGI</h4>
+           
+      </b><p> Las variables CGI son una forma de recoger información sobre una
+      petición. Algunas se derivan de la línea de petición HTTP y de las
+      cabeceras, otras del propio socket (como el nombre o la IP de quien
+      solicita la petición), y otras de los parámetros de instalación del
+      servidor (como el mapeo de URLs a los paths actuales). </p>
+           
+      <p>Mostramos a continuación una tabla con las variables CGI, y cómo
+      acceder a ellas desde servlets: </p>
+           
+      <table border="1" width="85%" height="550">
+        <tr>
+          <td width="28%" align="center" height="19"><b>VARIABLE CGI</b></td>
+          <td width="34%" align="center" height="19"><b>SIGNIFICADO</b></td>
+          <td width="38%" align="left" height="19">
+            <p align="center"><b>ACCESO DESDE SERVLETS</b></td>
+        </tr>
+        <tr>
+          <td width="28%" align="left" height="36">AUTH_TYPE</td>
+          <td width="34%" height="36">Tipo de cabecera Authorization (basic o
+            digest)</td>
+          <td width="38%" align="left" height="36"><i>request.getAuthType()</i></td>
+        </tr>
+        <tr>
+          <td width="28%" align="left" height="36">CONTENT_LENGTH</td>
+          <td width="34%" height="36">Número de bytes enviados en peticiones
+            POST</td>
+          <td width="38%" align="left" height="36"><i>request.getContentLength()</i></td>
+        </tr>
+        <tr>
+          <td width="28%" align="left" height="19">CONTENT_TYPE</td>
+          <td width="34%" height="19">Tipo MIME de los datos adjuntos</td>
+          <td width="38%" align="left" height="19"><i>request.getContentType()</i></td>
+        </tr>
+        <tr>
+          <td width="28%" align="left" height="19">DOCUMENT_ROOT</td>
+          <td width="34%" height="19">Path del directorio raíz del servidor web</td>
+          <td width="38%" align="left" height="19"><i>getServletContext().getRealPath(&quot;/&quot;)</i></td>
+        </tr>
+        <tr>
+          <td width="28%" align="left" height="19">HTTP_XXX_YYY</td>
+          <td width="34%" height="19">Acceso a cabeceras arbitrarias HTTP</td>
+          <td width="38%" align="left" height="19"><i>request.getHeader(&quot;Xxx-Yyy&quot;)</i></td>
+        </tr>
+        <tr>
+          <td width="28%" align="left" height="19">PATH_INFO</td>
+          <td width="34%" height="19">Información de path adjunto a la URL</td>
+          <td width="38%" align="left" height="19"><i>request.getPathInfo()</i></td>
+        </tr>
+        <tr>
+          <td width="28%" align="left" height="19">PATH_TRANSLATED</td>
+          <td width="34%" height="19">Path mapeado al path real del servidor</td>
+          <td width="38%" align="left" height="19"><i>request.getPathTranslated()</i></td>
+        </tr>
+        <tr>
+          <td width="28%" align="left" height="19">QUERY_STRING</td>
+          <td width="34%" height="19">Datos adjuntos para peticiones GET</td>
+          <td width="38%" align="left" height="19"><i>request.getQueryString()</i></td>
+        </tr>
+        <tr>
+          <td width="28%" align="left" height="19">REMOTE_ADDR</td>
+          <td width="34%" height="19">IP del cliente que hizo la petición</td>
+          <td width="38%" align="left" height="19"><i>request.getRemoteAddr()</i></td>
+        </tr>
+        <tr>
+          <td width="28%" align="left" height="54">REMOTE_HOST</td>
+          <td width="34%" height="54">Nombre del dominio del cliente que hizo la
+            petición (o IP si no se puede determinar)</td>
+          <td width="38%" align="left" height="54"><i>request.getRemoteHost()</i></td>
+        </tr>
+        <tr>
+          <td width="28%" align="left" height="36">REMOTE_USER</td>
+          <td width="34%" height="36">Parte del usuario en la cabecera
+            Authorization (si se suministró)</td>
+          <td width="38%" align="left" height="36"><i>request.getRemoteUser</i></td>
+        </tr>
+        <tr>
+          <td width="28%" align="left" height="36">REQUEST_METHOD</td>
+          <td width="34%" height="36">Tipo de petición (GET, POST, PUT, DELETE,
+            HEAD, OPTIONS, TRACE)</td>
+          <td width="38%" align="left" height="36"><i>request.getMethod()</i></td>
+        </tr>
+        <tr>
+          <td width="28%" align="left" height="19">SCRIPT_NAME</td>
+          <td width="34%" height="19">Path del servlet</td>
+          <td width="38%" align="left" height="19"><i>request.getServletPath()</i></td>
+        </tr>
+        <tr>
+          <td width="28%" align="left" height="19">SERVER_NAME</td>
+          <td width="34%" height="19">Nombre del servidor web</td>
+          <td width="38%" align="left" height="19"><i>request.getServerName()</i></td>
+        </tr>
+        <tr>
+          <td width="28%" align="left" height="18">SERVER_PORT</td>
+          <td width="34%" height="18">Puerto por el que escucha el servidor</td>
+          <td width="38%" align="left" height="18"><i>request.getServerPort()</i></td>
+        </tr>
+        <tr>
+          <td width="28%" align="left" height="18">SERVER_PROTOCOL</td>
+          <td width="34%" height="18">Nombre y versión usada en la línea de
+            petición (HTTP/1.0, HTTP/1.1 ...)</td>
+          <td width="38%" align="left" height="18"><i>request.getServerProtocol()</i></td>
+        </tr>
+        <tr>
+          <td width="28%" align="left" height="18">SERVER_SOFTWARE</td>
+          <td width="34%" height="18">Información del servidor web</td>
+          <td width="38%" align="left" height="18"><i>getServletContext().getServerInfo()</i></td>
+        </tr>
+      </table>
+      <p><i>request</i> se asume que es un objeto de tipo <i>HttpServletRequest</i>.
+      Para obtener cualquiera de las variables antes mencionadas, sólo hay que
+      llamar al método apropiado desde <i>doGet()</i> o <i>doPost()</i>. </p>
+           
+      <h4>1.5.4. Códigos de estado HTTP</h4>
+           
+      <p> Cuando un servidor web responde a una petición, en la respuesta
+      aparece, entre otras cosas, un código de estado que indica el resultado
+      de la petición, y un mensaje corto descriptivo de dicho código. </p>
+           
+      <p> El envío de cabeceras de respuesta
+      normalmente se planifica junto con el envío de códigos de estado, ya que
+      muchos de los códigos de estado necesitan tener una cabecera definida. Podemos hacer varias cosas con los servlets manipulando las líneas de
+      estado y las cabeceras de respuesta, como por ejemplo reenviar al usuario
+      a otros lugares, indicar que se requiere un password para acceder a un
+      determinado sitio web, etc. </p>
+           
+      <p> Para enviar códigos de estado se emplea el método <b>setStatus()</b>
+      de <b>HttpServletResponse</b>: </p>
+           
+      <pre class="codigo">void setStatus(int estado)</pre>
+           
+      <p>Donde se le pasa como parámetro el código del estado. En la clase <i>HttpServletResponse
+      </i>tenemos una serie de constantes para referenciar a cada código de
+      estado. Por ejemplo, la constante: </p>
+           
+      <pre class="codigo">HttpServletResponse.SC_NOT_FOUND</pre>
+           
+      <p>se corresponde con el código 404, e indica que el documento solicitado
+      no se ha encontrado. </p>
+           
+      <p>Existen otros métodos para gestión de mensajes de error: </p>
+           
+      <pre class="codigo">void sendError(int codigo, String mensaje)
+void sendRedirect(String url)</pre>
+           
+      <p><b>sendError() </b> genera una página de error, con código de error
+      igual a <i>codigo</i>, y con mensaje de error igual a <i>mensaje</i>. Se
+      suele utilizar este método para códigos de error, y <i>setStatus()</i>
+      para códigos normales. </p>
+           
+      <p><b>sendRedirect()</b> genera un error de tipo 302,
+      envía una cabecera <i>Location</i> y redirige a la página indicada en <i>url</i>.
+      Es mejor que enviar directamente el código, o hacer un <i>response.setHeader(&quot;Location&quot;,
+      &quot;http...&quot;)</i>, porque es más cómodo, y porque el servlet
+      genera así una página con el enlace a la nueva dirección, para
+      navegadores que no soporten redirección automática </p>
+           
+      <p> Si queremos enviar un código en la respuesta,
+      se tiene que especificar antes de obtener el objeto <i>PrintWriter</i>. </p>
+           
+      <h4>1.5.5. Ejemplos</h4>
+           
+      <p><b>1. Ejemplo de cabeceras de petición</b> </p>
+           
+        <p>El siguiente servlet muestra los valores de todas las cabeceras HTTP
+      enviadas en la petición. Recorre las cabeceras enviadas y muestra su nombre y valor: </p>
+           
+      <pre class="codigo">import java.io.*;
+import java.util.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
+
+public class ServletCabecerasPeticion 
+extends HttpServlet
+{
+   <b>// Metodo para GET
+</b>
+   public void doGet(HttpServletRequest request, 
+		     HttpServletResponse response) 
+   throws ServletException, IOException
+   {
+	PrintWriter out = response.getWriter();
+
+<b>	// Mostramos las cabeceras enviadas 
+	// en la peticion
+</b>
+	out.println (&quot;&lt;HTML&gt;&quot;);
+	out.println (&quot;&lt;BODY&gt;&quot;);	
+	out.println (&quot;&lt;H1&gt;Cabeceras&lt;/H1&gt;&quot;);
+	out.println (&quot;&lt;BR&gt;&quot;);
+
+<b>	Enumeration cabeceras = request.getHeaderNames();
+</b>
+	while (cabeceras.hasMoreElements())
+	{		
+		String nombre = (String)(cabeceras.nextElement());
+		out.println (&quot;Nombre: &quot; + nombre + 
+		   &quot;, Valor: &quot; + <b>request.getHeader(nombre)</b>);
+		out.println (&quot;&lt;BR&gt;&lt;BR&gt;&quot;);
+	}
+
+	out.println (&quot;&lt;/BODY&gt;&quot;);			
+	out.println (&quot;&lt;/HTML&gt;&quot;);
+   }	
+
+   <b>// Metodo para POST
+</b>	
+   public void doPost(HttpServletRequest request, 
+		      HttpServletResponse response) 
+   throws ServletException, IOException
+   {
+	doGet(request, response);
+   }	
+}</pre>
+           
+        <p>Se puede probar con este formulario, pinchando el botón:</p>
+           
+        <pre class="codigo">&lt;html&gt;
+&lt;body&gt;
+&lt;form action=
+ &quot;/ejemplocabeceras/servlet/ServletCabecerasPeticion&quot;&gt;
+	&lt;input type=&quot;submit&quot; value=&quot;Pulsa aqui&quot;&gt;
+&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+           
+        <p><b>2. Ejemplo de cabeceras de respuesta</b></p>
+           
+        <p>El siguiente servlet espera un parámetro <i>accion</i> que puede
+        tomar 4 valores: </p>
+           
+        <ul>
+          <li><b>primos</b>: El servlet tiene un hilo que está constantemente
+            calculando números primos. Al elegir esta opción se envía una
+            cabecera <i>Refresh</i> y recarga el servlet cada 10 segundos,
+            motrando el último número primo que ha encontrado.</li>
+          <li><b>redirect</b>: Utiliza un <i>sendRedirect()</i> para cargar la
+            página que se indique como parámetro</li>
+          <li><b>error</b>: Utiliza un <i>sendError()</i><b> </b>para mostrar
+            una página de error, con un mensaje de error definido por el
+            usuario, y un código de error a elegir de una lista.</li>
+          <li><b>codigo</b>: Envía un código de estado HTTP (con <i>setStatus()</i>),
+            a elegir de entre una lista.</li>
+        </ul>
+           
+      <pre class="codigo">import java.io.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
+
+public class ServletCabecerasRespuesta 
+extends HttpServlet implements Runnable
+{
+   <b>// Ultimo numero primo descubierto</b>
+   long primo = 1;			<b>
+   // Hilo para calcular numeros primos</b><b>
+</b>   Thread t = new Thread(this);	
+	
+<b>   // Metodo de inicializacion
+</b>	
+   public void init()
+   {
+	t.start();
+   }
+	
+<b>   // Metodo para GET
+</b>	
+   public void doGet(HttpServletRequest request, 
+		     HttpServletResponse response) 
+   throws ServletException, IOException
+   {	
+	String accion = request.getParameter(&quot;accion&quot;);
+	
+<b>	if (accion.equals(&quot;primo&quot;))
+</b>	{
+<b>		// Buscar el ultimo numero 
+		// primo y enviarlo
+</b>
+		response.setContentType(&quot;text/html&quot;);
+<b>		response.setHeader(&quot;Refresh&quot;, &quot;10&quot;);
+</b>		PrintWriter out = response.getWriter();
+		out.println (&quot;&lt;HTML&gt;&lt;BODY&gt;&quot;);
+		out.println (&quot;Primo: &quot; + primo);
+		out.println (&quot;&lt;/BODY&gt;&lt;/HTML&gt;&quot;);	
+
+<b>	} else if (accion.equals(&quot;redirect&quot;)) {
+</b>
+<b>		// Redirigir a otra pagina
+</b>
+		String url = request.getParameter(&quot;url&quot;);
+		if (url == null)
+			url = &quot;http://www.ua.es&quot;;
+<b>		response.sendRedirect(url);
+</b>			
+<b>	} else if (accion.equals(&quot;error&quot;)) {	
+</b>				
+<b>		// Enviar error con sendError()
+</b>
+		int codigo = response.SC_NOT_FOUND;
+		try
+		{
+		   codigo = Integer.parseInt
+		      (request.getParameter(&quot;codigoMensaje&quot;));
+		} catch (Exception ex) {
+		   codigo = response.SC_NOT_FOUND;
+		}
+		String mensaje = request.getParameter(&quot;mensaje&quot;);
+		if (mensaje == null)
+		   mensaje = &quot;Error generado&quot;;
+<b>		response.sendError(codigo, mensaje);
+</b>
+<b>	} else if (accion.equals(&quot;codigo&quot;)) {
+</b>
+		<b>// Enviar un codigo de error
+</b>
+		int codigo = response.SC_NOT_FOUND;
+		try
+		{
+		   codigo = Integer.parseInt
+		      (request.getParameter(&quot;codigo&quot;));
+		} catch (Exception ex) {
+		   codigo = response.SC_NOT_FOUND;
+		}
+<b>		response.setStatus(codigo);
+</b>	}
+   }	
+
+<b>   // Metodo para POST
+</b>	
+   public void doPost(HttpServletRequest request, 
+		      HttpServletResponse response) 
+   throws ServletException, IOException
+   {
+	doGet(request, response);
+   }
+
+   ... el resto del codigo es para el hilo, 
+   para calcular numeros primos
+   Puede consultarse en el fichero fuente, 
+   aqui se quita por simplificar
+}</pre>
+           
+        <p>Se puede probar con este formulario, eligiendo la acción a realizar,
+        introduciendo los parámetros necesarios en el formulario y pinchando el
+        botón de Enviar Datos:</p>
+           
+      <pre class="codigo">&lt;html&gt;
+&lt;body&gt;
+&lt;form action=
+&quot;/ejemplocabeceras/servlet/ServletCabecerasRespuesta&quot;&gt;
+
+&lt;table border=&quot;0&quot;&gt;
+
+&lt;tr&gt;
+&lt;td&gt;
+&lt;input type=&quot;radio&quot; name=&quot;accion&quot; value=&quot;primo&quot; selected&gt;
+<b>Obtener ultimo numero primo
+</b>&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td&gt;
+&lt;input type=&quot;radio&quot; name=&quot;accion&quot; value=&quot;redirect&quot;&gt;
+<b>Redirigir a una pagina
+</b>&lt;/td&gt;
+&lt;td&gt;
+URL: 
+&lt;input type=&quot;text&quot; name=&quot;url&quot; value=&quot;http://www.ua.es&quot;&gt;
+&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td&gt;
+&lt;input type=&quot;radio&quot; name=&quot;accion&quot; value=&quot;error&quot;&gt;
+<b>Mostrar pagina de error
+</b>&lt;/td&gt;
+&lt;td&gt;
+Mensaje: 
+&lt;input type=&quot;text&quot; name=&quot;mensaje&quot; 
+value=&quot;Error generado por el usuario&quot;&gt;
+&lt;/td&gt;
+&lt;td&gt;
+Codigo:
+&lt;select name=&quot;codigoMensaje&quot;&gt;
+&lt;option name=&quot;codigoMensaje&quot; value=&quot;400&quot;&gt;400&lt;/option&gt;
+&lt;option name=&quot;codigoMensaje&quot; value=&quot;401&quot;&gt;401&lt;/option&gt;
+&lt;option name=&quot;codigoMensaje&quot; value=&quot;403&quot;&gt;403&lt;/option&gt;
+&lt;option name=&quot;codigoMensaje&quot; value=&quot;404&quot; selected&gt;404
+&lt;/option&gt;
+&lt;/select&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td&gt;
+&lt;input type=&quot;radio&quot; name=&quot;accion&quot; value=&quot;codigo&quot;&gt;
+<b>Enviar codigo de error
+</b>&lt;/td&gt;
+&lt;td&gt;
+Codigo:
+&lt;select name=&quot;codigo&quot;&gt;
+&lt;option name=&quot;codigo&quot; value=&quot;200&quot;&gt;200&lt;/option&gt;	
+&lt;option name=&quot;codigo&quot; value=&quot;204&quot;&gt;204&lt;/option&gt;
+&lt;option name=&quot;codigo&quot; value=&quot;404&quot; selected&gt;404&lt;/option&gt;
+&lt;/select&gt;
+&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;/table&gt;
+
+&lt;input type=&quot;submit&quot; value=&quot;Enviar Datos&quot;&gt;
+
+&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+           
+        <p><b><a name="autHTTP"></a>3. Ejemplo de autentificación</b> </p>
+           
+        <p>El siguiente servlet emplea las cabeceras de autentificación:
+        envía una cabecera de autentificación si no ha recibido ninguna, o si
+        la que ha recibido no está dentro de un conjunto de <i>Properties </i>predefinido,
+        con logins y passwords válidos. En el caso de introducir un login o
+        password válidos, muestra un mensaje de bienvenida.&nbsp; </p>
+           
+        <p>Los logins y passwords están en un objeto <i>Properties</i>,
+        definido en el método<i>  init()</i>. Podríamos leer estos datos de un
+        fichero, aunque por simplicidad aquí se definen como constantes de
+        cadena. </p>
+           
+        <p>Los datos de autentificación se envían codificados, y se emplea un
+        objeto <i>sun.misc.BASE64Decoder</i> para descodificarlos y sacar el
+        login y password. </p>
+           
+      <pre class="codigo">import java.io.*;
+import java.util.*;
+import sun.misc.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
+
+public class ServletPassword extends HttpServlet
+{
+   <b>// Conjunto de logins y passwords permitidos</b>
+   Properties datos = new Properties();	<b>
+</b>	
+   <b>// Metodo de inicializacion
+</b>	
+   public void init()
+   {
+	datos.setProperty(&quot;usuario1&quot;, &quot;password1&quot;);
+	datos.setProperty(&quot;usuario2&quot;, &quot;password2&quot;);
+   }
+	
+   <b>// Metodo para GET
+</b>	
+   public void doGet(HttpServletRequest request, 
+		     HttpServletResponse response) 
+   throws ServletException, IOException
+   {		
+	response.setContentType(&quot;text/html&quot;);
+
+	<b>// Comprobamos si hay cabecera 
+	// de autorizacion
+</b>		
+	String autorizacion = request.getHeader(&quot;Authorization&quot;);
+		
+	if (autorizacion == null)
+	{
+		<b>// Enviamos el codigo 401 y 
+		// la cabecera para autentificacion
+</b>			
+		response.setStatus(response.SC_UNAUTHORIZED);
+		response.setHeader(&quot;WWW-Authenticate&quot;, 
+		   &quot;BASIC realm=\&quot;privileged-few\&quot;&quot;);
+	}
+	else
+	{
+		<b>// Obtenemos los datos del usuario 
+		// y comparamos con los almacenados
+</b>		
+		<b>// Quitamos los 6 primeros caracteres 
+		// que indican tipo de autentificación 
+		// (BASIC)
+
+</b>		String datosUsuario = 
+	 	   autorizacion.substring(6).trim();
+
+		BASE64Decoder dec = new BASE64Decoder();
+
+		String usuarioPassword = new String
+		   (dec.decodeBuffer(datosUsuario));
+
+		int indice = usuarioPassword.indexOf(&quot;:&quot;);
+
+		String usuario = 
+		   usuarioPassword.substring(0, indice);
+
+		String password = 
+		   usuarioPassword.substring(indice + 1);
+
+		String passwordReal = 
+		   datos.getProperty(usuario);
+		
+		if (passwordReal != null &amp;&amp; 
+		    passwordReal.equals(password))
+		{
+			<b>// Mensaje de bienvenida
+</b>				
+			PrintWriter out = response.getWriter();
+			out.println (&quot;&lt;HTML&gt;&lt;BODY&gt;&quot;);
+			out.println (&quot;OK&quot;);
+			out.println (&quot;&lt;/BODY&gt;&lt;/HTML&gt;&quot;);	
+		} else {
+				
+			<b>// Pedir autentificacion
+</b>
+			response.setStatus 
+			   (response.SC_UNAUTHORIZED);
+			response.setHeader
+			   (&quot;WWW-Authenticate&quot;, 
+			   &quot;BASIC realm=\&quot;privileged-few\&quot;&quot;);
+		}
+	}
+   }	
+
+   <b>// Metodo para POST
+</b>	
+   public void doPost(HttpServletRequest request, 
+		      HttpServletResponse response) 
+   throws ServletException, IOException
+   {
+	doGet(request, response);
+   }
+}</pre>
+           
+      <blockquote>
+           
+        <p>&nbsp;</p>
+           
+      </blockquote>
+      <p> Aquí
+      tenéis el <a href="ejemplos/basico/ejemplocabeceras.war.zip">WAR</a> con los
+      ejemplos.
+      Copiadlo en el directorio <i>webapps</i>  y probad cada ejemplo,
+      respectivamente, con:</p>
+           
+      <pre class="codigo">http://localhost:8080/ejemplocabeceras/inicioCabecerasPeticion.html
+http://localhost:8080/ejemplocabeceras/inicioCabecerasRespuesta.html
+http://localhost:8080/ejemplocabeceras/servlet/ServletPassword</pre>
+           
+      <p>Un ejemplo de login y password válidos para el tercer ejemplo es:
+      login=<i>usuario1</i>, password=<i>password1</i>.&nbsp; </p>
+           
+      <p>&nbsp;</p>
+           
+        </body>
+        </html>

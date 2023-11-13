@@ -1,0 +1,567 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Introducción a los servidores de aplicaciones y a WildFly</title>
+
+		<meta name="description" content="Experto en desarrollo de aplicaciones web con JavaEE y Javascript">
+		<meta name="author" content="José Luis Zamora Sánchez">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/experto.css" id="theme">
+		
+    	<!-- coloreado de sintaxis con highlight.js -->
+    	<link rel="stylesheet" type="text/css" href="lib/css/github.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+		
+		<style type="text/css">.slides .header{
+			position:absolute;
+			top: -50%;
+			left: -50%;
+			width: 100%;
+			display: table;
+		}
+
+		.slides .logo {
+			display: table-cell;
+			vertical-align: middle;
+		}
+
+		.slides .bar {
+			background-color: rgb(18,64,128);
+			font-size: 20px;
+			padding-top: 5px;
+			padding-bottom: 5px;
+			color: white;
+			border-top-left-radius:10px;
+			border-bottom-left-radius:10px;
+			display: table-cell;
+			vertical-align: middle;
+			text-align: center;
+		}
+
+		.slides .footer{
+			position:absolute;
+			bottom: 50%;
+			left: -50%;
+			width: 100%;
+			font-size: 15px;
+			color: gray;
+			display: table;
+		}  
+		.slides .left {
+			display: table-cell;
+			text-align: left;
+		}
+		.slides .right {
+			display: table-cell;
+			text-align: right;
+		}
+		.slides .center {
+			display: table-cell;
+			text-align: center;
+		}
+
+</style>
+
+	</head>
+
+<body>
+	<div class="reveal">
+	<div class="slides">
+		<!-- todo lo que se ponga aqui (que no sea un <section>) aparecerá
+		en todas las diapositivas -->
+		<div class="header">
+			<div class="logo">
+			 <img src="css/images/logo_small.png">
+			</div>
+			<div class="bar">Experto en desarrollo de aplicaciones web con JavaEE y Javascript</div>
+		</div>
+		<div class="footer">
+			<div class="left">
+				Servidores Web y PaaS
+			</div>
+			<div class="center">
+				&copy; 2014-15 Dpto. Ciencia de la Computación e I.A.
+			</div>
+			<div class="right">
+				Sesión 1
+			</div>	
+		</div>	
+		<!-- Cada <section> es una slide -->	
+		
+		<section>
+			<!-- al poner el <h1> automáticamente aparece el logo del curso-->
+			<h1>Servidores Web y PaaS</h1>
+			<h2>Sesión 1: Introducción a los servidores de aplicaciones y a WildFly</h2>
+		</section>
+		
+		<section>
+			<h2>Índice</h2>
+			<ul>
+				<li>Definición de servidor de aplicaciones</li>
+				<li>Tomcat vs servidor de aplicaciones</li>
+				<li>Roles Java Enterprise</li>
+				<li>Introducción a WildFly</li>
+				<li>Dominios en WildFly</li>
+				<li>Estructura de directorios</li>
+				<li>Herramientas de administración de WildFly</li>
+				<li>Administración de dominios básica </li>
+				<li>Empaquetado de aplicaciones Enterprise</li>
+				<li>Desplegue de aplicaciones en WildFly</li>
+			</ul>
+		</section>
+		
+		<section>			
+			<h2>¿Qué es un servidor de aplicaciones?</h2>
+			<blockquote class="fragment" align=left >Un servidor de aplicaciones es una plataforma que proporciona los servicios definidos en la especificación de Java Enterprise.</blockquote>			 
+		</section>
+		
+		<section>			
+			<br/>		
+			<h2>Especificación Java Enterprise</h2>
+			<p align=center><img style="border: 0;" src="imagenes/paas01/Java_ee7.png"></p>
+		</section>
+		
+		
+		<section>						
+			<h2>Servicios más importantes</h2>
+			<ul>
+				<li>Contenedor de aplicaciones web servlets y JSP.</li>
+				<li>Servicios Web y Servicios Rest.</li>
+				<li>Contenedor de EJBs.</li>
+				<li>Gestión de recursos Java EE: JavaMail, JNDI, DataSources, Colas de mensajes</li>
+				<li>Seguridad: JACC (Java Authorization Contract for  Containers)</li>
+			</ul>			
+		</section>
+		
+		<section>						
+			<h2>Web Profile vs Full Profile</h2>
+			<p align=center><img style="border: 0;"   src="imagenes/paas01/Java_ee_6_web_profile.jpg"></p>
+		</section>
+
+
+		<section>			
+			<h2>¿Tomcat o Jetty son servidores de aplicaciones?</h2>
+		</section>
+		
+		<section>			
+			<br>
+			<ul>
+				<li>No cumplen la especificación Java EE al completo (ni web profile ni full profile).</li>
+				<li>Estrictamente hablando son servidores web y contenedores de servlets.</li>
+				<li>Incorporan algunos servicios: JNDI, gestión de recursos.</li>
+			</ul>						
+			<ul>
+				<li>Su ligereza y sencillez de configuración.</li>
+				<li>De uso gratuito</li>
+				<li>Combinado con un framework como Spring permite desplegar aplicaciones empresariales complejas.</li>
+			</ul>
+			<p align=left><br>TomEE sí puede considerarse un servidor de aplicaciones (certificación JEE 6 Web Profile).</p>			
+		</section>
+
+	
+		<section>			
+			<h2>¿Cuándo utilizaremos un servidor de aplicaciones frente a Tomcat?</h2>			
+			<br>
+			<ol>
+				<li class="fragment">Cuando escalabilidad, alta disponibilidad, monitorización del rendimiento y seguridad sean elementos críticos</li>
+				<li class="fragment">Cuando busquemos una plataforma estable y estandarizada que incluya todas las librerías necesarias para desarrollar según el estándar JEE.</li>
+				<li class="fragment">En organizaciones donde se separe la administración de sistemas de los equipos de desarrollo.</li>
+			</ol>					
+		</section>
+
+		<section>			
+			<h2>Servidores de aplicaciones más utilizados</h2>
+			<p align=center><br>Java EE 7 Full/Web Profile</p>			
+			<p align=center><img style="border: 0;"   src="imagenes/paas01/ServersEE7.png"></p>
+		</section>
+
+		<section>			
+			<h2>Servidores de aplicaciones más utilizados</h2>
+			<p align=center><br>Java EE 6 Full/Web Profile</p>			
+			<p align=center><img style="border: 0;"   src="imagenes/paas01/ServersEE6.png"></p>
+		</section>
+
+
+		<section>						
+			<h2>Roles Java Enterprise</h2>
+			<br>
+			<ul>
+				<li><em>Product Provider</em>, define al conjunto de proveedores (hardware,software, comunicaciones, etc.) con las que trabaja nuestra empresa.</li>
+				<li><em>Tool Provider</em>, selecciona las herramientas de desarrollo, despliegue y monitorización de aplicaciones.</li>
+				<li><em>Application Component Provider</em>, encargado de construir los distintos módulos que componen las aplicaciones (desarrolladores, diseñadores, analistas con conocimiento del negocio).</li>				
+			</ul>			
+		</section>
+		
+		<section>						
+			<h2>Roles Java Enterprise</h2>
+			<br>
+			<ul>				
+				<li><em>Application Assembler</em>, quien  ensambla los módulos y genera los descriptores de despliegue.</li>
+				<li><em>Deployer</em>, cuya función es la desplegar aplicaciones y configurar los recursos necesarios en el servidor para que éstas funcionen.</li>				
+			</ul>			
+		</section>
+		
+		
+		<section>						
+			<h2>Introducción a WildFly</h2>
+			<br>
+			<p align=left>WildFly equivale a JBoss 8.x, desarrollado por Red Hat. Frente a las versiones anteriores (JBoss AS 7.1 y EAP6) presenta las siguientes novedades:</p>
+			<ul>				
+				<li class="fragment">Compatible y optimizado para la JVM de Java SE 7. Mejoras de rendimiento en Entrada/Salida, políticas de Garbage collector y concurrencia.</li>
+				<li class="fragment">Certificado para Java EE 7 Web y Full Profile.</li>
+				<li class="fragment">RBAC. Roles dentro de los usuarios con acceso WildFly, similares a los definidos por Java EE. Permiten delimitar tareas.</li>				
+			</ul>			
+		</section>
+		
+		<section>						
+			<h2>Introducción a WildFly</h2>
+			<br>			
+			<ul>								
+				<li class="fragment">Nuevo contenedor web y de servlets. Tomcat --> Undertow.</li>
+				<li class="fragment">Mejoras en las herramientas de administración (Consola, línea de comandos).</li>
+				<li class="fragment">Utiliza sólo 2 puertos, <em>trabajo</em> y <em>administración</em>. Facilita el ejecutar múltples instancias en una sola máquina.</li>
+				<li class="fragment">Aún no existe una versión con soporte comercial, únicamente open source gratuita</li>
+			</ul>			
+		</section>
+		
+		<section>						
+			<h2>Cómo instalar WildFly</h2>
+			<br>			
+			<ol>								
+				<li>Descargar desde http://www.wildfly.org</li>
+				<li>Descomprimir en una carpeta.</li>
+				<li>export JBOSS_HOME=/usr/share/wildfly-8.1.0</li>
+			</ol>			
+		</section>
+		
+		<section>									
+			 <blockquote align=left>Dominio: define un conjunto de propiedades, recursos e instancias de servidores de aplicaciones.</blockquote>
+			 <p align=center><img style="border: 0;" src="imagenes/paas01/dominio.png"></p>			 
+		</section>
+		
+		<section>									
+			 <h2>Dominio</h2>
+			 <ul>
+				<li>Organización flexible de recursos y servidores.</li>
+				<li>Cada dominio activo utiliza distintos puertos de servicio y administración.</li>				
+			</ul>	
+		</section>
+		
+		<section>									
+			 <h2>Modos de trabajo de WildFly</h2>
+			 <br>			
+			 <ul>
+				<li>Standalone: Permite ejecutar WildFly como un proceso independiente. Compatible con HA.</li>
+			</ul>
+			
+			<p align ="left"><br>&nbsp<em>standalone.sh</em></p>			
+			<p><br></p>
+			<ul>
+				<li>Managed Domain: permite ejecutar uno o varios servidores administrados desde un único dominio.</li>
+			</ul>				
+			<p align ="left" ><br>&nbsp<em>domain.sh</em></p>
+		</section>
+		
+		<section>												 
+			<br>
+			 <p align=center><img style="border: 0;" src="imagenes/paas01/DC-HC-Server.png"></p>			 
+		</section>
+		
+		<section>												 
+		    <br>
+			<h2>Estructura de directorios de WildFly</h2>			
+			 <p align=center><img style="border: 0;" src="imagenes/paas01/estructura.png"></p>			 
+		</section>
+
+		<section>												 
+		    <br>
+			<h2>Creación de un usuario administrador</h2>						
+			<ul>
+				<li>Paso necesario antes de poder comenzar a trabajar sobre WildFly</li>
+				<li>Script <em>add-user.sh</em></li>
+				<li>El usuario creado pertenecerá al <em>ManagementRealm</em></li>				
+			 <ul>			 
+		</section>
+		
+		<section>												 
+		    <br>
+			 <p align=center><img style="border: 0;"  height="600" src="imagenes/paas01/add-user.png"></p>			 			 
+		</section>
+		
+		
+		<section>			
+			<h2>» Herramientas de administración de WildFly</h2>
+		</section>
+		
+		<section>												 
+		    <br>
+			<h2>Edición manual de los ficheros de configuración</h2>
+			<ul>
+				<li>Técnicamente posible aunque cualquier cambio implica reiniciar el servidor.</li>
+				<li>En caso de error el servidor puede no arrancar.</li>
+				<li>Se trata de un último recurso.</li>
+				<li class="fragment">Para JBoss/WildFly sin embargo es más que un último recurso... </li>
+		</section>
+
+		<section>												 
+		    <br>
+			<h2>Consola web</h2>
+			 <p  align=center><img style="border: 0;" height="500" src="imagenes/paas01/WebConsole.png"></p>			 			 
+		</section>
+		
+		<section>												 
+		    <br>
+			<h2>Command Line Interface (CLI)</h2>
+			 <pre><code  class="bash"  data-trim  style="font-size: 18px;">
+					$ ./jboss-cli.sh [--help] [--version] [--connect] [--controller] [--commands] [--user] [--password] 
+						[--file]
+			</code></pre>
+			<p align="left">--help: Muestra un listado de comandos admitidos</p>
+			<p align="left">--version Muestra información de la versión de WildFly y de la máquina.</p>
+			<p align="left">--connect Comando utilizado para conectarnos al servidor e iniciar su administración.</p>
+			<p align="left">--controller  Host:puerto al que nos queremos conectar.</p>			
+		</section>
+		
+		<section>												 
+		    <br>
+			<h2>Command Line Interface (CLI)</h2>
+			 <pre><code   class="bash" data-trim  style="font-size: 18px;">
+					$ ./jboss-cli.sh [--help] [--version] [--connect] [--controller] [--commands] [--user] [--password] 
+						[--file]
+			</code></pre>			
+			<p align="left">--commands Permite especificar una o varias instrucciones de administración.</p>
+			<p align="left">--user/password Credenciales para conectarse a un servidor, utilizadas normalmente al acceder a un servidor remoto.</p>
+			<p align="left">--file Permite ejecutar un script con múltiples instrucciones de administración.</p>
+		</section>
+		
+		<section>
+		<h2>Ejemplos de uso</h2>
+		<pre><code  class="bash"  data-trim  style="font-size: 18px;">
+#Conexión a un servidor local (localhost:9990)
+./jboss-cli.sh --connect
+#Conexión a un host controller remoto
+./jboss-cli.sh --connect --controller=192.168.10.1 --user=admin1234 --pasword=pass1234
+#Ejecutar una secuencia de comandos
+./jboss-cli.sh --commands="connect,deploy prueba.jar"
+#Ejecutar un script de administración
+./jboss-cli.sh --file=myscript.cli
+#Parar el servidor
+./jboss-cli.sh --connect --command=shutdown
+#Arrancar el servidor en modo administración
+./standalone.sh --admin-only
+		</code></pre>
+		<p align=left>Para salir del modo administración: </p>
+		<pre><code  class="bash"  data-trim contenteditable style="font-size: 18px;">
+[standalone@localhost:9990/]reload --admin-only=false
+		</code></pre>
+		</section>
+		
+			<section>
+		<h2>Ejemplo de script</h2>
+		<pre><code  class="bash"  data-trim  style="font-size: 18px;">
+# Connect to Wildfly instance
+connect
+
+# Create Spring Batch Module
+
+module add \
+    --name=org.springframework.batch \
+    --dependencies=javax.api,javaee.api \
+    --resources=${wildfly.module.classpath}
+		</code></pre>
+		</section>
+
+		<section>
+			<br>
+			<h2>Navegación CLI</h2>
+			<p  align=center><img style="border: 0;" height="400" src="imagenes/paas01/jbosscli.png"></p>
+		</section>
+		
+		<section>
+			<br>
+			<h2>Interfaz gráfico para CLI</h2>
+			<pre><code  class="bash"  data-trim contenteditable style="font-size: 18px;">
+$ ./jboss-cli.sh --gui
+		</code></pre>		
+			<p  align=center><img style="border: 0;" height="400" src="imagenes/paas01/jbosscliGUI.png"></p>
+		</section>
+		
+		<section>			
+			<h2>» Empaquetado de aplicaciones Java Enterprise</h2>
+		</section>
+		
+		<section>			
+			<h2>Ficheros JAR y WAR</h2>
+			<p  align=center><img style="border: 0;" src="imagenes/paas01/jarwar.png"></p>
+		</section>
+
+		<section>			
+			<h2>Ficheros JAR y WAR</h2>
+			<ul>
+				<li>Los ficheros JAR contienen clases Java compiladas junto con un manifest que identifica su contenido.</li>
+				<li>Un archivo WAR contiene recursos estáticos y clases compiladas, pero también puede depender de clases externas (JAR’s).</li>
+				<li>Podemos resolver estas dependencias incluyendo los JAR en el CLASSPATH del servidor, o bien incluyéndolos en el propio WAR, en la carpeta WEB-INF/lib</li>
+			</ul>
+		</section>
+
+		<section>			
+			<h2>Limitaciones de los WAR</h2>
+			<ul>
+				<li>Las dependencias de las aplicaciones Web se guardan en la carpeta /WEB-INF/lib de la aplicación.  ¿Que ocurre si varias aplicaciones necesitan las mismas librerías?</li>
+				<li>Duplicar las librerías provoca mayor complejidad en los mantenimientos y consumo extra de recursos.</li>
+				<li class="fragment">Dos soluciones: Definir un <em>módulo global</em> o bien empaquetar estas aplicaciones en un fichero <em>EAR</em></li>
+			</ul>
+		</section>
+		
+		<section>			
+			<h2>Ficheros EAR</h2>
+			<p  align=center><img style="border: 0;" src="imagenes/paas01/ear.png"></p>
+		</section>
+		
+		<section>			
+			<h2>Ficheros EAR</h2>
+			<ul>
+				<li>Empaquetan aplicaciones enterprise que contienen distintas aplicaciones web y distintos EJB accesibles por todas ellas</li>
+				<br>
+				<li>Los EJB se empaquetan como ficheros JAR.</li>
+				<br>
+				<li>Se permite incluir en los ficheros enterprise ,ficheros JAR con librerías Java accesibles desde el classpath de cualquier aplicación web empaquetada en él.</li>
+				<br>
+				<li>Los ficheros JAR compartidos ya no tienen que desplegarse repetidos, se ubicarán en el EAR en la carpeta <strong>/lib</strong>.</li>
+			</ul>
+		</section>
+		
+		<section>			
+			<h2>» Despliegue de aplicaciones en WildFly</h2>
+		</section>
+		
+		<section>			
+			<h2>1.- Despliegue desde sistema de ficheros</h2>
+			<ul>
+				<li>Sólo en modalidad standalone</li>
+			</ul>
+			<pre><code   class="bash" data-trim  style="font-size: 18px;">
+					$ cp example.war /usr/local/wildfly-8.1.0.Final/standalone/deployments
+			</code></pre>			
+		</section>
+		
+		<section>			
+			<h2>1.- Despliegue desde sistema de ficheros</h2>
+			<p align=left>Deployment scanner</p>			
+			<pre><code   class="xml" data-trim  style="font-size: 18px;">
+&ltdeployment-scanner scan-interval="5000" relative-to="jboss.server.base.dir"
+   path="deployments" auto-deploy-zipped="true" auto-deploy-exploded="false"/&gt
+			</code></pre>			
+		</section>
+		
+		<section>			
+			<br>
+			<h2>2.- Mediante herramientas de administración</h2>
+			<ul>
+				<li>Consola Web</li>
+			</ul>
+			<p  align=center><img style="border: 0;" height="400" src="imagenes/paas01/deploy.png"></p>
+		</section>
+
+		<section>						
+			<h2>2.- Mediante herramientas de administración</h2>
+			<ul>
+				<li>CLI</li>
+			</ul>
+			<pre><code   class="bash" data-trim  style="font-size: 18px;">
+					$ [standalone@localhost:9990/]deploy example.war
+			</code></pre>			
+		</section>
+		
+		<section>			
+			<h2>3.- Mediante herramientas de terceros</h2>
+			<ul>
+				<li>wildfly-maven-plugin</li>
+			</ul>
+			<pre><code   class="bash" data-trim  style="font-size: 18px;">
+[standalone@localhost:9990/]mvn wildfly:deploy
+[standalone@localhost:9990/]mvn wildfly:redeploy
+[standalone@localhost:9990/]mvn wildfly:undeploy
+			</code></pre>			
+		</section>
+				
+		<section>			
+			<h2>3.- Mediante herramientas de terceros</h2>
+			<ul>
+				<li>wildfly-maven-plugin</li>
+			</ul>
+			<pre><code   class="xml" data-trim  style="font-size: 18px;"><plugin>
+	<groupId>org.wildfly.plugins</groupId>
+	<artifactId>wildfly-maven-plugin</artifactId>
+	<version>1.0.2.Final</version>
+	<executions>
+		<execution>
+			<phase>install</phase>
+			<goals>
+				<goal>deploy</goal>
+			</goals>
+		</execution>
+	</executions>
+</plugin></code></pre>			
+		</section>		
+		
+		<section>
+			<h1>¿Preguntas...?</h1>
+		</section>
+	</div>
+</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+				slideNumber: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Parallax scrolling
+				// parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+				// parallaxBackgroundSize: '2100px 900px',
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+
+				]
+			});
+
+		</script>
+
+	</body>
+</html>

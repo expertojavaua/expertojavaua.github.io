@@ -1,0 +1,187 @@
+<html>
+<head>
+<title>Untitled Document</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<h1>Tema 1: JSP B&aacute;sico</h1>
+
+<h2>1.1. Introducci&oacute;n a JSP</h2>
+<p>JSP (<b>JavaServer Pages</b>) es una tecnolog&iacute;a que permite incluir 
+  c&oacute;digo Java en p&aacute;ginas web. El denominado <em>contenedor JSP</em> (que sería un componente del servidor web) es el encargado de 
+  tomar la p&aacute;gina, sustituir el c&oacute;digo Java que contiene por el 
+  resultado de su ejecuci&oacute;n, y enviarla al cliente. As&iacute;, se pueden 
+  dise&ntilde;ar f&aacute;cilmente p&aacute;ginas con partes fijas y partes variables. 
+  El siguiente es un ejemplo muy sencillo de p&aacute;gina JSP:</p>
+<pre class="codigo">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0 Transitional//EN&quot;&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;Mi primera p&aacute;gina JSP&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt; Hoy es: <b>&lt;%= new java.util.Date() %&gt; </b>&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+<p>Para ejecutar la p&aacute;gina basta con colocarla en una aplicaci&oacute;n 
+  web (por ejemplo, en Tomcat, dentro de <code>webapps/ROOT</code>). No es necesario 
+  que sea en un directorio espec&iacute;fico como ocurre con los servlets, sino 
+  que puede ir en cualquier directorio en el que se colocar&iacute;a normalmente 
+  un HTML.</p>
+  <p>
+  La versión actual de la especificación JSP, y la que cubren estos apuntes, es la 1.2. (aunque existe una <em>b</em>eta de la versión 2.0) Como se verá, es una especificación paralela al API de servlets, concretamente a la versión 2.3. Se puede encontrar más información sobre JSP en 
+  </p>
+  <center>
+   <a href="http://java.sun.com/products/jsp">http://java.sun.com/products/jsp </a>
+  </center>
+<p>Aunque JSP y servlets parecen a primera vista tecnolog&iacute;as distintas, 
+  en realidad el servidor web traduce internamente el JSP a un servlet, lo compila 
+  y finalmente lo ejecuta cada vez que el cliente solicita la p&aacute;gina JSP. 
+  Por ello, en principio, JSPs y servlets ofrecen la misma funcionalidad, aunque 
+  sus caracter&iacute;sticas los hacen apropiados para distinto tipo de tareas. 
+  Los JSP son mejores para generar p&aacute;ginas con gran parte de contenido 
+  est&aacute;tico. Un servlet que realice la misma funci&oacute;n debe incluir 
+  gran cantidad de sentencias del tipo <code>out.println()</code> para producir 
+  el HTML. Por el contrario, los servlets son mejores en tareas que generen poca 
+  salida, datos binarios o p&aacute;ginas con gran parte de contenido variable. 
+  En proyectos m&aacute;s complejos, lo recomendable es combinar ambas tecnolog&iacute;as: 
+  los servlets para el procesamiento de informaci&oacute;n y los JSP para presentar 
+  los datos al cliente.</p>
+<h2>1.2. Traducción de los JSP a servlets</h2>
+<p>Como se ha comentado, la primera vez que se solicita una página JSP, el servidor genera el servlet equivalente, lo compila y lo ejecuta. Para las siguientes solicitudes, solo es necesario ejecutar el código compilado. El servlet generado de manera automática tiene un método <code>_jspService</code> 	que es el equivalente al <code>service</code> de los servlets "generados manualmente". En este método es donde se genera el código HTML, mediante instrucciones <code>println</code> y donde se ejecuta el código Java insertado en la página. Por ejemplo, la página <b>primera.jsp</b> podría generar un servlet con estructura similar al siguiente:</p>
+
+<pre class="codigo">
+public void _jspService(HttpServletRequest request, 
+                        HttpServletResponse  response)
+                        throws java.io.IOException, ServletException {
+   JspWriter out = null;
+   response.setContentType("text/html;ISO-8859-1");
+   out.println("&lt;!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0        
+                Transitional//EN\"&gt;);
+   out.println("&lt;html&gt;");
+   out.println("&lt;head&gt;");
+   out.println("&lt;title&gt;Mi primera pagina JSP&lt;/title&gt;");
+   out.println("&lt;/head&gt;");
+   out.println("&lt;body&gt;");
+   out.print("Hoy es ");
+   out.println(new java.util.Date());
+   out.println("&lt;/body&gt;");
+   out.println("&lt;/html&gt;");
+}
+</pre>
+<p>
+El directorio donde se coloca el servlet generado, así como su nombre, dependen del servidor web. Por ejemplo, Tomcat utiliza su directorio <code>work/localhost/<var>aplicacion_web</var></code>. En caso de que la página esté en <code>ROOT</code>, el nombre de la aplicación se sustituye por un carácter de subrayado (<code>_</code>).
+</p>
+<h2> 1.3. Elementos de JSP </h2>
+<p> 
+Existen tres tipos de elementos JSP que podemos insertar en una página web:
+</p>
+<ul>
+<li><b>Código</b>: podemos "incrustar" código Java de distintos tipos (declaraciones de variables y/o métodos, expresiones, sentencias) para que lo ejecute el contenedor JSP.</li>
+<li><b>Directivas</b>: permiten controlar distintos parámetros del servlet resultante de la traducción automática del JSP</li>
+<li><b>Acciones</b>: normalmente sirven para alterar el flujo normal de ejecución de la página (p.ej. redirecciones), aunque tienen usos variados.</li>
+</ul> 
+<p>
+Se pueden poner comentarios en una página JSP entre los símbolos <code>&lt;%--</code> y <code>--%&gt;</code>. El contenedor JSP ignorará todo lo contenido entre ambos. Dentro de los fragmentos de código Java también se pueden colocar comentarios siguiendo la sintaxis habitual del lenguaje.
+</p>
+<h2> 1.4. Inserción de código en páginas JSP </h2>
+<p>
+Hay tres formas de insertar código Java en una página JSP:
+<ul>
+<li><b>Expresiones</b> de la forma <code>&lt;%= <var>expresión</var> %&gt;</code>: en este caso, la expresión se evalúa, su resultado se convierte a <code>String</code> y se inserta en la salida. </li>
+<li><b>Scriptlets</b> de la forma <code>&lt;% <var>código</var> %&gt;</code></li>: el código se ejecuta dentro del método <code>_jspService</code> del servlet generado.
+<li><b>Declaraciones</b> de la forma <code>&lt;%! <var>código</var> %&gt;</code>: se insertan en el cuerpo del servlet generado, fuera de sus métodos. </li>
+</ul>
+<h3>1.4.1. Expresiones</h3>
+<p>
+Como se ha visto, se evalúan, su resultado se convierte a un <code>String</code> y se escriben en la salida (el objeto predefinido <code>out</code>). La forma de traducir una expresión a código de servlet es imprimiéndola en <code>out</code> (mediante una sentencia <code>out.write(<var>expresion</var>)</code>) o similar.
+</p>
+<h3>1.4.2. <em>Scriptlets</em></h3>
+<p>
+Permiten ejecutar código arbitrario, cuyo resultado no es necesario enviar a la salida. Si desde un <em>scriptlet</em> se desea escribir algo en ésta, bastará con utilizar el objeto predefinido <code>out</code>. Un uso común de los <em>scriptlets</em> es hacer que ciertas partes de código HTML aparezcan o no en función de una condición. Por ejemplo:
+</p>
+<pre class="codigo">
+<b>&lt;%
+  java.util.Calendar ahora = java.util.Calendar.getInstance();
+  int hora = ahora.get(java.util.Calendar.HOUR_OF_DAY);
+%&gt;</b>
+&lt;b&gt Hola mundo, &lt;i&gt
+<b>&lt;% if ((hora>20)||(hora<6)) { %> </b>
+     buenas noches
+<b>&lt;% }  
+   else if ((hora>=6)&&(hora<=12)) { %&gt;</b>
+          buenos días
+<b>&lt;%      }
+	else { %&gt; </b>
+           buenas tardes
+<b>&lt;%      } %&gt;</b>
+&lt;/i&gt &lt;/b&gt
+</pre>
+<h3>1.4.3. Declaraciones</h3>
+<p>
+Permiten definir variables o métodos que se insertarán dentro del cuerpo del servlet generado. Esto da la posibilidad de sobreescribir los métodos <code>jspInit</code> y <code>jspDestroy</code> que son el equivalente en JSP del <code>init</code> y <code>destroy</code> de los servlets. Las variables declaradas conservarán su valor entre sucesivas llamadas a la página, ya que son variables miembro del servlet y no locales al método <code>jspService</code>. Esto nos permite, por ejemplo, crear un contador de accesos a la página:
+<pre class="codigo">
+&lt;%! private int accesos = 0; %&gt;
+&lt;h1&gt; Visitas: &lt;%= ++accesos %&gt; &lt;/h1&gt;
+</pre>
+<p></p>
+<h3> 1.4.4. Objetos implícitos de JSP </h3>
+<p>En cualquiera de estas tres formas, se puede hacer referencia a una serie de <em> objetos implícitos </em>, que se corresponden con objetos útiles del API de servlets (petición, respuesta, ...) y que en realidad son variables instanciadas de manera automática en el servlet generado a partir del JSP. Los objetos predefinidos en JSP se referencian en la tabla 1.
+</p>
+<center>
+<p>
+<table border="1" cellpadding="5">
+<tr>
+       <th>Objeto</th>
+       <th>Significado</th>
+</tr>
+<tr>
+       <td><b><code>request</code></b></td>
+       <td>el objeto <code>HttpServletRequest</code> asociado con la petición</td>
+</tr>
+<tr>
+       <td><b><code>response</code></b></td>
+       <td>el objeto <code>HttpServletResponse</code> asociado con la respuesta</td>
+</tr>
+<tr>
+       <td><b><code>out</code></b></td>
+       <td>el <code>Writer</code> empleado para enviar la salida al cliente. La salida de los JSP emplea un <em>buffer</em> que permite que se envíen cabeceras HTTP o códigos de estado aunque ya se haya empezado a escribir en la salida (<code>out</code> no es un <code>PrintWriter</code> sino un objeto de la clase especial <code>JspWriter</code>).</td>
+</tr>
+<tr>
+       <td><b><code>session</code></b></td>
+       <td>el objeto <code>HttpSession</code> asociado con la petición actual. En JSP, las sesiones se crean automáticamente, de modo que este objeto está instanciado aunque no se cree explícitamente una sesión.</td>
+</tr>
+<tr>
+       <td><b><code>application</code></b></td>
+       <td>el objeto <code>ServletContext</code>, común a todos los servlets de la aplicación web.</td>
+</tr>
+<tr>
+       <td><b><code>config</code></b></td>
+       <td>el objeto <code>ServletConfig</code>, empleado para leer parámetros de inicialización. </td>
+</tr>
+<tr>
+       <td><b><code>pageContext</code></b></td>
+       <td>permite acceder desde un único objeto a todos los demás objetos implícitos </td>
+</tr>
+<tr>
+       
+      <td height="82"><b><code>page</code></b></td>
+       
+      <td height="82">referencia al propio servlet generado (tiene el mismo valor 
+        que <code>this</code>).Como tal, en Java no tiene demasiado sentido utilizarla, 
+        pero está pensada para el caso en que se utilizara un lenguaje de programación 
+        distinto.</td>
+</tr>
+<tr>
+       
+      <td height="82"><b><code>exception</code></b></td>
+       
+      <td height="82">Representa un error producido en la aplicación. Solo es accesible si la página se ha designado como página de error (mediante la directiva <code>page isErrorPage</code>).</td>
+</tr>
+<caption> <b>Tabla 1: Objetos implícitos de JSP. </b></caption>
+</table>
+  <p></p>
+</center>
+</body>
+</html>

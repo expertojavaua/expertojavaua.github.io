@@ -1,0 +1,944 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.7">
+<meta name="Forrest-skin-name" content="pelt">
+<title>Arquitecturas Web. Cach&eacute;</title>
+<link type="text/css" href="skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="skin/print.css" rel="stylesheet">
+<link type="text/css" href="skin/profile.css" rel="stylesheet">
+<script src="skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<div class="header">
+<div class="grouplogo">
+<a href="http://www.jtech.ua.es/j2ee"><img class="logoImage" alt="J2EE" src="images/baner_j2ee_izq.gif" title="Curso Especialista Universitario en Java Enterprise"></a>
+</div>
+<div class="projectlogoA1">
+<a href="http://www.dccia.ua.es/"><img class="logoImage" alt="Desarrollo de Proyectos J2EE" src="images/baner_j2ee_der.gif" title="Desarrollo de Proyectos J2EE"></a>
+</div>
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="../index.html">M&oacute;dulos</a>
+</li>
+<li class="current">
+<a class="base-selected" href="index.html">Arquitectura de Aplicaciones</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<div id="level2tabs"></div>
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<div id="menu">
+<div onclick="SwitchMenu('menu_selected_1.1', 'skin/')" id="menu_selected_1.1Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Arquitectura de Aplicaciones</div>
+<div id="menu_selected_1.1" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="index.html" title="Arquitectura de Aplicaciones">&Iacute;ndice</a>
+</div>
+<div onclick="SwitchMenu('menu_selected_1.1.2', 'skin/')" id="menu_selected_1.1.2Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Teor&iacute;a</div>
+<div id="menu_selected_1.1.2" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="sesion01-apuntes.html" title="Sesi&oacute;n 1: Arquitectura de Aplicaciones">Sesi&oacute;n 1</a>
+</div>
+<div class="menupage">
+<div class="menupagetitle">Sesi&oacute;n 2</div>
+</div>
+<div class="menuitem">
+<a href="sesion03-apuntes.html" title="Sesi&oacute;n 3: Arquitecturas Distribuidas. MDA">Sesi&oacute;n 3</a>
+</div>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<div id="credit2"></div>
+</div>
+<div id="content">
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="sesion02-apuntes.pdf"><img alt="PDF -icon" src="skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1>Arquitecturas Web. Cach&eacute;</h1>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#Bloques+Arquitect%C3%B3nicos">Bloques Arquitect&oacute;nicos</a>
+<ul class="minitoc">
+<li>
+<a href="#Capa+de+Servicios+de+Negocio">Capa de Servicios de Negocio</a>
+<ul class="minitoc">
+<li>
+<a href="#Acciones+Web+dentro+de+MVC">Acciones Web dentro de MVC</a>
+</li>
+<li>
+<a href="#Capa+de+Servicios+en+un+Contenedor+Ligero">Capa de Servicios en un Contenedor Ligero</a>
+</li>
+<li>
+<a href="#Limitaciones+de+Qu%C3%A9+se+Puede+Exponer">Limitaciones de Qu&eacute; se Puede Exponer</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Capa+de+Presentaci%C3%B3n">Capa de Presentaci&oacute;n</a>
+<ul class="minitoc">
+<li>
+<a href="#Importancia+de+la+Separaci%C3%B3n+L%C3%B3gica">Importancia de la Separaci&oacute;n L&oacute;gica</a>
+</li>
+<li>
+<a href="#Clientes+Remotos">Clientes Remotos</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Capa+de+Acceso+a+Datos">Capa de Acceso a Datos</a>
+<ul class="minitoc">
+<li>
+<a href="#Tecnolog%C3%ADas">Tecnolog&iacute;as</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Arquitectura+Web">Arquitectura Web</a>
+<ul class="minitoc">
+<li>
+<a href="#Ventajas">Ventajas</a>
+</li>
+<li>
+<a href="#Limitaciones">Limitaciones</a>
+</li>
+<li>
+<a href="#Implementaci%C3%B3n">Implementaci&oacute;n</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Arquitectura+Contenedor+Ligero">Arquitectura Contenedor Ligero</a>
+<ul class="minitoc">
+<li>
+<a href="#Ventajas-N10271">Ventajas</a>
+</li>
+<li>
+<a href="#Limitaciones-N10296">Limitaciones</a>
+</li>
+<li>
+<a href="#Implementaci%C3%B3n-N102AC">Implementaci&oacute;n</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Cach%C3%A9">Cach&eacute;</a>
+<ul class="minitoc">
+<li>
+<a href="#%C2%BFCachear+o+No+Cachear%3F">&iquest;Cachear o No Cachear?</a>
+<ul class="minitoc">
+<li>
+<a href="#Ejemplo">Ejemplo</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#OSCache">OSCache</a>
+<ul class="minitoc">
+<li>
+<a href="#Problemas+Resueltos">Problemas Resueltos</a>
+</li>
+<li>
+<a href="#Lista+de+Prestaciones">Lista de Prestaciones</a>
+</li>
+<li>
+<a href="#Configuraci%C3%B3n">Configuraci&oacute;n</a>
+</li>
+<li>
+<a href="#Modo+de+Empleo">Modo de Empleo</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Ejemplo+Integraci%C3%B3n">Ejemplo Integraci&oacute;n</a>
+<ul class="minitoc">
+<li>
+<a href="#CacheManager">CacheManager</a>
+</li>
+<li>
+<a href="#FactoriaDAOs">FactoriaDAOs</a>
+</li>
+<li>
+<a href="#UsuarioCacheDAO">UsuarioCacheDAO</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Para+Saber+M%C3%A1s">Para Saber M&aacute;s</a>
+<ul class="minitoc">
+<li>
+<a href="#Bibliograf%C3%ADa">Bibliograf&iacute;a</a>
+</li>
+<li>
+<a href="#Enlaces">Enlaces</a>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+
+<a name="N1000C"></a><a name="Bloques+Arquitect%C3%B3nicos"></a>
+<h2 class="underlined_10">Bloques Arquitect&oacute;nicos</h2>
+<div class="section">
+<p>Tal como comentamos en la primera sesi&oacute;n de arquitectura, los 3 bloques arquitect&oacute;nicos m&aacute;s importantes son:</p>
+<ul>
+    
+<li>
+<strong>Capa de Servicios de Negocio</strong>. Elemento central de las aplicaciones.</li>
+    
+<li>
+<strong>Capa de Presentaci&oacute;n</strong>. Interfaz gr&aacute;fico o fachada remota.</li>
+    
+<li>
+<strong>Capa de Acceso a Datos</strong>. Objetos que acceden a un almac&eacute;n persistente (normalmente, una o m&aacute;s bases de datos relacionales).</li>
+
+</ul>
+<a name="N10027"></a><a name="Capa+de+Servicios+de+Negocio"></a>
+<h3 class="underlined_5">Capa de Servicios de Negocio</h3>
+<p>La clave de una arquitectura s&oacute;lida es una capa de servicios bien definida. Esta capa expone la l&oacute;gica de negocio a los clientes, como interfaces web o capas remotas. Esta capa consistir&aacute; en m&uacute;ltiples interfaces, cada uno con un contrato bien definido.</p>
+<p>Una capa de servicios bien definida deber&iacute;a:</p>
+<ul>
+    
+<li>
+<strong>Ser completa</strong>. Deber&iacute;a exponer todas las operaciones que necesiten los clientes. Puede que sea necesario exponer diferentes interfaces que den soporte a los diferentes clientes.</li>
+    
+<li>
+<strong>Ser simple</strong>. No debe ser m&aacute;s compleja que los requisitos de negocio que ofrece.</li>
+    
+<li>
+<strong>Estar definida mediante interfaces</strong> en vez de clases, persiguiendo las buenas pr&aacute;cticas de OO.</li>
+    
+<li>
+<strong>Ser orientada a objetos</strong>. Se debe minimizar el n&uacute;mero de restricciones de los objetos de negocio. Por ejemplo, no se debe forzar a que implementen interfaces especiales o que hereden de alguna superclase particular.</li>
+    
+<li>
+<strong>Ser independiente de la l&oacute;gica de presentaci&oacute;n</strong>
+</li>
+    
+<li>
+<strong>Ser f&aacute;cil de escribir</strong>, maximizando la productividad y reduciendo los costes.</li>
+    
+<li>
+<strong>Forzar la ocultaci&oacute;n de la tecnolog&iacute;a de acceso a datos</strong>. El acceso a datos es un tema de bajo nivel, y por tanto, los objetos de negocio no deben tratar con tecnolog&iacute;as como JDBC ni capturar excepciones espec&iacute;fica de este tipo de tecnolog&iacute;as.</li>
+    
+<li>
+<strong>Tratar la gesti&oacute;n de transacciones</strong>. Los clientes de la capa de servicios de negocio no se deber&iacute;an preocupar sobre las transacciones.</li>
+    
+<li>
+<strong>Ser compatible con el escalado horizontal</strong> (si fuese necesario). Nada de la capa de negocio debe impedir la realizaci&oacute;n de un cluster. Sin embargo, esto no significa que la capa de negocio ofrezca escalado horizontal. No tiene por que ser un mecanismo distribuido.</li>
+    
+<li>
+<strong>Ser f&aacute;cil de probar y estar probada a conciencia</strong>. Esto es crucial, ya que la robustez de un objeto de negocio es esencial para construir aplicaciones de calidad.</li>
+
+</ul>
+<a name="N10067"></a><a name="Acciones+Web+dentro+de+MVC"></a>
+<h4>Acciones Web dentro de MVC</h4>
+<p>&iquest;Qu&eacute; sucede si no existe capa de negocio y toda la l&oacute;gica de negocio residen en la capa web dentro de un Action de Struts o un Controlador Spring, u otras clases de la capa web?</p>
+<p>Esto suele ocurrir por la falta de una gesti&oacute;n de los objetos de negocio en aplicaciones JavaEE que no utilizan EJB. Las desventajas son numerosas, incluyendo:</p>
+<ul>
+    
+<li>Atar los objetos de negocio al API de los Servlets.</li>
+    
+<li>Reutilizaci&oacute;n limitada de los objetos de negocio. Un framework como XWork, el cual desacopla los Actions del API de los Servlets puede paliar este problema.</li>
+    
+<li>Dependiendo del framework MVC utilizado, podemos perder capacidades de OO, ya que, por ejemplo, mediante el uso de Struts los Actions deben heredar de las clases de Struts, lo que nos priva de poder realizar herencia sobre otras clases.</li>
+    
+<li>Responsabilidades difusas en la capa web. Cada clase deber&iacute;a tener una sola y clara responsabilidad. Con este enfoque, las clases de la capa web al menos tienen 2 responsabilidades bien diferentes.</li>
+    
+<li>Ausencia de soporte para la gesti&oacute;n declarativa de transacciones (Spring AOP se puede utilizar para los controladores web, o los filtros de Servlets se puede utiliza para gestionar las transacciones en una aplicaci&oacute;n web, pero estas son soluciones tipo tirita para problemas mejor resueltos de forma separada al API de los Servlets).</li>
+    
+<li>La l&oacute;gica de negocio es dif&iacute;cil de probar, causado por los elementos impl&iacute;citos del contenedor web.</li>
+
+</ul>
+<a name="N10089"></a><a name="Capa+de+Servicios+en+un+Contenedor+Ligero"></a>
+<h4>Capa de Servicios en un Contenedor Ligero</h4>
+<p>La tendencia actual es utilizar una capa de servicio de negocio mediante POJOs corriendo sobre un contenedor ligero, tipo <em>Spring</em> o <em>PicoContainer</em>, el cual reemplaza la estructura de los EJB con mucha menos complejidad.</p>
+<p>En pocas palabras, un contenedor ligero:</p>
+<ul>
+    
+<li>Gestiona el ciclo de vida de los objetos de negocio. La principal diferencia con los EJBs es que un contenedor ligero puede gestionar POJOs: no hay necesidad de implementar contratos especiales.</li>
+    
+<li>Ofrece facilidades de lookup, resolviendo la dependencia entre objetos gestionados por el contenedor. El paradigma de <em>Inversion Of Control (IoC)</em> es el elemento central de este tipo de contenedores ligeros.</li>
+    
+<li>Ofrece servicios empresariales (mediante <em>AOP</em>) como gesti&oacute;n de transacciones declarativas sobre objetos corriendo dentro del contenedor, devaluando una de los principales defensas de EJB.</li>
+
+</ul>
+<p>El uso de buenas pr&aacute;cticas OO, como que los clientes realicen la llamadas a interfaces y no a clases. Estos interfaces definen contratos en la capa de negocio, los cuales permiten el intercambio de diferentes implementaciones. <em>IoC</em> hace esta separaci&oacute;n interfaz/implementaci&oacute;n una cosa sencilla.</p>
+<p>Los objetos de negocio y los componentes de la capa de presentaci&oacute;n que utilizan estos <em>BOs</em> se ejecutan en la misma m&aacute;quina virtual (<em>JVM</em>). La escalabilidad horizontal se puede conseguir mediante el clustering de la aplicaci&oacute;n entera en m&aacute;quinas virtuales adicionales.
+</p>
+<p>A partir de una capa de servicios bien definida, los clientes de los servicios deber&iacute;an ser m&aacute;s sencillos.</p>
+<a name="N100C0"></a><a name="Limitaciones+de+Qu%C3%A9+se+Puede+Exponer"></a>
+<h4>Limitaciones de Qu&eacute; se Puede Exponer</h4>
+<p>Hay algunas cosas que una capa de servicio no deber&iacute;a exponer al resto del mundo. Por ejemplo:</p>
+<ul>
+    
+<li>Si la capa de servicios es remota, es obligatorio trabajar con par&aacute;metros y tipos de retorno <span class="codefrag">Serializable</span>. Tambi&eacute;n hay que considerar la eficiencia &iquest;Cuanto costar&aacute; que estos objetos se codifiquen (<em>marshall</em>) y descodifiquen (<em>unmarshall</em>) para viajar a trav&eacute;s de la red?</li>
+    
+<li>Con algunas tecnolog&iacute;as de persistencia, puede ser necesario desconectar los objetos del almac&eacute;n persistente de un modo explicito.</li>
+
+</ul>
+<div class="frame note">
+<div class="label">Importante</div>
+<div class="content">La desconexi&oacute;n de un almac&eacute;n persistente es un problema com&uacute;n e importante.</div>
+</div>
+<p>Las tecnolog&iacute;as de persistencia se dividen en 2 tipos (en ambos un objeto del dominio normalmente se mapea con una fila de una tabla):</p>
+<ul>
+    
+<li>
+<strong>Registro Activo</strong>: La l&oacute;gica de acceso a datos se incluye en los objetos del dominio. Este enfoque es que utilizan los EJBs de Entidad y en la mayor&iacute;a de frameworks de persistencia.</li>
+    
+<li>
+<strong>Mapeo de Datos</strong> (<em>Data Mapper</em>): Una capa de mapeo externo al servidor de aplicaciones, como Hibernate, contiene toda la l&oacute;gica de persistencia. Los objetos del dominio normalmente no contienen SQL, aunque acaban haciendo algunas concesiones sobre el hecho de que van a ser persistidos.</li>
+
+</ul>
+<p>En la mayor&iacute;a de tecnolog&iacute;as persistentes, existen retos en desconectar los objetos persistentes de sus almacenes. La soluci&oacute;n pasa por:</p>
+<ul>
+    
+<li>Utilizar una capa de <em>Transfer Objects (TOs)</em> para mantener los datos desconectado, incluso en aplicaciones que residen en un &uacute;nico nivel. Esto se suele evitar, lo cual fuerza la escritura de objetos falsos y malgasta las ventajas de una arquitectura mononivel.</li>
+    
+<li>Usar un API de acceso a datos como <em>Hibernate</em> o <em>JDO 2.0</em> que permita la desconexi&oacute;n y reconexi&oacute;n de los objetos persistentes. Como con los TOs, esto requiere materializar todas las relacione necesarias.</li>
+    
+<li>Evitar las tecnolog&iacute;as como los EJBs de Entidad que descartan las desconexiones.</li>
+    
+<li>Mantener la sesi&oacute;n de persistencia abierta hasta que el trabajo del cliente haya terminado, por ejemplo, en una aplicaci&oacute;n web, hasta que la vista pinte los datos. A primera vista es una opci&oacute;n atractiva, ya que elimina los problemas de traslado de relaciones hasta la profundidad requerida, pero en realidad es peligroso, ya que las excepciones relaciones con la persistencia pueden problema problemas en la capa de presentaci&oacute;n.</li>
+
+</ul>
+<a name="N1010F"></a><a name="Capa+de+Presentaci%C3%B3n"></a>
+<h3 class="underlined_5">Capa de Presentaci&oacute;n</h3>
+<p>El requisito m&aacute;s com&uacute;n es exponer los servicios de negocio v&iacute;a un interfaz web. En esta arquitectura, existe un linea divisoria que fuerza la distribuci&oacute;n, la que existe entre el cliente y su navegador, y el servidor web. Sin embargo, no son necesarias m&aacute;s barreras distribuidas, ya que normalmente todo funciona mejor sin los costes asociados a los objetos distribuidos.</p>
+<p>
+    
+<img alt="Navegador-Contenedor Web" content-width="5cm" src="imagenes/j2ee/navegadorServidor.gif" width="195">
+</p>
+<p>Lo que com&uacute;nmente se conoce como arquitectura JavaEE (J2EE) tradicional u ortodoxa promueve la separaci&oacute;n f&iacute;sica entre el nivel web (v&iacute;a un Contenedor Web) y los objetos de negocio (v&iacute;a un Servidor de Aplicaciones). La tendencia se&ntilde;ala en otra direcci&oacute;n, donde toda la aplicaci&oacute;n reside un &uacute;nico nivel y, como hemos comentado, la escalabilidad se consiga mediante el clustering de servidores.</p>
+<p>
+    
+<img alt="Navegador-Contenedor Web-Servidor Aplicaciones" content-width="8cm" src="imagenes/j2ee/navegadorContenedorSA.gif" width="291">
+</p>
+<div class="frame note">
+<div class="label">Consejo</div>
+<div class="content">Coloca los objetos de negocio en el contenedor web (mononivel).<br>Este es el enfoque m&aacute;s sencillo, con mejor rendimiento, y con un enfoque m&aacute;s OO.<br>La separaci&oacute;n de los BOs del nivel web es una de las falacias del mundo JavaEE.</div>
+</div>
+<p>Puede haber un linea divisoria entre el servidor web y el contenedor web. Por ejemplo, se puede utilizar Apache como servidor HTTP, con un conector proxy el cual env&iacute;e peticiones al contenedor JavaEE. Esta distribuci&oacute;n no afecta al c&oacute;digo de la aplicaci&oacute;n. Lo que var&iacute;a es el efecto en el rendimiento. Normalmente este enfoque es m&aacute;s lento que si el contenedor web sirve todo el contenido web, a no ser que exista un gran proporci&oacute;n de contenido est&aacute;tico respecto al din&aacute;mico. Otra raz&oacute;n puede ser por cuestiones de seguridad, colocando todas las partes de la aplicaci&oacute;n JavaEE detr&aacute;s de un firewall.</p>
+<a name="N10138"></a><a name="Importancia+de+la+Separaci%C3%B3n+L%C3%B3gica"></a>
+<h4>Importancia de la Separaci&oacute;n L&oacute;gica</h4>
+<p>Parece ser que por lo general, no queremos una separaci&oacute;n f&iacute;sica de los objetos de negocio del nivel web. Sin embargo, si queremos una separaci&oacute;n l&oacute;gica, y el hecho de rechazar la separaci&oacute;n f&iacute;sica no implica que olvidemos esto.</p>
+<p>El primer paso para tener una separaci&oacute;n l&oacute;gica es tener una capa de servicios de negocio bien definida. Sin embargo, tambi&eacute;n debemos asegurar que el acceso a estos servicios sea f&aacute;cil y que no produzca una dependencia en la capa de UI o en la tecnolog&iacute;a detr&aacute;s del interfaz de los servicios de negocio</p>
+<p>La mayor&iacute;a de las aplicaciones JavaEE contienen demasiado c&oacute;digo dentro de la capa web, ya sea porque pocos libros enfatizan la importancia de esta separaci&oacute;n (se centran m&aacute;s en separar la l&oacute;gica de control de la vista), que los frameworks MVC tipo Struts no obligan a realizar esta separaci&oacute;n, y al no obligar, los desarrolladores tienden a colocar la l&oacute;gica de negocio en los Action, o bien porque parece que la soluci&oacute;n m&aacute;s f&aacute;cil sea colocar todo en el Action y evitar la creaci&oacute;n de las diferentes capas mediante el uso de interfaces/implementaciones desacopladas mediante factor&iacute;as.</p>
+<p>En resumen, el interfaz web deber&iacute;a ser ligero. Se deber&iacute;a construir sobre la capa de servicio y &uacute;nicamente contener el c&oacute;digo necesario para capturar los eventos del usuarios y visualizar las respuestas.</p>
+<a name="N1014B"></a><a name="Clientes+Remotos"></a>
+<h4>Clientes Remotos</h4>
+<p>El uso de los clientes remotos debe tratarse con cuidado. Aunque no se trata de un acceso complejo, los servicio de negocio solo deben exponer interfaces remotos cuando sea necesario.</p>
+<p>Aunque nuestros servicios de negocio no incluyan soporte nativo para el acceso remoto, el proceso de a&ntilde;adir una fachada sobre la capa de servicios es tan f&aacute;cil como a&ntilde;adir una fachada web.</p>
+<p>Las elecciones para acceder a servicios remotos se centran en <em>RMI (Remote Method Invocation)</em>, la cual es la tecnolog&iacute;a que utilizan los EJBs para la comunicaci&oacute;n remota de los componentes; tambi&eacute;n se pueden utilizar diferentes protocolos <em>Hessian</em> o <em>Burlap</em> v&iacute;a <em>Commons Proxy</em> (<a class="external" href="http://jakarta.apache.org/commons/sandbox/proxy/">jakarta.apache.org/commons/sandbox/proxy</a>) o el uso de servicio <em>SOAP</em> con <em>Web Services</em> v&iacute;a herramientas como <em>Apache Axis</em> (<a class="external" href="http://ws.apache.org/axis/">ws.apache.org/axis</a>)</p>
+<a name="N10179"></a><a name="Capa+de+Acceso+a+Datos"></a>
+<h3 class="underlined_5">Capa de Acceso a Datos</h3>
+<p>El acceso a los datos persistentes normalmente determina el rendimiento global de las aplicaciones empresariales, ya que el almac&eacute;n suele ser el cuello de botella. Los datos persistentes suelen almacenarse en una base de datos relacional, aunque en ocasiones podemos tener m&uacute;ltiples almacenes con transacciones distribuidas  o aplicaciones <em>legacy</em>.</p>
+<p>El concepto de capa de acceso a datos engloba una o m&aacute;s bases de datos , aunque el concepto de una capa <em>EIS</em> (Sistema de Informaci&oacute;n Empresarial) engloba no solo a las bases de datos, sino tambi&eacute;n sistemas legacy, los cuales tambi&eacute;n suelen ser transaccionales.</p>
+<a name="N1018B"></a><a name="Tecnolog%C3%ADas"></a>
+<h4>Tecnolog&iacute;as</h4>
+<p>Las tecnolog&iacute;as de acceso a datos incluidas en JavaEE son <em>JDBC</em>, <em>JDO</em> y los EJBs de Entidad. Sin embargo, es muy com&uacute;n utilizar productos de terceros, y en la mayor&iacute;a de las ocasiones, vale la pena.</p>
+<p>A la espera de <em>EJB 3.0</em>, el uso de EJBs de Entidad produce resultados no muy buenos. Esta apreciaci&oacute;n esta ampliamente aceptada dentro de la comunidad JavaEE. &iquest;Qu&eacute; nos queda?</p>
+<ul>
+    
+<li>JDBC es una buena tecnolog&iacute;a para acceso a bases de datos relacionales v&iacute;a SQL. Si utilizas JDBC, hazlo indirectamente mediante una buena capa de abstracci&oacute;n. Frameworks como <em>Commons DbUtils</em> (<a class="external" href="http://jakarta.apache.org/commons/dbutils/">jakarta.apache.org/commons/dbutils</a>) y <em>Apache iBatis</em> (<a class="external" href="http://ibatis.apache.org/">ibatis.apache.org</a>) facilitan y mejoran la calidad de este tipo de c&oacute;digo.</li>
+    
+<li>Hibernate es un excelente tecnolog&iacute;a ORM</li>
+    
+<li>A pesar de la lenta adopci&oacute;n desde su lanzamiento en 2001, JDO esta emergiendo como est&aacute;ndar Java de persistencia.</li>
+    
+<li>Alternativas comerciales como TopLink, aunque no tengan nada que los hagan muy superiores (normalmente, asistentes gr&aacute;ficos y soporte por parte de las empresas propietarias) a Hibernate o JDO.</li>
+
+</ul>
+<p>Como ya sabemos, podemos mezclar y encajar c&oacute;digo basado en SQL con persistencia ORM. El patr&oacute;n DAO es la elecci&oacute;n correcta, ya que oculta los detalles de las operaciones de persistencia tras un interfaz DAO, el cual libera a los objetos de negocio de conocer que tecnolog&iacute;a de persistencia se esta utilizando.</p>
+</div>
+
+
+<a name="N101C3"></a><a name="Arquitectura+Web"></a>
+<h2 class="underlined_10">Arquitectura Web</h2>
+<div class="section">
+<p>En los &uacute;ltimos tiempos, predominan los clientes web ligeros respecto a los interfaces de usuario pesados (Swing), aunque no hemos de descartarlos. Por lo tanto, las aplicaciones web son el est&aacute;ndar de facto de las aplicaciones empresariales.</p>
+<p>Estas arquitecturas, f&aacute;cilmente escalables a nivel de hardware (clustering), pueden acceder al mismo tipo de APIs que los EJBS, adem&aacute;s, se benefician de las capacidades que ofrece el servidor J2EE, como pueden ser la gesti&oacute;n de transacciones y el pool de conexiones. Finalmente, tambi&eacute;n pueden utilizar todos los servicios de empresas, tales como JMS, JDBC, JavaMail y JCA. La &uacute;nica tecnolog&iacute;a a la que no puede acceder es a los Entity Beans. Por lo tanto, cubre las necesidades de la mayor&iacute;a de las aplicaciones.</p>
+<p>En este tipo de arquitectura, tanto la capa web como la de negocio se ejecutan en la misma JVM, normalmente desplegadas sobre un contenedor web (tipo <em>Tomcat</em>, <em>Resin</em>, etc...). Sin embargo, es muy importante, que a nivel l&oacute;gico si que las separemos. Uno de los mayores riesgos a la hora de dise&ntilde;ar una aplicaci&oacute;n web es mezclar responsabilidades entre componentes de presentaci&oacute;n y de l&oacute;gica de negocio.</p>
+<a name="N101D8"></a><a name="Ventajas"></a>
+<h3 class="underlined_5">Ventajas</h3>
+<p>El uso de arquitecturas web ofrece las siguientes ventajas:</p>
+<ul>
+        
+<li>Velocidad. Estas arquitecturas son m&iacute;nimamente penalizadas por el servidor J2EE.</li>
+        
+<li>Los interfaces de usuario y los componentes de negocio se ejecutan dentro de la misma JVM, lo cual ofrece un gran rendimiento.</li>
+        
+<li>Al ejecutarse en una &uacute;nica JVM, posibilidad de hacerlo en un contenedor web, lo que conlleva licencias m&aacute;s baratas y administraci&oacute;n m&aacute;s sencilla.</li>
+        
+<li>El uso de POJOs en vez de EJBs para encapsular la l&oacute;gica de negocio elimina las configuraciones adicionales y complejidades de acceso y despliegue asociadas con la tecnolog&iacute;a EJB.</li>
+        
+<li>Mayor portabilidad entre servidores de aplicaciones o contenedores web. Al haber menos configuraciones, es m&aacute;s f&aacute;cil su portabilidad.</li>
+        
+<li>Las pruebas unitarias de los objetos de negocio, en principio, son m&aacute;s sencillas porque no necesitamos desplegarlos en el servidor J2EE para poder probarlos.</li>
+        
+<li>No se realizan llamadas RMI, por lo que se mantiene la convenci&oacute;n de llamada por paso de referencia.</li>
+        
+<li>Los objetos de negocio pueden exponer interfaces de granularidad fina.</li>
+    
+</ul>
+<p>Un prerequisito de la mayor&iacute;a de arquitecturas empresariales es la escalabilidad. Este tipo de arquitectura puede escalar mediante m&uacute;ltiples servidores con la ayuda de balanceadores de carga que repartan las peticiones entre los diferentes nodos de servidor.</p>
+<a name="N10200"></a><a name="Limitaciones"></a>
+<h3 class="underlined_5">Limitaciones</h3>
+<p>Como toda soluci&oacute;n, este tipo de arquitectura tambi&eacute;n tiene sus limitaciones, entre las que se encuentran:</p>
+<ul>
+        
+<li>S&oacute;lo soporta interfaces web. Si fuera necesaria que un cliente pesado acceder a la capa de negocio de forma remota, entonces necesitar&iacute;amos una capa de servicios web (por ejemplo, mediante Apache <em>Axis</em>) o una arquitectura EJB.</li>
+        
+<li>Falta de un entorno est&aacute;ndar para gestionar los objetos de negocio.</li>
+        
+<li>Puede no existir una capa de servicios de negocio bien definida. Se puede evitar mediante el uso de frameworks web, tipo Struts, Spring, etc...</li>
+        
+<li>Puede que necesitemos implementar "a mano" alg&uacute;n tipo de soluci&oacute;n que los EJBs ya ofrecen, como puedan ser la gesti&oacute;n de transacciones declarativas o el modelo declarativo de seguridad, que nos toca implementarlo mediante el c&oacute;digo de la aplicaci&oacute;n.</li>
+        
+<li>No existe un est&aacute;ndar de configuraci&oacute;n de los objetos de negocio (aunque los EJBs tampoco lo hacen muy bien).</li>
+        
+<li>Falta de consistencia entre aplicaciones, o incluso en una misma aplicaci&oacute;n. Cada aplicaci&oacute;n tiende a manejar a su modo el acceso a los objetos de negocio, su configuraci&oacute;n, la gesti&oacute;n de transacciones, etc... Por lo tanto, cada aplicaci&oacute;n requiere de su propia curva de aprendizaje.</li>
+    
+</ul>
+<p>El mayor inconveniente que puede ser la falta de una capa de servicios claramente definida, se puede resolver mediante el uso consistente de interfaces de negocio y el acceso consistente a los objetos de negocio.</p>
+<a name="N10225"></a><a name="Implementaci%C3%B3n"></a>
+<h3 class="underlined_5">Implementaci&oacute;n</h3>
+<p>En esta arquitectura, la capa de servicios de negocio consiste en un conjunto de interfaces Java implementados mediante POJOs (clases Java normales y corrientes).</p>
+<div class="frame note">
+<div class="label">Pregunta</div>
+<div class="content">&iquest;Sabr&iacute;as identificar los elementos del siguiente gr&aacute;fico con la implementaci&oacute;n que hemos realizado en el proyecto de integraci&oacute;n?</div>
+</div>
+<p>
+        
+<img alt="Arquitectura Web" content-width="11cm" src="imagenes/j2ee/arq-web.jpg" width="421">
+    </p>
+</div> 
+
+
+<a name="N1023F"></a><a name="Arquitectura+Contenedor+Ligero"></a>
+<h2 class="underlined_10">Arquitectura Contenedor Ligero</h2>
+<div class="section">
+<p>Por supuesto que las arquitecturas JavaEE pueden ser exitosas sin EJBs. Sin embargo, se puede utilizar algunas de las buenas ideas de los EJBs y llevarlas a una arquitectura sin EJBs. Para ello, se utiliza una arquitectura de <em>Contenedor Ligero</em>.</p>
+<p>Del mismo modo que los EJBs, se plantea una arquitectura centrada a partir de una capa de servicios de negocio gestionados por el contenedor. Pero aqu&iacute; se acaba la similitud. En vez de ejecutarse dentro de un contenedor EJB, los objetos de negocio corren dentro de un contenedor ligero.</p>
+<p>Un contenedor ligero no est&aacute; atado a JavaEE, por lo que puede correr en un contenedor web, una aplicaci&oacute;n "<em>standalone</em>", o incluso en un contenedor EJB (si fuese necesario). Adem&aacute;s, tampoco esta atado al API de los Servlets, como los frameworks MVC, lo cual seria una pobre elecci&oacute;n para gestionar los objetos de negocio.</p>
+<p>Los contenedores ligeros tiene un coste de arranque insignificante y elimina el proceso de despliegue necesario en los EJBs. Los contenedores ligeros ofrecen un modo de gestionar y localizar los objetos de negocio; ya no necesitan b&uacute;squedas JNDI, localizadores de servicio o singletons, ya que ofrece un registro de los objetos de aplicaci&oacute;n. Este enfoque es meno invasivo y m&aacute;s poderoso que los EJBs, siempre y cuando todo resida en la misma JVM.</p>
+<p>En la actualidad, los contenedores ligeros m&aacute;s conocidos son:</p>
+<ul>
+    
+<li>Framework Spring (<a class="external" href="http://www.springframework.org">www.springframework.org</a>)</li>
+    
+<li>PicoContainer (<a class="external" href="http://www.picocontainer.org">www.picocontainer.org</a>)</li>
+
+</ul>
+<p>Para ofrecer una soluci&oacute;n completa, el contenedor ligero debe ofrecer servicios empresariales como la gesti&oacute;n de transacciones. Esto normalmente se realiza mediante invocaciones a intercepciones AOP: a&ntilde;adir comportamiento adicional (como la gesti&oacute;n de transacciones) de un modo transparente, antes y tras la ejecuci&oacute;n de los m&eacute;todos de negocio.</p>
+<p>Los contenedores ligeros son una arquitectura reciente, hecha posible al desarrollo de frameworks open source con soporte para la IoC.</p>
+<a name="N10271"></a><a name="Ventajas-N10271"></a>
+<h3 class="underlined_5">Ventajas</h3>
+<p>El uso de arquitecturas web ofrece las siguientes ventajas:</p>
+<ul>
+        
+<li>Arquitectura simple pero potente</li>
+        
+<li>Permite la escalabilidad horizontal mediante el clustering del contenedor web. Las limitaciones a la escalabilidad vendr&aacute;n dadas por la gesti&oacute;n del estado de la sesi&oacute;n.</li>
+        
+<li>M&aacute;s sencilla que una arquitectura EJB, pero m&aacute;s compleja que una arquitectura Web.</li>
+        
+<li>Servicios declarativos sofisticados mediante AOP.</li>
+        
+<li>No requiere un contenedor EJB</li>
+        
+<li>Alta portabilidad entre servidores de aplicaciones.</li>
+        
+<li>IoC permite al contenedor ligero conectar objetos, lo que elimina la complejidad de b&uacute;squeda y conexi&oacute;n de recursos del c&oacute;digo de la aplicaci&oacute;n. La dependencia y colaboraci&oacute;n de los objetos se expresa mediante simples propiedades JavaBean o argumentos de constructor, siendo el contenedor el que las resuelve en tiempo de ejecuci&oacute;n. IoC permite que la granularidad de los BOs sea fina.</li>
+        
+<li>Los BOs son m&aacute;s f&aacute;ciles de probar fuera de un servidor de aplicaciones, y algunas pruebas de integraci&oacute;n se pueden realizar desde pruebas JUnit (sin necesidad de Cactus). Esto facilita seguir un enfoque TDD en el desarrollo.</li>
+    
+</ul>
+<a name="N10296"></a><a name="Limitaciones-N10296"></a>
+<h3 class="underlined_5">Limitaciones</h3>
+<p>A continuaci&oacute;n se enumeran algunas de las desventajas de esta arquitectura:</p>
+<ul>
+    
+<li>Igual que la arquitectura anterior, para permitir el acceso remoto de cliente es necesaria una fachada remota (RMI, Web Services, ...) Los Web Services son una gran alternativa para esta fachada, pero solo en el caso de utilizar RMI/IIOP ser&aacute; necesario el uso de EJBs.</li>
+    
+<li>No existe un est&aacute;ndar para contenedores ligeros. Pese a que Spring esta muy difundido, es un est&aacute;ndar de facto, pero no forma parte de ninguna especificaci&oacute;n de Sun. Aun as&iacute;, como los objetos de la aplicaci&oacute;n no dependen de ning&uacute;n API, en el caso de querer migrar de framework, los cambios se realizan sobre ficheros de configuraci&oacute;n y clases muy especificas.</li>
+    
+<li>Se trata de una arquitectura todav&iacute;a desconocida para la mayor&iacute;a del mercado, donde no existen muchos desarrolladores con dominio sobre las tecnolog&iacute;as empleadas. Por suerte, poco a poco, Spring suena m&aacute;s y mejor.</li>
+
+</ul>
+<a name="N102AC"></a><a name="Implementaci%C3%B3n-N102AC"></a>
+<h3 class="underlined_5">Implementaci&oacute;n</h3>
+<p>Dentro de una aplicaci&oacute;n, todas las clases se ejecutan dentro de la misma JVM. Desde el punto de vista del usuario, la capa web la ofrece un framework MVC, ya sea mediante Struts, o en el caso de Spring, mediante una capa web que puede ser gestionar por el contenedor y ofrecer un integraci&oacute;n cercana con los objetos de negocio. Los objetos de negocio ser&aacute;n POJOs, ejecut&aacute;ndose dentro del contenedor ligero. Estos pueden ser avisados v&iacute;a intercepcion AOP para que ofrezcan servicios empresariales. El acceso a los BOs ser realizar&aacute; exclusivamente a trav&eacute;s de sus interfaces, lo cual permite el intercambio de implementaciones de negocio, sin necesidad de modificar el c&oacute;digo llamador. En cuanto al acceso a datos, ya sea mediante un framework ORM tipo Hibernate, o JDBC si la abstracci&oacute;n de ORM no aporta casi valor.</p>
+<p>A parte de la ya comentada posibilidad de gestionar servicios empresariales de forma declarativa mediante AOP, el uso de un contenedor ligero como Spring permite que si controlamos las transacciones mediante conexiones JDBC, sin utilizar JTA, si en un futuro necesitamos sacar ventaja de JTA, entonces s&oacute;lo habremos de cambiar la configuraci&oacute;n de Spring.</p>
+<p>
+    
+<img alt="Arquitectura Contenedor Ligero" content-width="11cm" src="imagenes/j2ee/arq-web-orm.jpg" width="453">
+</p>
+</div>
+
+<p class="pageBreakAfter"></p>
+
+<a name="N102C6"></a><a name="Cach%C3%A9"></a>
+<h2 class="underlined_10">Cach&eacute;</h2>
+<div class="section">
+<p>En la actualidad, el rendimiento es un factor muy importante en una aplicaci&oacute;n. Los tiempos de respuesta deben ser m&iacute;nimos, y cuanto menores, mejor.</p>
+<p>Gran parte del tiempo de procesamiento de una aplicaci&oacute;n se emplea en el acceso a la fuente de datos y su consulta/manipulaci&oacute;n. Una forma de mejorar estos accesos es evitarlos :)</p>
+<p>En general, una <strong>cach&eacute;</strong> es una soluci&oacute;n a un problema b&aacute;sico: estamos empleando la mayor parte del tiempo de procesamiento en obtener datos que ya los hemos obtenido recientemente.</p>
+<p>Por ejemplo, si empleamos un mecanismo de "cacheo", de modo que en vez de ir a la base de datos tras cada petici&oacute;n realizada por el cliente, lo haga cada minuto, y mientras tanto devuelva la informaci&oacute;n que almacena en memoria, estaremos ahorrando tiempo de procesamiento.</p>
+<div class="frame note">
+<div class="label">Pregunta</div>
+<div class="content">&iquest;Pero qu&eacute; sucede si los datos consultados cambian durante ese minuto?</div>
+</div>
+<a name="N102DF"></a><a name="%C2%BFCachear+o+No+Cachear%3F"></a>
+<h3 class="underlined_5">&iquest;Cachear o No Cachear?</h3>
+<p>Cachear nos permite obtener beneficios importantes, pero requiere una comprensi&oacute;n de los elementos fundamentales para realizar una buena implantaci&oacute;n de una soluci&oacute;n (o implementar una soluci&oacute;n propia).</p>
+<p>Por lo tanto, para cachear aplicaciones Java, debemos resolver los siguientes problemas:</p>
+<dl>
+    
+<dt>&iquest;Cuando debemos cachear?</dt>
+    
+<dd>Las decisiones hemos de tomarlas basadas en los costes de operaci&oacute;n, volatilidad de los datos almacenados, patrones de acceso al almac&eacute;n de datos y tama&ntilde;o de la informaci&oacute;n almacenada.</dd>
+    
+<dt>&iquest;C&oacute;mo debemos gestionar los datos actualizados?</dt>
+    
+<dd>Los datos incorrectos deben ser invalidados y actualizados de un modo correcto.</dd>
+    
+<dt>&iquest;C&oacute;mo debemos gestionar los datos obsoletos?</dt>
+    
+<dd>A veces, los datos caducados son aceptables, pero normalmente la estrategia a seguir debe refrescar los datos de forma regular.</dd>
+    
+<dt>&iquest;C&oacute;mo debemos gestionar el acceso concurrente a nuestra cach&eacute;?</dt>
+    
+<dd>El acceso concurrente puede protegerse mediante m&eacute;todos sincronizados, pero este tipo de acceso puede ser demasiado restrictivo.</dd>
+
+</dl>
+<p>La implementaci&oacute;n m&aacute;s sencilla de una cach&eacute; es emplear un Mapa con pares (clave, valor), de modo que cada clave identifica de forma univoca a un objeto cacheado. Pero esta implementaci&oacute;n carece de mecanismos de caducidad, concurrencia, tolerancia a faltos, etc...</p>
+<p>En el mercado existen diferentes soluciones de cacheo para contenido est&aacute;tico las cuales est&aacute;n bien desarrolladas e implantadas, como pueden ser servidores proxy de cacheo, o los propios servidores web que almacenan en memoria tanto im&aacute;genes como p&aacute;ginas web est&aacute;ticas. Pero el contenido din&aacute;mico tambi&eacute;n es un centro de atenci&oacute;n para el cacheo. Es m&aacute;s, al cachear contenido din&aacute;mico es cuando vamos a obtener una productividad mucho mayor que la obtenida sin realizar el proceso de cach&eacute;.</p>
+<a name="N1030C"></a><a name="Ejemplo"></a>
+<h4>Ejemplo</h4>
+<p>A continuaci&oacute;n, mostramos un ejemplo visual de ilustra el impacto de una estrategia de cacheo agresiva en el rendimiento de un sistema. Los datos se han obtenido de un articulo de Mike Conner, descrito en el libro "<em>Bitter Java</em>" (Manning).</p>
+<p>Para empezar, tenemos una arquitectura sin cach&eacute;. En cada capa, se muestran los costes de cada comunicaci&oacute;n. En las llamadas a las capas posteriores sus pesos son mayores que respecto a las anteriores, ya que el contenido est&aacute;tico siempre es m&aacute;s barato. Conforme vamos hacia la derecha, el contenido se convierte m&aacute;s din&aacute;mico.</p>
+<p>
+        
+<img alt="Aplicaci&oacute;n sin Cach&eacute;" content-width="12cm" src="imagenes/j2ee/cache1.gif" width="453">
+    </p>
+<p>Para contrastar, podemos observar como una pol&iacute;tica agresiva de cacheo incrementa el rendimiento de la arquitectura, decrementando de forma significativa la carga de los nodos que est&aacute;n protegidos por cachear anteriores. Esta arquitectura utiliza caches en diferentes puntos, junto a Internet que tiene cach&eacute;s internas que nosotros nunca vemos.</p>
+<p>
+        
+<img alt="Aplicaci&oacute;n con Cach&eacute;" content-width="12cm" src="imagenes/j2ee/cache2.gif" width="458">
+    </p>
+<p>Dentro del mercado actual, existen m&uacute;ltiples alternativas ya desarrolladas, siendo las m&aacute;s conocidas <em>EhCache</em> (<a class="external" href="http://ehcache.sourceforge.net/">ehcache.sourceforge.net</a>), <em>JCS</em> (<a class="external" href="http://jakarta.apache.org/jcs/">jakarta.apache.org/jcs</a>), <em>SwarmCache</em> (<a class="external" href="http://swarmcache.sourceforge.net/">swarmcache.sourceforge.net</a>) y OSCache (esta &uacute;ltima es la que vamos a estudiar en esta sesi&oacute;n)</p>
+<div class="frame note">
+<div class="label">Hibernate</div>
+<div class="content">
+Como ya sabemos, Hibernate permite el uso de cache de segundo nivel (cache de aplicacion). Hibernate permite utilizar todas estas librerias como mecanismos de cacheo.
+</div>
+</div>
+<a name="N1034E"></a><a name="OSCache"></a>
+<h3 class="underlined_5">OSCache</h3>
+<p>OSCache (<a class="external" href="http://www.opensymphony.com/oscache">http://www.opensymphony.com/oscache</a>) es una soluci&oacute;n gratuita de cacheo que incluye una librer&iacute;a de tags JSP y un conjunto de clases para realizar cacheo din&aacute;mico con granularidad fina de contenido JSP, respuestas de Servlets u objetos arbitrarios.</p>
+<p>Esta librer&iacute;a ofrece cacheo persistente en disco o en memoria, lo cual permite al sitio web tener una alta tolerancia a los errores (en el caso de que ocurra un error, como pueda ser que se caiga la Base de Datos, se puede mostrar la informaci&oacute;n que estaba cacheada, de modo que los usuarios puede navegar por el site casi sin notar nada extra&ntilde;o).</p>
+<a name="N1035E"></a><a name="Problemas+Resueltos"></a>
+<h4>Problemas Resueltos</h4>
+<p>
+<em>OSCache</em> resuelve problemas fundamentales para las web din&aacute;micas:</p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+<th colspan="1" rowspan="1">Problema</th><th colspan="1" rowspan="1">Descripci&oacute;n</th><th colspan="1" rowspan="1">Soluci&oacute;n OSCache</th>
+</tr>
+
+<tr>
+    
+<td colspan="1" rowspan="1"><strong>Cacheo de Contenido Din&aacute;mico</strong></td>
+    <td colspan="1" rowspan="1">El contenido din&aacute;mico de algunos formularios debe ejecutarse tras cada petici&oacute;n, pero a veces ese contenido no var&iacute;a con cada petici&oacute;n. Cachear toda la p&aacute;gina no es una soluci&oacute;n, ya que puede haber secciones de la p&aacute;gina que cambian con cada petici&oacute;n.</td>
+    <td colspan="1" rowspan="1">Mediante el cacheo de objetos y/o secciones de JSPs.</td>
+
+</tr>
+
+<tr>
+    
+<td colspan="1" rowspan="1"><strong>Cacheo de Contenido Binario</strong></td>
+    <td colspan="1" rowspan="1">Las im&aacute;genes generadas y los PDFs pueden ser muy costosos en t&eacute;rminos de carga del servidor.</td>
+    <td colspan="1" rowspan="1">Mediante el uso del filtro <span class="codefrag">CachingFilter</span>, el cual puede cachear cualquier URI (ya sea una p&aacute;gina web entera o una imagen o documento PDF generado).</td>
+
+</tr>
+
+<tr>
+    
+<td colspan="1" rowspan="1"><strong>Tolerancia de Errores</strong></td>
+    <td colspan="1" rowspan="1">Si ocurre alg&uacute;n error en alg&uacute;n lugar de una pagina din&aacute;mica, el servidor devuelve un error aunque el 95% restante de la p&aacute;gina se hubiese ejecutado correctamente.</td>
+    <td colspan="1" rowspan="1">Permitiendo servir el contenido cacheado si se produce un evento de error, y a continuaci&oacute;n, reportar el error de forma apropiada.</td>
+
+</tr>
+
+</table>
+<a name="N103B7"></a><a name="Lista+de+Prestaciones"></a>
+<h4>Lista de Prestaciones</h4>
+<p>Adem&aacute;s de las caracter&iacute;sticas especificas de los servlets, <em>OSCache</em> se puede utilizar como mecanismo de cach&eacute; de aplicaci&oacute;n para cualquier aplicaci&oacute;n Java. Entre las prestaciones gen&eacute;ricas podemos destacar:</p>
+<ul>
+	
+<li>
+<strong>Cacheo de Objetos Arbitrarios</strong> - No solo podemos cachear porciones de c&oacute;digo JSP o peticiones HTTP. Cualquier objeto Java puede cachearse.</li>
+	
+<li>
+<strong>API Comprensible</strong> - El API de <em>OSCache</em> ofrece un control total a nivel programativo sobre todas las prestaciones.</li>
+	
+<li>
+<strong>Cacheo Persistente</strong> - La cach&eacute; puede ser almacenada en disco, permitiendo que los datos que son de crear (con un coste computacional alto) permanezcan cacheados incluso cuando la aplicaci&oacute;n se reinicia.</li>
+	
+<li>
+<strong>Clustering</strong> - Ofrece soporte para clustering de datos cacheado, sin necesidad de realizar ning&uacute;n cambio a nivel de c&oacute;digo.</li>
+	
+<li>
+<strong>Expiraci&oacute;n de las Entradas Cacheadas</strong> - Ofrece un gran control sobre la expiraci&oacute;n de los objetos cacheado, incluyendo pol&iacute;ticas de refresco configurables.</li>
+
+</ul>
+<a name="N103E3"></a><a name="Configuraci%C3%B3n"></a>
+<h4>Configuraci&oacute;n</h4>
+<p>Para que nuestra aplicaci&oacute;n pueda utilizar esta librer&iacute;a, el archivo <span class="codefrag">oscache.jar</span> debe estar en la carpeta <span class="codefrag">WEB-INF/lib</span> de la aplicaci&oacute;n web. Toda la configuraci&oacute;n de OSCache recae en el archivo <span class="codefrag">oscache.properties</span> el cual debe encontrarse en el classpath de la aplicaci&oacute;n.</p>
+<p>El archivo de muestra que obtenemos al descargar la librer&iacute;a es bastante autoexplicatorio. Aun as&iacute;, vamos a comentar las propiedades m&aacute;s importantes:</p>
+<ul>
+    
+<li>
+<strong>cache.memory</strong>: indica si queremos la cache en memoria (<em>true</em>) o en disco (<em>false</em>).</li>
+    
+<li>
+<strong>cache.capacity</strong>: indica el n&uacute;mero de elementos que puede almacenar la cach&eacute;, aunque por defecto, la capacidad es ilimitada.</li>
+    
+<li>
+<strong>cache.algorithm</strong>: indica el algoritmo de cach&eacute; a emplear cuando se haya especificado un n&uacute;mero fijo en la capacidad de la cach&eacute;. Por defecto se utiliza un algoritmo LRU, aunque podemos cambiar por FIFO o implementar uno propio.</li>
+    
+<li>
+<strong>cache.path</strong>: ruta del archivo en disco donde se almacenar&aacute; la cach&eacute; persistente.</li>
+
+</ul>
+<p>En nuestra aplicaci&oacute;n, hemos configurado que almacene hasta un m&aacute;ximo de 1000 objetos en memoria. Para m&aacute;s informaci&oacute;n, pod&eacute;is acceder a la documentaci&oacute;n de la <a class="external" href="http://www.opensymphony.com/oscache/wiki/Configuration.html">configuraci&oacute;n</a>.</p>
+<a name="N1041D"></a><a name="Modo+de+Empleo"></a>
+<h4>Modo de Empleo</h4>
+<p>Tal como hemos comentado, podemos utilizar la cach&eacute; a nivel de contenido din&aacute;mico mediante el uso de taglibs o filtros, o utilizar la cach&eacute; a nivel de aplicaci&oacute;n para cachear VOs de la aplicaci&oacute;n.</p>
+<p>En nuestro caso nos vamos a centrar en la segunda posibilidad, ya que el cacheo de contenido din&aacute;mico dentro de una arquitectura MVC no tiene mucho sentido.</p>
+<div class="frame note">
+<div class="label">M&aacute;s informaci&oacute;n</div>
+<div class="content">
+Si quer&eacute;is obtener informaci&oacute;n acerca de como cachear p&aacute;ginas JSP o el contenido generado por un Servlet, visitad la <a class="external" href="http://www.opensymphony.com/oscache/wiki/Documentation.html">documentaci&oacute;n de la librer&iacute;a</a>. 
+</div>
+</div>
+<p>El primer paso es decargar la libreria (la &uacute;ltima versi&oacute;n es la 2.3.2): <a class="external" href="http://www.opensymphony.com/oscache/download.action">http://www.opensymphony.com/oscache/download.action</a>
+</p>
+<p>Para poder utilizar la cach&eacute; a nivel de aplicaci&oacute;n, hemos de utilizar la clase <span class="codefrag">com.opensymphony.oscache.general.GeneralCacheAdministrator</span>. Esta clase se encarga de cargar la configuraci&oacute;n de la cach&eacute; a partir del archivo <span class="codefrag">oscache.properties</span>.</p>
+<p>Cada vez que queramos trabajar con un objeto candidato a estar en la cach&eacute;, primero hemos de consultarle a la cach&eacute; si ya tiene el objeto cacheado. Aqu&iacute; pueden pasar dos cosas:</p>
+<ul>
+    
+<li>que el objeto est&eacute; en la cach&eacute; y que su contenido no haya caducado, con lo que la cach&eacute; nos devolver&aacute; el objeto</li>
+    
+<li>o que el objeto no est&eacute; en la cach&eacute;, o que su contenido haya caducado, con lo cual se lanzar&aacute; un excepci&oacute;n de tipo <span class="codefrag">NeedRefreshException</span>. Una vez capturada la excepci&oacute;n, llega el momento de acceder al contenido real (normalmente accediendo a la Base de Datos).
+    <ul>
+        
+<li>Si al recuperar el objeto no se produce ning&uacute;n error, actualizaremos la cach&eacute; con este nuevo objeto.</li>
+        
+<li>Pero si salta alguna excepci&oacute;n, podemos recuperar el contenido que hab&iacute;a caducado, de modo que la aplicaci&oacute;n sigue funcionando, aunque la informaci&oacute;n mostrada no sea la informaci&oacute;n actualizada.</li>
+    
+</ul>
+    
+</li>
+
+</ul>
+<p>A continuaci&oacute;n se muestra un peque&ntilde;o esquema de trabajo con OSCache.</p>
+<pre class="code">
+String myKey = "myKey";
+String myValue;
+int myRefreshPeriod = 1000;
+
+try {
+<em>    // obtenemos de la cache
+    // (admin es una instancia de GeneralCacheAdministrator)
+    // el objeto identificado por una clave un&iacute;voca
+    // y le indicamos el periodo de refresco (en ms)</em>
+    <strong>myValue = (String) admin.getFromCache(myKey, myRefreshPeriod);</strong>
+} catch (NeedsRefreshException nre) {
+    try {
+        <em>// obtenemos el valor, normalmente accediendo a la bbdd</em>
+        myValue = "Estos son los datos obtenidos.";
+        <em>// Almacena el objeto identificado por la clave en la cach&eacute;</em>
+        <strong>admin.putInCache(myKey, myValue);</strong>
+    } catch (Exception ex) {
+        <em>// podemos obtener el contenido "caducado"
+        // para ofrecer tolerancia de fallos</em>
+        <strong>myValue = (String) nre.getCacheContent();</strong>
+        <em>// Es imprescindible realizar la llamada a
+        // cancelUpdate si no se ha recargado el contenido cacheado</em>
+        <strong>admin.cancelUpdate(myKey);</strong>
+    }
+}
+</pre>
+<p>Para facilitar la comprensi&oacute;n de este esquema, vamos a aplicar este mecanismo a la Biblioteca jTech.</p>
+<a name="N1047F"></a><a name="Ejemplo+Integraci%C3%B3n"></a>
+<h3 class="underlined_5">Ejemplo Integraci&oacute;n</h3>
+<p>Con la arquitectura que tenemos preparada, que ofrece puertas de entrada mediante factor&iacute;as tanto al negocio como a los datos, podemos introducir el mecanismo de cacheo en ambas capas.</p>
+<p>Para el siguiente ejemplo, vamos a cachear el DAO del usuario, de modo que mientras no se modifique ning&uacute;n atributo de un usuario, mantenga en cach&eacute; los datos de cada usuario.</p>
+<p>
+    
+<img alt="UML con la Cache" content-width="11cm" src="imagenes/j2ee/umlCache.jpg" width="428">
+</p>
+<a name="N10494"></a><a name="CacheManager"></a>
+<h4>CacheManager</h4>
+<p>Esta clase es la encargada de inicializar la cach&eacute;. Por defecto, busca en el classpath el archivo <span class="codefrag">oscache.properties</span> (en nuestro caso, en la carpeta <span class="codefrag">resources</span> del proyecto <em>Eclipse</em>, que a posteriori, a la hora del despliegue, se copia en <span class="codefrag">WEB-INF/classes</span>).</p>
+<p>Para evitar m&uacute;ltiples instancias de este gestor de cach&eacute;, utilizando el patr&oacute;n Singleton, nos aseguramos de que solo haya un &uacute;nico objeto cach&eacute; en la aplicaci&oacute;n (siempre y cuando no tengamos ning&uacute;n cluster).</p>
+<pre class="code">
+<strong>package es.ua.jtech.proyint.cache;</strong>
+
+public class <strong>CacheManager</strong> {
+
+    private static CacheManager me = new CacheManager();
+
+    private Log logger = LogFactory.getLog(CacheManager.class.getName());
+
+    <strong>private GeneralCacheAdministrator cache = null;</strong>
+
+    private CacheManager() {
+        try {
+             <strong>cache = new GeneralCacheAdministrator();</strong>
+        } catch (Exception e) {
+            logger.error("Error al inicializar la cache", e);
+            e.printStackTrace();
+        }
+
+        logger.info("Cache Creada");
+    }
+
+    public static CacheManager getInstance() {
+        return me;
+    }
+
+    public GeneralCacheAdministrator getCache() {
+        return cache;
+    }
+}
+</pre>
+<a name="N104BC"></a><a name="FactoriaDAOs"></a>
+<h4>FactoriaDAOs</h4>
+<p>Ahora, en la factor&iacute;a, en vez de instanciar un DAO concreto, creamos una nueva implementaci&oacute;n que funcione como envoltorio del DAO situando la cach&eacute; entre el negocio y los datos.</p>
+<pre class="code">
+public class FactoriaDAOs {
+
+    private static FactoriaDAOs me = new FactoriaDAOs();
+    
+    <strong>private GeneralCacheAdministrator cache = null;</strong>
+    
+    private FactoriaDAOs() {
+        // Obtenemos la cache
+        <strong>this.cache = CacheManager.getInstance().getCache();</strong>
+    }
+    
+    public static FactoriaDAOs getInstance() {
+        return me;
+    }
+    
+    public IUsuarioDAO getUsuarioDAO() {
+        <em>// En este DAO cacheamos</em>
+        <strong>return new UsuarioCacheDAO(this.cache);</strong>
+    }
+    
+    public ILibroDAO getLibroDAO() {
+        return new LibroJDBCDAO();
+    }
+    
+    public IOperacionDAO getOperacionDAO() {
+        return new OperacionJDBCDAO();
+    }
+}
+</pre>
+<a name="N104D6"></a><a name="UsuarioCacheDAO"></a>
+<h4>UsuarioCacheDAO</h4>
+<p>Por lo tanto, necesitamos un envoltorio del DAO que haga de puente entre la cach&eacute;  y los datos, de modo que a nivel de m&eacute;todo podemos decidir que m&eacute;todos cacheamos.</p>
+<pre class="code">
+public class UsuarioCacheDAO implements IUsuarioDAO {
+
+    private static Log logger = LogFactory.getLog(UsuarioCacheDAO.class.getName());
+    
+    <strong>private GeneralCacheAdministrator cache;</strong>
+    
+    private final static String GRUPO_USUARIO = "GrupoUsuario";
+    
+    <strong>private IUsuarioDAO dao;</strong>
+    
+    public UsuarioCacheDAO(GeneralCacheAdministrator laCache) {
+        <strong>this.cache = laCache;
+        this.dao = new UsuarioJDBCDAO();</strong>
+    }
+    
+    public void addUsuario(UsuarioTO usuario) throws DAOException {
+        dao.addUsuario(usuario);
+    
+        <em>// Limpiamos la cache</em>
+        <strong>cache.flushGroup(UsuarioCacheDAO.GRUPO_USUARIO);</strong>
+    
+        return;
+    }
+    
+    public int delUsuario(String login) throws DAOException {
+        int result = dao.delUsuario(login);
+    
+        // Limpiamos la cache
+        cache.flushGroup(UsuarioCacheDAO.GRUPO_USUARIO);
+    
+        return result;
+    }
+    
+    @SuppressWarnings("unchecked")
+    public List&lt;UsuarioTO&gt; getAllUsuarios() throws DAOException {
+        List&lt;UsuarioTO&gt; result = null;
+    
+        // Creamos la clave teniendo en cuenta los parametros
+        // TODO Crear una clase de Constantes de Cache (similar a Tokens)
+        String key = "UsuarioSelectAll";
+    
+        // Primero, buscamos el usuario en la cache (max 600 seg)
+        try {
+            <strong>result = (List&lt;UsuarioTO&gt;) cache.getFromCache(key, 600);</strong>
+            logger.debug("Listado de usuarios de la cache :)");
+        } catch (NeedsRefreshException nre) {
+            // si no los encuentra
+            try {
+                <strong>result = dao.getAllUsuarios();</strong>
+    
+                // los almacenamos en la cache dentro de un grupo
+                <strong>cache.putInCache(key, result, new String[] { UsuarioCacheDAO.GRUPO_USUARIO });</strong>
+            } catch (Exception ex) {
+                logger.warn("Recuperando usuarios de la cache", ex);
+                // Tenemos el contenido por si queremos tolerancia a fallos.
+                <strong>result = (List&lt;UsuarioTO&gt;) nre.getCacheContent();</strong>
+                // Evitamos el refresco de la cache
+                cache.cancelUpdate(key);
+            }
+        }
+    
+        return result;
+    }
+    
+    public List&lt;UsuarioTO&gt; getPosiblesPrestatarios() throws DAOException {
+        return dao.getPosiblesPrestatarios();
+    }
+    
+    public UsuarioTO selectUsuario(String login, String password)
+            throws DAOException {
+        return dao.selectUsuario(login, password);
+    }
+    
+    public UsuarioTO selectUsuario(String login) throws DAOException {
+        UsuarioTO result = null;
+    
+        // Creamos la clave teniendo en cuenta los parametros
+        // TODO Crear una clase de Constantes de Cache (similar a Tokens)
+        String key = "Usuario(" + login + ")";
+    
+        // Primero, buscamos el usuario en la cache
+        try {
+            result = (UsuarioTO) cache.getFromCache(key, 600);
+        } catch (NeedsRefreshException nre) {
+            // si no los encuentra
+            try {
+                result = dao.selectUsuario(login);
+    
+                // los almacenamos en la cache dentro de un grupo
+                cache.putInCache(key, result, new String[] { UsuarioCacheDAO.GRUPO_USUARIO });
+            } catch (Exception ex) {
+                logger.warn("Recuperando usuario de la cache", ex);
+                // Tenemos el contenido por si queremos tolerancia a fallos.
+                result = (UsuarioTO) nre.getCacheContent();
+                // Evitamos el refresco de la cache
+                cache.cancelUpdate(key);
+            }
+        }
+    
+        return result;
+    }
+    
+    public int updateUsuario(UsuarioTO usuario) throws DAOException {
+        int result = dao.updateUsuario(usuario);
+    
+        // Limpiamos la cache
+        cache.flushGroup(UsuarioCacheDAO.GRUPO_USUARIO);
+    
+        return result;
+    }
+
+}
+</pre>
+<p>El c&oacute;digo fuente y los ficheros de configuraci&oacute;n mostrados se pueden descargar <a href="recursos/cache.zip">aqu&iacute;</a>.</p>
+<p>A modo de conclusi&oacute;n, destacar lo f&aacute;cil que es a&ntilde;adir una cach&eacute; a la aplicaci&oacute;n. Lo m&aacute;s dif&iacute;cil respecto al uso de una cach&eacute; es <strong>definir una buena pol&iacute;tica de cacheo y caducidad de los datos</strong>, analizando las dependencias entre los diferentes componentes de la aplicaci&oacute;n.</p>
+<div class="frame note">
+<div class="label">Pregunta</div>
+<div class="content">
+En nuestra aplicaci&oacute;n, &iquest;Que sucede si un usuario realiza una reserva? &iquest;Debemos caducar los datos de los usuarios? &iquest;Seria mejor definir una pol&iacute;tica de grupos con granularidad m&aacute;s fina?
+</div>
+</div>
+</div> 
+
+
+
+<a name="N10516"></a><a name="Para+Saber+M%C3%A1s"></a>
+<h2 class="underlined_10">Para Saber M&aacute;s</h2>
+<div class="section">
+<a name="N1051C"></a><a name="Bibliograf%C3%ADa"></a>
+<h3 class="underlined_5">Bibliograf&iacute;a</h3>
+<ul>
+    
+<li>
+<strong>Expert one-on-one J2EE Development without EJB</strong>, de <em>Rod Johnson</em>. Secuela de libro J2EE Design and Development, el cual sirvi&oacute; como base del desarrollo de Spring, donde se defiende a capa y espada el uso de la Arquitectura de Contenedor Ligero.</li>
+
+</ul>
+<a name="N1052E"></a><a name="Enlaces"></a>
+<h3 class="underlined_5">Enlaces</h3>
+<ul>
+    
+<li>Articulo de Mart&iacute;n P&eacute;rez sobre Hibernate y el uso de Cach&eacute; <a class="external" href="http://www.javahispano.org/articles.article.action?id=95">http://www.javahispano.org/articles.article.action?id=95</a>
+</li>
+
+</ul>
+</div>
+
+
+<p class="pageBreakAfter"></p>
+
+</div>
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+        Copyright &copy;
+         2006-2007 Depto. CCIA</div>
+</div>
+</body>
+</html>

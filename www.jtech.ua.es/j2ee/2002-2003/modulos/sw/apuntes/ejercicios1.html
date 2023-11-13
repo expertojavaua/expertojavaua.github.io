@@ -1,0 +1,271 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+  <title>Ejercicios de introducci&oacute;n a los Servicios Web</title>
+                                                                        
+     
+  <meta content="text/html; charset=iso-8859-1"
+ http-equiv="Content-Type">
+                                           
+  <link href="http://www.jtech.ua.es/j2ee/2002-2003/sw/apuntes/apuntes.css" rel="stylesheet" type="text/css">
+                                             
+  <meta content="Microsoft FrontPage 4.0" name="GENERATOR">
+<link href="../../../apuntes.css" rel="stylesheet" type="text/css">
+</head>
+  <body bgcolor="#ffffff" text="#000000">
+<h1>Ejercicios de introducci&oacute;n a los Servicios Web</h1>
+<p>NOTA: Para realizar los ejercicios, se deben haber establecido previamente 
+  las variables de entorno de Weblogic, utilizando para ello el comando:</p>
+<pre class="codigo">. bea/weblogic700/server/bin/setWLSEnv.sh
+</pre>
+<p><strong>1.</strong> Para comenzar vamos a probar un servicio sencillo. Se trata 
+  de un <em>"Hola mundo!"</em> en forma de servicio. Vamos a desplegar el servicio 
+  en Weblogic, y a probarlo. Este servicio se encuentra en el directorio <em>hola</em>. 
+  Est&aacute; implementado en la clase <strong>utils.HolaMundo</strong>:</p>
+<pre class="codigo">package utils;
+
+
+public class HolaMundo {
+  public String <strong>saluda</strong>(String nombre) {
+    return "Hola " + nombre;
+  }
+}</pre>
+<p>a) Construir el servicio. Para ello seguiremos los siguientes pasos:</p>
+<p>Introduciremos el comando:</p>
+<pre class="codigo">ant service
+</pre>
+<p>Que nos generar&aacute; un fichero <em>sw_hola.ear</em>, que deberemos desplegar 
+  en Weblogic. </p>
+<ul>
+  <li> Ir a la consola de Weblogic.</li>
+</ul>
+<ul>
+  <li>Pulsar sobre <em>Web Service Components</em> en el men&uacute; de la izquierda.</li>
+</ul>
+<ul>
+  <li>Pulsar sobre <em>Configure a new Web Service Component</em> ...</li>
+</ul>
+<ul>
+  <li>Ir al paso uno (<em>Step 1</em>), para subir el fichero de nuestro servicio. 
+    Seleccionamos el fichero <em>sw_hola.ear</em> que hemos generado previamente 
+    y pulsamos en <em>Upload</em>.</li>
+</ul>
+<ul>
+  <li>Una vez subido, seleccionamos el fichero <em>sw_hola.ear</em> en la lista 
+    dentro del paso 2 (<em>Step 2</em>).</li>
+</ul>
+<ul>
+  <li>Desplegaremos el fichero en el contexto que nos pone por defecto (<em>sw_hola</em>), 
+    en cualquiera de los servidores disponibles. Vamos a suponer que lo desplegamos 
+    en el servidor de administraci&oacute;n, que se encuentra en el puerto 7001.</li>
+</ul>
+<ul>
+  <li>Una vez desplegado podemos ir a la siguiente direcci&oacute;n, donde Weblogic 
+    nos habr&aacute; generado una p&aacute;gina con informaci&oacute;n sobre el 
+    servicio, adem&aacute;s de una interfaz web para invocarlo: 
+    <blockquote> 
+      <pre class="codigo">http://localhost:7001/sw_hola/hola
+</pre>
+    </blockquote>
+  </li>
+  <li>Veremos una lista de las operaciones que ofrece el servicio, en este caso 
+    tenemos s&oacute;lo la operaci&oacute;n <em>saluda</em>. Pulsamos sobre ella.</li>
+</ul>
+<ul>
+  <li>Accedemos a una interfaz web para invocar dicha operaci&oacute;n. Deberemos 
+    proporcionar en un cuadro de texto el par&aacute;metro que toma este m&eacute;todo, 
+    que ser&aacute; nuestro nombre, y a continuaci&oacute;n pulsar sobre <em>Invoke</em>.</li>
+</ul>
+<ul>
+  <li>Nos mostrar&aacute; el resultado que nos ha devuelto la operaci&oacute;n 
+    de nuestro servicio, y los mensajes SOAP que se han utilizado para invocar 
+    el servicio. 
+    <ul>
+      <li>&iquest;Qu&eacute; elementos encontramos en el mensaje de petici&oacute;n?</li>
+      <li>&iquest;Y en el de respuesta?</li>
+    </ul>
+  </li>
+</ul>
+<ul>
+  <li>Vamos a ver el documento WSDL que describe el servicio. Este documento puede 
+    ser obtenido en la siguiente direcci&oacute;n: </li>
+  <pre class="codigo">http://localhost:7001/sw_hola/hola?WSDL</pre>
+  <li>Buscar en este documento la informaci&oacute;n sobre: 
+    <ul>
+      <li>Nombre del servicio y puerto.</li>
+      <li>Operaciones que ofrece el servicio.</li>
+      <li>Par&aacute;metros y datos devueltos por las operaciones.</li>
+    </ul>
+  </li>
+</ul>
+<p>b) Hemos accedido al servicio utilizando la interfaz web que nos ha generado 
+  Weblogic para probarlo. Sin embargo, la ventaja que nos ofrecen los Servicios 
+  Web es que podremos integrarlos en cualquier aplicaci&oacute;n cliente, independientemente 
+  de la plataforma y el lenguaje sobre el que la desarrollemos.</p>
+<p>Vamos a invocar este servicio desde una aplicaci&oacute;n Java independiente. 
+  Para ello seguiremos los siguientes pasos:</p>
+<ul>
+  <li>Desde el directorio <em>hola</em> ejecutamos el comando: 
+    <pre class="codigo">ant client</pre>
+  </li>
+</ul>
+<blockquote> 
+  <p>Para generar el c&oacute;digo necesario para nuestro cliente.</p>
+</blockquote>
+<ul>
+  <li> A continuaci&oacute;n compilamos el cliente con el comando: </li>
+  <pre class="codigo">ant compile</pre>
+  <li>Ahora podemos ejecutar el cliente con proporcionando como par&aacute;metro 
+    el nombre, por ejemplo: 
+    <pre class="codigo">ant run -Dnombre=Miguel</pre>
+  </li>
+</ul>
+<blockquote> 
+  <p>Como resultado nos devolver&aacute; el mensaje <em>"Hola Miguel"</em>.</p>
+</blockquote>
+<ul>
+  <li>Podemos utilizar el siguiente comando: 
+    <pre class="codigo">ant run-debug -Dnombre=Miguel</pre>
+  </li>
+</ul>
+<blockquote> 
+  <p>Que nos mostrar&aacute; los mensajes SOAP de petici&oacute;n y respuesta 
+    que han intervenido en la invocaci&oacute;n del servicio.</p>
+</blockquote>
+<p><strong>2.</strong> La p&aacute;gina <em>http://www.xmethods.net</em> contiene 
+  una serie de Servicios Web de demostraci&oacute;n. En la secci&oacute;n <em>XMethods 
+  Demo Services</em>, en la parte inferior de la p&aacute;gina, tenemos una lista 
+  de servicios que podremos integrar en nuestras aplicaciones. </p>
+<p>a) Pulsar sobre el servicio <em>Currency Exchange Rate</em> para obtener informaci&oacute;n 
+  sobre &eacute;l. Esto nos llevar&aacute; a una p&aacute;gina con documentaci&oacute;n 
+  sobre este servicio, adem&aacute;s de un enlace al documento WSDL que lo describe.</p>
+<ul>
+  <li>Leer la documentaci&oacute;n del servicio. &iquest;Qu&eacute; funci&oacute;n 
+    realiza?</li>
+</ul>
+<ul>
+  <li>Descargar el documento WSDL y editarlo. &iquest;Qu&eacute; operaciones nos 
+    ofrece el servicio? &iquest;Qu&eacute; par&aacute;metros toman y que nos devuelven?</li>
+</ul>
+<ul>
+  <li> Si pulsamos sobre el link <em>Analyze WSDL</em>, junto al link al documento 
+    WSDL, podremos ver los datos que aporta este documento de forma desglosada. 
+    Podemos ver el nombre del servicio, el puerto, las operaciones y los par&aacute;metros 
+    de entrada y datos devueltos por cada una de ellas.</li>
+</ul>
+<p>b) Vamos a invocar el servicio mediante un cliente de ejemplo que se encuentra 
+  en el directorio <em>currency</em>. </p>
+<ul>
+  <li>Si queremos convertir la divisa europea (euro) a la de EEUU (dolar), &iquest;qu&eacute; 
+    operaci&oacute;n y qu&eacute; par&aacute;metros debemos proporcionar?<br>
+  </li>
+  <li>Generar la clases necesarias para el cliente con: </li>
+  <pre class="codigo">ant client</pre>
+  <li> Compilar el cliente con: </li>
+  <pre class="codigo">ant compile</pre>
+  <li>Invocar el siguiente comando desde el directorio <em>currency</em> para 
+    invocar el servicio: 
+    <pre class="codigo">ant run -Dpais1=usa -Dpais2=euro</pre>
+    <p>Esto nos devolver&aacute; cuantos euros vale un dolar actualmente. </p>
+  </li>
+  <li>A continuaci&oacute;n ejecutarlo con: 
+    <pre class="codigo">ant run-debug -Dpais1=usa -Dpais2=euro</pre>
+    <p>Esto nos mostrar&aacute; en la consola los mensajes SOAP de petici&oacute;n 
+      y respuestas que se han utilizado en la invocaci&oacute;n del servicio. 
+      &iquest;Qu&eacute; datos encontramos en cada uno de ellos?</p>
+  </li>
+</ul>
+<p><strong>3.</strong> B&uacute;squeda de Servicios Web. En este ejercicio vamos 
+  a acceder a un registro UDDI para buscar un servicio.</p>
+<p><em>Amazon</em> ofrece Servicios Web para obtener informaci&oacute;n sobre 
+  los productos que venden. Vamos a buscar estos servicios en un registro UDDI, 
+  para posteriormente poder integrarlo en nuestras aplicaciones.<br>
+</p>
+<p>a) Acceder a un registro UDDI mediante su interfaz web y buscar el archivo 
+  WSDL que describa los servicios de <em>Amazon.com</em>.</p>
+<ul>
+  <li> Podemos acceder al registro de IBM en la direcci&oacute;n: </li>
+  <pre class="codigo">http://www-3.ibm.com/services/uddi/</pre>
+  <li>Para acceder al registro pulsaremos sobre <em>UDDI V2 Business Registry</em>. 
+    Como s&oacute;lo vamos a buscar, no hace falta que nos registremos como usuario. 
+    En el men&uacute; de la izquierda pulsaremos sobre la opci&oacute;n <em>Find</em> 
+    para buscar servicios.<br>
+  </li>
+  <li>Vamos a realizar una b&uacute;squeda por compa&ntilde;&iacute;a (<em>business</em>), 
+    ya que buscamos los servicios que ofrece la compa&ntilde;ia <em>Amazon</em>. 
+    En el campo <em>Search</em> for a seleccionamos <em>Business</em>. En el campo 
+    <em>Starts with</em> introduciremos el nombre de la compa&ntilde;&iacute;a 
+    buscada, es decir, <em>Amazon</em>. <br>
+  </li>
+  <li>Pulsamos sobre <em>Find</em>. Nos mostrar&aacute; los resultados de la b&uacute;squeda. 
+    De los resultados obtenidos, nos interesar&aacute; obtener informaci&oacute;n 
+    sobre los servicios que ofrece <em>Amazon.com</em>. <br>
+  </li>
+  <li>Pulsamos sobre el link <em>Services</em>. Se nos mostrar&aacute; una lista 
+    con los servicios que ofrece. Pulsaremos sobre el nombre del servicio para 
+    obtener informaci&oacute;n sobre como acceder a &eacute;l.<br>
+  </li>
+  <li>Aqu&iacute; podremos ver una descripci&oacute;n del servicio, y un enlace 
+    al documento WSDL que lo describe.</li>
+</ul>
+<p>b) Abrir el documento WSDL del servicio que ofrece <em>Amazon</em>. </p>
+<ul>
+  <li>&iquest;Cu&aacute;l es el endpoint del servicio?<br>
+  </li>
+  <li>&iquest;Qu&eacute; operaciones ofrece el servicio?<br>
+  </li>
+  <li>Para la operaci&oacute;n <em>DirectorSearchRequest</em>, &iquest;que par&aacute;metros 
+    toma, y que datos devuelve como resultado?<br>
+  </li>
+  <li>&iquest;De que se compone el tipo <em>DirectorRequest</em>?</li>
+</ul>
+<p>c) En el directorio <em>amazon</em>, tenemos un cliente que utiliza dicho servicio 
+  para hacer una b&uacute;squeda de DVDs teniendo como criterio de b&uacute;squeda 
+  el nombre del director. </p>
+<ul>
+  <li>Generar la clases necesarias para el cliente con:</li>
+  <pre class="codigo">ant client</pre>
+  <li> Compilar la aplicaci&oacute;n cliente con:</li>
+</ul>
+<blockquote> 
+  <pre class="codigo">ant compile</pre>
+</blockquote>
+<ul>
+  <li>Una vez compilado, podremos hacer una b&uacute;squeda por director con:</li>
+</ul>
+<blockquote> 
+  <pre class="codigo">ant run -Ddirector=nombre_director
+</pre>
+  <p>Por ejemplo, podriamos buscar las pel&iacute;culas en DVD de David Lynch, 
+    o de Stanley Kubrick:</p>
+  <pre class="codigo">ant run -Ddirector=lynch
+<span class="codigo">ant run -Ddirector=kubrick</span></pre>
+  <p>Con esto veremos los t&iacute;tulos de las pel&iacute;culas encontradas en 
+    <em>Amazon</em>. </p>
+</blockquote>
+<ul>
+  <li> Podemos ver los mensajes SOAP que est&aacute; enviando y recibiendo nuestro 
+    programa internamente utilizando el comando: </li>
+  <pre class="codigo">ant run-debug -Ddirector=nombre_director
+</pre>
+  <li>Podemos redireccionar los mensajes a un fichero, para poder visualizarlos 
+    en cualquier editor:</li>
+</ul>
+<blockquote> 
+  <pre class="codigo">ant run-debug -Ddirector=lynch &gt; log
+</pre>
+</blockquote>
+<ul>
+  <li> Observar el mensaje de la petici&oacute;n SOAP. 
+    <ul>
+      <li>&iquest;Qu&eacute; operaci&oacute;n se invoca?</li>
+      <li>&iquest;Qu&eacute; par&aacute;metros se proporcionan?</li>
+      <li>&iquest;De que informaci&oacute;n se compone el par&aacute;metro suministrado?<br>
+      </li>
+    </ul>
+  </li>
+  <li> Ahora observar el mensaje de respuesta. &iquest;Qu&eacute; informaci&oacute;n 
+    nos devuelve el servicio?</li>
+</ul>
+</body>
+</html>

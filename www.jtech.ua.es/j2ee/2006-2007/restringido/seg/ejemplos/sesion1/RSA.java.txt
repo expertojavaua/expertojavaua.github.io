@@ -1,0 +1,47 @@
+import java.security.*;
+import javax.crypto.*;
+import javax.crypto.spec.*;
+import sun.misc.*;
+
+public class RSA
+{
+  public static void main (String[] args)
+  throws Exception
+  {
+    // Crear una clave simétrica para Blowfish
+    System.out.println("Generando clave Blowfish...");
+    KeyGenerator generador = KeyGenerator.getInstance("Blowfish");
+    generador.init(128);
+    Key claveBlowfish = generador.generateKey();    
+    System.out.println("Formato: "+claveBlowfish.getFormat());
+
+
+    // Generar un par RSA
+    System.out.println("Generando par de claves RSA...");
+    KeyPairGenerator generadorRSA = KeyPairGenerator.getInstance("RSA");
+    generadorRSA.initialize(1024);
+    KeyPair claves = generadorRSA.genKeyPair();
+    System.out.println("Generada la clave asimétrica.");
+
+    // Crear e inicializar un cifrador adecuado (ECB)
+    Cipher cifradorRSA = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+    cifradorRSA.init(Cipher.ENCRYPT_MODE, claves.getPublic());
+
+    // Obtener bytes de la clave simétrica y encriptarlos con RSA
+    byte[] bytesClaveBlowfish = claveBlowfish.getEncoded();
+    byte[] claveBlowfishCifrada = cifradorRSA.doFinal(bytesClaveBlowfish);
+    System.out.println("Encriptada la clave simétrica");
+
+    // Reinicializar cifrador RSA para desencriptar con la clave privada
+    System.out.println("Comenzamos a desencriptarla");
+    cifradorRSA.init(Cipher.DECRYPT_MODE, claves.getPrivate());
+
+    // Desencriptar la clave
+    byte[] bytesClaveBlowfish2 = cifradorRSA.doFinal(claveBlowfishCifrada);
+
+    // Recrear la clave Blowfish a partir de los bytes
+    SecretKey nuevaClaveBlowfish = new SecretKeySpec(bytesClaveBlowfish2, "Blowfish");
+    System.out.println("Clave simétrica conseguida");
+
+  }
+}

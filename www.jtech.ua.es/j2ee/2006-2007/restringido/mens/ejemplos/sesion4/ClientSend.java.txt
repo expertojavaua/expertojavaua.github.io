@@ -1,0 +1,178 @@
+package examples.jms.messageformat;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Hashtable;
+import javax.jms.*;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import weblogic.jms.extensions.WLQueueSession;
+import weblogic.jms.extensions.XMLMessage;
+
+/**
+ * This class asks the user to input data to define a stock trade transaction.
+ * The class generates XML data from the user input and sends the data to 
+ * the JMS queue. A Message-driven bean then reads the request from the 
+ * queue and parses it using a SAX compliant parser.  
+ * 
+ * @author Copyright (c) 2005 by BEA Systems, Inc. All Rights Reserved.
+ */
+public class ClientSend
+{
+  public final static String JNDI_FACTORY="weblogic.jndi.WLInitialContextFactory";
+  public final static String JMS_FACTORY="weblogic.examples.jms.messageformat.QueueConnectionFactory";
+  public final static String QUEUE="weblogic.examples.jms.messageformat.exampleQueueSend";
+  public final static StringBuffer buffer = new StringBuffer();
+  private QueueConnectionFactory qconFactory;
+  private QueueConnection qcon;
+  private QueueSession qsession;
+  private QueueSender qsender;
+  private Queue queue;
+  private XMLMessage xmsg;
+
+  /**
+   * Creates all the necessary objects for sending messages to a JMS queue.
+   *
+   * @param ctx         the initial context
+   * @param queueName   the name of the JMS queue
+   * @exception NamingException if a naming exception occurred
+   * @exception JMSException    if a JMS exception occurred
+   */
+
+  public void init(Context ctx, String queueName)
+       throws NamingException, JMSException
+  {
+    qconFactory = (QueueConnectionFactory) ctx.lookup(JMS_FACTORY);
+    qcon = qconFactory.createQueueConnection();
+    qsession = qcon.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
+    queue = (Queue) ctx.lookup(queueName);
+    qsender = qsession.createSender(queue);
+    xmsg = ((WLQueueSession)qsession).createXMLMessage();
+    qcon.start();
+  }
+
+  /**
+   * Closes all JMS objects.
+   *
+   * @exception JMSException if a JMS error occurred
+   */
+  public void close() throws JMSException {
+    qsender.close();
+    qsession.close();
+    qcon.close();
+  }
+
+  /**
+   * Runs this client from the command line.
+   * <p>
+   * Use the following command:
+   * <tt>java examples.jms.messageformat.ClientSend t3://localhost:7001</tt>
+   */
+  public static void main(String[] args) throws Exception {
+    if (args.length != 1) {
+      System.out.println("Usage: java examples.jms.messageformat.ClientSend WebLogicURL");
+      return;
+    }
+    InitialContext ic = getInitialContext(args[0]);
+    ClientSend client = new ClientSend();
+    client.init(ic, QUEUE);
+
+    // get message from user
+
+    BufferedReader msgStream = new BufferedReader(new InputStreamReader(System.in));
+    String line=null;
+    boolean quitNow = false;
+    boolean buy = false;
+    boolean sell = false;
+    boolean beas = false;
+    boolean msft = false;
+    boolean transactionSent = false;
+    do {
+      buffer.append("<stocktrade action=");
+      transactionSent = false;
+
+      //get action from user
+      System.out.print("Action (\"Buy\" or \"Sell\", \"quit\" to quit): \n");
+      line = msgStream.readLine();
+      if (line != null && line.trim().length() != 0) {
+        quitNow = line.equalsIgnoreCase("quit");
+        buy = line.equalsIgnoreCase("buy");
+        sell = line.equalsIgnoreCase("sell");
+        buffer.append("\""+(buy ? "buy" : "sell")+"\"");
+        if ((buy || sell) && !quitNow) {
+          buffer.append(" symbol=");
+          do {
+
+            //get stock symbol from user
+            System.out.print("Symbol (\"BEAS\" or \"MSFT\", \"quit\" to quit): \n");
+            line = msgStream.readLine();
+            if (line != null && line.trim().length() != 0) {
+              quitNow = line.equalsIgnoreCase("quit");
+              beas = line.equalsIgnoreCase("BEAS");
+              msft = line.equalsIgnoreCase("MSFT");
+
+              if (beas == true) buffer.append("\""+ "BEAS" + "\"");
+              if (msft == true) buffer.append("\""+ "MSFT" + "\"");
+
+              if ((beas || msft) && !quitNow) {
+                 do {
+                   // get number of shares from user
+                   System.out.print("Number of shares (\"quit\" to quit): \n");
+                   buffer.append(" numShares=");
+                   line = msgStream.readLine();
+                   if (line != null && line.trim().length() != 0) {
+                     quitNow = line.equalsIgnoreCase("quit");
+                     buffer.append("\""+line+"\"");
+                     buffer.append("/>");
+                       if (!quitNow) {
+
+                       // make sure user input is an integer
+                       boolean isInteger = false;
+                       try {
+                         Integer.parseInt(line);
+                         isInteger = true;
+                       } catch (NumberFormatException nfe) {
+                         isInteger = false;
+                       }
+                       if (isInteger) {
+                         System.out.println("Sending trade information...");
+                         // send message to JMS queue
+                         client.send(buffer.toString());
+                         buffer.delete(0,buffer.length());
+                         System.out.println("Your message has been sent to queue");
+                         transactionSent = true;
+                       }
+                     }
+                   }
+                 } while ( !quitNow && !transactionSent);
+               }
+             }
+           } while ( !quitNow && !transactionSent);
+        }
+      }
+    } while (! quitNow);
+    client.close();
+  }
+
+  // gets the initial context to the server
+  private static InitialContext getInitialContext(String url)
+    throws NamingException
+  {
+    Hashtable<String,String> env = new Hashtable<String,String>();
+    env.put(Context.INITIAL_CONTEXT_FACTORY, JNDI_FACTORY);
+    env.put(Context.PROVIDER_URL, url);
+    return new InitialContext(env);
+  }
+
+  /**
+   * Sends a message in the form of XML data to a JMS queue.
+   *
+   * @exception JMSException if a JMS error occurred
+   */
+   public void send(String message) throws JMSException {
+    xmsg.setText(message);
+    qsender.send(xmsg);
+   }
+}
+

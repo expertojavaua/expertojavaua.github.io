@@ -1,0 +1,81 @@
+import java.security.*;
+import java.util.*;
+import javax.security.auth.*;
+import javax.security.auth.login.*;
+
+public class EjemploJAAS2 {
+
+	private static final String TEXTO_GENERICO = "esto lo puede ver cualquiera";
+	private static final String TEXTO_PARTICULAR = "solo para tus ojos";
+
+	/**
+	 *  Devolver un String distinto según el subject
+	 */
+	public static String getSecretText() {
+
+		AccessControlContext contexto = AccessController.getContext();
+		Subject sujeto = Subject.getSubject(contexto);
+
+		if (sujeto == null) {
+                        System.out.println("Sujeto null");
+			return TEXTO_GENERICO;
+		}
+                
+                // Obtener todos los principales: instancias de ImplPrincipal.
+                // Devolver el texto secreto si el usuario "sco"
+		Set principales = sujeto.getPrincipals();
+		Iterator iterador = principales.iterator();
+		while (iterador.hasNext()) {
+			ImplPrincipal principal = (ImplPrincipal)iterador.next();
+			if (principal.getName().equals("sco")) {
+				return TEXTO_PARTICULAR;
+			}
+		}
+		return TEXTO_GENERICO;
+	}
+
+	/**
+	 *	Intentar hacer un login y después ejecutar AccionEjemplo.
+	 */
+	public static void main(String[] args) {
+		if (args.length != 2) {
+			System.err.println
+			("Uso: java EjemploJAAS2 usuario password");
+			System.exit(1);
+		}
+
+		LoginContext loginContext = null;
+
+		String usuario = args[0];
+		char[] password = args[1].toCharArray();
+
+		try {
+			loginContext = new LoginContext(
+				"Ejemplo", new UserPasswordCallbackHandler
+				(usuario, password));
+			loginContext.login();
+			System.out.println("\nLogin con exito");
+		} catch (LoginException le) {
+			System.out.println("\nLogin falló");
+		}
+
+                // Como el login tiene éxito entonces vemos el sujeto actual.
+		Subject sujeto = loginContext.getSubject();
+
+		// Perform the example action as the authenticated subject.
+                // y realizamos una acción de ejemplo
+		sujeto.doAs(sujeto, new AccionEjemplo());
+	}
+}
+
+
+class AccionEjemplo  implements PrivilegedAction {
+
+	public AccionEjemplo() {
+	}
+
+	public Object run() {
+		System.out.println("Texto secreto: " + EjemploJAAS2.getSecretText());
+		return null;
+	}
+}

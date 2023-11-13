@@ -1,0 +1,105 @@
+<head>
+<title>Sesion 5 Enterprise Java Beans</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../../ejercicios.css" type="text/css">
+</head>
+<body>
+
+<h1>Ejercicios sesi&oacute;n 5</h1>
+
+<h2>Ejercicio 1: Despliegue y prueba del bean CustomerEJB</h2>
+
+<p>En este primer ejercicio probaremos y desplegaremos el bean CustomerEJB. Se 
+  trata de un bean de entidad con persistencia gestionada por el contenedor.</p>
+<p>Para el ejercicio usaremos el dominio weblogic &quot;ejemplos&quot; creado 
+  en el ejercicio anterior. El ejercicio consta de los siguientes pasos:</p>
+<ol>
+  <li>Creaci&oacute;n de la tabla CUSTOMER de la base de datos Demo. </li>
+  <li>Compilaci&oacute;n y despliegue del bean.</li>
+  <li>Compilaci&oacute;n y prueba de la aplicaci&oacute;n cliente.</li>
+</ol>
+<h3>Creaci&oacute;n de la tabla <code>customer</code></h3>
+<p>Vamos a crear la tabla que necesitamos en la base de datos <code>demo</code>:</p>
+<p>1. Descargamos el fichero <code>ejercicio5.zip</code>, y lo descomprimimos 
+  en el directorio de trabajo <code>$HOME/ejb</code></p>
+<p>2. Se habr&aacute; creado el directorio <code>$HOME/ejb/customer</code>. En 
+  ese directorio se encuentran los subdirectorios <code>java</code>, <code>xml</code> 
+  y <code>sql</code>. Dentro del directorio <code>sql</code>, se encuentra el 
+  script <code>customer.sql</code> con el que vamos a crear la base de datos.</p>
+<p>3. Copiar ese script al directorio <code>$WL_HOME/weblogic700/samples/server/eval/pointbase/tools</code></p>
+<pre class="codigo">% cp customer/sql/customer.sql $WL_HOME/weblogic700/samples/server/eval/pointbase/tools</pre>
+<p>4. Ejecutamos la aplicaci&oacute;n cliente del gestor de bases de datos con 
+  la instrucci&oacute;n</p>
+<pre class="codigo">% cd $WL_HOME/weblogic700/samples/server/eval/pointbase/tools
+% ./startPointBaseCommander.sh</pre>
+<p>Introducimos los siguientes valores </p>
+<pre class="codigo">Do you wish to create a &quot;New/Overwrite&quot; Database? [default: N]: 
+  Select product to connect with: Embedded (E), or Server (S)? [default: E]: <strong>S</strong>
+  Please enter the driver to use: [default: [com.pointbase.jdbc.jdbcUniversalDriver]: 
+  
+  Please enter the database URL to use: [default: [jdbc:pointbase:server://localhost/sample]: 
+  <strong>jdbc:pointbase:server://localhost/demo</strong>
+  Username: [default: PBPUBLIC]: <strong>examples</strong>
+  Password: [default: PBPUBLIC]: <strong>examples</strong>
+  PointBase Commander 4.2ECF build 183 SERVER
+  Interactive SQL command language. Mac OS X/10.1.5(C) Copyright 1998 - 2002 PointBase(R), 
+  Inc. All rights reserved
+  SQL&gt;</pre>
+<p>6. Una vez en la consola SQL, ejecutaremos el comando</p>
+<pre class="codigo">SQL &gt; run &quot;customer.sql&quot;;</pre>
+<p>(Recuerda el punto y coma!!). Ahora ya se habr&aacute; creado la tabla necesaria 
+  para el probar el bean de entidad.</p>
+<h3>Despliegue del bean</h3>
+<p>1. Vuelve al directorio <code>ejb</code>, donde se encuentran todos los ficheros 
+  necesarios para el bean y comprueba que se encuentra el fichero EJB JAR <code>customer-ejb.jar</code>.</p>
+<p>2. Accede desde el navegador a la consola de administraci&oacute;n y realiza 
+  el despliegue del bean <code>savingsaccount-ejb.jar</code>. Debes seleccionar 
+  la opci&oacute;n<em> EJB &gt; Configure a new EJB </em>y pasar directamente 
+  al paso 2 para moverte por el &aacute;rbol de directorios hasta el directorio<code> 
+  $HOME/ejb/customer</code> y seleccionar el fichero <code>customer-ejb.jar</code>. 
+  Selecciona el servidor <code>myserver</code> y pulsa <em>Configure and Deploy</em>.</p>
+<h3>Compilaci&oacute;n y prueba de la aplicaci&oacute;n cliente</h3>
+<p>1. A&ntilde;ade el directorio WL_HOME/weblogic700/server/bin al path:</p>
+<pre class="codigo">% export PATH=$PATH:<em>WL_HOME</em>/weblogic700/server/bin</pre>
+<p>2. Actualiza las variables del entorno</p>
+<pre class="codigo">% . setWLSEnv.sh
+% export CLASSPATH=$CLASSPATH:.</pre>
+<p>3. Vuelve al directorio donde se encuentra los fuentes y compila todos los 
+  ficheros</p>
+<pre class="codigo">% cd $HOME/customer/src
+% javac *.java</pre>
+<p>4. Ejecuta la aplicaci&oacute;n cliente para a&ntilde;adir registros de customers</p>
+<pre class="codigo">% java AddCustomers</pre>
+<p>5. Ejecuta la aplicaci&oacute;n cliente para buscar customers</p>
+<pre class="codigo">% java FindCustomer</pre>
+<h2>Ejercicio 2: Modificaci&oacute;n del bean</h2>
+<p>1. Modifica la aplicaci&oacute;n cliente <code>FindCustomer</code> para que 
+  actualice a <code>False</code> el valor del campo <code>hasGoodCredit</code>, 
+  con el m&eacute;todo de negocion <code>setHasGoodCredit(False)</code>.</p>
+<p>2. Modifica los ficheros del bean para a&ntilde;adir el campo <code>Integer 
+  edad</code>, as&iacute; como los m&eacute;todos de acceso <code>setEdad(Integer)</code> 
+  y <code>getEdad()</code>. Debes modificar tambi&eacute;n el fichero de creaci&oacute;n 
+  de la base de datos. Recompila y reconstruye el fichero <code>customer-ejb.jar</code>.</p>
+<p>3. Modifica las aplicaciones clientes <code>AddCustomers</code> y <code>FindCustomer</code> 
+  para que actualicen e impriman respectivamente la edad del <code>Customer</code>.</p>
+<p>4. A&ntilde;ade un nuevo m&eacute;todo de b&uacute;squeda</p>
+<pre class="codigo">public Collection findByGoodCredit() throws javax.ejb.FinderException;</pre>
+<p>en la clase CustomerHomeRemote.java. A&ntilde;ade la cl&aacute;usula EJB-QL 
+  correspondiente a esta b&uacute;squeda en el fichero ejb-jar.xml:</p>
+<pre class="codigo">&lt;query&gt;
+  &lt;query-method&gt;
+    &lt;method-name&gt;findByGoodCredit&lt;/method-name&gt;
+  &lt;method-params/&gt;
+  &lt;/query-method&gt;
+  &lt;ejb-ql&gt;
+     SELECT OBJECT(c) FROM Customer c
+     WHERE c.hasGoodCredit = TRUE
+  &lt;/ejb-ql&gt;
+&lt;/query&gt;</pre>
+<p>5. Escribe una aplicaci&oacute;n cliente que llame a <code>findByGoodCredit()</code> 
+  y muestre todos los customers que tienen ese campo a true.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</body>
+</html>

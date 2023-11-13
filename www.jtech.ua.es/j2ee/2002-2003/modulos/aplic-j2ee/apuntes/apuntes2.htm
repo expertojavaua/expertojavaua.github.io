@@ -1,0 +1,383 @@
+<html>
+<head>
+<title>Untitled Document</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<h1>Tema 2: La capa de presentaci&oacute;n</h1>
+<p>&nbsp;</p>
+<p>Esta capa act&uacute;a de interfaz entre el cliente y la capa de negocio. Sus 
+  responsabilidades comprenden:</p>
+<ul>
+  <li>El formateo y <strong>presentaci&oacute;n de los datos</strong> de manera 
+    adecuada para el cliente (HTML para un navegador web, mensajes XML para un 
+    cliente Java, ....).</li>
+  <li>La <strong>entrada de datos</strong> para su procesamiento (a trav&eacute;s 
+    de formularios web o controles de GUI Swing).</li>
+  <li>El <strong>flujo de navegaci&oacute;n</strong> entre p&aacute;ginas HTML 
+    o &quot;pantallas&quot; de la aplicaci&oacute;n.</li>
+</ul>
+<p>T&iacute;picamente una aplicaci&oacute;n J2EE usar&aacute; en esta capa <em>servlets</em> 
+  para la l&oacute;gica y el control, <em>p&aacute;ginas JSP</em> para la presentaci&oacute;n 
+  y entrada de datos y <em>JavaBeans</em> para el almacenamiento temporal de datos. 
+  Aunque en principio la capa de presentaci&oacute;n deber&iacute;a dise&ntilde;arse 
+  para atender a distintos tipos de clientes (navegadores web, <em>applets</em>, 
+  aplicaciones....) aqu&iacute; nos ce&ntilde;iremos al caso m&aacute;s com&uacute;n, 
+  el de aplicaciones web.</p>
+<h2>2.1 Patrones J2EE para la capa de presentaci&oacute;n</h2>
+<p>En el Sun Java Center se definen una serie de patrones J2EE orientados a la 
+  capa de presentaci&oacute;n:</p>
+<ul>
+  <li> <strong>Intercepting Filter</strong>: filtra las peticiones a un recurso, 
+    preprocesando o postprocesando la petici&oacute;n. Se puede emplear para logging, 
+    chequeo de seguridad, etc. Su implementaci&oacute;n directa en la plataforma 
+    J2EE es a trav&eacute;s de <em>filtros</em> de servlet.</li>
+  <li><strong>Front Controller:</strong> recibe peticiones, las analiza y las 
+    redirige hacia las clases Java apropiadas para su tratamiento. Es el controlador 
+    de una arquitectura MVC, que en J2EE normalmente se implementar&aacute; mediante 
+    un servlet. Trabaja en conjunci&oacute;n con un <strong>dispatcher</strong> 
+    que redirige finalmente la petici&oacute;n hacia el encargado de mostrar los 
+    resultados (normalmente un JSP).</li>
+  <li><strong>View helper</strong>: son clases auxiliares que permiten modularizar 
+    la l&oacute;gica necesaria para formatear los datos. T&iacute;picamente se 
+    implementan con librer&iacute;as de etiquetas JSP.</li>
+  <li><strong>Dispatcher view y Service to worker:</strong> es otra forma de llamar 
+    a la arquitectura MVC. La &uacute;nica diferencia es qui&eacute;n extrae los 
+    datos que hay que mostrar, si es la propia vista (JSP) una vez la petici&oacute;n 
+    se ha redirigido a ella o si la vista se limita a mostrar los datos que alguien 
+    (una clase auxiliar) ha obtenido.</li>
+  <li><strong>Composite view</strong>: permite componer vistas de manera modular 
+    y reutilizable. En JSP se pueden emplear librer&iacute;as de etiquetas, aunque 
+    hay <em>frameworks</em> dise&ntilde;ados para tal fin (por ejemplo, Tiles, 
+    incorporado en Struts)</li>
+</ul>
+<h2>2.3 Struts: un <em>framework</em> para la capa de presentaci&oacute;n</h2>
+<p><a href="http://jakarta.apache.org/struts"><strong>Struts</strong></a> <a href="http://www.jtech.ua.es/j2ee/2002-2003/aplic-j2ee/recursos/jakarta-struts-1.1-b3.zip">(versi&oacute;n 
+  1.1 en ZIP)</a> es un <em>framework</em> para implementar la capa de presentaci&oacute;n 
+  , desarrollado en el seno del proyecto <a href="http://jakarta.apache.org">Apache 
+  Jakarta</a> y que est&aacute; bastante difundido. Permite implementar aplicaciones 
+  web que sigan la arquitectura MVC. Al n&uacute;cleo central de Struts se han 
+  ido incorporando diversos subproyectos, ofreciendo en la actualidad las siguientes 
+  funcionalidades (entre otras):</p>
+<ul>
+  <li> Implementaci&oacute;n de un<strong> modelo MVC</strong> utilizando el patr&oacute;n 
+    &quot;Service to worker&quot;.</li>
+  <li><strong>Librer&iacute;as de etiquetas</strong> propias que a&ntilde;aden, 
+    entre otras, utilidades para tratar con formularios.</li>
+  <li>Un <strong>validador de datos</strong> que permite especificar las reglas 
+    de validaci&oacute;n en un fichero de configuraci&oacute;n XML, eliminando 
+    la necesidad de validar con c&oacute;digo Java (subproyecto <em>Validator</em>).</li>
+  <li>Implementaci&oacute;n del patr&oacute;n &quot;<strong>Composite View</strong>&quot; 
+    en un subproyecto denominado <em>Tiles</em>.</li>
+</ul>
+<h3>2.3.1 MVC en Struts</h3>
+<p>Struts implementa de la siguiente forma cada uno de los componentes de la arquitectura 
+  MVC:</p>
+<ul>
+  <li>El <strong>controlador</strong> es un servlet, de una clase proporcionada 
+    por Struts. Ser&aacute; necesario configurar la aplicaci&oacute;n web (a trav&eacute;s 
+    del fichero <code>web.xml</code>) para que las peticiones del usuario se redirijan 
+    siempre al servlet.</li>
+  <li>El controlador despacha las peticiones del usuario a la clase adecuada para 
+    ejecutar la <strong>acci&oacute;n</strong>. En struts, las clases que ejecuten 
+    las acciones deben <em>heredar de la clase <strong>Action</strong></em>.</li>
+  <li>La <strong>vista</strong> se implementar&aacute; normalmente mediante p&aacute;ginas 
+    JSP. Struts ofrece dos herramientas para ayudar en la presentaci&oacute;n 
+    de datos: los <strong>ActionForm</strong>s son clases que capturan los datos 
+    introducidos en formularios y permiten su validaci&oacute;n. Las <strong>librer&iacute;as 
+    de etiquetas</strong> permiten mostrar errores y facilitar el trabajo con 
+    formularios.</li>
+  <li>La implementaci&oacute;n del <strong>modelo</strong> corre enteramente a 
+    cargo del desarrollador, ya que es propio de la capa de negocio y no est&aacute; 
+    dentro del &aacute;mbito de Struts.</li>
+</ul>
+<h3>2.3.2 Instalar Struts</h3>
+<p>La instalaci&oacute;n es sencilla. Basta con colocar en la carpeta <code>WEB-INF/lib</code> 
+  de nuestra aplicaci&oacute;n web las librer&iacute;as (ficheros .jar) que vienen 
+  con la distribuci&oacute;n est&aacute;ndar de Struts. Si utilizamos alguna de 
+  las etiquetas propias de Struts, necesitaremos incluir tambi&eacute;n el correspondiente 
+  descriptor (fichero .tld).</p>
+<h3>2.3.3 Configurar el controlador</h3>
+<p>Como se ha comentado, el controlador en Struts es un servlet que recibe las 
+  peticiones del usuario y las redirige a las clases Java que las van a tratar. 
+  Salvo que tengamos necesidades muy especiales, podemos usar como controlador 
+  directamente la clase <code>org.apache.struts.action.ActionServlet</code>, que 
+  ya viene implementada en la distribuci&oacute;n de Struts. Para que todas las 
+  peticiones del usuario se redirijan a este servlet habr&aacute; que modificar 
+  el fichero <strong>web.xml</strong>, como en el siguiente ejemplo (los ejemplos 
+  de este tema muestran c&oacute;digo de la aplicaci&oacute;n <a href="http://www.jtech.ua.es/j2ee/2002-2003/aplic-j2ee/apuntes/ejemplos/amigosJ2EE.war">amigosJ2EE</a>):</p>
+
+<pre class="codigo" >&lt;!-- servlet que hace de controlador --&gt;
+&lt;servlet&gt;
+   &lt;servlet-name&gt;controlador&lt;/servlet-name&gt;
+   &lt;servlet-class&gt;org.apache.struts.action.ActionServlet&lt;/servlet-class&gt;
+&lt;/servlet&gt;
+
+&lt;!-- redirigir ciertas peticiones al controlador --&gt;
+&lt;servlet-mapping&gt;
+   &lt;servlet-name&gt;controlador&lt;/servlet-name&gt;
+   &lt;url-pattern&gt;*.do&lt;/url-pattern&gt;
+&lt;/servlet-mapping&gt;</pre>
+
+<p> En el ejemplo anterior, todas las peticiones que sigan el patr&oacute;n <code>*.do</code> 
+  se redirigir&aacute;n al controlador de Struts. Por ejemplo la petici&oacute;n 
+  <code>login.do</code> ser&aacute; capturada por Struts y redirigida a la acci&oacute;n 
+  de nombre <code>login</code>.</p>
+<h3>2.3.4 Mapear las acciones</h3>
+<p>La asociaci&oacute;n entre el nombre simb&oacute;lico de la acci&oacute;n y 
+  la clase Java que la procesa se realiza en el fichero de configuraci&oacute;n 
+  <code>struts-config.xml</code> (que se colocar&aacute; en <code>/WEB-INF</code>). 
+  El mapeado entre acciones y clases se realiza dentro del elemento <code>&lt;action-mappings&gt;</code> 
+  y cada uno de ellos constituye un <code>&lt;action&gt;</code>. Por ejemplo, 
+  supongamos que la encargada de procesar la acci&oacute;n <code>login</code> 
+  del ejemplo anterior es nuestra clase Java <code>acciones.AccionLogin</code>. 
+  En el fichero <code>struts-config.xml</code> se colocar&iacute;an las siguientes 
+  l&iacute;neas:</p>
+<pre class="codigo">&lt;?xml version = '1.0' encoding = 'ISO-8859-1'?&gt;
+&lt;!DOCTYPE struts-config PUBLIC &quot;-//Apache Software Foundation//DTD Struts    Configuration 1.1//EN&quot; &quot;http://jakarta.apache.org/struts/dtds/struts-config_1_1.dtd&quot;&gt;
+&lt;struts-config&gt;
+   &lt;!--definici&oacute;n de otros elementos del fichero de configuraci&oacute;n --&gt;
+   ...
+   ...
+   &lt;!--definici&oacute;n de acciones --&gt;<strong>
+   &lt;action-mappings&gt;
+</strong>      &lt;!-- hacer login --&gt;
+<strong>      &lt;action path=&quot;/login&quot; type=&quot;acciones.AccionLogin&quot;&gt;
+         &lt;forward name=&quot;OK&quot; path=&quot;/personal.jsp&quot;/&gt;
+         &lt;forward name=&quot;errorUsuario&quot; path=&quot;/error.html&quot;/&gt;
+      &lt;/action&gt;
+</strong>      &lt;!-- definici&oacute;n de otras acciones --&gt;
+<strong>	  ...
+   &lt;/action-mappings&gt;
+</strong>
+</pre>
+<p>Como se ve en el ejemplo, los atributos b&aacute;sicos de un <code>action</code> 
+  son su nombre (el <code>path</code> de la URL solicitada, sin el elemento com&uacute;n 
+  a todos las URL de acci&oacute;n, en este caso, sin el <code>.do </code>) y 
+  la clase Java que la procesa (<code>type</code>). </p>
+<p>Una acci&oacute;n ejecutada puede tener diversos resultados (por ejemplo, un 
+  login puede ser correcto o no, dependiendo de la contrase&ntilde;a). Cada uno 
+  de ellos se especifica mediante un elemento <code>&lt;forward&gt;</code>, en 
+  el que se define un nombre simb&oacute;lico para el resultado de la acci&oacute;n 
+  (<code>name</code>) y la URL de la p&aacute;gina que contiene la vista asociada 
+  (<code>path</code>).</p>
+<h3>2.3.5 Crear las clases que ejecutan las acciones</h3>
+<p>Las clases encargadas de ejecutar las acciones deben descender de la clase 
+  abstracta <code>org.apache.struts.action.Action</code>, proporcionada por Struts. 
+  Cuando se ejecuta una acci&oacute;n lo que hace Struts es llamar a su m&eacute;todo 
+  <code>execute</code>, que debemos sobreescribir para que realice la tarea deseada. 
+  Por ejemplo, para el caso de la acci&oacute;n login:</p>
+<pre class="codigo">package acciones;
+
+
+import javax.servlet.http.*;
+import org.apache.struts.action.*;
+
+
+<span class="codigo">public class AccionLogin <strong>extends Action</strong> {
+   <strong>public ActionForward execute(ActionMapping mapping, ActionForm form,
+                                HttpServletRequest request,
+                                HttpServletResponse response) throws Exception {
+</strong>
+      boolean usuarioOK;
+
+      //obtener login y password y autentificar al usuario
+      //si es correcto, poner usuarioOK a 'true'
+      ...
+
+      //dirigirnos a la vista adecuada seg&uacute;n el resultado
+      if (usuarioOK)
+         return <strong>mapping.findForward(&quot;OK&quot;)</strong>;
+      else
+         return <strong>mapping.findForward(&quot;errorUsuario&quot;)</strong>;
+</span>}</pre>
+<p>Hay que destacar varias cosas del c&oacute;digo de la acci&oacute;n:</p>
+<ul>
+  <li>Como se ha dicho, una acci&oacute;n debe descender de la clase <strong>Action</strong></li>
+  <li>El m&eacute;todo execute recibe como <strong>par&aacute;metros</strong> 
+    la petici&oacute;n y la respuesta HTTP, lo que nos permite interactuar con 
+    ellas. No obstante, tambi&eacute;n tenemos accesibles los datos incluidos 
+    en la petici&oacute;n (normalmente a trav&eacute;s de formularios) mediante 
+    el objeto <strong>ActionForm</strong>, si es que hemos asociado un objeto 
+    de esta clase a la acci&oacute;n. </li>
+  <li>El m&eacute;todo execute debe <strong>devolver</strong> un objeto de la 
+    clase <strong>ActionForward</strong>, que especifica la siguiente vista a 
+    mostrar. Normalmente, especificaremos la vista mediante un nombre simb&oacute;lico.</li>
+  <li>El <strong>par&aacute;metro</strong> de tipo <strong>ActionMapping</strong> 
+    nos permite acceder a la asociaci&oacute;n nombre acci&oacute;n-nombre clase 
+    definida en el fichero . De esta forma podemos encontrar la vista asociada 
+    a un nombre simb&oacute;lico.</li>
+</ul>
+<h3>2.3.6 Utilizar las acciones por defecto</h3>
+<p>Struts incorpora una serie de acciones con comportamientos predefinidos, que 
+  son de uso com&uacute;n en muchas aplicaciones. Por ejemplo, para dirigir al 
+  usuario desde la p&aacute;gina de login hacia la de registro de nuevo usuario, 
+  podr&iacute;amos en principio utilizar simplemente un enlace, pero esto ir&iacute;a 
+  &quot;contra la filosof&iacute;a&quot; de MVC, en la que todas las peticiones 
+  pasan por el controlador. En su lugar, podemos utilizar una acci&oacute;n de 
+  la clase <code>org.apache.struts.action.ForwardAction</code>, que redirige una 
+  petición hacia una vista, especificada mediante el atributo <code>parameter</code>. 
+  Por ejemplo:</p>
+<pre class="codigo">&lt;action path=&quot;/inicioRegistro&quot; type=&quot;org.apache.struts.actions.ForwardAction&quot;
+    parameter=&quot;/registro.jsp&quot;&gt;
+&lt;/action&gt; </pre>
+<p>De esta manera, la petici&oacute;n a la URL <code>inicioRegistro.do</code>, 
+  se redigir&iacute;a a la p&aacute;gina <code>registro.jsp</code>. As&iacute; 
+  se puede cambiar el flujo de navegaci&oacute;n sin tener que cambiar directamente 
+  los enlaces de las p&aacute;ginas. Struts incorpora otras acciones por defecto, 
+  que veremos posteriormente.</p>
+<h3>2.3.6 Obtener y validar las entradas del usuario: ActionForms</h3>
+<p>Aunque los datos introducidos en formularios podr&iacute;an obtenerse directamente 
+  de la petici&oacute;n HTTP, Struts ofrece un mecanismo alternativo que proporciona 
+  distintas ventajas: los <strong>ActionForm</strong>s. Empleando ActionForms 
+  podemos conseguir:</p>
+<ul>
+  <li><strong>Validaci&oacute;n de datos modular </strong>(realizada separadamente 
+    a la acci&oacute;n), y en caso de utilizar el plugin Validator, validaci&oacute;n 
+    autom&aacute;tica seg&uacute;n lo especificado en un fichero de configuraci&oacute;n.</li>
+  <li><strong>Recuperaci&oacute;n de los datos</strong> para volver a rellenar 
+    formularios. De esta forma se evita el t&iacute;pico problema de que el usuario 
+    tenga que volver a rellenar un formulario entero porque uno de los datos es 
+    incorrecto.</li>
+</ul>
+<p>Podemos considerar un ActionForm como si fuera un JavaBean que captura los 
+  datos de un formulario. Los datos se pueden extraer, validar, cambiar y volver 
+  a colocar en otro formulario. No obstante, no tiene por qu&eacute; haber una 
+  correspondencia uno a uno entre un ActionForm y un formulario HTML, de manera 
+  que se puede utilizar el mismo ActionForm para englobar varios formularios separados 
+  en distintas p&aacute;ginas (caso t&iacute;pico de un asistente, o de un proceso 
+  realizado en peque&ntilde;os pasos, como por ejemplo introducir todos los datos 
+  para un pedido v&iacute;a web: items pedidos, direcci&oacute;n de env&iacute;o, 
+  datos de la tarjeta,...). Tambi&eacute;n se puede reutilizar el mismo ActionForm 
+  en distintos formularios que compartan datos (por ejemplo, para dar de alta 
+  o modificar los datos de un usuario registrado).</p>
+<p>En Struts se pueden definir b&aacute;sicamente dos tipos distintos de ActionForms</p>
+<ul>
+  <li>Clases descendientes de la clase base <strong>ActionForm</strong>. Deben 
+    incorporar m&eacute;todos Java para obtener/cambiar cada uno de los datos 
+    (al estilo JavaBeans), cuya definici&oacute;n puede resultar tediosa.</li>
+  <li>Instancias de la clase <strong>DynaActionForm</strong> o descendientes de 
+    &eacute;sta. Permiten definir los campos en el fichero<code> struts-config</code>, 
+    de manera que se pueden a&ntilde;adir o modificar campos minimizando la necesidad 
+    de recompilar c&oacute;digo. Mediante la clase <strong>DynaValidatorForm</strong> 
+    se puede incluso validar datos de manera autom&aacute;tica, seg&uacute;n las 
+    reglas especificadas en un fichero de configuraci&oacute;n aparte.</li>
+</ul>
+<h3>2.3.7 El ciclo de vida de un ActionForm</h3>
+<p>La generaci&oacute;n y procesamiento de un ActionForm pasa por varias etapas:</p>
+<ul>
+  <li> El controlador recibe la petici&oacute;n del usuario, y chequea si la acci&oacute;n 
+    asociada utiliza un ActionForm. De ser as&iacute;, crea el objeto</li>
+  <li>Se llama al m&eacute;todo <code>reset()</code> del objeto, que el desarrollador 
+    puede sobreescribir para &quot;limpiar&quot; sus campos. Esto tiene sentido 
+    si el ActionForm persiste m&aacute;s all&aacute; de la petici&oacute;n actual 
+    (lo cual se puede especificar al definirlo).</li>
+  <li>El ActionForm se almacena en el &aacute;mbito especificado en su definici&oacute;n 
+    (petici&oacute;n, sesi&oacute;n o aplicaci&oacute;n)</li>
+  <li>Los datos del ActionForm se rellenan con los que contiene la petici&oacute;n 
+    HTTP. Cada par&aacute;metro HTTP se asocia con el dato del mismo nombre del 
+    ActionForm.</li>
+  <li>Se validan los datos, llamando al m&eacute;todo <code>validate()</code>, 
+    que el desarrollador debe sobreescribir para implementar la validaci&oacute;n 
+    deseada.</li>
+  <li>Si se han producido errores de validaci&oacute;n, se produce una redirecci&oacute;n 
+    a la p&aacute;gina especificada para este caso. Si no, se llama al<code> execute()</code> 
+    de la acci&oacute;n y finalmente se muestra la vista asociada a esta, desde 
+    donde tambi&eacute;n se puede acceder al ActionForm.</li>
+</ul>
+<h3>2.3.8 Declarar ActionForms</h3>
+<p>Los ActionForm se definen dentro del fichero <code>struts-config.xml</code>, 
+  dentro de la secci&oacute;n <code>&lt;form-beans&gt;</code>. Cada ActionForm 
+  viene definido por un elemento <code>&lt;form-bean&gt;</code>. Por ejemplo, 
+  para definir un ActionForm con el nombre simb&oacute;lico FormLogin y asociado 
+  a la clase Java <code>acciones.formularios.FormLogin</code> har&iacute;amos:</p>
+<pre class="codigo">&lt;form-beans&gt;
+   &lt;form-bean name=&quot;FormLogin&quot; type=&quot;acciones.formularios.FormLogin&quot;&gt;
+   &lt;/form-bean&gt;
+&lt;/form-beans&gt;</pre>
+<p>Para que los datos de un ActionForm sean accesibles a una acci&oacute;n, hay 
+  que definir una serie de atributos dentro del elemento action de <code>struts-config.xml</code>. 
+  Por ejemplo, para asociar un ActionForm de la clase <code>FormLogin</code> a 
+  la acci&oacute;n login de los ejemplos anteriores, se podr&iacute;a hacer:</p>
+<pre class="codigo">&lt;action path=&quot;/login&quot; type=&quot;acciones.AccionLogin&quot; 
+<strong>        name=&quot;FormLogin&quot; scope=&quot;session&quot;
+        validate=&quot;true&quot; input=&quot;/index.jsp&quot;&gt;
+</strong>   &lt;forward name=&quot;OK&quot; path=&quot;/personal.jsp&quot;/&gt;
+   &lt;forward name=&quot;errorUsuario&quot; path=&quot;/error.html&quot;/&gt;
+&lt;/action&gt;</pre>
+<p>El atributo <code>name</code> indica el nombre simb&oacute;lico para el ActionForm. 
+  El <code>scope</code> tiene el mismo significado que cuando tratamos con JavaBeans. 
+  En caso de que se desee validar los datos, hay que especificar el atributo <code>validate=true</code> 
+  y utilizar el atributo <code>input</code> para designar la p&aacute;gina a la 
+  que se volver&aacute; si se han producido errores de validaci&oacute;n.</p>
+<h3>2.3.8 Definir un <em>ActionForm</em> b&aacute;sico</h3>
+<p>Esta tarea es muy similar a definir un JavaBean. Hay que especificar m&eacute;todos 
+  get/set para cada campo, y colocar la l&oacute;gica de validaci&oacute;n en 
+  el m&eacute;todo validate(). Por ejemplo:</p>
+<pre class="codigo">package acciones.formularios;
+
+
+import org.apache.struts.action.*;
+
+import javax.servlet.http.HttpServletRequest;
+
+
+public class FormLogin extends ActionForm {
+   private String login;
+   private String password;
+   
+   public void setLogin(String l) {
+      login = l 
+   }
+   
+   public String getLogin() {
+      return login;
+   }
+   
+   public ActionErrors validate(ActionMapping mapping, 
+                                HttpServletRequest request) {
+      if ((getlogin()==null)||(getLogin.equals(&quot;&quot;)))
+         errores.add(ActionErrors.GLOBAL_ERROR
+                     , new ActionError(&quot;error.requerido.usuario&quot;));
+      return errores; 
+   }
+}</pre>
+<p>El m&eacute;todo validate() debe devolver una colecci&oacute;n de errores (o 
+  null), representada por el objeto <strong>ActionErrors</strong>. Cada error 
+  es un objeto <strong>ActionError</strong>. Para crear un error hay que especificar 
+  el mensaje de error, aunque para hacerlo m&aacute;s flexible, el mensaje no 
+  es directamente una cadena, sino una clave dentro de un fichero de texto del 
+  tipo properties. Por ejemplo, la clave &quot;error.requerido.usuario&quot; significar&aacute; 
+  que debe haber un fichero .properties en el que se especifique algo como:</p>
+<pre class="codigo">error.requerido.usuario = es necesario especificar nombre de usuario</pre>
+<p>Para indicar a struts c&oacute;mo encontrar el fichero .properties, utilizamos 
+  el fichero de configuraci&oacute;n struts-config.xml, mediante el elemento &lt;message-resources&gt;. 
+  Por ejemplo:</p>
+<pre class="codigo"> &lt;message-resources parameter=&quot;util.recursos&quot;/&gt;
+</pre>
+<p>Indicar&iacute;a a struts que busque un fichero <strong>recursos.properties</strong> 
+  dentro de la carpeta util. Normalmente, se toma como base de la b&uacute;squeda 
+  la carpeta /WEB_INF/classes, por lo que el fichero buscado ser&aacute; finalmente 
+  /WEB-INF/classes/util/recursos.properties.</p>
+<h3>2.3.9 Definir un <em>DynaActionForm</em></h3>
+<p>En formularios con muchos campos, resultar&aacute; tedioso definir m&eacute;todos 
+  get/set para cada uno de ellos. En su lugar, podemos utilizar DynaActionForms, 
+  en los que los campos se definen en el fichero de configuraci&oacute;n de Struts. 
+  Por ejemplo:</p>
+<pre class="codigo"> &lt;form-bean name=&quot;FormLogin&quot; type=&quot;org.apache.struts.action.DynaActionForm&quot;&gt;
+   &lt;form-property name=&quot;login&quot; type=&quot;java.lang.String&quot;/&gt;
+   &lt;form-property name=&quot;password&quot; type=&quot;java.lang.String&quot;/&gt;
+ &lt;/form-bean&gt;
+</pre>
+<p>Para acceder a los campos de un DynaActionForm se utiliza un m&eacute;todo 
+  gen&eacute;rico <strong>get</strong> al que se pasa como par&aacute;metro el 
+  nombre del campo. Algo similar ocurre para cambiar el valor de un campo (m&eacute;todo 
+  <strong>set</strong>).</p>
+<p>Si deseamos validar un DynaActionForm, tendremos que utilizar una clase propia 
+  que herede de &eacute;sta, y sobreescribir su m&eacute;todo validate(), o mejor 
+  a&uacute;n, podemos validar datos autom&aacute;ticamente utilizando el m&oacute;dulo 
+  <strong>validator</strong>.</p>
+</body>
+</html>

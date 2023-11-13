@@ -1,0 +1,667 @@
+<!-- saved from url=(0022)http://internet.e-mail -->
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+                                                            
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+                                                            
+  <meta name="Author" content="Nacho">
+                                                            
+  <meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+                                                        
+  <link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+  <title>Ejercicios de Servlets</title>
+</head>
+  <body>
+      <b>      
+<h1>Conceptos básicos de servlets</h1>
+<h2>&nbsp;</h2>
+      </b><p>Como ejercicio de servlets haremos un servidor de subastas. Dicho
+      servidor permitirá que varios clientes se conecten a él, y virtualmente
+      puedan ofertar sus productos y pujar por los de otros clientes. </p>
+           
+      <p>Para esta aplicación, tenemos una infraestructura con 5 servlets: </p>
+           
+      <div align="center">
+      <img border="0" src="imagenes/subastas/esquema.jpg" width="504" height="99">
+      </div>
+      <p class="caption">Figura 1. Esquema de aplicación de subastas</p>           
+           
+      <ul>
+        <li><b>ServletRegistro</b> se emplea para dar de alta un usuario en la
+          subasta</li>
+        <li><b>ServletLogin</b> se utiliza para entrar con un login y password
+          de un usuario previamente registrado</li>
+        <li><b>ServletVender</b> lo utiliza cada usuario para sacar a la venta
+          los productos que desee</li>
+        <li><b>ServletComprar</b> se utiliza para pujar por los productos de
+          otros usuarios</li>
+        <li><b>ServletMain </b>es un servlet centrar que se encarga de realizar
+          todas las operaciones, mostrar la información, y canalizar el flujo
+          al servlet correspondiente, si es el caso.</li>
+      </ul>
+           
+      <p>Vemos en la estructura que se tienen 4 servlets
+      &quot;periféricos&quot; (<i>ServletRegistro, ServletLogin, ServletComprar
+      </i>y <i>ServletVender</i>), y uno central <i>ServletMain</i> que canaliza
+      todas las operaciones. Los 4 servlets periféricos simplemente muestran un
+      formulario, que al validarse llamará a <i>ServletMain</i> con unos
+      determinados parámetros. Luego, <i>ServletMain</i> se encargará de
+      realizar la acción correspondiente de acuerdo a los parámetros que
+      recibe. </p>
+           
+      <p>Se proporciona un fichero ZIP con el esqueleto de los 5 servlets, que
+      iremos desarrollando a lo largo de los ejercicios. También se tiene un fichero
+      descriptor (<i>web.xml</i>) que se irá completando a continuación. </p>
+           
+      <p>&nbsp; </p>
+           
+      <p><b>1</b><b>. (SUBASTA) </b>Como primer ejercicio, vamos a definir el
+      fichero descriptor de la aplicación (<i>web.xml</i>), mapeando los 5
+      servlets propuestos. Se tiene un esqueleto de fichero descriptor, con el
+      servlet <i>ServletRegistro</i> ya añadido: </p>
+           
+      <pre class="codigo">&lt;!DOCTYPE web-app PUBLIC 
+&quot;-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN&quot; 
+&quot;http://java.sun.com/j2ee/dtds/web-app_2_3.dtd&quot;&gt;
+
+&lt;web-app&gt;
+        &lt;display-name&gt;Aplicacion de Subastas&lt;/display-name&gt;
+        &lt;description&gt;
+                Aplicacion de Subastas con Servlets
+        &lt;/description&gt;
+
+	&lt;servlet&gt;
+		&lt;servlet-name&gt;sregistro&lt;/servlet-name&gt;
+		&lt;servlet-class&gt;ServletRegistro&lt;/servlet-class&gt;
+	&lt;/servlet&gt;
+
+	&lt;servlet-mapping&gt;
+		&lt;servlet-name&gt;sregistro&lt;/servlet-name&gt;
+		&lt;url-pattern&gt;/registro&lt;/url-pattern&gt;
+	&lt;/servlet-mapping&gt;
+&lt;/web-app&gt;</pre>
+           
+      <p>De forma que para llamar al servlet <i>ServletRegistro</i> lo
+      llamaremos mediante: </p>
+           
+      <pre class="codigo">http://servidor:puerto/subasta/registro</pre>
+           
+      <p>Faltaría añadir los otros 4 servlets: </p>
+           
+      <ul>
+        <li>Para el servlet <i>ServletLogin</i> le pondremos un <i>&lt;servlet-name&gt;</i>
+          igual a <i>slogin</i>, y un <i>url-pattern</i> igual a <i>/login</i>:</li>
+      </ul>
+      <blockquote>
+           
+      <pre class="codigo">&lt;servlet&gt;
+	&lt;servlet-name&gt;slogin&lt;/servlet-name&gt;
+	&lt;servlet-class&gt;ServletLogin&lt;/servlet-class&gt;
+&lt;/servlet&gt;
+
+&lt;servlet-mapping&gt;
+	&lt;servlet-name&gt;slogin&lt;/servlet-name&gt;
+	&lt;url-pattern&gt;/login&lt;/url-pattern&gt;
+&lt;/servlet-mapping&gt;</pre>
+           
+      </blockquote>
+      <ul>
+        <li>Para el servlet <i>ServletComprar</i> le pondremos un <i>&lt;servlet-name&gt;</i>
+          igual a <i>scomprar</i>, y un <i>url-pattern</i> igual a <i>/comprar</i>:</li>
+      </ul>
+      <ul>
+        <li>Para el servlet <i>ServletVender</i> le pondremos un <i>&lt;servlet-name&gt;</i>
+          igual a <i>svender</i>, y un <i>url-pattern</i> igual a <i>/vender</i>:</li>
+      </ul>
+      <ul>
+        <li>Opcionalmente, sería bastante cómodo añadir un mapeo en el
+          fichero descriptor para que, si accedemos al directorio raíz de la
+          aplicación, se cargue el servlet <i>ServletLogin</i>:</li>
+      </ul>
+      <blockquote>
+           
+      <pre class="codigo">&lt;servlet-mapping&gt;
+	&lt;servlet-name&gt;slogin&lt;/servlet-name&gt;
+	&lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+&lt;/servlet-mapping&gt;</pre>
+           
+      </blockquote>
+      <p>&nbsp;</p>
+      <p><b>2. (SUBASTA) </b>Ahora vamos a desarrollar los
+      servlets &quot;periféricos&quot;, esto es, los servlets <i>ServletRegistro</i>,
+      <i>ServletLogin</i>, <i>ServletVender</i> y <i>ServletComprar</i>, que no
+      tienen más que un formulario cuyo <i>submit</i> llama al servlet central.
+      Veremos a continuación las características de cada formulario. </p>
+           
+      <blockquote>
+        <p><b>a) ServletRegistro</b> </p>
+           
+        <p>El servlet <i>ServletRegistro</i> servirá, como veíamos, para que
+        un usuario se dé de alta en las subastas. Este servlet se da ya hecho
+        como ejemplo, y simplemente muestra un formulario con 3 campos de texto: </p>
+           
+        <ul>
+          <li><b>login</b>: para el login del nuevo usuario</li>
+          <li><b>password</b>: para el password del nuevo usuario</li>
+          <li><b>email</b>: para el e-mail del usuario</li>
+        </ul>
+        <p>Además, se tendrá un campo oculto: </p>
+           
+        <ul>
+          <li><b>accion</b>: con la acción que realizará el servlet central
+            cuando le llegue esta petición. Dicha acción es, en este caso, <i>registrar</i>.</li>
+        </ul>
+           
+      <pre class="codigo">&lt;form action=&quot;/subasta/main&quot;&gt;
+
+&lt;input type=&quot;hidden&quot; name=&quot;accion&quot; value=&quot;registrar&quot;&gt;
+
+Login:
+&lt;input name=&quot;login&quot; value=&quot;&quot;&gt;&lt;br&gt;
+
+Password:
+&lt;input name=&quot;password&quot; value=&quot;&quot;&gt;&lt;br&gt;
+
+E-mail:
+&lt;input name=&quot;email&quot; value=&quot;&quot;&gt;&lt;br&gt;
+
+&lt;input type=&quot;submit&quot; value=&quot;Enviar&quot;&gt;
+
+&lt;/form&gt;</pre>
+           
+        <p>Opcionalmente, podemos añadir a la página un enlace a <i>ServletLogin</i>,
+        por comodidad: </p>
+           
+      <pre class="codigo">&lt;a href=&quot;/subasta/login&quot;&gt;Validacion&lt;/a&gt;</pre>
+           
+        <p><b>b) ServletLogin</b> </p>
+           
+        <p>El servlet <i>ServletLogin</i> permitirá a un usuario registrado
+        entrar a la subasta. Mostrará un formulario con 2 campos de texto: </p>
+           
+        <ul>
+          <li><b>login</b>: login del usuario</li>
+          <li><b>password</b>: password del usuario</li>
+        </ul>
+        <p>Además, se tendrá un campo oculto: </p>
+           
+        <ul>
+          <li><b>accion</b>: con la acción que realizará el servlet central
+            cuando le llegue esta petición. Dicha acción es, en este caso, <i>validar</i>.</li>
+        </ul>
+           
+      <pre class="codigo">&lt;form action=&quot;/subasta/main&quot;&gt;
+
+&lt;input type=&quot;hidden&quot; name=&quot;accion&quot; value=&quot;validar&quot;&gt;
+
+Login:
+&lt;input name=&quot;login&quot; value=&quot;&quot;&gt;&lt;br&gt;
+
+Password:
+&lt;input name=&quot;password&quot; value=&quot;&quot;&gt;&lt;br&gt;
+
+&lt;input type=&quot;submit&quot; value=&quot;Enviar&quot;&gt;
+
+&lt;/form&gt;</pre>
+           
+        <p>Opcionalmente, podemos añadir a la página un enlace a <i>ServletRegistro</i>,
+        para que el usuario no registrado se dé de alta: </p>
+           
+      <pre class="codigo">&lt;a href=&quot;/subasta/registro&quot;&gt;Registrar&lt;/a&gt;</pre>
+           
+        <p><b>c) ServletVender</b> </p>
+           
+        <p>El servlet <i>ServletVender</i> permitirá a un usuario poner a la
+        venta un artículo. Mostrará un formulario con 2 campos de texto: </p>
+           
+        <ul>
+          <li><b>producto</b>: descripción del producto que se ofrece</li>
+          <li><b>valor</b>: valor del producto (en euros)</li>
+        </ul>
+        <p>Además, se tendrá un campo oculto: </p>
+           
+        <ul>
+          <li><b>accion</b>: con la acción que realizará el servlet central
+            cuando le llegue esta petición. Dicha acción es, en este caso, <i>vender</i>.</li>
+        </ul>
+           
+      <pre class="codigo">&lt;form action=&quot;/subasta/main&quot;&gt;
+
+&lt;input type=&quot;hidden&quot; name=&quot;accion&quot; value=&quot;vender&quot;&gt;
+
+Producto:
+&lt;input name=&quot;producto&quot; value=&quot;&quot;&gt;&lt;br&gt;
+
+Valor:
+&lt;input name=&quot;valor&quot; value=&quot;&quot;&gt;&lt;br&gt;
+
+&lt;input type=&quot;submit&quot; value=&quot;Enviar&quot;&gt;
+
+&lt;/form&gt;</pre>
+           
+        <p>Opcionalmente, podemos añadir a la página un enlace a <i>ServletMain</i>,
+        en el caso de que el usuario decida finalmente no vender: </p>
+           
+      <pre class="codigo">&lt;a href=&quot;/subasta/main&quot;&gt;Volver&lt;/a&gt;</pre>
+           
+        <p><b>d) ServletComprar</b> </p>
+           
+        <p>El servlet <i>ServletComprar</i> permitirá a un usuario pujar por
+        los productos que ofrecen otros usuarios. Se tendrá un parámetro de
+        entrada, con el producto por el que se puja: </p>
+           
+        <pre class="codigo">String producto = request.getParameter(&quot;producto&quot;);</pre>
+           
+        <p>Se mostrará un formulario con 1 campos de texto: </p>
+           
+        <ul>
+          <li><b>valor</b>: valor que ofrece por el artículo seleccionado.</li>
+        </ul>
+        <p>Además, se tendrá un campo oculto: </p>
+           
+        <ul>
+          <li><b>accion</b>: con la acción que realizará el servlet central
+            cuando le llegue esta petición. Dicha acción es, en este caso, <i>comprar</i>.</li>
+        </ul>
+           
+      <pre class="codigo">&lt;form action=&quot;/subasta/main&quot;&gt;
+
+&lt;input type=&quot;hidden&quot; name=&quot;accion&quot; value=&quot;comprar&quot;&gt;
+
+Valor:
+&lt;input name=&quot;valor&quot; value=&quot;&quot;&gt;&lt;br&gt;
+
+&lt;input type=&quot;submit&quot; value=&quot;Enviar&quot;&gt;
+
+&lt;/form&gt;</pre>
+           
+        <p>Opcionalmente, podemos añadir a la página un enlace a <i>ServletMain</i>,
+        en el caso de que el usuario decida finalmente no pujar: </p>
+           
+      <pre class="codigo">&lt;a href=&quot;/subasta/main&quot;&gt;Volver&lt;/a&gt;</pre>
+           
+      </blockquote>
+      <p>Tras esto, tendremos ya los 4 formularios periféricos de la
+      aplicación. No podremos probarlos hasta no tener el núcleo central, pero
+      podremos cargarlos para ver su apariencia: </p>
+           
+      <pre class="codigo">http://localhost:8080/subasta/login
+http://localhost:8080/subasta/registro
+http://localhost:8080/subasta/comprar
+http://localhost:8080/subasta/vender</pre>
+           
+      <p>&nbsp; </p>
+           
+      <p><b>3</b><b>. (SUBASTA)</b> Finalmente, nos queda definir el servlet
+      central <i>ServletMain</i>. Hay algunos elementos que se dejan ya
+      implementados, para facilitar la tarea y para no perder tiempo con
+      aspectos de la aplicación que son secundarios en cuanto a manejo de
+      servlets se refiere. Veremos primero qué es lo que ya hay hecho, y
+      después lo que se pide hacer. </p>
+           
+      <p><b>Elementos ya implementados:</b> </p>
+           
+      <ul>
+        <li>El servlet tiene ya implementada la <b>gestión de usuarios</b>. <br>
+          <ul type="disc">
+            <li>Tiene un campo <b>usuarios</b>:</li>
+          </ul>
+        </li>
+      </ul>
+      <blockquote>
+        <blockquote>
+          <pre class="codigo">Vector usuarios = new Vector();</pre>
+           
+          <p>que mantiene un listado de los usuarios que hay actualmente
+          registrados en el servidor de subastas. </p>
+        </blockquote>
+        <ul>
+          <li>Los objetos del vector <i>usuarios </i>son de tipo <b>Usuario</b>,
+            una subclase interna que mantiene los datos de cada usuario
+            registrado: login, password y e-mail.<br>
+          </li>
+          <li>La clase <i>ServletMain</i> tiene los métodos:</li>
+        </ul>
+        <blockquote>
+          <pre class="codigo">boolean validaUsuario(String login, 
+                      String password)
+
+boolean registraUsuario(String login, 
+                        String password,
+                        String email)
+
+Usuario buscaUsuario(String login)</pre>
+           
+          <p>Con <b>validaUsuario()</b> podremos hacer que un usuario registrado
+          entre al servidor con el login <i>login</i> y password <i>password</i>.&nbsp;
+          Devuelve <i>true</i> si se ha validado bien, <i>false</i> si no.</p>
+          <p>Con <b>registraUsuario()</b> podremos registrar un nuevo usuario,
+          dando su login, password y e-mail. Devuelve <i>true</i> si se ha
+          registrado bien, <i>false</i> si no (porque el login esté repetido,
+          por ejemplo).</p>
+          <p>El método <b>buscaUsuario()</b> lo utilizan internamente los otros
+          dos, para buscar el usuario de login <i>login</i> en la lista de
+          usuarios. Devuelve el objeto <i>Usuario</i> con los datos del usuario,
+          si se ha encontrado, o <i>null</i> si no se encontró. </p>
+        </blockquote>
+      </blockquote>
+      <ul>
+        <li>También se tiene la subclase <b>ObjetoSubasta</b>, que contiene los
+          datos de cada producto que se tiene en la subasta:<br>
+          <ul>
+            <li><b>producto</b>: nombre del producto o artículo</li>
+            <li><b>valor</b>: valor actual del producto (en euros)</li>
+            <li><b>usuario</b>: login del usuario que realizó la mayor oferta
+              hasta ahora</li>
+            <li><b>propietario</b>: login del propietario del artículo.</li>
+          </ul>
+          <p>Se tienen métodos para acceder a todos los campos, y un método:</p>
+          <pre class="codigo">void setPuja(String usuario, double valor)</pre>
+           
+          <p>que asigna un nuevo <i>valor</i> para el producto, ofrecido por el
+          usuario <i>usuario</i>. Se empleará para ir incrementando el valor de
+          la puja a medida que los usuarios vayan incrementando el valor
+          ofrecido. </li>
+      </ul>
+      <p><b>Se pide:</b> </p>
+           
+      <p><b>a) </b>Ir añadiendo las funcionalidades restantes del servlet
+      central:</p>
+      <blockquote>
+        <p><b>a.1) </b>Para llevar un <b>control de los artículos</b> que hay
+        en cada momento en subasta, se puede utilizar por ejemplo un objeto <i>Hashtable</i>.
+        De esta forma, tendremos un campo en la clase:</p>
+        <pre class="codigo">Hashtable articulos = new Hashtable();</pre>
+           
+        <p>Tendremos los métodos <b>put(...)</b>, <b>get(...)</b> y <b>remove(...)
+        </b>de la clase <i>Hashtable </i>para añadir (o modificar), obtener y eliminar
+        objetos de la subasta, respectivamente.</p>
+        <ul>
+          <li>Si queremos <b>añadir</b> o <b>modificar </b>el artículo &quot;raton
+            inalambrico&quot;, del usuario &quot;pepe&quot;, con valor de 12
+            euros, simplemente haremos:</li>
+        </ul>
+        <blockquote>
+          <pre class="codigo">articulos.put(&quot;raton inalambrico&quot;,
+              new ObjetoSubasta(&quot;pepe&quot;,
+              &quot;raton inalambrico&quot;, 12));</pre>
+           
+        </blockquote>
+        <ul>
+          <li>Si queremos <b>obtener</b> los datos del artículo &quot;raton
+            inalambrico&quot;, sólo tendremos que hacer:</li>
+        </ul>
+        <blockquote>
+          <pre class="codigo">ObjetoSubasta obj = (ObjetoSubasta)
+   (articulos.get(&quot;raton inalambrico&quot;));</pre>
+           
+        </blockquote>
+        <ul>
+          <li>Finalmente, si queremos <b>eliminar</b> el artículo &quot;raton
+            inalambrico&quot;, sólo tendremos que hacer:</li>
+        </ul>
+        <blockquote>
+          <pre class="codigo">articulos.remove(&quot;raton inalambrico&quot;);</pre>
+           
+        </blockquote>
+        <p>&nbsp;</p>
+        <p><b>a.2) </b>Al principio del método <i>doGet(...)</i> se deben tomar
+        los <b>parámetros de entrada</b>, que serán:</p>
+        <ul>
+          <li><b>login</b>: el login del usuario que accede</li>
+          <li><b>password</b>: el password del usuario</li>
+          <li><b>accion</b>: la acción que desea realizar el usuario
+            (introducida en los cuatro formularios periféricos construidos
+            antes).</li>
+        </ul>
+        <pre class="codigo">String login = request.getParameter(&quot;login);
+String password = request.getParameter(&quot;password&quot;);
+String accion = request.getParameter(&quot;accion&quot;);</pre>
+           
+        <p>Si alguno de los parámetros de entrada es <i>null</i>, se redirige
+        al servlet <i>ServletLogin</i>:</p>
+        <pre class="codigo">response.sendRedirect(&quot;/subasta/login&quot;);</pre>
+           
+        <p>&nbsp;</p>
+           
+        <p><b>a.3) </b>Si están todos los parámetros, vamos comprobando qué
+        acción hay que realizar.<br>
+        </p>
+        <p><b>registrar: </b>si la acción es <i>registrar</i>, obtenemos el
+        email del usuario (el login y password ya los hemos tomado antes), e
+        intentamos llamar al método <i>registraUsuario(...)</i> de <i>ServletMain</i>.
+        Si funciona bien redirigimos a <i>ServletLogin</i> para que entre, y si
+        no, redirigimos a <i>ServletRegistro</i> para que vuelva a introducir
+        los datos:</p>
+        <pre class="codigo">String email = request.getParameter(&quot;email&quot;);
+if (registraUsuario(login, password, email))
+	response.sendRedirect(&quot;/subasta/login&quot;);
+else
+	response.sendRedirect(&quot;/subasta/registro&quot;);</pre>
+           
+        <p>&nbsp;</p>
+        <p><b>validar: </b>si la acción es <i>validar</i>, intentamos llamar al
+        método <i>validaUsuario(...)</i> de la clase <i>ServletMain</i>. Si no
+        funciona, redirigimos a <i>ServletLogin</i> para que se vuelva a validar
+        (si funciona no hace falta que hagamos nada).</p>
+        <pre class="codigo">if (!validaUsuario(login, password))
+	response.sendRedirect(&quot;/subasta/login&quot;);</pre>
+           
+        <p>&nbsp;</p>
+        <p><b>comprar: </b>si la acción es <i>comprar</i>, se toman primero dos
+        parámetros de entrada más: el producto que se compra y el valor que se
+        ofrece:</p>
+        <pre class="codigo">String producto = request.getParameter(&quot;producto&quot;);
+double valor = Double.parseDouble(
+               request.getParameter(&quot;valor&quot;));</pre>
+           
+        <p>Luego, tomamos el artículo, vemos si el valor ofertado es mayor que
+        el actual, y si es así modificamos la puja. Luego redirigimos a este
+        mismo servlet, con <i>accion=validar</i>, para que vuelva a validar al
+        usuario:</p>
+        <pre class="codigo">ObjetoSubasta obj = (ObjetoSubasta)
+                    articulos.get(producto);
+
+if (obj.getValor() &lt; valor)
+{
+   obj.setPuja(login, valor);
+   articulos.put(producto, obj);
+}
+
+response.sendRedirect(&quot;/subasta/main?accion=validar&quot;);</pre>
+           
+        <p>&nbsp;</p>
+        <p><b>vender: </b>si la acción es <i>vender</i>, se toman primero dos
+        parámetros de entrada más: el producto que se pone en venta y el valor
+        inicial:</p>
+        <pre class="codigo">String producto = request.getParameter(&quot;producto&quot;);
+double valor = Double.parseDouble(
+               request.getParameter(&quot;valor&quot;));</pre>
+           
+        <p>Luego añadimos el artículo a la lista, y redirigimos a este mismo
+        servlet, con <i>accion=validar</i>, para que vuelva a validar al
+        usuario:</p>
+        <pre class="codigo">articulos.put(producto, new ObjetoSubasta(
+              login, producto, valor));
+response.sendRedirect(&quot;/subasta/main?accion=validar&quot;);</pre>
+           
+        <p>&nbsp;</p>
+        <p>Adicionalmente, tenemos otras dos acciones, generadas desde el propio
+        servlet <i>ServletMain</i>:</p>
+        <p><b>adjudicar:</b> se utiliza para otorgar un artículo a un usuario.
+        Toma primero un parámetro de entrada, el producto que se adjudica:</p>
+        <pre class="codigo">String producto = request.getParameter(&quot;producto&quot;);</pre>
+           
+        <p>Luego eliminamos el producto de la lista de artículos de la subasta,
+        y redirigimos a este mismo servlet, con <i>accion=validar</i>:</p>
+          <pre class="codigo">articulos.remove(producto);
+response.sendRedirect(&quot;/subasta/main?accion=validar&quot;);</pre>
+           
+        <p><b>cancelar:</b> se utiliza para eliminar un artículo de la subasta,
+        sin otorgarlo a ningún usuario. Toma primero un parámetro de entrada,
+        el producto que se elimina:</p>
+        <pre class="codigo">String producto = request.getParameter(&quot;producto&quot;);</pre>
+           
+        <p>Luego eliminamos el producto de la lista de artículos de la subasta,
+        y redirigimos a este mismo servlet, con <i>accion=validar</i>:</p>
+          <pre class="codigo">articulos.remove(producto);
+response.sendRedirect(&quot;/subasta/main?accion=validar&quot;);</pre>
+           
+        <p>Aunque en apariencia estas dos acciones hacen lo mismo, en <i>adjudicar</i>
+        se podrían tomar los datos del usuario al que se le adjudica el
+        producto, o el valor por el que se vende, y sacar esa información por
+        pantalla. Esto se deja como opcional.</p>
+        <p>&nbsp;</p>
+        <p><b>a.4) </b>Finalmente, se muestra una página con el estado actual
+        de la subasta. </p>
+        <ul type="circle">
+          <li>La página deberá enviar una cabecera <b>Refresh</b> que
+            actualice el contenido cada cierto tiempo (5 segundos, por ejemplo):</li>
+        </ul>
+        <pre class="codigo">response.setContentType(&quot;text/html&quot;);
+<b>response.setHeader(&quot;Refresh&quot;, &quot;5&quot;);
+
+</b>PrintWriter out = response.getWriter();
+out.println (&quot;&lt;html&gt;&quot;);
+out.println (&quot;&lt;body&gt;&quot;);
+...</pre>
+           
+        <ul type="circle">
+          <li>Se mostrarán <b>enlaces para vender un producto </b>(enlace a <i>ServletVender</i>),
+            <b>y para salir</b> de las subastas (enlace a <i>ServletLogin</i>):</li>
+        </ul>
+        <pre class="codigo">out.println (&quot;&lt;a href=\&quot;/subasta/vender\&quot;&gt;&quot; + 
+             &quot;Vender un articulo&lt;/a&gt;&quot;);
+out.println (&quot;&lt;a href=\&quot;/subasta/login\&quot;&gt;&quot; + 
+             &quot;Salir&lt;/a&gt;&quot;);</pre>
+           
+        <ul type="circle">
+          <li>Luego se mostrará una lista con los <b>artículos del usuario
+            actual</b>, para que vea cómo van las pujas por ellos. Para cada
+            artículo, se tendrá un enlace para <b>adjudicar</b> el artículo
+            al usuario que más ha dado por él hasta ahora (llamando a este
+            mismo servlet con <i>accion=adjudicar</i>), o para <b>cancelar </b>la
+            puja (llamando a este mismo servlet con <i>accion=cancelar</i>):</li>
+        </ul>
+        <pre class="codigo">Enumeration elem = articulos.elements();
+while (elem.hasMoreElements())
+{
+   ObjetoSubasta os = (ObjetoSubasta)
+                      (elementos.nextElement());
+   if (os.getPropietario().equals(login))
+   {
+	out.println(&quot;&lt;br&gt;&lt;a href=\&quot;/subasta/main?&quot; + 
+                    &quot;accion=adjudicar&amp;producto=&quot; + 
+                    os.getProducto() + &quot;\&quot;&gt;<b>Adjudicar</b>&lt;/a&gt; &quot; + 
+
+                    &quot;&lt;a href=\&quot;/subasta/main?&quot; + 
+                    &quot;accion=cancelar&amp;producto=&quot; + 
+                    os.getProducto() + &quot;\&quot;&gt;<b>Cancelar</b>&lt;/a&gt; &quot; + 
+
+                    os.getProducto() + &quot; (&quot; + os.getValor() + 
+                    &quot;) [&quot; + os.getUsuario() + &quot;] &quot;);
+   } 
+}</pre>
+           
+      </blockquote>
+      <blockquote>
+        <ul type="circle">
+          <li>Finalmente, se mostrará una lista con los <b>artículos de otros
+            usuarios</b>, para que el usuario actual pueda pujar por ellos. Para
+            cada uno se tendrá un enlace a <i>ServletComprar</i>.</li>
+        </ul>
+        <pre class="codigo">Enumeration elem = articulos.elements();
+while (elem.hasMoreElements())
+{
+   ObjetoSubasta os = (ObjetoSubasta)
+                      (elementos.nextElement());
+   if (!os.getPropietario().equals(login))
+   {
+        out.println(&quot;&lt;br&gt;&lt;a href=\&quot;/subasta/comprar? + 
+                    &quot;producto=&quot; + os.getProducto() + 
+                    &quot;\&quot;&gt;<b>Comprar</b>&lt;/a&gt; &quot; + 
+
+                    os.getProducto() + &quot; (&quot; + os.getValor() + 
+                    &quot;) [&quot; + os.getUsuario() + &quot;] &quot;);
+   }
+}</pre>
+           
+      </blockquote>
+      <blockquote>
+        <p><b>a.5)</b> Notar que, con la estructura que le estamos dando a la
+        aplicación, los datos del usuario validado (login y password) se
+        pierden en las redirecciones. Para poderlos ir manteniendo a lo largo de
+        la sesión del usuario, necesitaremos algunos parámetros adicionales en
+        las llamadas a los servlets, que podremos pasar en la línea de
+        petición GET:</p>
+        <pre class="codigo">&lt;a href=&quot;/subasta/main?login=...&amp;password=...&quot;&gt;</pre>
+           
+        <p>o como campos ocultos en los formularios periféricos: </p>
+           
+      <pre class="codigo">&lt;input type=&quot;hidden&quot; name=&quot;login&quot; value=&quot;&lt;login&gt;&quot;&gt;
+&lt;input type=&quot;hidden&quot; name=&quot;password&quot; value=&quot;&lt;password&gt;&quot;&gt;</pre>
+           
+        <p>donde <i>&lt;login&gt;</i> y <i>&lt;password&gt;</i> se sustituirán
+        en el código por las variables donde se encuentren el login y password
+        tomados, respectivamente: </p>
+           
+        <pre class="codigo">String login = request.getParameter(&quot;login&quot;);
+String password = request.getParameter(&quot;password&quot;);</pre>
+           
+        <p>&nbsp;</p>
+        <p><b>NOTA</b>: observad que para las acciones <i>comprar</i>, <i>vender</i>,
+        <i>adjudicar</i> y <i>cancelar</i> se vuelve a llamar al servlet <i>ServletMain</i>
+        con <b>accion=validar</b>. Esto es porque, como se envía una cabecera <i>Refresh</i>
+        para actualizar cada 5 segundos, si no recargamos la página con una <i>accion</i>
+        distinta, se volverá a <i>comprar, vender, adjudicar</i> o <i>cancelar</i>
+        el artículo repetidamente. Necesitamos redirigir con otra acción para
+        que estas no se repitan. Así cada 5 segundos se valida la página y los
+        datos del usuario.</p>
+        <p>&nbsp;</p>
+      </blockquote>
+      <p><b>b) </b><b>Opcionalmente</b>, se puede añadir una tabla en la
+      página que muestre <i>ServletMain</i> donde se muestren las <b>últimas N
+      acciones realizadas</b> por los usuarios. Para ello podemos tener en la
+      clase los campos:</p>
+      <pre class="codigo">final int MAXOPERACIONES = 10;
+Vector ultimasOperaciones = new Vector();</pre>
+           
+      <p>Se trataría de mantener MAXOPERACIONES cadenas de texto en el vector <i>ultimasOperaciones</i>,
+      insertando las últimas operaciones que se vayan produciendo, y eliminando
+      las antiguas. Luego, para las operaciones actuales, se colocarían en una
+      tabla, una en cada fila: </p>
+           
+      <ul>
+        <li>Añadir una acción nueva:</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo">ultimasOperaciones.addElement(&quot;Venta de...&quot;);</pre>
+           
+      </blockquote>
+      <ul>
+        <li>Eliminar una acción antigua (suponiendo que las nuevas se añaden
+          al final, las antiguas quedan al principio):</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo">ultimasOperaciones.removeElementAt(0);</pre>
+           
+      </blockquote>
+      <ul>
+        <li>Mostrar las últimas MAXOPERACIONES realizadas en una tabla:</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo">&lt;table border=&quot;0&quot;&gt;
+&lt;th&gt;ULTIMAS OPERACIONES&lt;/th&gt;
+&lt;tr&gt;&lt;td&gt;Operacion 1&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Operacion 2&lt;/td&gt;&lt;/tr&gt;
+...
+&lt;tr&gt;&lt;td&gt;Operacion MAXOPERACIONES&lt;/td&gt;&lt;/tr&gt;</pre>
+           
+      </blockquote>
+      <p>&nbsp; </p>
+           
+      <p>&nbsp; </p>
+           
+        </body>
+        </html>

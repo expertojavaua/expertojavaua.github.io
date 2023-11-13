@@ -1,0 +1,438 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.7">
+<meta name="Forrest-skin-name" content="pelt">
+<title>Informaci&oacute;n de la BD y optimizaci&oacute;n en
+consultas</title>
+<link type="text/css" href="skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="skin/print.css" rel="stylesheet">
+<link type="text/css" href="skin/profile.css" rel="stylesheet">
+<script src="skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<div class="header">
+<div class="grouplogo">
+<a href="http://www.jtech.ua.es/j2ee"><img class="logoImage" alt="J2EE" src="images/baner_j2ee_izq.gif" title="Curso Especialista Universitario J2EE"></a>
+</div>
+<div class="projectlogoA1">
+<a href="http://www.dccia.ua.es/"><img class="logoImage" alt="Bases de datos con JDBC" src="images/baner_j2ee_der.gif" title="Bases de datos con JDBC"></a>
+</div>
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="../index.html">M&oacute;dulos</a>
+</li>
+<li class="current">
+<a class="base-selected" href="index.html">Bases de datos con JDBC</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<div id="level2tabs"></div>
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<div id="menu">
+<div onclick="SwitchMenu('menu_selected_1.1', 'skin/')" id="menu_selected_1.1Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Materiales</div>
+<div id="menu_selected_1.1" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="index.html" title="Bases de datos con JDBC">&Iacute;ndice</a>
+</div>
+<div onclick="SwitchMenu('menu_selected_1.1.2', 'skin/')" id="menu_selected_1.1.2Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Teor&iacute;a</div>
+<div id="menu_selected_1.1.2" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="sesion01-apuntes.html">Sesion 1</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-apuntes.html">Sesion 2</a>
+</div>
+<div class="menupage">
+<div class="menupagetitle">Sesion 3</div>
+</div>
+<div class="menuitem">
+<a href="sesion04-apuntes.html">Sesion 4</a>
+</div>
+<div class="menuitem">
+<a href="roadmap-apuntes.html">Roadmap</a>
+</div>
+</div>
+<div onclick="SwitchMenu('menu_1.1.3', 'skin/')" id="menu_1.1.3Title" class="menutitle">Ejercicios</div>
+<div id="menu_1.1.3" class="menuitemgroup">
+<div class="menuitem">
+<a href="sesion01-ejercicios.html">Sesion 1</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-ejercicios.html">Sesion 2</a>
+</div>
+<div class="menuitem">
+<a href="sesion03-ejercicios.html">Sesion 3</a>
+</div>
+<div class="menuitem">
+<a href="sesion04-ejercicios.html">Sesion 4</a>
+</div>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<div id="credit2"></div>
+</div>
+<div id="content">
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="sesion03-apuntes.pdf"><img alt="PDF -icon" src="skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1>Informaci&oacute;n de la BD y optimizaci&oacute;n en
+consultas</h1>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#Obtenci%C3%B3n+de+informaci%C3%B3n+propia+de+la+base+de%0Adatos">Obtenci&oacute;n de informaci&oacute;n propia de la base de
+datos</a>
+</li>
+<li>
+<a href="#Optimizaci%C3%B3n+de+sentencias">Optimizaci&oacute;n de sentencias</a>
+</li>
+<li>
+<a href="#Llamadas+a+procedimientos">Llamadas a procedimientos</a>
+</li>
+</ul>
+</div>
+
+<a name="N1000C"></a><a name="Obtenci%C3%B3n+de+informaci%C3%B3n+propia+de+la+base+de%0Adatos"></a>
+<h2 class="underlined_10">Obtenci&oacute;n de informaci&oacute;n propia de la base de
+datos</h2>
+<div class="section">
+<p>Hasta ahora asum&iacute;amos que el programador conoc&iacute;a la
+estructura de la BD a la que estaba accediendo (el nombre de las
+tablas, su tipo de datos, etc.). Sin embargo, en determinadas
+aplicaciones es posible que necesitemos obtener esa informaci&oacute;n
+directamente de la propia BD. Esta informaci&oacute;n se conoce con el
+nombre de Metadatos, datos sobre la estructura de la base de datos.
+Para obtener y manejar esta informaci&oacute;n disponemos de la clase <strong>DatabaseMetaData</strong>.
+Su uso es el siguiente:</p>
+<pre class="code">
+
+<strong>DatabaseMetaData</strong> dbmd = con.<strong>getMetaData()</strong>;
+</pre>
+<p>Ya tenemos toda la informaci&oacute;n de la base de datos. Ahora
+debemos manejarla. Para ello disponemos de m&aacute;s de 100
+m&eacute;todos en la clase <strong>DatabaseMetaData</strong>. No vamos a verlos
+todos, s&oacute;lo los m&aacute;s interesantes. Los siguientes
+m&eacute;todos proporcionan informaci&oacute;n gen&eacute;rica de la
+base de datos:</p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+    
+<tr>
+      
+<td colspan="1" rowspan="1"><strong>getDatabaseProductName</strong></td>
+      <td colspan="1" rowspan="1">Devuelve el nombre de la BD</td>
+    
+</tr>
+    
+<tr>
+      
+<td colspan="1" rowspan="1"><strong>getDatabaseProductVersion</strong></td>
+      <td colspan="1" rowspan="1">&Iacute;dem versi&oacute;n</td>
+    
+</tr>
+    
+<tr>
+      
+<td colspan="1" rowspan="1"><strong>getDriverName</strong></td>
+      <td colspan="1" rowspan="1">&Iacute;dem nombre del driver</td>
+    
+</tr>
+    
+<tr>
+      
+<td colspan="1" rowspan="1"><strong>supportsResultSetType(int)</strong></td>
+      <td colspan="1" rowspan="1">Pas&aacute;ndole por par&aacute;metro algunos de
+los tipos de ResultSet (TYPE_FORWARD_ONLY, TYPE_SCROLL_SENSITIVE,
+etc.), nos devuelve si la BD los soporta</td>
+    
+</tr>
+
+</table>
+<p>Podemos obtener toda la informaci&oacute;n referente a las tablas en
+la BD. Para ello llamamos al siguiente m&eacute;todo:</p>
+<pre class="code">
+
+<strong>String[] tipos = {"TABLE"};
+ResultSet</strong> resul = dbmd.<strong>getTables(null,null,null,tipos)</strong>;
+</pre>
+<p>Este m&eacute;todo devuelve un objeto de la clase <strong>ResultSet</strong>.
+Los par&aacute;metros pasados al m&eacute;todo sirven para: los dos
+primeros para especificar el cat&aacute;logo y el esquema de los que se
+obtendr&aacute; la informaci&oacute;n; el tercer par&aacute;metro es el
+nombre de la tabla a obtener y el &uacute;ltimo los tipos
+(tambi&eacute;n puede ser "VIEW","SYSTEM TABLE", etc.). Los tres
+primeros par&aacute;metros son de tipo cadena y permiten utilizar
+comodines. Por ejemplo, si quisi&eacute;ramos obtener todas las tablas
+cuyo nombre empiece por Nom, pasar&iacute;amos el par&aacute;metro
+"Nom%". Al devolver un objeto <strong>ResultSet</strong> podemos visitarlo tal
+como lo hac&iacute;amos antes. El esquema a seguir es el siguiente:</p>
+<pre class="code">while<strong> </strong>(resul<strong>.</strong>next()) {
+    <strong>String </strong>nombreTabla = resul.getString("TABLE_NAME");
+    <strong>ResultSet</strong> columnas = dbmd.<strong>getColumns</strong>(null,null,<strong>nombreTabla</strong>,null);
+    while (columnas.next()) {
+        <strong>String</strong> nombreColumna = columnas.getString("<strong>COLUMN_NAME</strong>");
+        <strong>int</strong> tipoDato = columnas.getInt("<strong>DATA_TYPE</strong>");
+        String nombreTipo = columnas.getString("<strong>TYPE_NAME</strong>");
+        if (tipoDato==java.sql.Types.CHAR || tipoDato==java.sql.Types.VARCHAR)
+            int tamanyo = columnas.getInt("<strong>COLUMN_SIZE</strong>");
+        String nulo = columnas.getString("<strong>IS_NULLABLE</strong>");
+        if (nulo.equalsIgnoreCase("no"))
+            System.out.println("NOT NULL");
+    }
+    <strong>ResultSet</strong> clavesPrimarias =	dbmd.<strong>getPrimaryKeys</strong>(null,null,nombreTabla);
+    while(clavesPrimarias.next())
+        String nombreClave = clavesPrimarias.getString("<strong>COLUMN_NAME</strong>");
+}
+</pre>
+<p>Como vemos en este ejemplo hemos accedido a todas las tablas de la
+BD. Para cada tabla obtenemos la informaci&oacute;n de sus columnas,
+que tambi&eacute;n es devuelta mediante un <strong>ResultSet</strong>. Visitamos
+todas las columnas y obtenemos la informaci&oacute;n de cada una de
+ellas y por &uacute;ltimo obtenemos las claves primarias de la tabla.</p>
+<p>Tambi&eacute;n podemos obtener los metadatos de una consulta, es
+decir, directamente de un <strong>ResultSet</strong> obtenido al llamar a un
+m&eacute;todo <strong>executeQuery</strong>. Vamos a ver con otro ejemplo una
+forma distinta de acceder a los metadatos de un <strong>ResultSet</strong>:</p>
+<pre class="code">
+ResultSet resul = stmt.executeQuery("SELECT * FROM ALUMNOS");
+<strong>ResultSetMetaData</strong> rsmd = resul.<strong>getMetaData</strong>();
+int columnas = rsmd.<strong>getColumnCount</strong>();
+for (int i=1; i&lt;=columnas; i++) {
+    System.out.println("Nombre tabla="+rsmd.<strong>getTableName</strong>(i));
+    System.out.println("Nombre columna="+rsmd.<strong>getColumnName</strong>(i));
+    System.out.println("Tipo de dato="+rsmd.<strong>getTypeName</strong>(i));
+    System.out.println("Autoincremento="+rsmd.<strong>isAutoIncrement</strong>(i));
+}
+</pre>
+<p>Hemos indicado algunos de los m&eacute;todos m&aacute;s
+&uacute;tiles. Consultad el API para conocer en detalle el resto de
+m&eacute;todos.</p>
+</div>
+
+<a name="N100DC"></a><a name="Optimizaci%C3%B3n+de+sentencias"></a>
+<h2 class="underlined_10">Optimizaci&oacute;n de sentencias</h2>
+<div class="section">
+<p>Cuando ejecutamos una sentencia SQL, esta se compila y se manda al
+SGBD. Si la vamos a invocar repetidas veces, puede ser conveniente
+dejar esa sentencia preparada (precompilada) para que pueda ser
+ejecutada de forma m&aacute;s eficiente. Para hacer esto utilizaremos
+la interfaz <strong>PreparedStatement</strong>, que podr&aacute; obtenerse a
+partir de la conexi&oacute;n a la BD de la siguiente forma:</p>
+<pre class="code">
+
+<strong>PreparedStatement</strong> ps = con.<strong>prepareStatement</strong>("UPDATE FROM alumnos
+    SET sexo = 'H' WHERE exp&gt;1200 AND exp&lt;1300");
+</pre>
+<p>Vemos que a este objeto, a diferencia del objeto <strong>Statement</strong>
+visto anteriormente, le proporcionamos la sentencia SQL en el momento
+de su creaci&oacute;n, por lo que estar&aacute; preparado y optimizado
+para la ejecuci&oacute;n de dicha sentencia posteriormente.</p>
+<p>Sin embargo, lo m&aacute;s com&uacute;n es que necesitemos hacer
+variaciones sobre la sentencia, ya que normalmente no ser&aacute;
+necesario ejecutar repetidas veces la misma sentencia exactamente, sino
+variaciones de ella. Por ello, este objeto nos permite parametrizar la
+sentencia. Estableceremos las posiciones de los par&aacute;metros con
+el car&aacute;cter '?' dentro de la cadena de la sentencia, tal como se
+muestra a continuaci&oacute;n:</p>
+<pre class="code">
+
+<strong>PreparedStatement</strong> ps = con.<strong>prepareStatement</strong>("UPDATE FROM alumnos
+    SET sexo = 'H' WHERE exp &gt; ? AND exp &lt; ?");
+</pre>
+<p>En este caso tenemos dos par&aacute;metros, que ser&aacute; el
+n&uacute;mero de expediente m&iacute;nimo y el m&aacute;ximo del rango
+que queremos actualizar. Cuando ejecutemos esta sentencia, el sexo de
+los alumnos desde expediente inferior hasta expediente superior se
+establecer&aacute; a 'H'.</p>
+<p>Para dar valor a estos par&aacute;metros utilizaremos los
+m&eacute;todos <strong>setXXX</strong> donde <strong>XXX</strong> ser&aacute; el tipo de
+los datos que asignamos al par&aacute;metro (recordad los
+m&eacute;todos del <strong>ResultSet</strong>), indicando el n&uacute;mero del
+par&aacute;metro (que empieza desde 1) y el valor que le queremos dar.
+Por ejemplo, para asignar valores enteros a los par&aacute;metros de
+nuestro ejemplo haremos:</p>
+<pre class="code">
+ps.<strong>setInt</strong>(1,1200);
+ps.<strong>setInt</strong>(2,1300);
+</pre>
+<p>Una vez asignados los par&aacute;metros, podremos ejecutar la
+sentencia llamando al m&eacute;todo <strong>executeUpdate</strong> (ahora sin
+par&aacute;metros) del objeto <strong>PreparedStatement</strong>:</p>
+<pre class="code">
+int n = ps.<strong>executeUpdate</strong>();
+</pre>
+<p>Igual que en el caso de los objetos <strong>Statement</strong>, podremos
+utilizar cualquier otro de los m&eacute;todos para la ejecuci&oacute;n
+de sentencias, <strong>executeQuery</strong> o <strong>execute</strong>, seg&uacute;n el
+tipo de sentencia que vayamos a ejecutar.</p>
+<p>Una caracter&iacute;stica importante es que los par&aacute;metros
+s&oacute;lo sirven para datos, es decir, no podemos sustituir el nombre
+de la tabla o de una columna por el signo '?'. Otra cosa a tener en
+cuenta es que una vez asignados los par&aacute;metros, estos no
+desaparecen, sino que se mantienen hasta que se vuelvan a asignar o se
+ejecute una llamada al m&eacute;todo <strong>clearParameters</strong>.</p>
+</div>
+
+<a name="N10141"></a><a name="Llamadas+a+procedimientos"></a>
+<h2 class="underlined_10">Llamadas a procedimientos</h2>
+<div class="section">
+<p>Los procedimientos (PROCEDURES) (tambi&eacute;n llamados funciones
+en algunos SGBD) son unidades de c&oacute;digo que
+contienen un conjunto de sentencias SQL. Estos pueden servirnos para
+tener en nuestra BD una serie de acciones comunes predefinidas. Al
+igual que las sentencias preparadas, los procedimientos aumentan la
+eficiencia en el acceso a una BD. Los procedimientos est&aacute;n
+creados en lenguaje SQL y DDL. Otra caracter&iacute;stica es que pueden
+tener par&aacute;metros de entrada y/o de salida. La principal
+caracter&iacute;stica que diferencia a los procedimientos de las
+sentencias preparadas es que, una vez creado, el procedimiento reside
+en la BD y puede ser llamado en otras partes del c&oacute;digo e
+incluso por otros programas.</p>
+<p>En cuanto a los par&aacute;metros, podemos tener de entrada (IN: su
+valor no puede ser cambiado por el procedimiento), de salida (OUT:
+dentro del procedimiento se le asigna un valor) y de entrada/salida
+(INOUT: la combinaci&oacute;n de ambas). </p>
+<p>Por ejemplo, si cuando realizamos una venta tenemos que
+a&ntilde;adir informaci&oacute;n de la venta, y reducir el stock del
+producto vendido, podemos definir un procedimiento que haga esto de la
+siguiente forma:</p>
+<pre class="code">
+String procedure = "CREATE PROCEDURE EFECTUAR_VENTA
+    (IN cod_cliente INT, IN cod_producto INT, IN cantidad INT)
+    LANGUAGE SQL
+    BEGIN
+        INSERT INTO ventas(cliente, producto, cant)
+            VALUES(cod_cliente, cod_producto, cantidad);
+        UPDATE productos SET stock = stock - cantidad
+            WHERE producto = cod_producto;
+    END";
+stmt.executeUpdate(procedure);
+</pre>
+<p>Los procedimientos se crean mediante una sentencia DDL (un tipo de
+lenguaje procedural) como la del ejemplo, ejecut&aacute;ndola de la
+misma forma que cualquier sentencia DDL. En este caso tomar&aacute;
+tres par&aacute;metros de entrada y no devuelve ning&uacute;n
+resultado. La llamada a <strong>executeUpdate</strong> crea y almacena el
+procedimiento en la BD. A partir de ese momento podremos llamar a dicho
+procedimiento. Si el procedimiento no ha podido ser creado, el sistema
+lanza una excepci&oacute;n.</p>
+<p>En muchos SGBD podemos definir procedimientos tambi&eacute;n como se
+muestra a continuaci&oacute;n:</p>
+<pre class="code">
+String procedure = "CREATE PROCEDURE VER_VENTAS_CLIENTE 
+    AS SELECT cliente, sum(precio) FROM ventas, productos
+    WHERE ventas.producto = productos.producto GROUP BY cliente";
+stmt.executeUpdate(procedure);
+</pre>
+<p>En este caso este procedimiento no toma par&aacute;metros de entrada
+pero s&iacute; que producir&aacute; resultados. Podremos tener
+procedimientos con distinto n&uacute;mero de par&aacute;metros de
+entrada, par&aacute;metros de salida, y podr&aacute;n generar incluso
+varios <strong>ResultSet</strong>.</p>
+<p>Para llamar al procedimiento necesitaremos un tipo especial de
+interfaz llamada<strong> CallableStatement</strong>. Con esta interfaz podremos
+invocar sentencias para la ejecuci&oacute;n de procedimientos como las
+que tenemos a continuaci&oacute;n:</p>
+<pre class="code">
+CallableStatement cs = con.prepareCall("{call VER_VENTAS_CLIENTE}");
+ResultSet rs = cs.executeQuery();
+</pre>
+<p>Podremos pasar par&aacute;metros de entrada de la misma forma que
+los pas&aacute;bamos con la interfaz <strong>PreparedStatement</strong>:</p>
+<pre class="code">
+CallableStatement cs = con.prepareCall("{call EFECTUAR_VENTA[?, ?, ?]}");
+cs.setInt(1, 112);
+cs.setInt(2, 3380);
+cs.setInt(3, 1);
+cs.executeUpdate();
+</pre>
+<p>Hay que tener en cuenta que si los par&aacute;metros de entrada no
+son asignados antes de llamar a <strong>executeUpdate</strong> se lanzar&aacute;
+una excepci&oacute;n. Disponemos de los mismos m&eacute;todos <strong>setXXX</strong>
+que anteriormente, siendo el primer par&aacute;metro el orden del
+par&aacute;metro y el segundo el valor asignado.</p>
+<p>Para hacer uso de los par&aacute;metros de salida (OUT) primero
+debemos registrar el tipo del par&aacute;metro. Si, por ejemplo, el
+segundo par&aacute;metro del procedimiento es de salida y su tipo
+original es VARCHAR debemos registrarlo de la siguiente forma:</p>
+<pre class="code">
+cs.registerOutParameter(2, java.sql.Types.STRING);
+</pre>
+<p>En el caso de par&aacute;metros INOUT debemos realizar los dos
+pasos, registrarlo como de salida (con <strong>registerOutParameter</strong>) y
+asignarle valor (con <strong>setXXX</strong>). Una vez realizada la consulta a
+la BD podemos recuperar los valores de los par&aacute;metros OUT y
+INOUT con los m&eacute;todos <strong>getXXX</strong> disponibles en la clase <strong>CallableStatements</strong>.</p>
+<p>Es posible devolver un <strong>ResultSet</strong> como par&aacute;metro de
+salida de un procedimiento. Sin embargo, depende en gran medida del
+SGBD que estemos utilizando. Incluso algunos no soportan este tipo de
+par&aacute;metros.
+</p>
+<p>A continuaci&oacute;n se muestra un ejemplo de funci&oacute;n en
+PostGres:</p>
+<pre class="code">
+create or replace function devhoralleg(int) 
+    returns time language 'plpgsql' as '
+    declare aux vuelo%rowtype;
+    begin
+        select * into aux from vuelo where numero=($1);
+        return aux.horalleg;
+    end;'
+</pre>
+<p>Esta funci&oacute;n recibe como par&aacute;metro un entero indicando en
+n&uacute;mero de vuelo y devuelve la hora de llegada del vuelo, en
+formato Time. Antes de crear esta funci&oacute;n, deb&eacute;is
+ejecutar los siguientes comandos dentro de PostGres, para definir el
+lenguaje PlPgsql:</p>
+<pre class="code">
+create function plpgsql_call_handler ()
+    returns language_handler as '$libdir/plpgsql' language C;
+create trusted procedural language plpgsql
+handler plpgsql_call_handler;
+</pre>
+<p>Para hacer uso de esta funci&oacute;n, PostGres no
+utiliza el procedimiento detallado en esta secci&oacute;n, sino que se
+basa en la llamada a una sentencia <em>select</em>
+tal como se muestra:</p>
+<pre class="code">
+ResultSet rs=stmt.executeQuery("select devhoralleg(1)");
+if (rs.next()) System.out.println("hola "+rs.getTime(1));
+</pre>
+</div>
+
+<p class="pageBreakAfter"></p>
+
+</div>
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+        Copyright &copy;
+         2006-2007 Depto. CCIA</div>
+</div>
+</body>
+</html>

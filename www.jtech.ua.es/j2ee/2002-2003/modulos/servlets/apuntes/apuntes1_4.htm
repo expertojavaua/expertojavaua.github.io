@@ -1,0 +1,348 @@
+<!-- saved from url=(0022)http://internet.e-mail -->
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+                                                            
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+                                                            
+  <meta name="Author" content="Nacho">
+                                                            
+  <meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+                                                        
+  <link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+  <title>Tema 1: Conceptos b&aacute;sicos de Servlets</title>
+</head>
+  <body>
+           
+      <b>      
+<h2>1.4. Procesamiento de peticiones</h2>
+      </b><p><b><br>
+      </b> Un servlet maneja peticiones de los clientes a través de su método <b>service</b>.
+      Con él se pueden manejar peticiones HTTP (entre otras), reenviando las
+      peticiones a los métodos apropiados que las manejan. Por ejemplo, una
+      petición GET puede redirigirse a un método <i>doGet</i>. Veremos ahora
+      los elementos principales que intervienen en una interacción vía HTTP. </p>
+           
+      <h4>1.4.1. Peticiones: HttpServletRequest</h4>
+           
+      <p>Como hemos visto anteriormente, los objetos <b>ServletRequest </b>se
+      emplean para obtener información sobre la petición de los clientes. Más
+      en concreto, el subtipo <b>HttpServletRequest </b>se utiliza en las
+      peticiones HTTP. Proporciona acceso a los datos de las cabeceras HTTP,
+      cookies, parámetros pasados por el usuario, etc, sin tener que parsear
+      nosotros a mano los datos de formulario de la petición. </p>
+           
+      <p>La clase dispone de muchos métodos, pero destacamos los siguientes: </p>
+           
+      <ul>
+        <li>Para <b>obtener los valores de los parámetros</b> pasados por el
+          cliente, se tienen los métodos:</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo">Enumeration getParameterNames()
+String      getParameter (String nombre)
+String[]    getParameterValues (String nombre)</pre>
+           
+        <p>Con <b>getParameterNames() </b>se obtiene una lista con los nombres
+        de los parámetros enviados por el cliente. Con <b>getParameter() </b>se
+        obtiene el valor del parámetro de nombre <i>nombre</i>. Si un
+        parámetro tiene varios valores (por ejemplo, si tenemos un array de
+        cuadros de texto con el mismo nombre en un formulario), se pueden
+        obtener todos separados con <b>getParameterValues()</b>. Los nombres de
+        los parámetros normalmente sí distinguen mayúsculas de minúsculas,
+        deberemos tener cuidado al indicarlos.</p>
+      </blockquote>
+      <ul>
+        <li>Para <b>obtener la cadena de una petición GET</b>, se tiene el
+          método:</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo">String getQueryString()</pre>
+           
+        <p>que devuelve toda la petición en una cadena, que deberemos parsear
+        nosotros como nos convenga.</p>
+      </blockquote>
+      <ul>
+        <li>Para <b>obtener datos de peticiones POST, PUT o DELETE</b>, se
+          tienen los métodos:</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo">BufferedReader     getReader()
+ServletInputStream getInputStream()</pre>
+           
+        <p>Con <b>getReader() </b>se obtiene un <i>BufferedReader </i>para
+        peticiones donde esperemos recibir texto. Si esperamos recibir datos
+        binarios, se debe emplear <b>getInputStream()</b>.</p>
+      </blockquote>
+           
+      <ul>
+        <li>Para <b>obtener información sobre la línea de petición</b>, se tienen
+          los métodos:</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo">String getMethod()
+String getRequestURI()
+String getProtocol()</pre>
+           
+        <p>Con <b>getMethod() </b>obtenemos el comando HTTP solicitado (GET,
+        POST, PUT, etc), con <b>getRequestURI()</b> obtenemos la parte de la URL
+        de petición que está detrás del <i>host</i> y el puerto, pero antes
+        de los datos del formulario. Con <b>getProtocol() </b>obtenemos el
+        protocolo empleado (<i>HTTP/1.1</i>, <i>HTTP/1.0</i>, etc).</p>
+      </blockquote>
+           
+      <h4>1.4.2. Respuestas: HttpServletResponse</h4>
+           
+      <p>Los objetos <b>ServletResponse </b>se emplean para enviar el resultado
+      de procesar una petición a un cliente. El subtipo <b>HttpServletResponse </b>se
+      utiliza en las peticiones HTTP. Proporciona acceso al canal de salida por
+      donde enviar la respuesta al cliente. </p>
+           
+      <p>La clase dispone de muchos métodos, pero destacamos: </p>
+           
+      <pre class="codigo">Writer              getWriter()
+ServletOutputStream getOutputStream()</pre>
+           
+      <p>Con <b>getWriter() </b>se obtiene un <i>Writer </i>para enviar texto al
+      cliente. Si queremos enviar datos binarios, se debe emplear <b>getOutputStream()</b>.</p>
+      <p>Si queremos especificar información de cabecera, debemos establecerla
+      ANTES de obtener el <i>Writer</i> o el <i>ServletOutputStream</i>. Hemos
+      visto en algún ejemplo el método <b>setContentType() </b>para indicar el
+      tipo de contenido. Veremos las cabeceras con más detenimiento más
+      adelante.</p>
+      <h4>1.4.3. Procesamiento de peticiones GET y POST</h4>
+           
+      <p>Como se ha visto anteriormente, el método <b>doGet()</b> se emplea
+      para procesar peticiones GET. Para realizar nuestro propio procesamiento de
+      petición, simplemente sobreescribimos este método en el servlet: </p>
+           
+      <pre class="codigo">public void doGet(HttpServletRequest request, 
+		  HttpServletResponse response) 
+throws ServletException, IOException
+{
+<b>	</b>// ... codigo para una peticion GET
+}</pre>
+           
+      <p>Podemos utilizar los métodos del objeto <b>HttpServletRequest</b>
+      vistos antes. Así podremos, entre otras
+      cosas:</p>
+      <ul>
+        <li>Acceder a elementos de la petición, como valores de
+          parámetros:</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo">String nombreUsuario = request.getParameter(&quot;nombre&quot;);</pre>
+           
+      </blockquote>
+      <ul>
+        <li>Acceder a la cadena de la petición y procesarla como queramos:</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo">String query = request.getQueryString();
+...</pre>
+           
+      </blockquote>
+      <ul>
+        <li>Obtener un canal de entrada (<i>Reader </i>o <i>InputStream</i>)
+          con que leer los datos de la petición:<i>&nbsp;</i></li>
+      </ul>
+      <blockquote>
+        <pre class="codigo">BufferedReader r = request.getReader();
+...</pre>
+           
+        Esta, sin embargo, no es una buena idea para tomar parámetros de
+        peticiones u otras cosas. Se suele emplear sobre todo para
+        transferencias de ficheros, pero hay que tener en cuenta que si
+        obtenemos un canal de entrada, luego no podremos obtener parámetros u
+        otros valores con métodos <i>getParameter() </i>y similares.
+           
+      </blockquote>
+      <ul>
+        <li>etc.</li>
+      </ul>
+      <p>También podemos utilizar los métodos del objeto <b>HttpServletResponse</b>
+      para, entre otras
+      cosas:</p>
+      <ul>
+        <li>Establecer valores de la cabecera (antes que cualquier otra
+          acción sobre la respuesta):</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo">response.setContentType(&quot;text/html&quot;);</pre>
+           
+      </blockquote>
+      <ul>
+        <li>Obtener el canal de salida por el que enviar la respuesta:</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo">PrintWriter out = response.getWriter();
+out.println (&quot;Enviando al cliente&quot;);</pre>
+           
+      </blockquote>
+      <ul>
+        <li>Redirigir a otra página:</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo">response.sendRedirect(&quot;http://localhost:8080/pag.html&quot;);</pre>
+           
+      </blockquote>
+      <ul>
+        <li>&nbsp;etc.</li>
+      </ul>
+      <p>De forma similar, el método <b>doPost()</b>, se emplea para procesar
+      peticiones POST. Igual que antes, debemos sobreescribir este método
+      para definir nuestro propio procesamiento de la petición:</p>
+      <pre class="codigo">public void doPost(HttpServletRequest request, 
+		   HttpServletResponse response) 
+throws ServletException, IOException
+{
+<b>	</b>// ... codigo para una peticion POST
+}</pre>
+           
+      <p>Las posibilidades de los parámetros <i>HttpServletRequest</i> y <i>HttpServletResponse
+      </i>son las mismas que para GET. Normalmente muchos servlets definen el mismo código para uno y otro
+      método (hacen que <i>doPost() </i>llame a <i>doGet()</i> y definen allí
+      el código, o al revés), pero conviene tenerlos separados para poder
+      tratar independientemente uno y otro tipo de peticiones si se quiere.</p>
+           
+      <h4>1.4.4. Procesamiento secuencial de peticiones</h4>
+           
+      <p>Los servlets normalmente pueden gestionar múltiples peticiones de
+      clientes concurrentemente. Pero puede suceder que, si los métodos que
+      definimos acceden a un recurso compartido, no nos interese que varios
+      clientes accedan a dicho recurso simultáneamente. Para solucionar este
+      problema, podemos definir bloques de código <i>synchronized</i>, o bien
+      hacer que el servlet sólo atienda una petición cada vez. </p>
+           
+      <p>Para esto último, lo único que hay que hacer es que el servlet,
+      además de heredar de <i>HttpServlet</i>, implemente la interfaz <b>SingleThreadModel</b>.
+      Esto no supone definir más métodos, simplemente añadimos el <i>implements</i>
+      necesario al definir la clase Servlet, y ya está: </p>
+           
+      <pre class="codigo">public class MiServlet 
+extends HttpServlet implements SingleThreadModel
+{
+<b>	</b>... 
+}</pre>
+           
+      <h4>1.4.5. Manejo de formularios</h4>
+           
+      <p> Los datos que se envían como parámetros en una petición (tras el
+      interrogante si es una petición GET, o por otro lado si es POST) se
+      llaman <b>datos de formulario</b>.<b> </b>Una vez enviados estos datos
+      como petición, ¿cómo se extraen en el servidor?&nbsp; </p>
+           
+      <p> Si trabajáramos con CGI, los datos se tomarían de forma distinta si
+      fuese una petición GET o una POST. Para una GET, por ejemplo, tendríamos que tomar la cadena tras
+      la interrogación, y parsearla convenientemente, separando los bloques
+      entre '&amp;', y luego separando el nombre del parámetro de su valor a
+      partir del '='. También hay que descodificar los valores: los
+      alfanuméricos no cambian, pero los espacios se han convertido previamente
+      en '+', y otros caracteres se convierten en '%XX'. </p>
+           
+      <p>Con servlets todo este análisis se realiza de forma automática. La
+      clase <i>HttpServletRequest</i> dispone de métodos que devuelve la
+      información que nos interesa ya procesada, e independientemente de si es
+      una petición GET o POST. Hemos visto antes los métodos: </p>
+           
+        <pre class="codigo">Enumeration getParameterNames()
+String      getParameter (String nombre)
+String[]    getParameterValues (String nombre)</pre>
+           
+      <h4>1.4.6. Ejemplo</h4>
+           
+      <p>Veamos un ejemplo: supongamos que tenemos este formulario: </p>
+      <pre class="codigo">&lt;html&gt;
+&lt;body&gt;
+&lt;form action=&quot;/ejemploform/servlet/ServletForm&quot;&gt;
+	Valor 1: &lt;input type=&quot;text&quot; name=&quot;texto1&quot;&gt;
+	&lt;br&gt;
+	Valor2: 
+	&lt;select name=&quot;lista&quot;&gt;
+	&lt;option name=&quot;lista&quot; value=&quot;Opcion 1&quot;&gt;Opcion 1&lt;/option&gt;
+	&lt;option name=&quot;lista&quot; value=&quot;Opcion 2&quot;&gt;Opcion 2&lt;/option&gt;
+	&lt;option name=&quot;lista&quot; value=&quot;Opcion 3&quot;&gt;Opcion 3&lt;/option&gt;
+	&lt;/select&gt;
+	&lt;br&gt;
+	Valores 3: 
+	&lt;br&gt;
+	&lt;input type=&quot;text&quot; name=&quot;texto2&quot;&gt;
+	&lt;input type=&quot;text&quot; name=&quot;texto2&quot;&gt;
+	&lt;input type=&quot;text&quot; name=&quot;texto2&quot;&gt;
+
+	&lt;input type=&quot;submit&quot; value=&quot;Enviar&quot;&gt;
+&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+           
+      <p>Al validarlo se llama al servlet <i>ServletForm</i>, que muestra una
+      página HTML con los valores introducidos en los parámetros del
+      formulario: </p>
+           
+      <pre class="codigo">import java.io.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
+
+public class ServletForm extends HttpServlet
+{
+<b>	// Metodo para GET
+</b>	
+	public void doGet(HttpServletRequest request, 
+			  HttpServletResponse response) 
+	throws ServletException, IOException
+	{
+		response.setContentType(&quot;text/html&quot;);
+		
+		PrintWriter out = response.getWriter();
+
+<b>		// Mostramos los datos del formulario
+</b>
+		out.println (&quot;&lt;HTML&gt;&quot;);			
+		out.println (&quot;&lt;BODY&gt;&quot;);			
+		out.println (&quot;&lt;H1&gt;Datos del formulario&lt;/H1&gt;&quot;);
+		out.println (&quot;&lt;BR&gt;&quot;);
+
+		String valor1 = 
+			request.getParameter(&quot;texto1&quot;);
+		String valor2 = 
+			request.getParameter(&quot;lista&quot;);
+		String[] valor3 = 
+			request.getParameterValues(&quot;texto2&quot;);
+		
+		out.println (&quot;Valor 1:&quot; + valor1);
+		out.println (&quot;&lt;BR&gt;&quot;);
+		out.println (&quot;Valor 2:&quot; + valor2);
+		out.println (&quot;&lt;BR&gt;&quot;);
+		out.println (&quot;Valor 3:&quot;);
+		out.println (&quot;&lt;BR&gt;&quot;);
+		if (valor3 != null)
+			for (int i = 0; i &lt; valor3.length; i++)
+			{
+				out.println (valor3[i]);
+				out.println (&quot;&lt;BR&gt;&quot;);
+			}
+
+		out.println (&quot;&lt;/BODY&gt;&quot;);
+		out.println (&quot;&lt;/HTML&gt;&quot;);
+	}	
+
+<b>	// Metodo para POST
+</b>	
+	public void doPost(HttpServletRequest request, 
+			   HttpServletResponse response) 
+	throws ServletException, IOException
+	{
+		doGet(request, response);
+	}	
+}</pre>
+           
+      <p> Aquí
+      tenéis el <a href="ejemplos/basico/ejemploform.war.zip">WAR</a> con el ejemplo comprimido.
+      Copiadlo en el directorio <i>webapps</i>  y probad el ejemplo con:</p>
+           
+      <pre class="codigo">http://localhost:8080/ejemploform/index.html</pre>
+           
+      <p>&nbsp;</p>
+           
+        </body>
+        </html>

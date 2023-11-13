@@ -1,0 +1,583 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Certificados digitales y SSL</title>
+
+		<meta name="description" content="Experto en desarrollo de aplicaciones web con JavaEE y Javascript">
+		<meta name="author" content="José Luis Zamora Sánchez">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/experto.css" id="theme">
+		
+    	<!-- coloreado de sintaxis con highlight.js -->
+    	<link rel="stylesheet" type="text/css" href="lib/css/github.css">
+
+		<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+		<script>
+			if( window.location.search.match( /print-pdf/gi ) ) {
+				var link = document.createElement( 'link' );
+				link.rel = 'stylesheet';
+				link.type = 'text/css';
+				link.href = 'css/print/pdf.css';
+				document.getElementsByTagName( 'head' )[0].appendChild( link );
+			}
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+		
+		<style type="text/css">.slides .header{
+			position:absolute;
+			top: -50%;
+			left: -50%;
+			width: 100%;
+			display: table;
+		}
+
+		.slides .logo {
+			display: table-cell;
+			vertical-align: middle;
+		}
+
+		.slides .bar {
+			background-color: rgb(18,64,128);
+			font-size: 20px;
+			padding-top: 5px;
+			padding-bottom: 5px;
+			color: white;
+			border-top-left-radius:10px;
+			border-bottom-left-radius:10px;
+			display: table-cell;
+			vertical-align: middle;
+			text-align: center;
+		}
+
+		.slides .footer{
+			position:absolute;
+			bottom: 50%;
+			left: -50%;
+			width: 100%;
+			font-size: 15px;
+			color: gray;
+			display: table;
+		}  
+		.slides .left {
+			display: table-cell;
+			text-align: left;
+		}
+		.slides .right {
+			display: table-cell;
+			text-align: right;
+		}
+		.slides .center {
+			display: table-cell;
+			text-align: center;
+		}
+
+</style>
+
+	</head>
+
+<body>
+	<div class="reveal">
+	<div class="slides">
+		<!-- todo lo que se ponga aqui (que no sea un <section>) aparecerá
+		en todas las diapositivas -->
+		<div class="header">
+			<div class="logo">
+			 <img src="css/images/logo_small.png">
+			</div>
+			<div class="bar">Experto en desarrollo de aplicaciones web con JavaEE y Javascript</div>
+		</div>
+		<div class="footer">
+			<div class="left">
+				Servidores Web y PaaS
+			</div>
+			<div class="center">
+				&copy; 2015-16 Dpto. Ciencia de la Computación e I.A.
+			</div>
+			<div class="right">
+				Sesión 4
+			</div>	
+		</div>	
+		<!-- Cada <section> es una slide -->	
+		
+		<section>
+			<!-- al poner el <h1> automáticamente aparece el logo del curso-->
+			<h1>Servidores Web y PaaS</h1>
+			<h2>Sesión 4: Certificados digitales y SSL</h2>
+		</section>
+		
+		<section>
+			<h2>Índice</h2>
+			<ul>
+				<li>Certificados digitales.</li>
+				<li>Handshake SSL.</li>
+				<li>One-Way SSL y Two-Way SSL.</li>
+				<li>Autorización basada en certificados.</li>
+				<li>Comunicación SSL a través de proxies.</li>				
+			</ul>
+		</section>
+
+		<section>
+			<h2>» Certificados digitales</h2>
+		</section>
+		
+		<section>			
+			<br>
+			<h2>Certificados digitales </h2>
+			<ul>
+				<li>Junto con los passwords, es uno de los mecanismos de autenticación más populares.</li>
+				<li>Derivado de la criptografía asimétrica con dos claves, una privada y otra pública.</li>
+				<br>
+				<li>Dos supuestos:
+					<ul>
+							<li>Emisor encripta un mensaje con clave pública y el receptor lo desencripta con clave privada → Se garantiza la confidencialidad del mensaje.</li>
+							<li>Emisor encripta un mensaje con clave privada y el receptor lo desencripta con clave pública → Se garantiza la identidad del emisor (fundamento de la firma digital).</li>
+					</ul>
+				</li>				
+			</ul>
+		</section>
+		
+		<section>			
+			<br>
+			<h2>Certificados digitales </h2>
+			<ul>
+				<li>Un certificado es un documento con información sobre la identidad de un individuo o empresa y una clave pública asociada al mismo. </li>
+				<li>Existen varios formatos, el más habitual <strong>X.509</strong>.</li>
+				<li>Para que tenga validez, debe ir firmado con por alguien de confianza: <em>autoridades de certificación (CA)</em>.</li>
+				<li>Estas entidades también acreditan su identidad con certificados digitales. La secuencia anidada se denomina chain of trust… ¿sin final?</li>
+				<li class=fragment>Los certificados autofirmados o raíz resuelven el problema, pero son el eslabón más débil. Normalmente vienen preinstalados o se obtienen de forma presencial.</li>
+			</ul>
+		</section>
+						
+		<section>
+			<h2>» Handshake SSL</h2>
+		</section>
+		
+		<section>
+			<h2>SSL - Secure Socket Layer</h2>
+			<ul>
+				<li>Protocolo que permite la confidencialidad y autenticación en Internet.</li>
+				<li>Funciona como una capa adicional, se puede combinar con múltiples protocolos que operen en la capa de aplicación de TCP/IP: HTTP, FTP, TELNET.</li>
+				<li>Se utiliza un puerto de escucha específico para SSL (estándar 443, por defecto en WildFly 8443).</li>
+				<li>Para establecer una comunicación segura,  cliente y servidor entablan un diálogo denominado <strong>handshake</strong>.</li>
+			</ul>
+		</section>
+		
+		<section>
+			<br>
+			<h2>Handshake (I) </h2>
+			<blockquote>El cliente solicita al servidor un recurso mediante conexión segura SSL. Envía una lista de los algoritmos de encriptación que soporta</blockquote>
+			<p  align=center><img style="border: 0;"  src="imagenes/paas04/hs3.png"></p>			
+		</section>
+		
+		<section>
+			<br>
+			<h2>Handshake (II) </h2>
+			<blockquote>El servidor se identifica mediante un certificado, e informa del algoritmo de encriptación más potente que pueden usar ambos.</blockquote>
+			<p  align=center><img style="border: 0;" src="imagenes/paas04/hs2.png"></p>
+		</section>
+		
+		<section>
+			<br>
+			<h2>Handshake (III) </h2>
+			<blockquote>El cliente comprueba que el certificado sea de un sitio de confianza y genera una clave de sesión, encriptada con la clave pública del certificado del servidor.</blockquote>
+			<p  align=center><img style="border: 0;"  src="imagenes/paas04/hs3.png"></p>
+		</section>
+		
+		<section>
+			<br>
+			<h2>Handshake (IV) </h2>
+			<blockquote>Cliente y servidor  ya conocen la nueva clave simétrica. Se envían mutuamente la clave de sesión y comprueban que coincida con su copia.</blockquote>
+			<p  align=center><img style="border: 0;"  src="imagenes/paas04/hs1.png"></p>
+		</section>
+		
+		
+		<section>
+			<h2>» One-Way SSL y Two-Way SSL</h2>
+		</section>
+		
+		<section>
+			<ul>
+				<li>El diálogo anterior permite que el cliente verifique que el servidor es quien dice ser  → Verificación en un sentido. </li>
+				<li>Adicionalmente es posible que el servidor solicite al cliente que se identifique mediante un certificado digital.</li>
+				<li>Si existe confianza mutua, se establece el canal de comunicación seguro → Verificación en los dos sentidos. </li>				
+			</ul>
+			<p><br></p>
+			<p align=left class=fragment>A continuación veremos cómo activar ambas modalidades de SSL en WildFly.</p>
+		</section>
+		
+		<section>
+			<br>
+			<h2>Instalación de OpenSSL</h2>
+<pre><code   class="bash" data-trim  style="font-size: 18px;">
+sudo apt-get install openssl			
+</code></pre>
+
+			<p align=left>Cambio para permitir firmar certificados </p>
+<pre><code   class="bash" data-trim  style="font-size: 18px;">			
+/usr/lib/ssl/openssl.conf Línea 170
+
+basicConstraints=CA:TRUE  # Antes FALSE
+</code></pre>			
+			<ul>
+				<li>Utilizaremos keytool para trabajar con almacenes de certificados JKS.</li>
+				<li>Con OpenSSL crearemos certificados y firmaremos como una CA. </li>
+				<li>Cada certificado se almacenará con un alias para poderlo recuperar del almacén. </li>
+			</ul>
+		</section>
+		
+		<section>
+			<br>
+			<h2>Creación de una CA ficticia</h2>
+			<p align=left>1. Definir un certificado de CA ficticia:</p>
+<pre><code   class="bash" data-trim  style="font-size: 18px;">
+openssl req -x509 -newkey rsa:2048 -keyout selfkey.pem -out selfcert.pem -days 365
+</code></pre>		
+		<p  align=center><img style="border: 0;"  src="imagenes/paas04/CACert.png"></p>
+		</section>
+
+
+		<section>
+			<br>
+			<h2>Creación de una CA ficticia</h2>
+			<p align=left>2. Importar el certificado en el almacén de confianza <em>trust.jks</em> :</p>
+<pre><code   class="bash" data-trim  style="font-size: 18px;">
+keytool -import -trustcacerts -alias trustself -keystore trust.jks -file selfcert.pem -keyalg RSA -keypass secreto -storepass secreto
+</code></pre>				
+		</section>
+		
+		<section>
+				<br>
+				<h2>One Way SSL</h2>
+				<p align=left>1.- Crear una petición de certificado que identifique al servidor: </p>
+<pre><code   class="bash" data-trim  style="font-size: 18px;">
+openssl genrsa -out server.key  1024	#crear una clave nueva de certificado
+openssl req -new -key server.key -out server.csr #crear una petición de certificado.
+</code></pre>				
+		<p  align=center><img style="border: 0;" height="370" src="imagenes/paas04/ServerCert.png"></p>			
+		</section>
+		
+		<section>
+				<br>
+				<h2>One Way SSL</h2>
+				<p align=left>2.- Firmar el certificado con nuestra CA</p>
+				<ul>
+					<li>Simulamos lo que haría una CA al recibir una petición de certificado
+<pre><code   class="bash" data-trim  style="font-size: 18px;">
+openssl x509 -req -days 365 -in server.csr -CA selfcert.pem -CAkey selfkey.pem -set_serial 01 -out server.crt
+</code></pre>									
+					</li>
+					<li>El serial debe ser distinto para cada certificado generado (!).</li>
+				</ul>				
+		</section>
+		
+		<section>
+				<br>
+				<h2>One Way SSL</h2>
+				<p align=left>3.- Importar el certificado en nuestro almacén de identidad</p>
+				<ul>
+					<li>Transformación previa a PKCS12:
+<pre><code   class="bash" data-trim  style="font-size: 18px;">
+# Convertir a PKCS12
+openssl pkcs12 -export -name servercert -in server.crt -inkey server.key -out keystore.p12 
+#finalmente importarlo en jks
+keytool -importkeystore -destkeystore identity.jks -srckeystore keystore.p12  \
+	-srcstoretype pkcs12 -alias servercert -keypass secreto -storepass secreto
+</code></pre>												
+				</ul>				
+		</section>
+		
+		<section>
+				<br>
+				<h2>One Way SSL</h2>
+				<p align=left>4.- Comprobar que los certificados están importados correctamente:</p>
+<pre><code   class="bash" data-trim  style="font-size: 18px;">
+keytool -list -v -keystore trust.jks -storepass secreto
+keytool -list -v -keystore identity.jks -storepass secreto
+</code></pre>	
+			<p align=left>5.- Copiar los almacenes a la carpeta standalone/configuration</p>
+			<p align=left>6.- Definir el realm asociado a los certificados:</p>
+<pre><code   class="xml" data-trim  style="font-size: 18px;">			
+<security-realm name="SecureRealm">
+	<server-identities>
+		<ssl>
+			&ltkeystore path="identity.jks" relative-to="jboss.server.config.dir" keystore-password="secreto" alias="servercert" key-password="secreto"/&gt
+		</ssl>
+	</server-identities>	
+</security-realm>					 
+</code></pre>	
+		</section>
+						
+		<section>
+			<br>
+			<h2>One Way SSL</h2>
+			<p align=left>7.- Definir un <em>https-listener</em> en el subsistema <em>undertow</em> :</p>
+			<pre><code class="xml" data-trim  style="font-size: 18px;">
+<subsystem xmlns="urn:jboss:domain:undertow:1.1">
+&ltbuffer-cache name="default"/&gt
+<server name="default-server">
+	&lthttp-listener name="default" socket-binding="http"/&gt
+	&lthttps-listener name="https" socket-binding="https" security-realm="SecureRealm"/&gt
+</code></pre>						
+			<p align=left>Aplica a las peticiones <em>https</em> y <em>management-https</em>.</p>		
+		</section>
+						
+		<section>
+			<br>
+			<h2>One Way SSL</h2>
+			<p align=left>8.-Arrancar el servidor</p>
+			<p align=left> Ya deberíamos tener SSL pero...	</p>			
+			<p align=center><img style="border: 0;" height="300" src="imagenes/paas04/ssl3.png"></p>			
+			<p align=left>El navegador avisa de que no confía en nuestro certificado de servidor.</p>
+		</section>
+
+		<section>
+			<br>
+			<h2>One Way SSL</h2>
+			<p align=left>Solución: Añadir nuestra CA a las CA de confianza del navegador</p>		
+			<p  align=center><img style="border: 0;" height="350" src="imagenes/paas04/cert4.jpg"></p>			
+			<p align=left>Importaremos el certificado <em>selfcert.pem</em></p>
+		</section>
+		
+		<section>
+			<br>
+			<h2>One Way SSL</h2>
+			<p align=left>It works!</p>		
+			<p  align=center><img style="border: 0;" src="imagenes/paas04/ssl5.png"></p>						
+		</section>		
+
+				
+		<section>
+			<br>
+			<h2>Cambios en las aplicaciones web</h2>
+			<p align= left>Proteger una serie de recursos mediante conexión segura:</p>
+<pre><code class="xml" data-trim  style="font-size: 18px;">			
+<security-constraint>
+<web-resource-collection>
+<web-resource-name>Redireccion SSL</web-resource-name>
+<url-pattern>/*</url-pattern>
+</web-resource-collection>
+<user-data-constraint>
+<transport-guarantee>CONFIDENTIAL</transport-guarantee>
+</user-data-constraint>
+</security-constraint>
+</code></pre>			
+		</section>
+					
+					
+		
+		<section>
+			<br>
+			<h2>Forzar acceso seguro a la consola web</h2>
+			<ul>
+				<li>Añadir el certificado de servidor al ManagementRealm
+<pre><code class="xml" data-trim  style="font-size: 18px;">			
+<server-identities>
+	<ssl>
+		&ltkeystore path="identity.jks" relative-to="jboss.server.config.dir" 
+		keystore-password="secreto" alias="servercert" key-password="secreto"/&gt
+	</ssl>
+</server-identities>
+</code></pre>	
+				</li>
+				<li>Asociar el puerto seguro a la interfaz de administración:
+<pre><code class="xml" data-trim  style="font-size: 18px;">			
+<http-interface security-realm="ManagementRealm" http-upgrade-enabled="true">
+	&ltsocket-binding https="management-https"/&gt <!-- Sustituye a management-http -->
+</http-interface>
+</code></pre>					
+				</li>		
+		</section>
+		
+		<section>
+				<br>
+				<h2>Two-Way SSL</h2>
+				<p align=left>1.- Crear un certificado de cliente, firmado por nuestra CA ficticia: </p>
+<pre><code   class="bash" data-trim  style="font-size: 18px;">
+openssl genrsa -out client.key  1024
+openssl req -new -key client.key -out client.csr
+openssl x509 -req -days 365 -in client.csr -CA selfcert.pem -set_serial 02 -CAkey selfkey.pem   -out client.crt
+</code></pre>				
+		<p  align=center><img style="border: 0;" height="300" src="imagenes/paas04/ClientCert.png"></p>			
+		</section>
+		
+				
+			<section>
+				<br>
+				<h2>Two-Way SSL</h2>
+				<p align=left>2.- Convertir al formato PKCS12 que incluye clave pública y privada: </p>
+<pre><code   class="bash" data-trim  style="font-size: 18px;">
+openssl pkcs12 -export -name clientcert -in client.crt -inkey client.key -out clientstore.p12
+</code></pre>				
+		<p align=left>3.- Importar el certificado como certificado propio:</p>
+		<p  align=center><img style="border: 0;" height="300" src="imagenes/paas04/ClientCert2.png"></p>			
+		</section>
+							
+		<section>
+				<br>
+				<h2>Two-Way SSL</h2>
+				<p align=left>4.- Configurar autenticación en SecureRealm: </p>
+<pre><code   class="xml" data-trim  style="font-size: 18px;">
+<security-realm name="SecureRealm">
+                ....
+                <authentication>
+                    &lttruststore path="trust.jks" relative-to="jboss.server.config.dir" keystore-password="secreto"/&gt
+                </authentication>
+            </security-realm>
+</code></pre>				
+				<p align=left>5.- Requerir certificado de cliente: </p>
+<pre><code   class="xml" data-trim  style="font-size: 18px;">				
+<https-listener name="https" socket-binding="https" security-realm="SecureRealm" verify-client="REQUESTED"/>
+</code></pre>				
+		</section>
+	
+		<section>
+		
+		<p align=left>El parámetro verify-client tiene tres valores posibles:</p>
+		<br>
+		<table>		
+				<thead>
+					<tr>
+						<th>Valor</th>
+						<th>Descripción</th>						
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>NOT_REQUESTED</td>
+						<td>No solicitar certificado a cliente (valor por defecto)</td>						
+					<tr>
+					<tr>
+						<td>REQUESTED</td>
+						<td>Se pide certificado de cliente, pero si no se presenta se permite continuar la conexión segura.</td>					
+					<tr>
+					<tr>
+						<td>REQUIRED</td>
+						<td>Se requiere un certificado de cliente válido para poder establecer una conexión segura.</td>						
+					<tr>
+				</tbody>
+			</table>
+		</section>
+	
+		<section>
+			<h2>» Autorización basada en certificados.</h2>
+		</section>
+		
+		<section>
+			<br>
+			<h2>Login module <em>CertificateRoles</em>
+<pre><code   class="xml" data-trim  style="font-size: 18px;">			
+<security-domain name="seguridad-cert" cache-type="default">
+	<authentication>
+		<login-module code="CertificateRoles" flag="required">
+			&ltmodule-option name="securityDomain" value="seguridad-cert"/&gt
+			&ltmodule-option name="verifier" value="org.jboss.security.auth.certs.AnyCertVerifier"/&gt
+			&ltmodule-option name="rolesProperties" value="file:/usr/local/wildfly/standalone/configuration/roles.properties"/&gt			
+		</login-module>
+	</authentication>
+	&ltjsse keystore-password="secreto" keystore-url="file:/usr/local/wildfly/standalone/configuration/trust.jks" 
+		truststore-password="secreto" truststore-url="file:/usr/local/wildfly/standalone/configuration/trust.jks"/&gt
+</security-domain>
+</code></pre>		
+			<ul>
+					<li><em>rolesProperties</em>: Fichero que asocia los (CN) con roles.</li>
+					<li><em>jsse</em>: Almacén de confianza.</li>
+			</ul>
+		</section>
+		
+		<section>
+			<h2>Asociar Certificados a roles</h2>
+			<ul>
+				<li>El fichero de roles sigue el mismo formato general que el fichero <em>application-roles.properties. </em></li>
+				<li>Cada usuario se identifica con el DN completo del certificado.</li>
+				<li>Los signos '=' se escapan con barras.</li>
+				<li>Ejemplo:
+<pre><code   class="bash" data-trim  style="font-size: 18px;">							
+CN\=JoseLuis,\ OU\=jtech,\ O\=UA,\ L\=Alicante,\ ST\=Spain,\ C\=ES=rol_usuario				
+</code></pre>
+				</li>
+				<li>Ojo con el último '=', separador entre usuario y rol o roles (!)</li>
+			</ul>
+		</section>
+		
+		<section>
+			<h2>Cambios en las aplicaciones Web</h2>
+			<ul>				
+				<li>Autenticación basada en certificados:
+<pre><code   class="xml" data-trim  style="font-size: 18px;">							
+<login-config>
+<auth-method>CLIENT-CERT</auth-method>
+<!--<auth-method>BASIC</auth-method>-->
+<realm-name>miDominio</realm-name>
+</login-config>
+</code></pre>
+				</li>				
+			</ul>
+		</section>
+		
+		<section>
+			<br>
+			<h2>Comunicación SSL a través de proxies</h2>			
+			<p  align=center><img style="border: 0;" height="350" src="imagenes/paas04/clientcert1.png"></p>			
+			<ul>
+				<li>Las conexiones SSL son punto a punto.</li>
+				<li>Elementos SW/HW intermedios: proxies, balanceadores.</li>
+				<li>Cabecera <em>SSL_CLIENT_CERT</em></li>
+			</ul>
+		</section>
+				
+		<section>
+			<h1>¿Preguntas...?</h1>
+		</section>
+
+		
+	</div>
+</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+				slideNumber: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
+
+		
+		</section>

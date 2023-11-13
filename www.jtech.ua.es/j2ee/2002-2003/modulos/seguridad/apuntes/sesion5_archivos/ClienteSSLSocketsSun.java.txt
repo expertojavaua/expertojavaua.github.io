@@ -1,0 +1,66 @@
+import java.io.*;
+import java.net.*;
+import java.security.*;
+
+import javax.net.ssl.SSLSocketFactory;
+
+import com.sun.net.ssl.SSLContext;
+import com.sun.net.ssl.TrustManagerFactory;
+import com.sun.net.ssl.TrustManager;
+
+/**
+ * ClienteSSLSocketsSun	
+ *
+ *      Usar SSL para comunicación entres sockets.
+ *      Utiliza las clases com.sun.net.ssl.
+ */
+public class ClienteSSLSocketsSun  {
+
+	private static final String HOST = "localhost";
+	private static final int PORT = 8080;
+
+	public static void main(String[] args) throws Exception {
+
+                // Cargar el keystore
+		char[] password = "scosco".toCharArray();
+		KeyStore keystore = KeyStore.getInstance("JKS");
+		keystore.load(new FileInputStream(".keystore"), password);
+
+                // Inicializamos la TrustManagerFactory con el KeyStore
+		TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
+		tmf.init(keystore);
+
+                // Creamos un contexto SSL y lo inicializamos con los 
+                // TrustManagers de la TrustManagerFactory
+		SSLContext contexto = SSLContext.getInstance("TLS");
+		TrustManager[] trustManagers = tmf.getTrustManagers();
+
+		contexto.init(null, trustManagers, null);
+
+                // Cogemos una SocketFactory para crear Sockets SSL.
+		SSLSocketFactory sf = contexto.getSocketFactory();
+
+		// Abrir una conexión 
+		Socket s = sf.createSocket(HOST,PORT);
+
+                // Coger los streams de entrada y salida. 
+                // La encriptación será transparente. 
+		OutputStream out = s.getOutputStream();
+		out.write("\nConexión establecida.\n\n".getBytes());
+		System.out.print("\nConexión establecida.\n\n");
+
+                // Enviar cualquier cosa que escriba el usuario.
+		int caracter=0;
+		caracter = System.in.read();
+		while (caracter != '~') // El '~' es el caracter de escape para salir.  
+		{
+		  out.write(caracter);
+		  out.flush();
+		  caracter = System.in.read();
+		}
+
+		out.close();
+		s.close();
+	}
+}
+

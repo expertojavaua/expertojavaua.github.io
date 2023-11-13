@@ -1,0 +1,348 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+  <title>Tema 5: Filtros</title>
+        
+  <meta content="text/html; charset=iso-8859-1"
+ http-equiv="Content-Type">
+   
+  <link href="../../../apuntes.css" rel="stylesheet" type="text/css">
+     
+  <meta content="Microsoft FrontPage 4.0" name="GENERATOR">
+</head>
+ <body bgcolor="#ffffff" text="#000000">
+   
+<h1><span class="section">5. Filtros</span> </h1>
+   
+<p>Hasta ahora hemos visto la forma en la que los servlets nos permiten encapsular 
+el mecanismo de petici&oacute;n/respuesta. Se identifica al servlet como un
+recurso dentro del sitio web, y cuando desde el cliente solicitamos dicho
+ recurso, se ejecutar&aacute; el c&oacute;digo que hayamos definido dentro 
+del m&eacute;todo de servicio del servlet.</p>
+   
+<p>La limitaci&oacute;n de los servlets es justamente esa, que un servlet 
+se invocar&aacute; s&oacute;lo cuando solicitemos dicho servlet desde el cliente.
+Pero, &iquest;y si queremos procesar cualquier petici&oacute;n que se haga
+a cierta parte o toda nuestra aplicaci&oacute;n web?</p>
+   
+<p>Si s&oacute;lo contamos con servlets, para solucionar esto podr&iacute;amos 
+optar por alguna de las siguientes opciones por ejemplo:</p>
+   
+<ul>
+    <li>Crear un servlet central que invocaremos siempre desde el cliente
+    pas&aacute;ndole como par&aacute;metro el recurso que deseamos obtener. 
+Tiene el     inconveniente de que no es transparente para desarrollador del 
+contenido de     nuestra aplicaci&oacute;n web, ya que deber&aacute; definir 
+todos los enlaces del sitio     para que vayan al servlet.</li>
+    <li>Introducir al comienzo de todos los servlets de nuestra aplicaci&oacute;n 
+una     llamada a cierta funci&oacute;n que haga el procesamiento que queremos 
+realizar.     Esto no nos servir&iacute;a para el contenido est&aacute;tico 
+de la aplicaci&oacute;n web.     Adem&aacute;s tampoco es transparente ya 
+que el desarrollador de los servlets     deber&aacute; realizar una llamada 
+a este c&oacute;digo. Otro inconveniente es que     estaremos repitiendo c&oacute;digo
+com&uacute;n en varios elementos, lo cual va en     contra de la modularidad.</li>
+    <li>Configurar el servidor web (si nos lo permite) para que cualquier
+    petici&oacute;n de recurso sea redirigida a un servlet que la procese. 
+Esta ser&iacute;a     la soluci&oacute;n m&aacute;s apropiada, pero tendremos 
+el problema de que si el servlet     internamente quiere hacer la petici&oacute;n 
+del recurso al servidor, volver&aacute; a     redireccionarlo a si mismo, 
+por lo que podemos entrar en un bucle infinito.     Por lo tanto, surgir&aacute;n 
+problemas con la identificaci&oacute;n de los recursos.</li>
+   
+</ul>
+   
+<p>Como vemos, por ahora este problema no tiene ninguna soluci&oacute;n totalmente
+ satisfactoria. Para ello, a partir de la versi&oacute;n 2.3 de servlets, 
+aparecen los denominados filtros.</p>
+   
+<h2>5.1 &iquest;Qu&eacute; es un filtro?</h2>
+   
+<p>Un filtro es un componente que intercepta cualquier petici&oacute;n que 
+se realice a un determinado grupo de recursos de nuestra aplicaci&oacute;n 
+web, y la respuesta que se vaya a devolver al cliente por parte del servidor.</p>
+   
+<p>Normalmente los filtros no generar&aacute;n por si mismos la respuesta, 
+como es el caso de los servlets, sino que simplemente la modificar&aacute;n 
+si es necesario. Podr&aacute;n modificar tanto la petici&oacute;n HTTP, como 
+la respuesta o las cabeceras de la misma.</p>
+   
+<p>Una ventaja importante de los filtros es que nos ayudar&aacute;n a modularizar 
+la aplicaci&oacute;n, ya que son componentes independientes que actuar&aacute;n 
+sobre cualquier grupo de recursos, no teniendo dichos recursos porque conocer 
+la existencia de estos filtros. De esta forma este filtrado de las peticiones 
+y respuestas a nuestro servidor se realiza de un forma totalmente transparente 
+en todos los niveles, tanto para el cliente como para los desarrolladores 
+del contenido del sitio web (servlets, JSPs, p&aacute;ginas est&aacute;tica, 
+y cualquier otro recurso).</p>
+   
+<p>Esta independencia implica por lo tanto que los filtros podr&aacute;n ser
+reutilizados    para cualquier elemento del sitio web, sin necesidad de incluir
+c&oacute;digo com&uacute;n    en todos los elementos que queramos que realicen
+dicha funcionalidad. </p>
+   
+<h2>5.2 Funcionalidades de los filtros</h2>
+   
+<p>Un filtro podr&aacute; acceder a la petici&oacute;n de un determinado recurso
+antes de que dicho recurso sea invocado, momento en el que podremos procesar
+o modificar dicha petici&oacute;n.</p>
+   
+<p>Una vez se ha invocado la petici&oacute;n, podremos procesar o modificar 
+la respuesta que nos ha devuelto el servidor.</p>
+   
+<p>Adem&aacute;s, podremos tener m&uacute;ltiples filtros actuando sobre determinados
+grupos de recursos. De esta forma un recurso podr&aacute; no ser filtrado,
+o ser filtrado por uno o m&aacute;s filtros. Cuando tenemos varios filtros,
+se organizar&aacute;n en forma de cadena en el orden que nosotros especifiquemos,
+y cada uno procesar&aacute; el resultado del anterior.</p>
+   
+<h2>5.3 Aplicaciones de los filtros</h2>
+   
+<p>Hemos descrito lo que es un filtro, pero entenderemos m&aacute;s claramente 
+los filtros si vemos una serie de posibles aplicaciones que les podemos dar:</p>
+   
+<ul>
+    <li>Autentificaci&oacute;n de usuarios: Podemos definir un filtro que 
+act&uacute;e sobre     cierta zona restringida de nuestra aplicaci&oacute;n 
+web. Si el usuario est&aacute;     registrado el filtro dejar&aacute; ver 
+el contenido tal cual, si no le redirigir&aacute;     a la p&aacute;gina con
+el formulario de registro de usuarios.</li>
+    <li>Transformaci&oacute;n con hojas XSL-T: Si tenemos una serie de p&aacute;ginas 
+escritas     en XML, y una serie de hojas de transformaci&oacute;n XSL-T para
+generar c&oacute;digo     para distintos navegadores, podremos definir un
+filtro que act&uacute;e sobre el     conjunto de documentos XML, y aplique 
+una transformaci&oacute;n seg&uacute;n el tipo de     navegador que hizo la
+petici&oacute;n. Devolver&aacute; al cliente la respuesta     transformada, 
+adaptada al navegador adecuado.</li>
+    <li>Transformaci&oacute;n de im&aacute;genes: Igual que transformamos 
+documentos XML,     tambi&eacute;n podemos aplicar los filtros a determinados 
+formatos de im&aacute;genes, y     transformar dichas im&aacute;genes din&aacute;micamente 
+a un formato m&aacute;s adecuado.</li>
+    <li>Encriptaci&oacute;n de datos: Podemos utilizar un filtro para que 
+encripte la     salida de cualquier recurso al que se acceda. El cliente deber&aacute;
+ser capaz     de desencriptarlo para poder visualizar dicho contenido.</li>
+    <li>Compresi&oacute;n de datos: De forma similar al punto anterior, podemos
+     comprimir los datos que genera el servidor.</li>
+    <li>Registro de acceso a recursos: Se puede contabilizar mediante un
+filtro la     cantidad de accesos a cada recurso de nuestra web. Como todas
+las peticiones     pasan a trav&eacute;s de &eacute;l, simplemente tendr&aacute; 
+que incrementar la cantidad de     visitas al recurso que se solicite en cada
+momento. </li>
+    <li>Log de accesos: Podemos tambi&eacute;n elaborar un fichero de log 
+de accesos a     la web, para conocer los datos de todos los accesos que se
+han realizado.</li>
+   
+</ul>
+   
+<h2>5.4 Configuraci&oacute;n de un filtro</h2>
+   
+<p>Para que un filtro intercepte las peticiones a determinados recursos, deberemos
+   configurar la aplicaci&oacute;n web para que esto sea as&iacute;. La forma
+de    configurar los filtros es similar a la configuraci&oacute;n de los
+servlets.</p>
+   
+<p>Los filtros, al igual que los servlets, ser&aacute;n clases Java que definamos, 
+   y que tendremos normalmente en el directorio <i>WEB-INF/classes</i> de 
+nuestra    aplicaci&oacute;n web, o subdirectorios de este si est&aacute; 
+en alg&uacute;n    subpaquete. La configuraci&oacute;n de los filtros deber&aacute; 
+establecerse    en el fichero de configuraci&oacute;n de nuestra aplicaci&oacute;n 
+web, <i>WEB-INF/web.xml</i>.  </p>
+   
+<p>Es importante recordar que en este fichero de configuraci&oacute;n, por 
+ser    un lenguaje definido mediante un DTD en XML, se debe respetar el orden 
+en el    que aparecen los distintos elementos. Los elementos para la configuraci&oacute;n 
+   de filtros deben ir tras los elementos <i>context-param</i>, y antes de<i> 
+listener</i>    y <i>servlet</i>. </p>
+   
+<p>Primero deberemos declarar los filtros incluidos en nuestra aplicaci&oacute;n 
+   web. Para ello deberemos utilizar el elemento <i>filter</i> que se define 
+de    la siguiente forma en el DTD:</p>
+   
+<pre class="codigo">&lt;!ELEMENT <b>filter</b> (icon?, filter-name, display-name?, <br>			description?, filter-class, init-param*)&gt;</pre>
+   
+<p>Un ejemplo de uso de este elemento en el fichero de configuraci&oacute;n 
+<i>web.xml</i>    es el siguiente:</p>
+   
+<pre class="codigo">&lt;<b>filter</b>&gt;<br>	&lt;<b>filter-name</b>&gt;Filtro de ejemplo&lt;/<b>filter-name</b>&gt;<br>	&lt;<b>filter-class</b>&gt;FiltroEjemplo&lt;/<b>filter-class</b>&gt;<br>	&lt;<b>init-param</b>&gt;<br>		&lt;<b>param-name</b>&gt;fichero_log&lt;/<b>param-name</b>&gt;<br>		&lt;<b>param-value</b>&gt;log.txt&lt;/<b>param-name</b>&gt;<br>	&lt;/<b>init-param</b>&gt;<br>&lt;/<b>filter</b>&gt;</pre>
+   
+<p>Es muy similar a la forma de declarar un servlet. Asignamos un nombre al
+filtro,    que ser&aacute; asociado a la clase en la que est&aacute; implementado 
+dicho    filtro. En este caso la clase es <i>FiltroEjemplo</i>, por lo que 
+tendremos    que tener el fichero <i>FiltroEjemplo.class</i> en el directorio 
+<i>WEB-INF/classes</i>    de nuestra aplicaci&oacute;n.</p>
+   
+<p>A continuaci&oacute;n podemos declarar una serie de par&aacute;metros de
+entrada    para el filtro, de forma que para variar estos datos no tengamos 
+que modificar    y recompilar la clase del filtro, sino que simplemente deberemos 
+modificar el    valor del par&aacute;metro en este fichero de configuraci&oacute;n. 
+Podremos    no tener ning&uacute;n par&aacute;metro, tener uno, o tantos como
+queramos.</p>
+   
+<p>Una vez declarados los filtros deberemos mapearlos a los recursos. Las 
+peticiones    que se hagan al servidor a estos recursos, ser&aacute;n interceptadas 
+por nuestro    filtro. Podemos mapear filtros a recursos de distintas formas, 
+con la etiqueta    <i>filter-mapping </i>que se define de la siguiente forma 
+en el DTD:</p>
+   
+<pre class="codigo">&lt;!ELEMENT <b>filter-mapping</b> (filter-name, (url-pattern | servletname))&gt;</pre>
+   
+<p>Ejemplos de utilizaci&oacute;n de las dos formas posibles de mapeado son 
+los    siguientes:</p>
+   
+<pre class="codigo">&lt;<b>filter-mapping</b>&gt;<br>	&lt;<b>filter-name</b>&gt;Filtro de ejemplo&lt;/<b>filter-name</b>&gt;<br>	&lt;<b>servlet-name</b>&gt;Servlet interceptado&lt;/<b>servlet-name</b>&gt;<br>&lt;/<b>filter-mapping</b>&gt;<br><br>&lt;<b>filter-mapping</b>&gt;<br>	&lt;<b>filter-name</b>&gt;Filtro de ejemplo&lt;/<b>filter-name</b>&gt;<br>	&lt;<b>url-pattern</b>&gt;/*&lt;/<b>url-pattern</b>&gt;<br>&lt;/<b>filter-mapping</b>&gt;</pre>
+   
+<p>La primera forma nos sirve para mapearlo a un servlet, dado el nombre del
+servlet    al que lo vamos a asociar. La segunda forma asocia el filtro a
+todos los elementos    cuya URL cumpla el patr&oacute;n dado:</p>
+   
+<pre class="codigo"><b>/*</b>                  Se asocia con todos los elementos de nuestra aplicaci&oacute;n web.<br><b>/zona_restringida/*</b> Se asocia con todos los elementos en el directorio de nombre    <br>                    zona_restringida, y con los de sus subdirectorios.<br><b>/web/*</b>              Se asocia con todos los elementos en el directorio de nombre    <br>                    web, y con los de sus subdirectorios.<br>...</pre>
+   
+<p>Podemos asociar varios filtros a un mismo recurso, si dicho recurso aparece 
+   mapeado para varios filtros. En este caso tendremos una cadena de varios 
+filtros    cuando se produzca una petici&oacute;n a este recurso.</p>
+   
+<div align="center"><img src="imagenes/filtros/chain.gif" alt=""
+ width="472" height="335">
+ <br>
+ </div>
+ 
+<p class="caption">Figura 1. Encadenamiento de filtros</p>
+   
+<h2>5.5 Implementaci&oacute;n b&aacute;sica de un filtro</h2>
+   
+<p>Los filtros se definen mediante la interfaz <b>Filter</b>, contenida en 
+el    paquete<b> javax.servlet</b>. Por lo tanto, para crear un filtro deberemos 
+crear    una clase que implemente dicha interfaz:</p>
+   
+<pre class="codigo">import javax.servlet.*;<br>import javax.servlet.http.*;<br><br><br>class MiFiltro <b>implements Filter</b> {<br>	FilterConfig config;</pre>
+   
+<p>Dentro de este clase, el m&eacute;todo b&aacute;sico que deberemos implementar 
+ser&aacute; el m&eacute;todo    <b>doFilter</b>, al que se llamar&aacute; 
+cada vez que dicho filtro intercepte una    petici&oacute;n a recursos:</p>
+   
+<pre class="codigo">	public void <b>doFilter</b>(ServletRequest request, <br>				ServletResponse response, FilterChain chain) <br>			throws IOException, ServletException {<br>		...</pre>
+   
+<p>Vemos que a este m&eacute;todo se le pasa como par&aacute;metro la petici&oacute;n 
+y la respuesta, de forma que podamos procesarlas o modificarlas seg&uacute;n 
+la funcionalidad que queramos que implemente el filtro. Hemos de fijarnos 
+que toma una petici&oacute;n y respuesta gen&eacute;rica, no se limita &uacute;nicamente 
+a peticiones y respuestas HTTP.</p>
+   
+<p>Adem&aacute;s tambi&eacute;n se nos proporciona un objeto que representa 
+la cadena de filtros. Con &eacute;l podremos pasar la petici&oacute;n y la 
+respuesta interceptadas al siguiente filtro de la cadena, o bien al recurso 
+destino en caso de que ya no hubiese m&aacute;s filtros. Esto lo haremos con
+una llamada a:</p>
+   
+<pre class="codigo">		...<br><br>		chain.<b>doFilter</b>(request, response);<br>		... // En este punto el servidor ya habr&aacute; producido <br>		    //la respuesta en response<br><br>	}</pre>
+   
+<p>Justo despu&eacute;s de haber llamado a este m&eacute;todo, ya se habr&aacute; 
+producido la respuesta, ya que con &eacute;l estamos indicando que se ejecuten 
+todos los filtros que siguen al nuestro en la cadena, y en &uacute;ltimo lugar
+el recurso solicitado.</p>
+   
+<p>Por lo tanto, todas las modificaciones que queramos hacer en la petici&oacute;n 
+que va a llegar al recurso las deberemos hacer antes de la llamada a este 
+m&eacute;todo, mientras que todo procesamiento que queramos hacer de la respuesta 
+se har&aacute; despu&eacute;s de esta llamada, que ser&aacute; cuando se haya
+generado.</p>
+   
+<p>Tambi&eacute;n podemos hacer que no se llegue a llamar, si queremos que 
+nuestro filtro de la respuesta por si solo, sin acceder al recurso que se 
+hab&iacute;a pedido. Esto lo haremos por ejemplo cuando queramos prohibir 
+el acceso a un recurso.</p>
+   
+<p>Otros m&eacute;todos que debemos definir en un filtro son:</p>
+   
+<pre class="codigo">	public void <b>init</b>(FilterConfig config) throws ServletException {<br>		// C&oacute;digo de inicializaci&oacute;n del filtro<br>		this.config = config;<br>		...<br><br>	}<br><br>	public void <b>destroy</b>() {<br>		// Libera recursos del filtro<br>		config = null;<br>		...<br>	}<br><br>	...<br><br>}<br></pre>
+  Que ser&aacute;n llamados en la inicializaci&oacute;n y en la destrucci&oacute;n 
+de este componente  respectivamente.  
+<h2>5.6 Acceso al contexto</h2>
+   
+<p>Acabamos de ver que cuando se inicializa el filtro se llama a su m&eacute;todo<b> 
+   init</b>. En esta llamada se proporciona un objeto <b>FilterConfig</b> 
+que contiene    informaci&oacute;n sobre los par&aacute;metros del filtro, 
+que vimos en el apartado de configuraci&oacute;n,    y adem&aacute;s nos permite
+acceder a la informaci&oacute;n global de contexto.</p>
+   
+<p>Para leer los par&aacute;metros del filtro especificados en el descriptor 
+de    despliegue de la aplicaci&oacute;n web (fichero<i> web.xml</i> en Tomcat 
+como    hemos visto), este objeto proporciona el siguiente m&eacute;todo:</p>
+   
+<pre class="codigo">String valor = config.<b>getInitParameter</b>(nombre_param);</pre>
+   
+<p>Esta llamada nos devolver&aacute; una cadena con el valor del par&aacute;metro, 
+   o null en el caso de que el par&aacute;metro indicado no existiese. Si 
+queremos    obtener la lista de par&aacute;metros definidos en el descriptor 
+de despliegue,    podemos usar el siguiente m&eacute;todo:</p>
+   
+<pre class="codigo">Enumeration parametros = config.<b>getInitParameterNames</b>();</pre>
+   
+<p>Con esto obtendremos una enumeraci&oacute;n de todos los nombres de par&aacute;metros 
+   definidos. </p>
+   
+<p>Este objeto tambi&eacute;n nos permite obtener el nombre del filtro, que 
+se    habr&aacute; definido en el descriptor de despliegue, con el m&eacute;todo:</p>
+   
+<pre class="codigo">String nombre = config.<b>getFilterName</b>();</pre>
+   
+<p>Este objeto adem&aacute;s nos permitir&aacute; acceder al objeto de contexto 
+   global del contenedor de servlets, mediante el m&eacute;todo:</p>
+   
+<pre class="codigo">ServletContext context = config.<b>getServletContext</b>();</pre>
+   
+<p>Obtenemos este objeto con el cual podremos acceder a los atributos globales 
+   definidos en nuestra aplicaci&oacute;n web, y adem&aacute;s nos proporciona 
+   una serie de m&eacute;todos que nos permitir&aacute;n realizar en filtros 
+las    mismas operaciones que pod&iacute;amos hacer en los servlets. </p>
+   
+<p>Ser&aacute; importante acceder a este objeto desde los filtros, ya que 
+si queremos    realizar redirecciones, o acceso a recursos est&aacute;ticos 
+por ejemplo, necesitaremos    contar con dicho objeto.</p>
+   
+<h2>5.7 Ciclo de vida de un filtro</h2>
+   
+<p>Justo despu&eacute;s del despliegue de la aplicaci&oacute;n web, y antes 
+de    que se produzca cualquier petici&oacute;n a un recurso, el contenedor 
+localizar&aacute;    los filtros que deben ser aplicados a cada recurso. Instanciar&aacute;
+los filtros    que hayamos declarado, y tras ello llamar&aacute; al m&eacute;todo<b>
+init</b>    de cada filtro para inicializarlo. </p>
+   
+<p>Si hacemos que este m&eacute;todo<b> init</b> lance una excepci&oacute;n 
+<b>UnavailableExeption    </b>estaremos indicando que el filtro no puede funcionar
+correctamente. Esta    excepci&oacute;n tiene un m&eacute;todo<b> isPermament
+</b>que indicar&aacute;    si el fallo es permanente o puede recuperarse
+pasado un tiempo. De no ser permanente    el contenedor intentar&aacute; volver
+a instanciar el filtro m&aacute;s adelante.    Podemos establecer en la excepci&oacute;n
+un tiempo estimado que puede tardar    en estar disponible, para informar
+al contenedor de cuando puede volver a intentar    instanciarlo.</p>
+   
+<p>Al m&eacute;todo<b> init</b> se le proporcionar&aacute; el objeto <b>FilterConfig</b>, 
+   con la informaci&oacute;n de los par&aacute;metros y nombre del filtro 
+obtenidos    del descriptor de despliegue, adem&aacute;s de una referencia 
+al objeto <b>ServletContext</b>    de la aplicaci&oacute;n web, como hemos 
+visto en el apartado anterior.</p>
+   
+<p>Una vez terminada la fase de inicializaci&oacute;n, el servidor ya podr&aacute; 
+   empezar a recibir peticiones. Cuando se produzca una petici&oacute;n, el
+contenedor    localizar&aacute; el primer filtro asociado a dicho recurso, 
+y llamar&aacute;    a su m&eacute;todo <b>doFilter</b> proporcionando los 
+objetos <b>ServletRequest</b>,    <b>ServletResponse</b>, y <b>FilterChain</b>. 
+Una vez hecho esto ser&aacute;    responsabilidad de nuestro filtro tratar 
+estos objetos, y decidir si pasar el    procesamiento al siguiente filtro 
+de la cadena.</p>
+   
+<p>Cuando lleguemos al ultimo filtro de la cadena, al llamar a <b>doChain</b> 
+   se invocar&aacute; directamente el recurso que se solicitaba en la petici&oacute;n.</p>
+   
+<p>Si durante <strong>doFilter</strong> lanzamos una excepci&oacute;n<b> UnavailableException</b>, 
+  el contenedor no intentar&aacute; seguir procesando la cadena de filtros. Si 
+  hemos indicado que es no permanente, tras un rato reintentar&aacute; procesar 
+  la cadena entera.</p>
+   
+<p>Antes de poder hacer que el filtro deje de estar en servicio, llamar&aacute; 
+   a su m&eacute;todo <b>destroy</b> para que libere los recursos que sea 
+necesario.</p>
+  <br>
+ 
+</body>
+</html>

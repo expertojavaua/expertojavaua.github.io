@@ -1,0 +1,712 @@
+<html>
+<head>
+<title>Tema 6: Construcci&oacute;n de aplicaciones CORBA</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<h1><span class="section">6. </span>Construcci&oacute;n de aplicaciones CORBA</h1>
+<p>Para ilustrar la construcci&oacute;n de aplicaciones mediante CORBA utilizaremos 
+  un ejemplo sencillo de reserva de habitaciones. El desarrollo de una aplicaci&oacute;n 
+  incluye la especificaci&oacute;n de la interfaz, la implementaci&oacute;n de 
+  los objetos, la implementaci&oacute;n del servidor, la implementaci&oacute;n 
+  de una <i>factory</i>, el inicio de los servidores y de los clientes como aplicaciones 
+  y como <i>applets</i>. </p>
+<h2 class="subsection">6.1. Especificaci&oacute;n de la aplicaci&oacute;n</h2>
+<p>El sistema de reserva de habitaciones permite tanto la reserva de habitaciones 
+  como la cancelaci&oacute;n de las mismas. Opera sobre una franja horaria de 
+  9 A.M. hasta las 4 P.M. con unidades de una hora (no se consideran dias ni semanas). 
+  Las habitaciones disponibles no son fijas, el n&uacute;mero y nombres de las 
+  habitaciones puede cambiar. Cuando se reserva una habitaci&oacute;n se debe 
+  indicar el nombre y el prop&oacute;sito de la persona que la reserva. Todos 
+  los objetos creados no tienen un estado persistente. Tampoco vamos a considerar 
+  cuestiones de seguridad y cualquiera puede cancelar cualquier reserva.</p>
+<p>Vamos a tener en cuenta las siguientes cuestiones sobre el dise&ntilde;o:</p>
+<ul>
+  <li>Las habitaciones y las reservas son objetos CORBA </li>
+  <li>Un objeto reserva define un prop&oacute;sito y la persona responsable de 
+    la reserva</li>
+  <li>Una <i>factory</i> de reservas crea objetos reserva</li>
+  <li>Una habitaci&oacute;n almacena reservas indexadas por intervalos de tiempo</li>
+  <li>Las habitaciones tienen un nombre y se registran ellas mismas con su nombre 
+    en el servicio <i>Naming</i>.</li>
+</ul>
+<p>La figura 6.1 ilustra la configuración de nuestro sistema de reservas. Hay 
+  tres servidores de habitaciones (<i>room servers</i>), que tienen una implementaci&oacute;n 
+  de objeto <i>Room</i>. Tambi&eacute;n hay un servidor <i>Meeting Factory</i> 
+  que crea un objeto <i>Meeting Factory. </i>La <i>Meeting Factory</i> crea varios 
+  objetos <i>Meeting</i> que utilizan en mismo espacio de direcciones, y que se 
+  corresponden con una m&aacute;quina virtual Java (en el caso de Java). Un servicio 
+  <i>Naming</i> tiene varios objetos <i>Naming Context</i> formando un &aacute;rbol 
+  de contexto. Las implementaciones de los objetos <i>Room</i> y <i>Meeting Factory</i> 
+  se registran en el servicio de nombres (<i>Naming service</i>).</p>
+<center>
+  <img border="0" src="Fig6-1.gif"> 
+</center>
+<p class="caption">Figura 6.1. Sistema de reserva de habitaciones.</p>
+<p>La especificaci&oacute;n IDL contiene las especificaciones para <i>Meeting</i>, 
+  <i>MeetingFactory</i>, y <i>Room. </i>La interfaz <i>Meeting</i> tiene dos atributos: 
+  <code>purpose</code> y <code>participants</code>. Los atributos describen la 
+  sem&aacute;ntica de una reserva. La interfaz tiene una operaci&oacute;n <code>destroy()</code> 
+  para completar su ciclo de vida. </p>
+<p>Los objetos reserva (<i>meeting</i>) son creados en tiempo de ejecuci&oacute;n 
+  por la <i>Meeting Factory</i>. Proporciona una &uacute;nica operaci&oacute;n, 
+  <code>createMeeting()</code>, cuyos par&aacute;metros se corresponden con los 
+  atributos del objeto <i>Meeting</i> y devuelve una referencia de objeto al nuevo 
+  objeto <i>Meeting</i> creado. </p>
+<pre class="codigo">
+module roomBooking {
+
+    interface Meeting {
+    
+        // Una reserva tiene dos atributos de solo lectura que describen
+        // el prop&oacute;sito y los participantes en dicha reserva
+    
+        readonly attribute string purpose;
+        readonly attribute string participants;
+
+        oneway void destroy();
+    };
+    
+    interface MeetingFactory {
+    
+        // Una meeting factory crea objetos reserva
+    
+        Meeting createMeeting( in string purpose, in string participants);
+    };
+    
+    interface Room {
+    
+        // Una habitaci&oacute;n proporciona operaciones para mostrar, realizar y 
+        // cancelar reservas
+        // Realizar una reserva implica asociar una reserva con un <i>slot</i> 
+        // de tiempo (para dicha habitaci&oacute;n particular).
+    
+        // Las reservas pueden realizarse en horario de oficina
+        // Por simplicidad disponemos de 8 <i>slots</i> en los que pueden
+        // realizarse las reservas
+    
+        enum Slot { am9, am10, am11, pm12, pm1, pm2, pm3, pm4 };
+
+        // ya que IDL does no proporciona la forma de determinar la
+        // cardinalidad de un <i>enum</i>, defnimos la constante <i>MaxSlots</i>
+    
+        const short MaxSlots = 8;
+    
+        // Las reservas asocian todas las reservas (de un dia) 
+        // con <i>slots</i> temporales para cada habitaci&oacute;n 
+    
+        typedef Meeting Meetings[ MaxSlots ];
+    
+        exception NoMeetingInThisSlot {};
+        exception SlotAlreadyTaken {};
+    
+        // El atributo <i>name</i> da nombre a una habitaci&oacute;n
+    
+        readonly attribute string name;
+    
+        // <i>view</i> devuelve las reservas de una habitaci&oacute;n
+        // Por simplicidad, la implementaci&oacute;n maneja solamente 
+        // reservas para un d&iacute;a
+    
+        Meetings view ();
+    
+        void book( in Slot a_slot, in Meeting  a_meeting )
+            raises(SlotAlreadyTaken);
+    
+        void cancelBooking( in Slot  a_slot )
+            raises(NoMeetingInThisSlot);
+};
+</pre>
+<p>Para la interfaz <i>Room</i>, definimos algunos tipos y constantes, junto con 
+  dos excepciones: <code>NoMeetingInThisSlot</code> y <code>SlotAlreadyTaken</code>. 
+  Hay tres operaciones definidas: <code>view()</code> devuelve <i>Meetings</i> 
+  (vector de objetos <i>Meeting</i>). Una referencia a objeto <i>nil</i> significa 
+  que el <i>slot</i> correspondiente est&aacute; libre. La operaci&oacute;n book() 
+  realiza una reserva en el <i>slot</i> <code>a_slot</code> del objeto Room sobre 
+  el que se invoca la operaci&oacute;n. La operaci&oacute;n <code>cancelBooking()</code> 
+  elimina la reserva del <i>slot</i> <code>a_slot</code>.</p>
+<p>Para compilar la especificaci&oacute;n IDL, asumiendo que la especificaci&oacute;n 
+  se llama <code>RoomBooking.idl</code> utilizamos el compilador <code>idlj</code>:</p>
+<pre class="codigo">idlj -fall RoomBooking.idl</pre>
+<p>Se generan los siguientes ficheros con interfaces java:</p>
+<ul>
+  <li><code>MeetingFactory.java</code> y <code>MeetingFactoryOperations.java</code> 
+  </li>
+  <li><code>Meeting.java</code> y <code>MeetingOperations.java</code> </li>
+  <li><code>Room.java</code> y <code>RoomOperations.java</code></li>
+</ul>
+<p>Tambi&eacute;n se generan clases <i>holder.</i> Entre otros m&eacute;todos, 
+  las clases <i>helper</i> contienen los m&eacute;todos <code>narrow()</code> 
+  para cada interfaz:</p>
+<ul>
+  <li><code>MeetingFactoryHelper.java</code> </li>
+  <li><code>MeetingHelper.java</code> </li>
+  <li><code>RoomHelper.java</code> </li>
+</ul>
+<p>Se generan las clases <i>stub</i> y <i>skeleton</i> para cada interfaz:</p>
+<ul>
+  <li><code>MeetingFactoryPOA.java</code> y <code>_MeetingFactoryStub.java</code></li>
+  <li><code>MeetingPOA.java</code> y <code>_MeetingStub.java</code></li>
+  <li><code>RoomPOA.java</code> y <code>_RoomStub.java</code></li>
+</ul>
+<p>Adicionalmente, hay clases para los tipos de datos y las excepciones definidas 
+  en la interface IDL. </p>
+<ul>
+  <li><code>MeetingsHelper.java</code> y <code>_MeetingsHolder.java</code></li>
+  <li><code>Slot.java</code>, <code>SlotHolder.java</code> y <code>SlotHelper.java</code></li>
+  <li><code>SlotAlreadyTaken.java</code>,<code> SlotAlreadyTakenHolder.java </code> 
+    y <code> SlotAlreadyTakenHelper.java</code></li>
+  <li><code>NoMeetingInThisSlot.java</code>,<code> NoMeetingInThisSlotHolder.java 
+    </code> y <code> NoMeetingInThisSlotHelper.java</code></li>
+</ul>
+<h2 class="subsection">6.2. Implementaci&oacute;n de los objetos</h2>
+<p>Las clases que tenemos que implementar utilizan las interfaces <i>Meeting</i> 
+  y <i>Room</i>. Para ello extienden las clases <i>POA skeleton</i> generadas. 
+</p>
+<p><u>Implementaci&oacute;n del objeto <i>Meeting</i></u></p>
+<pre class="codigo">
+import org.omg.CORBA.*;
+
+
+class MeetingImpl 
+    extends MeetingPOA {
+
+    private String purpose;
+    private String participants;
+
+    /** constructor */
+
+    <b>MeetingImpl</b>( String purpose, String participants) 
+    {
+	 // initialise private variables
+	 this.purpose = purpose;
+	 this.participants = participants;
+    }
+  
+    // attributes
+    <b>public String purpose</b>() {
+	  return purpose;
+    }
+
+    <b>public String participants</b>() {
+	return participants;
+    }
+
+
+    /** deactivates the object */
+    <b>public void destroy</b>() 
+    {
+	  try
+	  {
+	    _poa().deactivate_object( _poa().servant_to_id(this));
+	  }
+	  catch( Exception e )
+  	  {
+	    // ignore
+	  }
+   }
+}</pre>
+<p>El método <code>destroy()</code> desactiva el objeto para que puede ser &quot;recogido&quot; 
+  por el recolector de basuras.</p>
+<p>El m&eacute;todo <code>_poa()</code> se hereda de la clase base <i>skeleton</i> 
+  <code>org.omg.PortableServer.Servant</code>. Recupera la instancia POA del contexto 
+  de ejecuci&oacute;n actual que es responsable de este objeto CORBA.</p>
+<p><u>Implementaci&oacute;n del objeto <i>Room</i></u></p>
+<pre class="codigo">import org.omg.CORBA.*;
+
+
+public class RoomImpl extends RoomPOA 
+{
+
+    private String name;
+    private Meeting[] meetings;
+
+    // constructor
+    public RoomImpl( String name ) 
+    {
+        this.name = name;
+        meetings = new Meeting[ Room.MaxSlots ];
+    }
+    
+    // attributes
+    public String name() 
+    {
+        return name; 
+    }
+        
+    // operations
+    public Meeting[] view() 
+    {
+        return meetings;
+    }
+
+    public void book( Slot slot,
+                      Meeting meeting )
+        throws SlotAlreadyTaken 
+    {
+ 
+        if( meetings[ slot.value() ] == null ) 
+        {
+            meetings[ slot.value() ] = meeting;
+        }
+        else 
+        {
+            throw new SlotAlreadyTaken();
+        }        
+        return;
+    }
+
+    public void cancelBooking( Slot slot )
+        throws NoMeetingInThisSlot 
+    {
+
+        System.err.println("cancel " + slot );
+        if( meetings[slot.value()] != null  ) {
+            meetings[slot.value()].destroy();
+            meetings[slot.value()] = null;
+        }
+        else 
+        {
+            throw new NoMeetingInThisSlot();
+        }
+    }
+}
+</pre>
+<p>La variable <code>name</code> almacena el nombre del objeto <code>Room</code>, 
+  y <code>meetings</code> contiene el vector de habitaciones reservadas.</p>
+<p>Implementamos los m&eacute;todos name(), view(), book(), y cancelBooking(). 
+  El m&eacute;todo book() comprueba si el <i>slot</i> est&aacute; vac&iacute;o, 
+  en cuyo caso asignamos la reserva a dicho <i>slot</i>; en otro caso, lanzamos 
+  la excepci&oacute;n <code>SlotAlreadyTaken</code>. La clase de dicha excepci&oacute;n 
+  se define en el paquete <code>RoomPackage</code> debido a que la correspondiente 
+  excepci&oacute;n IDL se define en la interfaz <code>Room</code>.</p>
+<h2 class="subsection">6.3. Construcci&oacute;n de los servidores</h2>
+<p>Para instanciar las implementaciones de los objetos y hacer que est&eacute;n 
+  disponibles para los clientes debemos implementar un servidor. Dicho servidor 
+  se ejecuta como una tarea (o proceso) del sistema operativo. En el caso de Java 
+  se trata de una JVM en la que las instancias de los objetos se ejecutan. Puede 
+  habar un servidor por objeto, o un servidor puede manejar m&uacute;ltiples objetos. 
+  Un servidor tiene cuatro tareas fundamentales: </p>
+<ul>
+  <li>Inicializar el entorno, es decir, obtener las referencias a los pseudo-objetos 
+    para el ORB y POA</li>
+  <li>Crear los <i>servants</i></li>
+  <li>Hacer que los objetos sean accesibles para el &quot;resto del mundo&quot;</li>
+  <li>Ejecutar un bucle para esperar y &quot;despachar&quot; invocaciones</li>
+</ul>
+<p>Servidores de tareas adicionales pueden incluir el registro de los objetos 
+  con el servicio <i>Naming</i> o el servicio <i>Trading</i>. </p>
+<p>El servidor <code>RoomServer</code> lleva a cabo estas cuatro tareas fundamentales 
+  y registra cada nueva habitaci&oacute;n creada en el servicio <i>Naming</i>. 
+  Para ello se define una clase <code>RoomServer</code> y se implementa su m&eacute;todo 
+  <code>main()</code>. Definimos dos <i>strings</i> que se usan cuando registramos 
+  el objeto <code>Room</code> en el servicio <i>Naming</i>. A continuaci&oacute;n 
+  chequeamos que el n&uacute;mero de argumentos sea correcto y abandonamos el 
+  programa en caso de que no sea as&iacute;. Se espera un argumento que determine 
+  el nombre del objeto <code>Room</code>.</p>
+<p>Para usar el servicio Naming de forma exitosa, los objetos que queremos que 
+  compartan informaci&oacute;n via dicho servicio tienen que utilizar una misma 
+  convenci&oacute;n de nombrado. Para este ejemplo utilizaremos la siguiente convenci&oacute;n, 
+  ilustrada en la Figura 6.2: debajo del contexto raiz tenemos un contexto &quot;Building 
+  Applications&quot;, que contiene un contexto denominado &quot;<i>Rooms</i>&quot; 
+  y el objeto <code>Meeting Factory</code> en el contexto &quot;<i>Building Applications</i>&quot;. 
+  Siguiendo esta convenci&oacute;n aseguramos que los clientes pueden localizar 
+  a los objetos apropiados.</p>
+<center>
+  <img border="0" src="Fig6-2.gif"> 
+</center>
+<p class="caption">Figura 6.2. Convención de nombrado.</p>
+<p>De acuerdo con esta convenci&oacute;n de nombres inicicializamos la variable 
+  <code>context_name</code> con su versi&oacute;n en forma de cadena de caraceres 
+  el nombre de contexto <i>Room</i>. </p>
+<pre class="codigo">import java.io.*;
+import org.omg.CORBA.*;
+import org.omg.PortableServer.*;
+import org.omg.CosNaming.*;
+import org.omg.CosNaming.NamingContextPackage.*;
+ 
+public class RoomServer 
+{
+    public static void main(String[] args) 
+    {
+        String context_name, str_name;
+
+        if( args.length != 1 ) {
+            System.out.println("Usage: vbj RoomServer room_name");
+            System.exit( 1 );
+	}
+
+        context_name = new String("BuildingApplications/Rooms");
+
+        try {
+	    //init
+	    ORB orb = ORB.init( args, null );
+	    POA poa = POAHelper.narrow( orb.resolve_initial_references( "RootPOA"));
+	    poa.the_POAManager().activate();
+
+	    // create the Room object and
+	    // export the object reference
+	    org.omg.CORBA.Object room_obj = 
+		poa.servant_to_reference( new RoomImpl( args[0] ) );
+
+            // register with naming service
+            str_name = context_name + "/" + args[0];
+
+	    NamingContextExt root = 
+		NamingContextExtHelper.narrow( 
+			 orb.resolve_initial_references("NameService")
+			 );
+
+	    try
+	    {
+		// make sure the "rooms" context is  bound
+		root.bind_new_context( root.to_name( context_name ));
+	    }
+	    catch( AlreadyBound ab )
+	    { 
+		// does not matter .
+	    }
+	    catch( NotFound nf )
+	    {
+                System.err.println("Context " + context_name + " not found, 
+                     start MeetingFactoryServer first.");
+                System.err.println("exiting ...");
+            }
+
+            root.bind( root.to_name( str_name), room_obj );
+
+	    // wait for requests
+	    orb.run();
+        }
+	catch( AlreadyBound already_bound ) {
+	    System.err.println("Room " + context_name + args[0] +
+                " already bound.");
+	    System.err.println("exiting ...");
+        }
+	catch(UserException ue) {
+            ue.printStackTrace();
+        }
+	catch(SystemException se) {
+	    System.err.println(se);
+        }
+    }
+}
+</pre>
+<p>Para inicializar el ORB y obtener una referencia a POA llamamos al m&eacute;todo 
+  de clase <code>init()</code> de la clase CORBA.ORB, y a <code>resolve_initial_references(&quot;RootPOA&quot;)</code> 
+  sobre el pseudo-objeto <code>orb</code>.</p>
+<p>La segunda tarea es crear el objeto <i>Room</i>. La tercera tarea consiste 
+  en activar el <i>servant</i> como una r&eacute;plica del objeto <i>Room</i> 
+  en el <i>RootPOA</i>. La ctivaci&oacute;n del objeto se realiza de forma impl&iacute;cita 
+  (como efecto lateral resultante de crear al referencia al objeto para el objeto 
+  <i>Room</i>). </p>
+<p>El siguiente paso es registrar el objeto en el servicio <i>Naming</i>. Primero 
+  obtenemos una referencia a un contexto inicial de un servicio <i>Naming</i> 
+  mediante los mecanismos proporcionados por ORB. El servicio <i>Naming</i> maneja 
+  nombres incluyendo contextos de forma similar a la notaci&oacute;n de nombres 
+  de ficheros en varios sistemas operativos:</p>
+<pre class="codigo">/&lt;context1&gt;/&lt;context2&gt;/.../&lt;contextn&gt;/name</pre>
+<p>La cuarta tarea del servidor es crear un bucle para &quot;despachar&quot; invocaciones 
+  mediante la llamada al m&eacute;todo <code>run()</code> del ORB.</p>
+<h2 class="subsection">6.4. Construcci&oacute;n de las <i>Factories</i></h2>
+<p>Una <i>factory</i> es una implementaci&oacute;n de objeto con un particular 
+  patr&oacute;n de dise&ntilde;o. La diferencia con los objetos ordinarios es 
+  que las <i>factories</i> proporcionan m&eacute;todos para crear de forma din&aacute;mica 
+  nuevos objetos. Realizan la misma inicializaci&oacute;n de objetos nuevos que 
+  el m&eacute;todo <code>main()</code> de un servidor. El proceso de la construcci&oacute;n 
+  de <i>factories</i> est&aacute; formado por los mismos pasos que la construcci&oacute;n 
+  de cualquier otro servidor: implementaci&oacute;n del objeto e implementaci&oacute;n 
+  del servidor. </p>
+<p><u>Implementaci&oacute;n de <i>Meeting Factory</i></u></p>
+<p>La implementaci&oacute;n de <i>Meeting Factory</i>, la clase <code>MeetingFactoryImpl</code>, 
+  es una extensi&oacute;n de la correspondiente clase <i>skeleton</i> MeetingFactoryPOA.</p>
+<pre class="codigo">import org.omg.CORBA.*;
+
+class MeetingFactoryImpl 
+    extends MeetingFactoryPOA 
+{
+//      // constructor
+//      MeetingFactoryImpl(ORB orb) 
+//      {
+//  	this.orb = orb;	
+//      }
+  
+    // method
+    public Meeting createMeeting(String purpose, String participants ) 
+    {
+        MeetingImpl meetingImpl = new MeetingImpl(purpose, participants);
+	try
+	{
+	    org.omg.CORBA.Object obj = _poa().servant_to_reference(meetingImpl);
+	    Meeting meeting = MeetingHelper.narrow(obj);
+	    return meeting; 
+	}
+	catch( SystemException se )
+	{
+	}
+	catch( UserException ue )
+	{}
+	return null;
+    }
+}
+</pre>
+<p>El &uacute;nico m&eacute;todo de la <i>Meeting Factory</i>, <code>createMeeting()</code>, 
+  tiene como par&aacute;metros los correspondientes al constructor del objeto 
+  <i>Meeting</i>, <code>MeetingImpl()</code>.</p>
+<p><u>Implementaci&oacute;n de <i>Meeting Factory Server</i></u></p>
+<p>El servidor de la <i>Factory Meeting</i> sigue el mismo patr&oacute;n que el 
+  servidor <i>Room</i>. Inicializamos el ORB y POA, creamos el objeto <i>Meeting 
+  Factory</i>, y lo activamos.</p>
+<pre class="codigo">
+import java.io.*;
+import org.omg.CORBA.*;
+import org.omg.PortableServer.*;
+import org.omg.CosNaming.*;
+import org.omg.CosNaming.NamingContextPackage.*;
+ 
+public class MeetingFactoryServer 
+{
+
+    public static void main(String[] args) 
+    {
+        String str_name, context_name;
+
+        if( args.length != 0 ) {
+	    System.out.println("Usage: java MeetingFactoryServer");
+	    System.exit( 1 );
+	}
+
+	// the stringified names we want to use
+	context_name = "BuildingApplications";
+        str_name = context_name + "/MeetingFactory";
+
+        try {
+	    //initialise ORB
+	    ORB orb = ORB.init( args, null );
+
+            // initialise and activate POA
+	    POA poa = POAHelper.narrow(orb.resolve_initial_references("RootPOA"));
+	    poa.the_POAManager().activate();
+
+	    // create the MeetingFactory object
+	    MeetingFactoryImpl meeting_factory = new MeetingFactoryImpl();
+
+	    // export the object reference
+	    org.omg.CORBA.Object meeting_factory_obj = 
+		poa.servant_to_reference(meeting_factory);
+
+            // register with the CORBA Naming Service
+	    NamingContextExt root = 
+		NamingContextExtHelper.narrow( 
+			 orb.resolve_initial_references("NameService")
+			 );
+
+	    try
+	    {
+		// make sure our context exists, if the 
+		// name server has been running for a while
+		// someone may have already set up the context earlier
+		root.bind_new_context( root.to_name( context_name ));
+	    }
+	    catch( AlreadyBound ab )
+	    { 
+		// ok, we ignore that
+	    }
+
+	    // bind our new meeting factory
+	    try
+	    {
+		root.bind( root.to_name(str_name), meeting_factory_obj );
+	    }
+	    catch( AlreadyBound ab )
+	    { 
+		System.err.println("A meeting factory is already bound, exiting...");
+		System.exit(1);
+	    }
+	    // enter event loop
+	    orb.run();
+        }
+	catch(Exception e) 
+	{
+	    e.printStackTrace();
+        }
+    }
+}
+</pre>
+<p>Finalmente llamamos a orb.run() para esperar la llegada de invocaciones y capturamos 
+  las excepciones. </p>
+<h2 class="subsection">6.5. Inicio de los servidores </h2>
+<p>Para iniciar los servidores se requieren los siguientes pasos:</p>
+<ul>
+  <li>Lanzar el servicio <i>Naming</i> sobre el host <i>host</i>, en el puerto 
+    4711</li>
+  <pre class="codigo">&gt; tnameserv -ORBInitialHost= <i>host</i> -ORBInitialPort 4711 &</pre>
+  <li>Lanzar el servidor <i>Meeting Factory</i></li>
+  <pre class="codigo">&gt; java roomBooking.MeetingFactoryServer -ORBInitialPort 4711 &</pre>
+  <li>Lanzar los servidores <i>Room</i></li>
+  <pre class="codigo">&gt; java roomBooking.RoomServer RoomServer &quot;Board room&quot; -ORB.initialPort 4711 &
+&gt; java roomBooking.RoomServer RoomServer &quot;Training room&quot; -ORB.initialPort 4711 &
+&gt; java roomBooking.RoomServer RoomServer &quot;Meeting room&quot; -ORB.initialPort 4711 &
+&gt; java roomBooking.RoomServer RoomServer &quot;Andreas' Office&quot; -ORB.initialPort 4711 &
+&gt; java roomBooking.RoomServer RoomServer &quot;Keith's Office&quot; -ORB.initialPort 4711 &</pre>
+</ul>
+
+<h2 class="subsection">6.6. Construcción de los clientes</h2>
+<p>Los clientes pueden implementarse como aplicaciones Java o applets. Las diferencias 
+  entre estos dos tipos de clientes son:</p>
+<ul>
+  <li>Una inicialización diferente de la interfaz gráfica de usuario</li>
+  <li>Una inicializaci&oacute;n diferente del ORB</li>
+  <li>Acceso a las clases (desde el sistema local de ficheros, en el caso de aplicaciones, 
+    o mediante la red en los <i>Applets</i>)</li>
+</ul>
+<p><u>Un cliente como un <i>Applet</i></u></p>
+<p>Lo primero que debemos hacer es escribir la p&aacute;gina HTML que lo contiene. 
+</p>
+<pre class="codigo">&lt;html&gt;&lt;header&gt;
+&lt;title&gt;
+Room Booking Applet
+&lt;/title&gt;
+&lt;body&gt;
+&lt;center&gt;
+&lt;h1&gt;
+Room Booking Applet
+&lt;h1&gt;
+&lt;applet
+   code = ClientApplet.class width=600 height=300&gt;
+&lt;/applet&gt;
+&lt;/center&gt;
+&lt;/body&gt;&lt;/html&gt;</pre>
+<p>A continuaci&oacute;n mostramos el c&oacute;digo del <i>applet</i>: </p>
+<pre class="codigo">
+import java.awt.*;
+
+
+public class ClientApplet
+    extends java.applet.Applet 
+{
+    private RoomBookingClient client;
+
+    /** override init method of Class Applet */
+    public void init() 
+    {
+        // create a RoomBookingClient client -
+        // using the applet constructor
+        client = new RoomBookingClient( this );
+
+        // initialiase the GUI
+        client.init_GUI( this );
+
+        // initialise the Naming Service
+        client.init_from_ns();
+
+        // view existing bookings
+        client.view();
+    }
+}
+</pre>
+<p>Inicializamos la interfaz gráfica con el método <code>init_GUI()</code> sobre 
+  el objeto client. Comenzamos llamando al m&eacute;todo <code>init_from_ns()</code> 
+  sobre el objeto client, que contiene las referencias a la <i> Meeting Factory</i> 
+  y <i>Room</i> del servicio <i>Naming</i>. Entonces invocamos al m&eacute;todo 
+  <code>view()</code>, que obtiene las habitaciones disponibles del servicio <i>Naming</i> 
+  e invoca la operaci&oacute;n <code>view()</code> sobre cada uno de dichos objetos 
+  <i>Room</i>.</p>
+<p><u>Un cliente como una aplicaci&oacute;n</u></p>
+<p>Implementamos la clase <code>clientApplication</code> que extiende la clase 
+  <code>java.awt.Frame</code>. Tambi&eacute;n implementamos el m&eacute;todo <code>main()</code> 
+  de la clase, que es similar al m&eacute;todo <code>init()</code> de la clase 
+  <i>applet</i>. </p>
+<pre class="codigo">
+import java.awt.*;
+import java.awt.event.*;
+import org.omg.CORBA.*;
+ 
+public class ClientApplication
+    extends Frame
+    implements WindowListener 
+{
+
+    private static RoomBookingClient client;
+
+    /** constructor */
+    ClientApplication() {
+        super( "Room Booking System" );
+        addWindowListener( this );
+        setSize( 350, 250 );
+    }
+
+    public void windowActivated(WindowEvent e) {}
+    public void windowClosed(WindowEvent e) 
+    {
+	System.exit(0);
+    }
+    public void windowClosing(WindowEvent e) {}
+    public void windowDeactivated(WindowEvent e) {}
+    public void windowDeiconified(WindowEvent e) {}
+    public void windowIconified(WindowEvent e) {}
+    public void windowOpened(WindowEvent e) {}
+
+    /** override to reposition frame (for appearances sake only) */
+    public synchronized void setVisible(boolean vis) 
+    {
+        if(vis == true) {
+            setLocation(50, 50);
+        }
+            super.setVisible(vis);
+    }
+
+    public static void main(String args[]) 
+    {
+        // create an object of its own class
+        ClientApplication gui =
+            new ClientApplication();
+
+        gui.setVisible(true);
+
+        // create a RoomBookingClient object -
+        // using the application constructor
+        client = new RoomBookingClient();
+
+        // initialise the GUI
+        client.init_GUI( gui );
+
+        // initialise the Naming Service
+        client.init_from_ns();
+
+        // view existing bookings
+        client.view();
+    }
+}
+</pre>
+<p><u>C&oacute;digo independiente del tipo de cliente</u></p>
+<p>A continuaci&oacute;n explicamos el c&oacute;digo cliente que es independiente 
+  de los detalles del <i>applet</i> o aplicaci&oacute;n, es decir, el c&oacute;digo 
+  cliente que realiza la llamada a las implementaciones de los objetos. </p>
+<p>La clase <code>RoomBookingClient</code> implementa los siguientes m&eacute;todos:</p>
+<ul>
+  <li><code>public void init_GUI(java.awt.Container gui)</code>: inicializa la 
+    interfaz gr&aacute;fica</li>
+  <li><code>public void init_from_ns()</code>: obtiene el contexto <i>room </i>desde 
+    el contexto raiz y obtiene una referencia a la <i>Meeting</i> <i>Factory</i> 
+    a partir de un nombre predefinido</li>
+  <li><code>public boolean view()</code>: este m&eacute;todo consulta todas las 
+    habitaciones y visualiza el resultado en la interfaz de usuario</li>
+  <li><code>public boolean cancel()</code>: cancela una habitaci&oacute;n seleccionada</li>
+  <li><code>public boolean process_slot(int selected_room, int selected_slot)</code>: 
+    procesa el evento de &quot;pinchar&quot; un bot&oacute;n de una habitaci&oacute;n 
+    o una reserva. Decide si la habitaci&oacute;n est&aacute; libre y la reserva 
+    puede realizarse, o si los detalles de la reserva deben visualizarse</li>
+  <li><code>public boolean meeting_details()</code>: consulta y visualiza los 
+    detalles de una reserva</li>
+  <li><code>public void booking_form()</code>: produce un formulario de reserva 
+    para un usuario</li>
+  <li><code>public boolean book()</code>: crea una reserva y la almacena en el 
+    <i>slot</i> seleccionado</li>
+  <li><code>public boolean actionPerformed()</code>: este m&eacute;todo captura 
+    y procesa eventos del usuario</li>
+</ul>
+</body>
+</html>

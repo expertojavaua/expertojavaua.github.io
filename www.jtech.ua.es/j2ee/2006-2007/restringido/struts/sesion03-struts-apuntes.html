@@ -1,0 +1,569 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.7">
+<meta name="Forrest-skin-name" content="pelt">
+<title>Struts: Validaci&oacute;n autom&aacute;tica. Pruebas</title>
+<link type="text/css" href="skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="skin/print.css" rel="stylesheet">
+<link type="text/css" href="skin/profile.css" rel="stylesheet">
+<script src="skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<div class="header">
+<div class="grouplogo">
+<a href="http://www.jtech.ua.es/j2ee"><img class="logoImage" alt="J2EE" src="images/baner_j2ee_izq.gif" title="Curso Especialista Universitario J2EE"></a>
+</div>
+<div class="projectlogoA1">
+<a href="http://www.dccia.ua.es/"><img class="logoImage" alt="Struts y JSF" src="images/baner_j2ee_der.gif" title="Struts y JSF"></a>
+</div>
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="../index.html">M&oacute;dulos</a>
+</li>
+<li>
+<a class="base-not-selected" href="index.html">Struts y JSF</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<div id="level2tabs"></div>
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<div id="menu">
+<div onclick="SwitchMenu('menu_1.1', 'skin/')" id="menu_1.1Title" class="menutitle">JSF y Struts</div>
+<div id="menu_1.1" class="menuitemgroup">
+<div class="menuitem">
+<a href="index.html" title="JSF y Struts">&Iacute;ndice</a>
+</div>
+<div onclick="SwitchMenu('menu_1.1.2', 'skin/')" id="menu_1.1.2Title" class="menutitle">Teor&iacute;a</div>
+<div id="menu_1.1.2" class="menuitemgroup">
+<div class="menuitem">
+<a href="sesion01-jsf-apuntes.html">Sesion 1</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-jsf-apuntes.html">Sesion 2</a>
+</div>
+<div class="menuitem">
+<a href="roadmap-jsf.html">Roadmap JSF</a>
+</div>
+<div class="menuitem">
+<a href="sesion01-apuntes.html">Sesion 3</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-apuntes.html">Sesion 4</a>
+</div>
+</div>
+<div onclick="SwitchMenu('menu_1.1.3', 'skin/')" id="menu_1.1.3Title" class="menutitle">Ejercicios</div>
+<div id="menu_1.1.3" class="menuitemgroup">
+<div class="menuitem">
+<a href="sesion01-jsf-ejercicios.html">Sesion 1</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-jsf-ejercicios.html">Sesion 2</a>
+</div>
+<div class="menuitem">
+<a href="sesion01-ejercicios.html">Sesion 3</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-ejercicios.html">Sesion 4</a>
+</div>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<div id="credit2"></div>
+</div>
+<div id="content">
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="sesion03-struts-apuntes.pdf"><img alt="PDF -icon" src="skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1>Struts: Validaci&oacute;n autom&aacute;tica. Pruebas</h1>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#Validaci%C3%B3n+de+datos+con+el+plugin+Validator">Validaci&oacute;n de datos con el plugin Validator</a>
+<ul class="minitoc">
+<li>
+<a href="#Configuraci%C3%B3n">Configuraci&oacute;n</a>
+</li>
+<li>
+<a href="#Definir+qu%C3%A9+validar+y+c%C3%B3mo">Definir qu&eacute; validar y c&oacute;mo</a>
+</li>
+<li>
+<a href="#Los+validadores+est%C3%A1ndar">Los validadores est&aacute;ndar</a>
+</li>
+<li>
+<a href="#Modificar+el+ActionForm+para+Validator">Modificar el ActionForm para Validator</a>
+</li>
+<li>
+<a href="#Validaci%C3%B3n+en+el+cliente">Validaci&oacute;n en el cliente</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Pruebas">Pruebas</a>
+<ul class="minitoc">
+<li>
+<a href="#Una+breve+introducci%C3%B3n+a+StrutsTestCase">Una breve introducci&oacute;n a StrutsTestCase</a>
+</li>
+<li>
+<a href="#API+de+StrutsTestCase">API de StrutsTestCase</a>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+<p>Veremos en esta sesi&oacute;n un par de cuestiones que creemos que resultan interesantes en cualquier
+aplicaci&oacute;n web con Struts: la validaci&oacute;n autom&aacute;tica de datos y el desarrollo dirigido por pruebas.</p>
+ 
+<a name="N1000F"></a><a name="Validaci%C3%B3n+de+datos+con+el+plugin+Validator"></a>
+<h2 class="underlined_10">Validaci&oacute;n de datos con el plugin Validator</h2>
+<div class="section">
+<p>El uso del m&eacute;todo <span class="codefrag">validate</span> del <span class="codefrag">ActionForm</span> 
+  requiere escribir c&oacute;digo Java. No obstante, muchas validaciones pertenecen 
+  a uno de varios tipos comunes: dato requerido, dato num&eacute;rico, verificaci&oacute;n 
+  de longitud, verificaci&oacute;n de formato de fecha, etc. Struts dispone de 
+  un paquete opcional llamado <strong>Validator</strong> que permite efectuar 
+  distintas validaciones t&iacute;picas de manera autom&aacute;tica, sin escribir 
+  c&oacute;digo. Validator tiene las siguientes caracter&iacute;sticas principales:</p>
+<ul>
+  
+<li>Es configurable sin necesidad de escribir c&oacute;digo, modificando un 
+    fichero XML</li>
+  
+<li>Es extensible, de modo que el usuario puede escribir sus propios validadores, 
+    que no son m&aacute;s que clases Java, si los est&aacute;ndares no son suficientes.</li>
+  
+<li>Puede generar autom&aacute;ticamente JavaScript para efectuar la validaci&oacute;n 
+    en el cliente o puede efectuarla en el servidor, o ambas una tras otra.</li>
+
+</ul>
+<a name="N1002D"></a><a name="Configuraci%C3%B3n"></a>
+<h3 class="underlined_5">Configuraci&oacute;n</h3>
+<p>Antes que nada, necesitaremos incluir en nuestro proyecto el archivo .jar con la implementaci&oacute;n de validator
+   (<span class="codefrag">commons-validator-n&ordm;_version.jar</span>).</p>
+<p>Validator es un plugin de struts. Los plugins que se van a usar en una aplicaci&oacute;n
+deben colocarse en la etiqueta <span class="codefrag">&lt;plugin&gt;</span> del <span class="codefrag">struts-config.xml</span>.
+Esta etiqueta se coloca al final del fichero, inmediatamente antes de la etiqueta de cierre de <span class="codefrag">&lt;/struts-config&gt;</span>
+</p>
+<pre class="code">
+  &lt;plug-in className="org.apache.struts.validator.ValidatorPlugIn"&gt;
+   &lt;set-property property="pathnames"
+    value="/WEB-INF/validator-rules.xml,/WEB-INF/validation.xml"/&gt;
+&lt;/plug-in&gt;</pre>
+<p>El atributo <span class="codefrag">value</span> de la propiedad <span class="codefrag">pathnames</span> indica d&oacute;nde 
+  est&aacute;n y c&oacute;mo se llaman los dos ficheros de configuraci&oacute;n 
+  de Validator, cuya sintaxis veremos en el siguiente apartado. Podemos tomar el 
+  <span class="codefrag">validator-rules.xml</span> que viene por defecto con la distribuci&oacute;n de Struts,
+  mientras que el <span class="codefrag">validation.xml</span> lo escribiremos nosotros.</p>
+<a name="N10058"></a><a name="Definir+qu%C3%A9+validar+y+c%C3%B3mo"></a>
+<h3 class="underlined_5">Definir qu&eacute; validar y c&oacute;mo</h3>
+<p>La definici&oacute;n de qu&eacute; hay que validar y c&oacute;mo efectuar la validaci&oacute;n se hace, como ya se ha visto, en dos ficheros de
+configuraci&oacute;n separados:</p>
+<ul>
+  
+<li>
+<span class="codefrag">validator-rules.xml</span>: en el que se definen los validadores. Un validador
+  comprobar&aacute; que un dato cumple ciertas condiciones. Por ejemplo, podemos tener un validador
+  que compruebe fechas y otro que compruebe n&uacute;meros de DNI con la letra del NIF. Ya hay
+  bastantes validadores predefinidos, aunque si el usuario lo necesita podr&iacute;a definir los
+  suyos propios (ser&iacute;a este el caso de validar el NIF).  En la mayor parte de casos podemos
+  usar el fichero que viene por defecto. Definir nuevos validadores queda fuera del &aacute;mbito
+  de estos apuntes introductorios.</li>
+  
+<li>
+<span class="codefrag">validation.xml</span>: en &eacute;l se asocian las propiedades de 
+    los <span class="codefrag">actionForm</span> a alguno o varios de los validadores definidos 
+    en el fichero anterior. Las posibilidades de Validator se ven mejor con
+    un fichero de ejemplo que abordando todas las etiquetas XML una por una:</li>
+
+
+</ul>
+<pre class="code">&lt;?xml version="1.0" encoding="ISO-8859-1" ?&gt;
+&lt;!DOCTYPE form-validation PUBLIC
+   "-//Apache Software Foundation//DTD Commons Validator 
+   Rules Configuration 1.0//EN"
+   "http://jakarta.apache.org/commons/dtds/validator_1_0.dtd"&gt;
+&lt;form-validation&gt;
+  &lt;formset&gt;
+    &lt;form name="registro"&gt;
+      &lt;field property="login"
+         depends="required,minlength"&gt;
+         &lt;arg0 key="registro.nombre"/&gt;
+         &lt;var&gt;
+            &lt;var-name&gt;minlength&lt;/var-name&gt;
+            &lt;var-value&gt;5&lt;/var-value&gt;
+         &lt;/var&gt;
+      &lt;/field&gt;
+      ...
+    &lt;/form&gt;
+  &lt;/formset&gt;
+  ...
+&lt;/form-validation&gt;
+</pre>
+<p>Simplificando, un <span class="codefrag">&lt;formset&gt; </span>es un conjunto de <span class="codefrag">ActionForms</span> 
+  a validar. Cada <span class="codefrag">ActionForm</span> viene representado por la etiqueta <span class="codefrag">&lt;form&gt;</span>. 
+  Dentro de &eacute;l, cada propiedad del bean se especifica con <span class="codefrag">&lt;field&gt;</span>. 
+  Cada propiedad tiene su nombre (atributo <span class="codefrag">property</span>) y una lista 
+  de los validadores que debe cumplir (atributo <span class="codefrag">depends</span>). Si los 
+  mensajes de error que disparen los validadores tienen par&aacute;metros, estos 
+  se especifican con etiquetas <span class="codefrag">&lt;arg0&gt;</span>, <span class="codefrag">&lt;arg1&gt;</span>.... 
+  Adem&aacute;s, algunos validadores tienen par&aacute;metros, por ejemplo el 
+  validador <span class="codefrag">minlength</span> requiere especificar la longitud m&iacute;nima 
+  deseada. Los par&aacute;metros se pasan con la etiqueta <span class="codefrag">&lt;var&gt;</span>, 
+  dentro de la cual <span class="codefrag">&lt;var-name&gt;</span> es el nombre del par&aacute;metro 
+  y <span class="codefrag">&lt;var-value&gt;</span> su valor.</p>
+<a name="N100A0"></a><a name="Los+validadores+est%C3%A1ndar"></a>
+<h3 class="underlined_5">Los validadores est&aacute;ndar</h3>
+<p>Validator incluye 14 validadores b&aacute;sicos ya implementados, los cuales 
+  se muestran en la tabla siguiente</p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+  
+<tr> 
+    
+<td colspan="1" rowspan="1"><strong>Validador</strong></td>
+    <td colspan="1" rowspan="1"><strong>Significado</strong></td>
+    <td colspan="1" rowspan="1"><strong>Par&aacute;metros</strong></td>
+
+  
+</tr>
+  
+<tr> 
+    
+<td colspan="1" rowspan="1"><span class="codefrag">required</span></td>
+    <td colspan="1" rowspan="1">dato requerido y no vac&iacute;o (no todo blancos)</td>
+    <td colspan="1" rowspan="1">ninguno</td>
+  
+</tr>
+  
+<tr> 
+    
+<td colspan="1" rowspan="1"><span class="codefrag">mask</span></td>
+
+    <td colspan="1" rowspan="1">emparejar con una expresi&oacute;n regular</td>
+    <td colspan="1" rowspan="1"><span class="codefrag">mask</span>: e.r. a cumplir</td>
+  
+</tr>
+  
+<tr> 
+    
+<td colspan="1" rowspan="1"><span class="codefrag">range</span></td>
+    <td colspan="1" rowspan="1">valor en un rango</td>
+
+    <td colspan="1" rowspan="1"><span class="codefrag">min</span>, <span class="codefrag">max</span></td>
+  
+</tr>
+  
+<tr> 
+    
+<td colspan="1" rowspan="1"><span class="codefrag">maxLength</span></td>
+    <td colspan="1" rowspan="1">m&aacute;xima longitud para un dato</td>
+    <td colspan="1" rowspan="1"><span class="codefrag">maxLength</span></td>
+
+  
+</tr>
+  
+<tr> 
+    
+<td colspan="1" rowspan="1"><span class="codefrag">minLength</span></td>
+    <td colspan="1" rowspan="1">longitud m&iacute;nima para un dato</td>
+    <td colspan="1" rowspan="1"><span class="codefrag">minLength</span></td>
+  
+</tr>
+  
+<tr> 
+    
+<td colspan="1" rowspan="1"><span class="codefrag">byte</span>,<span class="codefrag">short</span>, <span class="codefrag">integer</span>, <span class="codefrag">long</span>, 
+      <span class="codefrag">double</span>, <span class="codefrag">float</span></td>
+
+    <td colspan="1" rowspan="1">dato v&aacute;lido si se puede convertir al tipo especificado </td>
+    <td colspan="1" rowspan="1">ninguno</td>
+  
+</tr>
+  
+<tr> 
+    
+<td colspan="1" rowspan="1"><span class="codefrag">date</span></td>
+    <td colspan="1" rowspan="1">verificar fecha</td>
+    <td colspan="1" rowspan="1"><span class="codefrag">datePattern</span>, formato de fecha especificado como lo hace <span class="codefrag">java.text.SimpleDateFormat</span>. 
+      Si se utiliza el par&aacute;metro <span class="codefrag">datePatternStrict</span> se verifica 
+      el formato de modo estricto. Por ejemplo, si el formato especifica dos d&iacute;as 
+      para el mes, hay que poner 08, no valdr&iacute;a con 8, que s&iacute; valdr&iacute;a 
+      con datePattern</td>
+
+  
+</tr>
+  
+<tr> 
+    
+<td colspan="1" rowspan="1"><span class="codefrag">creditCard</span></td>
+    <td colspan="1" rowspan="1">verificar n&uacute;mero de tarjeta de cr&eacute;dito</td>
+    <td colspan="1" rowspan="1">ninguno</td>
+  
+</tr>
+  
+<tr> 
+    
+<td colspan="1" rowspan="1"><span class="codefrag">email</span></td>
+
+    <td colspan="1" rowspan="1">verificar direccion de e-mail</td>
+    <td colspan="1" rowspan="1">ninguno</td>
+  
+</tr>
+
+</table>
+<p>el mensaje de error asociado al validador se supone en el fichero de recursos 
+  bajo la clave</p>
+<pre class="code">
+errors.<em>nombre-del-validador</em>
+
+</pre>
+<p>No obstante, si dentro de alg&uacute;n <span class="codefrag">&lt;field&gt;</span> se desea 
+  mostrar un mensaje de error espec&iacute;fico para un validador, se puede utilizar 
+  la etiqueta <span class="codefrag">&lt;msg&gt;</span>
+</p>
+<pre class="code">&lt;field property="login" depends="required, email"&gt;
+   &lt;msg name="required" key="login"/&gt;
+   ...
+</pre>
+<p>En la que el atributo <span class="codefrag">name</span> especifica el nombre del validador, 
+  y <span class="codefrag">key</span> la clave asociada al mensaje.</p>
+<a name="N101AB"></a><a name="Modificar+el+ActionForm+para+Validator"></a>
+<h3 class="underlined_5">Modificar el ActionForm para Validator</h3>
+<p>Si deseamos usar Validator, en lugar de <span class="codefrag">ActionForm</span> lo que debemos 
+  utilizar es una clase llamada <span class="codefrag">ValidatorForm</span>. As&iacute; nuestra 
+  clase extender&aacute; dicha clase, teniendo un encabezado similar al siguiente</p>
+<pre class="code">public class LoginForm extends org.apache.struts.validator.action.ValidatorForm { </pre>
+<p>Cuando se utiliza un ValidatorForm ya no es necesario implementar el m&eacute;todo 
+  <span class="codefrag">validate</span>. Cuando deber&iacute;a dispararse este m&eacute;todo, entra en acci&oacute;n 
+  Validator, verificando que se cumplen los validadores especificados en el fichero 
+  XML. </p>
+<a name="N101C5"></a><a name="Validaci%C3%B3n+en+el+cliente"></a>
+<h3 class="underlined_5">Validaci&oacute;n en el cliente</h3>
+<p>Se puede generar c&oacute;digo JavaScript para validar los errores de manera 
+  autom&aacute;tica en el cliente. Esto se har&iacute;a con un c&oacute;digo similar 
+  al siguiente:</p>
+<pre class="code">
+&lt;%@ taglib uri="http://struts.apache.org/tags-html" prefix="html" %&gt;
+...
+&lt;html:form action="/login.do" 
+           <strong>onsubmit="return validateLoginForm(this)"</strong>&gt;
+...
+&lt;/html:form&gt;
+
+<strong>&lt;html:javascript formName="loginForm"/&gt;</strong>
+</pre>
+<p>El JavaScript encargado de la validaci&oacute;n de un Form se genera con la 
+  etiqueta <span class="codefrag">&lt;html:javascript&gt;</span>, especificando en el atributo 
+  <span class="codefrag">formName</span> el nombre del <span class="codefrag">Form</span> a validar. En el evento 
+  de env&iacute;o del formulario HTML (<span class="codefrag">onsubmit</span>) hay que poner "<span class="codefrag">return 
+  validateXXX(this)</span>" donde <span class="codefrag">XXX</span> es el nombre del Form 
+  a validar. Validator genera la funci&oacute;n JavaScript <span class="codefrag">validateXXX</span> 
+  de manera que devuelva <span class="codefrag">false</span> si hay alg&uacute;n error de validaci&oacute;n. 
+  De este modo el formulario no se enviar&aacute;. Hay que destacar que aunque 
+  se pase con &eacute;xito la validaci&oacute;n de JavaScript, Validator sigue 
+  efectuando la validaci&oacute;n en el lado del servidor, para evitar problemas 
+  de seguridad o problemas en la ejecuci&oacute;n del JavaScript.</p>
+</div>
+ 
+<a name="N101F4"></a><a name="Pruebas"></a>
+<h2 class="underlined_10">Pruebas</h2>
+<div class="section">
+<p>Ya hab&eacute;is visto a lo largo del curso la importancia de las pruebas en cualquier metodolog&iacute;a
+ moderna de desarrollo de software. Aunque en principio una aplicaci&oacute;n Struts se podr&iacute;a probar con Cactus, que es
+ una capa sobre JUnit que permite probar aplicaciones web, aqu&iacute; usaremos<em>StrutsTestCase</em> (<a href="http://strutstestcase.sourceforge.net/">http://strutstestcase.sourceforge.net/</a>)
+ que es una extensi&oacute;n de <em>JUnit</em> que permite probar las acciones de manera individual, comprobando los resultados, 
+ los ActionErrors generados, etc. <em>StrutsTestCase</em> permite utilizar tanto el enfoque 
+ basado en objetos Mock (si nuestro caso hereda de <span class="codefrag">MockStrutsTestCase</span>) como el 
+ basado en <em>Cactus</em> (usando <span class="codefrag">CactusStrutsTestCase</span>), lo que permite 
+ probar el c&oacute;digo fuera o dentro del contenedor web, respectivamente.</p>
+<p>Al utilizar el controlador <span class="codefrag">ActionServlet</span> para probar el c&oacute;digo, este framework permite probar tanto la implementaci&oacute;n de los objetos Action, como los mappings, beans de formulario y declaraciones <em>forward</em>.</p>
+<a name="N1021C"></a><a name="Una+breve+introducci%C3%B3n+a+StrutsTestCase"></a>
+<h3 class="underlined_5">Una breve introducci&oacute;n a StrutsTestCase</h3>
+<p>Para mostrar como podemos probar un Action, vamos a realizar la prueba de la entrada de un usuario a una aplicaci&oacute;n.</p>
+<p>En el siguiente trozo de c&oacute;digo tenemos el esqueleto b&aacute;sico de una prueba StrutsTestCase basada en <em>Cactus</em>, donde heredamos de la indicada y en el cuerpo del m&eacute;todo configuramos cual es el Action que deseamos probar (el cual debe existir en el archivo <span class="codefrag">struts-config.xml</span>). A continuaci&oacute;n, realizamos la llamada al Action para su ejecuci&oacute;n.</p>
+<pre class="code">
+import servletunit.struts.CactusStrutsTestCase;
+
+public class <strong>LoginActionTest extends CactusStrutsTestCase</strong> {
+
+    public void testLogin() {
+        <strong>setRequestPathInfo("/login");</strong>
+        
+        <strong>actionPerform();</strong>
+    }
+
+}
+</pre>
+<p>Normalmente, sobre un mismo <em>Action</em> se realiza m&aacute;s de una prueba, para comprobar su funcionamiento cuando las cosas no van bien.</p>
+<pre class="code">
+public class LoginActionTest extends CactusStrutsTestCase {
+
+    public LoginActionTest(String testName) {
+        super(testName);
+    }
+    
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+
+        // Configuracion del ActionMapping. Lo ponemos aqui
+        // pq es comun a todos los casos de prueba de esta clase
+        setRequestPathInfo("/login");
+    }
+
+    public void testLogin() {
+        
+        // Configuramos el formulario
+        LoginForm unForm = new LoginForm();
+        unForm.setLogin("j2ee");
+        unForm.setPassword("j2ee");
+        <strong>setActionForm</strong>(unForm);
+        
+        // Llamada al Action
+        <strong>actionPerform();</strong>
+        
+        // Comprobamos que redirige al ActionForward correcto
+        <strong>verifyForward</strong>(Tokens.SUCCESS);
+        
+        // Comprobamos que no han habido errores
+        <strong>verifyNoActionErrors();</strong>
+    }
+    
+    public void testLoginKO() {
+        
+        // Configuramos el formulario
+        LoginForm unForm = new LoginForm();
+        unForm.setLogin("fdsagdsa");
+        unForm.setPassword("gdsahaas");
+        setActionForm(unForm);
+        
+        // Llamada al Action
+        actionPerform();
+        
+        // Comprobamos que redirige al InputForward
+        <strong>verifyInputForward</strong>();
+        
+        // Comprobamos que hay errores
+        <strong>verifyActionErrors</strong>(new String[] {Tokens.ERROR_KEY_LOGIN_KO});
+    }
+}
+</pre>
+<p>Del c&oacute;digo podemos observar como toda prueba tiene 4 partes claramente diferenciadas:</p>
+<ol>
+
+<li>Configuraci&oacute;n del <em>Action</em> a probar. Opcionalmente debemos configurar la ruta del archivo <span class="codefrag">struts-config.xml</span> (si no se encuentra en el classpath)</li>
+
+<li>Preparaci&oacute;n de los datos de entrada al <em>Action</em>, ya sea mediante:
+    <ul>
+        
+<li>la creaci&oacute;n de un objeto <em>ActionForm</em> y posterior inclusi&oacute;n en la prueba</li>
+        
+<li>o inclusi&oacute;n de par&aacute;metros en el objeto <em>Request</em> (mediante el m&eacute;todo <span class="codefrag">addRequestParameter(String nombreParametro, String valorParametro)</span>)</li>
+    
+</ul>
+
+</li>
+
+<li>Llamada a la ejecuci&oacute;n del <em>Action</em>.</li>
+
+<li>Validaci&oacute;n final de los datos de salida, forwards y/o mensajes de error.</li>
+
+</ol>
+<a name="N10288"></a><a name="API+de+StrutsTestCase"></a>
+<h3 class="underlined_5">API de StrutsTestCase</h3>
+<p>Este framework extiende JUnit y ofrece m&uacute;ltitud de m&eacute;todos que permiten acceder a todos los recursos de Struts. El API del framework est&aacute; bastante bien documentada, pero a modo de resumen, vamos a exponer cuales son los m&eacute;todos m&aacute;s utilizados.</p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+        
+<tr>
+<th colspan="1" rowspan="1">M&eacute;todo</th><th colspan="1" rowspan="1">Explicaci&oacute;n</th>
+</tr>
+        
+<tr>
+            
+<td colspan="1" rowspan="1"><span class="codefrag">setRequestPathInfo(String pathInfo)</span></td>
+            <td colspan="1" rowspan="1">Indica el ActionMapping a probar</td>
+        
+</tr>
+        
+<tr>
+            
+<td colspan="1" rowspan="1"><span class="codefrag">setConfigFile(String configFile)</span></td>
+            <td colspan="1" rowspan="1">Ruta del archivo <span class="codefrag">struts-config.xml</span></td>
+        
+</tr>
+        
+<tr>
+            
+<td colspan="1" rowspan="1"><span class="codefrag">actionPerform()</span></td>
+            <td colspan="1" rowspan="1">Pasa el control al <em>Action</em> a probar</td>
+        
+</tr>
+        
+<tr>
+            
+<td colspan="1" rowspan="1"><span class="codefrag">verifyForward(String forward)</span></td>
+            <td colspan="1" rowspan="1">Comprueba si el controlador ha utilizado este forward</td>
+        
+</tr>
+        
+<tr>
+            
+<td colspan="1" rowspan="1"><span class="codefrag">verifyInputForward()</span></td>
+            <td colspan="1" rowspan="1">Comprueba que el controlador ha redirigido al forward de entrada definido</td>
+        
+</tr>
+        
+<tr>
+            
+<td colspan="1" rowspan="1"><span class="codefrag">verifyNoActionErrors()</span></td>
+            <td colspan="1" rowspan="1">Comprueba que el controlador no ha enviado mensajes de error tras ejecutar el <em>Action</em></td>
+        
+</tr>
+        
+<tr>
+            
+<td colspan="1" rowspan="1"><span class="codefrag">verifyActionErrors(String[] nombresError)</span></td>
+            <td colspan="1" rowspan="1">Comprueba que el controlador ha enviado estos mensajes de error</td>
+        
+</tr>
+    
+</table>
+</div>
+ 
+<p class="pageBreakAfter"></p>
+ 
+ 
+</div>
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+        Copyright &copy;
+         2006-2007 Depto. CCIA</div>
+</div>
+</body>
+</html>

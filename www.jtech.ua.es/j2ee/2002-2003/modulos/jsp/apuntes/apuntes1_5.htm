@@ -1,0 +1,168 @@
+<html>
+<head>
+<title>Untitled Document</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<center><p></p>
+</center>
+
+<h2> 1.5. Directivas de página </h2>
+<p> Las <i>directivas</i> influyen en la estructura que tendrá el servlet generado 
+  a partir de la página JSP. Hay tres tipos de directivas: </p>
+<ul>
+  <li><code>page</code>: tiene varios usos: importar clases de Java, fijar el 
+    tipo MIME de la respuesta, controlar el <i>buffer</i> de salida,...</li>
+  <li><code>include</code>: sirve para incluir c&oacute;digo en la p&aacute;gina 
+    <i>antes de que se realice la compilaci&oacute;n del JSP</i>.</li>
+  <li><code>taglib</code>: se emplea cuando el JSP hace uso de etiquetas definidas 
+    por el usuario.</li>
+</ul>
+<p>El formato gen&eacute;rico de una directiva es:</p>
+<pre class="codigo">&lt;%@ directiva atributo=&quot;valor&quot; %&gt;
+</pre>
+<p> algunas directivas admiten m&aacute;s de un atributo.</p>
+<h3>1.5.1. La directiva <code>page</code></h3>
+<p>La tabla 2 recoge los distintos atributos que admite la directiva <code>page</code> 
+  y su significado.</p>
+<table  border="1" cellpadding="5" width="100%">
+<caption> <b>Tabla 2: atributos de la directiva page</b></caption>
+  <tr> 
+    <th width="15%">Atributo</th>
+    <th width="38%">Significado</th>
+    <th width="47%">Ejemplo</th>
+  </tr>
+  <tr> 
+    <td width="15%"><code>import</code></td>
+    <td width="38%">el equivalente a una sentencia <code>import</code> de Java</td>
+    <td width="47%"><code>&lt;%@ page import=&quot;java.util.Date&quot; %&gt;</code></td>
+  </tr>
+  <tr> 
+    <td width="15%"><code>contentType</code></td>
+    <td width="38%">genera una cabecera HTTP <code>Content-Type</code></td>
+    <td width="47%"><code>&lt;%@ page contentType=&quot;text/plain&quot; %&gt;</code></td>
+  </tr>
+  <tr> 
+    <td width="15%"><code>isThreadSafe</code></td>
+    <td width="38%">si es <code>false</code>, el servlet generado implementar&aacute; 
+      el interface <code>SingleThreadModel</code> (&uacute;n &uacute;nico hilo 
+      para todas las peticiones). Por defecto, el valor es <code>true</code>.</td>
+    <td width="47%">&nbsp;</td>
+  </tr>
+  <tr> 
+    <td width="15%"><code>session</code></td>
+    <td width="38%">Si es <code>false</code>, no se crear&aacute; un objeto <code>session</code> 
+      de manera autom&aacute;tica. Por defecto, es <code>true</code>.</td>
+    <td width="47%">&nbsp;</td>
+  </tr>
+  <tr> 
+    <td width="15%"><code>buffer</code></td>
+    <td width="38%">Define el tama&ntilde;o del <i>buffer</i> para la salida (en 
+      kb), o <code>none</code> si no se desea <i>buffer</i>. Su existencia permite 
+      generar cabeceras HTTP o c&oacute;digos de estado aunque ya se haya comenzado 
+      a escribir la salida.</td>
+    <td width="47%"><code>&lt;%@ page buffer=&quot;64kb&quot; %&gt;</code></td>
+  </tr>
+  <tr> 
+    <td width="15%"><code>autoflush</code></td>
+    <td width="38%">Si es <code>true</code> (valor por defecto), el buffer se envía automáticamente a la salida al llenarse. Si es <code>false</code>, al llenarse el buffer se genera una excepción.</td>
+    <td width="47%">&nbsp;</td>
+  </tr>
+  <tr> 
+    <td width="15%"><code>extends</code></td>
+    <td width="38%">Permite especificar de qué clase debe descender el servlet generado a partir de la página JSP. No es habitual cambiarlo.</td>
+    <td width="47%">&nbsp;</td>
+  </tr>
+  <tr> 
+    <td width="15%"><code>info</code></td>
+    <td width="38%">define una cadena que puede obtenerse a través del método <code>getServletInfo</code></td>
+    <td width="47%"><code>&lt;%@ page info="carro de la compra" %&gt;</code></td>
+  </tr>
+  <tr> 
+    <td width="15%"><code>errorPage</code></td>
+    <td width="38%">especifica la página JSP que debe procesar los errores generados y no capturados en la actual.</td>
+    <td width="47%"><code>&lt;%@ page errorPage="error.jsp" %&gt;</code></td>
+  </tr>
+  <tr> 
+    <td width="15%"><code>isErrorPage</code></td>
+    <td width="38%">Si es <code>true</code>, indica que la página actúa como página de error para otro JSP. El valor por defecto es <code>false</code>.</td>
+    <td width="47%">&nbsp;</td>
+  </tr>
+  <tr> 
+    <td width="15%"><code>language</code></td>
+    <td width="38%">Permite especificar el lenguaje de programación usado en el JSP. En la práctica, el lenguaje siempre es Java, por lo que esta directiva no se usa.</td>
+    <td width="47%">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="15%"><code>pageEncoding</code></td>
+    <td width="38%">define el juego de caracteres que usa la página. El valor por defecto es <code>ISO-8859-1</code>.</td>
+    <td width="47%">&nbsp;</td>
+  </tr>
+</table>
+<h2>1.6. Incluir código y redirigir la petición</h2>
+<p>En JSP existen varios mecanismos para incluir elementos externos en la página actual o redirigir la petición hacia otra página</p>
+<ul>
+<li><b>La directiva <code>include</code></b> permite insertar código en la página antes de que ésta se transforme en un servlet. De este modo se pueden reutilizar fragmentos de código JSP o HTML. </li>
+<li><b>La acción <code>&lt;jsp:include&gt;</code></b></li> permite insertar la salida de otra página JSP. Nótese que se incluye la <em>salida</em> generada por el código JSP, no el código propiamente dicho.
+<li><b>La acción <code>&lt;jsp:plugin&gt;</code></b> permite incluir <em>applets</em> que hagan uso de Java 2. </li>
+<li><b>La acción <code>&lt;jsp:forward&gt;</code></b> sirve para redirigir la petición a otra página JSP</li>
+</ul>
+<h3>1.6.1. La directiva <code>include</code> </h3>
+<p>Es el equivalente al <code>#include</code> del lenguaje C. su sintaxis es: </p>
+<pre class="codigo">
+&lt;% include file="<var>fichero</var>" %&gt;
+</pre>
+<p>
+Como el código se incluye en el servlet generado, los fragmentos de código incluidos pueden tener efecto sobre la página actual. Así, se puede utilizar esta directiva para definir constantes, generar cabeceras HTTP, ...
+</p>
+<p>
+El problema de esta directiva es que el estándar no exige que el contenedor JSP detecte de manera automática los cambios en los ficheros incluidos, de manera que si cambia uno de ellos puede ser necesario forzar la recompilación de las páginas JSP que los incluyan.
+</p>
+<p>
+La especificación JSP recomienda que si la página incluida no es una página JSP válida por sí sola (por ejemplo, porque utiliza variables que se confía que se hayan declarado previamente) se utilice la extensión "estándar" <code>.jspf </code>(JSP fragment) y se coloque en un directorio no público del contenedor JSP (por ejemplo, WEB-INF, que no es accesible desde el cliente, pero sí desde la directiva).
+</p>
+<h3>1.6.2. La acción <code>&lt;jsp:include&gt;</code> </h3>
+<p>
+Esta acción incluye en una página la salida generada por otra perteneciente a la misma aplicación web. La petición se redirige a la página incluida, y la respuesta que genera se incluye en la generada por la principal. Su sintaxis es:
+<pre class="codigo">
+&lt;jsp:include page="<var>URL relativa</var>" flush="<var>true</var>|<var>false</var>"/&gt;
+</pre>
+<p>
+El atributo  <code>flush</code> especifica si el flujo de salida de la página principal debería ser enviado al cliente antes de enviar el de la página incluida. En JSP 1.2 este atributo es optativo, y su valor por defecto es <code>false</code>. En JSP 1.1 es obligatorio y siempre debía valer <code>true</code> (el forzar el vaciado de buffer era problemático porque una vez que ha sucedido esto no se pueden hacer redirecciones ni ir a páginas de error, ya que ya se han terminado de escribir las cabeceras).
+</p>
+<p>
+Esta acción presenta la ventaja sobre la directiva del mismo nombre de que cambios en la página incluida no obligan a recompilar la "principal". No obstante, la página incluida solo tiene acceso al <code>JspWriter</code> de la "principal" y no puede generar cabeceras (por ejemplo, no puede crear <em>cookies</em>).
+</p>
+<p>
+Por defecto, la petición que se le pasa a la página incluida es la original, pero se le pueden agregar parámetros adicionales, mediante la etiqueta <code>jsp:param</code>. Por ejemplo:
+</p>
+<pre class="codigo">
+&lt;jsp:include page="cabecera.jsp"&gt;
+   &lt;jsp:param name="color" value="YELLOW" /&gt;
+&lt;/jsp:include&gt;
+</pre>
+<h3>1.6.3. La acción <code>&lt;jsp:plugin&gt;</code></h3>
+<p>
+Esta acción sirve para incluir, de manera portable e independiente del navegador, <em>applets</em> que utilicen alguna librería de Java 2 (Swing, colecciones, Java 2D, ...), ya que las máquinas virtuales Java distribuidas con algunos navegadores relativamente antiguos (Explorer 5.x, Netscape 4.x,...) son de una versión anterior a Java 2.
+</p>
+<h3>1.6.4. La acción <code>&lt;jsp:forward&gt;</code></h3>
+<p>
+Esta acción se utiliza para redirigir la petición hacia otra página JSP que esté en la misma aplicación web que la actual. Su sintaxis básica es: 
+<pre class="codigo">
+&lt;jsp:forward page="principal.jsp"/&gt;
+</pre>
+
+La salida generada hasta el momento por la página actual se descarta (se borra el <em>buffer</em>). En caso de que no se utilizara <em>buffer</em> de salida, se produciría una excepción.
+<p></p>
+<p>
+Al igual que en el caso de <code>&lt;jsp:include&gt;</code>, se pueden añadir parámetros a la petición original para que los reciba la nueva página JSP:
+</p>
+
+<pre class="codigo">
+&lt;jsp:forward page="principal.jsp"&gt;
+   &lt;jsp:param name="privilegios" value="root" /&gt;
+&lt;/jsp:forward&gt;</pre>
+</body>
+</html>

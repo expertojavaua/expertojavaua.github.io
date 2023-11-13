@@ -1,0 +1,113 @@
+import java.security.*;
+import javax.crypto.*;
+import javax.crypto.spec.*;
+import java.util.*;
+
+// Para codificación y decodificación BASE64 
+import sun.misc.*;
+// import com.isnetworks.base64.*;
+
+public class PBE
+{
+	private static int iteraciones = 1000;
+
+
+	private static void uso()
+	{
+		System.err.println("Uso: java PBE -e|-d password texto");
+		System.exit(1);
+	}
+
+	public static void main (String[] args)
+		throws Exception
+	{
+		if (args.length != 3) uso();
+
+		char[] password = args[1].toCharArray();
+		String texto = args[2];
+		String salida = null;
+
+		// Primer argumento: Estamos encriptando o des-encriptando? 
+		if ("-e".equals(args[0])) salida = encriptar(password, texto);
+		else if ("-d".equals(args[0])) 
+                     salida = desencriptar(password, texto);
+		else uso();
+
+		System.out.println(salida);
+	}
+
+	private static String encriptar(char[] password, String textoPlano)
+		throws Exception
+	{
+                // Creamos un salto de 64 bits (8 bytes)
+		byte[] salto = new byte[8];
+		Random random = new Random();
+		random.nextBytes(salto);
+
+                // Creamos un PBEKeySpec con el password
+		PBEKeySpec especificacion = new PBEKeySpec(password);
+
+                // Cogemos un SecretKeyFactory para PBEWithMD5AndDEs
+		SecretKeyFactory factoria = 
+                   SecretKeyFactory.getInstance("PBEWithSHAAndTwofish-CBC");
+
+		// Crear la clave
+		SecretKey clave = factoria.generateSecret(especificacion);
+
+                // Creamo los parámetros para el salto y las iteraciones
+		PBEParameterSpec parametros = 
+                          new PBEParameterSpec(salto, iteraciones);
+
+                // Creamos e inicializamos el cifrador
+		Cipher cifrador = Cipher.getInstance("PBEWithSHAAndTwofish-CBC");
+		cifrador.init(Cipher.ENCRYPT_MODE, clave, parametros);
+
+		byte[] textoCifrado = cifrador.doFinal(textoPlano.getBytes());
+
+                // Codificación BASE64
+		BASE64Encoder codificador = new BASE64Encoder();
+
+		String cadenaSalto = codificador.encode(salto);
+		String cadenaCifrado = codificador.encode(textoCifrado);
+
+		return cadenaSalto+cadenaCifrado;
+	}
+
+	private static String desencriptar(char[] password, String texto)
+		throws Exception
+	{
+                // Partimos el texto en salto y texto. El salto lo dan los 
+                // 12 primeros caracteres codificados en BASE64 a partir de 8 bytes.
+		String salto = texto.substring(0,12);
+		String textoCifrado = texto.substring(12,texto.length());
+
+                // Descodificar en BASE64 los bytes a partir del salto y 
+                //del texto cifrado.
+		BASE64Decoder decodificador = new BASE64Decoder();
+		byte[] arraySalto = decodificador.decodeBuffer(salto);
+		byte[] arrayCifrado = decodificador.decodeBuffer(textoCifrado);
+
+		// Crear el PBEKeySpec 
+		PBEKeySpec especificacion = new PBEKeySpec(password);
+
+		// Coger la SecretKeyFactory
+		SecretKeyFactory factoria = 
+                      SecretKeyFactory.getInstance("PBEWithSHAAndTwofish-CBC");
+
+		// Crear la clave
+		SecretKey clave = factoria.generateSecret(especificacion);
+
+		// Crear los parámetros 
+		PBEParameterSpec parametros = 
+                      new PBEParameterSpec(arraySalto, iteraciones);
+
+		// Crear el cifrador 
+		Cipher cifrador = Cipher.getInstance("PBEWithSHAAndTwofish-CBC");
+		cifrador.init(Cipher.DECRYPT_MODE, clave, parametros);
+
+		// Desencriptar 
+		byte[] arrayTextoPlano = cifrador.doFinal(arrayCifrado);
+
+		return new String(arrayTextoPlano);
+	}
+}

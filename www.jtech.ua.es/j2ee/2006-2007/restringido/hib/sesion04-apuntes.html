@@ -1,0 +1,1025 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.7">
+<meta name="Forrest-skin-name" content="pelt">
+<title>Consultas. HQL</title>
+<link type="text/css" href="skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="skin/print.css" rel="stylesheet">
+<link type="text/css" href="skin/profile.css" rel="stylesheet">
+<script src="skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<div class="header">
+<div class="grouplogo">
+<a href="http://www.jtech.ua.es/j2ee"><img class="logoImage" alt="J2EE" src="images/baner_j2ee_izq.gif" title="Curso Especialista Universitario J2EE"></a>
+</div>
+<div class="projectlogoA1">
+<a href="http://www.dccia.ua.es/"><img class="logoImage" alt="Hibernate" src="images/baner_j2ee_der.gif" title="Hibernate"></a>
+</div>
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="../index.html">M&oacute;dulos</a>
+</li>
+<li class="current">
+<a class="base-selected" href="index.html">Hibernate</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<div id="level2tabs"></div>
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<div id="menu">
+<div onclick="SwitchMenu('menu_selected_1.1', 'skin/')" id="menu_selected_1.1Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Hibernate</div>
+<div id="menu_selected_1.1" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="index.html" title="Hibernate">&Iacute;ndice</a>
+</div>
+<div onclick="SwitchMenu('menu_selected_1.1.2', 'skin/')" id="menu_selected_1.1.2Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Teor&iacute;a</div>
+<div id="menu_selected_1.1.2" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="sesion01-apuntes.html" title="Sesi&oacute;n 1: Introducci&oacute;n a Hibernate:Configuraci&oacute;n e Inicio">Sesi&oacute;n 1</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-apuntes.html" title="Sesi&oacute;n 2: Mapeado de clases persistentes">Sesi&oacute;n 2</a>
+</div>
+<div class="menuitem">
+<a href="sesion03-apuntes.html" title="Sesi&oacute;n 3: Relaciones entre objetos">Sesi&oacute;n 3</a>
+</div>
+<div class="menupage">
+<div class="menupagetitle">Sesi&oacute;n 4</div>
+</div>
+<div class="menuitem">
+<a href="roadmap-apuntes.html" title="Roadmap">Roadmap</a>
+</div>
+</div>
+<div onclick="SwitchMenu('menu_1.1.3', 'skin/')" id="menu_1.1.3Title" class="menutitle">Ejercicios</div>
+<div id="menu_1.1.3" class="menuitemgroup">
+<div class="menuitem">
+<a href="sesion01-ejercicios.html" title="Sesi&oacute;n 1: Introducci&oacute;n a Hibernate:Configuraci&oacute;n e Inicio">Sesi&oacute;n 1</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-ejercicios.html" title="Sesi&oacute;n 2: Mapeado de clases persistentes">Sesi&oacute;n 2</a>
+</div>
+<div class="menuitem">
+<a href="sesion03-ejercicios.html" title="Sesi&oacute;n 3: Relaciones entre objetos">Sesi&oacute;n 3</a>
+</div>
+<div class="menuitem">
+<a href="sesion04-ejercicios.html" title="Sesi&oacute;n 4: Consultas HQL">Sesi&oacute;n 4</a>
+</div>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<div id="credit2"></div>
+</div>
+<div id="content">
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="sesion04-apuntes.pdf"><img alt="PDF -icon" src="skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1>Consultas. HQL</h1>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#Consultas+y+procesamiento+de+resultados">Consultas y procesamiento de resultados</a>
+</li>
+<li>
+<a href="#HQL%3A+Hibernate+Query+Languaje">HQL: Hibernate Query Languaje</a>
+<ul class="minitoc">
+<li>
+<a href="#Consultas+b%C3%A1sicas+para+objetos">Consultas b&aacute;sicas para objetos</a>
+</li>
+<li>
+<a href="#Estrategias+de">Estrategias de Fetching</a>
+</li>
+<li>
+<a href="#Uni%C3%B3n+de+asociaciones%3A+uso+de">Uni&oacute;n de asociaciones: uso de join</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#SQL+nativo">SQL nativo</a>
+<ul class="minitoc">
+<li>
+<a href="#Uso+de">Uso de SQLQuery</a>
+</li>
+<li>
+<a href="#Alias+y+referencias+a+propiedades">Alias y referencias a propiedades</a>
+</li>
+<li>
+<a href="#Consultas+SQL+con+nombre">Consultas SQL con nombre</a>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+
+<p>En esta sesi&oacute;n hablaremos sobre c&oacute;mo realizar operaciones sencillas sobre la base de datos con Hibernate, mediante
+  el uso del lenguaje de consultas de Hibernate: HQL, y tambi&eacute;n utilizando SQL.</p>
+
+
+<a name="N1000F"></a><a name="Consultas+y+procesamiento+de+resultados"></a>
+<h2 class="underlined_10">Consultas y procesamiento de resultados</h2>
+<div class="section">
+<p>Si no conocemos los identificadores de los objetos que estamos buscando, necesitamos realizar una <em>query</em> (operaci&oacute;n
+   de consulta a la base de datos). Hibernate soporta un lenguaje de consultas orientado a objetos denominado HQL, del que
+   hablaremos en siguientes apartados. Tambi&eacute;n podemos expresar las consultas utilizando el SQL nativo de nuestra base de
+   datos,con un soporte adicional desde Hibernate para la conversi&oacute;n de <em>result sets</em> en objetos.</p>
+<p>Tanto las consultas HQL como las SQL se representan mediante una instancia de <span class="codefrag">org.hibernate.Query</span>. Esta
+   interfaz proporciona m&eacute;todos para enlazado de par&aacute;metros, manejo de <em>result sets</em>, y para la ejecuci&oacute;n de las
+   consultas. La forma de obtener una <em>query</em> es siempre a trav&eacute;s de la <span class="codefrag">Session</span> actual. Por ejemplo:
+   </p>
+<pre class="code">
+    List pujas = session.createQuery(
+          "from Puja as puja where puja.fecha &lt; ?")
+         .setDate(0, date)
+         .list();
+		 
+    Articulo artic = (Articulo) session.createQuery(
+          "select puja.articulo from Puja as puja where puja = ?")
+          .setEntity(0, pj)
+          .uniqueResult();
+
+</pre>
+<p>Una <em>query</em> se ejecuta normalmente invocando al m&eacute;todo <span class="codefrag">list()</span>, el resultado de la consulta se
+   carga en su totalidad en memoria. Las instancias de entidades recuperadas por una query est&aacute;n en estado persistente.
+   El m&eacute;todo <span class="codefrag">uniqueResult()</span> es &uacute;til cuando la consulta debe recuperar un &uacute;nico objeto. Vamos a ver algunas de las 
+   operaciones m&aacute;s habituales cuando realizamos alguna consulta a la base de datos.
+</p>
+<p>
+<strong>ITERACI&Oacute;N DE RESULTADOS</strong>
+</p>
+<p>En ocasiones, podemos utilizar el m&eacute;todo <span class="codefrag">iterate()</span> en lugar de <span class="codefrag">list()</span> para mejorar el rendimiento en el caso
+   de que las instancias devueltas por la consulta ya est&eacute;n en la sesi&oacute;n o en la cach&eacute; de segundo nivel (<em>second-level
+   cache</em>: es una cach&eacute; a nivel de proceso, mientras que la cach&eacute; de primer nivel es a nivel de transacci&oacute;n; No vamos
+   a hablar aqu&iacute; sobre las formas de almacenamiento <em>cache</em> de Hibernate, para ello pod&eacute;is consultar el manual de 
+   referencia de Hibernate, en el apartado 19.2). Ejemplo de iteraci&oacute;n de resultados:
+</p>
+<pre class="code">
+    Iterator pujas = session.createQuery(
+          "from Puja as puja where puja.fecha &lt; ?")
+         .setDate(0, date)
+         .iterate();
+	while (pujas.hasNext() ) {
+	   Puja puja = (Puja) pujas.next();
+	   //hacer algo que no podemos expresar con la consulta
+	   ...
+	}
+
+</pre>
+<p>
+<strong>CONSULTAS QUE DEVUELVEN TUPLAS</strong>
+</p>
+<p>Las consultas de Hibernate a veces devuelven tuplas de objetos, en cuyo caso cada tupla se devuelve como un <em>array</em>,
+   por ejemplo cuando utilizamos la cl&aacute;usula <em>join</em>:</p>
+<pre class="code">
+    Query q = session.createQuery("select a from Articulo a join a.pujas p");
+	Iterator pares = q.list().iterator();
+	while (pares.hasNext() ) {
+	    Object[] pares = (Object[]) pares.next();
+		Articulo art = (Articulo) pares[0];
+		Puja puja = (Puja) pares[1];
+	}
+</pre>
+<p>En este caso, en lugar de una lista de art&iacute;culos, este consulta devuelve una lista de <em>arrays</em> de objetos. En 
+   la posici&oacute;n 0 habr&aacute; un <em>Articulo</em>, y en la posici&oacute;n 1 habr&aacute; una <em>Puja</em>. Un <em>Art&iacute;culo</em> particular puede
+   aparecer muchas veces, una vez por cada <em>Puja</em> asociada.</p>
+<p>
+<strong>RESULTADOS ESCALARES</strong>
+</p>
+<p>Las consultas pueden especificar una propiedad de una clase en la cl&aacute;usula <span class="codefrag">select</span>. Incluso se puede
+   hacer llamadas a funciones SQL de agregaci&oacute;n (<em>SQL aggregate functions</em>). Las propiedades o agregaciones 
+   son consideradas como resultados "escalares" (en vez de entidades con su estado persistente). Veamos un ejemplo:</p>
+<pre class="code">
+    Iterator results = sess.createQuery(
+             "select articulo.color, min(articulo.fechaAlta), "+
+			 "count(articulo) from Articulo articulo " +
+             "group by articulo.color")
+            .list()
+            .iterator();
+    while ( results.hasNext() ) {
+        Object[] row = (Object[]) results.next();
+        Color type = (Color) row[0];
+        Date oldest = (Date) row[1];
+        Integer count = (Integer) row[2];
+        .....
+    }
+</pre>
+<p>
+<strong>ENLAZADO DE PAR&Aacute;METROS</strong>
+</p>
+<p>Los m&eacute;todos de la clase <em>Query</em> permiten enlazar valores a par&aacute;metros con nombre, similares a los par&aacute;metros 
+   <span class="codefrag">?</span> al estilo de JDBC. Al contrario que JDBC, Hibernate <strong>numera los par&aacute;metros comenzando por cero</strong>.
+   Los par&aacute;metros con nombre son identificadores con la forma <span class="codefrag">:name</span> en la cadena de consulta. Las ventajas
+   de los par&aacute;metros con nombre son:
+</p>
+<ul>
+  
+<li>Son insensibles al orden en el que aparecen en la cadena de consulta.</li>
+  
+<li>Pueden aparecer varias veces en la misma consulta.</li>
+  
+<li>Son auto-documentados.</li>
+
+</ul>
+<p>Ejemplos:</p>
+<pre class="code">
+      Query q = sess.createQuery("from Articulo art where art.name = :name");
+      q.setString("name", "Cuadro");
+      Iterator arts = q.iterate();
+
+     //lista de par&aacute;metros con nombre
+     List nombres = new ArrayList();
+     nombres.add("Collar");
+     nombres.add("Copa");
+     Query q = sess.createQuery("from Articulo art where art.name in (:listaNombres)");
+     q.setParameterList("listaNombres", nombres);
+     List articulos = q.list();
+</pre>
+<p>Aunque tambi&eacute;n podemos utilizar par&aacute;metros posicionales:</p>
+<pre class="code">
+      String queryString = "from Articulo art " 
+	                       + "where art.descripcion like ? " 
+						   + "and art.fechaAlta &gt; ? ");
+
+     List result = session.createQuery(queryString)
+	                         .setString(0, searchString)
+							 .setDate(1, minDate)
+							 .list();
+
+</pre>
+<p>La interfaz <em>Query</em> proporciona m&eacute;todos para enlazar argumentos para los tipos Hibernate, como 
+   <span class="codefrag">setInteger()</span>, <span class="codefrag">setTimestamp()</span>, <span class="codefrag">setDate()</span>,... Un m&eacute;todo particularmente
+   &uacute;til es el m&eacute;todo <span class="codefrag">setEntity()</span>, que permite enlazar con una entidad persistente:</p>
+<pre class="code">
+    session.createQuery("from Articulo art where art.vendedor = :vendedor")
+	             .setEntity("vendedor", vendedor)
+				 .list();
+</pre>
+<p>Sin embargo, tambi&eacute;n se dispone de un m&eacute;todo gen&eacute;rico que nos permite enlazar un argumento de cualquier
+   tipo Hibernate, o incluso tipos definidos por el usuario:</p>
+<pre class="code">
+    String queryString = "from Articulo art " 
+	                       + "where art.vendedor= :vendedor and " 
+						   + "art.descripcion like :desc and "
+						   + "art.origen like : org;
+    session.createQuery(queryString)
+	          .setParameter("vendedor", vendedor, Hibernate.entity(User.class) )
+              .setParameter("desc", descripcion, Hibernate.STRING )
+			  .setParameter("org", origen, Hibernate.custom(Origen.class) )
+			  .list();
+</pre>
+<p>
+<strong>PAGINACI&Oacute;N</strong>
+</p>
+<p>Si necesitamos especificar l&iacute;mites sobre el conjunto de resultados (el m&aacute;ximo n&uacute;mero de filas que queremos
+   recuperar y/o la primera fila que queremos recuperar), podemos utilizar los siguientes m&eacute;todos de la interface
+   <em>Query</em>:</p>
+<pre class="code">
+      Query q = sess.createQuery("from Articulo art");
+      q.setFirstResult(20);
+      q.setMaxResults(10);
+      List articulos = q.list();
+
+</pre>
+<p>La llamada a <span class="codefrag">setMaxResults(10)</span> limita el conjunto de resultados de la consulta a los siguientes diez objetos
+   comenzando por el que ocupa la veinteava posici&oacute;n (es decir, desde la posici&oacute;n 21 hasta la 30).</p>
+<p>
+<strong>RESULTADOS <em>"ENROLLABLES"</em></strong>
+</p>
+<p>Si el driver JDBC utilizado soporta <em>ResultSet</em>s <em>scrollables</em>, puede utilizarse la interfaz
+   <em>Query</em> para obtener un objeto <em>ScrollableResults</em>, que permite una navegaci&oacute;n flexible por los
+   resultados de la consulta.</p>
+<pre class="code">   
+    Query q = sess.createQuery("select art.nombre, art from Articulo art " +
+                               "order by cat.name");
+    ScrollableResults artics = q.scroll();
+    if ( artics.first() ) {
+      // encuentra el primer nombre en cada p&aacute;gina de una lista de art&iacute;culos 
+	  //ordenada alfab&eacute;ticamente por nombre
+      firstNamesOfPages = new ArrayList();
+      do {
+        String nombre = artics.getString(0);
+        firstNamesOfPages.add(nombre);
+      }
+      while ( artics.scroll(PAGE_SIZE) );
+     // Ahora  obtiene la primera p&aacute;gina de art&iacute;culos
+     pageOfArtics = new ArrayList();
+     artics.beforeFirst();
+     int i=0;
+     while( ( PAGE_SIZE &gt; i++ ) &amp;&amp; artics.next() ) pageOfArtics.add( artics.get(1) );
+     }
+     artics.close()
+
+</pre>
+</div>
+
+
+<a name="N10100"></a><a name="HQL%3A+Hibernate+Query+Languaje"></a>
+<h2 class="underlined_10">HQL: Hibernate Query Languaje</h2>
+<div class="section">
+<p>La recuperaci&oacute;n de objetos persistentes de la base de datos es una de 
+  las partes m&aacute;s interesantes (y complejas) de Hibernate. Hibernate proporciona 
+  varias formas de recuperar objetos de la base de datos:</p>
+<ul>
+  
+<li>Navegando por el grafo de objetos, comenzado por un objeto ya cargado, y 
+    accediendo a los objetos asociados a trav&eacute;s de los m&eacute;todos de 
+    que dan acceso a las propiedades del objeto, tales como <span class="codefrag">user.getDireccion().getCiudad()</span>. 
+    Hibernate autom&aacute;ticamente carga los nodos del grafo mientras navegamos 
+    por &eacute;l si la sesi&oacute;n est&aacute; abierta.</li>
+  
+<li>Recuperaci&oacute;n mediante el identificador, que es la forma m&aacute;s 
+    conveniente y m&aacute;s efectiva cuando se conoce el identficador del objeto</li>
+  
+<li>Utilizar HQL, que es un lenguaje de consulta orientado a objetos.</li>
+  
+<li>Utilizar el API <span class="codefrag">Criteria</span> de Hibernate, que permite realizar 
+    consultas <em>(queries)</em> sin necesidad de manipular strings.</li>
+  
+<li>Utilizar <em>queries</em> SQL nativas, de forma que Hibernate realiza una 
+    correspondencia de los <em>results sets</em> JDBC a grafos de objetos persistentes.</li>
+
+</ul>
+<p>En este apartado vamos a centrarnos en el uso de HQL. HQL es un dialecto orientado 
+  a objetos del lenguaje de consulta SQL. A diferencia de &eacute;ste 
+  &uacute;ltimo, HQL no es un lenguaje de manipulaci&oacute;n de datos, solamente 
+  se utiliza para recuperaci&oacute;n de objetos, no para actualizar, insertar 
+  o borrar datos.</p>
+<p>La estructura de una consulta HQL es la siguiente:</p>
+<pre class="code"> 
+[select ...] from ... [where ...] [group by ... [having ...]] [order by ...] </pre>
+<p>La &uacute;nica cl&aacute;usula requerida es la cl&aacute;usula <span class="codefrag">from</span>. El resto 
+  de cl&aacute;usulas son opcionales. </p>
+<p>Las consultas HQL, as&iacute; como las consultas nativas SQL, se representan 
+  con una instancia de la interfaz <span class="codefrag">org.hibernate.query</span>. Esta interfaz 
+  proporciona m&eacute;todos para enlazar par&aacute;metros, manejo de <em>result 
+  sets</em>, y para la ejecuci&oacute;n de la consulta. Siempre obendremos una 
+  <span class="codefrag">Query</span> a trav&eacute;s de la <span class="codefrag">Session</span> actual: </p>
+<pre class="code">
+Query hqlQuery = session.createQuery("from Usuario u where u.nombre = :fname ");
+hqlQuery.setString("fname","Pepe");
+hqlQuery.setFirstResult(0);
+hqlQuery.setMaxResults(10);
+List result = hqlQuery.list();
+</pre>
+<p>Despu&eacute;s de preparar la consulta <span class="codefrag">hqlQuery</span>, enlazamos el 
+  valor del identificador con un par&aacute;metro con nombre <span class="codefrag">fname</span> 
+  (indicado mediante los dos puntos seguidos del nombre del par&aacute;metro), 
+  utilizando el m&eacute;todo <span class="codefrag">setString()</span>. El m&eacute;todo <span class="codefrag">list()</span>,
+  como ya hemos visto antes, 
+  ejecuta la consulta y devuelve los resultados como un objeto de tipo <span class="codefrag">List</span>.</p>
+<p>
+<strong>Consultas HQL CON NOMBRE</strong>
+</p>
+<p>El ejemplo HQL anterior utiliza literales de cadenas de caracteres para 
+  realizar las consultas. Para no ver dispersados en el c&oacute;digo Java muchos 
+  literales HQL, Hibernate permite externalizar las consultas en el fichero de 
+  metadatos en el que establecemos la correspondencia OR, esta t&eacute;cnica 
+  se denomina <em><strong>named queries</strong></em>. Esto nos permite almacenar todas 
+  las consultas relacionadas con una clase persistente (o un conjunto de clases) 
+  encapsuladas con el resto de metadatos en un fichero XML. El nombre de la consulta 
+  se utiliza para hacer hacer la llamada dentro de la aplicaci&oacute;n.</p>
+<p>El m&eacute;todo <span class="codefrag">getNamedQuery()</span> obtiene una instancia <span class="codefrag">Query</span> 
+  para una consulta con nombre (<em>named query</em>):</p>
+<pre class="code"> 
+session.getNamedQuery("findArticulosByDescripcion") 
+       .setString( "desc", descripcion) 
+	   .list(); 
+</pre>
+<p>En en ejemplo anterior, ejecutamos la consulta con nombre <span class="codefrag">findArticulosByDescripcion</span>, 
+  despu&eacute;s de enlazar un argumento de tipo <span class="codefrag">String</span> a un par&aacute;metro 
+  con nombre. La consulta con nombre se define en el fichero de metadatos (por 
+  ejemplo, en <span class="codefrag">Articulo.hbm.xml</span>), utilizando el elemento <span class="codefrag">&lt;query&gt;</span>:</p>
+<pre class="code">
+&lt;query name="findArticulosByDescripcion"&gt;&lt;![CDATA [
+         from Articulo where articulo.descripcion like :desc ]]&amp;gt;
+&lt;/query&gt;
+
+</pre>
+<a name="N1018D"></a><a name="Consultas+b%C3%A1sicas+para+objetos"></a>
+<h3 class="underlined_5">Consultas b&aacute;sicas para objetos</h3>
+<p>La consulta m&aacute;s simple consiste en recuperar todas las instancias de 
+  una clase persistente particular. En HQL, se escribir&iacute;a como:</p>
+<pre class="code">from Puja</pre>
+<p>Esta consulta generar&iacute;a el siguiente c&oacute;digo SQL:</p>
+<pre class="code">select P.PUJA_ID, P.CANTIDAD, P.ARTICULO_ID, P.CREADO form PUJA P</pre>
+<p>Incluso en esta consulta tan sencilla podemos observar que HQL es menos verboso que SQL.</p>
+<p>Podemos establecer un <strong><em>alias</em></strong> para referirnos a Puja en otras partes de 
+  la consulta, mediante:</p>
+<pre class="code">from Puja as puja</pre>
+<p>o simplemente: <span class="codefrag">from Puja puja</span>
+</p>
+<p>
+<strong>CONSULTAS POLIM&Oacute;RFICAS</strong>
+</p>
+<p>Puesto que HQL es un lenguaje de consulta orientado a objetos, vamos a ver 
+  que soporta consultas polim&oacute;rficas, es decir, consultas para instancias 
+  de una clase y todas las instancias de sus subclases, respectivamente.</p>
+<p>Consideremos el ejemplo de la sesi&oacute;n anterior, en el que tenemos las clases <em>DetallesCuenta</em>, 
+  <em>Tarjeta</em> y <em>CuentaBancaria</em>. La consulta <span class="codefrag">from DetallesCuenta</span> 
+  devuelve los objetos del tipo DetallesCuenta, que es una clase abstracta. Por 
+  lo tanto, en este caso, los objetos concretos ser&aacute;n de los subtipos Tarjeta 
+  y CuentaBancaria. Si solamente queremos recuperar instancias de una subclase 
+  particular, podr&iacute;amos usar <span class="codefrag">from Tarjeta</span>.</p>
+<p>La clase referenciada en la cl&aacute;usula <span class="codefrag">from</span> no tiene por 
+  qu&eacute; ser una clase persistente concreta, podr&iacute;a ser cualquier clase. 
+  Por ejemplo, la consulta <span class="codefrag">from java.lang.Object</span> devuelve todos los 
+  objetos persistentes.</p>
+<p>Esto tambi&eacute;n es extensible a las interfaces, por ejemplo, la consulta 
+  <span class="codefrag">from java.io.Serializable</span>, devuelve todos los objetos persistentes 
+  serializables.</p>
+<p>
+<strong>RESTRICCIONES</strong> (<span class="codefrag">where</span>)</p>
+<p>Normalmente, no querremos recuperar todas las instancias de una clase. Por 
+  lo que debemos ser capaces de expresar restricciones sobre los valores de las 
+  propiedades de los objetos devueltos por la consulta. La cl&aacute;usula <span class="codefrag">where</span> 
+  se utiliza para expresar restricciones (tanto en HQL como en SQL). Las expresiones 
+  pueden ser arbitrariamente complejas. Comencemos por una sencilla:</p>
+<pre class="code">from Usuario u where u.email = 'usuario@hibernate.org'</pre>
+<p>La restricci&oacute;n se expresa utilizando propiedades, en este caso la propiedad 
+  <span class="codefrag">email</span> de la clase <span class="codefrag">Usuario</span>.</p>
+<p>La cl&aacute;usula <span class="codefrag">where</span> es una expresi&oacute;n l&oacute;gica que se eval&uacute;a 
+  a cierto, falso o nulo, para cada tupla de objetos. HQL soporta algunos operadores 
+  b&aacute;sicos como <span class="codefrag">=</span>, <span class="codefrag">&lt;&gt;</span>, <span class="codefrag">&lt;</span>, 
+  <span class="codefrag">&gt;</span>, <span class="codefrag">&gt;=</span>, <span class="codefrag">&lt;=</span>, <span class="codefrag">between</span>, 
+  <span class="codefrag">not between</span>, <span class="codefrag">in</span>, <span class="codefrag">not in</span>. Por ejemplo:</p>
+<pre class="code">from Puja puja where puja.cantidad between 1 and 10</pre>
+<pre class="code">from Puja puja where puja.cantidad &gt; 100</pre>
+<pre class="code">from Usuario u where u in ("usu1@hibernate.org", "usu2@hibernate.org")</pre>
+<pre class="code">from Usuario u where u.email is not null</pre>
+<p>HQL tambi&eacute;n soporta <strong>expresiones aritm&eacute;ticas</strong>:</p>
+<pre class="code">from Puja puja where (puja.cantidad / 0.71) -100.0 &lt;= 0.0</pre>
+<p>Tambi&eacute;n podemos hacer <strong>b&uacute;squedas de cadenas</strong> de caracteres, utilizando 
+  los s&iacute;mbolos <span class="codefrag">%</span> y <span class="codefrag">_</span>, igual que en SQL:</p>
+<pre class="code">from Usuario u where u.nombre like "G%"</pre>
+<p>Los operadores l&oacute;gicos se utilizan para combinar expresiones:</p>
+<pre class="code">
+from Usuario user
+    where user.nombre like "G%" and user.apellidos like "K%"
+from Usuario user
+    where (user.nombre like "G%" and user.apellidos like "K%")
+	     or user.email in ("usu1@hibernate.org", "usu2@hibernate.org")	
+	
+</pre>
+<p>
+<strong>ORDENACI&Oacute;N DE RESULTADOS ( <span class="codefrag">order by</span>)</strong>
+</p>
+<p>HQL proporciona un mecanismo para ordenar el resultado de las consultas, la 
+	cl&aacute;usula <strong><em>order by</em></strong>, similar a SQL. Por ejemplo la siguiente 
+  consulta devuelve todos los usuarios, ordenados por nombre:</p>
+<pre class="code">from Usuario u order by u.nombre</pre>
+<p>Podemos especificar el orden ascendente o descendente mediante <span class="codefrag">asc</span> 
+  o <span class="codefrag">desc</span>:</p>
+<pre class="code">from Usuario u order by u.nombre des</pre>
+<p>Finalmente podemos ordenar por varias propiedades:</p>
+<pre class="code">from Usuario u order by u.apellidos asc, u.nombre asc</pre>
+<p>
+<strong>Uso de AGREGACI&Oacute;N</strong>
+</p>
+<p>Hibernate reconoce las siguientes funciones agregadas: <span class="codefrag">count()</span>, 
+   <span class="codefrag">min()</span>, <span class="codefrag">max()</span>, <span class="codefrag">sum()</span> y <span class="codefrag">avg()</span>.</p>
+<p>As&iacute; por ejemplo, la siguiente consulta cuenta todos los art&iacute;culos:</p>
+<pre class="code">
+   select count(*) from Articulo
+</pre>
+<p>El resultado se devuelve como un <em>Integer</em>:</p>
+<pre class="code">
+Integer count = (Integer) session.createQuery("select count(*) from Articulo")
+                                 .uniqueResult();                
+</pre>
+<p>Notar que usamos <span class="codefrag">*</span> con la misma sem&aacute;ntica que en SQL.</p>
+<p>La siguiente variaci&oacute;n de la consulta calcula el total de pujas exitosas:</p>
+<pre class="code">
+  select count(art.pujaExitosa) from Articulo art
+</pre>
+<p>La siguiente consulta devuelve las pujas m&aacute;ximas y m&iacute;nimas para un art&iacute;culo particular:</p>
+<pre class="code">
+   select min(puja.cantidad), max(puja.cantidad)
+      from Puja puja where puja.articulo.id =1
+</pre>
+<p>El resultado es un par ordenado de <em>BigDecimal</em>s (dos instancias de <em>BigDecimal</em> 
+   en un <span class="codefrag">Object [] array</span>).</p>
+<p>Podemos utilizar la funci&oacute;n <span class="codefrag">count(distinct)</span> para ignorar los duplicados:</p>
+<pre class="code">
+  select count(distinct art.descripcion) from Articulo art
+</pre>
+<p>Cuando hacemos uso de una funci&oacute;n agregada en la cl&aacute;usula <span class="codefrag">select</span> sin especificar
+   ninguna agrupaci&oacute;n en una cl&aacute;usula <span class="codefrag">group by</span>, el resultado se devuelve en una &uacute;nica
+   fila que contiene lo/s valor/es agregados. Esto significa que (en ausencia de la cl&aacute;usula
+   <span class="codefrag">group by</span>) cualquier cl&aacute;usula <span class="codefrag">select</span> que contenga una funci&oacute;n agregada, 
+   solamente debe contener funciones agregadas.</p>
+<p>
+<strong>AGRUPACI&Oacute;N DE RESULTADOS ( <span class="codefrag">group by</span>)</strong>
+</p>
+<p>Al igual que en SQL, cualquier propiedad o alias que aparezca en HQL en una funci&oacute;n
+   agregada en la cl&aacute;usula <span class="codefrag">select</span> debe tambi&eacute;n aparecer en la cl&aacute;usula
+   <span class="codefrag">group by</span>.</p>
+<p>Considera la siguiente consulta, que cuenta el n&uacute;mero de usuarios con un apellido particular:</p>
+<pre class="code">
+  select u.apellido, count(u) from Usuario u
+     group by u.apellido
+</pre>
+<p>En este ejemplo, <span class="codefrag">u.apellido</span> no est&aacute; dentro de una funci&oacute;n agregada;  lo utilizamos
+   para agrupar el resultado. Tampoco necesitamos especificar la propiedad por la que queremos
+   contar en HQL. La sentencia SQL generada utilizar&aacute; autom&aacute;ticamente la clave primaria si usamos 
+   un alias que ha sido especificado en la cl&aacute;usula <span class="codefrag">from</span>.</p>
+<p>La siguiente consulta busca la cantidad media entre las pujas para cada art&iacute;culo:</p>
+<pre class="code">
+  select puja.articulo.id, avg(puja.cantidad) from Puja puja
+     group by puja.articulo.id
+</pre>
+<p>Esta consulta devuelve pares (identificador de art&iacute;culo, cantidad media de pujas). Utilizamos
+   la propiedad especial <span class="codefrag">id</span> para referirnos al identificador de una clase persistente,
+   sin importar cu&aacute;l es el nombre real de la propiedad del identificador.</p>
+<p>
+<strong>OBTENCI&Oacute;N DE RESULTADOS DISTINTOS( <span class="codefrag">distinct</span>)</strong>
+</p>
+<p>Cuando utilizamos una cl&aacute;usula <span class="codefrag">select</span>, no est&aacute; garantizado que 
+   los elementos del resultado sean &uacute;nicos. Por ejemplo, la descripci&oacute;n de los art&iacute;culos
+   no es &uacute;nica, por lo que la siguiente consulta podr&iacute;a devolver la misma descripci&oacute;n m&aacute;s
+   de una vez:</p>
+<pre class="code">
+   select art.descripcion from Articulo art
+</pre>
+<p>Si pensamos que es probable que vaya a haber duplicados, debemos usar la palabra 
+   reservada <span class="codefrag">distinct</span>:</p>
+<pre class="code">
+   select distinct art.descripcion from Articulo art
+</pre>
+<p>Lo cual elimina duplicados de la lista de descripciones de art&iacute;culos devuelta como resultado.</p>
+<a name="N1031E"></a><a name="Estrategias+de"></a>
+<h3 class="underlined_5">Estrategias de Fetching</h3>
+<p>Una estrategia de recuperaci&oacute;n de objetos de la base de datos(<em>fetching strategy</em>) es la estrategia que Hibernate 
+   utiliza para recuperar objetos asociados si la aplicaci&oacute;n necesita navegar por la asociaci&oacute;n.
+   Las estrategias <em>fetch</em> pueden ser declaradas en el fichero de mapeado O/R. </p>
+<p>Hibernate 3 define las siguientes estrategias <em>fetching</em>:</p>
+<ul>
+   
+<li>
+<strong><em>Join fetching</em></strong>: Hibernate recupera la instancia asociada o colecci&oacute;n en la misma <span class="codefrag">SELECT</span>,
+        utilizando un <span class="codefrag">OUTER JOIN</span> (explicaremos c&oacute;mo funciona un <em>outer join</em> en la siguiente secci&oacute;n).
+		Esta estrategia tambi&eacute;n se denomina <strong><em>eager fetching</em></strong>
+</li>
+   
+<li>
+<strong><em>Select fetching</em></strong>: Hibernate utiliza un segundo <span class="codefrag">SELECT</span> para recuperar la 
+        entidad asociada o colecci&oacute;n. A menos que deshabilitemos de forma expl&iacute;cita el <em>lazy fetching</em> especificando
+		<span class="codefrag">lazy="false"</span> en el fichero de mapeado, este segundo <em>select</em> solamente se ejecutar&aacute; cuando 
+		accedamos realmente a la asociaci&oacute;n. <em>Lazy fetching</em> hace referencia a que cuando un cliente solicita una entidad
+		y su grafo asociado, no necesita necesariamente recuperar el grafo entero (de forma indirecta) de cada objeto asociado.
+		Puede que no se quiera cargar a la vez toda la base de datos en memoria; por ejemplo, cuando hacemos un <em>load</em>
+		de un objeto <em>Categoria</em> no deber&iacute;amos lanzar la carga de todos los <em>Item</em>s de dicha categor&iacute;a.
+		</li>
+   
+<li>
+<strong><em>Subselect fetching</em></strong>: Hibernate utiliza un segundo <span class="codefrag">SELECT</span> para recuperar laa 
+        colecciones asociadas para todas las entidades recuperadas en una consulta previa o <em>fetch</em>. 
+		A menos que deshabilitemos de forma expl&iacute;cita el <em>lazy fetching</em> especificando
+		<span class="codefrag">lazy="false"</span> en el fichero de mapeado, este segundo <em>select</em> solamente se ejecutar&aacute; cuando 
+		accedamos realmente a la asociaci&oacute;n.</li>
+   
+<li>
+<strong><em>Batch fetching</em></strong>: es una estrategia de optimizaci&oacute;n para <em>select fetching</em>, Hibernate
+        recupera un lote de instancias de entidades o colecciones en una &uacute;nica <span class="codefrag">SELECT</span>, especificando una lista
+		de <em>primary keys</em> o <em>foreign keys</em>.</li>  
+
+</ul>
+<p>Hibernate distingue tambi&eacute;n, entre otras que no vamos a citar aqu&iacute;, entre: </p>
+<ul>
+   
+<li>
+<em>Immediate fetching</em>: una asociaci&oacute;n, colecci&oacute;n o atributo es recuperada inmediatamente, cuando el 
+       propietario es cargado en memoria.</li>
+   
+<li>
+<em>Lazy collection fetching</em>: una colecci&oacute;n es recuperada cuando la aplicaci&oacute;n invoca una operaci&oacute;n
+       sobre dicha colecci&oacute;n (es la opci&oacute;n por defecto para las colecciones).</li>
+   
+<li>
+<em>Proxy fetching</em>: una asociaci&oacute;n uni-valuada es recuperada cuando se invoca a un m&eacute;todo del objeto
+       asociado que no sea el m&eacute;todo <em>getter</em> del identificador. </li>   
+
+</ul>
+<p>La lista completa de estrategias <em>fetching</em> se encuentra en el manual de referencia
+   de Hibernate, en el cap&iacute;tulo 19.</p>
+<p>Hay dos cuestiones importantes que no conviene confundir: <em>cuando</em> la asociaci&oacute;n es <em>fetched</em>,
+   y <em>c&oacute;mo</em> es <em>fetched</em> (qu&eacute; SQL es usado). El uso de una estrategia <em>fetch</em> tiene por 
+   objetivo afinar el rendimiento. 
+   Podemos utilizar <em>lazy</em> para definir un contrato sobre qu&eacute; datos
+   est&aacute;n siempre disponibles en cualquier instancia <em>detached</em> para una clase particular.</p>
+<a name="N103C6"></a><a name="Uni%C3%B3n+de+asociaciones%3A+uso+de"></a>
+<h3 class="underlined_5">Uni&oacute;n de asociaciones: uso de join</h3>
+<p>Usaremos la palabra reservada <span class="codefrag">join</span> para combinar datos de dos 
+  (o m&aacute;s) tablas. Por ejemplo, podr&iacute;amos querer combinar los 
+  datos de las tablas ARTICULO y PUJA, tal y como se muestra en la Figura 4.1</p>
+<p>
+  
+<img alt="Figura 4.1 Tablas Usuario y Puja." src="imagenes/Fig4-1.gif"> 
+</p>
+<p>La sentencia <span class="codefrag">join</span> (sobre estas dos tablas) funciona como sigue: 
+  (a) primero se obtiene el producto cartesiano de las dos tablas, (b) en segundo 
+  lugar se filtran las filas resultantes utilizando una condici&oacute;n para 
+  la uni&oacute;n. Dicha condici&oacute;n es una expresi&oacute;n booleana que 
+  se eval&uacute;a a cierto si las filas se incluyen en el resultado de la consulta.</p>
+<p>Podemos utilizar varios tipos de <span class="codefrag">join</span>, como por ejemplo <em>inner 
+  join</em>, o <em>outer join</em>. Si utilizamos <em>inner join</em>, obtendremos 
+  solamente art&iacute;culos que tengan pujas (ver Figura 4.2). Si queremos todos 
+  los art&iacute;culos, y valores nulos para las pujas que no se correspondan 
+  con ning&uacute;n art&iacute;culo, utilizaremos un <em>left outer join</em> 
+  (ver Figura 4.3). </p>
+<p>
+  
+<img alt="Figura 4.2 Tabla resultado de un inner join de Usuario y Puja." src="imagenes/Fig4-2.gif"> 
+</p>
+<p>
+  
+<img alt="Figura 4.3 Tabla resultado de un left outer join de Usuario y Puja." src="imagenes/Fig4-3.gif"> 
+</p>
+<p>En el caso de un <em>left outer join</em>, cada fila en la tabla <span class="codefrag">ARTICULO</span> (izquierda) que no satisface
+   la condici&oacute;n tambi&eacute;n se incluye en el resultado con valores nulos devueltos para todas las columnas de
+   <span class="codefrag">PUJA</span>. (Un <em>right outer join</em> podr&iacute;a recuperar todas las pujas y valores nulos si 
+   una puja no tiene un art&iacute;culo).</p>
+<p>En SQL, la condici&oacute;n para realizar una operaci&oacute;n <em>join</em> normalmente se especifica de forma
+   expl&iacute;cita (mediante la cl&aacute;usula <em>on</em>). En las consultas Hibernate, normalmente no especificaremos 
+   una condici&oacute;n 
+  para join de forma expl&iacute;cita. En su lugar, especificaremos el nombre 
+  de una asociaci&oacute;n Java del fichero de correspondencia OR. Por ejemplo, consideremos que
+  la clase <em>Articulo</em> tiene una asociaci&oacute;n denominada <span class="codefrag">pujas</span> 
+  con la clase <span class="codefrag">Puja</span>. 
+  Si hacemos referencia a dicha asociaci&oacute;n en nuestra consulta, Hibernate 
+  tiene suficiente informaci&oacute;n en el documento de correspondencia para 
+  deducir la expresi&oacute;n <span class="codefrag">join</span> adecuada.</p>
+<p>HQL proporciona cuatro formas de expresar <em>joins</em>:</p>
+<ul>
+  
+<li>Un <em>join ordinario</em> en la cl&aacute;usula <span class="codefrag">from</span>
+</li>
+  
+<li>Un <em>fetch join</em> en la cl&aacute;usula <span class="codefrag">from</span>
+</li>
+  
+<li>Un <em>theta-style join</em> en la cl&aacute;usula <span class="codefrag">where</span> (cuando
+      entre dos clases no hay definida una asociaci&oacute;n).</li>
+  
+<li>Un <em>join</em> de asociaci&oacute;n <em>impl&iacute;cito en las cl&aacute;usulas <span class="codefrag">where</span> o <span class="codefrag">select</span></em>
+</li>
+
+</ul>
+<p>Comentaremos todos ellos.</p>
+<p>
+<strong>"Recuperaci&oacute;n" de asociaciones <em>(FETCHING ASSOCIATIONS)</em></strong>
+</p>
+<p>En HQL, podemos especificar que una asociaci&oacute;n tiene que ser recuperada de forma <em>eager</em>
+   mediante un <em>outer join</em> utilizando la palabra clave <span class="codefrag">fetch</span> en la cl&aacute;usula <span class="codefrag">from</span>.
+   Por ejemplo:
+</p>
+<pre class="code">
+from Articulo ar 
+left join fetch ar.pujas 
+    where ar.descripcion like '%es%'
+</pre>
+<p>Esta consulta devuelve todos los art&iacute;culos cuya descripci&oacute;n contiene la cadena <span class="codefrag">"es"</span>, y todas sus
+   pujas, en una &uacute;nica <em>select</em>. Cuando la ejecutamos, devuelve una <strong>lista</strong> de instancias <em>Articulo</em>,
+   con sus colecciones de <span class="codefrag">pujas</span> totalmente inicializadas. A esta cl&aacute;usula la llamamos <strong>cl&aacute;usula
+   <span class="codefrag">from</span> de tipo <em>fetch join</em></strong>. El prop&oacute;sito de una <em>fetch join</em> es optimizar el
+   rendimiento: utilizamos esta sintaxis debido a que queremos una inicializaci&oacute;n <em>eager</em> de las colecciones
+   de pujas en una &uacute;nica <span class="codefrag">select</span> SQL:</p>
+<pre class="code">
+   select A.DESCRIPCION, A.FECHA_CREACION, P.PUJA_ID
+          P.CANTIDAD, P.ARTICULO_ID, P.FECHA_CREACION
+   from ARTICULO A
+   left outer join PUJA P on A.ITEM_ID = P.ARTICULO_ID
+   where A.DESCRIPCION like '%es%'
+</pre>
+<p>
+<strong>Uso de <em>ALIAS</em> con <em>JOINS</em></strong>
+</p>
+<p>Ahora supongamos, por ejemplo, que queremos recuperar todos los <em>Articulos</em> 
+  cuya descripci&oacute;n contenga las letras "es" y que tengan una 
+  puja de m&aacute;s de 100.00 euros, la sentencia HQL asociada ser&iacute;a:</p>
+<pre class="code">
+from Articulo ar 
+join ar.pujas puja
+    where ar.descripcion like '%es%'
+	and puja.cantidad &gt; 100
+</pre>
+<p>En este caso hemos utilizado la palabra reservada <span class="codefrag">join</span> (<span class="codefrag">inner
+ 	join</span>, <span class="codefrag">left outer join</span> y <span class="codefrag">right outer join</span> pueden utilizarse 
+  de forma abreviada como <span class="codefrag">join</span>, <span class="codefrag">left join</span> y <span class="codefrag">right 
+  join</span>).</p>
+<p>Esta consulta asigna el alias <span class="codefrag">ar</span> a la clase Articulo, y el alias 
+  <span class="codefrag">puja</span> a las pujas del art&iacute;culo correspondiente.</p>
+<p>La SQL resultante de la sentencia anterior es:</p>
+<pre class="code">
+SELECT A.NOMBRE, A.DESCRIPCION, A.PRECIO_INICIAL,
+   P.PUJA_ID, P.CANTIDAD, P.ARTIC_ID, P.CREADO
+   from ARTICULO A
+   inner join PUJA P on A.ARTIC_ID = P.ARTIC_ID 
+   where A.DESCRIPCION like '%es%'
+   and P.CANTIDAD &gt; 100
+</pre>
+<p>Esta consulta devuelve todas las combinaciones de <span class="codefrag">Pujas</span> asociadas 
+  y <span class="codefrag">Articulos</span>. Pero a diferencia de una <em>fetch join</em>, <strong>la colecci&oacute;n de
+  <em>pujas</em> no se inicializa en la consulta</strong>. Por lo que las combinaciones que se devuelven
+  como resultado tienen la forma de un par ordenado 
+  (<span class="codefrag">puja</span>,<span class="codefrag">articulo</span>). En el resultado de la consulta, Hibernate 
+  representa un par ordenado como un <em>array</em>. Veamos c&oacute;mo tratar 
+  el resultado con un ejemplo de c&oacute;digo:</p>
+<pre class="code">
+Query q = session.createQuery("from Articulo ar join ar.pujas puja");
+Iterator pairs = q.list().iterator();
+while (pairs.hasNext() ) {
+    Object[] pair = (Object[]) pairs.next();
+	Item item = (Item) pair[0];
+	Puja puja = (puja) pair[1];
+}    
+</pre>
+<p>En lugar de una <span class="codefrag">List</span> de <span class="codefrag">Articulos</span>, esta consulta 
+  devuelve una <span class="codefrag">List</span> de <em>arrays</em> de <span class="codefrag">Object[]</span>. 
+  En la posici&oacute;n 0 tenemos el <span class="codefrag">Articulo</span>, y en la posici&oacute;n 
+  1 la <span class="codefrag">Puja</span>. Un <span class="codefrag">Articulo</span> particular puede aparecer muchas 
+  veces para cada <span class="codefrag">Puja</span> asociada.</p>
+<p>Esto es diferente del caso de una consulta con un <em>eager fetch join</em>. La consulta
+   con el <em>fetch join</em> devuelve una <em>List</em> de objetos <em>Articulo</em>, con
+   las colecciones de pujas inicializadas.</p>
+<p>Si no queremos los objetos <em>Puja</em> en el resultado de la consulta, podemos especificar
+   una cl&aacute;usula <strong><span class="codefrag">select</span></strong> en HQL.</p>
+<p>
+<strong>Uso de <em>SELECT</em></strong>
+</p>
+<p>Si no queremos los objetos <em>Puja</em> en el resultado de la consulta, podemos especificar
+   una cl&aacute;usula <strong><span class="codefrag">select</span></strong> en HQL. Esta cl&aacute;usula 
+  s&oacute;lo debemos utilizarla cuando no estemos satisfechos con el resultado 
+  que se devuelve por defecto. Usaremos el alias en una cl&aacute;usula <span class="codefrag">select</span> 
+  para recuperar solamente los objetos seleccionados:</p>
+<pre class="code">
+select ar
+from Articulo ar 
+join ar.pujas puja
+    where ar.descripcion like '%es%'
+	and puja.cantidad &gt; 100
+</pre>
+<p>En este caso, el resultado de la consulta contiene solamente <span class="codefrag">Articulo</span>s, 
+  y debido a que se trata de un <em>inner join</em>, solamente <span class="codefrag">Articulo</span>s 
+  que tienen <span class="codefrag">Puja</span>s:</p>
+<pre class="code">
+Query q = session.createQuery("from Articulo a join a.pujas p");
+Iterator items = q.list().iterator();
+while (items.hasNext() ) {
+	Item item = (Item) items.next();
+}    
+</pre>
+<p>
+<strong>Uso de <em>theta-style JOIN</em> </strong>
+</p>
+<p>Un producto cartesiano nos permite recuperar todas las posibles combinaciones de instancias de dos
+   o m&aacute;s clases.</p>
+<p>Si utiliz&aacute;semos SQL, un <em>theta-style join</em> es un producto cartesiano, junto con una condici&oacute;n
+   para la operaci&oacute;n <em>join</em> en la cl&aacute;usula <em>where</em>, la cual se aplica a dicho producto
+   cartesiano para restringir el resultado.</p>
+<p>En HQL, la sintaxis <em>theta-sytle</em> es &uacute;til cuando la condici&oacute;n de la operaci&oacute;n <em>join</em>
+   no es una clave ajena mapeada como una asociaci&oacute;n entre clases. Por ejemplo, supongamos que almacenamos
+   los nombres de usuarios (clase <em>User</em>) en registros de <em>log</em> en vez de mapear una
+   asociaci&oacute;n desde <em>LogRecord</em> hacia <em>User</em>. Estas clases no "conocen" nada una de la otra,
+   debido a que no est&aacute;n asociadas. Podemos recuperar todos los usuarios y todos los registros de <em>log</em>
+   con el siguiente estilo <em>theta join</em>:</p>
+<pre class="code">
+   from User user, LogRecord log where user.username = log.username
+</pre>
+<p>La condici&oacute;n de <em>join</em> aqu&iacute; es <em>username</em>, presentado como un atributo en ambas clases.
+   Si ambas entidades tienen el mismo <em>username</em>, &eacute;stas se "unir&aacute;n" (mediante una operaci&oacute;n <em>inner join</em>)
+   en el resultado de la consulta. Dicho resultado estar&aacute; formado por <strong>pares ordenados</strong>:
+   </p>
+<pre class="code">
+  Iterator i = session.createQuery(
+                "from User user, LogRecord log " +
+				"where user.username = log.username").list.iterator();
+  while (i.hasNext() ) {
+     Object[] pair = (Object[]) i.next();
+	 User user = (User) pair[0];
+	 LogRecord log = (LogRecord) pair[1];
+  }				
+				
+</pre>
+<p>
+<strong>Uso de <em>JOIN</em> IMPL&Iacute;CITO</strong>
+</p>
+<p>Como hemos visto, se pueden utilizar nombres de propiedades, como por ejemplo <span class="codefrag">puja.cantidad</span>
+   y <span class="codefrag">articulo.descripcion</span> en nuestras consultas HQL. HQL soporta expresiones con m&uacute;ltiples
+   propiedades por dos razones:</p>
+<ul>
+  
+<li>Para consultar componentes.</li>
+  
+<li>Para Expresar <em>joins</em> de asociaciones impl&iacute;citos.</li>
+
+</ul>
+<p>Un ejemplo del primer uso es el siguiente:</p>
+<pre class="code">
+   from Usuario u where u.direccion.ciudad = 'Alicante'
+</pre>
+<p>En este caso estamos expresando los elementos del componente mapeado de tipo <em>Direccion</em> con 
+   notaci&oacute;n de punto.</p>
+<p>Un ejemplo del segundo uso, el de utilizar un <em>join</em> de una asociaci&oacute;n de forma impl&iacute;cita, 
+   podr&iacute;a ser: </p>
+<pre class="code">
+   from Puja puja where puja.articulo.descripcion like '%es%'
+</pre>
+<p>Esto provoca un <em>join</em> impl&iacute;cito sobre la asociaci&oacute;n <em>many-to-one</em> desde <em>Puja</em> 
+   a <em>Articulo</em>. Los <em>joins</em> impl&iacute;citos se utilizan solamente con asociaciones <em>many-to-one</em>
+   o <em>one-to-one</em>.</p>
+<p>
+<strong>Comparaci&oacute;n de identificadores</strong>
+</p>
+<p>Es extremadamente usual realizar <em>queries</em> que comparan el valor de una clave primaria o clave ajena
+   con otros par&aacute;metros de consulta u otros valores de claves primarias o ajenas. HQL soporta lo siguiente:</p>
+<pre class="code">
+  from Item i, User u
+    where i.seller = u and u.username = 'steve'
+</pre>
+<p>En esta <em>query</em> (que utiliza un <em>theta-style join</em>, <span class="codefrag">i.seller</span> hace referencia 
+   a la clave ajena de la tabla <span class="codefrag">USER</span>
+   en la tabla <span class="codefrag">ITEM</span> (sobre la columna <span class="codefrag">SELLER_ID</span>, y <span class="codefrag">user&gt;</span> hace referencia
+   a la clave primaria de la tabla <span class="codefrag">USER</span> (sobre la columna USER_ID). La siguiente <em>query</em>
+   es equivalente a la anterior, pero utiliza un estilo mucho m&aacute;s adecuado:</p>
+<pre class="code">
+  from Item i join i.seller u
+      where u.username = 'steve'
+</pre>
+<p>Por otro lado, el siguiente <em>theta-style join</em> no puede ser re-expresado utilzando una operaci&oacute;n <em>join</em>
+   con una cl&aacute;usula <em>from</em> como en el caso anterior:</p>
+<pre class="code">
+  from Item i, Bid b
+     where i.seller = b.bidder
+</pre>
+<p>La raz&oacute;n es que <span class="codefrag">i.seller</span> y <span class="codefrag">b.bidder</span> son claves ajenas en la tabla <span class="codefrag">USER</span>.</p>
+<p>De forma alternativa, a veces podemos preferir expresar este tipo de <em>queries</em> en t&eacute;rminos de valores de
+   identificadores en vez de referencias a objetos. Las siguientes <em>queries</em> son equivalentes a las anteriores:</p>
+<pre class="code">
+  from Item i, User u
+     where i.seller.id = u.id and u.username = 'steve'
+  from Item i, Bid b
+     where i.seller.id= b.bidder.id	 
+</pre>
+</div>
+
+
+<a name="N10643"></a><a name="SQL+nativo"></a>
+<h2 class="underlined_10">SQL nativo</h2>
+<div class="section">
+<p>Podemos expresar consultas tambi&eacute;n en el dialecto SQL nativo de la base de datos que utilicemos. Esto es &uacute;til
+   cuando queramos utilizar caracter&iacute;sticas espec&iacute;ficas (como por ejemplo la palabra reservada <span class="codefrag">CONNECT</span>
+   en Oracle). Tambi&eacute;n proporciona el camino para una migraci&oacute;n "limpia" directamente desde una aplicaci&oacute;n 
+   basada en SQL/JDBH hacia Hibernate.</p>
+<p>Hibernate 3 nos permite especificar sentencias SQL (incluyendo procedimientos almacenados) para todas las operaciones
+   de crear (<em>create</em>), actualizar (<em>update</em>), borrar (<em>delete</em>) y cargar (<em>load</em>).</p>
+<a name="N1065E"></a><a name="Uso+de"></a>
+<h3 class="underlined_5">Uso de SQLQuery</h3>
+<p>La ejecuci&oacute;n de consultas nativas SQL se controlan mediante la interfaz <em>SQLQuery</em>, la cual se obtiene
+   llamando a <span class="codefrag">Session.createSQLQuery()</span>. Por ejemplo:</p>
+<pre class="code">
+List articulos = sess
+                    .createSQLQuery("select {art.*} from ARTICULOS art "+
+					 "were NOMBRE like 'Portatil%'")
+                    .addEntity("art",Articulo.class)
+					.list();
+</pre>
+<p>El m&eacute;todo <span class="codefrag">addEntity()</span> asocia el alias SQL de la tabla con la clase entidad devuelta, y determina el 
+   contenido del <em>result set</em> de la consulta.</p>
+<p>El m&eacute;todo <span class="codefrag">addJoin()</span> puede utilizarse para cargar en memoria las asociaciones o colecciones de las entitdades. </p>
+<pre class="code">
+List articulos = sess.createSQLQuery("select {art.*}, {pujas.*} from ARTICULO art, PUJA pujas
+                                        where pujas.ARTICULO = art.ID_ARTICULO")
+                     .addEntity("art",Articulo.class)
+					 .addJoin("pujas", "art.pujas")
+					 .list();
+</pre>
+<p>Algunas consultas SQL pueden devolver tuplas de entidades (como es habitual, Hibernate representa una tupla
+   como una instancia de <span class="codefrag">Object[]</span>.</p>
+<p>Una SQL nativa podr&iacute;a devolver un valor escalar (es decir, un valor sin identidad en la base de datos), o una 
+combinaci&oacute;n de escaleres y entidades:</p>
+<pre class="code">
+  Double max = (Double) sess.createSQLQuery("select max(art.PESO) as "+
+                               "pesoMaximo from ARTICULO art")
+              .addScalar("pesoMaximo",Hibernate.DOUBLE);
+</pre>
+<a name="N10694"></a><a name="Alias+y+referencias+a+propiedades"></a>
+<h3 class="underlined_5">Alias y referencias a propiedades</h3>
+<p>La notaci&oacute;n {art.*} que hemos utilizado en la secci&oacute;n anterior es una abreviaci&oacute;n de "todas las propiedades". 
+   De forma alternativa, podemos listar las columnas de forma expl&iacute;cita, pero incluso en este caso dejamos que Hibernate
+   asigne los alias para las columnas SQL para cada propiedad. El lugar (<em>placeholder </em>) destinado a almacenar un alias para la columna
+   es el nombre de la propiedad cualificado por el alias de la tabla. En el siguiente ejemplo, recuperamos propiedades de objetos
+   <em>Articulo</em> cuyo peso sea igual 20.</p>
+<pre class="code">   
+    String sql = "select art.ARTICULO_ID as {art.id}, " +
+                      "art.FECHA_COMPRA as {art.fechaCompra}" +
+                      "from ARTICULO art where {art.peso} = :pesoArt";
+    List articulos = sess.createSQLQuery(sql)
+                         .addEntity("art", Articulo.class)
+                         .setLong("pesoArt", 20)
+                         .list();
+</pre>
+<p>El <em>placeholder</em> <span class="codefrag">art.fechaCompra</span> es reemplazado por el nombre de la columna resultante del 
+   mapeado de la propiedad <em>fechaCompra</em> para la entidad <em>Articulo</em>. 
+    </p>
+<p>Algunas posibilidades del uso de alias para las propiedades son:</p>
+<ul>
+  
+<li>
+<strong><span class="codefrag">{[nombreAlias].[nombrePropiedad]}</span></strong>: para una propiedad sencilla</li>
+  
+<li>
+<strong><span class="codefrag">{[nombreAlias].[nombreComponente].[nombrePropiedad}</span></strong>: para una propiedad compuesta</li>
+  
+<li>
+<strong><span class="codefrag">{[nombreAlias].*}</span></strong>: para todas las propiedades de una <em>entity</em>
+</li>
+  
+<li>
+<strong><span class="codefrag">{[nombreAlias].element}</span></strong>: para el elemento de una colecci&oacute;n</li>  
+  
+<li>
+<strong><span class="codefrag">{[nombreAlias].element.[nombrePropiedad}</span></strong>: para una propiedad de un elemento de una colecci&oacute;n</li>
+  
+<li>
+<strong><span class="codefrag">{[nombreAlias].element.*}</span></strong>: para todas las propiedades de un elemento en una colecci&oacute;n</li>
+
+</ul>
+<a name="N106E3"></a><a name="Consultas+SQL+con+nombre"></a>
+<h3 class="underlined_5">Consultas SQL con nombre</h3>
+<p>Las consultas con nombre no tienen por qu&eacute; ser <em>strings</em> HQL; 
+  podr&iacute;an ser consultas nativas SQL (y el c&oacute;digo Java no notar&iacute;a 
+  la diferencia):</p>
+<p>Se pueden definir consultas SQL con nombre en el fichero de mapeado e invocarlas de la misma
+   forma que una consulta HQL (el c&oacute;digo Java no notar&iacute;a la diferencia). Por ejemplo:</p>
+<pre class="code">
+&lt;sql-query name="personas"&gt;
+    SELECT person.NAME,
+    person.AGE,
+    person.SEX 
+    FROM PERSON person
+    WHERE person.NAME LIKE :namePattern
+&lt;/sql-query&gt;
+
+&lt;sql-query name="findArticulosByDescripcion"&gt;
+         select {a.*} from ARTICULO where DESCRIPCION like :desc 
+	&lt;return alias="a" class="Articulo"/&gt;
+&lt;/sql-query&gt;
+
+</pre>
+<p>Y el c&oacute;digo Java asociado es id&eacute;ntico al c&oacute;digo Java que utilizar&iacute;amos para una consulta HQL con nombre:</p>
+<pre class="code"> 
+List articulos = session.getNamedQuery("findArticulosByDescripcion") 
+                .setString( "desc", descripcion) 
+	            .list(); 
+	   
+List compradores = sess.getNamedQuery("personas")
+               .setString("namePattern", "David")
+               .setMaxResults(50)
+               .list();
+</pre>
+<div class="frame note">
+<div class="label">Consejo:</div>
+<div class="content">Puesto que el c&oacute;digo SQL nativo est&aacute; estrechamente relacionado con los mapeados reales de las tablas y
+   columnas, es muy recomendable que definamos todas las consultas SQL nativas en el documento de mapeado
+   en lugar de hacerlo en el c&oacute;digo Java.</div>
+</div>
+</div>
+
+
+<p class="pageBreakAfter"></p>
+
+</div>
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+        Copyright &copy;
+         2006-2007 Depto. CCIA</div>
+</div>
+</body>
+</html>

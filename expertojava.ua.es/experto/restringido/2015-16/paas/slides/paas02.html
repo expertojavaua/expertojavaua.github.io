@@ -1,0 +1,771 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Administración de recursos en WildFly</title>
+
+		<meta name="description" content="Experto en desarrollo de aplicaciones web con JavaEE y Javascript">
+		<meta name="author" content="José Luis Zamora Sánchez">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/experto.css" id="theme">
+		
+    	<!-- coloreado de sintaxis con highlight.js -->
+    	<link rel="stylesheet" type="text/css" href="lib/css/github.css">
+
+		<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+		<script>
+			if( window.location.search.match( /print-pdf/gi ) ) {
+				var link = document.createElement( 'link' );
+				link.rel = 'stylesheet';
+				link.type = 'text/css';
+				link.href = 'css/print/pdf.css';
+				document.getElementsByTagName( 'head' )[0].appendChild( link );
+			}
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+		
+		<style type="text/css">.slides .header{
+			position:absolute;
+			top: -50%;
+			left: -50%;
+			width: 100%;
+			display: table;
+		}
+
+		.slides .logo {
+			display: table-cell;
+			vertical-align: middle;
+		}
+
+		.slides .bar {
+			background-color: rgb(18,64,128);
+			font-size: 20px;
+			padding-top: 5px;
+			padding-bottom: 5px;
+			color: white;
+			border-top-left-radius:10px;
+			border-bottom-left-radius:10px;
+			display: table-cell;
+			vertical-align: middle;
+			text-align: center;
+		}
+
+		.slides .footer{
+			position:absolute;
+			bottom: 50%;
+			left: -50%;
+			width: 100%;
+			font-size: 15px;
+			color: gray;
+			display: table;
+		}  
+		.slides .left {
+			display: table-cell;
+			text-align: left;
+		}
+		.slides .right {
+			display: table-cell;
+			text-align: right;
+		}
+		.slides .center {
+			display: table-cell;
+			text-align: center;
+		}
+
+</style>
+
+	</head>
+
+<body>
+	<div class="reveal">
+	<div class="slides">
+		<!-- todo lo que se ponga aqui (que no sea un <section>) aparecerá
+		en todas las diapositivas -->
+		<div class="header">
+			<div class="logo">
+			 <img src="css/images/logo_small.png">
+			</div>
+			<div class="bar">Experto en desarrollo de aplicaciones web con JavaEE y Javascript</div>
+		</div>
+		<div class="footer">
+			<div class="left">
+				Servidores Web y PaaS
+			</div>
+			<div class="center">
+				&copy; 2015-16 Dpto. Ciencia de la Computación e I.A.
+			</div>
+			<div class="right">
+				Sesión 2
+			</div>	
+		</div>	
+		<!-- Cada <section> es una slide -->	
+		
+		<section>
+			<!-- al poner el <h1> automáticamente aparece el logo del curso-->
+			<h1>Servidores Web y PaaS</h1>
+			<h2>Sesión 2: Administración de recursos en WildFly</h2>
+		</section>
+		
+		<section>
+			<h2>Índice</h2>
+			<ul>
+				<li>Bootstrap</li>
+				<li>Estructura de los ficheros de configuración</li>
+				<li>Configuración de recursos</li>
+				<ul>
+					<li>Datasources</li>
+					<li>Contenedor de EJB's</li>
+				</ul>
+				<li>Descriptores de despliegue</li>
+				<li>Classloading</li>
+				<li>Compresión GZIP</li>				
+			</ul>
+		</section>
+		
+		<section>			
+			<h2>Bootstrap</h2>
+			<p align=left>$JBOSS_HOME/bin/standalone.conf</p>
+			<pre><code   class="bash" data-trim  style="font-size: 18px;">
+	JAVA_OPTS="-XX:MaxPermSize=256m -Xms64m -Xmx512m"
+			</code></pre>			
+			<p align=left>JDK 8</p>
+			<pre><code   class="bash" data-trim  style="font-size: 18px;">
+	JAVA_OPTS="-XX:MaxMetaspaceSize=256m -Xms64m -Xmx512m"
+			</code></pre>	
+		</section>
+		
+		<section>			
+			<br/>		
+			<h2>Ficheros de configuración</h2>			
+			<ul>
+				<li>Para cada modo de inicio existen varias configuraciones predefinidas</li>
+				<li>Se almacenan en ficheros XML dentro de la carpeta de la modalidad correspondiente</li>
+				<li>Modalidad standalone:</li>
+				<ul>
+					<li><em>standalone.xml</em>  y <em>standalone-full.xml</em></li>
+					<li><em>standalone-ha.xml</em> y <em>standalone-ha-full.xml</em></li>					
+				</ul>
+			</ul>
+			
+			<pre><code   class="bash" data-trim  style="font-size: 18px;">
+./standalone.sh -c standalone-full.xml
+			</code></pre>	
+		</section>
+		
+		<section>			
+			<br/>		
+			<h2>Estructura de un fichero de configuración</h2>			
+			<p  align=center><img style="border: 0;" height="400" src="imagenes/paas02/EstructuraCfg.png"></p>			
+		</section>
+
+		<section>
+		<section>			
+			<br/>		
+			<h2>Profiles</h2>			
+			<ul>
+				<li>Son configuración del servidor y sus subsistemas</li>
+				<li>Múltiples profiles por tipo de servidor en <em>managed domain</em>.</li>				
+			</ul>			
+			<pre><code   class="xml" data-trim  style="font-size: 18px;">
+<profile>
+...
+<subsystem xmlns="urn:jboss:domain:deployment-scanner:2.0">
+	<deployment-scanner
+			path="deployments" relative-to="jboss.server.base.dir" scan-interval="5000"/>
+</subsystem>			
+  ...
+</profile>
+			</code></pre>			
+		</section>
+			<section>			
+				<br/>		
+				<h2>Estructura de un fichero de configuración</h2>			
+				<p  align=center><img style="border: 0;" height="400" src="imagenes/paas02/EstructuraCfg.png"></p>			
+			</section>
+		</section>
+		
+		<section>
+		<section>			
+			<br/>		
+			<h2>Extensions</h2>
+			<ul>
+				<li>La mayor parte de las funcionalidades de WildFly se configuran como extensiones que implementan especificaciones de Java EE.</li>				
+			</ul>			
+			<pre><code   class="xml" data-trim  style="font-size: 18px;">
+<extensions>
+    [...]
+    &ltextension module="org.jboss.as.transactions"/&gt
+    &ltextension module="org.jboss.as.web" /&gt
+    &ltextension module="org.jboss.as.webservices" /&gt
+    &ltextension module="org.jboss.as.weld"/&gt
+</extensions>
+			</code></pre>						
+		</section>
+			<section>			
+				<br/>		
+				<h2>Estructura de un fichero de configuración</h2>			
+				<p  align=center><img style="border: 0;" height="400" src="imagenes/paas02/EstructuraCfg.png"></p>			
+			</section>
+		</section>
+				
+		<section>	
+		<section>
+			<br/>		
+			<h2>Paths</h2>
+			<ul>
+				<li>Son rutas a directorios o ficheros de la máquina a las que se les asocia un nombre lógico.</li>				
+				<li>Pueden ser absolutas o relativas</li>
+			</ul>			
+			<pre><code   class="xml" data-trim  style="font-size: 18px;">
+&ltpath name="log.dir" path="/home/wildfly/logs" /&gt  <!-- Ruta absoluta -->
+&ltfile relative-to="log.dir" path="server.log"/&gt   <!-- Ruta relativa a log.dir -->
+
+			</code></pre>								
+		</section>
+		<section>			
+				<br/>		
+				<h2>Estructura de un fichero de configuración</h2>			
+				<p  align=center><img style="border: 0;" height="400" src="imagenes/paas02/EstructuraCfg.png"></p>			
+			</section>
+		</section>
+		
+		<section>
+		<section>			
+			<br/>		
+			<h2>Interfaces</h2>
+			<ul>
+				<li>Nombre lógico asociado a un nombre de máquina/dirección IP a través de la cual podemos acceder a nuestro servidor. Por defecto:</li>
+				<ul>
+					<li>management La dirección que se utilizará para atender peticiones de administración.</li>
+					<li>public Esta es la dirección de servicio que atenderá el acceso a las aplicaciones.</li>
+					<li>unsecure Esta es la dirección que se utilizará para la invocación de objetos remotos IIOP.</li>
+				</ul>
+			</ul>			
+			<pre><code   class="xml" data-trim  style="font-size: 18px;">
+<interface name="management">
+    &ltinet-address value="${jboss.bind.address.management:127.0.0.1}"/&gt
+</interface>
+			</code></pre>						
+		</section>
+			<section>			
+				<br/>		
+				<h2>Estructura de un fichero de configuración</h2>			
+				<p  align=center><img style="border: 0;" height="400" src="imagenes/paas02/EstructuraCfg.png"></p>			
+			</section>
+		</section>
+		
+		<section>
+		<section>			
+			<br/>		
+			<h2>Interfaces</h2>
+			<pre><code   class="xml" data-trim  style="font-size: 18px;">
+<interface name="public">
+    &ltinet-address value="${jboss.bind.address:127.0.0.1}"/&gt
+</interface>
+<interface name="unsecure">
+    &ltinet-address value="${jboss.bind.address.unsecure:127.0.0.1}"/&gt
+</interface>
+			</code></pre>						
+		
+		<p align=left> Sobreescribir variables:</p>
+		<pre><code   class="bash" data-trim  style="font-size: 18px;">
+$ ./standalone.sh -Djboss.bind.address=192.168.1.100	
+			</code></pre>						
+		</section>
+			<section>			
+				<br/>		
+				<h2>Estructura de un fichero de configuración</h2>			
+				<p  align=center><img style="border: 0;" height="400" src="imagenes/paas02/EstructuraCfg.png"></p>			
+			</section>
+		</section>
+
+		<section>
+		<section>
+			<h2>socket bindings group</h2>
+			<ul>
+				<li>Es la definición de un punto de escucha y se compone de una interfaz y un puerto de red.</li>				
+				<li>El parámetro port-offset permite variar automáticamente el puerto si se desplieguan múltiples instancias.</li>
+			</ul>
+<pre><code   class="xml" data-trim  style="font-size: 18px;">
+<socket-binding-group name="standard-sockets" default-interface="public" port-offset="${jboss.socket.binding.port-offset:0}">
+    &ltsocket-binding name="management-http" interface="management" port="${jboss.management.http.port:9990}"/&gt
+    &ltsocket-binding name="management-https" interface="management" port="${jboss.management.https.port:9993}"/&gt
+    &ltsocket-binding name="ajp" port="${jboss.ajp.port:8009}"/&gt
+    &ltsocket-binding name="http" port="${jboss.http.port:8080}"/&gt
+    &ltsocket-binding name="https" port="${jboss.https.port:8443}"/&gt
+</socket-binding-group>			</code></pre>			
+		</section>
+			<section>			
+				<br/>		
+				<h2>Estructura de un fichero de configuración</h2>			
+				<p  align=center><img style="border: 0;" height="400" src="imagenes/paas02/EstructuraCfg.png"></p>			
+			</section>
+		</section>
+		
+		<section>
+		<section>
+			<h2>System properties</h2>
+			<ul>
+				<li>Tres formas:</li>				
+				<ul>
+					<li><p>En el fichero de configuración:</p>
+<pre><code   class="xml" data-trim  style="font-size: 18px;">
+<system-properties>  
+         &ltproperty name="x" value="/opt/db/common"/&gt
+    </system-properties>
+</code></pre>								
+					</li>					
+					<li>En el script de arranque standalone.sh/domain.sh</li>
+					<li><p>Por línea de comandos, parámetro -D</p>
+					<pre><code   class="bash" data-trim  style="font-size: 18px;">
+./standalone.sh -Dpropiedad=true					
+</code></pre>			
+					</li>									
+				</ul>				
+			</ul>
+		</section>
+			<section>			
+				<br/>		
+				<h2>Estructura de un fichero de configuración</h2>			
+				<p  align=center><img style="border: 0;" height="400" src="imagenes/paas02/EstructuraCfg.png"></p>			
+			</section>
+		</section>
+		
+		<section>
+			<h2>» Edición de los ficheros de configuración</h2>
+		</section>
+		
+		<section>
+			<br>
+			<h2>Edición desde las herramientas de administración</h2>
+			<ul>
+				<li>Backup de configuraciones</li>
+			</ul>
+			<p  align=center><img style="border: 0;" height="400" src="imagenes/paas02/revisiones.png"></p>			
+		</section>
+		
+		<section>
+			<br>
+			<h2>Edición desde CLI</h2>
+			<ul>
+				<li>Navegación por directorios con autocompletar.</li>
+				<li>Recargar configuración en caliente con <em>reload</em></li>
+			</ul>
+			<p  align=center><img style="border: 0;" height="400" src="imagenes/paas02/ConfigTexto.png"></p>			
+		</section>
+		
+		<section>
+			<br>
+			<h2>Edición desde consola Web</h2>
+			<ul>
+				<li>Aplicación Web ligera autogenerada a partir de la propia configuración.</li>				
+			</ul>
+			<p  align=center><img style="border: 0;" height="400" src="imagenes/paas02/ConfigConsola.png"></p>			
+		</section>
+		
+		<section>
+			<br>
+			<h2>Edición desde consola Web</h2>
+			<ul>
+				<li>Notificación de cambios</li>				
+			</ul>
+			<p  align=center><img style="border: 0;" src="imagenes/paas02/Avisos.png"></p>			
+		</section>
+		
+		<section>
+			<br>
+			<h2>Edición manual de los ficheros</h2>
+			<br>
+			<p class="fragment"> Con mucho cuidado... </p>
+		</section>
+		
+		<section>
+			<h2>» Configuración de recursos</h2>			
+		</section>
+		
+		<section>
+			<h2>Acceso a base de datos</h2>			
+			<ul>
+				<li>Los pool de conexiones permiten acelerar la conexión a base de datos de las aplicaciones.</li>
+				<li>Propiedades más importantes:</li>
+				<ul>
+					<li>Min Pool Size/Max Pool Size</li>
+					<li>Strict Minimum</li>
+					<li>Prefill Enabled</li>
+					<li>Flush Strategy</li>
+					<li>Idle Timeout</li>					
+				</ul>				
+			</ul>
+		</section>
+		<section>
+			<br>
+			<p align=left>Instalación del driver MySQL como módulo</p>
+			<ol>
+				<li><p>Crear directorio del módulo</p>
+				<pre><code   class="bash" data-trim  style="font-size: 18px;">
+					JBOSS_HOME/modules/system/layers/base/com/mysql/driver/main
+				</code></pre>							
+				</li>
+				<li>Copiar el fichero .jar a la carpeta del módulo</li>
+				<li><p>Crear el descriptor <em>module.xml</em> en la carpeta del módulo</p>
+					<pre><code   class="bash" data-trim  style="font-size: 18px;">
+<module xmlns="urn:jboss:module:1.3" name="com.mysql.driver">
+	<resources>
+		&ltresource-root path="mysql-connector-java-5.1.33.jar"/&gt
+	</resources>
+	<dependencies>
+		&ltmodule name="javax.api"/&gt
+		&ltmodule name="javax.transaction.api"/&gt
+	</dependencies>
+</module>
+</code></pre>	
+				</li>	
+			</ol>
+		</section>
+		
+		<section>
+			<br>						
+			<p align=left>4. Añadir el driver al fichero standalone.xml subsistema <em>datasources</em></p>
+			<pre><code   class="bash" data-trim  style="font-size: 18px;">
+<driver>				
+	&ltdriver name="mysql" module="com.mysql.driver"/&gt
+	&ltdriver-class&gtcom.mysql.jdbc.Driver&lt/driver-class&gt
+</driver>
+			</code></pre>
+			<p align=left class="fragment">Alternativa: Copiar el driver a la carpeta deployments. WildFly le asignará un nombre en el arranque del servidor.</p>				
+		</section>
+		
+		<section>
+			<br>
+			<h2> Creación de un datasource (I)</h2>
+			<p  align=center><img style="border: 0;" src="imagenes/paas02/ds1.png"></p>			
+		</section>
+		
+		<section>
+			<br>
+			<h2> Creación de un datasource (II)</h2>
+			<p  align=center><img style="border: 0;" src="imagenes/paas02/ds2.png"></p>
+		</section>
+		
+		<section>
+			<br>
+			<h2> Creación de un datasource (III)</h2>
+			<p  align=center><img style="border: 0;" src="imagenes/paas02/ds3.png"></p>
+		</section>
+		
+		<section>
+			<br>
+			<h2> Creación de un datasource (IV)</h2>
+			<p  align=center><img style="border: 0;" src="imagenes/paas02/ds4.png"></p>
+		</section>
+		
+		<section>
+			<br>
+			<h2>Desplegar un datasource como deployment</h2>
+			<ul>
+				<li>Crear un descriptor <em>[nombre]-ds.xml con uno o varios datasources.</em></li>
+				<li>Misma estructura que el subsistema datasources.</li>
+				<li>No recomendado en producción (no se puede administrar).</li>
+			</ul>
+		</section>
+				
+		<section>			
+			<h2>Desplegar un datasource como deployment</h2>
+			<pre><code   class="xml" data-trim  style="font-size: 18px;">		
+		&lt?xml version="1.0" encoding="UTF-8"?&gt
+<datasources>
+	<datasource jta="false" jndi-name="java:jboss/datasources/portalDS" pool-name="portalDS" enabled="true" use-ccm="false">
+            <connection-url>jdbc:mysql://localhost:3306/experto</connection-url>
+            <driver-class>com.mysql.jdbc.Driver</driver-class>
+            <driver>mysql-connector-java-5.1.31-bin.jar_com.mysql.jdbc.Driver_5_1</driver>
+            <security>
+                <user-name>root</user-name>
+                <password>expertojavajs</password>
+            </security>
+            <validation>
+                <validate-on-match>false</validate-on-match>
+                <background-validation>false</background-validation>
+            </validation>
+            <statement>
+                <share-prepared-statements>false</share-prepared-statements>
+            </statement>
+        </datasource>
+</datasources>
+			</code></pre>		
+		</section>		
+		
+		<section>
+			<br>
+			<h2>Incluir datasources en aplicaciones</h2>
+			<table>
+				<thead>
+					<tr>
+						<th>Tipo aplicación</th>
+						<th>Ubicación</th>						
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>Web App (.war)</td>
+						<td>WEB-INF</td>						
+					<tr>
+					<tr>
+						<td>EJB (.jar)</td>
+						<td>META-INF</td>					
+					<tr>
+					<tr>
+						<td>Enterprise (.ear)</td>
+						<td>META-INF (fichero principal)</td>						
+					<tr>
+				</tbody>
+			</table>
+		</section>
+		
+		<section>
+			<br>
+			<h2>Solución a las password en plano</h2>
+			<ol>
+				<li><p>Encriptar la password mediante librería PicketBox</p>
+<pre><code class="bash" data-trim  style="font-size: 18px;">
+$ cd /usr/local/wildfly-8.2.1.Final/modules/system/layers/base/org/picketbox/main
+$ java -classpath picketbox-4.0.21.Final.jar org.picketbox.datasource.security.SecureIdentityLoginModule expertojavajs
+
+Encoded password: -46cea3eadea6ff81c9c59e773c1cfb95
+</code></pre>	
+				</li>
+				<li><p>Definir security-domain asociado a las credenciales en <em>standalone.xml</em></p>
+<pre><code class="xml" data-trim  style="font-size: 18px;">			
+<security-domain name="ds-encrypted" cache-type="default">
+            <authentication>
+                <login-module code="org.picketbox.datasource.security.SecureIdentityLoginModule"
+			flag="required">
+                  &ltmodule-option name="username" value="root"/&gt
+		  &ltmodule-option name="password" value="-46cea3eadea6ff81c9c59e773c1cfb95"/&gt
+                &ltmodule-option name="managedConnectionFactoryName"
+			value="jboss.jca:service=LocalTxCM,name=portalDS"/&gt
+            </login-module>
+            </authentication>
+        </security-domain>				
+</code></pre>					
+				</li>
+		</section>
+				
+		<section>
+			<br>
+			<h2>Solución a las password en plano</h2>			
+			
+			<p align=left>3. Asociar el security-domain al datasource</p>
+<pre><code class="xml" data-trim  style="font-size: 18px;">
+<security>
+	<security-domain>ds-encrypted</security-domain>
+</security>
+</code></pre>					
+		</section>
+		
+		<section>
+				<h2>Configuración del contenedor de EJB's</h2>
+				<p align=left>Implementan lógica de negocio en aplicaciones Java EE </p>
+				<p align=left>El servidor de aplicaciones maximiza el rendimiento de estos componentes.</p>
+				<p align=left>Tipos:</p>
+				<ul>
+					<li>Stateless Session Beans</li>
+					<li>Stateful Session Beans</li>
+					<li>Message Driven Beans </li>
+				</ul>
+				
+				<p align=left> <br>SFSB y SLSB instanciables internamente desde la aplicación o externamente mediante Remoting (RMI)</p>				
+		</section>
+		
+		<section>
+			<h2>Pool de EJB's</h2>
+			<ul>
+				<li>Los EJB's tienen un ciclo de vida dentro del servidor de aplicaciones.</li>
+				<li>WildFly permite mantener un número de instancias de un objeto para adaptarse a la carga de trabajo.</li>
+				<li>El mecanimo de pooling no aplica a los stateful session beans.</li>
+				<li>Pools por defecto: <em>mdb-strict-max-pool</em> y <em>slsb-strict-max-pool</em> (deshabilitado por defecto)</li>
+			</ul>
+		</section>			
+		
+		<section>
+			<br>
+			<h2>Activación del pool <em>slsb-strict-max-pool </em></h2>
+<pre><code class="xml" data-trim  style="font-size: 18px;">			
+			<subsystem xmlns="urn:jboss:domain:ejb3:2.0">
+ <session-bean>
+  <stateless>	<!-- Añadir tag stateless-->
+   &ltbean-instance-pool-ref pool-name="slsb-strict-max-pool"/&gt
+  </stateless>
+ </code></pre>			
+			<p  align=center><img style="border: 0;" height="320" src="imagenes/paas02/ejbpool.png"></p>			
+		</section>			
+		
+		<section>			
+			<h2>Definir un pool personalizado</h2>
+			<p align=left>Mediante CLI, crear un pool de hasta 5 objetos</p>
+<pre><code class="bash" data-trim  style="font-size: 18px;">			
+[standalone@localhost:9990 /] /subsystem=ejb3/strict-max-bean-instance-pool=nuevo-pool:add(max-pool-size=5,timeout-unit=SECONDS,timeout=30)			
+</code></pre>
+			<p align=left> El resultado:</p>
+<pre><code class="xml" data-trim  style="font-size: 18px;">			
+<subsystem xmlns="urn:jboss:domain:ejb3:2.0">
+ ....
+  <pools>
+   <bean-instance-pools>
+    &ltstrict-max-pool name="nuevo-pool" max-pool-size="5" instance-acquisition-timeout="30" instance-acquisition-timeout-unit="SECONDS"/&gt
+....
+</code></pre>			
+		</section>
+		
+		<section>
+			<h2>Definir un pool personalizado</h2>
+			<ul>
+				<li>Asociar una definición de pool a un EJB:</li>
+			</ul>
+<pre><code class="java" data-trim  style="font-size: 18px;">
+@Stateless
+@Pool (value="nuevo-pool")
+public class Ranking implements RankingLocal 
+...
+</code></pre>
+		</section>
+		
+		<section>
+			<h2>Descriptores de despliegue</h2>
+			<ul>
+				<li>Java Enterprise introduce dos formas de especificar aspectos de configuración dentro de una aplicación:</li>
+				<ul>
+						<li>Anotaciones en el código.</li>
+						<li>Descriptores de despliegue.</li>						
+				</ul>
+				<li>Cada servidor de aplicaciones introduce características propias que se configuran mediante descriptores y anotaciones específicos.</li>
+				<li>La documentación de WildFly es manifiestamente mejorable con respecto a otros servidores.</li>
+			</ul>
+		</section>
+		
+		<section>
+			<h2>ClassLoading</h2>
+			<p align=left>WildFly carga las clases que necesita una aplicación con la siguiente prioridad:</p>
+			<ol>
+				<li>Dependencias del sistema: Librerías que implementan la especificación Java EE.</li>
+				<li>Dependencias de usuario, especificadas en el manifest o a través del fichero <em>jboss-deployment-structure.xml</em></li>
+				<li>Recursos locales: WEB-INF/classes_ o WEB-INF/lib de una aplicación WAR.</li>
+				<li>Dependencias compartidas: Librerías dentro de una aplicación EAR.</li>
+			</ol>
+		</section>
+		
+		<section>
+			<h2>Módulos</h2>
+			<ul>
+				<li>Permiten compartir recursos entre diferentes aplicaciones</li>
+				<li>Dos formas de definirlos:</li>
+				<ul>
+					<li>Estáticos: integrados en la configuración del servidor y accesibles por todas las aplicaciones</li>
+					<li>Dinámicos: desplegados en la carpeta <em>deployments</em>, </li>referenciables como <em>deployment.[nombre del fichero]</em></li>					
+				</ul>
+				<li>Fichero MANIFEST.MF</li>
+<pre><code   class="bash" data-trim  style="font-size: 18px;">
+Dependencies: deployment.WebExample1.war
+</code></pre>				
+			</ul>
+			
+		</section>
+		
+		<section>
+				<h2>Rendimiento de un servidor de aplicaciones</h2>
+				<blockquote>El mejor rendimiento de un servidor de aplicaciones se consigue ajustando su configuración a los recursos disponibles y la carga de trabajo que va a soportar</blockquote>
+		</section>
+		<section>
+			<h2>Compresión GZIP</h2>
+			<ul>
+				<li>Permite ahorrar hasta el 90% del tiempo de transmisión de recursos estáticos no comprimidos.</li>
+				<li>Funcionalidad ya conocida desde hace años.</li>
+				<li>Con las modernas aplicaciones JavaScript cobra mayor importancia.</li>
+			</ul>
+		</section>
+		<section>
+<pre><code>
+<subsystem xmlns="urn:jboss:domain:undertow:1.0">
+   <buffer-caches>
+      &ltbuffer-cache name="default" buffer-size="1024" buffers-per-region="1024" max-regions="10"/&gt
+   </buffer-caches>
+   <server name="default-server">
+      &lthttp-listener name="default" socket-binding="http"/&gt
+      <host name="default-host" alias="localhost">
+          &ltlocation name="/" handler="welcome-content" /&gt
+		  <!-- Añadir gzipFilter-->
+          &ltfilter-ref name="gzipFilter" predicate="path-suffix['.css'] or path-suffix['.js']" /&gt
+          &ltfilter-ref name="server-header"/&gt
+          &ltfilter-ref name="x-powered-by-header"/&gt
+      </host>
+   </server>
+   <servlet-container name="default" default-buffer-cache="default" stack-trace-on-error="local-only">
+      &ltjsp-config/&gt
+   </servlet-container>
+   <handlers>
+      &ltfile name="welcome-content" path="${jboss.home.dir}/welcome-content" directory-listing="true"/&gt
+   </handlers>
+   <filters>
+      &ltesponse-header name="server-header" header-name="Server" header-value="Wildfly 8"/&gt
+      &ltresponse-header name="x-powered-by-header" header-name="X-Powered-By" header-value="Undertow 1"/&gt
+	  <!-- Añadir gzipFilter -->
+      &ltgzip name="gzipFilter"/&gt
+   </filters>
+</subsystem>
+</code></pre>
+		</section>
+
+
+		<section>
+			<h1>¿Preguntas...?</h1>
+		</section>
+	</div>
+</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+				slideNumber: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Parallax scrolling
+				// parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+				// parallaxBackgroundSize: '2100px 900px',
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+
+				]
+			});
+
+		</script>
+
+	</body>
+</html>

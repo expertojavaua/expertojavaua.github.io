@@ -1,0 +1,405 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0052)http://www.dccia.ua.es/j2ee/seguridad/apuntes/sesion3.htm -->
+<HTML><HEAD><TITLE>Seguridad en Java</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=iso-8859-1">
+<META content=Sco name=Author><LINK href="../../../apuntes.css"
+type=text/css rel=stylesheet>
+<META content="MSHTML 5.50.4134.100" name=GENERATOR></HEAD>
+<BODY>
+<H1>Tema 4: Firma Digital y Certificado Digital</H1>
+<H2>4.1. Autentificación por Firma Digital</H2>
+<P>Una firma digital asocia un individuo con unos datos. Por ejemplo para garantizar que
+yo he escrito un determinado e-mail éste se firma digitalmente. Una firma digital se
+implementa como un <I>digest</I> (asociado al mensaje que se desea firmar) procesado por
+una clave privada (asociada al usuario que firma).</P>
+<P>Cuando el destinatario recibe el mensaje y su firma digital asociada se procede en tres
+pasos. (1)Obtener el digest del mensaje. (2) Usar la clave pública del remitente para
+extraer el digest de la firma digital. (3) Si ambos digests son iguales entonces validar.</P>
+<P>En JCA, el proceso de crear el digest, firmar, extraer el digest y verificar la firma se lleva
+a cabo por clases del package <B>java.security.Signature</B>: </P>
+<table border="1">
+  <tr>
+    <td><B>getInstance()</B></td>
+    <td>Obtiene una instancia de un objeto <B>Signature</B> especificando algoritmo y
+    opcionalmente el proveedor. P.e. <B>MD5WithRSA</B>,<B>SHA1WithRSA</B>,
+    <B>MD5WithDSA</B>,<B>SHA1WithDSA</B></td>
+  </tr>
+  <tr>
+    <td><B>initSign()</B></td>
+    <td>Inicializa un objeto <B>Signature</B> con una clave privada para firmarlo.</td>
+  </tr>
+  <tr>
+    <td><B>initVerify()</B></td>
+    <td>Inicializa un objeto <B>Signature</B> con una clave pública para verificarlo.</td>
+  </tr>
+  <tr>
+    <td><B>update()</B></td>
+    <td>Una vez que el objeto <B>signature</B> está inicializado se le pasan los datos que
+    se quieren firmar o verificar como array de bytes.</td>
+  </tr>
+  <tr>
+    <td><B>sign()</B></td>
+    <td>Devuelve los bytes de la firma digital para los datos pasados a través de
+    <B>update()</B>.</td>
+  </tr>
+  <tr>
+    <td><B>verify()</B></td>
+    <td>Tomando como argumento los bytes de una firma digital, devuelve un valor booleano
+    indicando si la firma asociada a los datos pasados a <B>update()</B> es correcta.</td>
+  </tr>
+</table>
+
+<P>Por ejemplo, si hemos generado un par de claves RSA y lo hemos guardado en la variable
+<B>parClaves</B> y tenemos un array de bytes llamado <B>datos</B> que contiene el texto
+a firmar, seguiríamos el siguiente proceso para firmarlo:</P>
+<PRE class=codigo>
+// Obtener instancia del objeto Signature e inicializarlo con
+// la clave privada para firmarlo
+<B>Signature</B> firma = Signature.<B>getInstance</B>("MD5WithRSA");
+firma.<B>initSign</B>(parClaves.getPrivate());
+
+// Prepara la firma de los datos
+firma.<B>update</B>(datos);
+
+// Firmar los datos
+byte[] bytesFirma = firma.<B>sign</B>();
+
+// Mostrar en ASCII
+System.out.println("\nFirma:\n" + new BASE64Encoder().encode(bytesFirma));
+</PRE>
+
+<P>Si posteriormente queremos realizar la verificación deberemos inicializar el objeto
+<B>Signature</B>  para verificación y recoger un valor booleano o bien una 
+<B>SignatureException</B> cuando la verificación no tenga éxito:</P>
+<PRE class=codigo>
+firma.<B>initVerify</B>(parClaves.getPublic());
+
+// Pasar los datos que fueron firmados
+firma.update(datos);
+
+// Verificar
+boolean verificado = false;
+try {
+  verificado = firma.<B>verify</B>(bytesFirma);
+} catch (<B>SignatureException</B> se) {
+	  verificado = false;
+  }
+
+if (verificado) {
+  System.out.println("\nFirma verificada.");
+} else {
+  System.out.println("\nFirma incorrecta.");
+}
+</PRE>
+<P>El ejemplo completo se encuentra en
+<A href="sesion3_archivos/FirmaDigital.java.txt">FirmaDigital.java</A>.</P>
+
+<H2>4.2. Certificados Digitales: Contenidos</H2>
+<P>Uno de los problemas de las firmas digitales es que en el momento de la validación no
+se tiene garantía de que la clave pública que se utiliza sea la correcta. Los certificados
+digitales intentan añadir identidad a una clave pública para garantizar que el dueño de
+dicha clave es quien dice ser. En definitiva, un certificado digital consiste en la clave
+pública más información firmada por la clave privada de una tercera parte denominada
+autoridad certificadora (<I>certificate authority</I> o CA) como Verisign o Thawte. </P>
+
+<P>Para codificar certificados en JDK se utiliza el estándar X.509. Hay tres versiones
+(v1, v2, v3) cada una de las cuales añade ciertas características sobre la anterior. Por
+ejemplo un certificado <B>X.509v1</B> contiene la siguiente información:</P>
+
+<table border="1">
+  <tr>
+    <td><I>Version</I></td>
+    <td>Campo que indica la versión del certificado: V1, V2 o V3.</td>
+  </tr>
+  <tr>
+    <td><I>Serial Number</I></td>
+    <td>Entero largo que es único para la CA que emite el certificado.</td>
+  </tr>
+  <tr>
+    <td><I> Signature Algorithm</I></td>
+    <td>Algoritmo que la CA utilizó para firmar el certificado.</td>
+  </tr>
+  <tr>
+    <td><I>Validity</I></td>
+    <td>Intervalo de validez entre las fechas <I>from...</I> y <I>to...</I>.</td>
+  </tr>
+  <tr>
+    <td><I>Subject</I></td>
+    <td>Indica, en formato X.500 a quién se el emite el certificado.</td>
+  </tr>
+  <tr>
+    <td><I>Key</I></td>
+    <td>Clave pública del sujeto del certificado.</td>
+  </tr>
+  <tr>
+    <td><I>Signature</I></td>
+    <td>Firma de la CA que habrá de ser verificada contra la clave pública de la CA.</td>
+  </tr>
+</table>
+
+<H2>4.3. Generando Certificados: keystores y keytool</H2>
+<P>En Java un <I>keystore</I> o almacén de claves es una colección de certificados y claves.
+El <I>kestore</I> por defecto se encuentra en el fichero <I>$HOME/.keystore</I> y contiene dos tipos de
+entradas: certificados y claves. Los certificados son en efecto certificados activos válidos.
+Las claves son privadas o bien simétricas y deben estar asociadas a certificados que contienen los sujetos
+que poseen dichas claves. No obstante, por razones de seguridad no es recomendable almacenar
+claves simétricas en el almacén. En cualquier caso el almacén usa passwords para proteger el
+acceso a las claves privadas.</P>
+<P>La herramienta que maneja almacenes de claves y permite crear certificados es la 
+aplicación <I>keytool</I>. Algunas de las opciones de esta aplicación son:</P>
+<table border="1">
+  <tr>
+    <td><I>-certreq</I></td>
+    <td>Crea una petición de certificado por ejemplo para obtener un certificado de 
+    una CA, como Verisign, que esté contemplada en esta aplicación.</td>
+  </tr>
+  <tr>
+    <td><I>-delete</I></td>
+    <td>Borra una entrada del <I>keystore</I>.</td>
+  </tr>
+  <tr>
+    <td><I>-genkey</I></td>
+    <td>Genera un par de claves para un certificado auto-firmado. Se puede especificar 
+    el algoritmo con <I>-keyalg</I>. Por ejemplo <I>-keyalg RSA</I></td>
+  </tr>
+  <tr>
+    <td><I>-keyclone</I></td>
+    <td>Copia una entrada en el almacén.</td>
+  </tr>
+  <tr>
+    <td><I>-keystore</I></td>
+    <td>Especifica un fichero como almacén.</td>
+  </tr>
+  <tr>
+    <td><I>-printcert</I></td>
+    <td>Muestra un certificado digital.</td>
+  </tr>
+  <tr>
+    <td><I>-selfcert</I></td>
+    <td>Genera un certificado digital auto-firmado.</td>
+  </tr>
+  <tr>
+    <td><I>-storepasswd</I></td>
+    <td>Cambia el password del almacén.</td>
+  </tr>
+  <tr>
+    <td><I>-export</I></td>
+    <td>Exporta un certificado de un almacén codifidado en DER. Si queremos codificación
+    BASE64 hay que añadir la opción <I>-rfc</I>.</td>
+  </tr>
+</table>
+
+<P>Por ejemplo, con <I>keytool -v -list</I> listaremos las entradas del fichero 
+<I>.keystore</I>. Si queremos añadir una entrada, identificada por un alias, 
+haremos lo siguiente: <I>keytool -genkey -alias test</I> donde test es el alias. 
+La aplicación nos irá pidiendo los datos para el certificado. El contenido del 
+certificado será algo parecido a
+<A href="sesion3_archivos/micertificado.txt">micertificado</A>. Si queremos
+exportarlo a codificación DER haremos lo siguiente: <I>keytool -export -alias test -file
+micertificado.cer</I>.</P>
+
+<H2>4.4. Certificados en Java</H2>
+<P> Las clases para el manejo de certificados en Java pertenencen al
+paquete <B>java.security.cert</B>:</P>
+<table border="1">
+  <tr>
+    <td><B>CertificateFactory</B></td>
+    <td>Se utiliza para generar instancias de objetos <B>CertificateFactory</B>
+    a través de <B>getInstance()</B>.</td>
+  </tr>
+  <tr>
+    <td><B>Certificate</B></td>
+    <td>Clase abstracta que encapsula un certificado. Los métodos más importantes de esta
+    clase son: <B>getPublicKey()</B> (que devuelve la clave pública del sujeto del
+    certificado) y <B>verify()</B> (que tomando como argumento la clave pública de la 
+    CA verifica la firma del certificado).</td>
+  </tr>
+  <tr>
+    <td><B>X509Certificate</B></td>
+    <td>Otra clase que proporciona métodos para manejar certificados X.509.</td>
+  </tr>
+</table>
+
+<P>Por ejemplo podemos leer un certificado
+*.cer de un fichero e imprimirlo con las siguientes instrucciones: (el código completo
+se encuentra en <A href="sesion3_archivos/ImprimirCert.java.txt">ImprimirCert.java</A>)
+</P>
+<PRE class=codigo>
+<B>CertificateFactory</B> factoria = CertificateFactory.<B>getInstance</B>("X.509");
+
+// Abrir el fichero
+FileInputStream fis = new FileInputStream (args[0]);
+
+// Generar certificado para el fichero
+<B>Certificate</B> cert = factoria.<B>generateCertificate</B>(fis);
+fis.close();
+
+// Imprimir información
+System.out.println(cert);
+</PRE>
+
+<P>Si por el contrario queremos leer el certificado directamente del <I>keystore</I> debemos 
+utilizar la clase <B>java.security.KeyStore</B>. El método <B>load()</B> de esta clase 
+permite cargar el almacén si le pasamos el nombre del fichero de almacén (p.e. <I>.keystore</I>) 
+y el password correcto. A continuación el método <B>getCertificate()</B> permite obtener 
+el certificado con un alias concreto (el código completo se encuentra en
+<A href="sesion3_archivos/ImprimirCertKS.java.txt">ImprimirCertKS.java</A>):</P>
+<PRE class=codigo>
+// Abrir el keystore
+FileInputStream fIn = new FileInputStream(fich_keystore);
+<B>KeyStore</B> keystore = KeyStore.<B>getInstance</B>("JKS");
+
+// Cargar el keystore
+keystore.<B>load</B>(fIn, password);
+
+// Obtener el certificado
+Certificate cert = keystore.<B>getCertificate</B>(alias);
+
+// Mostrar el certificado
+System.out.println(cert);
+</PRE>
+
+<H2>4.5. Crear Nuestra Propia CA</H2>
+<P>Supongamos que pretendemos constituirnos en CA para nuestra propia organización.
+Esto nos permite emitir nuestros propios certificados. Así, p.e., podremos emitir
+certificados de e-mail para que todos los miembros de nuestra organización puedan firmar 
+sus correos electrónicos o bien crear certificados para validar el acceso de los 
+clientes a nuestras bases de datos, etc.</P>
+<P>Para ello podemos utilizar las clases del paquete <B>sun.security.x509</B>. Entre las
+más importantes tenemos las siguientes:</P>
+<table border="1">
+  <tr>
+    <td><B>X509CertImpl</B></td>
+    <td>Proporciona la implementación del certificado X.509. Usaremos esta clase para
+    crear un nuevo certificado y lo firmaremos con el método <B>sign()</B>.</td>
+  </tr>
+  <tr>
+    <td><B>X509CertInfo</B></td>
+    <td>Encapsula los atributos del certificado X.509 y nos permite instanciar dichos
+    atributos en el momeno de crearlo.</td>
+  </tr>
+  <tr>
+    <td><B>X500Name</B></td>
+    <td>Nombre X500 <I>(CN=Common name, OU=Organizational Unit,
+    O=Organization, L=Location, ST=State, C=Country)</I> del sujeto.</td>
+  </tr>
+   <tr>
+    <td><B>AlgorithmId</B></td>
+    <td>Identificación del algoritmo criptográfico.</td>
+  </tr>
+  <tr>
+    <td><B>CertificateSubjectName</B></td>
+    <td>Nombre del sujeto del certificado.</td>
+  </tr>  
+  <tr>
+    <td><B>CertificateValidity</B></td>
+    <td>Período de validez del certificado.</td>
+  </tr>
+  <tr>
+    <td><B>CertificateSerialNumber</B></td>
+    <td>Número de serie del certificado. Único para una CA dada.</td>
+  </tr>
+  <tr>
+    <td><B>CertificateIssuerName</B></td>
+    <td>Nombre x.500 del emisor del certificado (cuando es auto-firmado
+    coincide con el sujeto).</td>
+  </tr>
+  <tr>
+    <td><B>CertificateAlgorithmID</B></td>
+    <td>Identificador del algoritmo usado para firmar el certificado.</td>
+  </tr>
+</table>
+
+<P>Lo primero es crear un certificado y una clave privada para la CA. Para 
+ello haremos lo siguiente:</P>
+<P><I>keytool  -genkey -v -alias CA -keyalg RSA -keystore almacen</I></P>
+<P> A continuación nos pediran información X.500 sobre la CA y nos preguntarán 
+la clave de la CA.  Tenemos pués el certificado y la clave de la CA.</P>
+<P>El siguiente paso consiste en crear un certificado que queramos firmar con
+el certificado de la CA (encadenamiento de certificados):</P>
+<P><I>keytool -genkey -v -alias miClave -keyalg RSA -keystore almacen</I></P>
+<P>Y de nuevo contestaremos a las preguntas rellenando los atributos que deseemos. No 
+obstante el certificado que obtenemos es auto-firmado. Lo interesante es reemplazarlo 
+por uno firmado por la CA. Para ello usaremos el certificado y la clave privada de la 
+CA. Una vez leido el almacén (ver el código completo en
+<A href="sesion3_archivos/FirmarCertificado.java.txt">FirmarCertificado.java</A>) 
+seguiremos los pasos que se detallan a continuación:
+</P>
+<P><B>1)</B> Leer la clave privada y el certificado de la CA </P>
+<PRE class=codigo>
+PrivateKey clavePrivadaCA = (PrivateKey)keystore.<B>getKey</B>(aliasCA, passwordCA);
+java.security.cert.Certificate certificadoCA = keystore.<B>getCertificate</B>(aliasCA);
+</PRE>
+<P><B>2)</B> Crear una implementación X.509 para el certificado del CA </P>
+<PRE class=codigo>
+byte[] codificado = certificadoCA.getEncoded();
+<B>X509CertImpl</B> implementacionCA = new X509CertImpl(codificado);
+<B>X509CertInfo</B> infoCA = (X509CertInfo)implementacionCA.<B>get</B>
+   (X509CertImpl.NAME + "." + X509CertImpl.INFO);
+<B>X500Name</B> emisorCA = (X500Name)infoCA.<B>get</B>
+   (X509CertInfo.SUBJECT + "." + CertificateIssuerName.DN_NAME);
+</PRE>
+<P><B>3)</B> Leer la clave privada y el certificado a firmar. </P>
+<PRE class=codigo>
+java.security.cert.Certificate cert = keystore.<B>getCertificate</B>(aliasCert);
+PrivateKey clavePrivada = (PrivateKey)keystore.<B>getKey</B>(aliasCert, passwordCert);
+</PRE>
+<P><B>4)</B> Crear de nuevo otra implementación X.509 para el certificado a firmar. </P>
+<PRE class=codigo>
+codificado = cert.getEncoded();
+<B>X509CertImpl</B> implementacionCert = new X509CertImpl(codificado);
+<B>X509CertInfo</B> infoCert = (X509CertInfo)implementacionCert.<B>get</B>
+   (X509CertImpl.NAME + "." + X509CertImpl.INFO);
+</PRE>
+<P><B>5)</B> Especificar y almacenar el período de validez. </P>
+<PRE class=codigo>
+Date inicio = new Date();
+Date fin = new Date(inicio.getTime() + VALIDEZ*24*60*60*1000L);
+<B>CertificateValidity</B> intervalo = new <B>CertificateValidity</B>(inicio, fin);
+</PRE>
+<P><B>6)</B> Crear y almacenar un número de serie. </P>
+<PRE class=codigo>
+infoCert.<B>set</B>(X509CertInfo.SERIAL_NUMBER,
+   new <B>CertificateSerialNumber</B>((int)(inicio.getTime()/1000)));
+</PRE>
+<P><B>7)</B> Poner como emisor a la CA. </P>
+<PRE class=codigo>
+infoCert.<B>set</B>(X509CertInfo.ISSUER +
+ "." + CertificateSubjectName.DN_NAME, emisorCA);
+</PRE>
+<P><B>8)</B> Fijar el algoritmo. </P>
+<PRE class=codigo>
+<B>AlgorithmId</B> algoritmo = new <B>AlgorithmId</B>(AlgorithmId.md5WithRSAEncryption_oid);
+infoCert.<B>set</B>(CertificateAlgorithmId.NAME + "." +
+   CertificateAlgorithmId.ALGORITHM, algoritmo);
+</PRE>
+<P><B>9)</B> Crear el nuevo certificado a partir del info. </P>
+<PRE class=codigo>
+<B>X509CertImpl</B> nuevoCert = new <B>X509CertImpl</B>(infoCert);
+</PRE>
+<P><B>10)</B> Firmar el nuevo certificado que acabamos de crear. </P>
+<PRE class=codigo>
+nuevoCert.<B>sign</B>(clavePrivadaCA, ALG);
+</PRE>
+<P><B>11)</B> Almacenar en el keystore. </P>
+<PRE class=codigo>
+keystore.<B>setKeyEntry</B>(aliasNuevo, clavePrivada, passwordCert,
+    new java.security.cert.Certificate[] { nuevoCert } );
+</PRE>
+<P><B>12)</B> Almacenar el keystore en el fichero. </P>
+<PRE class=codigo>
+FileOutputStream output = new FileOutputStream(fich_keystore);
+keystore.<B>store</B>(output, password);
+output.close();
+</PRE>
+<P>Para aplicar esta firma ejecutamos el siguiente comando:</P>
+<P><I>java FirmarCertificado almacen CA miClave miClave2</I></P>
+<P>Así, habremos añadido un nuevo certificado, llamado <I>miClave2</I>, al almacén. Este certificado 
+está emitido por nuestra CA (ver el emisor o <I>issuer</I>).Para verlo haremos lo siguiente:</P>
+<P><I>keytool -list -v -keystore almacen</I></P>
+<P>Finalmente, podemos exportar este certificado codificado en DER o en BASE-64 para usarlo. Sin embargo, 
+en la práctica no se aceptará por defecto, a no ser que importemos el certificado de la CA y lo instalemos 
+en un navegador. Para exportar el certificado de la CA a un fichero de modo que podamos cargarlo en un 
+navegador haremos lo siguiente:</P>
+<P><I>keytool -export -alias CA -keystore almacen -file CA.crt</I></P>
+</BODY></HTML>

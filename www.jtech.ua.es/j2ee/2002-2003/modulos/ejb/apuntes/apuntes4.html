@@ -1,0 +1,862 @@
+<head>
+<title>Sesion 4 Enterprise Java Beans</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../../ejercicios.css" type="text/css">
+</head>
+<body>
+<h1>Tema 4: Un ejemplo completo de bean de entidad con persistencia gestionada 
+  por el bean </h1>
+<P>El bean de entidad presentado en este ejemplo representa una sencilla cuenta 
+  de banco. Los beans de entidad guardan su estado en alg&uacute;n dispositivo 
+  secundario (fichero o base de datos). En este caso, el estado de las instancias 
+  del bean <code>SavingsAccountEJB</code> se almacenan en la tabla <code>savingsaccount</code> 
+  de una base de datos relacional. Esta tabla se crea con la siguiente sentencia 
+  SQL 
+<pre class="codigo">
+CREATE TABLE savingsaccount
+  (id VARCHAR(3)
+  CONSTRAINT pk_savingsaccount PRIMARY KEY,
+  firstname VARCHAR(24),
+  lastname VARCHAR(24),
+  balance NUMERIC(10,2));</pre>
+ 
+  
+<p>El bean incluye m&eacute;todos mediante los cuales las aplicaciones clientes 
+  pueden obtener instancias del bean (cuentas) que cumplan unos requisitos de 
+  balance, o cuentas de personas con un determinado apellido. Tambi&eacute;n incluye 
+  un ejemplo de un m&eacute;todo que se puede invocar desde la aplicaci&oacute;n 
+  cliente para que se realice una determinada operaci&oacute;n de mantenimiento 
+  sobre todas las instancias del bean.</p>
+<p>Los beans de entidad tienen un conjunto de m&eacute;todos que permiten el acceso 
+  a operaciones de bases de datos. La siguiente tabla resume los mismos:</p>
+<p>La implementaci&oacute;n remota del bean <code>SavingsAccountEJB</code> requiere 
+  las siguientes clases e interfaces:</p>
+<UL>
+  <LI TYPE="disc">Clase EntityBean (<code>SavingsAccountBean</code>) 
+  <LI TYPE="disc">Interfaz Home (<code>SavingsAccountHome</code>) 
+  <LI TYPE="disc">Interfaz Remote (<code>SavingsAccountRemote</code>) 
+</UL>
+<p>La lista de clases es la misma que para los beans de sesi&oacute;n, con la 
+  excepci&oacute;n de la clase EntityBean, que en lugar de implementar la interfaz 
+  <code>SessionBean</code> deber&aacute; implementar la interfaz <code>EntityBean</code>. 
+  A continuaci&oacute;n se detallan estas clases, junto con alguna clase auxiliar 
+  y la aplicaci&oacute;n ejemplo que va a usar el bean. En concreto, estas &uacute;ltimas 
+  son:</p>
+<UL>
+  <LI TYPE="disc">Una clase auxiliar llamada <code>InsufficientBalanceException</code> 
+  <LI TYPE="disc">La aplicaci&oacute;n cliente se implementa con la clase llamada 
+    <code>SavingsAccountClient</code> 
+</UL>
+<h2>4.1 Clase EntityBean</h2>
+<p>La clase EntityBean se llama <code>SavingsAccountBean</code>. Esta clase define 
+  los m&eacute;todos a los que va a llamar el contenedor EJB cuando se requiera 
+  el cliente realice una invocaci&oacute;n a un m&eacute;todo de la interfaz remota, 
+  de la interfaz home o cuando haya que realizar alguna operaci&oacute;n de gesti&oacute;n 
+  del bean. </p>
+<p>La diferencia fundamental con un bean de sesi&oacute;n son los m&eacute;todos 
+  relacionados con con la persistencia de las instancias del bean. Entre ellas:</p>
+<UL>
+  <LI TYPE="disc">Cargar y grabar el estado de la instancia del bean en la base 
+    de datos. Ambas operaciones se implementan en los m&eacute;todos <code>ejbLoad</code> 
+    y <code>ejbStore</code>, que son m&eacute;todos llamados por el contenedor 
+    EJB cuando es necesario. 
+  <LI TYPE="disc">M&eacute;todos de b&uacute;squeda. Todos ellos comienzan por 
+    <code>ejbFind</code> y permiten la b&uacute;squeda de una instancia concreta 
+    o de una colecci&oacute;n de instancias que cumplen una condici&oacute;n. 
+  <LI TYPE="disc">M&eacute;todos de mantenimiento de todas las instancias. Comienzan 
+    por <code>ejbHome</code> y permiten realizar una operaci&oacute;n que afecta 
+    a todas las instancias del bean. 
+</UL>
+<p>La clase define los m&eacute;todos p&uacute;blicos que agrupados en la siguiente 
+  tabla:</p>
+<TABLE BORDER=1 width=523 height=370>
+  <TR>
+
+  <TD align=left VALIGN=TOP>
+<B>M&eacute;todos relacionados con la interfaz remota de las instancias del bean</B>
+<FONT SIZE=2>
+      <BLOCKQUOTE> 
+<pre>
+
+public void debit(BigDecimal amount)
+public void credit(BigDecimal amount)
+public String getFirstName() 
+public String getLastName()
+public BigDecimal getBalance() 
+
+</pre>
+      </BLOCKQUOTE>
+      </FONT>
+  </TD>
+ </TR>
+ <TR>
+
+  <TD align=left VALIGN=TOP>
+<B>M&eacute;todos relacionados con la interfaz home</B>
+<FONT SIZE=2>
+      <BLOCKQUOTE> 
+        <pre>
+
+public void ejbHomeChargeForLowBalance(BigDecimal minimumBalance, 
+                                       BigDecimal charge) 
+   throws InsufficientBalanceException
+public String ejbCreate(String id, 
+                        String firstName, 
+                        String lastName, 
+                        BigDecimal balance) 
+   throws CreateException 
+public String ejbFindByPrimaryKey(String primaryKey) 
+   throws FinderException 
+public Collection ejbFindByLastName(String lastName) 
+   throws FinderException 
+public Collection ejbFindInRange(BigDecimal low, 
+                                 BigDecimal high) 
+   throws FinderException 
+   
+</pre>
+        </BLOCKQUOTE></FONT>
+  </TD>
+ </TR>
+ <TR>
+
+  <TD align=left VALIGN=TOP>
+<B>M&eacute;todos relacionados con el ciclo de vida del bean</B>
+<FONT SIZE=2><BLOCKQUOTE>
+        <pre>
+
+public void ejbRemove() 
+public void setEntityContext(EntityContext context) 
+public void unsetEntityContext() 
+public void ejbActivate() 
+public void ejbPassivate()
+public void ejbLoad()
+public void ejbStore()
+public void ejbPostCreate(String id, 
+                          String firstName, 
+                          String lastName, 
+                          BigDecimal balance)
+
+</pre>
+</BLOCKQUOTE></FONT>
+  </TD>
+</TABLE>
+
+<p>Resumiendo, la clase implementa: </p>
+<UL>
+  <LI TYPE="disc">La interfaz <code>EntityBean</code> 
+  <LI TYPE="disc">Los m&eacute;todos <code>ejbCreate</code> y <code>ejbPostCreate</code> 
+  <LI TYPE="disc">M&eacute;todos de b&uacute;squeda 
+  <LI TYPE="disc">M&eacute;todos de negocio 
+  <LI TYPE="disc">M&eacute;todos home 
+</UL>
+<p>Adem&aacute;s, un bean de entidad con persistencia gestionada por el bean debe 
+  cumplir los siguientes requisitos:</p>
+<UL>
+  <LI TYPE="disc">La clase se define como <code>public</code> 
+  <LI TYPE="disc">La clase no puede ser definida como <code>abstract</code> o 
+    <code>final</code> 
+  <LI TYPE="disc">Contiene un constructor vac&iacute;o
+  <LI TYPE="disc">No implementa el m&eacute;todo <code>finalize</code> 
+</UL>
+<h3>4.1.1 La interfaz EntityBean</h3>
+<p>La interfaz <code>EntityBean</code> extiende la interfaz <code>EnterpriseBean</code>, 
+  la cual a su vez extiende la interfaz <code>Serializable</code>. La interfaz 
+  <code>EntityBean</code> declara una lista de m&eacute;todos, como <code>ejbActivate</code> 
+  y <code>ejbLoad</code>, que deben implementarse en la clase bean entidad que 
+  estemos definiendo (<code>SavingsAccountBean</code>, en este caso). Estos m&eacute;todos 
+  se explican m&aacute;s adelante.</p>
+<h3>4.1.2 El m&eacute;todo ejbCreate</h3>
+<p>Cuando el cliente invoca un m&eacute;todo create con unos determinados argumentos, 
+  el contenedor EJB invoca el m&eacute;todo correspondiente <code>ejbCreate</code>. 
+  Normalmente, un m&eacute;todo <code>ejbCreate</code> en un bean de entidad realiza 
+  las siguientes tareas:</p>
+<UL>
+  <LI TYPE="disc">Inserta el estado de la entidad en la base de datos
+  <LI TYPE="disc">Inicializa las variables de instancia
+  <LI TYPE="disc">Devuelve la clave primaria
+</UL>
+<p>El m&eacute;todo <code>ejbCreate</code> de <code>SavingsAccountBean</code> 
+  inserta el estado de la entidad en la base de datos invocando al m&eacute;todo 
+  privado <code>insertRow</code>, el cual lanza una sentencia SQL INSERT. A continuaci&oacute;n 
+  se encuentra el c&oacute;digo fuente del m&eacute;todo <code>ejbCreate</code></p>
+<pre class="codigo">public String ejbCreate(String id, String firstName, 
+   String lastName, BigDecimal balance)
+   throws CreateException {
+  
+   if (balance.signum() == -1) {
+      throw new CreateException (&quot;A negative initial balance is not allowed.&quot;);
+   }
+  
+   try {
+      insertRow(id, firstName, lastName, balance);
+   } catch (Exception ex) {
+      throw new EJBException(&quot;ejbCreate: &quot; + ex.getMessage());
+   }
+  
+   this.id = id;
+   this.firstName = firstName;
+   this.lastName = lastName;
+   this.balance = balance;
+   
+   return id;
+}</pre>
+ 
+<p>De la misma forma que ya vimos en el tema anterior, con el bean de sesi&oacute;n 
+  <code>CartEJB</code>, un bean de entidad puede tener m&uacute;ltiples m&eacute;todos 
+  <code>ejbCreate</code> con distintas signaturas.</p>
+<p>Cuando se escribe un m&eacute;todo <code>ejbCreate</code> de un bean de entidad 
+  deben seguirse las siguientes reglas:</p>
+<UL>
+  <LI TYPE="disc">El modificador de control de acceso al m&eacute;todo debe ser 
+    <code>public</code> 
+  <LI TYPE="disc">El tipo devuelto debe ser <code>String</code> y el objeto corresponde 
+    a la clave primaria 
+  <LI TYPE="disc">Los argumentos deben ser tipos legales de RMI
+  <LI TYPE="disc">No se debe declarar el m&eacute;todo <code>static</code> o <code>final</code> 
+</UL>
+<p>La cl&aacute;usula throws puede incluir la excepci&oacute;n <code>javax.ejb.CrateException</code> 
+  y excepciones que sean espec&iacute;ficas a la aplicaci&oacute;n. Un m&eacute;todo 
+  <code>ejbCreate</code> normalmente arroja una excepci&oacute;n <code>CrateException</code> 
+  si un par&aacute;metro de entrada es inv&aacute;lido. Si un m&eacute;todo <code>ejbCrate</code> 
+  no puede crear una entidad a causa de que ya existe otra entidad con la misma 
+  clave primaria, deber&iacute;a arrojar una excepci&oacute;n <code>javax.ejbDuplicteKeyException</code> 
+  (una subclase de <code>CreateException</code>). Si un cliente recibe una excepci&oacute;n 
+  <code>CreateException</code> o <code>DuplicateKeyException</code>, deber&iacute;a 
+  asumir que la entidad no ha sido creada.</p>
+<p>La clase de clave primaria se especifica en el descriptor de despliegue del 
+  bean de entidad. En la mayor&iacute;a de los casos, la clase de clave primaria 
+  ser&aacute; un <code>String</code>, un Integer o alguna otra clase que pertenece 
+  a las librer&iacute;as est&aacute;ndar de J2SE o J2EE. Sin embargo, en algunos 
+  casos ser&aacute; necesario definir una clase de clave primaria propia. Por 
+  ejemplo, si el bean tiene una clave primaria compuesta (esto es, una compuesta 
+  de m&uacute;ltiples campos), entonces es necesario crear una clase de clave 
+  primaria. </p>
+<p>Por &uacute;ltimo, el estado de un bean de entidad puede insertarse en la base 
+  de datos directamente, por una aplicaci&oacute;n desconocida al servidor J2EE. 
+  Por ejemplo, un script SQL podr&iacute;a insertar una fila en la tabla <code>savingsaccount</code>. 
+  Aunque el bean de entidad correspondiente a esta fila no ha sido creado por 
+  un m&eacute;todo <code>ejbCrate</code>, el bean puede ser obtenido y usado por 
+  un programa cliente.</p>
+<h3><B>4.1.3 El m&eacute;todo ejbPostCreate</B></h3>
+<p>Para cada m&eacute;todo <code>ejbCreate</code>, se debe escribir un m&eacute;todo 
+  <code>ejbPostCreate</code> en la clase bean de entidad. El contenedor EJB invoca 
+  el m&eacute;todo <code>ejbPostCreate</code> inmediatamente despu&eacute;s de 
+  que llama a <code>ejbCreate</code>. A diferencia de <code>ejbCreate</code>, 
+  el m&eacute;todo <code>ejbPostCreate</code> puede invocar los m&eacute;todos 
+  <code>getPrimaryKey</code> y <code>getEJBObject</code> de la interfaz <code>EntityContext</code>. 
+  En el tema anterior se coment&oacute; brevemente el m&eacute;todo <code>getEJBObject</code> 
+  en el apartado <i>C&oacute;mo pasar una referencia al objeto enterprise bean</i>. 
+  A menudo, los m&eacute;todos <code>ejbPostCreate</code> se dejan vac&iacute;os.</p>
+<p>La signatura de un m&eacute;todo <code>ejbPostCrate</code> debe conformar los 
+  siguientes requisitos:</p>
+<UL>
+  <LI TYPE="disc">El n&uacute;mero y tipos de los argumentos debe corresponderse 
+    con los del m&eacute;todo <code>ejbCreate</code> equivalente 
+  <LI TYPE="disc">El modificador de control de acceso debe ser <code>public</code>. 
+  <LI TYPE="disc">El modificador del m&eacute;todo no puede ser <code>final</code> 
+    o <code>static</code>. 
+  <LI TYPE="disc">El tipo devuelto debe ser <code>void</code> 
+</UL>
+<p>La cl&aacute;usula <code>throws</code> puede incluir una excepci&oacute;n <code>javax.ejb.CrateException</code> 
+  y excepciones que son espec&iacute;ficas a la aplicaci&oacute;n cliente.</p>
+<h3><B>4.1.4 El m&eacute;todo ejbRemove</B></h3>
+<p>Un cliente borra un bean de entidad invocando el m&eacute;todo remove. Esta 
+  invocaci&oacute;n causa que el contenedor EJB llame al m&eacute;todo <code>ejbRemove</code>, 
+  el cual borra el estado de la entidad de la base de datos. en la clase <code>SavingsAccountBean</code>, 
+  el m&eacute;todo <code>ejbRemove</code> invoca un m&eacute;todo privado llamado 
+  <code>deleteRow</code>, el cual env&iacute;a una sentencia SQL DELETE. El m&eacute;todo 
+  <code>ejbRemove</code> es corto:</p>
+<pre class="codigo">
+public void ejbRemove() {
+   try {
+      deleteRow(id); 
+   } catch (Exception ex) {
+      throw new EJBException(&quot;ejbRemove: &quot; + ex.getMessage());
+   }
+}</pre>
+
+  
+<p>Si el m&eacute;todo <code>ejbRemove</code> encuentra un problema del sistema, 
+  deber&iacute;a arrojar la excepci&oacute;n <code>javax.ejb.EJBException</code>. 
+  Si encuentra un error de aplicaci&oacute;n deber&iacute;a arrojar una excepci&oacute;n 
+  <code>javax.ejb.RemoveException</code>. </p>
+<p>Un bean de entidad tambi&eacute;n puede ser borrado directamente mediante un 
+  borrado de la base de datos. Por ejemplo, si un script SQL borra una fila que 
+  contiene un bean entidad, entonces el bean de entidad es eliminado.</p>
+<h3>4.1.5 Los m&eacute;todos ejbLoad y ejbStore</h3>
+<p>El contenedor EJB invoca a los m&eacute;todos <code>ejbLoad</code> y <code>ejbStore</code> 
+  cuando necesita sincronizar las variables de instancia de los beans de entidad 
+  con los valores correspondientes almacenados en la base de datos. El m&eacute;tod 
+  <code>ejbLoad</code> actualiza el valor de las variables de instancia con los 
+  valores de la base de datos, y el m&eacute;todo <code>ejbStore</code> escribe 
+  las variables en la base de datos. El cliente no puede llamar directamente a 
+  estos m&eacute;todos.</p>
+<p>Si un m&eacute;todo de negocio est&aacute; asociado con una transacci&oacute;n, 
+  el contenedor invoca <code>ejbLoad</code> antes de que el m&eacute;todo de negocio 
+  se ejecute. Inmediatamente despu&eacute;s de que el m&eacute;todo de negocio 
+  se ejecuta, el contenedor llama a <code>ejbStore</code>. </p>
+<p>Si los m&eacute;todos <code>ejbLoad</code> y <code>ejbStore</code> no pueden 
+  localizar una entidad en la base de datos, deber&iacute;an arrojar la excepci&oacute;n 
+  <code>javax.ejb.NoSuchEntityException</code>. Esta excepci&oacute;n es una subclase 
+  de <code>EJBException</code>. Debido a que <code>EJBException</code> es una 
+  subclase de <code>RuntimeException</code> no es necesario incluirla en la cl&aacute;usula 
+  <code>throws</code>. Cuando se lanza una excepci&oacute;n <code>NoSuchEntityException</code>, 
+  el contenedor la envuelve en una <code>RemoteException</code> antes de devolverla 
+  al cliente.</p>
+<p>En la clase <code>SavingsAccountBean</code>, <code>ejbLoad</code> invoca el 
+  m&eacute;todo <code>loadRow</code>, el cual lanza una sentencia SQL SELECT y 
+  asigna los datos devueltos a las variables de instancia. El m&eacute;todo <code>ejbStore</code> 
+  llama al m&eacute;todo privado <code>storeRow</code>, que a su vez almacena 
+  las variables de instancia en la base de datos con una sentencia SQL UPDATE. 
+  A continuaci&oacute;n se muestra el c&oacute;digo fuente de <code>ejbLoad</code> 
+  y <code>ejbStore</code>:</p>
+<pre class="codigo">
+public void ejbLoad() {
+   try {
+      loadRow();
+   } catch (Exception ex) {
+      throw new EJBException(&quot;ejbLoad: &quot; + 
+      ex.getMessage());
+   }
+}
+  
+public void ejbStore() {
+   try {
+      storeRow();
+   } catch (Exception ex) {
+      throw new EJBException(&quot;ejbStore: &quot; + 
+      ex.getMessage());
+   }
+}
+</pre>
+  
+<h3>4.1.6 Los m&eacute;todos de b&uacute;squeda</h3>
+<p>Los m&eacute;todos de b&uacute;squeda (Finder) permiten a los clientes localizar 
+  beans de entidad. El programa <code>SavingsAccountClient</code> localiza beans 
+  de entidad con tres m&eacute;todos de b&uacute;squeda:</p>
+<pre class="codigo">
+SavingsAccount jones = home.findByPrimaryKey(&quot;836&quot;);
+...
+Collection c = home.findByLastName(&quot;Smith&quot;);
+...
+Collection c = home.findInRange(20.00, 99.00);</pre>
+  
+<p>Por cada m&eacute;todo de b&uacute;squeda disponible para un cliente, la clase 
+  de bean de entidad debe implementar un m&eacute;todo correspondiente con el 
+  prefijo <code>ejbFind</code>. La clase <code>SavingsAccountBean</code>, por 
+  ejemplo, implementa el m&eacute;todo <code>ejbFindByLastName</code> como sigue:</p>
+<pre class="codigo">
+public Collection ejbFindByLastName(String lastName)
+  throws FinderException {
+  
+   Collection result;
+  
+   try {
+      result = selectByLastName(lastName);
+   } catch (Exception ex) {
+      throw new EJBException(&quot;ejbFindByLastName &quot; + 
+      ex.getMessage());
+   }
+   return result;
+}</pre>
+  
+<p> Los m&eacute;todos de b&uacute;squeda espec&iacute;ficos de la aplicaci&oacute;n, 
+  como <code>ejbFindByLastName</code> y <code>ejbFindInRange</code>, son opcionales. 
+  Pero el m&eacute;todo <code>ejbFindByPrimaryKey</code> es obligatorio. Como 
+  su nombre implica, el m&eacute;todo <code>ejbFindByPrimaryKey</code> acepta 
+  como argumento la clave primaria, que usa despu&eacute;s para localizar el bean. 
+  En la clase <code>SavingsAccountBean</code>, la clave primaria es la variable 
+  <code>id</code>. Este es el c&oacute;digo del m&eacute;todo <code>ejbFindByPrimaryKey</code>:</p>
+<pre class="codigo">
+public String ejbFindByPrimaryKey(String primaryKey) 
+  throws FinderException {
+  
+   boolean result;
+  
+   try {
+      result = selectByPrimaryKey(primaryKey);
+   } catch (Exception ex) {
+      throw new EJBException(&quot;ejbFindByPrimaryKey: &quot; + 
+      ex.getMessage());
+   }
+  
+   if (result) {
+      return primaryKey;
+   } else {
+      throw new ObjectNotFoundException
+      (&quot;Row for id &quot; + primaryKey + &quot; not found.&quot;);
+   }
+}
+</pre>
+  
+<p>El m&eacute;todo <code>ejbFindByPrimaryKey</code> puede parecer extra&ntilde;o 
+  a primera vista, debido a que usa una clave primaria como argumento y como valor 
+  devuelto. Sin embargo, hay que recordar que el cliente no llama a <code>ejbFindByPrimaryKey</code> 
+  directamente, sino que es el contenedor EJB el que llama al m&eacute;todo. El 
+  cliente invoca el m&eacute;todo <code>findByPrimaryKey</code>, que est&aacute; 
+  definido en la interfaz home.</p>
+<p>La siguiente lista resume las reglas que deben seguir los m&eacute;todos finder 
+  que se implementan en un bean de entidad con persistencia gestionada por el 
+  bean:</p>
+<UL>
+  <LI TYPE="disc">El m&eacute;todo <code>ejbFindByPrimaryKey</code> debe implementarse 
+    obligatoriamente. 
+  <LI TYPE="disc">Cualquier m&eacute;todo de b&uacute;squeda debe comenzar con 
+    el prefijo <code>ejbFind</code>. 
+  <LI TYPE="disc">El modificador de control de acceso debe ser p&uacute;blico.
+  <LI TYPE="disc">El modificador del m&eacute;todo no puede ser <code>final</code> 
+    o <code>static</code>. 
+  <LI TYPE="disc">Los tipos de los argumentos y de los valores devueltos deben 
+    ser legales para RMI (este requisito s&oacute;lo se aplica a m&eacute;todos 
+    definidos en una interfaz remota --no local--).
+  <LI TYPE="disc">El tipo devuelto debe ser una clave primaria o una ccolecci&oacute;n 
+    de claves primarias.
+</UL>
+<h3>4.1.7 Los m&eacute;todos de negocio</h3>
+<p>Los m&eacute;todos de negocio contienen la l&oacute;gica de negocio que es 
+  necesario encapsular dentro del bean de entidad. Normalmente, los m&eacute;todos 
+  de negocio no acceden a la base de datos permitiendo separar la l&oacute;gica 
+  de negocio de la implementaci&oacute;n. La clase <code>SavingsAccountBean</code> 
+  contiene los siguientes m&eacute;todos de negocio:</p>
+<pre class="codigo">
+public void debit(BigDecimal amount) 
+  throws InsufficientBalanceException {
+  
+   if (balance.compareTo(amount) == -1) {
+      throw new InsufficientBalanceException();
+   }
+   balance = balance.subtract(amount);
+}
+  
+public void credit(BigDecimal amount) {
+   balance = balance.add(amount);
+}
+  
+public String getFirstName() {
+   return firstName;
+}
+  
+public String getLastName() {
+   return lastName;
+}
+  
+public BigDecimal getBalance() {
+   return balance;
+}
+</pre>
+
+<p>El programa cliente <code>SavingsAccountClient</code> invoca los m&eacute;todos 
+  de negocio de la siguiente forma:</p>
+<pre class="codigo">
+  BigDecimal zeroAmount = new BigDecimal(&quot;0.00&quot;);
+  SavingsAccount duke = home.create(&quot;123&quot;, &quot;Duke&quot;, &quot;Earl&quot;, zeroAmount);
+  ...
+  duke.credit(new BigDecimal(&quot;88.50&quot;));
+  duke.debit(new BigDecimal(&quot;20.25&quot;));
+  BigDecimal balance = duke.getBalance();
+</pre>
+  
+<p>Los requesitos de las signaturas de un m&eacute;todo de negocio son los mismos 
+  tanto para beans de sesi&oacute;n como para los beans de entidad:</p>
+<UL>
+  <LI TYPE="disc">El nombre del m&eacute;todo no debe entrar en conflicto con 
+    un nombre de m&eacute;todo definido en la arquitectura EJB. Por ejemplo, no 
+    puede existir un m&eacute;todo de negocio llamado <code>ejbCreate</code> o 
+    <code>ejbActivate</code>. 
+  <LI TYPE="disc">El modificador de control de acceso debe ser <code>public</code>. 
+  <LI TYPE="disc">el modificador del m&eacute;todo no puede ser <code>final</code> 
+    o <code>static</code>. 
+  <LI TYPE="disc">Los argumentos y tipos devueltos deben ser legales para RMI. 
+    Este requisito se aplica s&oacute;lo a los m&eacute;todos definidos en una 
+    interfaz home remota, no local.
+</UL>
+<p>La cl&aacute;usula throws puede incluir las excepciones propias de la aplicaci&oacute;n. 
+  El m&eacute;todo <code>debit</code>, por ejemplo, arroja la excepci&oacute;n 
+  <code>InsufficientBalanceException</code>. Para indicar un problema de nivel 
+  de sistema, un m&eacute;todo de negoci deber&iacute;a arrojar la excepci&oacute;n<code> 
+  javax.ejb.EJBException</code>.</p>
+<h3>4.1.8 Los m&eacute;todos Home</h3>
+<p>Un m&eacute;todo home contiene la l&oacute;gica de negocio que se aplica a 
+  todos los beans de entidad de una clase particular. Sin embargo, la l&oacute;gica 
+  en un m&eacute;todo de negocio se aplica a un bean de entidad particular, una 
+  instancia con una identidad &uacute;nica. Durante la invocaci&oacute;n de un 
+  m&eacute;todo home, la instancia o bien no tiene una identidad &uacute;nica 
+  o bien no tiene un estado con el que representar un objeto de negocio. Por ello, 
+  un m&eacute;todo home no debe acceder a las variables de instancia del bean. 
+  En el caso de la persistencia gestionada por el contenedor, un m&eacute;todo 
+  home no puede tampoco acceder a relaciones.</p>
+<p>Normalmente, un m&eacute;todo home localiza una colecci&oacute;n de instancias 
+  de bean e invoca m&eacute;todos de negocio de forma iterativa a todas las instancias. 
+  En el caso de la clase <code>SavingsAccountBean</code>, un ejemplo de m&eacute;todo 
+  home es <code>ejbHomeChargeLowBalance</code>. Este m&eacute;todo aplica un cargo 
+  por servicio a todas las cuentas con balances menores de una determinada cantidad. 
+  El m&eacute;todo localiza estas cuentas invocando el m&eacute;todo <code>findInRange</code>. 
+  Al tiempo que itera a trav&eacute;ss de la colecci&oacute;n de instancias <code>SavingAccounts</code>, 
+  el m&eacute;todo <code>ejbHomeChargeForLowBalance</code> chequea el balance 
+  e invoca el m&eacute;todo <code>debit</code>. He aqu&iacute; el c&oacute;digo 
+  fuente de este m&eacute;todo:</p>
+<pre class="codigo">
+public void ejbHomeChargeForLowBalance(
+   BigDecimal minimumBalance, BigDecimal charge) 
+   throws InsufficientBalanceException {
+  
+   try {
+      SavingsAccountHome home =
+        (SavingsAccountHome)context.getEJBHome();
+      Collection c = home.findInRange(new BigDecimal(&quot;0.00&quot;),
+      minimumBalance.subtract(new BigDecimal(&quot;0.01&quot;)));
+  
+      Iterator i = c.iterator();
+  
+      while (i.hasNext()) {
+         SavingsAccount account = (SavingsAccount)i.next();
+         if (account.getBalance().compareTo(charge) == 1) {
+            account.debit(charge);
+         }
+      }
+   } catch (Exception ex) {
+      throw new EJBException(&quot;ejbHomeChargeForLowBalance: &quot; + ex.getMessage());
+   } 
+} 
+</pre>
+  
+<p>La interfaz home define un m&eacute;todo correspondiente llamado <code>chargeForLowBalance</code>. 
+  Ya que esta interfaz home es la que proporciona la vista del cliente, el programa 
+  <code>SavingsAccountClient</code> invoca el m&eacute;todo home como sigue:</p>
+<pre class="codigo">
+SavingsAccountHome home;
+...
+home.chargeForLowBalance(new BigDecimal(&quot;10.00&quot;),
+new BigDecimal(&quot;1.00&quot;));
+</pre>
+  
+<p>En una clase de bean de entidad, la implementaci&oacute;n de un m&eacute;todo 
+  home debe cumplir estas reglas:</p>
+<UL>
+  <LI TYPE="disc">El nombre de un m&eacute;todo home debe comenzar con el prefijo 
+    <code>ejbHome</code> 
+  <LI TYPE="disc">El modificador de control de acceso debe ser <code>public</code>. 
+  <LI TYPE="disc">El modificador del m&eacute;todo no puede ser <code>static</code>. 
+</UL>
+<p>La cl&aacute;usula trhows puede incluir excepciones espec&iacute;ficas de la 
+  aplicaci&oacute;n y no debe arrojar la excepci&oacute;n <code>java.rmi.RemoteException</code>.</p>
+<h3><B>4.1.9 Llamadas a la base de datos</B></h3>
+<p>La siguiente tabla resume las llamadas de acceso a la base de datos en la clase 
+  <code>SavingsAccountBean</code>. Los m&eacute;todos de negocio de la clase <code>SavingsAccountBean</code> 
+  no aparecen en la tabla porque no accede a la base de datos. En su lugar, estos 
+  m&eacute;todos de negocio actualizan las variables de instancias y la modificaci&oacute;n 
+  de la base de datos sucede cuando el contenedor EJB llama a <code>ejbStore</code>. 
+  Se podr&iacute;a haber escogido otro enfoque, en el que los propios m&eacute;todos 
+  de negocio acceden a la base de datos. La decisi&oacute;n de hacerlo de una 
+  forma u otra tiene que ver con la pol&iacute;tica de uso de transacciones.</p>
+<TABLE BORDER=1 width=388 height=279>
+ <TR>
+
+  <TD align=left VALIGN=TOP>
+M&eacute;todo
+  </TD>
+  <TD align=left VALIGN=TOP>
+Sentencia SQL
+  </TD>
+ </TR>
+ <TR>
+
+  <TD align=left VALIGN=TOP>
+ejbCreate
+  </TD>
+  <TD align=left VALIGN=TOP>
+INSERT un registro nuevo
+Devuelve la clave primaria al contenedor
+  </TD>
+ </TR>
+ <TR>
+
+  <TD align=left VALIGN=TOP>
+ejbFindByPrimaryKey
+  </TD>
+  <TD align=left VALIGN=TOP>
+SELECT el registro con una clave primaria espec&iacute;fica
+Devuelve la clave primaria al contenedor
+  </TD>
+ </TR>
+ <TR>
+
+  <TD align=left VALIGN=TOP>
+ejbFindXXX<BR>
+(ByLastName, InRange)
+  </TD>
+  <TD align=left VALIGN=TOP>
+SELECT uno o m&aacute;s registros<BR>
+Devuelve al contenedor la clave primaria o una colecci&oacute;n de claves primarias 
+  </TD>
+ </TR>
+ <TR>
+
+  <TD align=left VALIGN=TOP>
+ejbHomeXXX<BR>
+(ChargeForLowBalance)
+  </TD>
+  <TD align=left VALIGN=TOP>
+SELECT o UPDATE no ligado a una clave primaria espec&iacute;fica
+  </TD>
+ </TR>
+ <TR>
+
+  <TD align=left VALIGN=TOP>
+ejbLoad
+  </TD>
+  <TD align=left VALIGN=TOP>
+SELECT (refresca variables de instancia con valores de base de datos)
+  </TD>
+ </TR>
+ <TR>
+
+  <TD align=left VALIGN=TOP>
+ejbRemove
+  </TD>
+  <TD align=left VALIGN=TOP>
+DELETE un registro
+  </TD>
+ </TR>
+ <TR>
+
+  <TD align=left VALIGN=TOP>
+ejbStore
+  </TD>
+  <TD align=left VALIGN=TOP>
+UPDATE (almacena variables de instancia en base de datos)
+  </TD>
+</TABLE>
+<p>Antes de acceder a la base de datos hay que conectarse a ella. Eso se hace 
+  en el m&eacute;todo <code>setEntityContext</code>. El nombre de la base de datos 
+  a la que conectarse se define como una referencia mediante nombre JNDI ENC. 
+  En el fichero de configuraci&oacute;n de despliegue se define a qu&eacute; nombre 
+  JNDI real corresponde esta referencia. El m&eacute;todo <code>unsetEntityContext</code> 
+  se encarga de cerrar la conexi&oacute;n con la base de datos.</p>
+<pre class="codigo">
+private String dbName = &quot;java:comp/env/jdbc/SavingsAccountDB&quot;;
+
+public void setEntityContext(EntityContext context) {
+   this.context = context;
+   try {
+      makeConnection();
+   } catch (Exception ex) {
+      throw new EJBException(&quot;Unable to connect to database. &quot; 
+         + ex.getMessage());
+   }
+}
+
+private void makeConnection() throws NamingException, SQLException {
+   InitialContext ic = new InitialContext();
+   DataSource ds = (DataSource) ic.lookup(dbName);
+   con =  ds.getConnection();
+}
+
+public void unsetEntityContext() 
+   try {
+      con.close();
+   } catch (SQLException ex) {
+      throw new EJBException(&quot;unsetEntityContext: &quot; + ex.getMessage());
+   }
+}
+</pre>
+  
+<p>Para acceder a la base de datos se han definido unos m&eacute;todos privados, 
+  como insertRow o deleteRow. Por ejemplo, el c&oacute;digo fuente de insertRow 
+  es el siguiente:</p>
+<pre class="codigo">
+private void insertRow (String id, String firstName, String lastName, 
+  BigDecimal balance) throws SQLException {
+   String insertStatement =
+      &quot;insert into savingsaccount values ( ? , ? , ? , ? )&quot;;
+   PreparedStatement prepStmt = 
+   con.prepareStatement(insertStatement);
+  
+   prepStmt.setString(1, id);
+   prepStmt.setString(2, firstName);
+   prepStmt.setString(3, lastName);
+   prepStmt.setBigDecimal(4, balance);
+  
+   prepStmt.executeUpdate();
+   prepStmt.close();
+}</pre>
+  
+<h3>4.2 Interfaz Home</h3>
+<p>La interfaz home define los m&eacute;todos que permiten a un cliente crear 
+  y encontrar un bean de entidad. </p>
+<p>La interfaz <code>SavingsAccountHome</code> sigue a continuaci&oacute;n:</p>
+<pre class="codigo">
+import java.util.Collection;
+import java.math.BigDecimal;
+import java.rmi.RemoteException;
+import javax.ejb.*;
+
+
+public interface SavingsAccountHome extends EJBHome {
+  public SavingsAccount create(String id, String firstName, 
+  String lastName, BigDecimal balance)
+  throws RemoteException, CreateException;
+  
+  public SavingsAccount findByPrimaryKey(String id) 
+  throws FinderException, RemoteException;
+  
+  public Collection findByLastName(String lastName)
+  throws FinderException, RemoteException;
+  
+  public Collection findInRange(BigDecimal low, 
+  BigDecimal high)
+  throws FinderException, RemoteException;
+  
+  public void chargeForLowBalance(BigDecimal minimumBalance, 
+  BigDecimal charge)
+  throws InsufficientBalanceException, RemoteException;
+  }
+</pre>
+  
+<h3>4.2.1 Definici&oacute;n de m&eacute;todos create</h3>
+<p>Cada m&eacute;todo <code>create</code> en la interfaz home debe cumplir los 
+  siguientes requisitos:</p>
+<UL>
+  <LI TYPE="disc">Tiene la misma signatura que sus m&eacute;todos correspondientes 
+    <code>ejbCreate</code> en la clase bean enterprise. 
+  <LI TYPE="disc">Devuelve el tipo de la interfaz remota del enterprise bean
+  <LI TYPE="disc">La cl&aacute;usula throws incluye las excepciones especificadas 
+    por la cl&aacute;usula <code>throws</code> en los m&eacute;todos correspondientes 
+    <code>ejbCreate</code> y <code>ejbPostCreate</code>. 
+  <LI TYPE="disc">La cl&aacute;usula throws incluye la excepci&oacute;n <code>javax.ejb.CreateException</code>. 
+  <LI TYPE="disc">Si el m&eacute;todo se define en una interfaz home remota -no 
+    local-, entonces la cl&aacute;usula throws incluye la excepci&oacute;n <code>RemoteException</code>. 
+</UL>
+<h3>4.2.2 Definici&oacute;n de los m&eacute;todos de b&uacute;squeda</h3>
+<p>Cada m&eacute;todo de b&uacute;squeda en la interfaz home corresponde con un 
+  m&eacute;todo de b&uacute;squeda en la clase de bean de entidad. El nombre del 
+  m&eacute;todo finder en la interfaz home comienza con <code>find</code>, mientras 
+  que el correspondiente nombre en la clase de bean de entidad comienza por <code>ejbFind</code>. 
+  Por ejemplo, la clase <code>SavingsAccountHome</code> define el m&eacute;todo 
+  <code>findByLastName</code>, y la clase SavingsAccountBean implementa el m&eacute;todo 
+  <code>ejbFindByLastName</code>. Las reglas para definir las signaturas de los 
+  m&eacute;todos finder son similares a las de los m&eacute;todos home:</p>
+<UL>
+  <LI TYPE="disc">Tiene la misma signatura que sus m&eacute;todos correspondientes 
+    en la clase bean enterprise.
+  <LI TYPE="disc">Devuelve el tipo de la interfaz remota del enterprise bean, 
+    o una colecci&oacute;n de estos tipos
+  <LI TYPE="disc">La cl&aacute;usula throws incluye las excepciones especificadas 
+    por la cl&aacute;usula throws en los m&eacute;todos correspondientes.
+  <LI TYPE="disc">La cl&aacute;usula throws incluye la excepci&oacute;n <code>javax.ejb.FinderException</code>. 
+  <LI TYPE="disc">Si el m&eacute;todo se define en una interfaz home remota -no 
+    local-, entonces la cl&aacute;usula throws incluye la excepci&oacute;n <code>RemoteException</code>. 
+</UL>
+<h3>4.2.3 Definiciones de m&eacute;todos Home</h3>
+<p>Cada definici&oacute;n de m&eacute;todo home en la interfaz home corresponde 
+  a un m&eacute;todo home en la clase de bean de entidad. En la interfaz home, 
+  el nombre del m&eacute;todo es arbitrario, siempre que no comience por create 
+  o find. En la clase bean, el nombre del m&eacute;todo correspondiente es el 
+  mismo precedido por <code>ejbHome</code>. Por ejemplo, en la clase <code>SavingsAccountBean</code>, 
+  el nombre es <code>ejbHomeChargeForLowBalance</code>, mientras que en la interfaz 
+  <code>SavingsAccountHome</code> el nombre es <code>chargeForLowBalance</code>.</p>
+<p>La signatura del m&eacute;todo home debe seguir las misma reglas especificadas 
+  para m&eacute;todos finder en la secci&oacute;n previa (excepto que un m&eacute;todo 
+  home no arroja una excpci&oacute;n <code>FinderException</code>).</p>
+<h2>4.3 Interfaz remota</h2>
+<p>La interfaz remota extiende j<code>avax.ejb.EJBObject</code> y define los m&eacute;todos 
+  de negocio que un cliente remoto puede invocar. He aqu&iacute; la interfaz remota 
+  <code>SavingsAccountRemote</code>:</p>
+<pre class="codigo">
+import javax.ejb.EJBObject;
+import java.rmi.RemoteException;
+import java.math.BigDecimal;
+  
+public interface SavingsAccountRemote extends EJBObject {
+  
+   public void debit(BigDecimal amount)
+      throws InsufficientBalanceException, RemoteException;
+  
+   public void credit(BigDecimal amount)
+     throws RemoteException;
+  
+   public String getFirstName()
+     throws RemoteException;
+  
+   public String getLastName()
+     throws RemoteException;
+  
+   public BigDecimal getBalance()
+     throws RemoteException;
+}</pre>
+  
+<p>Los requisitos para las definiciones de m&eacute;todos en una interfaz remota 
+  son los mismos que hemos visto en beans de sesi&oacute;n y beans de entidad:</p>
+<UL>
+  <LI TYPE="disc">Cada m&eacute;todo en la interfaz remota debe emparejar un m&eacute;todo 
+    en el bean de empresa.
+  <LI TYPE="disc">Devuelve el tipo de la interfaz remota del enterprise bean, 
+    o una colecci&oacute;n de estos tipos
+  <LI TYPE="disc">La cl&aacute;usula throws incluye las excepciones especificadas 
+    por la cl&aacute;usula <code>throws</code> en los m&eacute;todos correspondientes. 
+  <LI TYPE="disc">La cl&aacute;usula throws incluye la excepci&oacute;n <code>javax.ejb.FinderException</code>. 
+  <LI TYPE="disc">Si el m&eacute;todo se define en una interfaz home remota -no 
+    local-, entonces la cl&aacute;usula <code>throws</code> incluye la excepci&oacute;n 
+    <code>RemoteException</code>. 
+</UL>
+<p>Una interfaz local tiene los mismos requisitos, con las siguientes excepciones:</p>
+<UL>
+  <LI TYPE="disc">Los tipos de los argumentos y de los valores devueltos no tienen 
+    por qu&eacute; ser v&aacute;lidos RMI.
+  <LI TYPE="disc">La cl&aacute;sula throws no incluye<code> java.rmi.RemoteException</code> 
+</UL>
+<h2>4.4 El descriptor de despliegue</h2>
+<p>En la primera parte del fichero de despcripci&oacute;n del despliegue se definen 
+  las caracter&iacute;sticas b&aacute;sicas del despliegue del bean</p>
+<pre class="codigo"> 
+  &lt;enterprise-beans&gt;
+     &lt;entity&gt;
+        &lt;display-name&gt;SavingsAccountEJB&lt;/display-name&gt;
+        &lt;ejb-name&gt;SavingsAccountEJB&lt;/ejb-name&gt;
+        &lt;home&gt;SavingsAccountHome&lt;/home&gt;
+        &lt;remote&gt;SavingsAccount&lt;/remote&gt;
+        &lt;ejb-class&gt;SavingsAccountBean&lt;/ejb-class&gt;
+        &lt;persistence-type&gt;Bean&lt;/persistence-type&gt;
+        &lt;prim-key-class&gt;java.lang.String&lt;/prim-key-class&gt;
+        &lt;reentrant&gt;False&lt;/reentrant&gt;
+        &lt;security-identity&gt;
+           &lt;description&gt;&lt;/description&gt;
+           &lt;use-caller-identity&gt;&lt;/use-caller-identity&gt;
+        &lt;/security-identity&gt;
+        &lt;resource-ref&gt;
+           &lt;res-ref-name&gt;jdbc/SavingsAccountDB&lt;/res-ref-name&gt;
+           &lt;res-type&gt;javax.sql.DataSource&lt;/res-type&gt;
+           &lt;res-auth&gt;Container&lt;/res-auth&gt;
+           &lt;res-sharing-scope&gt;Shareable&lt;/res-sharing-scope&gt;
+        &lt;/resource-ref&gt;
+     &lt;/entity&gt;
+  &lt;/enterprise-beans&gt;</pre>
+  
+  
+<p>La segunda parte del fichero de descripci&oacute;n del despliegue contiene 
+  las caracter&iacute;sticas de seguridad y transacciones de cada uno de los m&eacute;todos 
+  del EJB</p>
+<pre class="codigo">&lt;assembly-descriptor&gt;
+   &lt;method-permission&gt;
+      &lt;method&gt;
+         &lt;ejb-name&gt;SavingsAccountEJB&lt;/ejb-name&gt;
+		 &lt;method-intf&gt;Home&lt;/method-intf&gt;
+		 &lt;method-name&gt;create&lt;/method-name&gt;
+		 &lt;method-params&gt;
+		    &lt;method-param&gt;java.lang.String&lt;/method-param&gt;
+		    &lt;method-param&gt;java.lang.String&lt;/method-param&gt;
+		    &lt;method-param&gt;java.lang.String&lt;/method-param&gt;  
+		    &lt;method-param&gt;java.math.BigDecimal&lt;/method-param&gt;
+		 &lt;/method-params&gt;
+	  &lt;/method&gt;
+	  ...
+   &lt;container-transaction&gt;
+      &lt;method&gt;
+	  ...
+	  &lt;/method&gt;
+   &lt;trans-attribute&gt;Required&lt;/trans-attribute&gt;
+&lt;/assembly-drescriptor&gt;</pre>
+<p>&nbsp;</p>
+</BODY>
+</HTML>
+

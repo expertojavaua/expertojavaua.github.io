@@ -1,0 +1,591 @@
+<html>
+<head>
+<title>Tema 4: XML y Bases de Datos</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<h1><span class="section">4. XML y Bases de Datos</span> </h1>
+<p>XML proporciona un marco est&aacute;ndar para intercambio de datos entre m&uacute;ltiples 
+  aplicaciones. Concretamente, XML ha sido asociado mayormente a aplicaciones 
+  en Internet debido a que el contenido de un documento XML es simplemente texto, 
+  lo cual facilita el intercambio de documentos a trav&eacute;s de los distintos 
+  protocolos de Internet, sistemas operativos y &quot;cortafuegos&quot; (<i>firewalls</i>). 
+  Por otro lado, las aplicaciones que manejan datos, se benefician del uso de 
+  bases de datos (BD), para almacenar, consultar y modificar dichos datos. Es 
+  por ello que se est&aacute;n realizando esfuerzos para poder manejar documentos 
+  XML almacenados en una base de datos.</p>
+<p>Concretamente, vamos a centrarnos en las soluciones proporcionadas por Oracle, 
+  utilizando el lenguaje Java. Oracle permite utilizar documentos XML y bases 
+  de datos de dos formas distintas:</p>
+<ul>
+  <li>Se pueden manejar datos XML utilizando un esquema relacional, es decir, 
+    un documento XML puede almacenarse en la BD previa conversi&oacute;n del documento 
+    en tablas de la base de datos. De igual forma, se pueden recuperar tablas 
+    relacionales de la base de datos y convertirlas en formato XML. Para ello 
+    se utiliza la utilidad <u>SQL XML</u> </li>
+  <li>Se pueden manejar datos XML almacen&aacute;ndolos y recuper&aacute;ndolos 
+    en la BD como tales, sin una conversi&oacute;n previa. Esto se consigue mediante 
+    <u>XML DB</u> </li>
+</ul>
+En este tema analizaremos las dos aproximaciones. 
+<h2 class="subsection">4.1. Oracle XML SQL Utility (XSU)</h2>
+<p>La utilidad XSU de Oracle consiste en un conjunto de clases Java que aceptan 
+  <i>queries</i> desde las aplicaciones, acceden a la BD mediante JDBC, y devuelven 
+  el resultado del <i>query</i> en formato XML. Como proceso complementario, XSU 
+  acepta un documento XML que se adapta al esquema de la BD y guarda los datos 
+  en funci&oacute;n de dicho esquema, tal y como se muestra a continuaci&oacute;n.</p>
+<div align="center"> <img border="0" src="XSU3.gif"> </div>
+<p>La estructura del documento XML resultante est&aacute; basado en la estructura 
+  interna de la base de datos, de forma que:</p>
+<ul>
+  <li>Las columnas de las tablas pasan a ser elementos del nivel más alto</li>
+  <li>Los valores escalares pasan a ser elementos con contenido de s&oacute;lo 
+    texto </li>
+</ul> 
+<p>La utilidad XML SQL genera:</p>
+<ul>
+  <li> Una representación string del documento XML. Se suele usar esta representación si 
+       se debe devolver el documento XML como respuesta a una petición de un usuario </li>
+  <li> Un árbol DOM en memoria de elementos. Se suele usar esta representación si es necesario
+       utilizarlo para transformalo utilizando métodos DOM o modificar el XML de alguna manera
+	   </li> 
+</ul>
+<p>Mediante la utilidad XSU podemos realizar lo siguiente:</p>
+<ul>
+  <li>Transformar datos recuperados desde tablas de una base de datos relacional 
+    en documentos XML</li>
+  <li>Extraer datos de un documento XML e insertarlos en las columnas correspondientes 
+    de una tabla</li>
+  <li>Extraer datos de un documento XML y utilizarlos para actualizar o borrar 
+    valores de columnas de una tabla</li> 
+</ul>
+
+<p>El mapeado por defecto de SQL a XML (y viceversa), consiste en incluir las 
+  filas devueltas por un <i>query</i> SQL en una etiqueta <code>&lt;ROWSET&gt;</code>, 
+  que constituye el elemento <code>&lt;ROWSET&gt;</code>. Est elemento es tambi&eacute;n 
+  el elemento ra&iacute;z del documento XML generado. Dicho elemento <code>&lt;ROWSET&gt;</code> 
+  contiene uno o m&aacute;s elementos <code>&lt;ROW&gt;</code>. Cada uno de los 
+  elementos <code>&lt;ROW&gt;</code> contiene los datos de una de las filas devueltas 
+  de la base de datos. Espec&iacute;ficamente, cada elemento <code>&lt;ROW&gt;</code> 
+  contiene uno o m&aacute;s elementos cuyos nombre y contenido son los de las 
+  columnas de la base de datos especificados en la lista <code>SELECT</code> del 
+  <i>query</i> SQL.</p>
+<p>Por ejemplo, consideremos la siguiente tabla denominada <code>emp</code>:</p>
+<pre class="codigo">CREATE TABLE emp
+{ EMPNO NUMBER,
+  ENAME VARCHAR2 (20),
+  JOB VARCHAR2 (20),
+  MGR NUMBER,
+  HIREDATE DATE,
+  SAL NUMBER,
+  DEPTNO NUMBER
+};
+</pre>
+<p>XSU puede generar el siguiente documento especificando el <i>query</i> <code>select 
+  * from emp</code>: </p>
+<pre class="codigo">&lt;?xml version='1.0'?&gt;
+&lt;ROWSET&gt;
+  &lt;ROW num=&quot;1&quot;&gt;
+    &lt;EMPNO&gt;7369&lt;/EMPNO&gt;
+    &lt;ENAME&gt;Smith&lt;/ENAME&gt;
+    &lt;JOB&gt;CLERK&lt;/JOB&gt;
+    &lt;MGR&gt;7902&lt;/MGR&gt;
+    &lt;HIREDATE&gt;12/17/1980 0:0:0&lt;/HIREDATE&gt;
+    &lt;SAL&gt;800&lt;/sal&gt;
+    &lt;DEPTNO&gt;20&lt;/DEPTNO&gt;
+  &lt;ROW&gt;
+  &lt;!-- filas adicionales ... --&gt;
+&lt;/ROWSET&gt;
+};
+</pre>
+<p>Las clases Java que implementan la utilidad XSU son:</p>
+<ul>
+  <li> <code>oracle.xml.sql.query.OracleXMLQuery</code>: API para generación de 
+    documentos XML</li>
+  <li> <code>oracle.xml.sql.dml.OracleXMLSave</code>: API para guardar, insertar, 
+    actualizar y borrar</li>
+</ul>
+Los pasos a seguir para generar documentos XML utilizando la clase <code>OracleXMLQuery</code>, 
+son los siguientes: 
+<ul>
+  <li> Crear una conexión</li>
+  <pre class="codigo">
+//importar el driver de Oracle
+import oracle.jdbc.driver.*; 
+//cargar el driver JDBC de Oracle
+DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
+//crear la conexi&oacute;n
+Connection conn=
+    DriverManager.getConnection
+        (&quot;jdbc:oracle:thin:@www.rvg.ua.es:1521:j2eebd&quot;,&quot;schema&quot;,&quot;passwd&quot;);</pre>
+  <li> Crear una instancia de <code>OracleXMLQuery</code> proporcionando un <i>string</i> 
+    SQL o un objeto <code>ResultSet</code></li>
+  <pre class="codigo">import oracle.xml.sql.query.OracleSMLQuery;
+OracleXMLQuery qry = new OracleXMLQuery (conn, "select * from emp*");
+</pre>
+  <li> Obtener el resultado como un árbol DOM o como un <i>string</i> XML</li>
+  <pre class="codigo">//para obtener el resultado como un string
+String xmlString = qry.getXMLString;</pre>
+  <pre class="codigo">//para obtener el resultado como un &aacute;rbol DOM
+org.w3c.DOM.Document domDos = qry.getXMLDOM();
+</pre>
+</ul>
+<p><u>Ejemplo1</u>. Obtenci&oacute;n de un <i>String</i> a partir de una sentencia 
+  SQL. </p>
+<p>Se trata de recuperar datos de una tabla mediante una sentencia SQL y obtener 
+  el resultado como un documento XML, representado por un <code>String</code>.</p>
+<pre class="codigo">import oracle.jdbc.driver.*;
+import oracle.xml.sql.query.OracleXMLQuery;
+import java.lang.*;
+import java.sql.*;
+
+
+class testXMLSQL {
+
+   public static void main(String[] argv)
+   {
+
+     try{
+      // create the connection
+      Connection conn  = getConnection("scott","tiger");
+
+      // Create the query class.
+      OracleXMLQuery qry = new <b>OracleXMLQuery</b>(conn, "select * from emp");
+
+      // Get the XML string
+      String str = qry.<b>getXMLString</b>();
+
+      // Print the XML output
+      System.out.println(" The XML output is:\n"+str);
+      qry.close();
+     }catch(SQLException e){
+      System.out.println(e.toString());
+     }
+   }
+
+   // Creaci&oacute;n de la conexi&oacute;n dado un nombre de usuario y una clave
+   private static Connection getConnection(String username, String password)
+     throws SQLException
+   {
+       DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
+      // Create the connection using the JDBC driver
+       Connection conn =
+        DriverManager.getConnection
+          (&quot;jdbc:oracle:thin:@www.rvg.ua.es:1521:j2eebd&quot;, username,password);
+      return conn;
+   }
+}
+</pre>
+<p>Si se quiere generar un &aacute;rbol DOM en lugar de un <i>String</i>, podemos 
+  escribir el siguiente c&oacute;digo:</p>
+<pre class="codigo">import org.w3c.dom.*;
+import oracle.xml.parser.v2.*;
+import java.sql.*;
+import oracle.xml.sql.query.OracleXMLQuery;
+import java.io.*;
+
+ class domTest{
+
+   public static void main(String[] argv)
+   {
+      try{
+       Connection conn  = getConnection("scott","tiger");
+       OracleXMLQuery qry = new OracleXMLQuery(conn, "select * from emp");
+
+       // Obtenci&oacute;n del documento DOM
+       XMLDocument domDoc = (XMLDocument)qry.<b>getXMLDOM</b>();
+
+       // Escritura directamente a partir de DOM
+       domDoc.print(System.out);
+
+       // Si se prefiere escribir en un string buffer hacer lo siguiente:
+       StringWriter s = new StringWriter(10000);
+       domDoc.print(new PrintWriter(s));
+       System.out.println(" The string version ---> "+s.toString());
+
+       qry.close(); // Siempre se debe cerrar el query!!
+      }catch(Exception e){
+        System.out.println(e.toString());
+      }
+    }
+    //getConnection es igual que el de la clase testXMLSQL
+    private static Connection getConnection(...){...}
+}
+</pre>
+<p><u>Ejemplo 2</u>. Obtenci&oacute;n de un documento XML a partir de <code>ResultSets</code> 
+</p>
+<p>En este caso, se proporciona un objeto <code>ResultSet</code> a la sentencia 
+  <code>OracleXMLQuery</code>. El objeto <code>ResultSet</code> se utiliza para 
+  &quot;movernos&quot; por el conjunto de resultados. </p>
+<pre class="codigo">public class pageTest()
+{
+   Connection conn;
+   OracleXMLQuery qry;
+   ResultSet rset;
+   int lastRow = 0;
+
+   public pageTest(String sqlQuery)
+   {
+     conn  = getConnection("scott","tiger");
+     Statement stmt = conn.createStatement(sqlQuery);// create a scrollable Rset
+     <b>ResultSet rset</b> = stmt.executeQuery();  // get the result set..
+     qry = new <b>OracleXMLQuery</b>(conn,rset);   // create a OracleXMLQuery instance
+     qry.keepObjectOpen(true); // Don't lose state after the first fetch
+   }
+  
+   // Returns the next XML page..!
+   public String getResult(int startRow, int endRow)
+   {
+     rset.scroll(lastRow-startRow);  // scroll inside the result set
+     qry.setMaxRows(endRow-startRow); // set the max # of rows to retrieve..!
+     return qry.getXMLString();
+   }
+
+   // Function to still perform the next page. 
+   public String nextPage()
+   {
+     String result = getResult(lastRow,lastRow+10);
+     lastRow+= 10;
+     return result;
+   }
+
+   public void close()
+   {
+     stmt.close();   // close the statement..
+     conn.close();   // close the connection
+     qry.close();    // close the query..
+   }
+  
+   public void main(String[] argv)
+   {
+     pageTest test = new pageTest("select * from emp");
+
+     int i = 0;
+     // Get the data one page at a time..!!!!!
+     while ((str = test.getResult(i,i+10))!= null)
+     {
+         System.out.println(str);
+         i+= 10;
+     }
+     test.close();
+   }
+} 
+
+</pre>
+<p><u>Ejemplo 3</u>. Inserci&oacute;n de valores en Columnas mediante <code>OracleXMLSave</code> 
+</p>
+<p>En este caso la entrada es un fichero XML con etiquetas <code>ROW</code> y 
+  <code>ROWSET</code>. Utilizaremos la tabla <code>emp</code>, mostrada anteriormente. 
+  Asumimos que proporcionamos los valores solamente para el n&uacute;mero de empleado 
+  (<code>EMPNO</code>), nombre (<code>ENAME</code>), y trabajo (<code>JOB</code>), 
+  y que el resto de campos se &quot;rellenan&quot; autom&aacute;ticamente. Primero 
+  creamos una lista de nombres de columna que queremos insertar, y la pasamos 
+  a la instancia de <code>OracleXMLSave</code>.</p>
+<pre class="codigo">import java.sql.*;
+import oracle.xml.sql.dml.OracleXMLSave;
+public class testInsert
+{
+   public static void main(String argv[])
+     throws SQLException
+   {
+      Connection conn = getConnection("scott","tiger");
+      OracleXMLSave sav = new <b>OracleXMLSave</b>(conn, "scott.emp");
+
+      String [] colNames = new String[5];
+      colNames[0] = "EMPNO";
+      colNames[1] = "ENAME";
+      colNames[2] = "JOB";
+
+      sav.setUpdateColumnList(colNames); // set the columns to update..!
+
+      // Assume that the user passes in this document as the first argument!
+      sav.insertXML(argv[0]);
+      sav.close();
+   }
+   //getConnection es igual que el de la clase testXMLSQL
+    private static Connection getConnection(...){...}
+}
+</pre>
+<p>Se genera una sentencia <code>insert</code> con la forma:</p>
+<pre class="codigo">insert into scott.emp (EMPNO, ENAME, JOB) VALUES (?, ?, ?); </pre>
+<p>Si el documento insertado contiene valores para el resto de columnas (<code>JOB, 
+  HIREDATE,...</code>), &eacute;stos se ignoran. Se realiza un <code>insert</code> 
+  por cada elemento <code>ROW</code> presente en la entrada. Por defecto, estas 
+  inserciones son encoladas. </p>
+<p><u>Ejemplo 4</u>. Actualizaci&oacute;n de una tabla usando las claves mediante 
+  <code>OracleXMLSave</code> </p>
+<p>Vamos a actualizar ciertos valores de una tabla. Supongamos que queremos actualizar 
+  el salario de un empleado y el departamento en el que trabaja. Se dispone del 
+  siguiente documento XML como entrada: </p>
+<pre class="codigo">
+  &lt;ROWSET&gt;<br>    &lt;ROW num=&quot;1&quot;&gt;<br>      &lt;EMPNO&gt;7369&lt;/EMPNO&gt;<br>      &lt;SAL&gt;1800&lt;/SAL&gt;<br>      &lt;DEPTNO&gt;30&lt;/DEPTNO&gt;<br>    &lt;/ROW&gt;<br>    &lt;ROW&gt;<br>      &lt;EMPNO&gt;2290&lt;/EMPNO&gt;<br>      &lt;SAL&gt;2000&lt;/SAL&gt;<br>      &lt;HIREDATE&gt;12/31/1992&lt;/HIREDATE&gt;<br>    &lt;!-- additional rows ... --&gt;<br>&lt;/ROWSET&gt;
+</pre>
+Para actualizar los valores correspondientes se debe suministrar a la utilidad 
+XSU la lista de nombres de columnas clave. &Eacute;stas forman parte de la cl&aacute;usula 
+<code>WHERE</code> en la sentencia <code>UPDATE</code> correspondiente. En la 
+tabla anterior, el n&uacute;mero de empleado (<code>EMPNO</code>) es el clampo 
+clave. El c&oacute;digo para realizar la actualizaci&oacute;n se muestra a continuaci&oacute;n: 
+<pre class="codigo">import java.sql.*;
+import oracle.xml.sql.dml.OracleXMLSave;
+public class testUpdate
+{
+   public static void main(String argv[])
+     throws SQLException
+   {
+      Connection conn = getConnection("scott","tiger");
+      OracleXMLSave sav = new <b>OracleXMLSave</b>(conn, "scott.emp");
+
+      String [] keyColNames = new String[1];
+      keyColNames[0] = "EMPNO";
+      sav.setKeyColumnList(keyColNames);
+
+      // Assume that the user passes in this document as the first argument!
+      sav.updateXML(argv[0]);
+      sav.close();
+   }
+   //getConnection es igual que el de la clase testXMLSQL
+    private static Connection getConnection(...){...}
+}</pre>
+<p>En este ejemplo, se generan dos sentencias <code>UPDATE</code>. Para el primer 
+  elemento <code>ROW</code>, se genera una sentencia <code>UPDATE</code> para 
+  actualizar los campos <code>SAL</code> y <code>JOB</code> como sigue: </p>
+<pre class="codigo">update scott.emp SET SAL = 1800 and DEPTNO = 30 WHERE EMPNO = 7369; </pre>
+<p>Para el segundo elemento <code>ROW</code>: </p>
+<pre class="codigo">update scott.emp SET SAL = 2000 and HIREDATE = 12/31/1992 WHERE EMPNO = 2290; 
+</pre>
+<p><u>Ejemplo 5</u>. Borrado de valores clave especificados mediante<code> OracleXMLSave</code></p>
+<p>Para realizar borrados a partir de documentos, se puede especificar la lista 
+  de columnas clave. Dichas columnas se usan en cl&aacute;usulas <code>WHERE</code> 
+  de sentencias <code>DELETE</code> statement. Si no se proporciona una lista 
+  de columnas clave, entoces se crea una nueva sentencia <code>DELETE</code> para 
+  cada elemento <code>ROW</code> del documento XML, en donde la lista de columnas 
+  en la cl&aacute;usula <code>WHERE</code> se instancia con las proporcionadas 
+  en el elemento <code>ROW</code>.</p>
+<p>En este caso, vamos a proporicionar como entrada el documento XML utilizado 
+  para el Ejemplo 4. Pretendemos utilizar la sentencia <code>DELETE</code> &uacute;nicamente 
+  con valores clave como predicados, para lo cual utilizamos la funci&oacute;n 
+  <code>setKeyColumnList</code>.</p>
+<pre class="codigo">import java.sql.*;
+import oracle.xml.sql.dml.OracleXMLSave;
+public class testDelete
+{
+   public static void main(String argv[])
+     throws SQLException
+   {
+      Connection conn = getConnection("scott","tiger");
+      OracleXMLSave sav = new <b>OracleXMLSave</b>(conn, "scott.emp");
+
+      String [] keyColNames = new String[1];
+      keyColNames[0] = "EMPNO";
+      sav.<b>setKeyColumnList</b>(keyColNames);
+
+      // Assume that the user passes in this document as the first argument!
+      sav.deleteXML(argv[0]);
+      sav.close();
+   }
+   //getConnection es igual que el de la clase testXMLSQL
+    private static Connection getConnection(...){...}
+}
+</pre>
+En este caso se genera una &uacute;nica sentencia <code>DELETE</code> con la forma: 
+<pre class="codigo">DELETE FROM scott.emp WHERE EMPNO=? </pre>
+<h2 class="subsection">4.2. Oracle XML DB</h2>
+<p>La mayor parte de los datos de las aplicaciones y contenidos Web se almacenan 
+  en bases de datos relacionales, sistemas de ficheros, o una combinaci&oacute;n 
+  de ambos. A medida que el volumen de datos XML transportados aumenta, el coste 
+  de regenerar estos documentos XML se incrementa y los m&eacute;todos de almacenamiento 
+  se vuelven menos efectivos para contener los datos XML. Oracle XML DB es una 
+  tecnolog&iacute;a nativa para almacenamiento y recuperaci&oacute;n de documentos 
+  XML. El objetivo es integrar las ventajas de la tecnolog&iacute;a de una base 
+  de datos relacional con la tecnolog&iacute;a XML.</p>
+
+<p>Para facilitar el manejo nativo de datos XML en la base de datos Oracle se 
+  utiliza el tipo de datos <code>XMLType</code>, pudiendo elegir entre almacenar 
+  el documento XML como una columna <code>XMLType</code>, o como una tabla <code>XMLType</code>.</p>
+<p>Java proporciona un API para manejar <code>XMLTYpe</code> mediante <i>queries</i> 
+  SQL. Se pueden crear tablas y columnas <code>XMLType</code>, as&iacute; como 
+  consultar y recuperar datos de cualquier documento XML, independientemente de 
+  c&oacute;mo haya sido almacenado en la BD<i></i>. Dicho API est&aacute; formado 
+  por dos paquetes:</p>
+<ul>
+  <li><code>oracle.xdb</code>: en donde se define la clase <code>XMLType</code> 
+    <br>
+    Los principales métodos de la clase XMLType son: 
+    <table width="96%" border="1">
+      <tr> 
+        <td><code>createXML()</code><br>
+        </td>
+        <td>Crea un XMLType. Usar este método cuando se accede a los datos a través 
+          de JDBC </td>
+      </tr>
+      <tr> 
+        <td><code>getStringVal()</code></td>
+        <td>Recupera un valor String conteniendo los datos XML del XMLType correspondiente 
+        </td>
+      </tr>
+      <tr> 
+        <td><code>extract()</code></td>
+        <td>Extrae un conjunto dado de nodos desde XMLType </td>
+      </tr>
+      <tr> 
+        <td><code>existsNode()</code></td>
+        <td>Comprueba la existencia de un conjunto dado de nodos en XMLType </td>
+      </tr>
+      <tr> 
+        <td><code>transform()</code></td>
+        <td>Transforma MLType usando un documento XSL</td>
+      </tr>
+      <tr> 
+        <td><code>isFragment()</code></td>
+        <td>Comprueba si XMLType es un documento o un fragmento de él</td>
+      </tr>
+      <tr> 
+        <td><code>getDOM()</code></td>
+        <td>Recupera el documento DOM asociado con el XMLType</td>
+      </tr>
+    </table>
+    <br>
+  </li>
+  <li><code>oracle.xdb.dom</code>: implementa las interfaces definidas por <code>org.w3c.dom</code> 
+    <br>
+    La clase <code>XMLDocument()</code> representa el DOM del documento XML correspondiente. 
+    Se puede recuperar el <code>XMLType</code> asociado mediante la función <code>getXMLType()</code> 
+    de la clase <code>XMLDocument</code></li>
+</ul>
+<p>Para acceder a datos <code>XMLType</code> usando JDBC se debe usar la clase 
+  <code>oracle.xdb.XMLType</code>, concretamente el m&eacute;todo <code>createXML()</code>:</p>
+<pre class="codigo">import oracle.xdb.XMLType; 
+            ... 
+   DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
+   Connection conn = 
+    DriverManager.getConnection
+         (&quot;jdbc:oracle:thin:@www.rvg.ua.es:1521:j2eebd&quot;,&quot;schema&quot;,&quot;passwd&quot;);
+
+   OraclePreparedStatement stmt = (OraclePreparedStatement) 
+                     conn.prepareStatement("select e.poDoc from po_xml_tab e"); 
+       ResultSet rset = stmt.executeQuery(); 
+       OracleResultSet orset = (OracleResultSet) rset; 
+
+   while(orset.next())
+        { 
+       // get the XMLType 
+       XMLType poxml = XMLType.<b>createXML</b>(orset.getOPAQUE(1)); 
+       // get the XMLDocument as a string... 
+   Document podoc = (Document)poxml.getDOM(); 
+</pre>
+<p>Se puede <u>seleccionar</u> el tipo de datos XMLType en JDBC de dos maneras 
+  distintas:</p>
+<ul>
+  <li>Usando <code>getStringVal()</code> en SQL y devolviendo el resultado como 
+    <code>java.lang.String</code> en Java: 
+    <pre class="codigo"> ...
+OraclePreparedStatement stmt = 
+    (OraclePreparedStatement) conn.prepareStatement(
+          "e.poDoc.<b>getStringVal</b>() poString "+
+          " from po_xml_tab e");
+
+ResultSet rset = stmt.executeQuery();
+OracleResultSet orset = (OracleResultSet) rset;
+
+while(orset.next()){
+// the first argument is a string..
+String poString = orset.getString(1);
+}
+</pre>
+  </li>
+  <li>Usando la llamada <code>getOPAQUE()</code> en <code>PreparedStatement</code> 
+    para obtener la toda la instancia <code>XMLType</code>, y usar el constructor 
+    <code>XMLType</code>. A continuación se pueden usar las funciones Java sobre 
+    la clase <code>XMLType</code> para acceder a los datos
+	<pre class="codigo">import oracle.xdb.XMLType;
+...
+
+ OraclePreparedStatement stmt = 
+    (OraclePreparedStatement) conn.prepareStatement(
+          "select e.poDoc from po_xml_tab e");
+
+ResultSet rset = stmt.executeQuery();
+OracleResultSet orset = (OracleResultSet) rset;
+
+// get the XMLType
+XMLType poxml = XMLType(orset.<b>getOPAQUE</b>(1));
+
+// get the XML as a string...
+String poString = poxml.getStringVal();
+
+	</pre>
+</ul>
+<p>Se puede utilizar tambi&eacute;n el m&eacute;todo <code>getObject()</code> 
+  para obtener directamente <code>XMLType</code> a partir del <code>ResultSet</code>:</p>
+<pre class="codigo">import oracle.xdb.XMLType;
+...
+
+ OraclePreparedStatement stmt = 
+    (OraclePreparedStatement) conn.prepareStatement(
+          "select e.poDoc from po_xml_tab e");
+
+ResultSet rset = stmt.executeQuery();
+OracleResultSet orset = (OracleResultSet) rset;
+while(orset.next()) {
+
+// get the XMLType
+XMLType poxml = (XMLType)orset.<b>getObject</b>(1);
+
+// get the XML as a string...
+String poString = poxml.getStringVal();
+}
+
+</pre>
+<p>La <u>actualizaci&oacute;n/Inserci&oacute;n/Borrado</u> de datos XMLType usando 
+  JDBC tambi&eacute;n se puede realizar de dos formas:</p>
+<ul>
+  <li> Instanciando un String en una sentencia <code>INSERT/UPDATE/DELETE</code>, 
+    y usar el constructor <code>XMLType</code> dentro de la sentencia SQL: 
+    <pre class="codigo">OraclePreparedStatement stmt = 
+    (OraclePreparedStatement) conn.prepareStatement(
+        "update po_xml_tab set poDoc = XMLType(?) ");
+
+// the second argument is a string..
+String poString = &quot;&lt;PO&gt;&lt;PONO&gt;200&lt;/PONO&gt;&lt;PNAME&gt;PO_2&lt;/PNAME&gt;&lt;/PO&gt;&quot;;
+
+// now bind the string..
+stmt.setString(1,poString);
+stmt.execute();
+</pre>
+  </li>
+  <li> Usando una llamada a <code>setObject()</code> (o <code>setOPAQUE()</code>) 
+    en <code>PreparedStatement</code> para determinar la instancia <code>XMLType</code>: 
+    <pre class="codigo">import oracle.xdb.XMLType;
+...
+OraclePreparedStatement stmt = 
+    (OraclePreparedStatement) conn.prepareStatement(
+        "update po_xml_tab set poDoc = ? ");
+
+// the second argument is a string
+String poString = &quot;&lt;PO&gt;&lt;PONO&gt;200&lt;/PONO&gt;&lt;PNAME&gt;PO_2&lt;/PNAME&gt;&lt;/PO&gt;&quot;;
+XMLType poXML = XMLType.createXML(conn, poString);
+
+// now bind the string..
+stmt.setObject(1,poXML);
+stmt.execute();
+</pre>
+  </li>
+</ul>
+<p><u>Ejemplo 6</u>. Actualizaci&oacute;n del elemento <code>discount</code> dentro 
+  de la orden de compra, almacenada en una columna <code>XMLType</code>. Para 
+  localizar el elemento se utiliza una expresi&oacute;n basada en XPath. Se actualiza 
+  el &aacute;rbol DOM en memoria y se escribe el XML actualizado en la columna 
+  correspondiente.</p>
+<pre class=codigo>//CLASSPATH debe contener classes12.zip, xmlparserv2.jar, y oraxdb.jar
+<br>import java.sql.*;<br>import java.io.*;<br>import oracle.xml.parser.v2.*;<br>import org.xml.sax.*;<br>import org.w3c.dom.*;<br>import oracle.jdbc.driver.*;<br>import oracle.sql.*;<br>import oracle.xdb.XMLType;<br>
+public class tkxmtpje<br>{<br>  static String conStr = &quot;jdbc:oracle:oci8:@&quot;;<br>  static String user = &quot;scott&quot;;<br>  static String pass = &quot;tiger&quot;;<br>  static String qryStr =<br>    &quot;SELECT x.poDoc from po_xml_tab x &quot;+<br>    &quot;WHERE x.poDoc.extract(<b>'/PO/PONO/text()'</b>).getNumberVal()=200&quot;;
+<br>  static String updateXML(String xmlTypeStr)<br>  {<br>    System.out.println(&quot;\n===============================&quot;);<br>    System.out.println(&quot;xmlType.getStringVal():&quot;);<br>    System.out.println(xmlTypeStr);<br>    System.out.println(&quot;===============================&quot;);<br>    String outXML = null;<br>    try{<br>    DOMParser parser = new DOMParser();<br>    parser.setValidationMode(false);
+    parser.setPreserveWhitespace (true);<br>    parser.parse(new StringReader(xmlTypeStr));<br>    System.out.println(&quot;xmlType.getStringVal(): xml String is well-formed&quot;);<br>    XMLDocument doc = parser.getDocument();<br>    NodeList nl = doc.getElementsByTagName(&quot;DISCOUNT&quot;);<br>    for(int i=0;i&lt;nl.getLength();i++){<br>      XMLElement discount = (XMLElement)nl.item(i);<br>      XMLNode textNode = (XMLNode)discount.getFirstChild();<br>      textNode.setNodeValue(&quot;10&quot;);<br>    } //end for<br>    StringWriter sw = new StringWriter();<br>    doc.print(new PrintWriter(sw));<br>    outXML = sw.toString();<br>    //print modified xml<br>    System.out.println(&quot;\n===============================&quot;);<br>    System.out.println(&quot;Updated PurchaseOrder:&quot;);<br>    System.out.println(outXML);<br>    System.out.println(&quot;===============================&quot;);<br>    }<br>    catch ( Exception e )<br>    {<br>      e.printStackTrace(System.out);<br>    }<br>    return outXML;<br>  }
+<br>  public static void main(String args[]) throws Exception<br>  {<br>    try{<br>     System.out.println(&quot;qryStr=&quot;+ qryStr);<br>     DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());<br>     Connection conn =<br>     DriverManager.getConnection
+         (&quot;jdbc:oracle:thin:@rvg7.i3a.ua.es:j2eebd&quot;, user, pass);<br>     Statement s = conn.createStatement();
+     OraclePreparedStatement stmt;<br>     ResultSet rset = s.executeQuery(qryStr);<br>     OracleResultSet orset = (OracleResultSet) rset;<br>     while(orset.next()){<br>      <b>//retrieve PurchaseOrder xml document from database</b><br>      XMLType xt = XMLType.createXML(orset.getOPAQUE(1));<br>      <b>//store this PurchaseOrder in po_xml_hist table</b><br>      stmt = (OraclePreparedStatement)conn.prepareStatement(<br>        &quot;insert into po_xml_hist values(?)&quot;);<br>      stmt.setObject(1,xt); // bind the XMLType instance<br>      stmt.execute();<br>      <b>//update &quot;DISCOUNT&quot; element</b><br>      String newXML = <b>updateXML</b>(xt.getStringVal());<br>     <b> // create a new instance of an XMLtype from the updated value</b><br>      xt = XMLType.createXML(conn,newXML);<br>     <b> // update PurchaseOrder xml document in database</b><br>      stmt = (OraclePreparedStatement)conn.prepareStatement(<br>           &quot;update po_xml_tab x set x.poDoc =? where &quot;+<br>           &quot;x.poDoc.extract(<b>'/PO/PONO/text()'</b>).getNumberVal()=200&quot;);<br>      stmt.setObject(1,xt); // bind the XMLType instance<br>      stmt.execute();<br>      conn.commit();<br>      System.out.println(&quot;PurchaseOrder 200 Updated!&quot;);<br>     } //end while<br>    <b>//delete PurchaseOrder 1001</b><br>    s.execute(&quot;delete from po_xml x&quot;+<br>      &quot;where x.xpo.extract&quot;+<br>      &quot;('/PurchaseOrder/PONO/text()').getNumberVal()=1001&quot;);<br>    System.out.println(&quot;PurchaseOrder 1001 deleted!&quot;);<br>    }<br>    catch( Exception e )<br>    {<br>      e.printStackTrace(System.out);
+    }<br>  }<br>}</pre>
+</body>
+</html>

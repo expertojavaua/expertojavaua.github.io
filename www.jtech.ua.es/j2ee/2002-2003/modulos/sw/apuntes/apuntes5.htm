@@ -1,0 +1,1307 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+  <title>Tema 5: Acceso a registros XML</title>
+                                    
+  <meta content="text/html; charset=iso-8859-1"
+ http-equiv="Content-Type">
+                   
+  <link href="http://www.jtech.ua.es/j2ee/2002-2003/sw/apuntes/apuntes.css" rel="stylesheet" type="text/css">
+                     
+  <meta content="Microsoft FrontPage 4.0" name="GENERATOR">
+<link href="../../../apuntes.css" rel="stylesheet" type="text/css">
+</head>
+  <body bgcolor="#ffffff" text="#000000">
+ 
+<h1>5. Registros XML</h1>
+ 
+<p>Un registro es una infraestructura que nos permitir&aacute; publicar y localizar 
+  Servicios Web. Esta capacidad de localizar el servicio que necesitemos nos permitir&aacute; 
+  crear una integraci&oacute;n din&aacute;mica y d&eacute;bilmente acoplada de 
+  nuestras aplicaciones. Ser&aacute; din&aacute;mica en cuanto que podremos localizar 
+  el servicio que necesitamos para realizar una determinada tarea en tiempo de 
+  ejecuci&oacute;n, accediendo al registro y solicitando un servicio que realice 
+  la tarea que buscamos. Decimos que es d&eacute;bilmente acoplado ya que la implementaci&oacute;n 
+  de nuestro m&oacute;dulo no depender&aacute; del servicio que estemos invocando, 
+  ni siquiera tendr&aacute; que conocer<em> a priori</em> su interfaz, sino que 
+  podr&aacute; interrogarlo din&aacute;micamente para obtenerla, y a continuaci&oacute;n 
+  invocar el m&eacute;todo de dicha interfaz que necesitemos.</p>
+<h2>5.1 Caracter&iacute;sticas de los registros UDDI</h2>
+<p>UDDI (<em>Universal Descripti&oacute;n, Discovery and Integration</em>) es 
+  un conjunto de registros en web donde se almacena informaci&oacute;n sobre diversas 
+  organizaciones, y sobre los productos y servicios que ofrecen. En ellos podemos 
+  registrar cualquier tipo de servicios que ofrezcan dichas organizaciones, como 
+  pueden ser servicios para el acceso manual a trav&eacute;s de la web de la empresa 
+  o por tel&eacute;fono, pero est&aacute; principalmente destinado al registro 
+  de Servicios Web.</p>
+<p>Podemos encontrar los registros en diferentes sitios de Internet, proporcionados 
+  por diferentes operadores (IBM, Microsoft, SAP, etc). Cada operador ofrece su 
+  propia implementaci&oacute;n de la especificaci&oacute;n UDDI. Todos los nodos 
+  comparten la misma informaci&oacute;n, ya que &eacute;sta es replicada entre 
+  ellos. Estos registros son de libre acceso para que cualquiera pueda consultarlos. 
+  Podremos acceder a ellos o bien mediante una interfaz web (acceso manual) o 
+  mediante mensajes SOAP (mediante un programa).</p>
+<p><strong>Informaci&oacute;n contenida</strong></p>
+<p>Es importante contar con informaci&oacute;n sobre el negocio, ya que est&aacute; 
+  nos permitir&aacute; determinar si la informaci&oacute;n proporcionada por el 
+  servicio nos va a servir. Por ejemplo, si buscamos informaci&oacute;n meteorol&oacute;gica, 
+  ser&aacute; recomendable buscar una organizaci&oacute;n que se encuentre en 
+  nuestra zona geogr&aacute;fica.</p>
+<p>La informaci&oacute;n que contiene el registro nos permite responder a las 
+  siguientes preguntas sobre el negocio:</p>
+<ul>
+  <li>&iquest;<strong>Qui&eacute;n</strong>? Para responder a esta pregunta el 
+    registro proporciona informaci&oacute;n sobre el nombre de la organizaci&oacute;n, 
+    su identificaci&oacute;n de cara al exterior (su n&uacute;mero de la Seguridad 
+    Social por ejemplo), e informaci&oacute;n de contacto.</li>
+  <li>&iquest;<strong>Qu&eacute;</strong>? Para describir la actividad del negocio, 
+    se le da una determinada clasificaci&oacute;n, asignando un c&oacute;digo 
+    que identifica el tipo de producto de la organizaci&oacute;n, y una descripci&oacute;n 
+    sobre los servicios que ofrece.</li>
+  <li>&iquest;<strong>D&oacute;nde</strong>? Aporta informaci&oacute;n para acceder 
+    al servicio. Se puede dar una URL, direcci&oacute;n de e-mail u otra direcci&oacute;n.</li>
+  <li>&iquest;<strong>C&oacute;mo</strong>? Aporta informaci&oacute;n sobre la 
+    interfaz del servicio, de forma que podamos saber como utilizarlo.</li>
+</ul>
+<p>Esta informaci&oacute;n contenida en el registro se define mediante los siguientes 
+  tipos de esquemas XML:</p>
+<ul>
+  <li><strong>Organizaciones (businessEntity)</strong>. Se proporciona informaci&oacute;n 
+    acerca de cada organizaci&oacute;n. Cada organizaci&oacute;n se identificar&aacute; 
+    mediante una clave &uacute;nica, y podr&aacute; contener la siguiente informaci&oacute;n: 
+    <ul>
+      <li><strong>Nombre</strong>: Nombre de la organizaci&oacute;n.</li>
+      <li><strong>Descripci&oacute;n</strong>: Descripci&oacute;n en lenguaje 
+        natural de la organizaci&oacute;n.</li>
+      <li><strong>Informaci&oacute;n de contacto</strong>: Direcci&oacute;n, URL 
+        de su web, direcci&oacute;n de e-mail, etc.</li>
+      <li><strong>Identificadores</strong>: Informaci&oacute;n que identifique 
+        a la empresa en el exterior. Debemos distinguir esta informaci&oacute;n 
+        de la clave que identifica a la organizaci&oacute;n internamente en el 
+        registro UDDI. Un posible tipo de identificador externo puede ser el n&uacute;mero 
+        de la Seguridad Social que tiene la empresa. Para indicar el tipo de identificaci&oacute;n 
+        que estamos especificando haremos referencia a un <em>tModel</em>.</li>
+      <li><strong>Categor&iacute;as</strong>: Podemos clasificar la organizaci&oacute;n 
+        seg&uacute;n distintos criterios. Por ejemplo, seg&uacute;n la industria, 
+        el tipo de productos que ofrece, o la zona geogr&aacute;fica donde se 
+        encuentra. Para indicar el tipo de esquema de clasificaci&oacute;n que 
+        estamos usando, haremos referencia a un <em>tModel</em>.</li>
+    </ul>
+  </li>
+  <li><strong>Servicios (businessService)</strong>. Cada organizaci&oacute;n puede 
+    ofrecer una serie de servicios. De cada uno de estos servicios tendremos una 
+    descripci&oacute;n, una lista de categor&iacute;as a las que pertenece, y 
+    una lista de enlaces a informaci&oacute;n sobre dicho servicio. 
+    <ul>
+      <li><strong>Nombre</strong>: Nombre del servicio.</li>
+      <li><strong>Descripci&oacute;n</strong>: Descripci&oacute;n en lenguaje 
+        natural del servicio.</li>
+    </ul>
+  </li>
+  <li><strong>Enlaces (bindingTemplate)</strong>. De cada servicio tenemos una 
+    serie de enlaces (<em>bindings</em>) a direcciones que nos indican donde podemos 
+    acceder al servicio. Cada enlace tiene tambi&eacute;n su propio identificador, 
+    y la siguiente informaci&oacute;n: 
+    <ul>
+      <li><strong>Descripci&oacute;n</strong>: Descripci&oacute;n en lenguaje 
+        natural del enlace.</li>
+      <li><strong>Punto de acceso</strong>: Indica d&oacute;nde se accede al servicio. 
+        Puede referirse a una direcci&oacute;n URL para acceder a un Servicio 
+        Web mediante HTTP, FTP o SMTP, o bien un n&uacute;mero de tel&eacute;fono 
+        o de fax.</li>
+      <li><strong>Especificaci&oacute;n t&eacute;cnica</strong>: Adem&aacute;s 
+        de decirnos a que direcci&oacute;n debemos acceder para utilizar el servicio, 
+        tambi&eacute;n nos dice c&oacute;mo se debe utilizar este servicio. Para 
+        ello nos proporciona una especificaci&oacute;n t&eacute;cnica. Como especificaci&oacute;n 
+        se puede proporcionar un documento WSDL que describa la interfaz del servicio, 
+        aunque tambi&eacute;n se podr&iacute;a dar por ejemplo la direcci&oacute;n 
+        de una p&aacute;gina donde se explique el uso del servicio mediante lenguaje 
+        natural. El tipo de especificaci&oacute;n se indica mediante una referencia 
+        a un <em>tModel</em>.</li>
+    </ul>
+  </li>
+  <li><strong>Especificaciones (tModel)</strong>. Un <em>tModel</em> hace referencia 
+    a una especificaci&oacute;n externa. Esta especificaci&oacute;n puede describir 
+    un determinado tipo de servicio, que cumple unas determinadas especificaciones 
+    e interfaz. Un <em>tModel</em> utilizado para referenciar la especificaci&oacute;n 
+    de un servicio tendr&aacute; una clave que lo identifica y la siguiente informaci&oacute;n: 
+    <ul>
+      <li><strong>Nombre</strong>: Nombre del <em>tModel</em>.</li>
+      <li><strong>Descripci&oacute;n</strong>: Descripci&oacute;n en lenguaje 
+        natural del <em>tModel</em>.</li>
+      <li><strong>Documento</strong>: Hace referencia al documento donde se define 
+        la especificaci&oacute;n. Puede tratarse por ejemplo de la URL donde tenemos 
+        el documento WSDL que define un servicio.</li>
+      <li><strong>Categor&iacute;a</strong>: Podemos asignar a un <em>tModel</em> 
+        una serie de categor&iacute;as en las que lo clasificamos, referenciando 
+        est&aacute;s categor&iacute;as a su vez a otros <em>tModel</em> que se 
+        utilizan para especificar los esquemas de clasificaci&oacute;n a los que 
+        pertenecen las categor&iacute;as que usamos. Por ejemplo, si tenemos un 
+        <em>tModel</em> que especifica un servicio mediante un documento WSDL, 
+        podemos clasificarlo en la categor&iacute;a &quot;<em>wsdlSpec</em>&quot; 
+        perteneciente al esquema &quot;<em>uddi-org:types</em>&quot; que se referencia 
+        mediante un <em>tModel</em>.</li>
+    </ul>
+    <p>Estos <em>tModels</em> se utilizan para facilitar la integraci&oacute;n 
+      de servicios, ya que si un servicio pertenece a un determinado <em>tModel</em> 
+      conocido por varios desarrolladores, todos ellos sabr&aacute;n como integrar 
+      dicho servicio dentro de su aplicaci&oacute;n. </p>
+    <p>Un <em>tModel</em> puede ser publicado por una determinada organizaci&oacute;n, 
+      de forma que sea accesible para todo el mundo.</p>
+    <p>Si tenemos una aplicaci&oacute;n que soporta la especificaci&oacute;n de 
+      un cierto <em>tModel</em>, podremos buscar servicios que sepamos que cumplan 
+      dicha especificaci&oacute;n y que por lo tanto puedan integrarse en nuestra 
+      aplicaci&oacute;n.</p>
+    <p>Los <em>tModel</em> son una forma de describir los Servicios Web, para 
+      lo cual puede hacer referencia a un documento WSDL por ejemplo. No hay ninguna 
+      especificaci&oacute;n formal de donde debe enlazarse un documento WSDL dentro 
+      del registro. Podemos tenerlo o bien directamente como un enlace del servicio, 
+      o como descripci&oacute;n de un <em>tModel</em>, aunque ser&aacute; recomendable 
+      utilizar esta segunda forma.</p>
+    <p>Sin embargo, no se utilizan &uacute;nicamente para especificaciones t&eacute;cnicas 
+      de servicios. Podemos utilizarla para hacer referencia a cualquier especificaci&oacute;n 
+      externa, como pueden ser los tipos de identificadores y de clasificaciones 
+      de las organizaciones que referenciamos mediante un <em>tModel</em>. </p>
+  </li>
+</ul>
+<p><strong>Categor&iacute;as</strong></p>
+<p>Como hemos dicho, los elementos registrados tienen varias categor&iacute;as 
+  asignadas. Esta clasificaci&oacute;n puede darse seg&uacute;n diferentes esquemas, 
+  llamados taxonom&iacute;as. Podemos encontrar especificadas distintas taxonom&iacute;as, 
+  cada una de las cuales clasifica los elementos seg&uacute;n distintos criterios. 
+  En el caso de las organizaciones, podemos clasificarlas seg&uacute;n las siguientes 
+  taxonom&iacute;as:</p>
+<table width="100%" border="0">
+  <tr> 
+    <td width="16%"><strong>Taxonom&iacute;a</strong></td>
+    <td width="31%"><strong>Nombre</strong></td>
+    <td width="53%"><strong>Descripci&oacute;n</strong></td>
+  </tr>
+  <tr> 
+    <td>NAICS</td>
+    <td>ntis-gov:naics:1997</td>
+    <td>Clasifica las organizaciones mediante un c&oacute;digo de industria</td>
+  </tr>
+  <tr> 
+    <td>UNSPSC</td>
+    <td>unspsc-org:unspcs:3-1</td>
+    <td>Clasifica seg&uacute;n el tipo de productos y servicios que ofrece la 
+      organizaci&oacute;n. </td>
+  </tr>
+  <tr> 
+    <td>ISO 3166</td>
+    <td>uddi-org:iso-ch:3166:1999</td>
+    <td>Clasifica seg&uacute;n la localizaci&oacute;n geogr&aacute;fica de la 
+      organizaci&oacute;n. </td>
+  </tr>
+</table>
+<p>Por ejemplo, si seguimos el esquema (taxonom&iacute;a) NAICS (<em>ntis-gov:naics</em>) 
+  tendremos las siguientes clases:</p>
+<pre>   Accommodation and Food Services 
+   Administrative and Support and Waste Management and Remediation Services 
+   Agriculture, Forestry, Fishing and Hunting 
+   Arts, Entertainment, and Recreation 
+   Construction 
+   Educational Services 
+   Finance and Insurance 
+   Health Care and Social Assistance 
+   Information 
+   Management of Companies and Enterprises 
+   Manufacturing 
+   Manufacturing 
+   Manufacturing 
+   Mining 
+   Other Services (except Public Administration) 
+   Professional, Scientific, and Technical Services 
+   Public Administration 
+   Real Estate and Rental and Leasing 
+   Retail Trade 
+   Retail Trade 
+   Transportation and Warehousing 
+   Transportation and Warehousing 
+   Utilities 
+   Wholesale Trade </pre>
+<p>Cada una de estas clases puede contener subclases, y &eacute;stas a su vez 
+  dividirse en m&aacute;s subclases. Por lo tanto, tendremos una serie de conceptos 
+  organizados en forma de &aacute;rbol. </p>
+<p><strong>B&uacute;squeda en el registro</strong></p>
+<p>Cuando buscamos una organizaci&oacute;n o servicio en el registro, podremos 
+  establecer una serie de criterios de b&uacute;squeda, como el nombre y/o la 
+  categor&iacute;a, seg&uacute;n un determinado esquema de categorizaci&oacute;n. 
+  Para buscar una organizaci&oacute;n podemos restringir la b&uacute;squeda con 
+  los siguientes criterios:</p>
+<ul>
+  <li><strong>Opciones de b&uacute;squeda</strong>: Podemos establecer diferentes 
+    opciones para realizar la b&uacute;squeda. Por ejemplo, podemos indicar si 
+    el nombre debe coincidir exactamente con el buscado, o si es suficiente con 
+    que se parezcan.</li>
+  <li><strong>Nombre</strong>: Nombre de la organizaci&oacute;n buscada. Podemos 
+    usar '%' como car&aacute;cter comod&iacute;n. </li>
+  <li><strong>Identificaci&oacute;n</strong>: Podemos indicar identificadores 
+    externos de la organizaci&oacute;n buscada. Si especificamos varios, se tendr&aacute;n 
+    en cuenta todos los elementos que al menos contengan uno de ellos (operaci&oacute;n 
+    OR l&oacute;gica).</li>
+  <li><strong>Categor&iacute;a</strong>: Categor&iacute;as a las que debe pertenecer 
+    la organizaci&oacute;n buscada. Si especificamos varias categor&iacute;as 
+    los elementos encontrados deber&aacute;n pertenecer a todas ellas (operaci&oacute;n 
+    AND l&oacute;gica).</li>
+  <li><strong>Especificaci&oacute;n</strong>: Podemos establecer varios <em>tModels</em> 
+    a los que debe estar asociado. Si especificamos varios se realizar&aacute; 
+    una operaci&oacute;n l&oacute;gica AND con ellos.</li>
+  <li><strong>Enlaces externos</strong>: URLs con informaci&oacute;n sobre la 
+    informaci&oacute;n. Si especificamos varias se realiza una operaci&oacute;n 
+    l&oacute;gica OR con ellas. </li>
+</ul>
+<p>Cuando localicemos una organizaci&oacute;n, obtendremos una <em>clave</em> 
+  de dicha organizaci&oacute;n, que podremos utilizar para localizar los servicios 
+  que pertenezcan a ella dentro de nuestro programa. Para buscar servicios debemos 
+  proporcionar la clave de la organizaci&oacute;n dentro de la cual queremos buscar, 
+  y podemos utilizar los siguientes criterios de b&uacute;squeda:</p>
+<ul>
+  <li><strong>Opciones de b&uacute;squeda</strong>: Podemos establecer diferentes 
+    opciones para realizar la b&uacute;squeda. Por ejemplo, podemos indicar si 
+    el nombre debe coincidir exactamente con el buscado, o si es suficiente con 
+    que se parezcan.</li>
+  <li><strong>Nombre</strong>: Nombre del servicio buscado. Podemos usar '%' como 
+    car&aacute;cter comod&iacute;n. </li>
+  <li><strong>Categor&iacute;a</strong>: Categor&iacute;as a las que debe pertenecer 
+    el servicio buscado. Si especificamos varias categor&iacute;as los elementos 
+    encontrados deber&aacute;n pertenecer a todas ellas (operaci&oacute;n AND 
+    l&oacute;gica).</li>
+  <li><strong>Especificaci&oacute;n</strong>: Podemos establecer varios <em>tModels</em> 
+    a los que debe estar asociado. Si especificamos varios se realizar&aacute; 
+    una operaci&oacute;n l&oacute;gica AND con ellos.</li>
+</ul>
+<p>Una vez localizado el servicio, podremos obtener un <em>clave</em> asociada 
+  a dicho servicio que nos permitir&aacute; localizar los enlaces de dicho servicio. 
+  Para buscar enlaces deberemos proporcional la clave del servicio dentro del 
+  cu&aacute;l queremos buscar, y podemos proporcionar los siguientes criterios 
+  de b&uacute;squeda:</p>
+<ul>
+  <li><strong>Opciones de b&uacute;squeda</strong>: Podemos establecer diferentes 
+    opciones para realizar la b&uacute;squeda. Por ejemplo, podemos indicar si 
+    el nombre debe coincidir exactamente con el buscado, o si es suficiente con 
+    que se parezcan.</li>
+  <li><strong>Especificaci&oacute;n</strong>: Podemos establecer varios <em>tModels</em> 
+    a los que debe estar asociado. Si especificamos varios se realizar&aacute; 
+    una operaci&oacute;n l&oacute;gica AND con ellos.</li>
+</ul>
+<p>En lugar de buscar organizaciones, y posteriormente descender a sus servicios 
+  y enlaces, podemos buscar directamente <em>tModels</em> en el registro. De esta 
+  forma podremos encontrar elementos que cumplan una determinada especificaci&oacute;n. 
+  Por ejemplo, podremos buscar servicios definidos mediante un documento WSDL. 
+  Para buscar un <em>tModel</em> podremos proporcionar los siguientes criterios 
+  de b&uacute;squeda:</p>
+<ul>
+  <li><strong>Opciones de b&uacute;squeda</strong>: Podemos establecer diferentes 
+    opciones para realizar la b&uacute;squeda. Por ejemplo, podemos indicar si 
+    el nombre debe coincidir exactamente con el buscado, o si es suficiente con 
+    que se parezcan.</li>
+  <li><strong>Nombre</strong>: Nombre del <em>tModel</em> buscado. Podemos usar 
+    '%' como car&aacute;cter comod&iacute;n. </li>
+  <li><strong>Identificaci&oacute;n</strong>: Podemos indicar identificadores 
+    externos del <em>tModel</em> buscado. Si especificamos varios, se tendr&aacute;n 
+    en cuenta todos los elementos que al menos contengan uno de ellos (operaci&oacute;n 
+    OR l&oacute;gica).</li>
+  <li><strong>Categor&iacute;a</strong>: Categor&iacute;as a las que debe pertenecer 
+    el <em>tModel</em> buscado. Si especificamos varias categor&iacute;as los 
+    elementos encontrados deber&aacute;n pertenecer a todas ellas (operaci&oacute;n 
+    AND l&oacute;gica).</li>
+</ul>
+<h2>5.2 Acceso a registros mediante JAXR</h2>
+ 
+<p>JAXR nos permitir&aacute; acceder a registros XML mediante una interfaz &uacute;nica 
+  y est&aacute;ndar a trav&eacute;s de Java. Podremos acceder a varios tipos de 
+  registros, como pueden ser UDDI y ebXML.</p>
+<center>
+  <center><img src="imagenes/jaxr.gif" width="275" height="258"></center>
+  <p class="caption">Figura 1. Arquitectura de JAXR</p>
+</center>
+<p>En la arquitectura de JAXR podemos distinguir dos elementos:</p>
+<ul>
+  <li>Un cliente JAXR que deber&aacute; conectarse a un proveedor.</li>
+  <li>Un proveedor JAXR que proporcionar&aacute; a los clientes una interfaz para 
+    el acceso al registro (interfaz <b>RegistryService</b>).</li>
+</ul>
+<p>La librer&iacute;a JAXR se encuentra en el paquete <b>javax.xml.registry</b> 
+  y subpaquetes de &eacute;ste, por lo que para utilizarla deberemos importar 
+  estos paquetes.</p>
+<p>Lo primero que deberemos hacer para acceder a un registro ser&aacute; conectarnos 
+  a un proveedor JAXR. Para ello obtendremos un objeto <b>ConnectionFactory</b> 
+  que nos proporcione conexiones a registros:</p>
+<pre class="codigo"><b>ConnectionFactory</b> cf = <b>ConnectionFactory</b>.newInstance();</pre>
+<p>Antes de crear la conexi&oacute;n, deberemos establecer una serie de propiedades 
+  como configuraci&oacute;n para la conexi&oacute;n que vamos a crear. Estas propiedades 
+  deben a&ntilde;adirse a un objeto <strong>Properties</strong> de Java. Debemos 
+  recordar que estas propiedades en Java son pares <i>&lt;nombre, valor&gt;</i>, 
+  que pueden a&ntilde;adirse al invocar la aplicaci&oacute;n en la l&iacute;nea 
+  de comando mediante el par&aacute;metro<b> -D</b>, o bien crearse dentro del 
+  c&oacute;digo como sigue a continuaci&oacute;n:</p>
+<pre class="codigo"><b>Properties</b> p = new <b>Properties</b>();<br>p.<b>setProperty</b>("nombre", "valor");<br>...</pre>
+<p>Las propiedades que debemos establecer de forma obligatoria son las siguientes:</p>
+<table cellpadding="2" cellspacing="2" border="1" width="100%">
+  <tbody>
+    <tr>
+      <td valign="top"><b>Nombre de la propiedad<br>
+      </b></td>
+      <td valign="top"><b>Valor<br>
+      </b></td>
+    </tr>
+    <tr>
+      <td valign="top"><i>"javax.xml.registry.queryManagerURL"<br>
+      </i></td>
+      <td valign="top">Deberemos asignar una cadena (<strong>String</strong>) 
+        con la URL del proveedor de la API para consultar el registro.<br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top"><i>"javax.xml.registry.lifeCycleManagerURL"<br>
+      </i></td>
+      <td valign="top">Deberemos asignar una cadena (<strong>String</strong>) 
+        con la URL del proveedor de la API para publicar y modificar el registro. 
+        Por defecto toma el mismo valor que se le haya asignado a la anterior 
+        propiedad.<br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top"><i>"javax.xml.registry.semanticEquivalences"<br>
+      </i></td>
+      <td valign="top">Nos permite a&ntilde;adir una cadena (<strong>String</strong>) 
+        con equivalencias sem&aacute;nticas. El formato ser&aacute; una cadena 
+        donde los identificadores de conceptos equivalentes estar&aacute; separados 
+        por comas, y las tuplas de diferentes conceptos por |, como por ejemplo 
+        "id1,id2|id3,id4". Por defecto no toma ning&uacute;n valor.<br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top"><i>"javax.xml.registry.security.authenticationMethod"<br>
+      </i></td>
+      <td valign="top">Cadena (<strong>String</strong>) con el m&eacute;todo de 
+        autentificaci&oacute;n utilizado para acceder al registro. S&oacute;lo 
+        soporta UDDI_GET_AUTHTOKEN. Por defecto no toma ning&uacute;n valor.<br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top"><i>"javax.xml.registry.uddi.maxRows"<br>
+      </i></td>
+      <td valign="top">Permite especificar, como un objeto entero (<strong>Integer</strong>), 
+        el m&aacute;ximo n&uacute;mero de filas que podr&aacute; devolver una 
+        b&uacute;squeda.<br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top"><i>"javax.xml.registry.postalAddressScheme"<br>
+      </i></td>
+      <td valign="top">Cadena (<strong>String</strong>)<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<p>Una vez establecidas las propiedades en el objeto <strong>Properties</strong>, 
+  podemos asignarlas al <strong>ConnectionFactory</strong> de JAXR y por &uacute;ltimo 
+  crear la conexi&oacute;n:</p>
+<pre class="codigo">cf.<b>setProperties</b>(props);<br><b>Connection</b> con = cf.<b>createConnection</b>();</pre>
+<p>Una vez obtenida la conexi&oacute;n, el siguiente paso ser&aacute; acceder 
+  al proveedor JAXR, obteniendo acceso a la interfaz <strong>RegistryService</strong>:</p>
+<pre class="codigo"><b>RegistryService</b> rs = con.<b>getRegistryService</b>();<br><b>BusinessQueryManager</b> bqm = rs.<b>getBusinessQueryManager</b>();<br><b>BusinessLifeCycleManager</b> blcm = rs.<b>getBusinessLifeCycleManager</b>();</pre>
+<p>Vemos que mediante <b>RegistryService</b> podemos obtener dos interfaces. Cada 
+  una de estas interfaces tendr&aacute; una utilidad distinta:</p>
+<ul>
+  <li><b>BusinessQueryManager</b> se utiliza para consultar el registro. Si lo 
+    &uacute;nico que queremos es localizar servicios, s&oacute;lo necesitaremos 
+    obtener esta interfaz.</li>
+  <li><b>BusinessLifeCycleManager</b> se utiliza para modificar el registro. Esta 
+    interfaz nos permitir&aacute; publicar nuestros servicios en el registro, 
+    as&iacute; como modificar o eliminar aquellos que ya hayamos publicado.</li>
+</ul>
+<h3>5.2.1 Consulta del registro</h3>
+<p>Vamos a utilizar la interfaz <strong>BusinessQueryManager</strong> obtenida 
+  previamente para realizar una consulta del registro.</p>
+<p>Esta interfaz nos permitir&aacute; buscar distintos elementos en el registro 
+  con los siguientes m&eacute;todos que nos ofrece:</p>
+<table width="100%" border="0">
+  <tr> 
+    <td width="27%"><strong>findOrganizations</strong></td>
+    <td width="73%">Busca organizaciones en el registro.</td>
+  </tr>
+  <tr> 
+    <td><strong>findServices</strong></td>
+    <td>Busca servicios pertenecientes a una organizaci&oacute;n dada.</td>
+  </tr>
+  <tr> 
+    <td><strong>findServiceBindings</strong></td>
+    <td>Busca enlaces de un determinado servicio.</td>
+  </tr>
+  <tr> 
+    <td><strong>findConcepts</strong></td>
+    <td>Busca conceptos (<em>tModels</em>) dentro del registro. </td>
+  </tr>
+</table>
+<p>En la b&uacute;squeda de los distintos elementos podemos establecer distintos 
+  criterios de b&uacute;squeda:</p>
+<ul>
+  <li><strong>Opciones de b&uacute;squeda</strong>: Podemos a&ntilde;adir una 
+    serie de atributos a la b&uacute;squeda (<em>findQualifiers</em>), proporcionando 
+    una colecci&oacute;n de constantes definidas en la clase <strong>FindQualifiers</strong>.</li>
+  <li><strong>Nombre</strong>: Una serie de patrones para el nombre (<em>namePatterns</em>) 
+    del elemento buscado. Ser&aacute; una colecci&oacute;n de objetos <strong>String</strong>.</li>
+  <li><strong>Clasificaci&oacute;n</strong>: Las clasificaciones (<em>classification</em>) 
+    seg&uacute;n un determinado esquema de clasificaci&oacute;n. Si queremos obtener 
+    un esquema de clasificaci&oacute;n (taxonom&iacute;a) a partir de su nombre, 
+    podemos utilizar el m&eacute;todo <strong>findClassificationSchemeByName</strong>. 
+    Esto nos permitir&aacute; crear una determinada clasificaci&oacute;n (<strong>Classification</strong>) 
+    perteneciente a este esquema. </li>
+  <li><strong>Identificador</strong>: Identificadores externos (<em>externalIdentifiers</em>), 
+    hacen referencia a la identificaci&oacute;n de la organizaci&oacute;n de cara 
+    al exterior (su n&uacute;mero de la Seguridad Social por ejemplo). Ser&aacute; 
+    una colecci&oacute;n de objetos <strong>ExternalIdentifier</strong>.</li>
+  <li><strong>Especificaci&oacute;n t&eacute;cnica</strong> (<em>specification</em>). 
+    En el caso de un registro UDDI, ser&aacute; un conjunto de conceptos (<strong>Concept</strong>) 
+    que hagan referencia a la especificaci&oacute;n t&eacute;cnica de los servicios 
+    (<em>tModel</em>). Por ejemplo, podemos especificar mediante este par&aacute;metro 
+    que busque aquellos servicios descritos mediante documentos WSDL.</li>
+  <li><strong> Enlaces externos</strong> (<em>externalLinks</em>), a direcciones 
+    relacionadas. Por ejemplo, pueden contener enlaces a un documento WSDL. Ser&aacute; 
+    una colecci&oacute;n de objetos <strong>ExternalLink</strong>. </li>
+</ul>
+<p>En todos estos par&aacute;metros debemos indicar una colecci&oacute;n (<strong>Collection</strong>) 
+  de elementos. La b&uacute;squeda se realizar&aacute; mediante una operaci&oacute;n 
+  l&oacute;gica AND de todos los par&aacute;metros distintos de <em>null</em>, 
+  y de todos los elementos que contenga cada colecci&oacute;n. Como colecciones 
+  podemos utilizar por ejemplo objetos de tipo <strong>ArrayList</strong>.</p>
+<p>Todas las clases que representan elementos del registro heredan de la clase 
+  <strong>RegistryObject</strong>.</p>
+<p>Los m&eacute;todos de b&uacute;squeda de elementos en el registro devuelven 
+  un objeto <strong>BulkObject</strong>, del que podremos extraer los resultados 
+  de la b&uacute;squeda.</p>
+<p>Vamos a ver ahora una serie de ejemplos de b&uacute;squedas en el registro.</p>
+<p><strong>B&uacute;squeda de organizaciones por nombre</strong></p>
+<p>Proporcionamos el patr&oacute;n de nombre de organizaci&oacute;n que buscamos 
+  dentro de una colecci&oacute;n. Podemos utilizar el car&aacute;cter '%' como 
+  comod&iacute;n en los nombres que buscamos. Si especificamos por ejemplo <em>&quot;%patron%&quot;</em> 
+  estaremos buscando todos los nombres que contengan la subcadena <em>patron</em>.</p>
+<pre class="codigo">Collection nombres = new ArrayList();
+nombres.add(&quot;%patron_nombre%&quot;);</pre>
+<p>Invocamos <strong>findOrganizations</strong> proporcion&aacute;ndole la colecci&oacute;n 
+  que hemos creado como par&aacute;metro de nombre de la organizaci&oacute;n buscada.</p>
+<pre class="codigo"><strong>BulkResponse</strong> resp = bqm.<strong>findOrganizations</strong>(null, 
+    nombres, null, null, null, null);
+Collection orgs = resp.getCollection();</pre>
+<p>Del objeto <strong>BulkResponse</strong> obtenido podemos obtener una colecci&oacute;n 
+  de organizaciones encontradas. Podemos consultar todas estas organizaciones 
+  que nos ha devuelto recorriendo esta colecci&oacute;n.</p>
+<pre class="codigo">Iterator orgIter = orgs.iterator();
+while (orgIter.hasNext()) {
+<strong>  Organization</strong> org = (<strong>Organization</strong>) orgIter.next();
+  ...
+}</pre>
+<p>Para cada organizaci&oacute;n obtenida, podremos obtener todos los servicios 
+  que ofrece. Podremos recorrer la colecci&oacute;n de servicios obtenida para 
+  obtener informaci&oacute;n sobre los servicios.</p>
+<pre class="codigo">Collection servicios = org.getServices();
+Iterator servIter = servicios.iterator();
+while (servIter.hasNext()) {
+<strong>  Service</strong> serv = (<strong>Service</strong>) servIter.next();
+  ...
+}</pre>
+<p>Una vez obtenido un servicio, podemos obtener todos sus enlaces (<em>bindings</em>) 
+  y recorrer esta lista de enlaces para obtener informaci&oacute;n sobre ellos.</p>
+<pre class="codigo">Collection bindings = serv.getServiceBindings();
+Iterator sbIter = bindings.iterator();
+while (sbIter.hasNext()) {
+<strong>  ServiceBinding</strong> sb = (<strong>ServiceBinding</strong>) sbIter.next();
+  ...
+}</pre>
+<p>De esta forma, a partir del objeto de una organizaci&oacute;n, podemos obtener 
+  toda su informaci&oacute;n y servicios que contiene.</p>
+<p><strong>B&uacute;squeda de organizaciones por clasificaci&oacute;n</strong></p>
+<p>Podemos buscar organizaciones que pertenezcan a unas determinadas clasificaciones 
+  dentro de una taxonom&iacute;a. </p>
+<p>Lo primero que deberemos hacer es localizar la taxonom&iacute;a que vamos a 
+  usar, obteniendo un objeto <strong>ClassificationScheme</strong> que represente 
+  dicha taxonom&iacute;a. En el siguiente ejemplo obtenemos un objeto encapsulando 
+  la taxonom&iacute;a NAICS:</p>
+<pre class="codigo"><strong>ClassificationScheme</strong> taxonomia = 
+  bqm.<strong>findClassificationSchemeByName</strong>(null, &quot;ntis-gov:naics&quot;);</pre>
+<p>El siguiente paso ser&aacute; obtener la clasificaci&oacute;n que queramos 
+  buscar dentro de la taxonom&iacute;a especificada. Esto lo obtendremos como 
+  un objeto <strong>Classification</strong>, para lo cual necesitaremos la interfaz 
+  <strong>BusinessLifeCycleManager</strong>. Para crear la clasificaci&oacute;n 
+  deberemos pasar el c&oacute;digo y la descripci&oacute;n de dicha clasificaci&oacute;n 
+  dentro de la taxonom&iacute;a.</p>
+<pre class="codigo"><strong>Classification</strong> clase = (<strong>Classification</strong>)
+  blcm.<strong>createClassification</strong>(taxonomia, 
+    &quot;Automobile Manufacturing&quot;, &quot;336111&quot;);</pre>
+<p>Podemos encontrar los c&oacute;digos de la taxonom&iacute;a NAICS en:</p>
+<p><em>http://www.census.gov/epcd/naics/naicscod.txt</em></p>
+<p>A&ntilde;adimos la clasificaci&oacute;n creada en una colecci&oacute;n.</p>
+<pre class="codigo">Collection clases = new ArrayList();
+clases.add(classification);</pre>
+<p>Y por &uacute;ltimo, buscamos las organizaciones pasando dicha colecci&oacute;n 
+  como par&aacute;metro de clasificaciones a la b&uacute;squeda.</p>
+<pre class="codigo"><strong>BulkResponse</strong> resp = bqm.<strong>findOrganizations</strong>(null,
+  null, clases, null, null, null);</pre>
+<p>Podremos extraer las organizaciones devueltas por la b&uacute;squeda y sus 
+  servicios igual que hicimos en el caso anterior, a partir del objeto <strong>BulkResponse</strong>.</p>
+<p><strong>B&uacute;squeda de tModels</strong></p>
+<p>Si estamos interesados en localizar Servicios Web que podamos integrar a nuestra 
+  aplicaci&oacute;n, ser&aacute; conveniente restringir la b&uacute;squeda a elementos 
+  que contengan un documento WSDL.</p>
+<p>Para hacer esto buscaremos <em>tModels</em> (conceptos) dentro del registro 
+  que pertenezcan a la clase de especificaci&oacute;n WSDL. Esta clase la encontramos 
+  en la taxonom&iacute;a <em>uddi-org:types</em>. </p>
+<pre class="codigo">String taxonomia = &quot;uddi-org:types&quot;;
+<strong>ClassificationScheme</strong> tiposUDDI =
+  bqm.<strong>findClassificationSchemeByName</strong>(null, taxonomia);</pre>
+<p>Creamos la clasificaci&oacute;n correspondiente a la especificaci&oacute;n 
+  WSDL: </p>
+<pre class="codigo"><strong>Classification</strong> claseWSDL = 
+  blcm.<strong>createClassification</strong>(tiposUDDI, &quot;wsdlSpec&quot;, &quot;wsdlSpec&quot;);</pre>
+<p>Construimos una colecci&oacute;n con la clasificaci&oacute;n creada.</p>
+<pre class="codigo">Collection clases = new ArrayList();
+clases.add(claseWSDL);</pre>
+<p>Buscamos dentro del registro conceptos que pertenezcan a esta clase.</p>
+<pre class="codigo"><strong>BulkResponse</strong> resp = bqm.<strong>findConcepts</strong>(null, null, 
+  clases, null, null);</pre>
+<p>Una vez obtenidos los conceptos, podremos recorrer la lista de conceptos devueltos 
+  para obtener los datos de cada uno:</p>
+<pre class="codigo"><strong>Collection</strong> conceptos = resp.<strong>getCollection</strong>();
+Iterator iter = conceptos.iterator();
+while (iter.hasNext()) {
+  <strong>Concept</strong> concepto = (<strong>Concept</strong>) iter.next();
+}</pre>
+<p>Para obtener el WSDL asociado al concepto podremos acceder a sus enlaces externos.</p>
+<pre class="codigo">Collection enlaces = concepto.<strong>getExternalLinks</strong>();
+<strong>ExternalLink</strong> enlace = (<strong>ExternalLink</strong>) enlaces.iterator().next();
+String uri_wsdl = enlace.<strong>getExternalURI</strong>();</pre>
+<p>Dado un concepto o lista de conceptos, que se refiere a una determinada especificaci&oacute;n 
+  t&eacute;cnica, podemos especificarlo en la b&uacute;squeda de organizaciones 
+  para obtener las organizaciones con servicios que cumplan dicha especificaci&oacute;n.</p>
+<pre class="codigo">resp= bqm.<strong>findOrganizations</strong>(null, null, null, conceptos , null, null);</pre>
+<p> Podremos consultar las organizaciones que nos ha devuelto la b&uacute;squeda 
+  igual que hicimos anteriormente.</p>
+<h3>5.2.2 Manipulaci&oacute;n del registro</h3>
+<p>Mediante el objeto <strong>BusinessLifeCycleManager</strong> obtenido previamente, 
+  podremos hacer modificaciones en el registro. Para poder modificar el registro, 
+  deberemos autentificarnos como usuario. Para ello debemos crear un objeto <strong>PasswordAuthentication</strong> 
+  con la informaci&oacute;n de <em>login</em> de nuestro usuario (<em>login</em> 
+  y <em>password</em>):</p>
+<pre class="codigo">String login = &quot;MiLogin&quot;;
+String password = &quot;MiPassword&quot;;
+
+<strong>PasswordAuthentication</strong> autentificacion =
+   new <strong>PasswordAuthentication</strong>(login, password.toCharArray());</pre>
+<p>Una vez hecho esto introduciremos esta autentificaci&oacute;n en un conjunto 
+  (<strong>Set</strong>) de credenciales, y proporcionaremos dichos credenciales 
+  a la conexi&oacute;n (objeto <strong>Connection</strong>):</p>
+<pre class="codigo">Set cred = new HashSet();
+cred.add(autentificacion);
+con.<strong>setCredentials</strong>(cred);</pre>
+<p>Una vez autentificados como usuario, podremos modificar el registro mediante 
+  los m&eacute;todos que proporciona el objeto <strong>BusinessLifeCycleManager</strong>. 
+  Encontramos dos grandes grupos de m&eacute;todos dentro de este objeto:</p>
+<ul>
+  <li><strong>delete*</strong> : M&eacute;todos para eliminar elementos del registro.</li>
+  <li><strong>save*</strong> : M&eacute;todos para a&ntilde;adir elementos al 
+    registro.</li>
+</ul>
+<p>Los elementos que podemos a&ntilde;adir o eliminar del registro son:</p>
+<ul>
+  <li><strong>Associations</strong>: Asociaciones entre elementos del registro.</li>
+  <li><strong>ClassificationSchemes</strong>: Esquemas de clasificaci&oacute;n 
+    (taxonom&iacute;as), especificadas mediante <em>tModels</em> en un registro 
+    UDDI.</li>
+  <li><strong>Concepts</strong>: Elementos de una taxonom&iacute;a. Tambi&eacute;n 
+    se representar&aacute;n mediante <em>tModels</em> en un registro UDDI.</li>
+  <li><strong>Organizations</strong>: Organizaciones (<em>businessEntity</em>).</li>
+  <li><strong>ServiceBindings</strong>: Enlaces de los servicios.</li>
+  <li><strong>Services</strong>: Servicios (<em>businessService</em>).</li>
+</ul>
+<p><strong>A&ntilde;adir datos al registro</strong></p>
+<p>Por ejemplo, para a&ntilde;adir una nueva organizaci&oacute;n al registro primero 
+  deberemos crear esta organizaci&oacute;n. Para crear nuevas instancias de los 
+  diferentes elementos del registro utilizaremos una serie de m&eacute;todos <strong>create*</strong> 
+  definidos en la superclase del objeto <strong>BusinessLifeCycleManager</strong>:</p>
+<pre class="codigo">Organization org = blcm.<strong>createOrganization</strong>(&quot;Mi organizacion&quot;);</pre>
+<p>De esta forma tenemos creado un objeto que representa la nueva organizaci&oacute;n 
+  que vamos a registrar, al que podremos a&ntilde;adir una descripci&oacute;n, 
+  informaci&oacute;n de contacto, clasificaciones (mediante un objeto <strong>Classification</strong>), 
+  etc. </p>
+<p>Adem&aacute;s podremos a&ntilde;adir servicios y enlaces de estos servicios 
+  a la nueva organizaci&oacute;n. Para ello deberemos crear los objetos <strong>Service</strong> 
+  y <strong>ServiceBinding</strong> correspondiente mediante nuestro objeto <strong>BusinessLifeCycleManager</strong>:</p>
+<pre class="codigo">Collection servicios = new ArrayList();
+Service servicio = blcm.<strong>createService</strong>(&quot;Mi servicio&quot;);
+servicios.add(servicio);
+
+Collection enlaces = new ArrayList();
+ServiceBinding enlace = blcm.<strong>createServiceBinding</strong>();
+enlace.<strong>setAccessURI</strong>(&quot;http://www.rvg.ua.es:7001/sw&quot;);
+enlaces.add(enlace);</pre>
+<p>A continuaci&oacute;n a&ntilde;adiremos los enlaces al servicio, y los servicios 
+  a la organizaci&oacute;n a la que pertenecen, mediante los m&eacute;todos:</p>
+<pre class="codigo">servicio.<strong>addServiceBindings</strong>(enlaces);
+org.<strong>addServices</strong>(servicios); </pre>
+<p>Una vez creada la nueva organizaci&oacute;n con todos sus datos, servicios 
+  y enlaces, deberemos grabarla en el registro:</p>
+<pre class="codigo">Collection orgs = new ArrayList();
+orgs.add(org);
+BulkResponse res = blcm.<strong>saveOrganizations</strong>(orgs);
+</pre>
+<p>Esta operaci&oacute;n puede haber tenido alg&uacute;n problema y no haberse 
+  realizado correctamente. Podemos comprobar si ha ocurrido alg&uacute;n error 
+  consultando las excepciones del objeto devuelto como respuesta:</p>
+<pre class="codigo">Collection excep = res.<strong>getException</strong>();</pre>
+<p><strong>Eliminar datos del registro</strong></p>
+<p>En el caso de que queramos eliminar una organizaci&oacute;n, deberemos previamente 
+  obtener la clave de dicha organizaci&oacute;n en forma de un objeto <strong>Key</strong>. 
+</p>
+<pre class="codigo">Key key = // Obtener clave de la organizaci&oacute;n a eliminar.
+Collection keys = new ArrayList();
+keys.add(key);</pre>
+<p> Una vez obtenida esta clave (por ejemplo mediante una b&uacute;squeda en el 
+  registro, como vimos en el punto anterior), podremos eliminar la organizaci&oacute;n 
+  del registro mediante:</p>
+<pre class="codigo">BulkResponse res = blcm.<strong>deleteOrganizations</strong>(keys);</pre>
+<p>Durante esta operaci&oacute;n pueden haberse producido errores. Para comprobar 
+  si algo ha fallado podemos consultar las excepciones de la respuesta que nos 
+  ha dado con:</p>
+<pre class="codigo">Collection excep = res.<strong>getException</strong>();</pre>
+<h2>5.3 Servidores de registro</h2>
+<p>Podemos conectarnos a diferentes registros UDDI p&uacute;blicos donde podremos 
+  buscar servicios o publicar nuestros propios servicios para que otros desarrolladores 
+  sean capaces de localizarlos e integrarlos en sus aplicaciones. Podemos conectarnos 
+  a los servidores de registros de distintos vendedores:</p>
+<ul>
+  <li><strong>Microsoft</strong>: http://uddi.microsoft.com</li>
+  <li><strong>IBM</strong>: http://www-3.ibm.com/services/uddi</li>
+  <li><strong>SAP</strong>: http://uddi.sap.com/</li>
+  <li><strong>NTT-Com</strong>: http://www.ntt.com/uddi/</li>
+</ul>
+<p>Adem&aacute;s de estas direcciones, la mayor&iacute;a de los vendedores anteriores 
+  proporcionan un registro de prueba (<em>test</em>) que podremos utilizar para 
+  probar nuestras aplicaciones que publican servicios en registros. Estas direcciones 
+  son:</p>
+<ul>
+  <li><strong>Microsoft</strong>: http://test.uddi.microsoft.com/</li>
+  <li><strong>IBM</strong>: https://uddi.ibm.com/testregistry/registry.html</li>
+  <li><strong>SAP</strong>: http://udditest.sap.com/</li>
+</ul>
+<p>Para poder acceder a estos servicios desde nuestras aplicaciones, deberemos 
+  conocer la URL de la API para consultar (<em>Inquiry API</em>) y la URL de la 
+  API para publicar (<em>Publish API</em>) en el registro. Estas direcciones son 
+  las siguientes:</p>
+<table width="100%" border="0">
+  <tr> 
+    <td width="19%"><strong>Registro</strong></td>
+    <td width="40%"><strong>API de consulta</strong></td>
+    <td width="41%"><strong>API de publicaci&oacute;n</strong></td>
+  </tr>
+  <tr> 
+    <td><strong>Microsoft</strong></td>
+    <td><font size="2">http://uddi.microsoft.com/inquire</font></td>
+    <td><font size="2">https://uddi.microsoft.com/publish</font></td>
+  </tr>
+  <tr> 
+    <td><strong>IBM</strong></td>
+    <td><font size="2">http://uddi.ibm.com/ubr/inquiryapi</font></td>
+    <td><font size="2">https://uddi.ibm.com/ubr/publishapi</font></td>
+  </tr>
+  <tr> 
+    <td><strong>SAP</strong></td>
+    <td><font size="2">http://uddi.sap.com/uddi/api/inquiry</font></td>
+    <td><font size="2">https://uddi.sap.com/uddi/api/publish</font></td>
+  </tr>
+  <tr> 
+    <td><strong>NTT-Com</strong></td>
+    <td><font size="2">http://www.uddi.ne.jp/ubr/inquiryapi</font></td>
+    <td><font size="2">https://www.uddi.ne.jp/ubr/publishapi</font></td>
+  </tr>
+  <tr> 
+    <td><strong>Microsoft (test)</strong></td>
+    <td><font size="2">http://test.uddi.microsoft.com/inquire</font></td>
+    <td><font size="2">https://test.uddi.microsoft.com/publish</font></td>
+  </tr>
+  <tr> 
+    <td><strong>IBM (test)</strong></td>
+    <td><font size="2">http://uddi.ibm.com/testregistry/inquiryapi</font></td>
+    <td><font size="2">https://uddi.ibm.com/testregistry/publishapi</font></td>
+  </tr>
+  <tr> 
+    <td><strong>SAP (test)</strong></td>
+    <td><font size="2">http://udditest.sap.com/UDDI/api/inquiry</font></td>
+    <td><font size="2">https://udditest.sap.com/UDDI/api/publish</font></td>
+  </tr>
+</table>
+<p>Sin embargo, es posible que no queramos que nuestros servicios sean accesibles 
+  por todo el mundo p&uacute;blicamente. Para ello podemos utilizar un registro 
+  privado. Tanto JWSDP como WebLogic incorporan su propio servidor de registro.</p>
+<h3>5.3.1 Servidor de registro de WSDP</h3>
+<p>El servidor de registro incluido en WSDP utiliza una base de datos <strong>Xindice</strong> 
+  para almacenar los datos del registro.</p>
+<p><strong>Xindice</strong></p>
+<p><em>Xindice</em> es una base de datos nativa XML. Esta base de datos pertenece 
+  al proyecto XML de Apache. Antes de ponerla en marcha deberemos iniciar tomcat 
+  con el comando</p>
+<pre class="codigo">startup	    // Windows
+startup.sh  // Linux</pre>
+<p>Ponemos en marcha la base de datos <em>Xindice</em> con</p>
+<pre class="codigo">xindice-start       // Windows
+xindice-start.sh    // Linux</pre>
+<p>En las nuevas versiones de JWSDP no hace falta iniciar <em>Xindice</em> por 
+  separado, ya que se ejecuta se encuentra integrada en Tomcat. </p>
+<p>Con esto tendremos nuestro registro funcionando. Ahora necesitaremos configurar 
+  el registro, y agregar datos a &eacute;ste.</p>
+<p>Dentro de nuestra aplicaci&oacute;n, para conectar al registro utilizaremos 
+  la siguiente URL, tanto para consultar como para publicar:</p>
+<pre class="codigo">&quot;http://localhost:8080/registry-server/RegistryServerServlet&quot;</pre>
+<p>Esto nos permitir&aacute; a&ntilde;adir datos al registro o consultar los que 
+  ya tiene registrados a trav&eacute;s de nuestros propios programas. Para poder 
+  publicar, deberemos utilizar un nombre de usuario y password dado de alta en 
+  el registro. Cuando hayamos instalado el registro, tendremos un usuario por 
+  defecto:</p>
+<pre class="codigo">Login: <strong>testuser</strong>
+Password: <strong>testuser</strong></pre>
+<p>Ser&aacute; recomendable a&ntilde;adir nuestro propio usuario, y eliminar este 
+  usuario por defecto de forma que nadie m&aacute;s pueda acceder al registro 
+  sin nuestro permiso. Para a&ntilde;adir o eliminar usuarios podemos utilizar 
+  una serie de herramientas para el acceso al registro incluidas en JWSDP.</p>
+<p><strong>Acceso al registro</strong></p>
+<p>En el subdirectorio <em>registry-server-x.x/samples</em>, dentro del directorio 
+  donde hayamos instalado JWSDP, tenemos un <em>script</em> mediante el que podemos 
+  realizar diferentes operaciones con el registro. Este <em>script</em> es:</p>
+<pre class="codigo">registry-server-test      // Windows
+registry-server-test.sh	  // Linux</pre>
+<p>Con este <em>script</em> podremos enviar al registro diferentes mensajes, desde 
+  l&iacute;nea de comandos, o bien invocar la aplicaci&oacute;n <strong>Indri</strong>, 
+  que nos permite acceder al registro a trav&eacute;s de una interfaz gr&aacute;fica. 
+  En las &uacute;ltimas versiones de JWSDP est&aacute; aplicaci&oacute;n gr&aacute;fica 
+  <strong>Indri</strong> ya no est&aacute; disponible.</p>
+<p>Podemos enviar mensajes UDDI mediante l&iacute;nea de comandos. Para ello tenemos 
+  plantillas de diferentes mensajes UDDI en el subdirectorio <em>xml</em>. Para 
+  enviar uno de estos comandos deberemos:</p>
+<ul>
+  <li>Editar la plantilla correspondiente al mensaje que queramos enviar, a&ntilde;adiendo 
+    en ella los par&aacute;metros necesarios. Las plantillas disponibles son:</li>
+</ul>
+<table width="100%" border="0">
+  <tr> 
+    <td width="28%"><strong>Fichero del mensaje</strong></td>
+    <td width="72%"><strong>Funci&oacute;n</strong></td>
+  </tr>
+  <tr> 
+    <td><em>DeleteBinding.xml</em></td>
+    <td>Elimina un enlace. Deberemos proporcionar el c&oacute;digo de autentificaci&oacute;n 
+      del usuario en <strong>authInfo</strong> y la clave del enlace en <strong>bindingKey</strong>.</td>
+  </tr>
+  <tr> 
+    <td><em>DeleteBusiness.xml</em></td>
+    <td>Elimina una organizaci&oacute;n. Deberemos proporcionar el c&oacute;digo 
+      de autentificaci&oacute;n del usuario en <strong>authInfo</strong> y la 
+      clave de la organizaci&oacute;n en <strong>businessKey</strong>.</td>
+  </tr>
+  <tr> 
+    <td><em>DeletePublisherAssertions.xml</em></td>
+    <td>Elimina una relaci&oacute;n entre elementos del registro. Deberemos proporcionar 
+      el c&oacute;digo de autentificaci&oacute;n del usuario en <strong>authInfo</strong> 
+      y los datos de la relaci&oacute;n.</td>
+  </tr>
+  <tr> 
+    <td><em>DeleteService.xml</em></td>
+    <td>Elimina un servicio. Deberemos proporcionar el c&oacute;digo de autentificaci&oacute;n 
+      del usuario en <strong>authInfo</strong> y la clave del servicio en <strong>serviceKey</strong>.</td>
+  </tr>
+  <tr> 
+    <td><em>DeleteTModel.xml</em></td>
+    <td>Elimina un <em>tModel</em>. Deberemos proporcionar el c&oacute;digo de 
+      autentificaci&oacute;n del usuario en <strong>authInfo</strong> y la clave 
+      del <em>tModel</em> en <strong>tModelKey</strong>.</td>
+  </tr>
+  <tr> 
+    <td><em>SaveBinding.xml</em></td>
+    <td>Registra un nuevo enlace. Deberemos proporcionar el c&oacute;digo de autentificaci&oacute;n 
+      del usuario en <strong>authInfo</strong> y la informaci&oacute;n sobre el 
+      nuevo enlace y la clave del servicio al que pertenece dentro del elemento 
+      <strong>bindingTemplate</strong>.</td>
+  </tr>
+  <tr> 
+    <td><em>SaveBusiness.xml</em></td>
+    <td>Registra una nueva organizaci&oacute;n. Deberemos proporcionar el c&oacute;digo 
+      de autentificaci&oacute;n del usuario en <strong>authInfo</strong> y la 
+      informaci&oacute;n sobre la nueva organizaci&oacute;n dentro del elemento 
+      <strong>businessEntity</strong>.</td>
+  </tr>
+  <tr> 
+    <td><em>SaveService.xml</em></td>
+    <td>Registra un nuevo servicio. Deberemos proporcionar el c&oacute;digo de 
+      autentificaci&oacute;n del usuario en <strong>authInfo</strong> y la informaci&oacute;n 
+      sobre el nuevo servicio y la clave de la organizaci&oacute;n a la que pertenece 
+      dentro del elemento <strong>businessService</strong>.</td>
+  </tr>
+  <tr> 
+    <td><em>SaveTModel.xml</em></td>
+    <td>Registra un nuevo <em>tModel</em>. Deberemos proporcionar el c&oacute;digo 
+      de autentificaci&oacute;n del usuario en <strong>authInfo</strong> y la 
+      informaci&oacute;n sobre el nuevo <em>tModel</em> dentro del elemento <strong>tModel</strong>.</td>
+  </tr>
+  <tr> 
+    <td><em>FindBinding.xml</em></td>
+    <td>Busca un enlace perteneciente a un servicio en el registro. Deberemos 
+      especificar la clave del servicio al que pertenece en <strong>serviceKey</strong>, 
+      e incluir las caracter&iacute;sticas del enlace buscado dentro de <strong>find_binding</strong>.</td>
+  </tr>
+  <tr> 
+    <td><em>FindBusiness.xml</em></td>
+    <td>Busca una organizaci&oacute;n en el registro. Deberemos especificar las 
+      caracter&iacute;sticas de la organizaci&oacute;n buscada dentro de <strong>find_business</strong>.</td>
+  </tr>
+  <tr> 
+    <td><em>FindService.xml</em></td>
+    <td>Busca un servicio perteneciente a una organizaci&oacute;n en el registro. 
+      Deberemos especificar la clave de la organizaci&oacute;n a la que pertenece 
+      en <strong>businessKey</strong>, e incluir las caracter&iacute;sticas del 
+      servicio buscado dentro de <strong>find_service</strong>.</td>
+  </tr>
+  <tr> 
+    <td><em>FindTModel.xml</em></td>
+    <td>Busca un <em>tModel</em> en el registro. Deberemos especificar las caracter&iacute;sticas 
+      del <em>tModel</em> buscada dentro de <strong>find_tModel</strong>.</td>
+  </tr>
+  <tr> 
+    <td><em>GetAssertionStatusReport.xml</em></td>
+    <td>Obtiene informaci&oacute;n sobre el estado de la relaciones publicadas, 
+      informando acerca de si est&aacute;n completas o no. Deberemos proporcionar 
+      el c&oacute;digo de autentificaci&oacute;n del usuario en <strong>authInfo</strong>.</td>
+  </tr>
+  <tr> 
+    <td><em>GetAuthToken.xml</em></td>
+    <td>Valida un usuario. Debemos especificar el nombre del usuario como <strong>userID</strong> 
+      y su password en <strong>cred</strong>. Nos devolver&aacute; el c&oacute;digo 
+      de autentificaci&oacute;n del usuario en <strong>authInfo</strong>, que 
+      podremos usar en pr&oacute;ximos accesos al registro.</td>
+  </tr>
+  <tr> 
+    <td><em>GetBindingDetail.xml</em></td>
+    <td>Nos devuelve informaci&oacute;n detallada sobre un enlace. Deberemos especificar 
+      la clave del enlace en <strong>bindingKey</strong>.</td>
+  </tr>
+  <tr> 
+    <td><em>GetBusinessDetail.xml</em></td>
+    <td>Nos devuelve informaci&oacute;n detallada sobre una organizaci&oacute;n. 
+      Deberemos especificar la clave de la organizaci&oacute;n en <strong>businessKey</strong>.</td>
+  </tr>
+  <tr> 
+    <td><em>GetBusinessDetailExt.xml</em></td>
+    <td>Nos devuelve informaci&oacute;n detallada ampliada sobre una organizaci&oacute;n. 
+      Deberemos especificar la clave de la organizaci&oacute;n en <strong>businessKey</strong>.</td>
+  </tr>
+  <tr> 
+    <td><em>GetPublisherAssertions.xml</em></td>
+    <td>Devuelve la lista de relaciones publicadas entre elementos del registro. 
+      Deberemos proporcionar el c&oacute;digo de autentificaci&oacute;n del usuario 
+      en <strong>authInfo</strong>.</td>
+  </tr>
+  <tr> 
+    <td><em>GetRegisteredInfo.xml</em></td>
+    <td>Devuelve la lista de elementos publicados por el usuario actual. Deberemos 
+      proporcionar el c&oacute;digo de autentificaci&oacute;n del usuario en <strong>authInfo</strong>.</td>
+  </tr>
+  <tr> 
+    <td><em>GetServiceDetail.xml</em></td>
+    <td>Nos devuelve informaci&oacute;n detallada sobre un servicio. Deberemos 
+      especificar la clave del servicio en <strong>serviceKey</strong>.</td>
+  </tr>
+  <tr> 
+    <td><em>GetTModelDetail.xml</em></td>
+    <td>Nos devuelve informaci&oacute;n detallada sobre un <em>tModel</em>. Deberemos 
+      especificar la clave del <em>tModel</em> en <strong>tModelKey</strong>.</td>
+  </tr>
+  <tr> 
+    <td><em>DiscardAuthToken.xml</em></td>
+    <td>Cierra la sesi&oacute;n del usuario actual, dejando de tener validez el 
+      c&oacute;digo de autentificaci&oacute;n correspondiente. Deberemos proporcionar 
+      el c&oacute;digo de autentificaci&oacute;n del usuario en <strong>authInfo</strong>.</td>
+  </tr>
+  <tr> 
+    <td><em>UserInfo.xml</em></td>
+    <td>Informaci&oacute;n para registrar un nuevo usuario. Se debe introducir 
+      la informaci&oacute;n sobre el nuevo usuario (nombre, apellidos, ID, password). 
+      El password debe estar codificado en MD5. M&aacute;s adelante veremos como 
+      obtener est&aacute; codificaci&oacute;n.</td>
+  </tr>
+  <tr> 
+    <td><em>UserDelete.xml</em></td>
+    <td>(A partir de JWSDP 1.1) Permite eliminar un usuario del registro, proporcionando 
+      los datos (nombre, login, password) del usuario a eliminar.</td>
+  </tr>
+</table>
+<blockquote>
+  <p>Por ejemplo, para validarnos como usuario deberemos modificar el fichero 
+    <em>xml/GetAuthToken.xml</em> de la siguiente forma:</p>
+</blockquote>
+<pre class="codigo">&lt;?xml version=&quot;1.0&quot;?&gt;
+
+&lt;!--
+   Copyright 2002 Sun Microsystems, Inc. All rights reserved.
+   SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+   --&gt;
+
+<span class="codigo">&lt;get_authToken generic=&quot;2.0&quot; xmlns=&quot;urn:uddi-org:api_v2&quot;
+   userID=&quot;<strong>testuser</strong>&quot; cred=&quot;<strong>testuser</strong>&quot;/&gt;
+</span> </pre>
+<ul>
+  <li>Una vez hemos introducido la informaci&oacute;n necesaria en el mensaje 
+    UDDI, podemos de forma opcional validarlo, para comprobar que el mensaje es 
+    correcto.</li>
+</ul>
+<pre class="codigo">registry-server-test <strong>run-validate</strong> -Dinstance=&lt;fichero_del_mensaje&gt;</pre>
+<ul>
+  <li>Para realizar la operaci&oacute;n, deberemos enviar el mensaje UDDI correspondiente 
+    al servidor UDDI, mediante el comando</li>
+</ul>
+<pre class="codigo">registry-server-test <strong>run-cli-request</strong> -Drequest=&lt;fichero_del_mensaje&gt;</pre>
+<blockquote>
+  <p>Esto nos mostrar&aacute; por pantalla el mensaje de respuesta que nos ha 
+    devuelto el servidor. En el caso de que hayamos enviado un mensaje <em>GetAuthToken.xml</em>, 
+    si el usuario se ha validado correctamente nos devolver&aacute; la siguiente 
+    respuesta:</p>
+</blockquote>
+<pre class="codigo">run-cli-request:
+   [echo] -- Running CLI client to process request: xml\GetAuthToken.xml --
+   [java] 
+   [java] CLIClient: request = 
+   [java] &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+   [java] &lt;soap-env:Envelope xmlns:soap-env=
+			&quot;http://schemas.xmlsoap.org/soap/envelope/&quot;&gt;
+			&lt;soap-env:Header/&gt;&lt;soap-env:Body&gt;
+			&lt;get_authToken    xmlns=&quot;urn:uddi-org:api_v2&quot; cred=&quot;testuser&quot; 
+			generic=&quot;2.0&quot;    userID=&quot;testuser&quot;/&gt;&lt;/soap-env:Body&gt;
+			&lt;/soap-env:Envelope&gt;
+   [java] --------
+   [java] 
+   [java] CLIClient: response = 
+   [java] &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+   [java] &lt;soap-env:Envelope xmlns:soap-env=
+			&quot;http://schemas.xmlsoap.org/soap/envelope/&quot;&gt;
+			&lt;soap-env:Header/&gt;&lt;soap-env:Body&gt;
+			&lt;authToken    xmlns=&quot;urn:uddi-org:api_v2&quot; generic=&quot;2.0&quot; 
+			operator=&quot;Sun    Microsystems Inc.&quot;&gt;
+			&lt;authInfo&gt;<strong>3793a3253793a32</strong>&lt;/authInfo&gt;&lt;/authToken&gt;
+			&lt;/soap-env:Body&gt;&lt;/soap-env:Envelope&gt;
+   [java] --------
+
+BUILD SUCCESSFUL
+<span class="codigo">Total time: 2 seconds
+</span> </pre>
+<blockquote>
+  <p>De aqu&iacute; podremos copiar el c&oacute;digo de <em>authInfo</em>, que 
+    podremos usar como c&oacute;digo de autentificaci&oacute;n de usuario en los 
+    pr&oacute;ximos mensajes que enviemos, que requieran una autentificaci&oacute;n.</p>
+</blockquote>
+<p><strong>Indri</strong></p>
+<p>La aplicaci&oacute;n <em>Indri</em> se incluye con JWSDP 1.0.X, pero ha sido 
+  eliminada en la versi&oacute;n 1.1. Para invocar <em>Indri</em> deberemos ejecutar 
+  el siguiente comando:</p>
+<pre class="codigo">registry-server-test <strong>run-indri</strong>     // Windows
+registry-server-test.sh <strong>run-indri</strong>  // Linux</pre>
+<p>Una vez hecho esto aparecer&aacute; la siguiente ventana:</p>
+<center><img src="imagenes/indri1.gif" width="465" height="331"></center>
+<p>En la parte izquierda de la ventana vemos dos listas que contienen la siguiente 
+  informaci&oacute;n:</p>
+<ul>
+  <li><strong>Collection</strong>: En la base de datos tenemos la informaci&oacute;n 
+    organizada por colecciones. Cada colecci&oacute;n contendr&aacute; un conjunto 
+    de nodos de informaci&oacute;n. Las colecciones que tenemos creadas en la 
+    base de datos de nuestro registro son:
+    <ul>
+      <li><strong>authinfo</strong>: Datos sobre los usuarios registrados. Los 
+        nodos de esta colecci&oacute;n son de tipo <em>userinfo</em>, que contienen 
+        los datos de los usuarios registrados.</li>
+      <li><strong>system</strong>: Colecci&oacute;n con datos del sistema.</li>
+      <li><strong>uddi</strong>: Colecci&oacute;n con todos los elementos de informaci&oacute;n 
+        que contiene nuestro registro UDDI. Aqu&iacute; podremos encontrar distintos 
+        tipos de nodos como organizaciones (<em>businessEntity</em>) y tModels 
+        (<em>tModel</em>).</li>
+    </ul>
+  </li>
+  <li><strong>XNodes</strong>: Aqu&iacute; se mostrar&aacute; una lista de todos 
+    o parte de los nodos de la colecci&oacute;n seleccionada, cuando hagamos una 
+    b&uacute;squeda en ella.</li>
+</ul>
+<p>En la parte superior de la ventana vemos una serie de campos, donde encontramos:</p>
+<ul>
+  <li><strong>Collection ID</strong>: Identificador de la colecci&oacute;n seleccionada 
+    actualmente.</li>
+  <li><strong>Node ID</strong>: Identificador del nodo seleccionado actualmente.</li>
+  <li><strong>Owner</strong>: Nombre del usuario que est&aacute; realizando las 
+    operaciones con el registro. Por ejemplo, podemos utilizar el usuario por 
+    defecto <em>testuser</em>.</li>
+  <li><strong>XPath</strong> <strong>query</strong>: Aqu&iacute; podemos especificar 
+    un <em>XPath</em> que nos sirva para realizar b&uacute;squedas en el registro. 
+    Pulsando el bot&oacute;n <em>Find</em> que se encuentra junto a este campo 
+    se realizar&aacute; la b&uacute;squeda de los nodos que cumplan las condiciones 
+    establecidas en dicho <em>XPath</em> dentro de la colecci&oacute;n actual.</li>
+</ul>
+<p>En la parte central de la pantalla tenemos el &aacute;rea de texto <strong>Node</strong>, 
+  donde se muestra el contenido XML del nodo seleccionado actualmente. </p>
+<p>En la parte inferior vemos un &aacute;rea para mensajes de <em>log</em>, donde 
+  se indicar&aacute; si las operaciones que realizamos se han realizado correctamente 
+  o se ha producido alg&uacute;n error.</p>
+<p>En la barra de men&uacute; encontramos las siguientes opciones:</p>
+<ul>
+  <li><strong>File</strong>: Operaciones para cargar o grabar los datos de los 
+    nodos en ficheros de texto. 
+    <ul>
+      <li><strong>Open</strong>: Abre un fichero y lo muestra en el &aacute;rea 
+        central (<em>Node</em>). Esto nos servir&aacute; para abrir las plantillas 
+        de los distintos elementos UDDI que tenemos en el directorio <em>xml</em>, 
+        editarlas dentro de este &aacute;rea, y a&ntilde;adir estos datos al registro.</li>
+      <li><strong>Save</strong>: Nos permite grabar en un fichero el texto del 
+        nodo actual, que ser&aacute; el que se est&eacute; mostrando en el &aacute;rea 
+        <em>Node</em>.</li>
+      <li><strong>Exit</strong>: Sale de la aplicaci&oacute;n.</li>
+    </ul>
+  </li>
+  <li><strong>Database</strong>: Nos permitir&aacute; realizar distintas operaciones 
+    con la base de datos. 
+    <ul>
+      <li><strong>Create Collection</strong>: Crea una nueva colecci&oacute;n 
+        con el identificador especificado en <em>collection ID</em>.</li>
+      <li><strong>Get Collection</strong>: Accede a la colecci&oacute;n especificada 
+        en <em>collection ID</em>. Tiene el mismo efecto que pinchar sobre el 
+        nombre de la colecci&oacute;n en la lista de colecciones.</li>
+      <li><strong>Delete Collection</strong>: Elimina la colecci&oacute;n especificada 
+        en <em>collection ID</em> de la base de datos.</li>
+      <li><strong>Index Collection</strong>: Lee todos los nodos contenidos en 
+        la colecci&oacute;n especificada en <em>collection ID</em>, y los muestra 
+        en la lista de nodos (<em>XNodes</em>). Podremos seleccionar los nodos 
+        en esta lista, y visualizar su contenido en el &aacute;rea central (<em>Node</em>).</li>
+      <li><strong>Disconnect</strong>: Desconecta de la base de datos.</li>
+      <li><strong>Create Node</strong>: Crea un nuevo nodo dentro de la colecci&oacute;n 
+        indicada en <em>collection ID</em>, con el nombre indicado en <em>node 
+        ID</em>, y el contenido especificado en el &aacute;rea central <em>Node</em>.</li>
+      <li><strong>Modify Node</strong>: Modifica el nodo seleccionado actualmente, 
+        que ser&aacute; el que figura en el campo <em>node ID</em>, perteneciente 
+        a la colecci&oacute;n <em>collection ID</em>. Se actualizar&aacute; su 
+        contenido en la base de datos tomando como nuevo contenido el especificado 
+        en el &aacute;rea central <em>Node</em>.</li>
+      <li><strong>Get Node</strong>: Lee el nodo especificado en <em>node ID</em> 
+        de la colecci&oacute;n <em>collection ID</em>. Tiene el mismo efecto que 
+        pinchar sobre el nombre del nodo en la lista de nodos <em>XNodes</em>.</li>
+      <li><strong>Delete Node</strong>: Borra el nodo actual, que ser&aacute; 
+        el especificado en <em>node ID</em>, perteneciente a la colecci&oacute;n 
+        indicada en <em>collection ID</em>.</li>
+      <li><strong>Clear Text Area</strong>: Vac&iacute;a el &aacute;rea de texto 
+        central (<em>Node</em>), para que podamos a&ntilde;adir nuevo contenido.</li>
+    </ul>
+  </li>
+  <li><strong>Process</strong>: Nos permite realizar b&uacute;squedas en el registro 
+    y validar documentos UDDI. 
+    <ul>
+      <li><strong>Search on Business Name</strong>: Realiza una b&uacute;squeda 
+        dentro del registro UDDI por nombre de organizaci&oacute;n. Al pinchar 
+        en esta opci&oacute;n se abrir&aacute; una ventana donde deberemos introducir 
+        el nombre que estamos buscando. Deberemos tener seleccionada la colecci&oacute;n 
+        <em>uddi</em> para realizar la b&uacute;squeda entre los elementos del 
+        registro. Los nodos que nos devuelva como resultado de la b&uacute;squeda 
+        se mostrar&aacute;n en la lista de nodos <em>XNodes</em>.</li>
+      <li><strong>Search on Business Category</strong>: Realiza una b&uacute;squeda 
+        dentro del registro UDDI por categor&iacute;a. Al pinchar en esta opci&oacute;n 
+        se abrir&aacute; una ventana donde deberemos introducir la categor&iacute;a 
+        que estamos buscando. Deberemos tener seleccionada la colecci&oacute;n 
+        <em>uddi</em> para realizar la b&uacute;squeda entre los elementos del 
+        registro. Los nodos que nos devuelva como resultado de la b&uacute;squeda 
+        se mostrar&aacute;n en la lista de nodos <em>XNodes</em>.</li>
+      <li><strong>Find (XPath)</strong>: Busca en la colecci&oacute;n actual (especificada 
+        en <em>collection ID</em>) el <em>XPath</em> especificado en el campo 
+        <em>XPath query</em>. Los nodos que nos devuelva como resultado de la 
+        b&uacute;squeda se mostrar&aacute;n en la lista de nodos <em>XNodes</em>.</li>
+      <li><strong>Check Content</strong>: Verifica que el documento que tenemos 
+        actualmente en el &aacute;rea central <em>Node</em> sea correcto. En la 
+        barra de estado, en la parte inferior de la ventana, nos mostrar&aacute; 
+        si el documento est&aacute; bien formado o no.</li>
+    </ul>
+  </li>
+  <li><strong>Help</strong>: Muestra informaci&oacute;n acerca de la aplicaci&oacute;n 
+    (cr&eacute;ditos).</li>
+</ul>
+<p>Para a&ntilde;adir datos al registro UDDI:</p>
+<ul>
+  <li>Introducimos nuestro nombre de usuario en el campo <em>owner</em>.</li>
+  <li>Seleccionamos la colecci&oacute;n <em>uddi</em>.</li>
+  <li>Cargamos el fichero con la plantilla correspondiente a la estructura de 
+    datos que queramos a&ntilde;adir: <em>SaveBusiness.xml</em> y <em>SaveTModel.xml</em>. 
+    Hay que destacar que estas plantillas contienen el mensaje UDDI completo que 
+    se utilizar&aacute; para registrar estos elementos. Sin embargo, en este caso 
+    s&oacute;lo necesitaremos especificar el documento que vayamos a registrar, 
+    que ser&aacute;n respectivamente los elementos <em>businessEntity</em> (que 
+    contiene servicios y enlaces) y<em> tModel </em>contenidos en estas plantillas.</li>
+  <li>A&ntilde;adimos los datos que queramos a esta plantilla. En este caso no 
+    hace falta introducir manualmente el c&oacute;digo de autentificaci&oacute;n 
+    del usuario (<em>authInfo</em>), ya que la aplicaci&oacute;n se encargar&aacute; 
+    de realizar esta validaci&oacute;n.</li>
+  <li>Pulsamos sobre la opci&oacute;n <em>Check Content</em> del men&uacute; <em>Process</em>, 
+    para que valide el documento que vamos a insertar. Si el documento es bien 
+    formado pasamos al siguiente punto.</li>
+  <li>Creamos un nuevo nodo con la informaci&oacute;n que tenemos en el &aacute;rea 
+    <em>Node</em>, pulsando sobre la opci&oacute;n <em>Create Node </em>del men&uacute; 
+    <em>Database</em>. Esto registrar&aacute; el nodo en la base de datos. Si 
+    a continuaci&oacute;n pulsamos sobre <em>Index Collection</em> del men&uacute; 
+    <em>Database</em>, deberemos ver en la lista de nodos (<em>XNodes</em>) el 
+    nodo que acabamos de insertar.</li>
+</ul>
+<p>Para registrar un nuevo usuario:</p>
+<ul>
+  <li>Introducimos nuestro nombre de usuario en el campo <em>owner</em>.</li>
+  <li>Seleccionamos la colecci&oacute;n <em>authinfo</em>.</li>
+  <li>Cargamos el fichero <em>UserInfo.xml </em>e introducimos en &eacute;l los 
+    datos del nuevo usuario. No hace falta que cambiemos el contenido de los campos 
+    <em>tokenExpiration</em> y <em>authInfo</em>.</li>
+  <li>El password debe estar codificado en MD5. Por lo tanto deberemos codificarlo 
+    nosotros manualmente e introducir en el documento el valor codificado. Para 
+    codificarlo podemos usar la herramienta que veremos en el siguiente apartado.</li>
+  <li>Pulsamos sobre la opci&oacute;n <em>Check Content</em> del men&uacute; <em>Process</em>, 
+    para que valide el documento que vamos a insertar. Si el documento es bien 
+    formado pasamos al siguiente punto.</li>
+  <li>Creamos un nuevo nodo con la informaci&oacute;n que tenemos en el &aacute;rea 
+    <em>Node</em>, pulsando sobre la opci&oacute;n<em> Create Node</em> del men&uacute; 
+    <em>Database</em>. Esto registrar&aacute; el nodo en la base de datos. Si 
+    a continuaci&oacute;n pulsamos sobre <em>Index Collection</em> del men&uacute; 
+    <em>Database</em>, deberemos ver en la lista de nodos (<em>XNodes</em>) todos 
+    los nodos correspondientes a usuarios registrado, entre los que deber&aacute; 
+    encontrarse el nodo que acabamos de insertar.</li>
+</ul>
+<p><strong>MD5</strong></p>
+<p>El password que especifiquemos para los usuarios creados deber&aacute; estar 
+  encriptado con MD5. El <em>script</em> anterior nos da acceso a una herramienta 
+  para codificar nuestro password con MD5. Escribiendo</p>
+<pre class="codigo">registry-server-test <strong>run-md5</strong> -Dpassword=mi_password     // Windows
+registry-server-test.sh <strong>run-md5</strong> -Dpassword=mi_password  // Linux</pre>
+<p>Donde especificamos como propiedad <em>password</em> el password que queremos 
+  codificar. Esto nos producir&aacute; una salida similar a la siguiente:</p>
+<pre class="codigo">run-md5:
+   [echo] -- Running md5 for auth --
+   [java] 
+   [java] The Value of the MD5 Hash is: <strong>ee43f1335fcc90fb</strong>
+
+BUILD SUCCESSFUL
+
+Total time: 1 second</pre>
+<p>De aqu&iacute; podremos copiar directamente el valor MD5 de nuestro password. 
+  De esta forma, una vez generado este valor s&oacute;lo tendremos que copiarlo 
+  y pegarlo en el campo password al registrar un nuevo usuario.</p>
+<h3>5.3.2 Servidor de registro de Weblogic</h3>
+<p>Weblogic incorpora un servidor de registro privado propio, que podremos utilizar 
+  para a&ntilde;adir datos que queramos que sean accesibles s&oacute;lo de forma 
+  privada, como pueden ser por ejemplo datos de prueba, mientras probamos nuestras 
+  aplicaciones. </p>
+<p>Para acceder a este registro privado podemos usar la herramienta <em>UDDI Directory 
+  Explorer</em>, a la que podemos acceder a trav&eacute;s de nuestro servidor 
+  Weblogic mediante la direcci&oacute;n:</p>
+<pre class="codigo">http://localhost:7001/<strong>uddiexplorer</strong></pre>
+<p>Suponiendo que tenemos instalado Weblogic en nuestra m&aacute;quina local, 
+  escuchando en el puerto por defecto 7001. Si queremos conectarnos a este registro 
+  en nuestros programas, las direcciones para la API de consulta y la de publicaci&oacute;n 
+  son: </p>
+<ul>
+  <li> API de consulta (<strong>inquiry API</strong>): <em>http://localhost:7001/uddi/uddilistener</em></li>
+  <li> API de publicaci&oacute;n (<strong>publish API</strong>): <em>http://localhost:7001/uddi/uddilistener</em></li>
+</ul>
+<p>Estas direcciones son modificables desde la p&aacute;gina de configuraci&oacute;n 
+  del registro UDDI de WebLogic.</p>
+<p>Una vez introducida la direcci&oacute;n de la herramienta <em>UDDI Directory 
+  Explorer</em> en el navegador, aparecer&aacute; la siguiente p&aacute;gina:</p>
+<center>
+  <img src="imagenes/uddi-main.gif" width="500" height="244">
+</center>
+<p>En el men&uacute; de la izquierda nos ofrece las siguientes opciones:</p>
+<ul>
+  <li><strong>Search public registries</strong>: Mediante esta opci&oacute;n podremos 
+    realizar una b&uacute;squeda en cualquier registro p&uacute;blico existente. 
+    Cuando pulsemos sobre ella se mostrar&aacute; la siguiente p&aacute;gina:</li>
+</ul>
+<center>
+  <img src="imagenes/uddi-public.gif" width="500" height="236">
+</center>
+<blockquote> 
+  <p>Podremos seleccionar el registro donde vamos a realizar la b&uacute;squeda 
+    de una lista. Podremos a&ntilde;adir nuevos registros p&uacute;blicos a esta 
+    lista desde la p&aacute;gina de configuraci&oacute;n, como veremos m&aacute;s 
+    adelante. La b&uacute;squeda se podr&aacute; hacer por nombre de la organizaci&oacute;n, 
+    por clave, o por otros criterios seg&uacute;n distintas clasificaciones.</p>
+</blockquote>
+<ul>
+  <li><strong>Search private registry</strong>: Nos permite realizar una b&uacute;squeda 
+    en el registro privado de WebLogic. Se mostrar&aacute; la siguiente p&aacute;gina:</li>
+</ul>
+<center>
+  <img src="imagenes/uddi-privado.gif" width="500" height="232">
+</center>
+<blockquote> 
+  <p>La b&uacute;squeda se realizar&aacute; de la misma forma que en el caso de 
+    registros p&uacute;blicos, con la diferencia de que no tendremos que seleccionar 
+    el registro en el que vamos a buscar.</p>
+</blockquote>
+<ul>
+  <li><strong>Publish to private registry</strong>: Nos permite publicar datos 
+    en el registro privado de WebLogic. La primera vez que accedamos nos pedir&aacute; 
+    que introduzcamos nuestro <em>login</em> y <em>password</em> de WebLogic en 
+    la siguiente p&aacute;gina:</li>
+</ul>
+<center>
+  <img src="imagenes/uddi-login.gif" width="500" height="231">
+</center>
+<blockquote>
+  <p>Una vez hayamos introducido nuestro usuario de WebLogic, podremos publicar 
+    nuevos servicios o informaci&oacute;n de contacto mediante la siguiente p&aacute;gina:</p>
+</blockquote>
+<center>
+  <img src="imagenes/uddi-publish.gif" width="500" height="354">
+</center>
+<blockquote> 
+  <p>Podemos a&ntilde;adir un servicio o un contacto a una organizaci&oacute;n 
+    existente en el registro, seleccionando la organizaci&oacute;n entre una de 
+    las de la lista que se muestra, o bien introducir el nombre de una nueva organizaci&oacute;n, 
+    para que &eacute;sta sea introducida en el registro.</p>
+</blockquote>
+<ul>
+  <li><strong>Modify private registry details</strong>: Nos permitir&aacute; modificar 
+    datos existentes en el registro, eliminar organizaciones, servicios, e informaci&oacute;n 
+    de contacto, as&iacute; como a&ntilde;adir servicios e informaci&oacute;n 
+    de contacto a las organizaciones del registro. Para acceder a esta opci&oacute;n 
+    tambi&eacute;n ser&aacute; necesario registrarnos previamente como usuario 
+    de Weblogic. Cuando pulsemos sobre esta opci&oacute;n nos mostrar&aacute; 
+    las organizaciones existentes:</li>
+</ul>
+<center>
+  <img src="imagenes/uddi-modif.gif" width="500" height="230">
+</center>
+<blockquote>
+  <p>Aqu&iacute; podremos eliminarlas, modificar su nombre, o bien a&ntilde;adir 
+    una nueva organizaci&oacute;n. Pinchando sobre el nombre de la organizaci&oacute;n 
+    podremos a&ntilde;adir o eliminar datos dentro de ella:</p>
+</blockquote>
+<center>
+  <img src="imagenes/uddi-modif2.gif" width="500" height="386">
+</center>
+<blockquote>
+  <p>Aqu&iacute; se podr&aacute; a&ntilde;adir o eliminar servicios o informaci&oacute;n 
+    de contacto a la organizaci&oacute;n, as&iacute; como editar los existentes.</p>
+</blockquote>
+<ul>
+  <li><strong>Setup UDDI directory explorer</strong>: Nos permite cambiar la configuraci&oacute;n 
+    de la aplicaci&oacute;n <em>UDDI Directory Explorer</em>:</li>
+</ul>
+<center>
+  <img src="imagenes/uddi-setup.gif" width="500" height="464">
+</center>
+<blockquote>
+  <p>Podremos cambiar las URL de la API de consulta (<em>Search URL</em>) y de 
+    la API de modificaci&oacute;n (<em>Publish URL</em>) del registro, as&iacute; 
+    como a&ntilde;adir o eliminar registros p&uacute;blicos a la lista.</p>
+</blockquote>
+<ul>
+  <li><strong>Help</strong>: Muestra ayuda sobre la herramienta.</li>
+</ul>
+</body>
+</html>

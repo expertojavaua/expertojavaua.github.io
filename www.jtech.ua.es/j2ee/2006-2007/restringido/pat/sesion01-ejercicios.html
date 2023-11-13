@@ -1,0 +1,144 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.7">
+<meta name="Forrest-skin-name" content="pelt">
+<title>Ejercicio de la charla 1: Introducci&oacute;n a los patrones de dise&ntilde;o</title>
+<link type="text/css" href="skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="skin/print.css" rel="stylesheet">
+<link type="text/css" href="skin/profile.css" rel="stylesheet">
+<script src="skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<div class="header">
+<div class="grouplogo">
+<a href="http://www.jtech.ua.es/j2ee"><img class="logoImage" alt="J2EE" src="images/baner_j2ee_izq.gif" title="Curso Especialista Universitario J2EE"></a>
+</div>
+<div class="projectlogoA1">
+<a href="http://www.dccia.ua.es/"><img class="logoImage" alt="Patrones de dise&ntilde;o" src="images/baner_j2ee_der.gif" title="Patrones de dise&ntilde;o"></a>
+</div>
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="../index.html">M&oacute;dulos</a>
+</li>
+<li>
+<a class="base-not-selected" href="index.html">Patrones de dise&ntilde;o Java Enterprise</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<div id="level2tabs"></div>
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<div id="menu">
+<div onclick="SwitchMenu('menu_1.1', 'skin/')" id="menu_1.1Title" class="menutitle">Patrones de dise&ntilde;o</div>
+<div id="menu_1.1" class="menuitemgroup">
+<div class="menuitem">
+<a href="index.html" title="RMI">&Iacute;ndice</a>
+</div>
+<div onclick="SwitchMenu('menu_1.1.2', 'skin/')" id="menu_1.1.2Title" class="menutitle">Teor&iacute;a</div>
+<div id="menu_1.1.2" class="menuitemgroup">
+<div class="menuitem">
+<a href="sesion01-apuntes.html">Sesion 1</a>
+</div>
+</div>
+<div class="menuitem">
+<a href="">Ejercicios</a>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<div id="credit2"></div>
+</div>
+<div id="content">
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="sesion01-ejercicios.pdf"><img alt="PDF -icon" src="skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1>Ejercicio de la charla 1: Introducci&oacute;n a los patrones de dise&ntilde;o</h1>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#Descripci%C3%B3n+de+la+aplicaci%C3%B3n">Descripci&oacute;n de la aplicaci&oacute;n</a>
+</li>
+<li>
+<a href="#Refactorizaci%C3%B3n+con+patrones+de+dise%C3%B1o">Refactorizaci&oacute;n con patrones de dise&ntilde;o</a>
+</li>
+</ul>
+</div>
+
+
+<a name="N1000C"></a><a name="Descripci%C3%B3n+de+la+aplicaci%C3%B3n"></a>
+<h2 class="underlined_10">Descripci&oacute;n de la aplicaci&oacute;n</h2>
+<div class="section">
+<p>Tenemos una aplicaci&oacute;n web con JavaEE denominada <strong>AmigosJavaEE</strong> en la que cada
+usuario mantiene una p&aacute;gina personal con datos, descripci&oacute;n, aficiones,etc. Una vez hecho
+login, un usuario puede ver las p&aacute;ginas de otros, buscar usuarios por diferentes criterios y enviarles mensajes, adem&aacute;s de ver los que
+otros usuarios le han enviado.</p>
+<p>En resumen, los casos de uso son los siguientes:</p>
+<ul>
+
+<li>Un usuario hace login en la aplicaci&oacute;n</li>
+
+<li>Un usuario ve la p&aacute;gina personal de otro</li>
+
+<li>Un usuario ve los mensajes de su buz&oacute;n (inicialmente solo fecha, remitente y tema)</li>
+
+<li>Un usuario lee un mensaje</li>
+
+<li>Un usuario env&iacute;a un mensaje a otro</li>
+
+<li>Un usuario busca otros usuarios especificando sexo, localidad y edades m&aacute;xima y m&iacute;nima</li>
+
+</ul>
+</div>
+
+<a name="N10031"></a><a name="Refactorizaci%C3%B3n+con+patrones+de+dise%C3%B1o"></a>
+<h2 class="underlined_10">Refactorizaci&oacute;n con patrones de dise&ntilde;o</h2>
+<div class="section">
+<p>La siguiente figura muestra un diagrama de clases parcial de la aplicaci&oacute;n, teniendo en cuenta
+solo las capas de negocio y acceso a datos.</p>
+<p>
+
+<img alt="diagrama de clases actual" content-width="12cm" src="imagenes/ejercicio1.jpg">
+</p>
+<p> En grupos de 2-3 personas, refactorizad la aplicaci&oacute;n para que use patrones de dise&ntilde;o, generando
+un nuevo diagrama de clases.
+No es necesario usar todos los que se han visto en la charla, solo aquellos que sean necesarios justificando
+brevemente (2-3 l&iacute;neas) su introducci&oacute;n.</p>
+</div>
+
+
+<p class="pageBreakAfter"></p>
+
+
+</div>
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+        Copyright &copy;
+         2006-2007 Depto. CCIA</div>
+</div>
+</body>
+</html>

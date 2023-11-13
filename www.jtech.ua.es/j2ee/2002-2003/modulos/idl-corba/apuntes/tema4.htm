@@ -1,0 +1,255 @@
+<html>
+<head>
+<title>Tema 4: Soporte de ejecuci&oacute;n ORB</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<h1><span class="section">4. </span>Soporte de ejecuci&oacute;n ORB</h1>
+<p>La especificaci&oacute;n de CORBA 2.3 define el soporte de ejecuci&oacute;n 
+  ORB en forma de pseudo-objetos ORB, el objeto Object, y el objeto de localidad 
+  restringida POA. Los pseudo-objetos proporcionan interfaces de igual forma que 
+  los objetos CORBA normales, pero no heredan de CORBA::Object, y las operaciones 
+  sobre dichas interfaces se implementan en librer&iacute;as y no se pueden utilizar 
+  en invocaciones remotas, es decir, solamente pueden usarse en procesos locales. 
+  La definici&oacute;n de los pseudo-objetos se marca con las siglas PIDL en los 
+  comentarios IDL. </p>
+<p>Los objetos POA son de localidad restringida, lo cual significa que se establece 
+  la correspondencia entre la interfaz y el lenguaje destino de acuerdo con las 
+  normas establecidas por el lenguaje, pero las referencias a objetos no pueden 
+  &quot;externalizarse&quot;, bien ser convirti&eacute;ndolas en cadena de caracteres, 
+  o pas&aacute;ndolas en invocaciones remotas. Los objetos solamente pueden utilizarse 
+  en procesos locales.</p>
+<p>A continuaci&oacute;n vamos a ver cu&aacute;l es la correspondencia de dichas 
+  interfaces con su implementaci&oacute;n Java.</p>
+<h2 class="subsection">4.1. Interfaz ORB</h2>
+<p>La interfaz ORB proporciona operaciones para soportar aplicaciones CORBA. Incluye 
+  la conversi&oacute;n de referencias a objetos a <code>Strings</code>, y viceversa, 
+  y la resoluci&oacute;n de referencias iniciales. Una de estas referencias iniciales 
+  es la referencia a POA, necesaria par apermitir que los objetos est&eacute;n 
+  disponibles para ser invocados.</p>
+<p>La interfaz ORB se implementa en Java de la siguiente forma:</p>
+<pre class="codigo">package orb.omg.CORBA;
+public abstract class ORB {...}</pre>
+<p><font color="#FF0000"><b>Inicializaci&oacute;n ORB.</b></font> Antes de que 
+  una aplicaci&oacute;n pueda usar las operaciones del interfaz ORB necesita una 
+  referencia a un pseudo-objeto ORB. Los ORBs en applets Java requieren diferentes 
+  inicializaciones para que las aplicaciones Java &quot;se salten&quot; las restricciones 
+  de seguridad. Dicha inicializaci&oacute;n se realiza llamando a m&eacute;todos 
+  est&aacute;ticos de la clase ORB. </p>
+
+<pre class="codigo">Operación IDL: ORB ORB_init(inout arg_list argv, in ORBid orb_identifier);
+M&eacute;todo Java por defecto:       <b>public static ORB init()</b>;
+M&eacute;todo Java para aplicaciones: 
+   <b>public static ORB init</b>(<b>String</b> [] args, <b>Properties</b> props);
+M&eacute;todo Java para applets:
+   <b>public static ORB init</b> (<b>Applet</b> app, <b>Properties</b> props);</pre>
+<p>El m&eacute;todo por defecto <code>init()</code> devuelve una referencia a 
+  un &uacute;nico ORB. Los otros dos m&eacute;todos se han dise&ntilde;ado espec&iacute;ficamente 
+  para usarlos en aplicaciones Java y <i>applets</i>, respectivamente. En ambos 
+  casos se pueden pasar como par&aacute;metros una lista de propiedades. ORB reconocer&aacute; 
+  c&oacute;mo interpretar dos propiedades est&aacute;ndar:</p>
+<ul>
+  <li> <code>org.omg.CORBA.ORBClass: </code> que contiene el nombre de una implementaci&oacute;n 
+    de clase de ORB.</li>
+  <li><code>org.omg.CORBA.ORBSingletonClass:</code> que contiene el nombre de 
+    una implementaci&oacute;n ORB que act&uacute;a como una <i>TypeCode factory</i>. 
+  </li>
+</ul>
+<p>Los <i>typecodes</i> pueden representar informaci&oacute;n de tipo sobre cualquier 
+  tipo IDL. Muchos tipos de datos IDL son estructurados y contienen otros tipos 
+  dentro de ellos. Estos son representados como <i>TypeCodes</i> anidados.</p>
+<p><font color="#FF0000"><b>Conversi&oacute;n de referencias a objetos en Strings.</b></font> 
+  Las referencias a objetos pueden ser externalizadas convirti&eacute;ndolas en 
+  <i>strings</i>. Una referencia a objeto convertida en <i>string</i> puede ser 
+  almacenada convenientemente en un fichero o &quot;enviada&quot; utilizando alg&uacute;n 
+  otro mecanismo que no sea CORBA, como por ejemplo <i>e-mail</i>. Tambi&eacute;n 
+  puede ser reconvertida en una referencia real al mismo objeto. Las dos operaciones 
+  para convertir a <i>String</i> y viceversa una referncia a objeto son: </p>
+<pre class="codigo">Operación IDL: string object_to_string(in CORBA::Object obj);
+M&eacute;todo Java:  <b>String object_to_string(org.omg.CORBa.Object obj)</b>;
+Operación IDL: object string_to_object(in string obj);
+M&eacute;todo Java:  <b>orb.omg.CORBA.Object string_to_object(String str); </b></pre>
+<p>La operaci&oacute;n <code>object_to_string()</code> convierte un IOR en un 
+  <i>String</i>. La operaci&oacute;n <code>string_to_object()</code> realiza la 
+  operaci&oacute;n contraria. </p>
+<p><font color="#FF0000"><b>Obtenci&oacute;n de una referencia POA.</b></font> 
+  ORB proporciona una operaci&oacute;n para recuperar una referencia a la ra&iacute;z 
+  de POA, necesaria para conseguir que los objetos est&eacute;n disponibles para 
+  invocaciones remotas. </p>
+<pre class="codigo">Operación IDL: CORBA::Object resolve_initial_references(in string name);
+M&eacute;todo Java:  <b>public abstract org.omg.CORBA.Object</b>
+                                 <b>resolve_initial_references(String name);</b></pre>
+<p>Asumiendo que el pseudo-objeto ORB ha sido inicializado correctamente, una 
+  ferencia a la raiz POA podr&iacute;a obtenerse de la siguiente forma: </p>
+<pre class="codigo">orb.omg.CORBA.Object obj= orb.resolve_initial_references(&quot;RootPOA&quot;);
+org.omg.PortableServer.POA rootPOA =
+             org.omg.PortableServer.POAHelper.narrow(obj);</pre>
+<p>Se debe notar que la ra&iacute;z POA, al igual que cualquier POA de nueva creaci&oacute;n, 
+  es inicialmente un estado contenedor y no procesar&aacute; peticiones de entrada. 
+  Para habilitar el proceso de peticiones es necesario realizar una llamada activate() 
+  sobre su POAManager:</p>
+<pre class="codigo">rootPOA.the_Manager().activate();</pre>
+<h2 class="subsection">4.2. Interfaz POA</h2>
+<p>La interfaz POA se utiliza para crear referencias a objetos y hacer que dichas 
+  referencias est&eacute;n disponibles para invocaciones remotas. La interfaz 
+  POA se define en el m&oacute;dulo <code>PortableServer</code>. </p>
+<pre class="codigo">IDL interfaz: module PortableServer {
+                  interface POA {//locality-constrained;
+Clase Java:   package org.omg.PortableServer;
+                  public interface POA {...}</pre>
+<p><font color="#FF0000"><b>Creaci&oacute;n de referencias.</b></font> La interfaz 
+  POA proporciona dos operaciones para crear de forma expl&iacute;cita nuevas 
+  referencias a objetos. </p>
+<pre class="codigo">Operaciones IDL: Object create_reference(in RepositoryID intf);
+                 Object create_reference_with_id(in ObjectID oid,
+                                                 in RepositoryID intf);
+M&eacute;todos Java:  <b>org.omg.CORBA.Object create_reference(String intf);
+               org.omg.CORBA.Object create_reference_with_id(byte [] oid,
+                                                     String intf);</b></pre>
+<p>En ambos casos, el tipo del objeto debe especificarse en forma de <code>RepositoryID. 
+  </code>Las nuevas referencias creadas no se asocian con ning&uacute;n <i>servant</i> 
+  todav&iacute;a, lo cual significa que no son activadas. Mientras que el objeto 
+  abstracto existe y su referencia puede ser exportada usando <code>object_to_string()</code> 
+  o via el servicio de nombres, todav&iacute;a es necesario asociar el objeto 
+  con un <i>servant</i>. </p>
+<p><font color="#FF0000"><b>Activaci&oacute;n y desactivaci&oacute;n impl&iacute;cita.</b></font> 
+  En muchos casos, la forma m&aacute;s conveniente de crear una referencia a objeto 
+  consiste en activarla al mismo tiempo que la referencia es creada, en lugar 
+  de llamar a una de las operaciones <code>create_reference</code> y posteriormente 
+  activar expl&iacute;citamente el objeto llamando a <code>activate_object()</code> 
+  o <code>activate_object_with_id()</code>. </p>
+<pre class="codigo">Operaci&oacute;n IDL: Object servant_to_reference(in Servant servant);
+M&eacute;todo Java:  <b>org.omg.CORBA.Object servant_to_reference(Servant s);</b></pre>
+<p>Usando esta operaci&oacute;n, una &uacute;nica llamada es suficiente:</p>
+<pre class="codigo">MyServerImpl servant= new MyServerImpl();
+org.omg.CORBA.Object obj= poa.servant_to_reference(servant);</pre>
+<p>Mediante la llamada a <code>servant_to_reference()</code> se puede asociar 
+  el objeto con el <i>servant</i> y simult&aacute;neamente crear una entrada en 
+  su <i>Active Object Map</i>. A esto se le denomina activaci&oacute;n impl&iacute;cita 
+  y requiere las pol&iacute;ticas <code>IMPLICIT_ACTIVATION</code> y <code>RETAIN</code>. 
+  El <i>servant</i> especificado no debe estar actualmente activo o el POA debe 
+  tener tambi&eacute;n fijada la pol&iacute;tica <code>MULTIPLE_ID</code>. Se 
+  debe notar que para que POA sea capaz de asignar un ID a un objeto para una 
+  nueva referencia, la pol&iacute;tica de asingaci&oacute;n de ID debe tener un 
+  valor de <code>SYSTEM_ID</code>.</p>
+<p>Despu&eacute;s de que un programa servidor haya inicializado su ORB, obtenido 
+  una referencia a la raiz POA, y activar su objetos, el hijo de control principal 
+  del servidor usualmente se queda esperando para esperar peticiones y procesarlas. 
+  Esto se realiza normalmente llamando al m&eacute;todo <code>run()</code> de 
+  ORB. </p>
+<p>Un ejemplo de servidor sencillo podr&iacute;a ser &eacute;ste:</p>
+<pre class="codigo">public class Server {
+  public static void main (String[] args) {
+    //inicializar el ORB
+    org.omg.CORBA.ORB orb = org.omg.CORBA.ORB.init(args, null);
+    try {
+     //obtener la raiz POA
+     org.omg.PortableServer.POA poa=
+        org.omg.PortableServer.POAHelper.narrow(
+            orb.resolve_initial_references(&quot;RootPOA&quot;));
+     //activar POA
+     poa.the_POAManager().activate();
+     //activar de forma impl&iacute;cita un objeto
+     orb.omg.CORB.Object o = poa.servant_to_reference(new myImpl());
+     //esperar peticiones
+     orb.run();
+    } catch (Exception e) {
+       e.printStackTrace();
+    }
+  }
+
+}</pre>
+<p>Los objetos pueden desactivarse expl&iacute;citamente mediante una llamada 
+  a <code>deactivate_object()</code> si POA tiene la pol&iacute;tica <code>RETAIN</code>. 
+  Los objetos se desactivan de forma impl&iacute;cita de varias formas: destruyendo 
+  su POA con la operaci&oacute;n <code>destroy()</code>, desactivando su POA a 
+  trav&eacute;s de la operaci&oacute;n <code>deactivate()</code> de su <i>POAManager</i>, 
+  o &quot;cerrando&quot; el ORB. En este &uacute;ltimo caso, la interfaz ORB proporciona 
+  dos operaciones:</p>
+<pre class="codigo">Operaciones IDL:  void shutdown (in boolean wait_for_completion);
+                  void destroy();
+M&eacute;todos Java:     void shutdown(boolean wait_for_completionI;
+                  void destroy();</pre>
+<p>Mediante una llamada a <code>shutdown()</code> sobre un pseudo-objeto ORB se 
+  consigue que el ORB detenga el procesamiento de peticiones y se prepare para 
+  su &quot;destrucci&oacute;n&quot;. Tambi&eacute;n se &quot;destruyen&quot; todos 
+  su adaptadores de objetos. El par&aacute;metro Boolean indica si esta operaci&oacute;n 
+  debe retornar inmediatamente o solamente cuando el ORB se ha cerrado completamente. 
+  Despu&eacute;s de que ORB se haya cerrado, los &uacute;nicos m&eacute;todos 
+  que pueden llamarse son operaciones de gesti&oacute;n de referencias a objetos.</p>
+<p>El m&eacute;todo <code>destroy()</code> libera todos los recursos de un ORB. 
+  Si el ORB no se ha cerrado cuando se llama a <code>destroy()</code>, este m&eacute;todo 
+  iniciar&aacute; el cierre. </p>
+<h2 class="subsection">4.3. Interfaz de invocaci&oacute;n din&aacute;mica</h2>
+<p>La interfaz de invocaci&oacute;n din&aacute;mica (<i>DII: Dynamic Invocation 
+  Interface</i>) permite a los clientes invocar operaciones sobre objetos sin 
+  conocimiento en tiempo de compilaci&oacute;n sobre su tipo IDL, es decir, sin 
+  el c&oacute;digo <i>stub</i> generado por el compilador IDL. Un cliente crea 
+  una petici&oacute;n (<i>Request</i>), que es el equivalente din&aacute;mico 
+  de una operaci&oacute;n. Una <i>Request</i> contiene una referencia a objeto, 
+  un nombre de operaci&oacute;n, e informaci&oacute;n de tipo y valores para los 
+  argumentos que son proporcionados por el cliente. Una vez inicializado con todos 
+  estos par&aacute;metros, una <i>Request </i> puede ser invocada, y tiene la 
+  misma sem&aacute;ntica que la invocaci&oacute;n de una operaci&oacute;n usando 
+  c&oacute;digo <i>stub</i>.</p>
+<p><i>Request</i> es una interfaz pseudo-IDL que proporciona las operaciones para 
+  inicializar una invocaci&oacute;n de una petici&oacute;n de invocaci&oacute;n 
+  de operaci&oacute;n e invoca de forma din&aacute;mica una operaci&oacute;n sobre 
+  un objeto. Las peticiones son creadas por el ORB.</p>
+<p>Los m&eacute;todos Java usados para crear una <i>Request</i> son:</p>
+<pre class="codigo">Request _create_request(
+   Context ctx,
+   String operation,
+   NVList arg_list,
+   NamedValue result
+);
+Request _creat_request ( 
+   Context ctx,
+   String operation,
+   NVList arg_list,
+   NamedValue result,
+   ExceptionLIst exclist,
+   ContextList ctxlist
+);</pre>
+<p>Los dos métodos son idénticos, excepto que la segunda versi&oacute;n a&ntilde;ade 
+  alguna informaci&oacute;n extra.</p>
+<ul>
+  <li><code>ctx</code> especifica el contexto de ejecución de la petición. Un 
+    objeto <i>context</i> contiene una lista de propiedades consistentes en pares 
+    de nombres y valores</li>
+  <li><code>operation</code> determina el nombre de la operaci&oacute;n a ser 
+    invocada</li>
+  <li><code>arg_list</code> proporciona los argumentos para dicha operaci&oacute;n</li>
+  <li><code>result</code> es un <i>NamedValue</i> cuyo valor est&aacute; inicializado 
+    para contener &uacute;nicamente el tipo esperado como resultado de la operaci&oacute;n</li>
+  <li><code>exclist</code> es una lista de <i>TypeCodes</i> que indica las excepciones 
+    del usuario que se declaran en las cl&aacute;usulas <i>raise</i> de la operaci&oacute;n</li>
+  <li><code>ctxlist</code> es una lista de <i>Strings</i> que se corresponden 
+    con los nombres en la cl&aacute;usula <i>context</i> de una declaraci&oacute;n 
+    de operaci&oacute;n</li>
+</ul>
+<p>El nuevo objeto creado <code>Request</code> se devuelve como resultado del 
+  m&eacute;todo Java. Hay una operaci&oacute;n adicional para crear objetos <code>Request</code> 
+  parcialmente inicializados:</p>
+<pre class="codigo">Request _request (String operation) throws SystemException</pre>
+<p>La pseudo-interfaz <i>Request</i> se corresponde con la clase abstracta Java 
+  <code>org.omg.CORBA.Request</code>.</p>
+<p>El DII proporciona un mecanismo para invocar operaciones desde un cliente sin 
+  conocimiento en tiempo de compilaci&oacute;n sobre la interfaz. La <i><b>Dynamic 
+  Skeleton Interface</b> (DSI)</i> proporciona un mecanismo similar en el lado 
+  del servidor. Permite al ORB invocar una implementaci&oacute;n de un objeto 
+  sin conocimiento en tiempo de compilaci&oacute;n sobre la interfaz, es decir, 
+  sin una clase <i>skeleton</i>. Para una implementaci&oacute;n de objeto, las 
+  llamadas a trav&eacute;s de un <i>skeleton</i> generadas por un compilador y 
+  las DSI no son distinguibles. La idea subyacente a DSI es invocar todas las 
+  implementaciones de objetos a trav&eacute;s de la misma operaci&oacute;n general. 
+  Esto se especifica en la clase abstracta <code>DynamicImplementation</code> 
+  que contiene una operaci&oacute;n, llamada por el ORB, para transportar la petici&oacute;n 
+  original al servidor. Esta clase presenta un pseudo-objeto de tipo <code>ServerRequest</code> 
+  para permitir al servidor acceder a la informaci&oacute;n sobre la operaci&oacute;n 
+  que est&aacute; siendo invocada y sus argumentos. Tambi&eacute;n usa referencias 
+  a los contenidos de dicho objeto par devolver los resultados de la invocaci&oacute;n.</p>
+</body>
+</html>

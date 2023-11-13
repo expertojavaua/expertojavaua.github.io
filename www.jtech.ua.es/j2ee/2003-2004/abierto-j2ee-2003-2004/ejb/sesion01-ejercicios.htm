@@ -1,0 +1,338 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+  <title>Ejercicios Sesion 1</title>
+  <link href="../apuntes.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<h1>Ejercicios sesi&oacute;n 1</h1>
+<p>Los ejercicios de esta sesi&oacute;n van a centrarse en la creaci&oacute;n, 
+  compilaci&oacute;n y despliegue de beans. En concreto, vamos a trabajar con 
+  un sencillo ejemplo de bean de sesi&oacute;n sin estado, el bean saludoEjb. 
+  En los ejercicios vamos a usar las siguientes herramientas:<br>
+</p>
+<ul>
+  <li>WebLogic Server como contenedor del bean </li>
+  <li>Eclipse como herramienta de desarrollo del bean</li>
+  <li>WebLogic Builder como herramienta de despliegue del bean en
+el&nbsp;</li>
+</ul>
+<h3>Ejercicio 1: instalaci&oacute;n del servidor WebLogic Server 8.1</h3>
+<p><em>Tiempo estimado de realizaci&oacute;n: 10 minutos</em></p>
+<p>Suponemos que el servidor de aplicaciones est&aacute; instalado en
+el directorio del usuario. Por ejemplo, en el directorio <code>/home/domingo/bea</code>.
+Vamos a llamar a este directorio <code>BEA_HOME</code>. Justo en este
+directorio podemos encontrar el directorio <code>weblogic81</code>.
+Llamaremos a este otro directorio <code>WL_HOME</code> :</p>
+<pre>BEA_HOME = /home/domingo/bea<br>WL_HOME = /home/domingo/bea/weblogic81<br></pre>
+<p>1. Lo primero que debemos hacer es instalar un dominio vac&iacute;o en el que 
+  vamos a probar los ejemplos. Para ello debes ejecutar el comando <code>config.sh</code> 
+  que se encuentra en el directorio <code>WL_HOME/common/bin</code>:<br>
+</p>
+<pre>% cd /home/domingo/bea/weblogic81/common/bin<br>% ./config.sh<br></pre>
+<p>Sigue paso a paso las indicaciones del asistente, tal y como se
+muestra en las siguientes figuras:<br>
+</p>
+<p>1. Indica que quieres crear una nueva configuraci&oacute;n de
+WebLogic Server</p>
+<p><img src="imagenes/ejercicios01/install1.png"
+ alt="Crear nueva configuracion WebLogic" width="780" height="559"><br>
+</p>
+<p>2. Selecciona la plantilla de configuraci&oacute;n b&aacute;sica.
+Esta es una plantilla vac&iacute;a, sin ejemplos ni configuraciones
+iniciales de servicios. Tambi&eacute;n ser&iacute;a posible escoger
+alguna otra plantilla, en la que ya se han configurado algunos
+servicios, como el de JDBC o el de JMS.<br>
+</p>
+<p><img src="imagenes/ejercicios01/install2.png"
+ alt="Escoge plantilla vacia" width="780" height="559"><br>
+</p>
+<p>3. Cuando pulses "Next" aparecer&aacute; otra pantalla en la que te
+preguntar&aacute; si quieres usar la configuraci&oacute;n Express.
+Acepta esa configuraci&oacute;n.<br>
+</p>
+<p>4. Despu&eacute;s aparece la siguiente pantalla en la que
+debes&nbsp; dar un login y contrase&ntilde;a para el usario de
+administraci&oacute;n del servidor de aplicaciones. Deja "weblogic" como
+usuario y, por simplificar, pon "weblogic" como contrase&ntilde;a:</p>
+<p><img src="imagenes/ejercicios01/install3.png"
+ alt="Contrase&ntilde;a weblogic" width="780" height="559"><br>
+</p>
+<p>5. La siguiente pantalla te preguntar&aacute; por el modo del
+servidor, desarrollo o producci&oacute;n, as&iacute; como por ej Java
+SDK que queremos usar. Acepta lo que aparece por defecto (modo
+desarrollo y Java SDK de Sun proporcionado por BEA):<br>
+</p>
+<p><img src="imagenes/ejercicios01/install4.png"
+ alt="modo y sdk" width="780" height="559"><br>
+<br>
+</p>
+<p>6. Por &uacute;ltimo, la siguiente pantalla te da la oportunidad de
+cambiar el nombre de la configuraci&oacute;n del servidor de
+aplicaciones. Acepta el nombre que te ofrece por defecto (<code>mydomain</code>):</p>
+<p><img src="imagenes/ejercicios01/install5.png"
+ alt="Nombre de configuracion" width="780" height="559"><br>
+</p>
+<p>Pulsa "Create" y aparecer&aacute; una &uacute;ltima ventana de
+resumen con las caracter&iacute;sticas de la nueva configuraci&oacute;n.
+Pulsa "Done" y el asistente se cerrar&aacute;.<br>
+</p>
+<p>7. Una vez que se ha creado el nuevo dominio, lanza el servidor de
+aplicaciones con esa nueva configuraci&oacute;n vac&iacute;a. Para ello
+ejecuta los siguientes comandos en un shell:<br>
+</p>
+<pre>% cd BEA_HOME/user_projects/domain/mydomain<br>% ./startWebLogic.sh <br></pre>
+<p>Se lanzar&aacute; el servidor de aplaciones en ese shell. Deja el
+shell abierto porque ah&iacute; vas a poder ver todos los mensajes que
+genere el servidor de apliaciones y todo lo que escriban los beans por
+la salida estandar.<br>
+</p>
+<p>8. Por &uacute;ltimo, para comprobar que el servidor de aplicaciones
+est&aacute; funcionando correctamente puedes abrir un navegador y
+conectarte a la p&aacute;gina http://localhost:7001/console.
+Deber&aacute;s ver la consola de administraci&oacute;n del WebLogic y
+deber&aacute;s poder entrar en ella con el usuario weblogic y la
+contrase&ntilde;a weblogic:<br>
+</p>
+<p><img src="imagenes/ejercicios01/install6.png"
+ alt="Consola de administracion" width="730" height="492"><br>
+</p>
+<h3>Ejercicio 2: compilaci&oacute;n y despliegue del bean <code>saludoEjb</code></h3>
+<p><em>Tiempo estimado de realizaci&oacute;n: 40 minutos</em></p>
+<p>Vamos ahora a ver, paso a paso, c&oacute;mo compilar y desplegar un
+enterprise bean. Existen distintas herramientas y distintas
+configuraciones para realizar este despliegue. Por ejemplo, es posible
+usar la herramienta <code>ant</code> y algunas tareas proporcionadas por
+el servidor de aplicaciones. En este primer ejemplo, vamos a usar el
+entorno Eclipse para implementar el bean y la herramienta gr&aacute;fica
+WebLogic Builder para desplegar el bean en el servidor de aplicaciones.<br>
+</p>
+<p>Partimos del fichero <code>SaludoBean.java</code> en el que se
+define la implementaci&oacute;n del bean de sesi&oacute;n. Puedes
+encontrar este fichero en las plantillas de ejercicios de la
+sesi&oacute;n 1. El c&oacute;digo fuente de este fichero es el siguiente:<br>
+</p>
+<pre class="codigo">package especialista;<br><br>import javax.ejb.*;<br><br>public class SaludoBean implements SessionBean {<br><br>&nbsp;&nbsp;&nbsp; private String[] saludos = {"Hola, que tal?",<br>       "Cuanto tiempo sin verte","Que te cuentas?", "Me alegro de<br>       volver a verte"};<br>&nbsp;&nbsp; &nbsp;&nbsp;  <br>    // Metodos de la interfaz SessionBean<br>&nbsp;&nbsp;&nbsp; public void setSessionContext(SessionContext arg0) {&nbsp;&nbsp;&nbsp; &nbsp;  <br>           System.out.println("set session context");<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; public void ejbRemove() {<br>   &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; System.out.println("ejb remove");<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; public void ejbActivate() {<br>   &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; System.out.println("ejb activate");<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; public void ejbPassivate() {<br>   &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; System.out.println("ejb passivate");<br>&nbsp;&nbsp;&nbsp; }<br>    // Fin de la interfaz SessionBean<br><br>&nbsp;&nbsp;&nbsp; public String saluda() {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; System.out.println("estoy en saluda");<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; int random = (int) (Math.random() * saludos.length);<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; return saludos[random];<br>&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp; public void ejbCreate() {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; System.out.println("ejb create");<br>&nbsp;&nbsp;&nbsp; }<br>}<br></pre>
+<p>1. Lo primero que debemos hacer es crear el directorio en el que vamos a compilar 
+  el bean. Supongamos que vamos a realizar todos los ejercicios en el directorio 
+  <code>/home/domingo/ejb</code>. Bajo ese directorio debemos crear la estructura 
+  del bean de sesi&oacute;n <code>saludoEjb</code>. Vamos a llamar al directorio 
+  que contiene esa estructura <code>saludoEjb</code>. Tambi&eacute;n creamos el 
+  directorio correspondiente al package <code>especialista</code>, que es donde 
+  va a residir el bean. Por &uacute;ltimo, copiamos en este directorio el fichero 
+  <code>SaludoBean.java</code>:<br>
+</p>
+<pre>% cd /home/domingo<br>% mkdir ejb<br>% mkdir ejb/saludoEjb<br>% mkdir ejb/saludoEjb/especialista<br>% cp ejercicios1/SaludoBean.java ejb/saludoEjb/especialista<br></pre>
+<p>2. Lanzamos ahora Eclipse. Aseg&uacute;rate de que Eclipse est&aacute; configurado 
+  para que guarde los ficheros compilados en el mismo directorio en el que se 
+  encuentran los ficheros fuente. Para ello, selecciona "Window &gt; Preferences" 
+  y comprueba de que en la preferencia "Java &gt; New Project" est&aacute; activa 
+  la opci&oacute;n "Source and output folder: Project":</p>
+<p><img src="imagenes/ejercicios01/eclipse1.png"
+ alt="Preferencias nuevo proyecto" width="614" height="557"><br>
+</p>
+<p><br>
+3. Vamos ahora a crear un proyecto nuevo que debe residir en el
+directorio /home/domingo/ejb/saludoEjb. Para ello, seleccionamos la
+opci&oacute;n "File &gt; New Project " y escogemos un proyecto de tipo
+Java. Cuando pulsamos "Next" aparece una pantalla en la que debemos
+definir el directorio base del proyecto:<br>
+</p>
+<p><img src="imagenes/ejercicios01/eclipse2.png" alt="Crear proyecto" width="547" height="332" border="1"><br>
+<br>
+  Pulsando "Next &gt;" pasamos a configurar el proyecto. Pulsamos la pesta&ntilde;a 
+  "Libraries" y pulsamos la opci&oacute;n "Add External JARs ...". Vamos a a&ntilde;adir 
+  el fichero JAR <code>weblogic.jar</code> al proyecto. Se trata de un fichero 
+  JAR donde se incluyen todas las librer&iacute;as de clases de J2EE. Su ruta 
+  es: <code>WL_HOME/server/lib/weblogic.jar</code>.</p>
+<p><img src="imagenes/ejercicios01/eclipse5.png"
+ alt="A&ntilde;adiendo weblogic.jar" width="569" height="500" border="1"><br>
+</p>
+<p>La configuraci&oacute;n final del proyecto en la vista de Java
+aparece en la siguiente imagen:</p>
+<p><img src="imagenes/ejercicios01/eclipse6.png"
+ alt="Estructura proyecto" width="396" height="148" border="1"><br>
+</p>
+<p>Eclipse habr&aacute; compilado correctamente el fichero <code>SaludoBean.java</code> 
+  y habr&aacute; depositado el fichero <code>SaludoBean.class</code> en el mismo 
+  directorio <code>saludoEjb/especialista</code>.</p>
+<p>4. El siguiente paso es crear los ficheros de interfaz del bean. Recordemos 
+  que son dos: la interfaz componente (<code>Saludo.java</code>) y la interfaz 
+  home (<code>SaludoHome.java</code>). Creamos las interfaces ayudados del asistente 
+  de Eclipse:</p>
+<p><img src="imagenes/ejercicios01/eclipse7.png"
+ alt="Creando una nueva interfaz" width="468" height="328" border="1"><br>
+</p>
+<p>La interfaz <code>Saludo.java</code> debe heredar de la interfaz <code>java.ejb.EJBObject</code>. 
+  Lo puedes indicar en la ventana correspondiente del asistente de creaci&oacute;n 
+  de interfaces:</p>
+<p><img src="imagenes/ejercicios01/eclipse8.png"
+ alt="Escribiendo la interfaz Saludo" width="730" height="592" border="1"></p>
+<p>Cuando hayas creado el fichero debes copiar en &eacute;l el siguiente c&oacute;digo, 
+  en el que se declara el m&eacute;todo <code>saluda()</code>:</p>
+<pre class="codigo">package especialista;<br><br>import javax.ejb.EJBObject;<br>import java.rmi.RemoteException;<br><br>public interface Saludo extends EJBObject {<br>	<br>	public String saluda() throws RemoteException;<br>}</pre>
+<p>Vamos a escribir ahora la interfaz home. La llamaremos <code>SaludoHome.java</code> 
+  y debe heredar de la interfaz <code>java.ejb.EJBHome</code>. Al igual que la 
+  interfaz componente la puedes crear tambi&eacute;n con el asistente de creaci&oacute;n 
+  de interfaces.</p>
+<p>Cuando tengas el fichero debes copiar en &eacute;l el siguiente c&oacute;digo 
+  en el que se declara el m&eacute;todo <code>create()</code>:</p>
+<pre class="codigo">package especialista;<br><br>import javax.ejb.EJBHome;<br>import javax.ejb.CreateException;<br>import java.rmi.RemoteException;<br><br>public interface SaludoHome extends EJBHome {<br>	public Saludo create() throws <br>	           RemoteException, CreateException;<br>}</pre>
+<p>Con esto ya has terminado de escribir todo el c&oacute;digo que necesitas para 
+  que el bean funcione. Ahora s&oacute;lo falta construir los descriptores de 
+  despliegue y realizar el despliegue en el servidor de aplicaciones. Ambas tareas 
+  se van a simplificar en&oacute;rmemente con la herramienta WebLogic Builder. 
+</p>
+<p>Antes, comprueba que todo est&aacute; correctamente. En la
+perspectiva de recursos, debe aparecer la siguiente estructura de
+directorios:</p>
+<p><img src="imagenes/ejercicios01/eclipse9.png"
+ alt="Estructura directorios" width="268" height="316" border="1"><br>
+</p>
+<p>5. Primero lanza el programa WebLogic Builder:</p>
+<pre>% cd WL_HOME/server/bin<br>% ./startWLBuilder.sh</pre>
+<p>Escoge la opci&oacute;n "File &gt; Open" y abre el directorio saludoEjb. Aparecer&aacute; 
+  un mensaje de aviso en el que se indica que no se encuentran los descriptores 
+  de despliegue. <strong>Acepta la opci&oacute;n para que los construya autom&aacute;ticamente 
+  y salva el directorio con la opci&oacute;n "File &gt; Save"</strong>:</p>
+<p><img src="imagenes/ejercicios01/wlbuilder1.png"
+ alt="Despliegue del bean" width="512" height="516" border="1"></p>
+<p> Refresca el directorio saludoEjb en Eclipse para comprobar que se
+han creado los descriptores de despliegue:</p>
+<p><img src="imagenes/ejercicios01/eclipse10.png"
+ alt="Descriptores de despliegue" width="262" height="360" border="1"><br>
+</p>
+<p>Los dos ficheros descriptores de despliegue son <code>ejb-jar.xml</code>, que 
+  es el fichero est&aacute;ndar de la especificaci&oacute;n EJB, y <code>weblogic-ejb-jar.xml</code>, 
+  que contiene unos descriptores espec&iacute;ficos del servidor de aplicaciones 
+  WebLogic. El contenido de estos ficheros es el siguiente.</p>
+<p>Fichero <code>ejb-jar.xml</code>:</p>
+<pre class="codigo">&lt;ejb-jar&gt;<br><br>  &lt;enterprise-beans&gt;<br>    &lt;session&gt;<br>      <strong>&lt;ejb-name&gt;SaludoBean&lt;/ejb-name&gt;<br>      &lt;home&gt;especialista.SaludoHome&lt;/home&gt;<br>      &lt;remote&gt;especialista.Saludo&lt;/remote&gt;<br>      &lt;ejb-class&gt;especialista.SaludoBean&lt;/ejb-class&gt;<br>      &lt;session-type&gt;Stateless&lt;/session-type&gt;</strong><br>      &lt;transaction-type&gt;Container&lt;/transaction-type&gt;<br>    &lt;/session&gt;<br>  &lt;/enterprise-beans&gt;<br><br>  &lt;assembly-descriptor&gt;<br>    &lt;container-transaction&gt;<br>      &lt;method&gt;<br>        &lt;ejb-name&gt;SaludoBean&lt;/ejb-name&gt;<br>        &lt;method-name&gt;*&lt;/method-name&gt;<br>      &lt;/method&gt;<br>      &lt;trans-attribute&gt;Required&lt;/trans-attribute&gt;<br>    &lt;/container-transaction&gt;<br>  &lt;/assembly-descriptor&gt;<br>&lt;/ejb-jar&gt;</pre>
+<p>Fichero <code>weblogic-ejb-.jar.xml</code>:</p>
+<pre class="codigo">&lt;weblogic-ejb-jar&gt;<br>  &lt;weblogic-enterprise-bean&gt;<br>    &lt;ejb-name&gt;SaludoBean&lt;/ejb-name&gt;<br>    &lt;stateless-session-descriptor&gt;<br>      &lt;pool&gt;<br>      &lt;/pool&gt;<br>      &lt;stateless-clustering&gt;<br>      &lt;/stateless-clustering&gt;<br>    &lt;/stateless-session-descriptor&gt;<br>    &lt;transaction-descriptor&gt;<br>    &lt;/transaction-descriptor&gt;<br>    <strong>&lt;jndi-name&gt;SaludoBean&lt;/jndi-name&gt;</strong><br>  &lt;/weblogic-enterprise-bean&gt;<br>&lt;/weblogic-ejb-jar&gt;</pre>
+<p>6. S&oacute;lo falta desplegar el bean en el contenedor. Al estar el directorio 
+  en el mismo host que el servidor de aplicaciones, no es necesario comprimir 
+  toda la estructura de directorios en un &uacute;nico fichero JAR, sino que basta 
+  con indicarle al servidor e aplicaciones las ubicaci&oacute;n del directorio 
+  <code>saludoEjb</code>. Lo va a hacer todo de forma casi autom&aacute;tica WebLogic 
+  Builder. Selecciona la opci&oacute;n "Tools &gt; Connect to server ...". Comprueba 
+  los siguientes par&aacute;mentros:</p>
+<p>Host: localhost<br>
+Port: 7001<br>
+Server name: myserver<br>
+System user name: weblogic<br>
+System user password: weblogic</p>
+<p>Pulsa "Connect..." y deber&aacute; aparecer un bot&oacute;n verde en
+la esquina inferior derecha de la aplicaci&oacute;n para indicar que se
+ha conectado correctamente con el servidor de aplicaciones. Pulsa ahora
+la opci&oacute;n "Tools &gt; Deploy module ..." y aparecer&aacute; la
+siguiente ventana:</p>
+<p><img src="imagenes/ejercicios01/wlbuilder2.png" width="403"
+ height="436" border="1"></p>
+<p>Pulsa "Deploy Module..." y, si todo ha ido bien, el m&oacute;dulo se
+desplegar&aacute; correctamente en el servidor de aplicaciones. Puedes
+comprobarlo con el navegador, abriendo la consola de
+administraci&oacute;n (recuerda la direcci&oacute;n:
+http://localhost:7001/console) y eleccionando la opci&oacute;n "EJB
+Modules". Ver&aacute;s que ya est&aacute; activo el bean:</p>
+<p><img src="imagenes/ejercicios01/wlserver2.png" width="391"
+ height="449" border="1"></p>
+<p>Si pichamos en saludoEjb, veremos que la ubicaci&oacute;n de los ficheros de 
+  la aplicaci&oacute;n es exactamente la misma en la que hemos estado realizando 
+  el desarrollo. En este caso WebLogic Server no necesita que los ficheros se 
+  encuentren comprimidos en un fichero JAR, sino que le basta con una estructura 
+  de directorios correcta. Es lo que la aplicaci&oacute;n denomina un <em>exploded 
+  JAR directory</em>. La siguiente imagen muestra esta pantalla:</p>
+<p><img src="imagenes/ejercicios01/wlserver3.png" width="494" height="497" border="1"></p>
+<p>Con esto se terminar el ejercicio. En el ejercicio siguiente construiremos 
+  un cliente java que se conecta con el bean.</p>
+<h3>Ejercicio 3: compilaci&oacute;n y prueba de un cliente del bean</h3>
+<p><em>Tiempo estimado de realizaci&oacute;n: 15 minutos</em></p>
+<p>Vamos a usar el fichero <code>SaludoClient.java</code> que se
+encuentra en las plantillas de ejercicios de la sesi&oacute;n 1. Con
+este fichero crearemos un nuevo proyecto en Eclipse y desde el propio
+Eclipse ejecutaremos el fichero para comprobar como se conecta al bean
+desplegado en el servidor de aplicaciones. El c&oacute;digo fuente de
+este fichero es el siguiente:</p>
+<pre class="codigo">import javax.naming.*;<br>import java.util.*;<br>import javax.rmi.*;<br>import especialista.*;<br><br>public class SaludoClient {<br><br>   public static void main(String[] args) {<br>      try {<br>         Context jndiContext = getInitialContext();<br>         Object ref = jndiContext.lookup("SaludoBean");<br>         SaludoHome home =<br>            (SaludoHome) PortableRemoteObject.narrow(<br>               ref,<br>               SaludoHome.class);<br>         Saludo sal = home.create();<br>         System.out.println("Voy a llamar al bean");<br>         System.out.println(sal.saluda());<br>         System.out.println("Ya he llamado al bean");<br>         sal.remove();<br>      } catch (Exception e) {<br>         e.printStackTrace();<br>      }<br>   }<br><br>   public static Context getInitialContext()<br>      throws javax.naming.NamingException {<br>      Properties p = new Properties();<br>      p.put(<br>         Context.INITIAL_CONTEXT_FACTORY,<br>         "weblogic.jndi.WLInitialContextFactory");<br>      p.put(Context.PROVIDER_URL, "t3://localhost:7001");<br>      return new javax.naming.InitialContext(p);<br>   }<br>}</pre>
+<p>&nbsp;</p>
+<p>1. Lo primero es crear la estructura de directorios en la que nos
+vamos a basar para crear el proyecto en Eclipse, y copiar en el nuevo
+directorio el fichero <code>SaludoClient.java</code>:</p>
+<pre>% cd /home/domingo<br>% mkdir ejb/saludoClient<br>% cp ejercicios1/SaludoClient.java ejb/saludoClient</pre>
+<p>2. Creamos el nuevo proyecto en Eclipse. </p>
+<p><img src="imagenes/ejercicios01/eclipse11.png"
+ alt="Proyecto cliente" width="527" height="366"></p>
+<p>Y ahora hay que hacer algo muy importante: definir las librer&iacute;as de 
+  clases que va a usar el proyecto. En primer lugar declaramos que necesitamos 
+  el proyecto <code>saludoEjb</code>, ya que en este proyecto se encuentran las 
+  clases <code>especialista.Saludo</code> y <code>especialista.SaludoHome</code> 
+  que se necesitan para compilar la aplicaci&oacute;n cliente. Tambi&eacute;n 
+  podr&iacute;amos haber construido un fichero JAR con estas dos clases, darle 
+  el nombre de <code>saludoClient.jar</code> y a&ntilde;adirlo al proyecto como 
+  un JAR externo. Sin embargo, vamos a hacer lo primero que hemos comentado:</p>
+<p><img src="imagenes/ejercicios01/eclipse12.png"
+ alt="Proyecto cliente" width="564" height="356" border="1"></p>
+<p>Tambi&eacute;n hay que a&ntilde;adir el JAR con las clases
+necesarias para construir un cliente EJB, el fichero <code>wlclient.jar</code>.
+Su ruta es: WL_HOME/server/lib/wlclient.jar:</p>
+<p><img src="imagenes/ejercicios01/eclipse13.png"
+ alt="Libreria wlclient.jar" width="549" height="360" border="1"><br>
+</p>
+<p>La estructura del proyecto queda como muestra la siguiente imagen:</p>
+<p align="left"><img src="imagenes/ejercicios01/eclipse14.png"
+ alt="Estructura proyectos" width="446" height="322" border="1"><br>
+</p>
+<p>3. Y, por &uacute;ltimo, lanzamos el cliente con la opci&oacute;n
+"Run As &gt; Java Application". Si todo ha funcionado correctamente, el
+cliente se conectar&aacute; con el bean y escribir&aacute; en la salida
+est&aacute;ndar unos mensajes como:</p>
+<pre>Voy a llamar al bean<br>Que te cuentas?<br>Ya he llamado al bean</pre>
+<p>Prueba a ejecutar el programa varias veces para comprobar que
+aparecen mensajes distintos. </p>
+<h3>Ejercicio 4: Modificaci&oacute;n y redespliegue del bean</h3>
+<p><em>Tiempo estimado de realizaci&oacute;n: 10 minutos</em></p>
+<p>En este ejercicio modificaremos el bean y volveremos a desplegarlo
+en el servidor de aplicaciones.</p>
+<p>1. Modifica el fichero SaludoBean.java para que en el mensaje del
+bean aparezca tu nombre.</p>
+<p>2. Con el WebLogic Builder vuelve a desplegar el bean en el servidor
+de aplicaciones.</p>
+<p>3. Vuelve a ejecutar el cliente para comprobar que tu nombre aparece
+en la salida del bean</p>
+<h3>Ejercicio 5: Conexi&oacute;n con un servidor situado en un host distinto</h3>
+<p><em>Tiempo estimado de realizaci&oacute;n: 10 minutos</em></p>
+<p>En este ejercicio comprobaremos una de las caracter&iacute;sticas
+fundamentales de los beans: su naturaleza distrubu&iacute;da. </p>
+<p>1. Modifica el c&oacute;digo del cliente para que se conecte con el
+servidor que est&aacute; en la m&aacute;quina de alg&uacute;n
+compa&ntilde;ero.</p>
+<p>2. Ejecuta el cliente y comprueba que est&aacute; usando el bean que reside 
+  en el servidor de aplicaciones de tu compa&ntilde;ero.</p>
+<h3>Ejercicio 6 (optativo)</h3>
+<p>Modifica el bean <code>saludoEjb</code> para a&ntilde;adir el m&eacute;todo 
+  m&eacute;todo <code>saludaPlantilla (String plantilla)</code> . El par&aacute;metro 
+  <code>plantilla</code> es una cadena que contiene el literal &quot;&lt;saludo&gt;&quot;. 
+  El bean deber&aacute; buscar ese literal, sustituirlo por un saludo y devolver 
+  el resultado. Por ejemplo, la llamada al bean</p>
+<blockquote>
+  <p><code>sal.saluda(&quot;Juan entra en la sala y dice: &lt;saludo&gt;&quot;);</code></p>
+</blockquote>
+<p>debe devolver algo como &quot;Juan entra en la sala y dice: Hola, qu&eacute; 
+  tal&quot;.</p>
+<p>&nbsp; </p>
+<p class="innerbox"><strong>Entregas en el directorio WebDAV<br>
+  </strong><br>
+  1. Comprime los ficheros del bean saludoEjb:<br>
+  <br>
+  <code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;% cd /home/&lt;alunmno&gt;/ejb/saludoEjb<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;% jar cvf ../saludoEjb.jar *<br>
+  </code><br>
+  2. Crea en tu directorio WebDAV el directorio <code>entregas/ejb/sesion1</code> 
+  y copia el fichero <code>saludoEjb.jar</code> en &eacute;l.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</body>
+</html>

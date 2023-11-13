@@ -1,0 +1,975 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.7">
+<meta name="Forrest-skin-name" content="pelt">
+<title>Ejercicios sesi&oacute;n 4: Procesos BPEL s&iacute;ncronos y as&iacute;ncronos</title>
+<link type="text/css" href="skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="skin/print.css" rel="stylesheet">
+<link type="text/css" href="skin/profile.css" rel="stylesheet">
+<script src="skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<div class="header">
+<div class="grouplogo">
+<a href="http://www.jtech.ua.es/j2ee"><img class="logoImage" alt="J2EE" src="images/baner_j2ee_izq.gif" title="Curso Especialista Universitario J2EE"></a>
+</div>
+<div class="projectlogoA1">
+<a href="http://www.dccia.ua.es/"><img class="logoImage" alt="Servicios Web" src="images/baner_j2ee_der.gif" title="Servicios Web"></a>
+</div>
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="../index.html">M&oacute;dulos</a>
+</li>
+<li class="current">
+<a class="base-selected" href="index.html">Servicios Web</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<div id="level2tabs"></div>
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<div id="menu">
+<div onclick="SwitchMenu('menu_selected_1.1', 'skin/')" id="menu_selected_1.1Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Servicios Web</div>
+<div id="menu_selected_1.1" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="index.html" title="Servicios Web">&Iacute;ndice</a>
+</div>
+<div onclick="SwitchMenu('menu_1.1.2', 'skin/')" id="menu_1.1.2Title" class="menutitle">Teor&iacute;a</div>
+<div id="menu_1.1.2" class="menuitemgroup">
+<div class="menuitem">
+<a href="sesion01-apuntes.html">Sesion 1</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-apuntes.html">Sesion 2</a>
+</div>
+<div class="menuitem">
+<a href="sesion03-apuntes.html">Sesion 3</a>
+</div>
+<div class="menuitem">
+<a href="sesion04-apuntes.html">Sesion 4</a>
+</div>
+<div class="menuitem">
+<a href="roadmap-apuntes.html" title="Roadmap">Roadmap</a>
+</div>
+</div>
+<div onclick="SwitchMenu('menu_selected_1.1.3', 'skin/')" id="menu_selected_1.1.3Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Ejercicios</div>
+<div id="menu_selected_1.1.3" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="sesion01-ejercicios.html">Sesion 1</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-ejercicios.html">Sesion 2</a>
+</div>
+<div class="menuitem">
+<a href="sesion03-ejercicios.html">Sesion 3</a>
+</div>
+<div class="menupage">
+<div class="menupagetitle">Sesion 4</div>
+</div>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<div id="credit2"></div>
+</div>
+<div id="content">
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="sesion04-ejercicios.pdf"><img alt="PDF -icon" src="skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1>Ejercicios sesi&oacute;n 4: Procesos BPEL s&iacute;ncronos y as&iacute;ncronos</h1>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#Proceso+BPEL+s%C3%ADncrono%3A+Servicio+de+orden+de+compra.">Proceso BPEL s&iacute;ncrono: Servicio de orden de compra.</a>
+<ul class="minitoc">
+<li>
+<a href="#L%C3%B3gica+de+negocio+de+los+servicios">L&oacute;gica de negocio de los servicios</a>
+</li>
+<li>
+<a href="#Creaci%C3%B3n+del+proyecto+BPEL">Creaci&oacute;n del proyecto BPEL</a>
+</li>
+<li>
+<a href="#Creaci%C3%B3n+del+esquema+XML">Creaci&oacute;n del esquema XML</a>
+</li>
+<li>
+<a href="#Creaci%C3%B3n+del+documento+WSDL">Creaci&oacute;n del documento WSDL</a>
+</li>
+<li>
+<a href="#Definimos+el+proceso+BPEL">Definimos el proceso BPEL</a>
+</li>
+<li>
+<a href="#Compilamos+el+proyecto">Compilamos el proyecto</a>
+</li>
+<li>
+<a href="#Creamos+la+Composite+Application">Creamos la Composite Application</a>
+</li>
+<li>
+<a href="#Probamos+el+proceso+BPEL">Probamos el proceso BPEL</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Proceso+BPEL+as%C3%ADncrono.+Uso+de+correlaci%C3%B3n%3A+Hola+Mundo.">Proceso BPEL as&iacute;ncrono. Uso de correlaci&oacute;n: Hola Mundo.</a>
+<ul class="minitoc">
+<li>
+<a href="#A%C3%B1adimos+un+estado+al+proceso+de+negocio">A&ntilde;adimos un estado al proceso de negocio</a>
+</li>
+<li>
+<a href="#Definimos+las+propiedades+de+correlaci%C3%B3n+y+los+alias+de+las+propiedades">Definimos las propiedades de correlaci&oacute;n y los alias de las propiedades</a>
+</li>
+<li>
+<a href="#Creamos+y+a%C3%B1adimos+los">Creamos y a&ntilde;adimos los Correlation sets</a>
+</li>
+<li>
+<a href="#Pruebas+y">Pruebas y debugging del proceso BPEL</a>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+ 
+
+<a name="N1000C"></a><a name="Proceso+BPEL+s%C3%ADncrono%3A+Servicio+de+orden+de+compra."></a>
+<h2 class="underlined_10">Proceso BPEL s&iacute;ncrono: Servicio de orden de compra.</h2>
+<div class="section">
+<p>Como ya hemos indicado, las operaciones s&iacute;ncronas son adecuadas en procesos de negocio que, ante
+   una petici&oacute;n, requieren una respuesta inmediata. La ejecuci&oacute;n, en la parte del consumidor del servicio
+   puede continuar solamente despu&eacute;s de que la respuesta sea recibida y procesada.</p>
+<p>Con este ejercicio utilizaremos un proceso BPEL que: (a) proporciona una operaci&oacute;n s&iacute;ncrona a un
+   cliente externo; (b) consume una operaci&oacute;n s&iacute;ncrona suminstradas por un servicio Web <em>partner</em>.
+</p>
+<p>Cuando se dise&ntilde;a un proceso de negocio que incorpora interacciones con servicios Web s&iacute;ncronos, se
+   necesitan las siguientes construcciones:
+</p>
+<ul>
+  
+<li>
+<span class="codefrag">partnerLinks</span> que representan servicios Web <em>partner</em>
+</li>
+  
+<li>
+<span class="codefrag">variables</span> que almacenan los datos intercambiados entre los servicios Web</li>
+  
+<li>Una actividad <span class="codefrag">invoke</span> para <strong>consumir</strong> un servicio</li>
+  
+<li>Un par de actividades <span class="codefrag">receive-reply</span> para <strong>proporcionar</strong> un servicio</li>
+  
+<li>Mapeados de datos de entrada y salida para conseguir la l&oacute;gica de negocio requerida</li>
+
+</ul>
+<a name="N10042"></a><a name="L%C3%B3gica+de+negocio+de+los+servicios"></a>
+<h3 class="underlined_5">L&oacute;gica de negocio de los servicios</h3>
+<p>Los dos servicios Web que vamos a implementar son: (a) un servicio de orden de compra,
+   <em>POService</em>, que es consumido por un cliente externo mediante SOAP sobre HTTP;
+   (b) un servicio de comprobaci&oacute;n de inventariado, <em>InventoryService</em>, consumido por el
+   proceso BPEL que proporciona el servicio de orden de compra. Ambos servicios, <em>POService</em>
+   e <em>InventoryService</em> se implementan como servicios BPEL.
+</p>
+<p>Cuando el suministrador del servicio de orden de compra recibe una petici&oacute;n de un cliente,
+  tienen lugar los siguientes eventos:
+</p>
+<ul>
+  
+<li>El suministrador del servicio de orden de compra:
+    <ul>
+      
+<li>Asigna el precio de la petici&oacute;n</li>
+      
+<li>Llama al servicio de inventario para comprobar el estado del inventario</li>
+    
+</ul>
+  
+</li>
+  
+<li>La l&oacute;gica de negocio del suministrador del servicio de inventario comprueba la 
+    disponibilidad de un <em>item</em>. Si el valor de <em>orderDescription</em> comienza
+    con <em>OrderVal</em>, entonces el estado de la orden en el inventario ser&aacute; la de 
+    "disponible" </li>
+  
+<li>Seg&uacute;n el resultado del servicio de inventario, el suministrador del servicio de 
+    orden de compra responde con lo siguiente:
+    <ul>
+      
+<li>La orden de compra cumplimentada</li>
+      
+<li>Un error (en forma de mensaje) indicando que la orden no puede ser completada</li>
+    
+</ul>
+  
+</li>   
+
+</ul>
+<p>La Figura 1 ilustra el dise&ntilde;o de la soluci&oacute;n que vamos a plantear:</p>
+<p>
+	
+<img alt="Figura 1. Interacci&oacute;n con un servicio Web S&iacute;ncrono." content-width="10cm" src="imagenes/sesion4Ej/sincrono.gif" width="552"> 
+</p>
+<a name="N10090"></a><a name="Creaci%C3%B3n+del+proyecto+BPEL"></a>
+<h3 class="underlined_5">Creaci&oacute;n del proyecto BPEL</h3>
+<p>Para este ejercicio proporcionamos un proyecto BPEL ya creado con los WSDL y los 
+  esquemas (fichero ordenCompra.zip). Creamos una carpeta en nuestro directorio de trabajo,
+  por ejemplo la carpeta <em>OrdenCompra</em> y extraemos el contenido del fichero <em>OrdenCompra.zip</em>
+  en el directorio <em>OrdenCompra</em>.
+</p>
+<p>A continuaci&oacute;n, y desde el men&uacute; principal de <em>Netbeans</em> elegimos <em>File &gt; Open Project</em>.
+  Seleccionamos el proyecto <em>OrdenCompraSincrona</em> en el directorio <em>OrdenCompra</em>. 
+</p>
+<a name="N100B4"></a><a name="Creaci%C3%B3n+del+esquema+XML"></a>
+<h3 class="underlined_5">Creaci&oacute;n del esquema XML</h3>
+<p>En el proyecto <em>OrdenCompraSincrona</em>, encontraremos los ficheros de esquema <em>.xsd</em> 
+  ya creados (en el directorio <em>Process Files</em>). Concretamente se trata de <em>purchaseOrder.xsd</em>,
+  e <em>inventory.xsd</em>, que contienen la definici&oacute;n de los tipos de datos que utilizan 
+  los servicios BPEL que vamos a implementar. 
+</p>
+<p>
+<img alt="Figura 2. Esquema purchaseOrder.xsd" content-width="7cm" height="337" src="imagenes/sesion4Ej/purchaseOrder.gif" width="328"></p>
+<p>En el fichero <strong><em>purchaseOrder.xsd</em></strong> (ver Figura 2) hemos definido el tipo complejo <strong><em>purchaseOrderType</em></strong>, que representa una orden de compra. El tipo
+   <em>purchaseOrderType</em> est&aacute; formado por los elementos locales: <em>orderId</em>, <em>customerId</em>,
+   <em>orderDescription</em>, y <em>price</em>, que representan el identificador de la orden de compra, 
+   identificador del cliente, la descripci&oacute;n de la orden de compra y el precio de la compra, respectivamente.</p>
+<p>Tambi&eacute;n definimos el elemento global <strong><em>purchaseOrder</em></strong>, del tipo <em>purchaseOrderType</em>.
+</p>
+<p>
+<img alt="Figura 3. Esquema inventory.xsd" content-width="7cm" height="288" src="imagenes/sesion4Ej/inventory.gif" width="336"></p>
+<p>El fichero de esquema <strong><em>inventory.xsd</em></strong> (ver Figura 3) contiene la definici&oacute;n del tipo  complejo <strong><em>inventoryType</em></strong>, 
+   que almacena informaci&oacute;n sobre el estado del inventario. El tipo
+   <em>inventoryType</em> est&aacute; formado por los elementos locales: <em>inventoryStatus</em> e <em>inventoryStatusMessage</em>. 
+</p>
+<p>Tambi&eacute;n definimos el elemento global <strong><em>inventory</em></strong>, del tipo <em>inventoryType</em>.
+</p>
+<a name="N10121"></a><a name="Creaci%C3%B3n+del+documento+WSDL"></a>
+<h3 class="underlined_5">Creaci&oacute;n del documento WSDL</h3>
+<p>En el directorio <em>Process Files</em> del proyecto <em>OrdenCompraSincrona</em> contiene tambi&eacute;n los
+  ficheros <em>POService.wsdl</em> e <em>InventoryService.wsdl</em>.
+</p>
+<p>
+<img alt="Figura 4. Fichero POService.wsdl" content-width="7cm" height="378" src="imagenes/sesion4Ej/POService.gif" width="432"></p>
+<p>El fichero <strong><em>POService.wsdl</em></strong> (ver Figura 4) contiene la definici&oacute;n de dos mensajes: 
+   <em>POMessage</em>, que representa la orden de compra, y <em>orderFaultType</em>, que 
+   hace referencia a la informaci&oacute;n sobre el error producido (en caso de que en el inventario
+   no queden existencias para servir la orden de compra). 
+</p>
+<p>
+<img alt="Figura 5. Fichero inventoryService.wsdl" content-width="7cm" height="330" src="imagenes/sesion4Ej/inventoryService.gif" width="480"></p>
+<p>El fichero <strong><em>inventoryService.wsdl</em></strong> (ver Figura 5) contiene la definici&oacute;n
+  de los mensajes: (a) <em>InventoryMessage</em>, formado por un elemento de tipo <em>inventoryType</em>,
+  (b) <em>inventoryFault</em>, que contiene informaci&oacute;n sobre el error producido, y (c) <em>POMessage</em>,
+  que contiene la orden de compra.
+</p>
+<p>
+<strong>PARTNER LINK TYPES</strong>
+</p>
+<p>Como ya sabemos, un <em>partnerLinkType</em> especifica la relaci&oacute;n entre dos servicios, definiendo
+  el rol que cada servicio implementa. Cada rol especifica exactamente un <em>portType</em> WSDL que debe
+  ser implementado por el servicio que implemente dicho rol. 
+</p>
+<p>En las Figuras 4 y 5, podemos ver que hemos
+  definido un <em>partnerLinkType</em> en cada fichero <em>wsdl</em>. Concretamente, en <em>POService.wsdl</em> 
+  se define un <em>partnerLinkType</em> (denominado <em>purchasingLT</em>) con el rol <em>purchaseService</em>. Dicho rol hace referencia a la 
+  operaci&oacute;n WSDL <em>sendPurchaseOrder</em> a trav&eacute;s del <em>portType</em> denominado
+  <em>purchaseOrderPT</em>.
+</p>
+<pre class="code"> 
+&lt;!-- POService.wsdl--&gt;
+&lt;plink:partnerLinkType name="purchasingLT"&gt;        
+   &lt;plink:role name="purchaseService"
+               portType="tns:purchaseOrderPT"&gt;
+   &lt;/plink:role&gt;
+&lt;/plink:partnerLinkType&gt; 
+
+</pre>
+<p>La operaci&oacute;n <em>sendPurchaseOrder</em> define una entrada que debe enviarse al suministrador
+  del servicio Web correspondiente, y espera una respuesta o bien un error. 
+</p>
+<pre class="code"> 
+&lt;!-- POService.wsdl--&gt;
+&lt;portType name="purchaseOrderPT"&gt;        
+   &lt;operation name="sendPurchaseOrder"&gt;
+       &lt;input name="sendPurchaseOrderRequest" 
+              message="tns:POMessage"&gt;&lt;/input&gt; 
+       &lt;output name="sendPurchaseOrderReply" 
+              message="tns:POMessage"&gt;&lt;/output&gt;
+       &lt;fault name="cannotCompleteOrder"
+              message="tns:orderFaultType"&gt;&lt;/fault&gt;   
+   &lt;/operation&gt;   
+&lt;/portType&gt;
+
+</pre>
+<p>En el fichero <em>InventoryService.wsdl</em> se define un <em>partnerLinkType</em>
+  (denominado <em>inventoryRequestingLT</em>) con el rol <em>inventoryService</em>. Este
+  rol hace referencia a la operaci&oacute;n <em>inventoryService</em> a trav&eacute;s del <em>portType</em>
+  denominado <em>inventoryPortType</em>.
+</p>
+<pre class="code"> 
+&lt;!-- InventoryService.wsdl--&gt;
+&lt;plink:partnerLinkType name="inventoryRequestingLT"&gt;       
+   &lt;plink:role name="inventoryService"                    
+               portType="tns:inventoryPortType"&gt;
+   &lt;/plink:role&gt;    
+&lt;/plink:partnerLinkType&gt; 
+
+</pre>
+<p>La operaci&oacute;n <em>inventoryService</em> espera un mensaje <em>purchaseOrder</em>, y  responde
+  con un <em>inventoryStatus</em> o <em>inventoryFaultType</em>.
+</p>
+<pre class="code"> 
+&lt;!-- InventoryService.wsdl--&gt;
+&lt;portType name="inventoryPortType"&gt;         
+    &lt;operation name="inventoryService"&gt;             
+       &lt;input name="purchaseOrder"                   
+              message="tns:POMessage"&gt;&lt;/input&gt;             
+       &lt;output name="inventoryStatus"                    
+               message="tns:InventoryMessage"&gt;&lt;/output&gt;             
+       &lt;fault name="inventoryFaultType"                   
+              message="tns:inventoryFault"&gt;&lt;/fault&gt;         
+    &lt;/operation&gt;     
+&lt;/portType&gt;
+
+</pre>
+<div class="frame note">
+<div class="label">NOTA</div>
+<div class="content">
+    Si el fichero WSDL de un servicio Web existente no contiene una definici&oacute;n para un
+    <em>partnerLinkType</em>, podemos crear un fichero WSDL <em>wrapper</em> para importar
+    el fichero WSDL original, y a&ntilde;adirle la definici&oacute;n de los <em>partnerlinktypes</em>.
+    Posteriormente, podemos hacer referencia a dicho <em>wrapper</em> desde nuestro 
+    proceso BPEL.
+</div>
+</div>
+<a name="N101E1"></a><a name="Definimos+el+proceso+BPEL"></a>
+<h3 class="underlined_5">Definimos el proceso BPEL</h3>
+<p>En nuestro caso tendremos que crear dos documentos <em>bpel</em>, correspondientes a los dos servicios
+  BPEL de la soluci&oacute;n propuesta, con los nombres <em>POService.bpel</em>, y <em>InventoryService.bpel</em>.
+</p>
+<p>
+<strong>Creamos <em>POService.bpel</em></strong>
+</p>
+<p>Nos situamos en el nodo <em>Process Files</em> del proyecto (<em>OrdenCompraSincrona</em>) y con el bot&oacute;n derecho
+  seleccionamos <em>New &gt; BPEL Process</em>. En el campo <em>File Name</em> de la ventana que aparece, ponemos
+  el nombre del fichero: <em>POService</em> y pulsamos el bot&oacute;n <em>Finish</em>. A continuaci&oacute;n se abrir&aacute;
+  el fichero <em>POService.bpel</em> creado, con la vista de Dise&ntilde;o abierta.
+</p>
+<p>
+<strong>A&ntilde;adimos los <em>Partner Links del proceso</em></strong>
+</p>
+<p>Recordemos que los elementos <em>partnerLink</em> especifican los <em>partners</em> 
+  con los que interact&uacute;a el proceso BPEL. Cada <em>partnerLink</em> se corresponde con un <em>partnerLinkType</em>
+  espec&iacute;fico definido en el correspondiente fichero WSDL.
+</p>
+<p>Un elemento <em>partnerLink</em> puede contener uno o dos roles:</p>
+<ul>
+  
+<li>
+<span class="codefrag">myRole</span>: especifica el rol del proceso BPEL. Si definimos solamente <em>myRole</em>
+    en un <em>partnerLink</em>, hacemos posible que cualquier <em>partner</em> o cliente interact&uacute;a con
+    el proceso BPEL sin ning&uacute;n otro requerimiento adicional sobre los <em>partners</em>.
+  </li>
+  
+<li>
+<span class="codefrag">partnerRole</span>: especifica el rol del <em>partner</em>. Si solamente definimos
+    <em>partnerRole</em> en el <em>partnerLink</em>, permitimos interacciones con un <em>partner</em>
+    sin imponer restricciones sobre el servicio que realice la llamada.
+  </li>  
+
+</ul>
+<p>El proceso bpel <em>POService</em> define un <em>partnerLink</em> que denominaremos <em>Cliente</em>
+  en el que indicaremos su rol como suministrador de la orden <em>sendPurchaseOrder</em>.
+  Para ello realizaremos las siguientes acciones:
+</p>
+<ul>
+  
+<li>Seleccionamos el fichero <em>POService.wsdl</em> y lo arrastramos a la vista de dise&ntilde;o de <em>POService.bpel</em>.
+  </li>
+  
+<li>En la ventana de propiedades a&ntilde;adimos como nombre del <em>partnerLink</em>: <em>Cliente</em>; indicamos el fichero
+    wsdl: <em>POService.wsdl</em> de la lista desplegable; usaremos un <em>partnerLinkType</em> existente, concretamemente:
+    <em>purchasingLT</em>, con el valor de <em>myRole</em>: <em>purchaseService</em>
+  
+</li>
+
+</ul>
+<p>Como resultado, si pasamos a la vista de c&oacute;digo, podemos comprobar que hemos generado el siguiente c&oacute;digo BPEL:</p>
+<pre class="code"> 
+&lt;!-- POService.bpel--&gt;
+&lt;partnerLink name="POServicePLink"                     
+        partnerLinkType="ns1:purchasingLT"                     
+        myRole="purchaseService"/&gt;
+
+</pre>
+<p>Puesto que <em>POService</em> consume el servicio <em>InventoryService</em>, definimos otro <em>partnerLink</em>
+  al que llamaremos <em>requestInventoryPLink</em>. En este caso el fichero wsdl asociado es: <em>InventoryService.wsdl</em>.
+  El nombre del <em>partnerLinkType ya existente es: <em>inventoryRequestingLT</em>. Y finalmenente definimos un <em>partnerRole</em>
+  con el nombre <em>inventoryService</em> (para ello tendremos que pulsar el bot&oacute;n </em>Swap Roles).</p>
+<pre class="code"> 
+&lt;!-- POService.bpel--&gt;
+&lt;partnerLink name="requestInventoryPLink"                     
+        partnerLinkType="ns2:inventoryRequestingLT"                     
+        partnerRole="inventoryService"/&gt;
+
+</pre>
+<p>
+<strong>Definir variables globales del proceso</strong>
+</p>
+<p>Para a&ntilde;adir variables, seleccionamos el proceso bpel, y nos aparecer&aacute;n cuatro iconos en la parte superior
+  izquierda de dicho proceso. Pulsamos el primero de ellos (el situado m&aacute;s hacia la izquierda), y nos aparecer&aacute;
+  un editor de variables; a cada una de ellas vamos a asignarle un tipo (que seleccionaremos de los tipos que
+  nos muestra el editor). Concretamente, las variables a crear 
+  y sus tipos son:
+</p>
+<ul>
+  
+<li>Nombre: <em>purchaseOrderRequest</em>; tipo: <em>POMessage</em> (desde POService.wsdl)</li> 
+  
+<li>Nombre: <em>purchaseOrderReply</em>; tipo: <em>POMessage</em> (desde POService.wsdl)</li> 
+  
+<li>Nombre: <em>purchaseOrderFault</em>; tipo: <em>orderFaultType</em> (desde POService.wsdl)</li> 
+  
+<li>Nombre: <em>inventoryServiceRequest</em>; tipo: <em>POMessage</em> (desde InventoryService.wsdl)</li> 
+  
+<li>Nombre: <em>inventoryServiceReply</em>; tipo: <em>InventoryMessage</em> (desde InventoryService.wsdl)</li> 
+  
+<li>Nombre: <em>inventoryServiceFault</em>; tipo: <em>inventoryFault</em> (desde InventoryService.wsdl)</li> 
+
+</ul>
+<p>El c&oacute;digo BPEL generado es el siguiente:</p>
+<pre class="code"> 
+&lt;!-- POService.bpel--&gt;
+  &lt;variables&gt;        
+    &lt;variable name="purchaseOrderRequest"                  
+              messageType="ns1:POMessage"&gt;&lt;/variable&gt;        
+    &lt;variable name="purchaseOrderReply"                  
+              messageType="ns1:POMessage"&gt;&lt;/variable&gt;        
+    &lt;variable name="purchaseOrderFault"                  
+              messageType="ns1:orderFaultType"&gt;&lt;/variable&gt;   
+    &lt;variable name="inventoryServiceRequest"                  
+              messageType="ns2:POMessage"&gt;&lt;/variable&gt;        
+    &lt;variable name="inventoryServiceReply"                  
+              messageType="ns2:InventoryMessage"&gt;&lt;/variable&gt;    
+    &lt;variable name="inventoryServiceFault"                  
+              messageType="ns2:inventoryFault"&gt;&lt;/variable&gt;    
+  &lt;/variables&gt;
+
+</pre>
+<p>
+<strong>A&ntilde;adimos una actividad <em>receive</em></strong>
+</p>
+<p>En la secci&oacute;n <em>Web Service</em> de la paleta de elementos, seleccionamos el icono <em>Receive</em>
+  y lo arrastramos al &aacute;rea de dise&ntilde;o entre las actividades <em>Start</em> y <em>End</em> del proceso.
+  El IDE de <em>Netbeans</em> muestra mediante marcas visuales d&oacute;nde podemos "soltar" el elemento que
+  estamos arrastrando. 
+</p>
+<p>Una vez que "depositemos" la actividad <em>Receive</em> en el lugar deseado, pulsamos dos veces con
+  el bot&oacute;n izquierdo sobre la actividad y se abrir&aacute; el editor de propiedades, a las que daremos los 
+  siguientes valores:</p>
+<ul>
+  
+<li>Name: <em>receivePOFromClient</em>.</li>
+  
+<li>Partner Link: <em>Cliente</em>.</li>
+  
+<li>Operation: <em>sendPurchaseOrder</em>.</li>
+  
+<li>Input variable: <em>purchaseOrderRequest</em>.</li>
+  
+<li>La casilla: <em>Create Instance</em> estar&aacute; marcada.</li>
+
+</ul>
+<p>El c&oacute;digo BPEL resultante es:</p>
+<pre class="code"> 
+&lt;!-- POService.bpel--&gt;
+    &lt;receive name="receivePOFromClient"                 
+             partnerLink="Cliente"                 
+             portType="ns1:purchaseOrderPT"                 
+             operation="sendPurchaseOrder"                 
+             variable="purchaseOrderRequest"                 
+             createInstance="yes"&gt;    
+    &lt;/receive&gt;
+
+</pre>
+<p>
+<strong>A&ntilde;adimos una actividad <em>assign</em></strong>
+</p>
+<p>En el siguiente paso vamos a a&ntilde;adir una asignaci&oacute;n a la que llamaremos <em>Assign 1</em>.
+  Se trata de asignar un valor a la parte <em>price</em> de la orden de compra (<em>purchaseOrder</em>).
+  El valor ser&aacute;: 49.98.
+</p>
+<p>Para ello tendremos que arrastrar desde la paleta la actividad <em>Assign</em> en la secci&oacute;n de 
+  <em>Basic Activities</em>, hasta colocarla a continuaci&oacute;n de la actividad <em>receive</em>.</p>
+<p>Cuando "soltemos" la actividad <em>Assign</em> que est&aacute;bamos arrastrando se abrir&aacute; la ventana
+  <em>BPEL Mapper</em> en la parte inferior del IDE (si no fuese visible, tendr&iacute;amos que seleccionar
+  <em>Windows &gt; BPEL Mapper</em> desde el men&uacute; del IDE de <em>Netbeans</em>).</p>
+<p>En la ventana <em>BPEL Mapper</em> tenemos a ambos lados una lista de las variables que podemos
+  utilizar (que ser&aacute;n las que hemos declarado como globales). Las asignaciones se har&aacute;n haciendo
+  corresponder un elemento de la izquierda (que representa el valor asignado), con
+  un elemento de la parte derecha (que representa el valor a asignar).
+</p>
+<p>En nuestro caso particular, queremos
+  asignar a la variable que representa el precio de la orden de compra el valor 49.98. Para ello
+  seleccionamos <em>Number &gt; Number Literal</em> desde la barra de men&uacute;s de la ventana <em>Mapper</em>,
+  y tecleamos el valor 49.98 en el cuadro de di&aacute;logo asociado a <em>Number Literal</em>. A continuaci&oacute;n,
+  en la lista de variables de la parte derecha, desplegamos la variable <em>purchaseOrderRequest &gt;
+  purchaseOrder &gt;</em> y dejamos visible la parte <em>price</em>. Finalmente, con el bot&oacute;n izquierdo
+  pulsado lo llevamos desde un peque&ntilde;o cuadrado azul que aparece a la derecha del cuadro
+  de di&aacute;logo <em>Number Literal</em>, hasta la parte <em>price</em>, para as&iacute; completar el
+  proceso de asignar un valor a una variable.  
+</p>
+<p>El c&oacute;digo BPEL generado es el siguiente:</p>
+<pre class="code"> 
+&lt;!-- POService.bpel--&gt;
+&lt;copy&gt;
+   &lt;from&gt;49.98&lt;/from&gt;
+   &lt;to&gt;$purchaseOrderRequest.purchaseOrder/ns0:price&lt;/to&gt;
+&lt;/copy&gt; 
+
+</pre>
+<p>A continuaci&oacute;n asignamos todos los valores del mensaje <em>purchaseOrderRequest.purchaseOrder</em>
+   a los elementos correspondientes del mensaje <em>inventoryServiceRequest.purchaseOrder</em>. 
+   Para ello vammos "trazando l&iacute;neas" con el bot&oacute;n izquierdo del rat&oacute;n desde la variable de la
+   parte inquierda del <em>Mapper</em> hasta la correspondiente variable de la parte derecha del
+   <em>Mapper</em>. El resultado se muestra
+   en la Figura 6.
+</p>
+<p>
+<img alt="Figura 6. BPEL Mapper: asignaciones correspondientes a la actividad assign1" content-width="12cm" height="274" src="imagenes/sesion4Ej/mapper.gif" width="795"></p>
+<p>
+<strong>A&ntilde;adimos la actividad <em>invoke</em></strong>
+</p>
+<p>La actividad <em>invoke</em> tiene el efecto de consumir un servicio Web. 
+  A&ntilde;adiremos dicha actividad a continuaci&oacute;n de la actividad <em>Assign1</em>. El proceso es similar al
+  realizado para la actividad <em>receive</em>. En este caso, los valores de las propiedades para la
+  actividad <em>invoke</em> ser&aacute;n los siguientes:
+</p>
+<ul>
+  
+<li>Name: <em>CallInventoryService</em>
+</li>
+  
+<li>PartnerLink: <em>requestInventoryPLink</em>
+</li>
+  
+<li>Operation: <em>inventoryService</em>
+</li>
+  
+<li>Input variable: <em>inventoryServiceRequest</em>
+</li>
+  
+<li>Output variable: <em>inventoryServiceReply</em>
+</li>
+
+</ul>
+<p>
+<strong>A&ntilde;adimos la actividad <em>if</em></strong>
+</p>
+<p>La actividad <em>if</em> tiene el efecto de bifurcar la l&oacute;gica del proceso BPEL en funci&oacute;n de una
+  condici&oacute;n cuyo resultado ser&aacute; cierto o falso. La a&ntilde;adiremos a continuaci&oacute;n de la 
+  actividad <em>invoke</em>. Los valores de las propiedades de la actividad <em>if</em>
+  ser&aacute;n:</p>
+<ul>
+  
+<li>Name: <em>CheckAvailability</em>
+</li>
+  
+<li>Condition: <em>$inventoryServiceReply.inventoryPart/ns3:inventoryStatus</em>. En la Figura 7
+      mostramos el mapeado a realizar en la ventana <em>BPEL Mapper</em>, asignando el valor de la
+      parte <em>inventoryStatus</em> (de tipo <em>boolean</em>) a la variable <em>Result</em> asociada
+      a la actividad <em>if</em>.</li>
+
+</ul>
+<p>
+<img alt="Figura 7. BPEL Mapper: asignaci&oacute;n correspondiente a la actividad CheckAvailability" content-width="12cm" height="169" src="imagenes/sesion4Ej/mapperIF.gif" width="790"></p>
+<p>En la parte cierta de la actividad <em>if</em> (parte "then", queda justo debajo del s&iacute;mbolo que representa
+   el <em>if</em>), a&ntilde;adimos una actividad <em>sequence</em>, en la que anidaremos las actividades 
+   <em>assign</em> y <em>reply</em>.
+</p>
+<p>Para la actividad <em>assign</em> a la que llamaremos <em>assign 2</em>, haremos corresponder la variable
+   <em>purchaseOrderRequest</em> con la variable <em>PurchaseOrderReply</em>.</p>
+<p>Para la actividad <em>reply</em>, los valores de sus propiedades ser&aacute;n:</p>
+<ul>
+  
+<li>Name: <em>ReplyPO</em>
+</li>
+  
+<li>Partner Link: <em>Cliente</em>
+</li>
+  
+<li>Operation: <em>sendPurchaseOrder</em>
+</li>
+  
+<li>Normal response, Output variable: <em>purchaseOrderRequest</em>
+</li>
+
+</ul>
+<p>Procederemos de la misma forma para la parte "else" de la actividad <em>if</em>, es decir, a&ntilde;adimos
+  una actividad <em>sequence</em> a la que anidamos las actividades <em>assign</em> y <em>reply</em>.</p>
+<p>Para la actividad <em>assign</em> a la que llamaremos <em>assign 3</em>, haremos corresponder la variable
+   <em>inventoryServiceReply &gt; inventoryPart &gt; inventoryStatusMessage</em> 
+   con la variable <em>purchaseOrderFault</em>.</p>
+<p>Para la actividad <em>reply</em>, los valores de sus propiedades ser&aacute;n:</p>
+<ul>
+  
+<li>Name: <em>ReplyFault</em>
+</li>
+  
+<li>Partner Link: <em>Cliente</em>
+</li>
+  
+<li>Operation: <em>sendPurchaseOrder</em>
+</li>
+  
+<li>Fault response, Fault Name: <em>ns1:cannotCompleteOrder</em>
+</li>
+  
+<li>Fault response, Fault Variable: <em>purchaseOrderFault</em>
+</li>
+
+</ul>
+<p>La Figura 8 muestra el resultado final de la vista de dise&ntilde;o del proceso POService.bpel.</p>
+<p>
+<img alt="Figura 8. Vista de dise&ntilde;o del proceso POService.bpel" content-width="10cm" height="505" src="imagenes/sesion4Ej/POServiceBPEL.gif" width="432"></p>
+<p>Guardamos todos los cambios con <em> File &gt; Save All </em> (si es que no hemos ido guardando antes los
+  cambios con <em> File &gt; Save </em>.</p>
+<p>De forma similar, crearemos el proceso <em>InventoryService.bpel</em>. En el fichero <em>inventory.zip</em>
+  que se proporciona, encontrar&eacute;is el fuente <em>inventoryService.bpel</em> que pod&eacute;is incorporar en vuestro
+  proyecto. Para ello no tendr&eacute;is m&aacute;s que, desde el sistema operativo, copiar dicho fichero en el directorio 
+  <em>src</em> del proyecto.</p>
+<a name="N104AF"></a><a name="Compilamos+el+proyecto"></a>
+<h3 class="underlined_5">Compilamos el proyecto</h3>
+<p>Para compilar el proyecto BPEL, simplemente nos situamos en el nodo del proyecto <em>OrdenCompraSincrona</em>
+  y con el bot&oacute;n derecho del rat&oacute;n seleccionamos la opci&oacute;n <em>Build Project</em>
+
+</p>
+<a name="N104C1"></a><a name="Creamos+la+Composite+Application"></a>
+<h3 class="underlined_5">Creamos la Composite Application</h3>
+<p>Crearemos una nueva <em>Composite Application</em> para que podamos desplegar nuestro proyecto BPEL en el
+  servidor de aplicaciones. Para ello seguiremos los siguientes pasos:</p>
+<ul>
+  
+<li>Seleccionamos <em>File &gt; New Project &gt; Service Oriented Architecture &gt; Composite Application </em>
+</li>
+  
+<li>Asignamos el nombre <em>OrdenCompraSincronaApplication</em>
+</li>
+  
+<li>Una vez hecho esto, nos aparecer&aacute; un nuevo proyecto con el nombre <em>OrdenCompraSincronaApplication</em>. Nos
+    situamos en dicho nodo, y con el bot&oacute;n derecho del rat&oacute;n seleccionamos Add JBI Module</li>
+  
+<li>Seleccionamos el proyecto <em>OrdenCompraSincrona</em> y pulsamos el bot&oacute;n: <em>Add Project JAR Files</em>.
+   Si desplegamos el nodo <em>JBI Modules</em> veremos que
+    se ha a&ntilde;adido el nodo <em>OrdenCompraSincrona.jar</em>
+</li>  
+
+</ul>
+<p>A continuaci&oacute;n debemos asegurarnos de que el servidor est&aacute; en marcha para poder desplegar la <em>Composite Application</em>
+  que hemos creado. Para ello puedes consultar el ejercicio de la sesi&oacute;n anterior.</p>
+<p>Para desplegar el proceso BPEL en el servidor de aplicaciones nos situaremos en el nodo <em>OrdenCompraSincronaApplication</em>
+  y elegiremos <em>Deploy Project</em>.
+</p>
+<a name="N10500"></a><a name="Probamos+el+proceso+BPEL"></a>
+<h3 class="underlined_5">Probamos el proceso BPEL</h3>
+<p>Para probar nuestro proceso BPEL vamos a a&ntilde;adir un caso de prueba. Nos situamos en el nodo <em>Test</em> del proyecto
+  <em>OrdenCompraSincronaApplication</em> y elegimos <em>New Test case</em> al que llamaremos <em>TestExito</em>.</p>
+<p>A continuaci&oacute;n elegimos el fichero WSDL del proceso a probar: <em>POService.wsld</em>. La operaci&oacute;n a probar ser&aacute;
+   <em>sendPurchaseOrder</em>. Vemos que se ha creado el fichero <em>Input.xml</em>, que contiene la estructura del
+   mensaje de entrada. Como datos de entrada podemos utilizar los datos del fichero <em>Input.xml</em> que se proporciona.
+   Para ello podemos pegar el contenido del fichero Input.xml proporcionado en el nuevo fichero <em>Input.xml</em> 
+   reemplazado as&iacute; su contenido. Guardamos los cambios.</p>
+<p>Para ejecutar el proceso con dicha entrada, nos situamos en el nodo <em>TestExito</em> y elegimos <em>Run</em>.</p>
+<p>Recordad que la primera vez obtendremos un informe por pantalla indic&aacute;ndonos que no se ha "pasado la prueba" debido a que
+   el fichero <em>Output.xml</em> estar&aacute; vac&iacute;o inicialmente.
+</p>
+<p>Al ejecutar la prueba por segunda vez (y sucesivas) ya debemos obtener un resultado correcto.</p>
+</div> 
+
+
+<a name="N1053E"></a><a name="Proceso+BPEL+as%C3%ADncrono.+Uso+de+correlaci%C3%B3n%3A+Hola+Mundo."></a>
+<h2 class="underlined_10">Proceso BPEL as&iacute;ncrono. Uso de correlaci&oacute;n: Hola Mundo.</h2>
+<div class="section">
+<p>Cada proceso de negocio BPEL es un servicio Web, por lo que puede parecer que solamente necesitamos
+  conocer el puerto de destino para poder enviar un mensaje a un proceso BPEL. Sin embargo, puesto que los
+  procesos de negocio son procesos con estado, se instancian bas&aacute;ndose en su estado. En este ejercicio, utilizaremos
+  los conjuntos de correlaci&oacute;n de BPEL para dar soporte a una colaboraci&oacute;n entre servicios Web con estado.</p>
+<p>Para este ejercicio se proporciona el fichero <em>hello.zip</em> que contiene un proceso de negocio sencillo
+  denominado <em>HelloWorldSample</em>, con su correspondiente <em>Composite Application</em> con el nombre
+  <em>HelloWorldSampleCompApp</em>.</p>
+<p>Para comenzar a trabajar con el proyecto con <em>Netbeans</em>, nos vamos al men&uacute; principal del IDE y elegimos
+  <em>File &gt; Open Project</em>. Seleccionamos los proyecots <em>HelloWorldSample</em> y <em>HelloWorldSampleCompApp</em>,
+  y "pinchamos" con el bot&oacute;n izquierdo del rat&oacute;n sobre <em>Open Project Folder</em>. Observaremos que aparece un problema
+  de referencias (esto es normal, puesto que la aplicaci&oacute;n compuesta tiene una dependencia del m&oacute;dulo JBI). Para resolver
+  el problema nos situamos sobre el proyecto <em>HelloWorldSampleCompApp</em>, pulsamos el bot&oacute;n derecho y elegimos la
+  opci&oacute;n <em>Resolve Reference Problems</em> del men&uacute; emergente. En el
+  cuadro de di&aacute;logo que aparece pulsamos en el bot&oacute;n <em>Resolve</em>. En el cuadro de di&aacute;logo <em>Browse Project</em>
+  seleccionamos el proyecto <em>HelloWorldSample</em> y pulsamos sobre <em>Open Project Folder</em>. Ahora el
+  cuadro de di&aacute;logo <em>Resolve Reference Problems</em> nos indica que el problema est&aacute; resuelto..
+</p>
+<p>A continuaci&oacute;n desplegamos el proyecto <em>HelloWorldSampleCompApp</em> en el servidor de aplicaciones (recuerda c&oacute;mo
+  lo hemos hecho en los ejercicios anteriores). Podemos probar el proyecto ejecutando el test <em>SendUserName1</em>.
+</p>
+<a name="N10586"></a><a name="A%C3%B1adimos+un+estado+al+proceso+de+negocio"></a>
+<h3 class="underlined_5">A&ntilde;adimos un estado al proceso de negocio</h3>
+<p>Para convertir al proceso <em>HelloWorld</em> en un proceso de negocio con estado, lo que haremos 
+  ser&aacute; a&ntilde;adir otra actividad <em>Receive</em> a dicho
+  proceso. Esta actividad a&ntilde;ade una comunicaci&oacute;n as&iacute;ncrona con el proceso y &eacute;ste se convierte en un proceso
+  con estado. El mensaje resultante devuelto por el proceso ser&aacute; extendido con un prefijo.</p>
+<p>Para a&ntilde;adir el estado al proceso <em>HelloWorld</em> realizaremos los siguientes pasos:</p>
+<ul>
+  
+<li>Expandimos el nodo <em>HelloWorldSample &gt; Process Files</em> y abrimos el fichero <em>HelloWorlProcess</em>.</li>
+  
+<li>Arrastramos el icono <em>Receive</em> desde la paleta hasta situarla entre las actividades <em>ReceiveUserName</em> y
+    <em>AddHello</em>. Esta acci&oacute;n a&ntilde;ade una actividad <em>Receive1</em> en el diagrama.</li>
+  
+<li>Vamos a cambiar las propiedades de <em>Receive1</em> de la siguiente forma:
+     <ul>
+       
+<li>Name: <em>SetPrefix</em>
+</li>
+       
+<li>Partner Link: <em>ProcessInterface</em>
+</li>
+       
+<li>Operation: <em>setPrefix</em>
+</li>
+       
+<li>Creamos una variable de entrada utilizando en bot&oacute;n <em>Create</em> con el nombre 
+          <em>Prefix</em> y cerramos el editor de propiedades</li>
+     
+</ul>
+  
+</li>
+  
+<li>A&ntilde;adimos un prefijo al nombre de usuario en la cadena de salida de la siguiente forma:
+     <ul>
+       
+<li>Abrimos el <em>BPEL mapper</em> pinchando dos veces sobre la actividad <em>AddHello</em>
+         y borramos el enlace existente entre la variable <em>UserNameRequest&gt;part1&gt;data</em> y la parte <em>string2</em>
+         de la funci&oacute;n <em>Concat</em> (nos situamos sobre &eacute;l y pulsamos la tecla de borrado).</li> 
+       
+<li>Seleccionamos la variable <em>Prefix&gt;part1&gt;data</em> en la parte izquierda del <em>mapper</em>
+         y la enlazamos con la parte <em>string2</em> de la funci&oacute;n <em>Concat</em>.</li>
+       
+<li>Hacemos lo mismo para <em>UsernameRequest&gt;part1</em> y la parte <em>string3</em> de la funci&oacute;n <em>Concat</em>.</li>  
+       
+<li>Pulsamos <em>Ctrl-S</em> para guardar los cambios.</li>
+     
+</ul>         
+ 
+</li>
+
+</ul>
+<p>Con los pasos anteriores hemos a&ntilde;adido una comunicaci&oacute;n as&iacute;ncrona en el proceso. Ahora, despu&eacute;s de que se
+  reciba el primer mensaje y se inicialice el proceso, el proceso BPEL necesita esperar a otro mensaje en la 
+  actividad <em>SetPrefix</em>.
+</p>
+<p>Imaginemos una situaci&oacute;n en la que varias instancias del proceso son instanciadas y todas ellas est&aacute;n esperando
+  un mensaje en la segunda actividad <em>Receive</em>.</p>
+<p>Como ya hemos visto, la m&aacute;quina BPEL utiliza conjuntos de correlaci&oacute;n para decidir a qu&eacute; instancia proceso se le
+  ha enviado el mensaje. Como resultado de los cambios que hemos realizado, el proceso devuelve la cadena de saludo
+  extendida con el prefijo <em>Mr.</em>.
+</p>
+<a name="N10625"></a><a name="Definimos+las+propiedades+de+correlaci%C3%B3n+y+los+alias+de+las+propiedades"></a>
+<h3 class="underlined_5">Definimos las propiedades de correlaci&oacute;n y los alias de las propiedades</h3>
+<p>Las propiedades se utilizan t&iacute;picamente para almacenar elementos para la correlaci&oacute;n de instancias de servicios con
+  mensajes. Usaremos <em>property aliases</em> para especificar qu&eacute; parte de los datos tiene que extraerse de los
+  mensajes y con qu&eacute; propiedad tienen que asociarse los datos extra&iacute;dos. Una propiedad es un concepto abstracto, 
+  mientras que la <em>propertyAlias</em> es el aspecto concreto correspondiente. Las <em>property aliases</em> 
+  enlazan las propiedades con valores definidos en el mensaje del servicio Web utilizando una <em>query</em> <em>xpath</em>.
+</p>
+<p>Para <strong>crear una propiedad</strong>, seguiremos los siguientes pasos:</p>
+<ul>
+  
+<li>Desde el men&uacute; principal, elegimos <em>Window &gt; Navigator</em>
+</li>
+  
+<li>En la vista de dise&ntilde;o, seleccionamos el proceso <em>HelloWorldProcess</em>. La ventanta <em>Navigator</em>
+    muestra la vista l&oacute;gica de BPEL, es decir, una vista estructurada del proceso de negocio.</li>
+  
+<li>En la ventana <em>Navigator</em> expandimos <em>Imports</em>. (Vamos a utilizar <em>HelloWorldProcessWSDLWrapper.wsdl</em>
+    para a&ntilde;adir las propiedades y alias de las propiedades). </li>
+  
+<li>Pinchamos con el bot&oacute;n derecho sobre <em>HelloWorldProcessWSDLWrapper.wsdl</em> y elegimos <em>Add Property</em> del
+    men&uacute; emergente.</li>
+  
+<li>Como nombre de la propiedad pondremos <em>MyProperty</em>, y elegimos <em>string</em> como tipo de la propiedad en el
+    &aacute;rbol <em>Built-in Types</em>. Finalmente pulsamos OK.</li>    
+
+</ul>
+<p>Ahora necesitamos crear una <em>property alias</em> para especificar c&oacute;mo se extraen los datos de correlaci&oacute;n a partir de 
+  los mensajes. Como tenemos dos actividades <em>Receive</em> que reciben mensajes de tipos diferentes, necesitamos definir dos
+  <em>property aliases</em>.
+</p>
+<p>Creamos la primera <strong><em>property alias</em></strong>, con los siguientes pasos:</p>
+<ul>
+  
+<li>En la ventana <em>Navigator</em> expadimos <em>Imports</em>.</li>
+  
+<li>Pinchamos con el bot&oacute;n derecho sobre <em>HelloWorldProcessWSDLWrapper.wsdl</em> y elegimos <em>Add Property Alias</em> del
+    men&uacute; emergente. Recuerda que necesitamos especificar la propiedad, parte del mensaje, y la <em>query</em> para crear una 
+    <em>property alias</em>. La propiedad especificada se usa para almacenar un <em>token</em> de correlaci&oacute;n extra&iacute;do, la parte
+    del mensaje ayuda a establecer una correspondencia entre la <em>property alias</em> con alg&uacute;n mensaje espec&iacute;fico y su parte, y 
+    la <em>query</em> se utiliza para especificar qu&eacute; datos en particular necesitan ser extra&iacute;dos.</li>
+  
+<li>En el cuadro de di&aacute;logo, pulsamos sobre <em>Browse</em>.</li>
+  
+<li>Expandimos el nodo <em>HelloWorldProcessWSDLWrapper.wsdl</em>, seleccionamos <em>MyProperty</em> y
+    pulsamos OK.</li>
+  
+<li>En el cuadro de di&aacute;logo, expandimos el nodo <em>HelloWorldProcessWSDL.wsdl</em> y  <em>getHelloRequest</em>, y pulsamos OK.</li>
+  
+<li>Elegimos <em>part1</em> como una parte del mensaje.</li>
+  
+<li>Especificamos <em>/UserData/id</em> en el campo de texto <em>Query</em> y pulsamos OK.</li>
+
+</ul>
+<p>Para crear la segunda <em>property alias</em>, repetimos los pasos anteriores, teniendo en cuenta que elegiremos
+  <em>HelloHelloWorldProcessWSDL.wsdl &gt; setPrefixRequest &gt; part1</em> como parte del mensaje.
+  Para la <em>Query</em> especificaremos <em>/Prefix/id</em>.
+</p>
+<a name="N106E5"></a><a name="Creamos+y+a%C3%B1adimos+los"></a>
+<h3 class="underlined_5">Creamos y a&ntilde;adimos los Correlation sets</h3>
+<p>Como ya hemos visto, un conjunto de correlaci&oacute;n es una colecci&oacute;n de propiedades que especifican qu&eacute;
+  datos deber&iacute;an extraerse de los mensajes de entrada. Estos datos se utilizan posteriormente para 
+  identificar la instancia del proceso destinataria del mensaje.</p>
+<p>Para <strong>crear un conjunto de correlaci&oacute;n</strong> seguimos los siguientes pasos:</p>
+<ul>
+  
+<li>Seleccionamos el proceso <em>HelloWorldProcess</em> en la vista de dise&ntilde;o, pulsamos
+    el bot&oacute;n derecho del rat&oacute;n y elegimos <em>Add &gt; Corrrelation Set</em> en el men&uacute; emergente.</li>
+  
+<li>En el cuadro de di&aacute;logo correspondiente elegimos como nombre: <em>MyCorrelationSet</em>, y
+    pulsamos el bot&oacute;n <em>Add</em>.</li>
+  
+<li>Aparecer&aacute; el cuatro de di&aacute;logo <em>Property Chooser</em>, expandimos el nodo <em>HelloWorldProcessWSDLWrapper.wsdl</em>,
+    y seleccionamos <em>MyProperty</em>. Pulsamos OK para a&ntilde;adir la propiedad, y OK de nuevo en el
+    cuadro de di&aacute;logo <em>Add Correlation Set</em> para crear el conjunto de correlaci&oacute;n.</li>   
+
+</ul>
+<p>Despu&eacute;s de crear el conjunto de correlaci&oacute;n, necesitamos a&ntilde;adirlo a las actividades que
+    reciben/env&iacute;an mensajes.</p>
+<p>Para <strong>a&ntilde;adir el conjunto de correlaci&oacute;n a la actividad <em>ReceiveUserName</em></strong> tenemos que:</p>
+<ul>
+  
+<li>Seleccionamos la actividad <em>ReceiveUserName</em> en la vista de dise&ntilde;o, pulsamos
+    el bot&oacute;n derecho del rat&oacute;n y elegimos <em>Edit</em> en el men&uacute; emergente.</li>
+  
+<li>En el cuadro de di&aacute;logo correspondiente elegimos como nombre: <em>MyCorrelationSet</em>, y
+    pulsamos el bot&oacute;n <em>Add</em>.</li>
+
+  
+<li>En la pesta&ntilde;a <em>Correlations</em>, pulsamos en el bot&oacute;n <em>Add</em>, y
+    elegimos <em>MyCorrelationSet</em> en la lista desplegable.</li>
+  
+<li>A continuaci&oacute;n fijamos el valor de <em>MyCorrelationSet</em> en la columna <em>Initiate</em> 
+    a <em>yes</em>. Finalmente pusamos sobre <em>OK</em>.</li>
+
+</ul>
+<p>Ahora necesitamos mapear los datos de correlaci&oacute;n con la actividad <em>setPrefix</em>. Esto permitir&aacute; a la
+  m&aacute;quina BPEL asociar datos de entrada con instancias del proceso.</p>
+<p>Para <strong>a&ntilde;adir el conjunto de correlaci&oacute;n a la actividad <em>SetPrefix</em></strong> tenemos que:</p>
+<ul>
+  
+<li>Seleccionamos la actividad <em>SetPrefix</em> en la vista de dise&ntilde;o</li>
+  
+<li>Pulsamos con el bot&oacute;n derecho sobre la actividad y elegimos <em>Edit</em> en el men&uacute; emergente.</li>
+  
+<li>En la pesta&ntilde;a <em>Correlations</em> pulsamos sobre <em>Add</em>, y elegimos <em>MyCorrelationSet</em>.
+    Finalmente pulsamos OK. Tenemos que asegurarnos de que el valor de <em>MyCorrelationSet</em> en la columna
+    <em>Inititate</em> tiene el valor <em>no</em>.</li>
+
+</ul>
+<p>Finalmente grabamos todos los cambios con <em>File &gt; Save All</em>.</p>
+<a name="N10790"></a><a name="Pruebas+y"></a>
+<h3 class="underlined_5">Pruebas y debugging del proceso BPEL</h3>
+<p>Vamos a comprobar que el proceso que hemos dise&ntilde;ado funciona bien. Monitorizaremos la ejecuci&oacute;n
+  del proceso para verificar que se devuelve la salida esperada. Para ello vamos a seguir los siguientes pasos:</p>
+<ul>
+  
+<li>En la ventana de proyectos pulsamos con el bot&oacute;n derecho del rat&oacute;n sobre el proyecto <em>HelloWorldSampleCompApp</em>
+    y elegimos <em>Clean and Build Project</em> del men&uacute; emergente.</li>
+  
+<li>Esperamos hasta que el mensaje "BUILD SUCCESSFUL" aparezca en la ventana de salida.</li>
+  
+<li>Pulsamos con el bot&oacute;n derecho del rat&oacute;n sobre el proyecto <em>HelloWorldSampleCompApp</em>
+    y elegimos <em>Debug Project (BPEL)</em> del men&uacute; emergente para comenzar a monitorizar la ejecuci&oacute;n del
+    proyecto.</li>
+  
+<li>Esperamos hasta que el mensaje que indica que la sesi&oacute;n de <em>debug</em> ha comenzado en la ventana de
+    la consola del <em>debugger</em> de BPEL.</li>
+  
+<li>En la vista de dise&ntilde;o, seleccionamos la actividad <em>ReceiveUserName</em>. Pulsamos sobre ella
+    con el bot&oacute;n derecho del rat&oacute;n y elegimos <em>Toggle Breakpoint</em>. Aparecer&aacute; un cuadrado rojo
+    sobre la actividad con un <em>breakpoint</em>.</li>
+  
+<li>Pulsamos con el bot&oacute;n derecho del rat&oacute;n sobre la actividad <em>AddHello</em> y a&ntilde;adimos otro <em>breakpoint</em>.</li>
+  
+<li>En la ventana de proyectos, expandimos <em>HelloWorldSampleCompApp &gt; Test</em>.</li>
+  
+<li>Pulsamos con el bot&oacute;n derecho sobre el test <em>SendUserName2</em> y elegimos <em>Run</em> en el men&uacute; emergente.
+    Las actividades por las que va pasando el programa aparecen marcadas con un indicador verde.</li>
+  
+<li>Tan pronto como el proceso se detiene en su primer <em>breakpoint</em> pulsamos sobre <em>Continue</em>
+    en la barra de herramientas del <em>debugging</em> (<em>Run &gt; Continue (CtrL+F5)</em>).</li>
+  
+<li>El proceso contin&uacute;a y se detiene en la actividad <em>SetPrefix</em>.</li>
+  
+<li>En la ventana de proyectos, pulsamos con el bot&oacute;n derecho del rat&oacute;n sobre el test <em>SendPrefix</em> y 
+    seleccionamos <em>Run</em>.</li>
+  
+<li>El proceso contin&uacute;a y se detiene en el segundo <em>breakpoint</em> de la actividad <em>AddHello</em>.</li>
+  
+<li>Volvemos a pulsar sobre <em>Continue</em> en la barra de herramientas del <em>debugging</em> para
+    continuar el proceso. (Cuando JUnit nos pregunte si queremos sobreescribir la salida responderemos afirmativamente).</li>
+  
+<li>Al final del proceso, el test <em>SendPrefix</em> se ejecuta con &eacute;xito.</li>   
+  
+<li>En la ventana del proyectos, hacemos doble <em>click</em> sobre el nodo con la salida del test 
+    <em>SendUserName2</em>. La salida del test <em>SendUserName2</em> contiene la cadena 
+    esperada: <em>Hello Mr. Michael</em>. Lo cual significa que el proceso ha funcionado bien y que la
+    m&aacute;quina BPEL ha manejado correctamente la comunicaci&oacute;n as&iacute;ncrona utiizando el conjunto de 
+    correlaci&oacute;n <em>MyCorrelationSet</em>
+</li>
+  
+<li>Seleccionamos <em>Run &gt; Finish Debugger Session</em> desde el men&uacute; principal.</li>  
+
+</ul>
+<p>Podemos comprobar que si deshabilitamos el conjunto de correlaci&oacute;n <em>MyCorrelationSet</em>, el proceso
+  nunca alcanza la actividad <em>AddHello</em> ya que no hay datos de correlaci&oacute;n que puedan ayudar a la m&aacute;quina
+  de servicios BPEL para enrutar el mensaje a la instancia correcta del proceso.</p>
+</div>
+
+
+<p class="pageBreakAfter"></p>
+
+
+</div>
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+        Copyright &copy;
+         2007 Depto. CCIA</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.7">
+<meta name="Forrest-skin-name" content="pelt">
+<title>Ejercicios de Spring Security</title>
+<link type="text/css" href="skin/highlight/shCore.css" rel="stylesheet">
+<link type="text/css" href="skin/highlight/shThemeEclipse.css" rel="stylesheet">
+<script src="skin/highlight/shCore.js" type="text/javascript"></script><script src="skin/highlight/shAutoloader.js" type="text/javascript"></script>
+<link type="text/css" href="skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="skin/print.css" rel="stylesheet">
+<link type="text/css" href="skin/profile.css" rel="stylesheet">
+<script src="skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<div class="header">
+<div class="grouplogo">
+<a href="http://web.ua.es/especialistajava"><img class="logoImage" alt="jtech" src="images/baner_j2ee_izq.gif" title="Experto Universitario Java Enterprise"></a>
+</div>
+<div class="projectlogoA1">
+<a href="http://www.dccia.ua.es/"><img class="logoImage" alt="Spring" src="images/baner_j2ee_der.gif" title="Spring"></a>
+</div>
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="javascript:location.href='../index.html'">Home</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../aplic-web.html'">Aplicaciones Web</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../aplic-ent.html'">Aplicaciones Enterprise</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../charlas.html'">Charlas</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../proy-int/index.html'">Proyecto</a>
+</li>
+<li>
+<a class="base-not-selected" href="index.html">Spring</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<div id="level2tabs"></div>
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<div id="menu">
+<div onclick="SwitchMenu('menu_1.1', 'skin/')" id="menu_1.1Title" class="menutitle">Spring</div>
+<div id="menu_1.1" class="menuitemgroup">
+<div class="menuitem">
+<a href="index.html" title="Spring">Indice</a>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<div id="credit2"></div>
+</div>
+<div id="content">
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="sesion07-ejercicios.pdf"><img alt="PDF -icon" src="skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1>Ejercicios de Spring Security</h1>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#Seguridad+de+la+capa+web+%281+punto%29">Seguridad de la capa web (1 punto)</a>
+</li>
+<li>
+<a href="#Personalizaci%C3%B3n+de+la+seguridad+web+%281+punto%29">Personalizaci&oacute;n de la seguridad web (1 punto) </a>
+</li>
+<li>
+<a href="#Seguridad+en+los+JSP+%280.5+puntos%29">Seguridad en los JSP (0.5 puntos)</a>
+</li>
+<li>
+<a href="#Seguridad+de+la+capa+de+negocio+%280.5+puntos%29">Seguridad de la capa de negocio (0.5 puntos)</a>
+</li>
+</ul>
+</div>
+
+
+<p>Vamos a a&ntilde;adirle Spring Security a la aplicaci&oacute;n de alquiler de coches que llevamos usando desde la sesi&oacute;n 5. No importa si no has completado todav&iacute;a los ejercicios de las sesiones 5 y 6, son independientes de estos.</p> 
+
+
+<a name="N1000F"></a><a name="Seguridad+de+la+capa+web+%281+punto%29"></a>
+<h2 class="underlined_10">Seguridad de la capa web (1 punto)</h2>
+<div class="section">
+<p>Lo primero que debes hacer es la <strong>configuraci&oacute;n b&aacute;sica de la seguridad en la capa web</strong>. Las dependencias de Spring Security ya est&aacute;n incluidas en el pom.xml, por tanto lo que te queda por hacer, como se comenta en los apuntes, es:</p>
+<ol>
+	
+<li>Definir los filtros correspondientes en el web.xml para que Spring Security pueda interceptar las peticiones</li>
+	
+<li>Tambi&eacute;n en el web.xml, especificar d&oacute;nde va a estar y c&oacute;mo se va a llamar nuestro fichero de configuraci&oacute;n de seguridad. Debes llamarlo security.xml y colocarlo en src/main/webapp/config, con el resto de ficheros de configuraci&oacute;n de Spring.</li>
+	
+<li>Crear el propio security.xml, puedes tomar como base el de los apuntes. Modif&iacute;calo para que haya dos roles, ROLE_USUARIO y ROLE_GESTOR. El primero ser&aacute; un usuario externo de la web, que &uacute;nicamente podr&aacute; ver los coches. El segundo ser&aacute; un trabajador de la empresa, que adem&aacute;s podr&aacute; hacer altas y modificaciones de coches. Ya implementaremos estos permisos, por el momento simplemente crea los dos roles. Crea adem&aacute;s en el fichero alg&uacute;n usuario de prueba de cada tipo, poni&eacute;ndole el login y password que desees.</li>
+
+</ol>
+<p>Comprueba que la seguridad funciona. Al arrancar la aplicaci&oacute;n, en lugar del listado de coches deber&iacute;a aparecer el formulario de login auto-generado por Spring Security. Comprueba que se puede entrar correctamente en la aplicaci&oacute;n.</p>
+<div class="frame note">
+<div class="label">C&oacute;mo hacer logout por las malas</div>
+<div class="content">Para poder hacer logout puedes usar el "truco" de borrar en el navegador la cookie JSESSIONID. Si no, tendr&aacute;s que cerrar el navegador.</div>
+</div>
+<div class="frame warning">
+<div class="label">Seguridad y acceso remoto</div>
+<div class="content">Si has hecho el ejercicio 1 de la sesi&oacute;n de acceso remoto, desprotege la URL /remoting/* si quieres que siga funcionando. Una soluci&oacute;n mejor ser&iacute;a asignarle a esta URL autentificaci&oacute;n BASIC y hacer que el cliente remoto la use para conectarse al servidor. Para ver c&oacute;mo hacer esto, consultar por ejemplo <a href="http://weblogs.java.net/blog/kalali/archive/2010/03/18/using-spring-security-enforce-authentication-and-authorization-spring">este tutorial</a>
+</div>
+</div>
+</div>
+
+
+<a name="N10036"></a><a name="Personalizaci%C3%B3n+de+la+seguridad+web+%281+punto%29"></a>
+<h2 class="underlined_10">Personalizaci&oacute;n de la seguridad web (1 punto) </h2>
+<div class="section">
+<p>Una vez hecho esto, <strong>personaliza la seguridad web</strong>:</p>
+<ol>
+
+<li>Crea un formulario de login personalizado en la p&aacute;gina login.jsp y configura Spring Security para que lo use. La default-target-url (a la que se saltar&aacute; tras hacer login) debe ser "listar.do".</li>
+
+<li>Configura el "servicio" de logout y a&ntilde;&aacute;dele al menos a la p&aacute;gina de listar coches (WEB-INF/views/listar.jsp) un enlace para hacer "logout"</li>
+
+</ol>
+<p>Una vez tengas todo esto funcionando, cambia la configuraci&oacute;n de la seguridad para <strong>tomar los datos de los usuarios de la base de datos</strong> en lugar de tenerlos definidos en el security.xml</p>
+</div>
+
+
+<a name="N10052"></a><a name="Seguridad+en+los+JSP+%280.5+puntos%29"></a>
+<h2 class="underlined_10">Seguridad en los JSP (0.5 puntos)</h2>
+<div class="section">
+<p>A&ntilde;ade algo de <strong>seguridad de "grano fino"</strong> a listar.jsp para que el enlace "editar" al lado de cada coche y el bot&oacute;n de "crear" solo aparezcan si el usuario actual tiene rol ROLE_GESTOR.</p>
+</div>
+
+
+
+<a name="N1005F"></a><a name="Seguridad+de+la+capa+de+negocio+%280.5+puntos%29"></a>
+<h2 class="underlined_10">Seguridad de la capa de negocio (0.5 puntos)</h2>
+<div class="section">
+<p>Queremos reservar los coches que llevan pocos kil&oacute;metros solo para ciertos clientes VIP. A&ntilde;adir un filtro al m&eacute;todo listar() de la capa de negocio de modo que solo los gestores puedan ver los coches con menos de 1000 km.
+</p>
+</div>
+
+<p class="pageBreakAfter"></p>
+
+</div>
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+        Copyright &copy;
+         2012-2013 Depto. Ciencia de la computaci&oacute;n e IA</div>
+</div>
+<script type="text/javascript">
+     
+         SyntaxHighlighter.defaults['toolbar'] = false;
+         SyntaxHighlighter.autoloader(
+  		     'java                   skin/highlight/shBrushJava.js',
+  		     'xml xhtml xslt html    skin/highlight/shBrushXml.js',
+  		     'js jscript javascript  skin/highlight/shBrushJScript.js',
+  		     'groovy                 skin/highlight/shBrushGroovy.js',
+  		     'bash shell             skin/highlight/shBrushBash.js',
+  		     'php                    skin/highlight/shBrushPhp.js',
+  		     'css                    skin/highlight/shBrushCss.js',
+  		     'sql                    skin/highlight/shBrushSql.js',
+  		     'objc                   skin/highlight/shBrushObjC.js',
+  		     'cpp c                  skin/highlight/shBrushCpp.js',
+  		     'text plain             skin/highlight/shBrushPlain.js'
+         );
+         SyntaxHighlighter.all();
+     </script><a href="skin/highlight/shBrushJava.js"></a><a href="skin/highlight/shBrushXml.js"></a><a href="skin/highlight/shBrushJScript.js"></a><a href="skin/highlight/shBrushGroovy.js"></a><a href="skin/highlight/shBrushBash.js"></a><a href="skin/highlight/shBrushPhp.js"></a><a href="skin/highlight/shBrushCss.js"></a><a href="skin/highlight/shBrushSql.js"></a><a href="skin/highlight/shBrushObjC.js"></a><a href="skin/highlight/shBrushCpp.js"></a><a href="skin/highlight/shBrushPlain.js"></a>
+</body>
+</html>

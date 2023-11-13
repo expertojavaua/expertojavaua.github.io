@@ -1,0 +1,255 @@
+<html>
+<head>
+<title>Tema 2: SAX</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<h1>2. SAX</h1>
+<p>Una vez que hemos estudiado la estructura de un documento XML sabemos construir 
+  este tipo de documentos. Pero todav&iacute;a nos queda algo muy importante: 
+  dise&ntilde;ar programas que analicen y entiendan documentos XML e incluso que 
+  los puedan modificar din&aacute;micamente. El objetivo de SAX es posibilitar 
+  la construcci&oacute;n de analizadores (<em>parsers</em>) de documentos XML. 
+  En realidad, SAX no es m&aacute;s que un API para analizar los documentos (como 
+  su propio nombre, <em><b>S</b>imple <b>A</b>PI for <b>X</b>ML</em>, indica). 
+  Existen otros APIs, como DOM, pero con aplicaciones distintas: SAX es recomendable 
+  para extraer informaci&oacute;n del documento, mientras que DOM lo es para manipular 
+  su estructura. En este tema describiremos el funcionamiento de un analizador 
+  SAX y las tareas para las que es m&aacute;s adecuado.</p>
+<h2 >2.1. &iquest;C&oacute;mo funciona SAX?</h2>
+<p> Los analizadores SAX est&aacute;n basados en un modelo de <b>eventos</b>: 
+  a medida que el <em>parser</em> recorre el documento &eacute;ste informa de 
+  la ocurrencia de eventos, tales como el comienzo de un elemento XML o el final 
+  del documento, a un manejador de eventos (<em>event handler</em>). Se sigue 
+  una filosof&iacute;a parecida a la forma en que se implementa el modelo de eventos 
+  en AWT: existe un objeto, una componente gr&aacute;fica como un bot&oacute;n 
+  o un selector, que puede emitir eventos y existen objetos oyentes (<em>listeners</em>) 
+  que pueden manejarlos. Estos oyentes implementan una interfaz que el objeto 
+  emisor entiende y por ello deben registrarse como oyentes autorizados para ser 
+  capaz de manejar estos eventos. Cuando se produce un evento el emisor informa 
+  solo a los oyentes registrados para que estos lo traten invocando al m&eacute;todo 
+  correspondiente de la interfaz.</p>
+<p>Por ejemplo, veamos qu&eacute; hace un analizador SAX cuando procesa un documento 
+  XML como el siguiente: </p>
+<pre class="codigo">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot; standalone=&quot;yes&quot;?&gt;
+&lt;documentoXML&gt;<br>&lt;cabecera&gt; Esto es un documento XML &lt;/cabecera&gt;<br>Eso es todo amigos<br>&lt;/documentoXML&gt;</pre>
+<p>Se producir&iacute;an los siguientes eventos como salida: </p>
+<pre class ="codigo">startDocument()
+startElement(): documentoXML
+startElement(): cabecera<br>characters(): Esto es un documento XML<br>endElement(): cabecera<br>characters(): Eso es todo amigos<br>endElement(): documentoXML<br>endDocument() </pre>
+  Lo que demuestra que SAX realiza un an&aacute;lisis secuencial y no hay manera 
+de determinar relaciones padre/hijo: es responsabilidad del programador descubrir 
+si el elemento <code>&lt;cabecera&gt;</code> debe encontrarse justo a continuaci&oacute;n 
+de <tt>&lt;documentoXML&gt;</tt> o no.<br>
+<h2 >2.2. Estructura de un analizador SAX</h2>
+<p >Existen dos versiones de SAX: la que trataremos aqu&iacute; es la 2.0, que 
+  introdujo en su d&iacute;a diversas mejoras sobre la 1.0, como la posibilidad 
+  de manejar espacios de nombres. El API est&aacute; formado por un conjunto de 
+  interfaces y clases:</p>
+<ul>
+  <li>La interfaz <code>ContentHandler</code> es la m&aacute;s importante desde 
+    el punto de vista del desarrollador. Especifica los manejadores de eventos 
+    que debemos implementar en nuestro analizador y que veremos en el siguiente 
+    apartado. En caso de que no nos interesen todos los eventos, sino solo algunos 
+    concretos, puede ser m&aacute;s sencillo extender la clase <code>DefaultHandler</code>, 
+    que ya incorpora manejadores por defecto (vac&iacute;os) para todos los eventos.</li>
+  <li>Las interfaces <code>ErrorHandler</code>, <code>EntityResolver </code>y 
+    <code>DTDHandler</code> desempe&ntilde;an un papel parecido a <code>ContentHandler</code>, 
+    pero para tratar errores, entidades y DTDs, respectivamente. Afortunadamente, 
+    la clase <code>DefaultHandler</code> tambi&eacute;n implementa estos interfaces.</li>
+  <li>La interfaz <code>XMLReader</code> es el &quot;coraz&oacute;n&quot; del 
+    API, aqu&iacute; vienen los m&eacute;todos que analizan el XML y generan los 
+    eventos. No obstante, el c&oacute;digo de estos m&eacute;todos es fijo e independiente 
+    de la aplicaci&oacute;n, por lo que desde el punto de vista del desarrollador 
+    nos limitaremos a usar clases ya implementadas en su totalidad.</li>
+  <li>Hay tres clases descendientes de <code>SAXException</code> que representan 
+    los distintos tipos de error que se pueden producir en el an&aacute;lisis.</li>
+</ul>
+<h2 class="subsection">2.3. Trabajar con SAX en Java</h2>
+<p> En la actualidad hay diversas implementaciones de analizadores SAX en Java. 
+  La m&aacute;s conocida y usada es <a href="http://xml.apache.org/xerces2-j/index.html" target="_blank">Xerces</a>, 
+  del proyecto Apache (no s&oacute;lo implementa SAX, sino tambi&eacute;n DOM). 
+  No obstante, el problema de SAX es que deja algunos &quot;cabos sueltos&quot; 
+  en cuanto a su uso real. Por ejemplo, la forma de instanciar un <i>parser</i> 
+  SAX no est&aacute; contemplada en el est&aacute;ndar, y es dependiente de la 
+  implementaci&oacute;n empleada. Este problema se solucion&oacute; con la aparici&oacute;n 
+  del API <b>JAXP</b>, desarrollado por Sun, que a&ntilde;ade una capa de abstracci&oacute;n 
+  sobre SAX y sobre otros est&aacute;ndares, y permite trabajar con XML y Java 
+  independientemente de la implementaci&oacute;n de <i>parser</i> que estemos 
+  usando.</p>
+<p>JAXP est&aacute; dividido en dos partes, el API de an&aacute;lisis y el de 
+  transformaci&oacute;n (para aplicar XSLT), por lo que las diferentes implementaciones 
+  existentes pueden cubrir uno, otro o ambos:</p>
+<ul>
+  <li><b>Implementaci&oacute;n de referencia de JAXP </b>(JAXP RI): desarrollada 
+    por Sun. La versi&oacute;n actual es la 1.2. En el J2SE 1.4 se incluye la 
+    versi&oacute;n anterior, la 1.1 (que no soporta <i>schemas</i>). Cubre todo 
+    el API JAXP.</li>
+  <li><b>Xerces 2</b>: el propio Xerces implementa tambi&eacute;n JAXP, pero solo 
+    el API de an&aacute;lisis. Soporta <i>schemas</i>.</li>
+</ul>
+<h3> Instanciar un analizador SAX con JAXP </h3>
+<p> JAXP encapsula en la clase <code>SAXParser</code> una implementaci&oacute;n 
+  de un analizador SAX. Podemos utilizar la que viene en la distribuci&oacute;n 
+  de JAXP o bien cualquier otra, siempre que sea compatible con &eacute;l. Como 
+  se muestra en el ejemplo, los objetos <code>SAXParser</code> se construyen a 
+  partir de la clase <code>SAXParserFactory</code> . Una vez instanciado el analizador, 
+  se efect&uacute;a el an&aacute;lisis llamando al m&eacute;todo <code>parse</code>:</p>
+<p>&nbsp;</p>
+<pre class="codigo">import java.io.FileReader;<br>import javax.xml.parsers.SAXParser; <br>import javax.xml.parsers.SAXParserFactory;<br>import org.xml.sax.InputSource;<br>import org.xml.sax.helpers.DefaultHandler;<p>public class EjemploSax {<br>  public static void main(String[] args) throws Exception {<br>     SAXParserFactory factory = SAXParserFactory.newInstance(); <br>     SAXParser parser = factory.newSAXParser(); <br>     parser.parse(args[0], new DefaultHandler()); <br>  }<br>}</pre>
+<p> al m&eacute;todo <code>parse</code> hay que pasarle una entrada de donde obtener 
+  un documento (en el ejemplo, un nombre de fichero) y un manejador de eventos 
+  (en el ejemplo, el manejador por defecto, la clase <code>DefaultHandler</code>, 
+  que no hace nada salvo que haya un error en el documento). En el siguiente apartado 
+  veremos c&oacute;mo escribir nuestro propio manejador de eventos.</p>
+<h2 class="subsection">2.4. Eventos SAX</h2>
+<p> Como hemos visto en el apartado anterior, el c&oacute;digo principal de nuestro 
+  analizador SAX debe extender la clase <code>DefaultHandler</code> (o implementar 
+  los interfaces <code>ContentHandler</code>, <code>ErrorHandler</code>, <code>EntityResolver 
+  </code>y <code>DTDHandler</code>). </p>
+<p>El siguiente ejemplo muestra un manejador de eventos que imprime un mensaje 
+  en la salida cuando se produce alg&uacute;n evento SAX, mostrando los par&aacute;metros 
+  del evento.</p>
+<pre class="codigo">
+import javax.xml.parsers.SAXParser;<br>import javax.xml.parsers.SAXParserFactory;<br>import org.xml.sax.Attributes;<br>import org.xml.sax.SAXException;<br>import org.xml.sax.helpers.DefaultHandler;<p>public class SAXParserHandler extends DefaultHandler {<br>
+  <b>//comienzo del documento</b>
+  public void startDocument() throws SAXException {<br>     System.out.println(&quot;startDocument&quot;);<br>  }
+   
+  <b>//fin del documento</b><br>  public void endDocument() throws SAXException {<br>     System.out.println(&quot;endDocument&quot;); <br>  }<br>
+  <b>//texto dentro de etiquetas</b>
+  public void characters(char[] ch, int start, int length)<br>                         throws SAXException {<br>
+     String charString = new String(ch, start, length); <br>     System.out.println(&quot;caracteres: &quot; + charString); <br>  }<br>
+  <b>//etiqueta de apertura, puede contener atributos</b>
+  public void startElement(String namespaceURI, String localName, <br>                           String qName, Attributes atts) <br>                           throws SAXException {<br>     System.out.println(&quot;startElement: &quot; + qName);<br>     // Lista atributos y sus valores<br>     for (int i=0; i&lt;atts.getLength(); i++) {<br>        System.out.println(&quot;Atributo: &quot; + atts.getLocalName(i));<br>        System.out.println(&quot;\tValor: &quot; + atts.getValue(i));<br>     }<br>  }<br>
+  <b>//etiqueta de cierre</b><br>  public void endElement(String nameSpaceURI, String localName, <br>                         String qName) <br>                         throws SAXException {<br>     System.out.println(&quot;endElement: &quot; + qName);<br>  }<br><br>  <b>//espacio en blanco que se puede ignorar</b>
+  public void ignorableWhitespace(char[] ch, int start, int length) <br>                                  throws SAXException {<br>     System.out.println(length + &quot; caracteres en blanco ignorables&quot;); <br>  }<br><br>  <b>//comienzo de espacio de nombres</b>
+  public void startPrefixMapping(String prefix, String uri) <br>                                 throws SAXException {<br>     System.out.println(&quot;Comienza prefijo de namespace: &quot; + prefix); <br>  }<br>
+  <b>//fin de espacio de nombres</b>
+  public void endPrefixMapping(String prefix) <br>                               throws SAXException {<br>     System.out.println(&quot;Termina prefijo de namespace: &quot; + prefix); <br>  } <br>
+  <b>//instrucci&oacute;n de procesamiento
+</b>  public void processingInstruction(String instruction, String data) <br>                                    throws SAXException {<br>     System.out.println(&quot;Instrucci&oacute;n: &quot; + <br>                        instruction + &quot;, datos: &quot; + data); <br>  }<br>
+  <b>//entidad que no se desea resolver, por lo que se ignora
+</b>  public void skippedEntity(String name) throws SAXException {<br>     System.out.println(&quot;Entidad saltada: &quot; + name);<br>  }<br>
+}</pre>
+<p>Como puede verse en el listado anterior, un manejador de eventos SAX puede 
+  gestionar los siguientes eventos:</p>
+<ul>
+  <li><code>startDocument()</code> y <code>endDocument()</code>: se producen cuando 
+    se empieza y se termina de analizar el documento XML, respectivamente.</li>
+  <li><code>startElement()</code>: Se activa en el momento en que el se encuentra 
+    una etiqueta de apertura. Los dos primeros argumentos, <code>namespaceURI</code> 
+    y <code>localName</code>, se usan solamente si el parser contempla espacios 
+    de nombres. El argumento <code>qName</code> contiene el nombre del elemento. 
+    Por otro lado, el argumento <code>atts</code> contiene los atributos asociados 
+    al elemento (consultar la interfaz <code>org.xml.sax.Attributes</code> para 
+    ver los m&eacute;todos de acceso como <code>getLocalName()</code> y <code>getValue()</code> 
+    que en este caso se acceden via &iacute;ndices en lugar de por valor lo cual 
+    es mejor para evitar dependencias del orden de aparici&oacute;n). </li>
+  <li><code>endElement()</code>: Por cada <code>startElement()</code> hay un par 
+    <code>endElement()</code> siendo los argumentos iguales pero omitiendo los 
+    atributos en este &uacute;ltimo. Cuando tenemos un elemento vac&iacute;o se 
+    disparar&aacute;n ambos eventos. </li>
+  <li><code>characters()</code>: Se dispara cuando se encuentran datos tipo car&aacute;cter, 
+    incluyendo las secciones CDATA. Los argumentos incluyen un array de caracteres, 
+    el comienzo del array y la longitud del mismo. </li>
+  <li><code>ignorableWhitespace()</code>: Este m&eacute;todo se usa para informar 
+    de blancos irrelevantes dentro de un elemento. Recibe los mismos argumentos 
+    que el m&eacute;todo <code>characters()</code>.</li>
+  <li><code>startPrefixMapping()</code> y <code>endPrefixMapping()</code>: indican 
+    que comienza el &aacute;mbito de un espacio de nombres (definido mediante 
+    el atributo <code>xmlns</code>) o termina, respectivamente.</li>
+</ul>
+<h3>2.4.1. Ignorar los espacios en blanco</h3>
+<p>Si se ejecuta el manejador de eventos anterior sobre un fichero de ejemplo 
+  como el siguiente:</p>
+<pre class="codigo">&lt;?xml version=&quot;1.0&quot;?&gt;<br>&lt;prueba&gt;<br>   &lt;uno&gt;Una prueba simple&lt;/uno&gt;<br>&lt;/prueba&gt;</pre>
+<p>Se generar&aacute; la salida:</p>
+<pre class="codigo">startDocument<br>startElement: prueba<br><b>caracteres:</b>
+startElement: uno<br>caracteres: Una prueba simple<br>endElement: uno<br><b>caracteres:</b>
+endElement: prueba<br>endDocument
+</pre>
+<p> Obs&eacute;rvese que cuando el analizador llega a los espacios en blanco que 
+  hay entre etiquetas (entre <code>&lt;prueba&gt;</code> y <code>&lt;uno&gt;</code>, 
+  por ejemplo) por defecto no los considera como espacios ignorables, sino significativos. 
+  Esto es as&iacute; porque en ausencia de informaci&oacute;n externa (un DTD, 
+  por ejemplo) el analizador no puede decidir qu&eacute; espacios pueden ignorarse. 
+  Por ello, en este caso el evento <code>ignorableWhitespace</code> no se produce. 
+  Para que el analizador distinga entre espacios significativos y no significativos, 
+  es necesario definir una gram&aacute;tica y decirle que valide el documento 
+  con ella.</p>
+<h3>2.4.2. Validar los documentos</h3>
+<p> Se puede hacer que el analizador verifique la gram&aacute;tica del documento 
+  empleando el m&eacute;todo <code>setValidating</code> de la clase <code>SAXParserFactory</code>. 
+  Modificando el ejemplo anterior, donde se instanciaba un analizador SAX:</p>
+<pre class="codigo">
+<b>//modificaci&oacute;n a la clase EjemploSax</b>
+...
+SAXParserFactory factory = SAXParserFactory.newInstance();
+<b>factory.setValidating(true); </b><br>SAXParser parser = factory.newSAXParser();
+... 
+</pre>
+<p> Si definimos una gramática (mediante un DTD, por ejemplo) y la referenciamos 
+  desde el documento XML, el analizador SAX verificar&aacute; que el fichero la 
+  cumpla y adem&aacute;s detectar&aacute; los espacios en blanco que puede ignorar.</p>
+<pre class="codigo"><b>//fichero &quot;prueba.dtd&quot;</b>
+&lt;!ELEMENT prueba (uno)&gt;<br>&lt;!ELEMENT uno (#PCDATA)&gt;
+</pre>
+<pre class="codigo"><b>//modificaci&oacute;n al documento XML</b>
+&lt;?xml version=&quot;1.0&quot;?&gt;
+<b>&lt;!DOCTYPE prueba SYSTEM &quot;prueba.dtd&quot;&gt;</b><br>&lt;prueba&gt;<br>   &lt;uno&gt;Una prueba simple&lt;/uno&gt;<br>&lt;/prueba&gt;</pre>
+<h3>2.4.3. Trabajar con espacios de nombres</h3>
+<p>En SAX 2.0 se puede trabajar con espacios de nombres. Para habilitar el soporte 
+  de espacios de nombres en JAXP, se emplea el m&eacute;todo <code>setNamespaceAware</code> 
+  de la clase <code>SAXParserFactory</code>.</p>
+<pre class="codigo"><b>//modificaci&oacute;n a la clase EjemploSax
+</b>...
+SAXParserFactory factory = SAXParserFactory.newInstance();
+<b>factory.setNamespaceAware(true); </b>
+SAXParser parser = factory.newSAXParser();
+... </pre>
+<p> A partir de este momento, se disparará el evento <code>startPrefixMapping</code> 
+  cuando se defina un espacio de nombres y <code>endPrefixMapping</code> cuando 
+  acabe el &aacute;mbito del espacio definido (la etiqueta que lo define mediante 
+  un atributo <code>xmlns</code>).</p>
+<h3>2.4.4. Localización de los eventos</h3>
+<p> Mediante los manejadores de eventos se puede saber cu&aacute;ndo se ha producido 
+  un evento, pero en principio no en qu&eacute; l&iacute;nea del documento ha 
+  sido. Esta informaci&oacute;n es accesible a trav&eacute;s de la clase <code>Locator</code>. 
+  Esta clase tiene dos m&eacute;todos, <code>getLineNumber()</code> y <code>getColumnNumber()</code>, 
+  que sirven para saber por qu&eacute; l&iacute;nea y columna del documento va 
+  el an&aacute;lisis. Para utilizar <code>Locator</code> es necesario definir 
+  un objeto de esta clase y hacer que el <i>parser</i> lo utilice mediante el 
+  m&eacute;todo <code>setDocumentLocator</code>. Por ejemplo:</p>
+<pre class="codigo"><b>//A&ntilde;adido al manejador de eventos (clase SAXParserHandler)</b>
+import org.xml.sax.Locator;
+...
+public void setDocumentLocator(Locator locator) {<br>   this.locator = locator; <br>}
+</pre>
+<h2>2.5. Gestión de errores</h2>
+<p> Para gestionar los errores que se puedan producir durante el an&aacute;lisis 
+  es necesario utilizar una clase que implemente el interfaz <code>ErrorHandler</code>. 
+  Afortunadamente, la clase del manejador por defecto, <code>DefaultHandler</code>, 
+  tambi&eacute;n implementa los gestores de error. Por ello bastar&aacute; con 
+  ampliar nuestra clase de gesti&oacute;n de eventos con los m&eacute;todos apropiados, 
+  que son tres:</p>
+<ul>
+  <li><code>fatalError()</code>: es un error del que el analizador no puede recuperarse. 
+    Un ejemplo es un documento mal formado. </li>
+  <li><code>error()</code>: se produce cuando el documento es incorrecto seg&uacute;n 
+    el est&aacute;ndar, pero el an&aacute;lisis puede proseguir. La lista de errores 
+    fatales y no fatales est&aacute; definida en el <a href="http://www.w3.org/TR/REC-xml">est&aacute;ndar 
+    XML</a>.</li>
+  <li><code>warning()</code>: es cualquier problema no definido como error o error 
+    fatal en el est&aacute;ndar XML.</li>
+</ul>
+<p> Los tres m&eacute;todos tienen como argumento un objeto de la clase <code>SAXParseException</code>, 
+  que representa el error o <i>warning</i> que se ha producido. Por ejemplo, para 
+  gestionar errores fatales se incluir&iacute;a el siguiente c&oacute;digo</p>
+<pre class="codigo"><b>//A&ntilde;adido al manejador de eventos (clase SAXParserHandler)
+</b>import org.xml.sax.SAXParseException;<br>...
+public void fatalError(SAXParseException e) throws SAXException {<br>   System.out.println(&quot;Error fatal &quot; + e);<br>}</pre>
+</body>
+</html>

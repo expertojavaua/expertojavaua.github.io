@@ -1,0 +1,617 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.7">
+<meta name="Forrest-skin-name" content="pelt">
+<title>Ejercicios sesi&oacute;n 3: Creaci&oacute;n de un servicio BPEL s&iacute;ncrono</title>
+<link type="text/css" href="skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="skin/print.css" rel="stylesheet">
+<link type="text/css" href="skin/profile.css" rel="stylesheet">
+<script src="skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<div class="header">
+<div class="grouplogo">
+<a href="http://www.jtech.ua.es/j2ee"><img class="logoImage" alt="J2EE" src="images/baner_j2ee_izq.gif" title="Curso Especialista Universitario J2EE"></a>
+</div>
+<div class="projectlogoA1">
+<a href="http://www.dccia.ua.es/"><img class="logoImage" alt="Servicios Web" src="images/baner_j2ee_der.gif" title="Servicios Web"></a>
+</div>
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="../index.html">M&oacute;dulos</a>
+</li>
+<li class="current">
+<a class="base-selected" href="index.html">Servicios Web</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<div id="level2tabs"></div>
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<div id="menu">
+<div onclick="SwitchMenu('menu_selected_1.1', 'skin/')" id="menu_selected_1.1Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Servicios Web</div>
+<div id="menu_selected_1.1" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="index.html" title="Servicios Web">&Iacute;ndice</a>
+</div>
+<div onclick="SwitchMenu('menu_1.1.2', 'skin/')" id="menu_1.1.2Title" class="menutitle">Teor&iacute;a</div>
+<div id="menu_1.1.2" class="menuitemgroup">
+<div class="menuitem">
+<a href="sesion01-apuntes.html">Sesion 1</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-apuntes.html">Sesion 2</a>
+</div>
+<div class="menuitem">
+<a href="sesion03-apuntes.html">Sesion 3</a>
+</div>
+<div class="menuitem">
+<a href="sesion04-apuntes.html">Sesion 4</a>
+</div>
+<div class="menuitem">
+<a href="roadmap-apuntes.html" title="Roadmap">Roadmap</a>
+</div>
+</div>
+<div onclick="SwitchMenu('menu_selected_1.1.3', 'skin/')" id="menu_selected_1.1.3Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Ejercicios</div>
+<div id="menu_selected_1.1.3" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="sesion01-ejercicios.html">Sesion 1</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-ejercicios.html">Sesion 2</a>
+</div>
+<div class="menupage">
+<div class="menupagetitle">Sesion 3</div>
+</div>
+<div class="menuitem">
+<a href="sesion04-ejercicios.html">Sesion 4</a>
+</div>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<div id="credit2"></div>
+</div>
+<div id="content">
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="sesion03-ejercicios.pdf"><img alt="PDF -icon" src="skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1>Ejercicios sesi&oacute;n 3: Creaci&oacute;n de un servicio BPEL s&iacute;ncrono</h1>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#Configurar+e+iniciar+el+servidor+de+aplicaciones+de">Configurar e iniciar el servidor de aplicaciones de Sun</a>
+</li>
+<li>
+<a href="#Creamos+el+proyecto+BPEL">Creamos el proyecto BPEL</a>
+</li>
+<li>
+<a href="#WSDL+y+esquema+de+nombres+del+proyecto+BPEL">WSDL y esquema de nombres del proyecto BPEL</a>
+</li>
+<li>
+<a href="#L%C3%B3gica+del+proceso+BPEL">L&oacute;gica del proceso BPEL</a>
+</li>
+<li>
+<a href="#Desplegamos+el+proyecto+en+el+servidor+de+aplicaciones">Desplegamos el proyecto en el servidor de aplicaciones</a>
+</li>
+<li>
+<a href="#Creamos+un+conductor+de+pruebas">Creamos un conductor de pruebas</a>
+</li>
+<li>
+<a href="#Ejecutamos+las+pruebas+sobre">Ejecutamos las pruebas sobre SynchronousSampleApplication</a>
+</li>
+</ul>
+</div>
+
+
+<p>Vamos a crear desarrollar, desplegar y probar un sencillo servicio Bpel utilizando <em>Netbeans</em>.
+  Para ello seguiremos los pasos que hemos indicado en esta sesi&oacute;n. En este caso, se trata de un proceso BPEL
+  s&iacute;ncrono que simplemente recibe un mensaje de entrada y, en funci&oacute;n de su contenido, devuelve una respuesta
+  u otra al cliente.
+</p>
+
+<p>El cliente, despu&eacute;s de invocar al proceso BPEL, permanece bloqueado hasta que el proceso termine y
+  devuelva el resultado.
+</p>  
+
+
+<a name="N10017"></a><a name="Configurar+e+iniciar+el+servidor+de+aplicaciones+de"></a>
+<h2 class="underlined_10">Configurar e iniciar el servidor de aplicaciones de Sun</h2>
+<div class="section">
+<p>Antes de desplegar la aplicaci&oacute;n, debemos poner en marcha el servidor de aplicaciones</p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+
+<td colspan="1" rowspan="1"><img alt="Puesta en marcha del servidor de aplicaciones" content-width="7cm" height="398" src="imagenes/sesion3/inicServidor.gif" width="298"></td>
+<td colspan="1" rowspan="1">
+<p>Pasos a seguir</p>
+
+<ul>
+
+<li>Comprobamos el estado del servidor:
+  <ul>
+    
+<li>Si la ventana <em>Runtime</em> no es visible, elegir <em>Windows-&gt;Runtime</em>
+</li>
+    
+<li>En la ventana <em>Runtime</em>, expandimos el nodo <em>Servers</em>. Si no aparece
+      el subnodo <em>Sun Java System Application Server</em> tendremos que configurar el
+      servidor de aplicaciones. Si aparece una flecha en verde en el subnodo, entonces el 
+      servidor se ha iniciado. Si no aparece el s&iacute;mbolo verde, tendremos que arrancar
+      el servidor.</li>
+  
+</ul> 
+
+</li>
+
+<li>Configuramos el servidor:
+  <ul>
+    
+<li>Pinchar con el bot&oacute;n derecho en el nodo <em>Servers</em> y elegir <em>Add Server</em>
+      en el men&uacute; emergente.</li>
+    
+<li>En la p&aacute;gina <em>Choose Server</em> desplegamos la lista de servidores y seleccionamos
+      <em>Sun Java System Application Server</em>. Opcionalmente podremos darle un nombre.</li>
+    
+<li>En la p&aacute;gina <em>Platform Location Folder</em> elegimos el sitio en donde est&aacute; instalado
+      el servidor. Por defecto se instala en <em>C:\Sun\SDK</em>
+</li>
+    
+<li>Seleccionamos el got&oacute;n <em>Register local default domain</em>
+</li>
+    
+<li>Introducimos el <em>login</em> y <em>password</em> del administrador. Por defecto,
+      el <em>login</em> es <strong>admin</strong>, y el <em>password</em> es <strong>adminadmin</strong>
+</li>    
+  
+</ul>
+
+</li>
+
+<li>Arrancar el servidor:
+  <ul>
+    
+<li>Desde la ventana <em>Runtime</em>, pinchamos con el bot&oacute;n derecho en el nodo del servidor
+      y elegimos <em>Start</em> en el men&uacute; emergente.</li>
+  
+</ul>
+
+</li>       
+
+</ul>
+
+</td>
+
+</tr>
+
+</table>
+</div>
+
+
+<a name="N1009F"></a><a name="Creamos+el+proyecto+BPEL"></a>
+<h2 class="underlined_10">Creamos el proyecto BPEL</h2>
+<div class="section">
+<p>La mejor forma de familiarizarnos con la construcci&oacute;n de diagramas BPEL el crear un 
+  proyecto ejemplo (<em>sample project</em>). <em>Netbeans</em> permite generar dos tipos de
+  proyectos ejemplo: s&iacute;ncrono y as&iacute;ncrono. El IDE genera un proyecto esqueleto, con los ficheros
+  <em>wsdl</em> y <em>xsd</em> que podremos modificar a nuestra conveniencia.
+</p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+
+<td colspan="1" rowspan="1"><img alt="Plantilla del proyecto BPEL esqueleto s&iacute;ncrono generado" content-width="6cm" height="262" src="imagenes/sesion3/proyectoBPEL.gif" width="261"></td>
+<td colspan="1" rowspan="1">
+
+<p>Para crear un nuevo proyecto ejemplo BPEL:</p>
+
+<ul>
+  
+<li>Elegimos <em>File-&gt;New Project.</em>
+</li>
+  
+<li>En la lista <em>Categories</em>, expandimos el nodo <em>Samples</em> y elegimos
+    <em>Service Oriented Architecture</em>.</li>
+  
+<li>En la lista <em>Projects</em>, seleccionamos el proyecto <em>Synchronous BPEL process</em>.
+    </li>
+  
+<li>Especificamos el nombre y la ubicaci&oacute;n del proyecto.</li>        
+
+</ul>
+
+<p>Cuando creamos un proyecto BPEL ejemplo, autom&aacute;ticamente se genera el proyecto de aplicaciones
+  compuestas, y autom&aacute;ticamente se a&ntilde;ade el proyecto del m&oacute;dulo BPEL como un m&oacute;dulo JBI en
+  el proyecto <em>Composite Application</em>.
+</p>
+
+</td>
+
+</tr>
+
+</table>
+</div>
+
+
+<a name="N100F3"></a><a name="WSDL+y+esquema+de+nombres+del+proyecto+BPEL"></a>
+<h2 class="underlined_10">WSDL y esquema de nombres del proyecto BPEL</h2>
+<div class="section">
+<p>En este caso, al utilizar una plantilla para el proceso BPEL s&iacute;ncrono, <em>Netbeans</em>
+   ha creado por nostros el fichero WSDL y el esquema de nombres.</p>
+<p>Los ficheros WSDL pueden visualizarse de tres formas: podemos ver el c&oacute;digo fuente 
+   (<em>Source view</em>), podemos verlo en forma de &aacute;rbol de componentes(<em>Design view</em>), o podemos
+   verlo de forma gr&aacute;fica (<em>Partner view</em>).
+</p>
+<p>La siguiente figura muestra la vista gr&aacute;fica del fichero WSDL creado:</p>
+<p>
+<img alt="Vista gr&aacute;fica del fichero WSDL generado" content-width="11cm" height="302" src="imagenes/sesion3/wsdlSincrono.gif" width="653">
+</p>
+<p>Podemos ver que el fichero WSDL contiene una definici&oacute;n de <em>partnerLinkType</em>, que es el
+  correspondiente al cliente que realizar&aacute; la llamada a nuestro servicio BPEL s&iacute;ncrono. Tambi&eacute;n
+  hay definidos dos mensajes: uno de entrada (<em>requestMessage</em>), y otro de salida 
+  (<em>responseMessage</em>), que contienen una cadena de caracteres</p>
+<p>El fichero de definici&oacute;n de esquema es opcional en un proyecto BPEL. En este caso <em>Netbeans</em>
+  tambi&eacute;n lo ha generado por nostros. Al igual que ocurre con los ficheros WSDL, los ficheros de esquema
+  tienen tres vistas diferentes: c&oacute;digo fuente (<em>Source view</em>), &aacute;rbol de componentes(<em>Schema view</em>), 
+  y vista gr&aacute;fica (<em>Desgign view</em>). En la siguiene figura se muestra la vista gr&aacute;fica del fichero
+  <em>xsd</em> creado:
+</p>
+<p>
+<img alt="Vista gr&aacute;fica del fichero .xsd generado" content-width="5cm" height="322" src="imagenes/sesion3/xsdSincrono.gif" width="342">
+</p>
+<p>Podemos ver que se ha definido el tipo <em>typeA</em>, que es un elemento del tipo complejo <em>simpleProcess</em>, 
+   que a su vez es una cadena de caracteres</p>
+<p>En caso de que tuvi&eacute;semos que crear nosotros los ficheros WSDL y de esquema, el proceso que se 
+   sigue es similar en ambos casos:</p>
+<ul>
+  
+<li>Crear un nuevo documento: pinchamos con el bot&oacute;n derecho del rat&oacute;n sobre el nodo <em>Process Files</em> y 
+     elegimos <em>New-&gt;WSDL Document</em>, o <em>New-&gt;File/Folder/XML Schema</em>.</li>
+  
+<li>Desde la vista gr&aacute;fica a&ntilde;adimos componentes arrastr&aacute;nolos desde la ventana <em>Palette</em>
+     a la vista grafica.</li>
+  
+<li>Desde la vista de &aacute;rbol, a&ntilde;adimos componentes y pinchamos con el bot&oacute;n derecho sobre nodo
+     del tipo de componente que queremos a&ntilde;adir, y elegimos el opci&oacute;n <em>Add ...</em> correspondiente
+     del men&uacute; emergente</li>
+  
+<li>Desde la vista de fuente, escribimos el c&oacute;digo en el editor de texto</li>      
+
+</ul>
+</div>  
+
+
+<a name="N10169"></a><a name="L%C3%B3gica+del+proceso+BPEL"></a>
+<h2 class="underlined_10">L&oacute;gica del proceso BPEL</h2>
+<div class="section">
+<p>
+<em>Netbeans</em> ha creado un proceso BPEL s&iacute;ncrono muy sencillo, que podremos modificar seg&uacute;n
+  nos interese. En el caso de que tuvi&eacute;semos que crearlo nosotros, tendr&iacute;amos que hacerlo pinchando con
+  el bot&oacute;n derecho del rat&oacute;n sobre el nodo <em>Process Files</em> y elegimos <em>New-&gt;BPEL Process</em> en
+  el men&uacute; emergente.</p>
+<p>El proceso BPEL presenta dos vistas: c&oacute;digo fuente (<em>Source</em>) y vista gr&aacute;fica (<em>Design</em>).
+   La <strong>vista de dise&ntilde;o</strong>
+   (o vista gr&aacute;fica) que se ha generado de forma autom&aacute;tica es la siguiente:</p>
+<p>
+<img alt="Vista de dise&ntilde;o del proceso BPEL s&iacute;ncrono generado" content-width="8cm" height="451" src="imagenes/sesion3/bpelSincrono.gif" width="472">
+</p>
+<p>En el caso de que tuvi&eacute;semos que crear nosotros el proceso BPEL desde cero, tendr&iacute;amos que ir a&ntilde;adiendo
+  elementos arrastr&aacute;ndolos desde la ventana <em>Palette</em> hasta la vista de dise&ntilde;o del proceso BPEL.
+</p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+
+<td colspan="1" rowspan="1"><img alt="Paleta de componentes BPEL" content-width="5cm" height="282" src="imagenes/sesion3/paletaBPEL.gif" width="187"></td>
+<td colspan="1" rowspan="1">
+
+<p>La <strong>paleta de componentes</strong> nos muestra los elementos que podemos insertar en el proceso BPEL,
+  clasificados en tres categor&iacute;as:</p>
+
+<ul>
+  
+<li>Servicios Web: en donde encontramos las actividades <em>Invoque</em>, <em>Receive</em>,
+     <em>Reply</em> y el componente <em>PartnerLink</em>
+</li>
+  
+<li>Actividades b&aacute;sicas: <em>Assign</em>, <em>Empty</em>, <em>Wait</em>, <em>Throw</em> y
+     <em>Exit</em>
+</li>
+  
+<li>Actividades estructuradas: <em>If</em>, <em>While</em>, <em>Sequence</em>,...
+    </li>       
+
+</ul>
+
+</td>
+
+</tr>
+
+</table>
+<p>A su vez, podemos acceder a las <strong>propiedades del m&oacute;dulo BPEL</strong>, pulsando con el bot&oacute;n derecho
+  sobre el nodo del m&oacute;dulo (en la ventana <em>Projects</em>), y seleccionando <em>Properties</em>
+  del men&uacute; emergente. En este caso, nos aparecer&aacute; un cuadro en el que podemos acceder a varias 
+  p&aacute;ginas:</p>
+<ul>
+  
+<li>
+<strong>General</strong>: muestra la ruta de directorios de los ficheros del proyecto, entre otros elementos</li>
+  
+<li>
+<strong>Referencias del proyecto</strong>: muestra otros proyectos BPEL referenciados por nuestro proyecto BPEL</li>
+  
+<li>
+<strong>Cat&aacute;logo XML</strong>: muestra las entradas del cat&aacute;logo XML usado en el proyecto BPEL. Los 
+     cat&aacute;logos XML proporcionan informaci&oacute;n de mapeo entre una entidad externa en un documento XML y su localizaci&oacute;n real
+     del documento que est&aacute; siendo referenciado.</li>
+
+</ul>
+<p>Volviendo a nuestro proceso BPEL s&iacute;ncrono, a continuaci&oacute;n mostramos el <strong>c&oacute;digo fuente</strong> generado por <em>Netbeans</em>:</p>
+<pre class="code"> 
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+
+&lt;process 
+    name="SynchronousSample" 
+    targetNamespace="http://enterprise.netbeans.org/bpel/SynchronousSample/SynchronousSample_1"
+    xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:bpws="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+    xmlns:wsdlNS="http://enterprise.netbeans.org/bpel/SynchronousSample/SynchronousSample_1" 
+                 xmlns:ns1="http://localhost/SynchronousSample/SynchronousSample"&gt;
+    &lt;import location="SynchronousSample.xsd" importType="http://www.w3.org/2001/XMLSchema" 
+                 namespace="http://xml.netbeans.org/schema/SynchronousSample"/&gt;
+    &lt;import namespace="http://localhost/SynchronousSample/SynchronousSample" 
+                 location="SynchronousSample.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/&gt;
+
+    &lt;partnerLinks&gt;
+        &lt;partnerLink name="SynchronousSample" partnerLinkType="ns1:partnerlinktype1" 
+                     myRole="partnerlinktyperole1"/&gt;
+    &lt;/partnerLinks&gt;
+
+    &lt;variables&gt;
+        &lt;variable name="outputVar" messageType="ns1:responseMessage"/&gt;
+        &lt;variable name="inputVar" messageType="ns1:requestMessage"/&gt;
+    &lt;/variables&gt;
+
+    &lt;sequence&gt;
+        &lt;receive name="start" partnerLink="SynchronousSample" operation="operation1" 
+                 portType="ns1:portType1" variable="inputVar" createInstance="yes"/&gt;
+        &lt;assign name="Assign1"&gt;
+            &lt;copy&gt;
+            &lt;from&gt;$inputVar.inputType/paramA&lt;/from&gt;&lt;to&gt;$outputVar.resultType/paramA&lt;/to&gt;
+            &lt;/copy&gt;
+        &lt;/assign&gt;
+        &lt;reply name="end" partnerLink="SynchronousSample" operation="operation1" 
+               portType="ns1:portType1" variable="outputVar"/&gt;
+    &lt;/sequence&gt;
+&lt;/process&gt;
+
+</pre>
+<p>Seg&uacute;n el c&oacute;digo fuente anterior, podemos ver que la l&oacute;gica del proceso de negocio consiste
+  en esperar a recibir una llamada del <em>partner link</em> cliente sobre la operaci&oacute;n
+  <em>operation1</em>, con el mensaje de entrada <em>inputVar</em>. Una vez que el proceso BPEL
+  ha sido invocado por un cliente, asignamos el valor del mensaje de entrada en el mensaje de
+  salida, denominado <em>outputVar</em> y se lo enviamos al cliente utilizando la actividad <em>reply</em>
+
+</p>
+<p>
+<strong>A&ntilde;adimos una actividad <em>if</em></strong>
+</p>
+<p>Vamos a modificar este proceso inicial <strong>a&ntilde;adiendo una actividad <em>if</em></strong> en la vista de
+  dise&ntilde;o. Para ello:</p>
+<ul>
+  
+<li>Elegimos el icono <em>if</em> de la paleta de componentes y lo arrastramos   
+     a la vista de dise&ntilde;o del proceso BPEL, situ&aacute;ndolo entre las actividades <em>Start</em> y
+     <em>Assign</em>. Esto nos siuar&aacute; una actividad <em>if</em> denominada <em>if1</em> en la
+     vista de dise&ntilde;o. (El IDE nos indica d&oacute;nde podemos situar los elementos que arrastramos
+     mediante dos c&iacute;rculos conc&eacute;ntricos, coloreando el m&aacute;s peque&ntilde;o).</li>
+  
+<li>Pinchamos sobre la actividad <em>if1</em> y aparecer&aacute; la ventana de mapeado (<em>BPEL Mapper</em>)
+     en la parte inferior del IDE (si esta ventana no es visible, podemos visualizarla mediante <em>Window-&gt;BPEL Mapper</em>).
+     Usaremos la ventana de mapeado para definir una condici&oacute;n booleana.</li>     
+
+</ul>
+<p>
+<img alt="Ventana de mapeado de BPEL" content-width="8cm" height="123" src="imagenes/sesion3/bpelMapper.gif" width="601">
+</p>
+<ul>
+  
+<li>En la barra de men&uacute;s, pinchamos en <em>Operator</em> y seleccionamos el m&eacute;todo <em>EQUAL</em> en el 
+     men&uacute; emergente. El m&eacute;todo <em>equal</em> aparecer&aacute; en la parte central de la ventana de mapeado.</li>
+  
+<li>En la barra de men&uacute;s, pinchamos sobre el m&eacute;todo <em>String</em> y seleccionamos <em>String Literal</em> en la
+     lista desplegable. Aparecer&aacute; una caja con la etiqueta <em>String literal</em> en el panel central.</li>   
+  
+<li>Tecleamos "Hola mundo" en el m&eacute;todo <em>string literal</em> y pulsamos retorno de carro.</li>
+  
+<li>En el panel de la izquierda, expandimos el nodo <em>Variables - inputVar - inputType</em>, aparecer&aacute;
+     <em>paramA</em>
+</li>
+  
+<li>Arrastramos <em>paramA</em> sobre la parte <em>any1</em> del m&eacute;todo <em>equal</em>
+</li>
+  
+<li>Seleccionamos el peque&ntilde;o cuadrado que aparece en el lado derecho de la caja <em>String Literal</em>.
+     Cuando el cursor con forma de mano aparezca, dibujamos una l&iacute;nea que conecte dicha caja con la aprte <em>any2</em>
+     del m&eacute;todo <em>equal</em>
+</li>
+  
+<li>Desde el m&eacute;todo <em>equal</em>, arrastrar <em>return boolean</em> sobre <em>Result</em> en el panel de la derecha</li>         
+
+</ul>
+<p>El resultado de realizar las acciones anteriores debe ser el que mostramos a continuaci&oacute;n:</p>
+<p>
+<img alt="Ventana de mapeado de BPEL a la que hemos a&ntilde;adido una condici&oacute;n" content-width="8cm" height="177" src="imagenes/sesion3/mapperIf.gif" width="789">
+</p>
+<p>
+<strong>A&ntilde;adimos una actividad <em>Assign</em></strong>
+</p>
+<p>En la vista de dise&ntilde;o, arrastramos la actividad <em>Assign1</em> existente hasta la actividad <em>if</em>.
+  Colocamos esta actividad entre los iconos X en el &aacute;rea
+  de la actividad <em>if1</em>
+</p>
+<p>A continuaci&oacute;n, elegimos la actividad <em>Assign</em> de la secci&oacute;n de actividades b&aacute;sicas de la paleta, y la
+  arrastramos a la derecha de la actividad <em>Assign1</em> existente.</p>
+<p>
+<img alt="Resultado de a&ntilde;adir una segunda asignaci&oacute;n" content-width="4cm" height="224" src="imagenes/sesion3/assign2.gif" width="220">
+</p>
+<p>Seleccionamos la nueva actividad <em>Assign2</em> y volvemos a utilizar la ventana de mapeado de la siguiente forma.</p>
+<ul>
+  
+<li>Elegimos el m&eacute;todo <em>String</em> en la barra de men&uacute;s y seleccionamos <em>Concat</em> de la lista desplegable. Aparecer&aacute;
+    el m&eacute;todo <em>Concat</em> en el panel central. </li>
+  
+<li>Pinchamos con el bot&oacute;n derecho en el primer campo en la caja <em>concat</em> y elegimos <em>Add Literal</em> del men&uacute; emergente</li>
+  
+<li>Tecleamos <span class="codefrag">Hola</span> seguido de un espacio y pulsamos el retorno de carro</li>
+  
+<li>Expandimos el nodo <em>inputVar - inputType</em> (en el panel de la izquierda) y arrastramos <em>paramA</em> sobre la parte <em>string2</em> del m&eacute;todo <em>concat</em>
+</li>
+  
+<li>Expandimos el nodo <em>outputVar - resultType</em> (en el panel de la derecha)</li>
+  
+<li>Arrastramos el <em>return string</em> desde el m&eacute;todo <em>concat</em> hasta <em>paramA</em> (en el panel de la derecha). Esto
+     concatena la cadena "Hello " con la entrada y copia el resultado en la salida.</li> 
+
+</ul>
+<p>Despu&eacute;s de realizar los pasos anteriores, la ventana de mapeado debe presentar el siguiente aspecto:</p>
+<p>
+<img alt="Concatenamos el resultado" content-width="8cm" height="180" src="imagenes/sesion3/mapperAssign2.gif" width="788">
+</p>
+</div>
+
+
+<a name="N10320"></a><a name="Desplegamos+el+proyecto+en+el+servidor+de+aplicaciones"></a>
+<h2 class="underlined_10">Desplegamos el proyecto en el servidor de aplicaciones</h2>
+<div class="section">
+<p>Desplegar el proyecto significa hacer que el ensamblado de servicios est&eacute; 
+  disponible para el servidor de aplicaciones, permitiendo as&iacute; que las unidades de servicio puedan ejecutarse.
+</p>
+<p>Para desplegar la <em>Composite Application</em> realizaremos los siguientes pasos:</p>
+<ul>
+  
+<li>Si la ventana <em>Output</em> no es visible, elegimos <em>Window-&gt;Output</em>  
+</li>
+  
+<li>Pinchamos con el bot&oacute;n derecho sobre el proyecto <em>SynchronousSampleApplication</em> y elegimos
+     <em>Deploy Project</em>.</li>
+  
+<li>En el di&aacute;logo <em>Warning</em> nos aseguraremos de que est&aacute; seleccionado <em>Sun Java Application Server 9</em>
+     y pinchamos sobre <em>OK</em>. Aparecer&aacute; el mensaje <em>BUILD SUCCESSFUL</em> en la ventana <em>Output</em>
+</li>        
+
+</ul>
+</div>
+
+
+<a name="N10356"></a><a name="Creamos+un+conductor+de+pruebas"></a>
+<h2 class="underlined_10">Creamos un conductor de pruebas</h2>
+<div class="section">
+<p>Vamos a a&ntilde;adir casos de prueba para comprobar el funcionamiento del proceso BPEL que hemos creado. Para
+   ello seguiremos los siguientes pasos:
+</p>
+<ul>
+  
+<li>En la ventana <em>Projects</em>, expandimos el nodo del proyecto <em>SynchronousSampleApplication</em>,
+    pinchamos con el bot&oacute;n derecho sobre el nodo <em>Test</em>, y elegimos <em>New Test Case</em> del men&uacute; 
+    emergente.</li>
+  
+<li>Vamos a darle el nombre <span class="codefrag">CasoPrueba1</span> y pinchamos en <em>Next</em>.</li>
+  
+<li>Expandimos <em>SynchronousSample - Process Files</em> y seleccionamos <em>SynchronousSample.wsdl</em>.
+      Pinchamos en <em>Next</em>
+</li>
+  
+<li>Seleccionamos <em>operation1</em> y pinchamos en <em>Finish</em>. Ahora, en en &aacute;rbol del proyecto, bajo
+      el nodo <em>Test</em> se ha creado la carpeta <em>CasoPrueba1</em>, que contiene dos ficheros: <em>Input</em>
+      y <em>Output</em>
+</li>
+  
+<li>Pinchamos dos veces sobre <em>Input</em> y modificamos su contenido de la siguiente forma:
+      <ul>
+        
+<li>Localiza la siguiente l&iacute;nea en los contenidos del cuerpo: <span class="codefrag">&lt;syn:paramA&gt;?string?&lt;syn:paramA&gt;</span>
+</li>
+        
+<li>Reemplaza <span class="codefrag">?string?</span> con <span class="codefrag">Colega</span>
+</li>
+        
+<li>Grabamos los cambios desde <em>File-&gt;Save</em>
+</li>         
+      
+</ul>     
+  
+</li>
+  
+<li>Pinchamos dos veces sobre <em>Output.xml</em> para examinar los contenidos. Antes de ejecutar las pruebas, este
+     fichero est&aacute; vac&iacute;o. Cada vez que ejecutemos las pruebas, la salida actual se compara con los contenidos de
+     <em>Output</em>. La entrada (<em>input</em>) se copia sobre <em>Output</em> cuando <em>Output</em> est&aacute; vac&iacute;o.</li>
+
+</ul>
+</div>
+
+
+<a name="N103C7"></a><a name="Ejecutamos+las+pruebas+sobre"></a>
+<h2 class="underlined_10">Ejecutamos las pruebas sobre SynchronousSampleApplication</h2>
+<div class="section">
+<p>En la ventana <em>Projects</em>, expandimos <em>SynchronousSampleApplication - Test -
+   TestCase0</em>. El nodo <em>TestCase0</em> contiene dos ficheros XML: <em>Input</em>
+   para la entrada, y <em>Output</em> para la salida esperada. Cada vez que se ejecuta el caso de 
+   prueba, la salida actual se compara con el contenido de <em>Output</em>. Si coinciden,
+   entonces superamos la prueba y veremos en la ventana <em>Output</em> el mensaje:
+   <em>Nombre_Caso_Prueba passed</em>. Si no coinciden, aparecer&aacute; el mensaje <em>Nombre_Caso_Prueba
+   FAILED</em>.
+</p>
+<p>Pinchamos con el bot&oacute;n derecho sobre el nodo <em>TestCase0</em>, y elegimos <em>Run</em> 
+  en el men&uacute; emergente. Nos fijamos en la ventana <em>Output</em> y veremos que el test se
+  ha completado y que no pasamos el test, ya que aparece el mensaje <em>CasoPrueba1
+  FAILED</em>. <strong>Pregunta</strong>: &iquest;Puedes explicar por qu&eacute; ocurre &eacute;sto? Realiza las modificaciones
+  necesarias para poder superar el test.
+</p>
+<p>A continuaci&oacute;n, repetimos las acciones indicadas en el p&aacute;rrafo anterior sobre <em>CasoPrueba1</em>. En este caso, como
+   el fichero <em>Output</em> est&aacute; vac&iacute;o, se nos pregunta si queremos sobreescribirlo. 
+   Contestamos que s&iacute;. En la ventana <em>Output</em> aparecer&aacute; el mensaje: <em>CasoPrueba1
+   FAILED</em>. Despu&eacute;s de la primera ejecuci&oacute;n, el fichero <em>Output.xml</em> ya no est&aacute;
+   vac&iacute;o, por lo que su contenido ser&aacute; preservado y no ser&aacute; sobreescrito por el nuevo resultado.
+   Si ejecutamos de nuevo el test, podremos ver el mensaje: <em>CasoPrueba1 passed</em>.
+</p>
+</div>
+
+<p class="pageBreakAfter"></p>
+
+
+</div>
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+        Copyright &copy;
+         2007 Depto. CCIA</div>
+</div>
+</body>
+</html>

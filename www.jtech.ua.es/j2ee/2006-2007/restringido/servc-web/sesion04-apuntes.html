@@ -1,0 +1,486 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.7">
+<meta name="Forrest-skin-name" content="pelt">
+<title>Procesos BPEL s&iacute;ncronos y as&iacute;ncronos</title>
+<link type="text/css" href="skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="skin/print.css" rel="stylesheet">
+<link type="text/css" href="skin/profile.css" rel="stylesheet">
+<script src="skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<div class="header">
+<div class="grouplogo">
+<a href="http://www.jtech.ua.es/j2ee"><img class="logoImage" alt="J2EE" src="images/baner_j2ee_izq.gif" title="Curso Especialista Universitario J2EE"></a>
+</div>
+<div class="projectlogoA1">
+<a href="http://www.dccia.ua.es/"><img class="logoImage" alt="Servicios Web" src="images/baner_j2ee_der.gif" title="Servicios Web"></a>
+</div>
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="../index.html">M&oacute;dulos</a>
+</li>
+<li class="current">
+<a class="base-selected" href="index.html">Servicios Web</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<div id="level2tabs"></div>
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<div id="menu">
+<div onclick="SwitchMenu('menu_selected_1.1', 'skin/')" id="menu_selected_1.1Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Servicios Web</div>
+<div id="menu_selected_1.1" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="index.html" title="Servicios Web">&Iacute;ndice</a>
+</div>
+<div onclick="SwitchMenu('menu_selected_1.1.2', 'skin/')" id="menu_selected_1.1.2Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Teor&iacute;a</div>
+<div id="menu_selected_1.1.2" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="sesion01-apuntes.html">Sesion 1</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-apuntes.html">Sesion 2</a>
+</div>
+<div class="menuitem">
+<a href="sesion03-apuntes.html">Sesion 3</a>
+</div>
+<div class="menupage">
+<div class="menupagetitle">Sesion 4</div>
+</div>
+<div class="menuitem">
+<a href="roadmap-apuntes.html" title="Roadmap">Roadmap</a>
+</div>
+</div>
+<div onclick="SwitchMenu('menu_1.1.3', 'skin/')" id="menu_1.1.3Title" class="menutitle">Ejercicios</div>
+<div id="menu_1.1.3" class="menuitemgroup">
+<div class="menuitem">
+<a href="sesion01-ejercicios.html">Sesion 1</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-ejercicios.html">Sesion 2</a>
+</div>
+<div class="menuitem">
+<a href="sesion03-ejercicios.html">Sesion 3</a>
+</div>
+<div class="menuitem">
+<a href="sesion04-ejercicios.html">Sesion 4</a>
+</div>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<div id="credit2"></div>
+</div>
+<div id="content">
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="sesion04-apuntes.pdf"><img alt="PDF -icon" src="skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1>Procesos BPEL s&iacute;ncronos y as&iacute;ncronos</h1>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#Procesos+BPEL+s%C3%ADncronos+frente+a+procesos+BPEL+as%C3%ADncronos">Procesos BPEL s&iacute;ncronos frente a procesos BPEL as&iacute;ncronos</a>
+</li>
+<li>
+<a href="#">Correlations</a>
+<ul class="minitoc">
+<li>
+<a href="#Uso+de+conjuntos+de+correlaci%C3%B3n">Uso de conjuntos de correlaci&oacute;n</a>
+</li>
+<li>
+<a href="#Pasos+a+seguir+para+usar+correlaci%C3%B3n+en+BPEL">Pasos a seguir para usar correlaci&oacute;n en BPEL</a>
+</li>
+<li>
+<a href="#Definici%C3%B3n+y+uso+de+conjuntos+de+correlaci%C3%B3n+con">Definici&oacute;n y uso de conjuntos de correlaci&oacute;n con Netbeans</a>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+
+<p>Uno de los requerimientos t&eacute;cnicos importantes a tener en cuenta cuando se dise&ntilde;an procesos de negocio
+   que implican la ejecuci&oacute;n de m&uacute;ltiples servicios Web que se ejecutan durante periodos largos
+   de tiempo, es la capacidad de poder invocar servicios de forma as&iacute;ncrona.   
+</p>
+
+<p>La invocaci&oacute;n de servicios de forma as&iacute;ncrona es vital para alcanzar la fiabilidad, escalabilidad, y
+   adaptabilidad requeridas hoy en d&iacute;a en entornos IT (<em>Information Tecnology</em>). Mediante un soporte
+   as&iacute;ncrono, un proceso de negocio puede invocar servicios Web de forma concurrente (en lugar de 
+   secuencialmente), de forma que se mejora el rendimiento. Por ejemplo, un sistema de compras podr&iacute;a
+   necesitar interactuar con m&uacute;ltiples servicios Web de suministradores al mismo tiempo, para as&iacute; buscar
+   el suministrador que le ofrezca el precio m&aacute;s bajo y la fecha de entrega m&aacute;s temprana. Este soporte
+   as&iacute;ncrono para servicios Web puede conseguirse mediante t&eacute;cnicas de correlaci&oacute;n
+</p>   
+
+<p>En esta sesi&oacute;n nos centraremos en la invocaci&oacute;n de servicios Web de forma as&iacute;ncrona 
+   utilizando BPEL, y veremos alg&uacute;n ejemplo.
+</p>
+
+
+
+<a name="N10018"></a><a name="Procesos+BPEL+s%C3%ADncronos+frente+a+procesos+BPEL+as%C3%ADncronos"></a>
+<h2 class="underlined_10">Procesos BPEL s&iacute;ncronos frente a procesos BPEL as&iacute;ncronos</h2>
+<div class="section">
+<p>Los procesos BPEL difieren en el protocolo de intercambio de mensajes. Un <strong>proceso BPEL 
+   s&iacute;ncrono</strong> es aquel que devuelve al cliente los resultados de procesamiento de forma inmediata.
+   El cliente se bloquea hasta que los resultados son devueltos. 
+    El proceso BPEL tendr&aacute; una operaci&oacute;n de tipo <em>request-response</em>. Este tipo de proceso t&iacute;picamente 
+    sigue la siguiente l&oacute;gica y sintaxis:
+</p>
+<pre class="code"> 
+&lt;!-- Estructura de un proceso BPEL s&iacute;ncrono --&gt;
+&lt;process&gt;
+  &lt;receive partnerLink="pLinkA" portType="portA" 
+         operation="opA" variable="invarA"&gt;
+  
+  ...... realizar procesamiento ......
+  
+  &lt;reply partnerLink="pLinkA" portType="portA" 
+         operation="opA" variable="outvarB"&gt;
+&lt;/process&gt;
+
+</pre>
+<p>La Figura 1 muestra gr&aacute;ficamente la estructura de un proceso BPEL s&iacute;ncrono:</p>
+<p>
+	
+<img alt="Figura 1. Estructura de un proceso BPEL s&iacute;ncrono." content-width="10cm" src="imagenes/sesion4/bpelSincrono.gif" width="468"> 
+</p>
+<p>Para que un proceso BPEL sea s&iacute;ncrono, todos los servicios Web a los que invoca tienen que ser tambi&eacute;n
+  s&iacute;ncronos. La Figura 2 muestra un ejemplo de una invocaci&oacute;n a un servicio Web s&iacute;ncrono.</p>
+<p>
+	
+<img alt="Figura 2. Invocaci&oacute;n de un servicio s&iacute;ncrono." content-width="10cm" src="imagenes/sesion4/invocSincrona.gif" width="545"> 
+</p>
+<p>Podemos utilizar un <strong>proceso BPEL as&iacute;ncrono</strong> en un escenario en el que el calcular los resultados conlleva
+   mucho tiempo. Cuando utilizamos un proceso BPEL as&iacute;ncrono, es necesario que el cliente no se quede bloqueado
+   en la llamada. En su lugar, el cliente implementa una interfaz <em>callback</em> y una vez que los resultados
+   est&aacute;n disponibles, el proceso BPEL simplemente realiza una invocaci&oacute;n <em>callback</em> sobre el cliente. 
+</p>
+<p>Una situaci&oacute;n en la que podemos utilizar un proceso BPEL as&iacute;ncrono es por ejemplo cuando los servicios Web subyacentes que
+   tienen que ser orquestados son as&iacute;ncronos. Este tipo de procesos t&iacute;picamente sigue la siguiente l&oacute;gica y sintaxis:
+</p>
+<pre class="code"> 
+&lt;!-- Estructura de un proceso BPEL as&iacute;ncrono --&gt;
+&lt;process&gt;
+  &lt;receive partnerLink="pLinkA" portType="portA" 
+           operation="opA" variable="invarA"&gt;
+  
+  ...... realizar procesamiento que consume mucho tiempo ......
+  
+  &lt;!-- Realizar una invocaci&oacute;n sobre el cliente para devolver los resultados --&gt;
+  &lt;invoque partnerLink="pLinkA" portType="callBackportA" 
+           operation="opCallBackB" variable="outvarB"&gt;
+&lt;/process&gt;
+
+</pre>
+<p>La Figura 3 muestra gr&aacute;ficamente un proceso BPEL as&iacute;ncrono (el proceso BPEL realiza una llamada a un 
+  servicio as&iacute;ncrono):</p>
+<p>
+	
+<img alt="Figura 3. Invocaci&oacute;n de un servicio as&iacute;ncrono." content-width="10cm" src="imagenes/sesion4/invocAsincrona.gif" width="561"> 
+</p>
+</div>
+
+
+<a name="N10065"></a>
+<h2 class="underlined_10">Correlations</h2>
+<div class="section">
+<p>A diferencia de los servicios web, que son un modelo sin estado, los procesos
+  de negocio requiere el uso de un modelo con estado. Cuando un cliente inicia un proceso de
+  negocio, se crea una nueva instancia. Esta instancia "vive" durante la ejecuci&oacute;n del
+  proceso de negocio. Los mensajes que se env&iacute;an a un proceso de negocio (utilizando
+  operaciones sobre los <em>port types</em> y <em>ports</em>) necesitan ser entregados
+  a la instancia correcta de dicho proceso de negocio. BPEL proporciona un mecanismo
+  para utilizar datos espec&iacute;ficos del negocio para mantener referencias a instancias espec&iacute;ficas
+  del proceso de negocio. A esta caracter&iacute;stica la denomina correlaci&oacute;n (<em>correlation</em>).
+  En definitiva se trata de hacer corresponder un mensaje de entrada en la m&aacute;quina BPEL con
+  una instancia espec&iacute;fica de un proceso de negocio.
+  
+</p>
+<p>Por lo tanto, la <strong>correlaci&oacute;n</strong> (<em>correlation</em>) es el mecanismo que el <em>runtime</em> 
+  de BPEL utiliza para seguir la pista a las conversaciones entre una instancia 
+  particular de un proceso y las correspondientes instancias de sus servicios <em>partners</em>.
+  Es decir, la correlaci&oacute;n permite que el <em>runtime</em> de BPEL conozca que instancia del
+  proceso est&aacute; esperando a sus mensajes <em>callback</em>.  
+  Podemos pensar en la correlaci&oacute;n como una clave primaria que utiliza el <em>runtime</em> de
+  BPEL para correlacionar los mensajes de entrada y salida y enrutarlos convenientemente.
+</p>
+<p>La correlaci&oacute;n puede utilizarse, por ejemplo, para enviar la respuesta de procesos de
+  negocio que requieren mucho tiempo de procesamiento (<em>long-running business processes</em>). 
+</p>
+<p>En muchos sistemas de objetos distribuidos, un componente del enrutado de un mensaje
+  implica examinar el mensaje en busca de un identificador expl&iacute;cito ID de la instancia, que 
+  identifique el destino. Si bien el proceso de enrutado es similar, las instancias BPEL
+  se identifican por uno o m&aacute;s campos de datos dentro del mensaje intercambiado. En t&eacute;rminos
+  de BPEL, estas colecciones de campos de datos que identifican la instancia de un proceso se
+  conocen con el nombre de <strong>conjuntos de correlaci&oacute;n</strong> (<em>correlation sets</em>).
+</p>
+<p>Cada conjunto de correlaci&oacute;n tiene un nombre asociado, y est&aacute; formado por unas propiedades
+  definidas en WSDL. Una <strong>propiedad</strong> es un elemento de datos tipado con nombre, que se define
+  en el documento WSDL, y cuyo valor se extrae de una instancia de un mensaje WSDL aplicando
+  una expresi&oacute;n <em>Xpath</em> espec&iacute;fica para cada mensaje. En WSDL, una <strong><em>propertyAlias</em></strong>
+  define cada uno de dichos mapeados (para hacer corresponder el campo de datos con el elemento
+  del conjunto de correlaci&oacute;n). Los mapeados son espec&iacute;ficos
+  para cada mensaje, por lo que una &uacute;nica propiedad puede tener m&uacute;ltiples <em>propertyAliases</em>
+  asociadas con ella. Las <em>propertyAliases</em> especifican c&oacute;mo extraer los datos de 
+  correlaci&oacute;n de los mensajes.
+</p>
+<p>Por ejemplo, um documento WSDL podr&iacute;a indicar que la propiedad <em>name</em>
+    se corresponde con la parte <em>nombreusuario</em> del mensaje WSDL denominada
+    <em>loginmsg</em> y la parte <em>lastname</em> del mensaje <em>ordermsg</em>. Las propiedades
+    y las <em>propertyAliases</em> proporcionan, conjuntamente, una forma de
+    referenciar una &uacute;nica pieza de informaci&oacute;n l&oacute;gica de una manera consistente,
+    incluso aunque pueda aparecer de diferentes formas a trav&eacute;s de un conjunto de
+    mensajes.
+
+</p>
+<a name="N100CB"></a><a name="Uso+de+conjuntos+de+correlaci%C3%B3n"></a>
+<h3 class="underlined_5">Uso de conjuntos de correlaci&oacute;n</h3>
+<p>Para utilizar un conjunto de correlaci&oacute;n, debemos <strong>definir</strong> dicho conjunto ennumerando las
+  propiedades que lo forman, y a continuaci&oacute;n <strong>referenciarlo</strong> desde una actividad <em>receive</em>, <em>reply</em>,
+  <em>invoke</em>, o <em>pick</em>. 
+</p>
+<p>El <em>runtime</em> de BPEL utiliza la definici&oacute;n del conjunto
+  de correlaci&oacute;n y sus referencias para determinar qu&eacute; elementos de informaci&oacute;n debe examinar
+  en diferentes momentos de ejecuci&oacute;n del proceso. Cada instancia del proceso tiene una instanciaci&oacute;n
+  de cada uno de los conjuntos de correlaci&oacute;n que han sido definidos para el proceso. Cada una de estas
+  instanciaciones de los conjuntos de correlaci&oacute;n se inicializa exactamente una vez durante la ejecuci&oacute;n de la instancia del proceso, y 
+  solamente se utiliza durante las comparaciones que implican a mensajes de entrada y
+  de salida. Si se produce un intento de reinicializar un conjunto de correlaci&oacute;n, o usar un conjunto
+  que no ha sido inicializado, entonces el <em>runtime</em> de BPEL genera una <em>bpws:correlationViolation</em>.
+  Para extraer los valores de un conjunto de correlaci&oacute;n referenciado por una actividad, bien para inicializar el
+  conjunto o para realizar comparaciones, se aplican los <em>alias</em> correspondientes al mensaje WSDL
+  particular que est&aacute; siendo examinado, para cada una de las propiedades que componene el conjunto de 
+  correlaci&oacute;n referenciado.
+</p>
+<p>Puesto que las actividades <em>receive</em> y <em>pick</em> proporcionan puntos de entrada en un proceso, los 
+  conjuntos de correlaci&oacute;n a menudo se definen sobre ellos para habilitar el enrutamiento de mensajes hasta instancias
+  de procesos BPEL.
+</p>
+<p>Si un conjunto de correlaci&oacute;n se define sobre una actividad <em>receive</em> o <em>pick</em>, los
+  valores de las propiedades que comprenden el conjunto de correlaci&oacute;n se extraen del mensaje de entrada y se comparan
+  con los valores almacenados para el mismo conjunto de correlaci&oacute;n en todas las instancias de dicho proceso, y despu&eacute;s
+  el mensaje es enrutado hacia la instancia que tiene los mismos valores. 
+</p>
+<p>El atributo <em>initiate</em> sobre un <em>correlationSet</em> se utiliza para indicar si el conjunto de correlaci&oacute;n
+  est&aacute; siendo iniciado. Despu&eacute;s de que un <em>correlationSet</em> es iniciado, los valores de las propiedades de un
+  <em>correlationSet</em> deben ser ind&eacute;nticas para todos los mensajes en todas las operaciones que hacen referencia a 
+  dichos <em>correlationSet</em>, y tienen validez en el correspondente &aacute;mbito hasta su finalizaci&oacute;n. Un <em>correlationSet</em>
+  puede ser iniciado como mucho una s&oacute;la vez durante el ciclo de vida de la instancia del &aacute;mbito al que pertence. 
+  Una vez iniciado un <em>correlationSet</em>, &eacute;ste puede considerarse como una identidad de la instancia del proceso
+  de negocio correspondiente. Los valores
+  posibles para el atributo <em>intitiate</em> son <em>"yes"</em>, <em>"join"</em>, <em>"no"</em>. El valor por
+  defecto del atributo <em>initiate</em> es <em>"no"</em>.</p>
+<ul>
+  
+<li>Cuando el valor del atributo <em>initiate</em> es <em>"yes"</em>,
+  la actividad relacionada debe intentar iniciar el <em>correlationSet</em>:
+    <ul>
+      
+<li>Si el <em>correlationSet</em> ya est&aacute; iniciado, se lanzar&aacute; la excepci&oacute;n <em>bpel:correlationViolation</em>.</li>
+    
+</ul>
+  
+</li> 
+  
+<li>Cuando el atributo <em>initiate</em> tiene el valor <em>"join"</em>, la actividad relacionada debe intentar
+     iniciar el <em>correlationSet</em>, si el <em>correlationSet</em> todav&iacute;a no est&aacute; iniciado.
+    <ul>
+      
+<li>Si el <em>correlationSet</em> ya est&aacute; iniciado y la restricci&oacute;n de consistencia de correlaciones se viola, se
+       lanza la excepci&oacute;n <em>bpel:correlationViolation</em>.</li>
+    
+</ul>
+  
+</li>     
+  
+<li>Cuando el atributo <em>initiate</em> tiene el valor <em>"no"</em> o no se le ha asignado un valor de forma
+    expl&iacute;cita, entonces la actividad relacionada no debe intentar iniciar el <em>correlationSet</em>. 
+    <ul>
+      
+<li>Si el <em>correlationSet</em> no ha sido iniciado previamente, se lanza la excepci&oacute;n <em>bpel:correlationViolation</em>.</li>
+      
+<li>Si el <em>correlationSet</em> ya est&aacute; iniciado y la restricci&oacute;n de consistencia de correlaciones se viola, se
+         lanza la excepci&oacute;n <em>bpel:correlationViolation</em>.</li>
+    
+</ul>
+  
+</li>       
+
+</ul>
+<p>  
+  Los conjuntos de correlaci&oacute;n que aparecen en las actividades <em>invoke</em>, cuando la operaci&oacute;n invocada es una
+  operaci&oacute;n de tipo <em>request/response</em>, se utiliza un atributo
+  adicional: <em>pattern</em>. El atributo <em>pattern</em> puede tener los valores: <em>'out'</em>, para indicar que el conjunto de correlaci&oacute;n
+  tiene que aplicarse al mensaje de salida (<em>"request"</em>), <em>'in'</em>, para el mensaje de entrada (<em>"response"</em>), o <em>'both'</em>, 
+  que significa 
+  que tiene que aplicarse durante las dos fases. El atributo <em>pattern</em> no se utiliza cuando se invoca a una operaci&oacute;n de
+  tipo <em>one-way</em>.
+</p>
+<p>Pueden aparecer varios conjuntos de correlaci&oacute;n sobre una &uacute;nica actividad. Algunos de ellos ser&aacute;n
+  inicializados, y otros ser&aacute;n utilizados para hacer comparaciones.</p>
+<p>La siguiente Figura muestra el uso de correlaci&oacute;n en un proceso BPEL.</p>
+<p>
+	
+<img alt="Figura 4. Uso de correlaci&oacute;n en un proceso BPEL." content-width="10cm" src="imagenes/sesion4/correlacion.gif" width="559"> 
+</p>
+<a name="N101C0"></a><a name="Pasos+a+seguir+para+usar+correlaci%C3%B3n+en+BPEL"></a>
+<h3 class="underlined_5">Pasos a seguir para usar correlaci&oacute;n en BPEL</h3>
+<p>Vamos a ordenar los pasos que acabamos de explicar en el apartado anterior para utilizar conjuntos
+  de correlaci&oacute;n, e ilustrarlos con ejemplos de c&oacute;digo BPEL, son los siguientes:</p>
+<ol>
+  
+<li>Definimos una propiedad (mediante un nombre y un tipo de datos) en nuestro fichero WSDL que 
+     ser&aacute; utilizado por el conjunto de correlaci&oacute;n.
+     <pre class="code"> 
+     &lt;bpws:property name="correlationData" type="xsd:int"/&gt;
+     
+     </pre>   
+  
+</li>
+  
+<li>Definimos una <em>propertyAlias</em> para cada elemento de los datos de correlaci&oacute;n.
+     El nombre de la propiedad puede ser el mismo para diferentes alias.
+     <pre class="code"> 
+     &lt;bpws:propertyAlias messageType="CoreBankingP2P:CallbackType" 
+                         part="accountNumber" 
+			             propertyName="CoreBankingP2P:correlationData"/&gt;
+     &lt;bpws:propertyAlias messageType="CoreBankingP2P:ServiceRequestType" 
+                         part="accountNumber" 
+			             propertyName="CoreBankingP2P:correlationData"/&gt;
+     
+     </pre> 
+  
+</li>
+  
+<li>Definimos el conjunto de correlaci&oacute;n en el documento BPEL relacionado antes de cualquier
+    actividad <em>sequence</em> o <em>flow</em>.
+    <pre class="code"> 
+     &lt;correlationSets&gt;
+			&lt;correlationSet name="CS1" 
+			                properties="CoreBankingP2P:correlationData"/&gt;
+     &lt;/correlationSets&gt;
+     
+     </pre>
+  
+</li>
+  
+<li>Referenciamos el conjunto de correlaci&oacute;n dentro de la secuencia BPEL. El <em>runtime</em>
+    de BPEL crear&aacute; la instancia del conjunto de correlaci&oacute;n para cada conversaci&oacute;n (asumiendo
+    que el atributo <em>createInstance</em> tenga el valor <em>"yes"</em> en uno de los
+    <em>receives</em>.
+    <pre class="code"> 
+		.......
+		&lt;receive name="receiveRequest" partnerLink="Client" 
+		         portType="CoreBankingP2P:CoreBankingP2PPortType" 
+			     operation="applyForCC" variable="ServiceRequest" 
+			     createInstance="yes"&gt;
+			&lt;correlations&gt;
+				&lt;correlation initiate="yes" pattern="out" set="CS1"/&gt;
+ 			&lt;/correlations&gt;	
+ 		&lt;/receive&gt;
+		.......
+		&lt;receive name="P2Pcallback" partnerLink="CoreBankingP2PPLT" 
+		         portType="CoreBankingP2P:CoreBankingCallbackP2PPortType" 
+			     operation="callback" variable="CallbackRequest"&gt;
+			&lt;correlations&gt;
+        			&lt;correlation set="CS1"/&gt;
+			&lt;/correlations&gt;
+		&lt;/receive&gt;
+		.......
+     
+     </pre>  
+  
+</li>
+
+</ol>
+<p>Cuando se recibe un mensaje, el <em>runtime</em> de BPEL examina los datos de correlaci&oacute;n.
+  Si se encuentra una coincidencia en el conjunto de datos de la instancia que mantiene la
+  conversaci&oacute;n con alguna instancia del proceso BPEL, entonces se servir&aacute; el mensaje recibido,
+  en el ejemplo anterior ser&aacute; <em>P2Pcallback</em>.
+
+</p>
+<a name="N10209"></a><a name="Definici%C3%B3n+y+uso+de+conjuntos+de+correlaci%C3%B3n+con"></a>
+<h3 class="underlined_5">Definici&oacute;n y uso de conjuntos de correlaci&oacute;n con Netbeans</h3>
+<p>Como ya hemos expuesto en apartados anteriores, un conjunto de correlaci&oacute;n es una colecci&oacute;n de propiedades
+  utilizadas por el <em>runtime</em> de BPEL para identificar el proceso correcto para recibir un mensaje.
+  Cada propiedad del conjunto de correlaci&oacute;n debe ser mapeada con un elemento en uno o m&aacute;s tipos de mensajes a 
+  trav&eacute;s de los alias de las propiedades.</p>
+<p>Para <strong>definir un conjunto de correlaci&oacute;n</strong>, los mensajes de los servicios <em>partner</em> deben tener definidos 
+  propiedades y alias para las propiedades en sus correspondientes ficheros WSDL.</p>
+<p>Despu&eacute;s de que las propiedades y alias para las propiedades se hayan a&ntilde;adido al fichero WSDL asociado al
+  proceso, podemos definir los conjuntos de correlaci&oacute;n para el elemento <em>Process</em>, de la siguiente forma: </p>
+<ul>
+  
+<li>En la vista de dise&ntilde;o, pulsar con el bot&oacute;n derecho del rat&oacute;n sobre el elemento <em>Process</em> y elegir
+    <em>Add &gt; Correlation Set</em>. Aparecer&aacute; un cuatro de di&aacute;logo.</li>
+  
+<li>Cambiar el nombre del conjunto de correlaci&oacute;n y seleccionar <em>Add</em> para a&ntilde;adir propiedades.</li>
+  
+<li>En el cuadro de di&aacute;logo <em>Property Chooser</em>, seleccionar una propiedad a a&ntilde;adir al conjunto y pulsar sobre
+    <em>OK</em>. Por defecto, el cuadro de di&aacute;logo <em>Property Chooser</em> solamente muestra aquellos ficheros que
+    ya han sido referenciados en el proceso. Sin embargo, el proyecto puede contener otros ficheros <em>.swdl</em> 
+    y <em>.xsd</em> que todav&iacute;a no hayan sido importados en el proceso. Si seleccionamos una propiedad definida en un
+    fichero no importado, el IDE autom&aacute;ticamente a&ntilde;ade los <em>imports</em> requeridos en el proceso BPEL.</li>      
+
+</ul>
+<p>Despu&eacute;s de definir el conjunto de correlaci&oacute;n, se a&ntilde;ade dicho conjunto de correlaci&oacute;n a las actividades <em>invoque</em>, 
+  <em>Receive</em>, o <em>Reply</em>, entre otros. Para a&ntilde;adir un conjunto de correlaci&oacute;n a un elemento, se debe
+  realizar lo siguiente: </p>
+<ul>
+  
+<li>En la vista de dise&ntilde;o, hacer doble <em>click</em> sobre una actividad.</li>
+  
+<li>En el editor de propiedades, seleccionar la pesta&ntilde;a <em>Correlations</em> y pichar sobre <em>Add</em>.</li>
+  
+<li>En el cuadro de di&aacute;logo para seleccionar un conjunto de correlaci&oacute;n, seleccionar el conjunto y pinchar en <em>OK</em>.</li>
+  
+<li>A&ntilde;adir tantos conjuntos de correlaci&oacute;n como sean necesarios y pinchar sobre <em>OK</em>.</li>
+
+</ul>
+</div>    
+  
+
+
+
+
+
+
+<p class="pageBreakAfter"></p>
+
+
+</div>
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+        Copyright &copy;
+         2007 Depto. CCIA</div>
+</div>
+</body>
+</html>

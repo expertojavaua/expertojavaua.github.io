@@ -1,0 +1,753 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+  <title>Tema 4: Invocaci&oacute;n de Servicios Web</title>
+                                    
+  <meta content="text/html; charset=iso-8859-1"
+ http-equiv="Content-Type">
+                   
+  <link href="http://www.jtech.ua.es/j2ee/2002-2003/sw/apuntes/apuntes.css" rel="stylesheet" type="text/css">
+                     
+  <meta content="Microsoft FrontPage 4.0" name="GENERATOR">
+<link href="../../../apuntes.css" rel="stylesheet" type="text/css">
+</head>
+  <body bgcolor="#ffffff" text="#000000">
+ 
+<h1>4. Invocaci&oacute;n de Servicios Web</h1>
+ 
+<p>Vamos a ver ahora c&oacute;mo invocar Servicios Web orientados a RPC desde 
+  Java. Para ello contamos con la API JAX-RPC, que se apoya en la API SAAJ para 
+  gestionar los mensajes SOAP orientados a RPC.</p>
+<p>Con JAX-RPC podremos ejecutar procedimientos de forma remota, simplemente haciendo 
+  una llamada a dicho procedimiento, sin tener que introducir apenas c&oacute;digo 
+  adicional. Ser&aacute; JAX-RPC quien se encargue de gestionar internamente la 
+  conexi&oacute;n con el servicio y el manejo de los mensajes SOAP de llamada 
+  al procedimiento y de respuesta.</p>
+<p>Podemos encontrar las clases de la API de JAX-RPC dentro del paquete<strong> 
+  javax.xml.rpc</strong> y en subpaquetes de &eacute;ste.</p>
+<p>Nuestro cliente Java realizado con JAX-RPC ser&aacute; interoperable con pr&aacute;cticamente 
+  todos los servicios creados desde otras plataformas. Se pueden ver los resultados 
+  de los <em>tests</em> de interoperabilidad de JAX-RPC en la direcci&oacute;n:</p>
+<p> <em>http://java.sun.com/wsinterop/sb/index.html</em></p>
+<h2>4.1 Tipos de acceso</h2>
+<p>Tenemos varias posibilidades para acceder a un Servicio Web utilizando JAX-RPC:</p>
+<ul>
+  <li><strong>Creaci&oacute;n de un stub est&aacute;tico</strong>: Consiste en 
+    generar una capa de <em>stub</em> por debajo del cliente de forma autom&aacute;tica. 
+    Dicho <em>stub</em> implementar&aacute; la misma interfaz que el servicio, 
+    lo cu&aacute;l nos permitir&aacute; desde nuestro cliente acceder al Servicio 
+    Web a trav&eacute;s del <em>stub</em> tal y como si estuvi&eacute;ramos accediendo 
+    directamente al servicio. 
+    <p>Para utilizar este mecanismo es recomendable contar con alguna herramienta 
+      dentro de nuestra plataforma que nos permita generar dicho <em>stub</em>, 
+      para no tener que encargarnos nosotros de realizar esta tarea manualmente.</p>
+  </li>
+  <li><strong>Acceso mediante proxy din&aacute;mico</strong>: Nos permite acceder 
+    al servicio generando el <em>stub</em> de forma din&aacute;mica, justo en 
+    el momento que queramos conectarnos al servicio, en lugar de tener el <em>stub</em> 
+    ya generado de forma est&aacute;tica como en el caso anterior. 
+    <p>Para poder hacer esto deberemos proporcionar la interfaz que deber&aacute; 
+      implementar dicho <em>stub</em>, que deber&aacute; ajustarse a la interfaz 
+      del Servicio Web (deber&aacute; tener m&eacute;todos con el mismo nombre 
+      y los mismos tipos de par&aacute;metros).</p>
+  </li>
+  <li><strong>Utilizaci&oacute;n de la Interfaz de Invocaci&oacute;n Din&aacute;mica 
+    (DII)</strong>: Esta forma de acceso nos permitir&aacute; hacer llamadas a 
+    procedimientos de nuestro Servicio Web de forma din&aacute;mica, sin crear 
+    un <em>stub</em> para ello. Utilizaremos este tipo de invocaci&oacute;n cuando 
+    no conozcamos la interfaz del servicio <em>a priori</em>, para invocarlo deberemos 
+    proporcionar &uacute;nicamente los nombres de los m&eacute;todos a utilizar 
+    mediante una cadena de texto. 
+    <p>Podremos utilizar esta interfaz din&aacute;mica, aunque no contemos con 
+      un documento WSDL que nos indique la interfaz y datos de nuestro servicio. 
+      En este caso, deberemos proporcionar manualmente esta informaci&oacute;n, 
+      de forma que sea capaz de acceder al servicio correctamente.</p>
+  </li>
+</ul>
+<h2>4.2 Invocaci&oacute;n mediante stub est&aacute;tico</h2>
+<p>Est&aacute; ser&aacute; la forma m&aacute;s sencilla de acceder siempre que 
+  contemos con una herramienta que genera el <em>stub</em> de forma autom&aacute;tica. 
+</p>
+<p>De esta forma, una vez generado el <em>stub</em>, s&oacute;lo tendremos que 
+  utilizar este <em>stub</em> como si se tratase de nuestro servicio directamente. 
+  En el <em>stub</em> podremos hacer las mismas llamadas a m&eacute;todos que 
+  har&iacute;amos directamente en la clase que implemente nuestro servicio, ya 
+  que ambos implementar&aacute;n la misma interfaz.</p>
+<p>El <em>stub</em> generado implementar&aacute; la interfaz <strong>Stub</strong>, 
+  adem&aacute;s de la interfaz de nuestro servicio. Vamos a ver ahora c&oacute;mo 
+  generar dicha capa de <em>stub</em> desde diferentes plataformas.</p>
+<h3>4.2.1 Creaci&oacute;n del stub en WSDP</h3>
+<p>En WSDP podemos crear nuestro <em>stub</em> de forma sencilla a partir de la 
+  interfaz Java (RMI) de nuestro servicio, o bien del documento WSDL si no contamos 
+  con la interfaz Java. Para ello utilizaremos la herramienta <strong>xrpcc</strong>, 
+  o <strong>wscompile</strong> en las &uacute;ltimas versiones, para generar la 
+  parte del cliente.</p>
+<p>Vamos a ver c&oacute;mo se crear&iacute;a mediante el ejemplo del servicio 
+  <strong>Conversion</strong> que vimos en el tema anterior, que ofrece m&eacute;todos 
+  para convertir de <em>euros</em> a <em>ptas</em> y viceversa. </p>
+<p><strong>A partir de la interfaz Java</strong></p>
+<p>Supongamos que tenemos la interfaz de nuestro servicio definida en el fichero 
+  <em>ConversionIF.java</em> de la siguiente forma:</p>
+<pre class="codigo">package utils;
+
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+
+public interface <strong>ConversionIF</strong> extends Remote {
+  public int <strong>euro2ptas</strong>(double euro) throws RemoteException;
+  public double <strong>ptas2euro</strong>(int ptas) throws RemoteException;
+}</pre>
+<p>Necesitaremos adem&aacute;s un fichero <strong>config.xml</strong> que defina 
+  la configuraci&oacute;n del Servicio Web como el que se muestra a continuaci&oacute;n:</p>
+<pre class="codigo">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt; 
+&lt;configuration 
+  xmlns=&quot;http://java.sun.com/xml/ns/jax-rpc/ri/config&quot;&gt;    
+  &lt;service name=&quot;<strong>Conversion</strong>&quot; 
+    targetNamespace=&quot;<strong>http://rvg.ua.es/wsdl</strong>&quot; 
+    typeNamespace=&quot;<strong>http://rvg.ua.es/types</strong>&quot; 
+    packageName=&quot;<strong>utils</strong>&quot;&gt; 
+    &lt;interface name=&quot;<strong>utils.ConversionIF</strong>&quot; 
+      servantName=&quot;<strong>utils.ConversionImpl</strong>&quot;/&gt; 
+  &lt;/service&gt; 
+&lt;/configuration&gt; </pre>
+<p>En este fichero especificamos el nombre de nuestro Servicio Web, los espacios 
+  de nombres utilizados, el paquete donde guardaremos las clases del servicio, 
+  y el nombre de la interfaz del servicio y de la clase que implementa este servicio 
+  (<em>servantName</em>). </p>
+<p>Una vez tenemos estos ficheros podemos generar las clases necesarias autom&aacute;ticamente 
+  mediante la herramienta <strong>xrpcc</strong> introduciendo el siguiente comando:</p>
+<pre class="codigo">xrpcc.sh config.xml -<strong>client</strong> -classpath .  LINUX
+xrpcc config.xml -<strong>client</strong> -classpath .     WINDOWS</pre>
+<p>En las nuevas versiones de WSDP esta herramienta se ha sustituido por la herramienta 
+  <strong>wscompile</strong>, aunque <strong>xrpcc</strong> todav&iacute;a se 
+  mantenga por cuestiones de compatibilidad. Por ello ser&aacute; recomendable 
+  utilizar la nueva herramienta, que es similar a la anterior:</p>
+<pre class="codigo">wscompile.sh config.xml -<strong>gen:client</strong> -classpath .  LINUX
+wscompile config.xml -<strong>gen:client</strong> -classpath .     WINDOWS</pre>
+<p>NOTA: Si no especificamos el <em>classpath</em> explicitamente en la l&iacute;nea 
+  de comando es posible que no consiga localizar las clases necesarias. </p>
+<p><strong>A partir de la descripci&oacute;n WSDL</strong></p>
+<p>Si nosotros no hemos desarrollado el Servicio Web que queremos usar, lo normal 
+  ser&aacute; que no tengamos la interfaz Java de dicho servicio. Es m&aacute;s, 
+  puede ocurrir que el Servicio Web ni siquiera est&eacute; implementado en Java. 
+  En este caso deberemos recurrir al fichero WSDL que describa el servicio para 
+  generar nuestro cliente.</p>
+<p>En este caso utilizaremos la herramienta <strong>xrpcc</strong> o <strong>wscompile</strong> 
+  al igual que en el caso anterior. Tendremos un fichero de configuraci&oacute;n 
+  <em>config.xml</em> en el que deberemos indicar la direcci&oacute;n donde se 
+  encuentra la descripci&oacute;n WSDL del servicio, as&iacute; como el paquete 
+  en el que se guardar&aacute;n las clases generadas para el <em>stub</em>:</p>
+<pre class="codigo">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt; 
+&lt;configuration 
+  xmlns=&quot;http://java.sun.com/xml/ns/jax-rpc/ri/config&quot;&gt; 
+  &lt;wsdl location=&quot;<strong>http://localhost:8080/conv/Conversion.wsdl</strong>&quot;    
+    packageName=&quot;<strong>utils</strong>&quot;&gt; 
+  &lt;/wsdl&gt; 
+&lt;/configuration&gt;</pre>
+<p>Para generar el <em>stub</em> deberemos introducir el siguiente comando con 
+  la antigua herramienta <strong>xrpcc</strong>:</p>
+<pre class="codigo">xrpcc.sh config.xml -<strong>client</strong>  LINUX
+xrpcc config.xml -<strong>client     </strong>WINDOWS</pre>
+<p>O utilizar la nueva herramienta <strong>wscompile</strong>, cosa que ser&aacute; 
+  recomendable ya que <strong>xrpcc</strong> podr&iacute;a desaparecer en pr&oacute;ximas 
+  versiones:</p>
+<pre class="codigo">wscompile.sh config.xml -<strong>gen:client</strong>		LINUX
+wscompile config.xml -<strong>gen:client</strong>		WINDOWS</pre>
+<p>Esto nos generar&aacute; la interfaz RMI del servicio dentro del paquete que 
+  hayamos indicado. Adem&aacute;s habr&aacute; creado las clases auxiliares necesarias 
+  para invocar el servicio mediante JAX-RPC. La interfaz del servicio que podremos 
+  utilizar desde nuestro programas se habr&aacute; generado en una clase cuyo 
+  nombre ser&aacute; el nombre del tipo de puerto al que vayamos a acceder. Si 
+  utilizamos la opci&oacute;n <em>-keep</em> de <strong>wscompile</strong>, para 
+  que no elimine los fuentes, podremos consultar esta interfaz para conocer los 
+  m&eacute;todos que podremos invocar sobre ella. </p>
+<p>Tendremos que obtener un objeto <strong>Stub</strong> que implemente dicha 
+  interfaz, y que ser&aacute; quien nos d&eacute; acceso al servicio. Para ello 
+  nos habr&aacute; generado un fichero con el sufijo <strong><em>&lt;Nombre_del_servicio&gt;</em>_Impl</strong> 
+  que podremos instanciar desde nuestro cliente mediante un constructor vac&iacute;o, 
+  y a partir de &eacute;l obtener el <strong>Stub</strong> para acceder a nuestro 
+  servicio. Para ello tendr&aacute; definido un m&eacute;todo <strong>get<em>&lt;Nombre_del_tipo_de_puerto&gt;</em>()</strong> 
+  que nos devolver&aacute; el objeto <strong>Stub</strong> correspondiente al 
+  puerto para acceder al servicio, que podremos referenciar mediante la interfaz 
+  <strong><em>&lt;Nombre_del_tipo_de_puerto&gt;</em></strong>.</p>
+<p>En el pr&oacute;ximo punto veremos con m&aacute;s detalle como utilizar estos 
+  objetos en nuestro cliente para obtener el objeto <strong>Stub</strong> y acceder 
+  al servicio.</p>
+<p><strong>Implementaci&oacute;n del cliente</strong></p>
+<p>Con cualquiera de estos dos m&eacute;todos anteriores habremos generado una 
+  serie de clases necesarias para invocar el servicio. Entre ellas, tendremos 
+  una clase llamada <strong><em>&lt;Nombre_del_servicio&gt;</em>_Impl </strong>que 
+  ser&aacute; la que deberemos utilizar dentro de nuestra aplicaci&oacute;n cliente 
+  para obtener un <em>stub</em>. Esta clase tendr&aacute; un m&eacute;todo <strong>get<em>&lt;Nombre_del_tipo_de_puerto&gt;</em>()</strong> 
+  que nos devolver&aacute; el <em>stub</em> que buscamos. </p>
+<pre class="codigo">Stub stub = (Stub)(new <strong>Conversion_Impl</strong>().<strong>getConversionIFPort</strong>()); </pre>
+<p>Deberemos indicar al <em>stub</em> al menos cual es la direcci&oacute;n donde 
+  se encuentra atendiendo el servicio (su <em>endpoint</em>). Esto lo estableceremos 
+  como una propiedad del objeto <strong>Stub</strong> obtenido:</p>
+<pre class="codigo">stub.<strong>_setProperty</strong>(javax.xml.rpc.Stub.<strong>ENDPOINT_ADDRESS_PROPERTY</strong>, 
+   endpoint);  </pre>
+<p>Para finalizar, tendremos que hacer una conversi&oacute;n <em>cast</em> del 
+  <em>stub</em> obtenido a la interfaz de nuestro servicio, para poder invocar 
+  de esta forma los m&eacute;todos de nuestro servicio.</p>
+<p>En el caso del ejemplo anterior podremos acceder al <em>stub</em> (o <em>proxy</em>) 
+  generado de la siguiente forma:</p>
+<pre class="codigo">private static ConversionIF <strong>creaProxy</strong>(String endpoint) {
+  Stub stub = (Stub)(new Conversion_Impl().getConversionIFPort());
+  stub._setProperty(javax.xml.rpc.Stub.ENDPOINT_ADDRESS_PROPERTY, 
+    endpoint);
+  return (<strong>ConversionIF</strong>)stub;
+}</pre>
+<p>Este ser&aacute; el &uacute;nico c&oacute;digo adicional que debamos insertar 
+  para acceder a nuestro servicio. Una vez obtenido este <em>stub</em> podremos 
+  invocar los m&eacute;todos del servicio como si se tratase de un objeto local:</p>
+<pre class="codigo">public static void main(String[] args) {
+  try {
+    ConversionIF conv = <strong>creaProxy</strong>(args[0]);
+    int ptas = conv.<strong>euro2ptas</strong>(Double.parseDouble(args[1]));
+    System.out.println(args[1] + &quot; euros son &quot; + ptas + &quot; ptas&quot;);
+  } catch (Exception e) {
+    e.printStackTrace();
+  }
+} </pre>
+<h3>4.2.2 Creaci&oacute;n del stub en Weblogic</h3>
+<p>Weblogic incluye una serie de ficheros JAR que contienen la implementaci&oacute;n 
+  de JAX-RPC para el cliente. Tenemos los siguientes ficheros:</p>
+<table width="99%" border="0">
+  <tr> 
+    <td width="34%"><em>webserviceclient.jar</em></td>
+    <td width="66%">Implementaci&oacute;n de JAX-RPC para el cliente</td>
+  </tr>
+  <tr> 
+    <td><em>webserviceclient+ssl.jar</em></td>
+    <td>Implementaci&oacute;n para utilizar SSL</td>
+  </tr>
+  <tr> 
+    <td><em>webserviceclient+ssl_pj.jar</em></td>
+    <td>Implementaci&oacute;n para crear un cliente J2ME</td>
+  </tr>
+</table>
+<p>El cliente deber&aacute; tener acceso a los ficheros necesarios seg&uacute;n 
+  la implementaci&oacute;n que estamos haciendo, por lo que deberemos copiar el 
+  fichero JAR adecuado a la m&aacute;quina cliente.</p>
+<p>Ahora deberemos generar las clases de <em>stub</em> en el cliente para nuestro 
+  Servicio Web espec&iacute;fico. Para ello en la implementaci&oacute;n de Weblogic, 
+  contamos con una tarea de la herramienta <strong>ant</strong> que realizar&aacute; 
+  este trabajo por nosotros, se trata de la tarea <strong>clientgen</strong>.</p>
+<p>Igual que ocurr&iacute;a en el caso anterior, podemos crear estas clases a 
+  partir de la implementaci&oacute;n de nuestro Servicio Web, o a partir del fichero 
+  WSDL, si no contamos con la implementaci&oacute;n. </p>
+<p><strong>A partir de la implementaci&oacute;n del servicio</strong></p>
+<p>La primera opci&oacute;n es hacerlo a partir del fichero EAR que hemos generado 
+  previamente con la implementaci&oacute;n de nuestro Servicio Web de Weblogic:</p>
+<pre class="codigo">&lt;<strong>clientgen</strong> 
+<strong>  ear</strong>=&quot;conversion.ear&quot; 
+<strong>  warName</strong>=&quot;conversion.war&quot;<strong>
+  packageName</strong>=&quot;utils&quot; 
+<strong>  clientJar</strong>=&quot;cliente.jar&quot; 
+/&gt;</pre>
+<p>Del Servicio Web del cual vamos a generar el cliente especificamos el fichero 
+  EAR donde tenemos empaquetada la implementaci&oacute;n del servicio, y adem&aacute;s 
+  el nombre del fichero WAR contenido en este fichero EAR anterior con la aplicaci&oacute;n 
+  Web. Adem&aacute;s debemos especificar los datos sobre las clases del cliente 
+  que vamos a generar. Indicaremos el paquete en el que se encontrar&aacute;n 
+  las clases de <em>stub</em> y otras clases auxiliares, y el nombre del fichero 
+  JAR donde vamos a empaquetar todas estas clases.</p>
+<p><strong>A partir del documento WSDL</strong></p>
+<p>Sin embargo, si no contamos con una implementaci&oacute;n Weblogic del servicio, 
+  deberemos utilizar el documento WSDL:</p>
+<pre class="codigo">&lt;<strong>clientgen</strong> 
+	<strong>wsdl</strong>=&quot;http://localhost:8080/conversion/Conversion.wsdl&quot; 
+	<strong>packageName</strong>=&quot;utils&quot;    
+	<strong>clientJar</strong>=&quot;cliente.jar&quot;
+/&gt;</pre>
+<p>En este caso como datos del servicio &uacute;nicamente aportamos la URL del 
+  documento WSDL del cu&aacute;l vamos a extraer la informaci&oacute;n del Servicio 
+  Web a invocar. Adem&aacute;s tambi&eacute;n deberemos indicar, al igual que 
+  en el caso anterior, el paquete donde ubicaremos las clases generadas, y el 
+  fichero JAR en el que las empaquetaremos.</p>
+<p><strong>Cliente para J2ME</strong></p>
+<p>Adem&aacute;s podemos crear clientes J2ME para los servicios de forma sencilla. 
+  Simplemente deberemos a&ntilde;adir el atributo<em> <strong>j2me</strong>=&quot;True&quot;</em> 
+  a la tarea <strong>clientgen</strong>. Con esto generaremos un fichero JAR que 
+  podr&aacute; ser utilizado en nuestras aplicaciones J2ME para invocar el servicio. 
+  En este cliente deberemos acompa&ntilde;ar este fichero JAR que hemos generado 
+  con la librer&iacute;a de Weblogic para clientes de servicios J2ME <em>webserviceclient+ssl_pj.jar</em>. 
+</p>
+<p><strong>Implementaci&oacute;n del cliente</strong></p>
+<p>Con esto habremos generado el <em>stub</em> necesario en el paquete especificado 
+  en <em>packageName</em>, y lo empaqueta en el JAR indicado en<em> clientJar</em>. 
+  Podremos utilizarlo dentro de nuestra aplicaci&oacute;n cliente para acceder 
+  al servicio pr&aacute;cticamente igual que en el caso anterior. Podemos implementar 
+  un cliente de la siguiente forma:</p>
+<pre class="codigo">import utils.*;
+
+public class Cliente { 
+  
+  public static void main(String[] args) { 
+    try { 
+<strong>      ConversionPort</strong> conv = creaProxy(); 
+      int ptas = conv.<strong>euro2ptas</strong>(Double.parseDouble(args[0]));    
+      System.out.println(args[0] + &quot; euros son &quot; + ptas + &quot; ptas&quot;);    
+    } catch (Exception e) { 
+      e.printStackTrace(); 
+    } 
+  } 
+
+  private static <strong>ConversionPort</strong> creaProxy() { 
+    String wsdl = &quot;http://localhost:7001/sw_conv/conv?WSDL&quot;;
+<strong>    ConversionPort</strong> stub = null; 
+
+    try { 
+      stub = (new <strong>Conversion_Impl</strong>(wsdl)).<strong>getConversionPort</strong>();	   
+    } catch(Exception e) { } 
+
+    return stub; 
+  }
+}
+</pre>
+<p>Para acceder al <em>stub</em> primero debemos crear la implementaci&oacute;n 
+  generada del servicio correspondiente (<strong><em>&lt;servicio&gt;</em>_Impl</strong>). 
+  Podremos crearla proporcionando la URL del documento WSDL que describe el servicio. 
+  En caso de no especificar este dato, utilizar&iacute;a por defecto la direcci&oacute;n 
+  WSDL que hubi&eacute;semos especificado al generar las clases de <em>stub</em>. 
+  Una vez tenemos este objeto, podemos obtener a partir de &eacute;l el <em>stub</em> 
+  para acceder a un puerto del servicio, y a partir de este objeto <em>stub</em> 
+  acceder al servicio igual que si estuviesemos accediendo a la clase que lo implementa 
+  en modo local.</p>
+<p>Para poder compilar e invocar esta aplicaci&oacute;n cliente deber&aacute; 
+  poder localizar las clases generadas para el cliente, adem&aacute;s de las clases 
+  de JAX-RPC en las que se basa. Podemos o bien establecerlas en la variable CLASSPATH, 
+  o bien utilizar <em>ant</em> para ejecutar el cliente, haciendo que el fichero 
+  <em>build.xml</em> correspondiente establezca el CLASSPATH adecuado, o indicar 
+  esta informaci&oacute;n directamente en la l&iacute;nea de comando como sigue 
+  a continuaci&oacute;n:</p>
+<pre class="codigo">javac Cliente.java -classpath <strong>webserviceclient.jar</strong>:<strong>client.jar</strong></pre>
+<p>Con esto habremos compilado nuestra aplicaci&oacute;n cliente. Ahora deberemos 
+  ejecutarla, cosa que haremos de forma similar:</p>
+<pre class="codigo">java -classpath <strong>webserviceclient.jar</strong>:<strong>client.jar</strong>:. Cliente 250</pre>
+<p>Lo cual nos dar&aacute; la conversi&oacute;n a <em>ptas</em> de 250 <em>euros</em>.</p>
+<h2>4.3 Invocaci&oacute;n mediante proxy din&aacute;mico</h2>
+<p>Con este m&eacute;todo no tendremos que haber generado previamente de forma 
+  est&aacute;tica el <em>stub</em> para nuestro servicio, sino que &eacute;ste 
+  ser&aacute; generado de forma din&aacute;mica en tiempo de ejecuci&oacute;n.</p>
+<p>Para hacer esto, deberemos proporcionar la descripci&oacute;n WSDL del Servicio 
+  Web, adem&aacute;s de una interfaz Java que implemente los m&eacute;todos de 
+  dicho servicio. </p>
+<p>Ahora ya no necesitamos ninguna herramienta para generar las clases del cliente, 
+  ya que no vamos a generar ninguna clase. Pasaremos directamente a introducir 
+  el c&oacute;digo de nuestro cliente.</p>
+<p>Deberemos introducir en nuestro programa los nombres que se le ha dado al servicio 
+  y a los puertos dentro del XML. Estos nombres normalmente constar&aacute;n de 
+  su nombre local y del espacio de nombres al que pertenezcan, aunque pueden venir 
+  dados &uacute;nicamente por un nombre local. Para representar estos nombres 
+  (<em>qualified names</em>) tenemos el objeto <strong>QName</strong> en java, 
+  que se puede construir de dos formas distintas, seg&uacute;n si pertenece a 
+  un espacio de nombres o no:</p>
+<pre class="codigo"><strong>QName</strong> nombre = new <strong>QName</strong>(namespace, nombre_local);
+<strong>QName</strong> nombre = new <strong>QName</strong>(nombre_local);</pre>
+<p>Lo primero que deberemos hacer es obtener un objeto <strong>Service</strong> 
+  correspondiente al servicio que queremos utilizar. Para ello necesitamos previamente 
+  un <strong>ServiceFactory</strong> que nos permita construir objetos <strong>Service</strong>:</p>
+<pre class="codigo"> <strong>ServiceFactory</strong> sf = <strong>ServiceFactory</strong>.newInstance();</pre>
+<p>Ahora podremos crear nuestro objeto <strong>Service</strong> indicando la direcci&oacute;n 
+  donde se encuentra el documento WSDL, y el nombre del servicio al que queremos 
+  acceder:</p>
+<pre class="codigo"><strong>Service</strong> serv = sf.<strong>createService</strong>(
+  new URL(&quot;http://localhost:8080/conversion/Conversion.wsdl&quot;), 
+  new QName(&quot;http://rvg.ua.es/wsdl&quot;, &quot;Conversion&quot;));</pre>
+<p>Una vez tenemos el servicio, ya s&oacute;lo nos queda acceder al puerto concreto 
+  que vayamos a utilizar del servicio. Tendremos que indicar el nombre del puerto, 
+  y la clase de una interfaz que se ajuste al puerto que queremos utilizar. En 
+  el caso del servicio de <em>Conversion</em>, podemos utilizar la interfaz que 
+  hemos definido anteriormente (<strong>ConversionIF</strong>):</p>
+<pre class="codigo">ConversionIF conv = (ConversionIF) serv.<strong>getPort</strong>(
+  new QName(&quot;http://rvg.ua.es/wsdl&quot;, &quot;ConversionIFPort&quot;), 
+  utils.ConversionIF.class); </pre>
+<p>Una vez hecho esto podremos acceder al servicio a trav&eacute;s de dicho objeto, 
+  de la misma forma que si accedi&eacute;semos directamente al servicio, ya que 
+  implementar&aacute; la misma interfaz:</p>
+<pre class="codigo">int ptas = conv.euro2ptas(Double.parseDouble(args[1]));
+System.out.println(args[1] + &quot; euros son &quot; + ptas + &quot; ptas&quot;);</pre>
+<p>Este m&eacute;todo nos obliga a introducir m&aacute;s c&oacute;digo en el cliente 
+  para conectar con el servicio, pero tiene la ventaja de no necesitar utilizar 
+  herramientas adicionales, y si introducimos alg&uacute;n cambio en el servicio, 
+  no tendremos que volver a generar las clases del cliente.</p>
+<h2>4.4 Interfaz de invocaci&oacute;n din&aacute;mica (DII)</h2>
+<p>Mediante esta interfaz, ya no utilizaremos un <em>stub</em> para invocar los 
+  m&eacute;todos del servicio, sino que nos permitir&aacute; invocar los m&eacute;todos 
+  de forma din&aacute;mica, indicando simplemente el nombre del m&eacute;todo 
+  que queremos invocar como una cadena de texto, y sus par&aacute;metros como 
+  un <em>array</em> de objetos.</p>
+<p>Esto nos permitir&aacute; utilizar servicios que no conocemos previamente. 
+  De esta forma podremos implementar por ejemplo un <em>broker</em> de servicios. 
+  Un <em>broker</em> es un servicio intermediario, al que podemos solicitar alguna 
+  tarea que necesitemos. Entonces el <em>broker</em> intentar&aacute; localizar 
+  el servicio m&aacute;s apropiado para dicha tarea en un registro de servicios, 
+  y lo invocar&aacute; por nosotros. Una vez haya conseguido la informaci&oacute;n 
+  que requerimos, nos la devolver&aacute;. De esta forma la localizaci&oacute;n 
+  de servicios se hace totalmente transparente para nosotros.</p>
+<p>Podremos acceder con esta interfaz tanto si contamos con un documento WSDL 
+  como si no contamos con &eacute;l, pero en el caso de que no tengamos el WSDL 
+  deberemos especificar en el c&oacute;digo todos los datos incluidos en estos 
+  documentos que necesitemos y de los que en este caso no disponemos (<em>endpoint</em>, 
+  par&aacute;metros y tipos, etc).</p>
+<p><strong>A partir de un documento WSDL</strong></p>
+<p>Vamos a ver el caso en el que contamos con el documento WSDL que describe el 
+  servicio. El primer paso ser&aacute; conseguir el objeto <strong>Service</strong> 
+  igual que hicimos en el caso anterior:</p>
+<pre class="codigo"><span class="codigo">ServiceFactory sf = ServiceFactory.newInstance();</span> 
+Service serv = sf.createService(
+  new URL(&quot;http://localhost:8080/conversion/Conversion.wsdl&quot;), 
+  new QName(&quot;http://rvg.ua.es/wsdl&quot;, &quot;Conversion&quot;));</pre>
+<p>Utilizaremos el objeto <strong>Call</strong> para hacer las llamadas din&aacute;micas 
+  a los m&eacute;todos del servicio. Deberemos crear un objeto <strong>Call</strong> 
+  correspondiente a un determinado puerto y operaci&oacute;n de nuestro servicio:</p>
+<pre class="codigo"><strong>Call</strong> call = serv.<strong>createCall</strong>(
+  new QName(&quot;http://rvg.ua.es/wsdl&quot;, &quot;ConversionIFPort&quot;),
+  new QName(&quot;http://rvg.ua.es/wsdl&quot;, &quot;euro2ptas&quot;));</pre>
+<p>El &uacute;ltimo paso ser&aacute; invocar la llamada que hemos creado:</p>
+<pre class="codigo">Integer result = (Integer) call.<strong>invoke</strong>(
+                 new Object[] { new Double(30.0) });</pre>
+<p>A este m&eacute;todo le debemos proporcionar un <em>array</em> de objetos como 
+  par&aacute;metro, ya que debe poder utilizarse para cualquier operaci&oacute;n, 
+  con diferente n&uacute;mero y tipo de par&aacute;metros. Como tampoco se conoce<em> 
+  a priori</em> el valor devuelto por la llamada, deberemos hacer una conversi&oacute;n 
+  <em>cast</em> al tipo que corresponda, ya que nos devuelve un <strong>Object</strong> 
+  gen&eacute;rico.</p>
+<p><strong>Sin un documento WSDL</strong></p>
+<p>Si no contamos con el WSDL del servicio, crearemos un objeto <strong>Service</strong> 
+  proporcionando &uacute;nicamente el nombre del servicio:</p>
+<pre class="codigo"><span class="codigo">ServiceFactory sf = ServiceFactory.newInstance();</span> 
+Service serv = sf.createService( 
+  new QName(&quot;http://rvg.ua.es/wsdl&quot;, &quot;Conversion&quot;));</pre>
+<p>A partir de este objeto podremos obtener un objeto <strong>Call</strong> para 
+  realizar una llamada al servicio de la misma forma que vimos en el caso anterior:</p>
+<pre class="codigo"><strong>Call</strong> call = serv.<strong>createCall</strong>(
+  new QName(&quot;http://rvg.ua.es/wsdl&quot;, &quot;ConversionIFPort&quot;),
+  new QName(&quot;http://rvg.ua.es/wsdl&quot;, &quot;euro2ptas&quot;));</pre>
+<p>En este caso el objeto <strong>Call</strong> no tendr&aacute; ninguna informaci&oacute;n 
+  sobre las caracter&iacute;sticas del servicio, ya que no tiene acceso al documento 
+  WSDL que lo describe, por lo que deberemos proporcion&aacute;rselas nosotros 
+  expl&iacute;citamente.</p>
+<p>En primer lugar, deberemos especificar el <em>endpoint</em> del servicio, para 
+  que sepa a qu&eacute; direcci&oacute;n debe conectarse para acceder a dicho 
+  servicio:</p>
+<pre class="codigo">call.<strong>setTargetEndpointAddress</strong>(endpoint);
+</pre>
+<p>Una vez especificada esta informaci&oacute;n, deberemos indicar el tipo de 
+  datos que nos devuelve la llamada a la operaci&oacute;n que vamos a invocar 
+  (en nuestro ejemplo <em>euro2ptas</em>):</p>
+<pre class="codigo">QName t_int = 
+  new QName(&quot;http://www.w3.org/2001/XMLSchema&quot;, &quot;int&quot;);
+call.<strong>setReturnType</strong>(t_int);
+</pre>
+<p>Por &uacute;ltimo, indicaremos los par&aacute;metros de entrada que toma la 
+  operaci&oacute;n y sus tipos:</p>
+<pre class="codigo">QName t_double = 
+  new QName(&quot;http://www.w3.org/2001/XMLSchema&quot;, &quot;double&quot;);
+call.<strong>addParameter</strong>(&quot;double_1&quot;, t_double, ParameterMode.IN);</pre>
+<p>Una vez hecho esto, podremos invocar dicha operaci&oacute;n igual que en el 
+  caso anterior:</p>
+<pre class="codigo">Integer result = (Integer) call.<strong>invoke</strong>(
+                 new Object[] { new Double(30.0) });</pre>
+<h2>4.5. Invocaci&oacute;n de Servicios Web seguros </h2>
+<p>Si hemos restringido el acceso a nuestro servicio mediante autentificaci&oacute;n 
+  HTTP b&aacute;sica deberemos especificar el <em>login</em> y <em>password</em> 
+  del usuario para poder conectarnos. Esto lo haremos estableciendo las siguientes 
+  propiedades de JAX-RPC en el objeto <strong>Stub</strong>:</p>
+<pre class="codigo">stub._setProperty(
+  &quot;<strong>javax.xml.rpc.security.auth.username</strong>&quot;, &quot;mylogin&quot;);
+stub._setProperty(
+  &quot;<strong>javax.xml.rpc.security.auth.password</strong>&quot;, &quot;mypassword&quot;);
+</pre>
+<p>En caso de realizar la invocaci&oacute;n mediante DII, podemos establecer estas 
+  propiedades en el objeto <strong>Call</strong>. </p>
+<p>Para acceder mediante SSL a un Servicio Web de Weblogic, deberemos a&ntilde;adir 
+  al CLASSPATH el fichero <em>webserviceclient+ssl.jar</em>. Adem&aacute;s deberemos 
+  establecer dentro de nuestro programa el fichero que contiene el certificado 
+  CA dentro de un objeto <strong>WLSSLAdapter</strong> perteneciente al paquete<strong> 
+  weblogic.webservice.client</strong>:</p>
+<pre class="codigo"><strong>WLSSLAdapter</strong> adapter = new <strong>WLSSLAdapter</strong>(); 
+adapter.<strong>setTrustedCertifcatesFile</strong>(&quot;certificado.pem&quot;);</pre>
+<p>Una vez hemos creado el objeto, para que sea utilizado en la invocaci&oacute;n 
+  deberemos establecer la siguiente propiedad en el objeto <strong>Stub</strong> 
+  o <strong>Call</strong>, seg&uacute;n el tipo de invocaci&oacute;n:</p>
+<pre class="codigo">stub.setProperty(&quot;<strong>weblogic.webservice.client.ssladapter</strong>&quot;, adapter);
+<span class="codigo">call.setProperty(&quot;<strong>weblogic.webservice.client.ssladapter</strong>&quot;, adapter);</span></pre>
+<p>En la invocaci&oacute;n del cliente deberemos especificar las siguiente propiedades:</p>
+<pre class="codigo">java 
+  -D<strong>bea.home</strong>=&lt;dir_bea&gt; 
+  -D<strong>java.protocol.handler.pkgs</strong>=com.certicom.net.ssl 
+  MiCliente</pre>
+<p>Donde <strong>bea.home</strong> se refiere al directorio donde se encuentra 
+  la licencia de BEA (<em>license.bea</em>).</p>
+<h2>4.6 Instalaci&oacute;n de handlers en el cliente</h2>
+<p>En el tema anterior vimos como crear <em>handlers</em> para interceptar los 
+  mensajes SOAP de la petici&oacute;n y la respuesta que se env&iacute;an a trav&eacute;s 
+  de la red. Mediante estos <em>handlers</em> podremos interceptar el mensaje 
+  antes de que &eacute;ste sea enviado a trav&eacute;s de la red, en el caso de 
+  los mensajes de entrada, y antes de que sea recibido por la aplicaci&oacute;n, 
+  en el caso de los mensajes salientes, y leerlo o modificarlo en la forma que 
+  queramos.</p>
+<p>Mediante estos componentes podremos realizar tareas como encriptar estos mensajes, 
+  para que viajen de forma segura a trav&eacute;s de la red. El extremo que env&iacute;a 
+  el mensaje tendr&aacute; un <em>handler</em> que encripte el mensaje, y el extremo 
+  que lo reciba deber&aacute; tener un <em>handler</em> que lo desencripte, para 
+  que esta encriptaci&oacute;n sea transparente para JAX-RPC, y sea capaz de leer 
+  correctamente el mensaje SOAP en el destino.</p>
+<p>Por lo tanto, en este caso vemos claramente la necesidad de que los <em>handlers</em> 
+  puedan intervenir en ambos extremos de la comunicaci&oacute;n. En el tema anterior 
+  vimos como instalar un <em>handler</em> en el servidor. A continuaci&oacute;n 
+  veremos como instalar este componente en nuestra aplicaci&oacute;n cliente que 
+  invoca al servicio.</p>
+<h3>4.6.1 Creaci&oacute;n del handler</h3>
+<p>El primer paso ser&aacute; implementar el objeto <strong>Handler</strong> que 
+  vamos a introducir en nuestra aplicaci&oacute;n. Esto lo haremos de la misma 
+  forma que para el caso de los <em>handlers</em> del servidor. Por ejemplo, podemos 
+  crear un <em>handler</em> que muestre por la salida est&aacute;ndar los mensajes 
+  de petici&oacute;n y respuesta que est&aacute; intercambiando el cliente:</p>
+<pre class="codigo">public class HandlerEspia extends <strong>GenericHandler</strong>
+{
+  public HandlerEspia() { }
+
+  public QName [] getHeaders() {
+    return null;
+  }
+
+  public boolean <strong>handleRequest</strong>(<strong>MessageContext</strong> context) {
+    System.out.println(&quot;PETICION:&quot;);
+    try {
+      // Accede al mensaje SOAP
+      <strong>SOAPMessageContext</strong> smc = (<strong>SOAPMessageContext</strong>)context;
+      <strong>SOAPMessage</strong> msg = smc.<strong>getMessage</strong>();
+
+      // Lee el contenido del mensaje y lo imprime
+      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      msg.writeTo(baos);
+      System.out.println(baos.toString());
+    } catch(Exception ex) { }
+    return true;
+  }
+
+  public boolean <strong>handleResponse</strong>(<strong>MessageContext</strong> context) {
+    System.out.println(&quot;RESPUESTA:&quot;);
+    try {
+      // Accede al mensaje SOAP
+      <strong>SOAPMessageContext</strong> smc = (<strong>SOAPMessageContext</strong>)context;
+      <strong>SOAPMessage</strong> msg = smc.<strong>getMessage</strong>();
+
+      // Lee el contenido del mensaje y lo imprime
+      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      msg.writeTo(baos);
+      System.out.println(baos.toString());
+    } catch(Exception ex) { }
+    return true;
+  }
+}</pre>
+<p>En este caso, al tratarse del cliente, la petici&oacute;n (<em>request</em>) 
+  ser&aacute; el mensaje saliente y la respuesta (<em>response</em>) ser&aacute; 
+  el mensaje entrante, que nos devuelve el servidor como resultado de la llamada 
+  a un m&eacute;todo.</p>
+<h3>4.6.2 Registrar el handler en el cliente</h3>
+<p>Una vez hemos creado nuestro <em>handler</em>, deberemos registrarlo en el 
+  cliente del servicio, de forma que cuando entre o salga un mensaje sea interceptado 
+  por nuestro <em>handler</em>. El <em>handler</em> deber&aacute; ser registrado 
+  dentro del objeto <strong>Service</strong> correspondiente al servicio que estemos 
+  invocando:</p>
+<pre class="codigo"><strong>Service</strong> serv = ... // Obtener servicio</pre>
+<p>En el caso en el que accedamos mediante un <em>stub</em> est&aacute;tico, no 
+  se usa directamente un objeto <strong>Service</strong>, sino una subclase del 
+  mismo, adaptada al caso concreto de nuestro servicio. En este caso podremos 
+  utilizar este objeto para registrarlo, ya que al ser subclase de <strong>Service</strong> 
+  podremos utilizarlo de la misma forma.</p>
+<p>A trav&eacute;s de este objeto <strong>Service</strong> podremos acceder al 
+  registro de <em>handlers</em> (<strong>HandlerRegistry</strong>) de la siguiente 
+  forma:</p>
+<pre class="codigo"><strong>HandlerRegistry</strong> hr = serv.<strong>getHandlerRegistry</strong>();
+</pre>
+<p>A partir de este registro podremos obtener la cadena (<em>chain</em>) de <em>handlers</em> 
+  instalados en este servicio. Proporcionaremos el nombre del puerto para el que 
+  queremos registrar el <em>handler</em>, mediante un objeto <strong>QName</strong>:</p>
+<pre class="codigo">List chain = hr.<strong>getHandlerChain</strong>(
+             new QName(&quot;http://rvg.ua.es/wsdl/Conversion&quot;, 
+                       &quot;ConversionIFPort&quot;));</pre>
+<p>Esto nos devolver&aacute; una lista con informaci&oacute;n sobre todos los 
+  <em>handlers</em> instalados en el cliente para el servicio y puerto indicados. 
+  Esta lista nos dar&aacute; el orden de invocaci&oacute;n de la cadena de <em>handlers</em> 
+  en el cliente, tal como se muestra en la siguiente figura:</p>
+<center><img src="imagenes/handler-cli.gif" width="536" height="84"></center>
+<p class="caption">Figura 2. Cadena de handlers en el cliente</p>
+<p>Cada elemento de esta lista ser&aacute; un objeto <strong>HandlerInfo</strong>, 
+  que contendr&aacute; informaci&oacute;n sobre cada <em>handler</em> instalado. 
+  Para registrar un nuevo <em>handler</em> deberemos crearnos un objeto <strong>HandlerInfo</strong> 
+  que haga referencia a nuestro <em>handler</em>. En dicho objeto deberemos indicar 
+  la clase de nuestro <em>handler</em>, y adem&aacute;s podemos proporcionar una 
+  serie de par&aacute;metros de configuraci&oacute;n gen&eacute;ricos que se enviar&aacute;n 
+  al <em>handler</em> en el momento de su creaci&oacute;n.</p>
+<pre class="codigo"><strong>HandlerInfo</strong> hi = new <strong>HandlerInfo</strong>(HandlerEspia.class,null,null);
+</pre>
+<p>Una vez hecho esto, el &uacute;ltimo paso ser&aacute; a&ntilde;adir este objeto 
+  a la cadena de <em>handlers</em>:</p>
+<pre class="codigo">chain.add(hi);
+</pre>
+<p>Con esto tendremos ya nuestro <em>handler</em> registrado. A continuaci&oacute;n 
+  deberemos acceder al puerto correspondiente para hacer la llamada al servicio, 
+  con cualquiera de los tres m&eacute;todos que hemos visto anteriormente (<em>stub</em> 
+  est&aacute;tico, <em>proxy</em> din&aacute;mico, o DII). En el momento en el 
+  que se env&iacute;e el mensaje SOAP con la petici&oacute;n, nuestro <em>handler</em> 
+  lo interceptar&aacute; justo antes de que salga a trav&eacute;s de la red. Cuando 
+  llegue la respuesta, el <em>handler</em> tambi&eacute;n la interceptar&aacute; 
+  antes de que la lea nuestra aplicaci&oacute;n cliente. </p>
+<h2>4.7 Acceso a la descripci&oacute;n del servicio</h2>
+<p>En ocasiones puede interesarnos que una aplicaci&oacute;n pueda <em>&quot;interrogar&quot;</em> 
+  a un servicio para averiguar los m&eacute;todos que ofrece, los par&aacute;metros 
+  que se le deben proporcionar a estos m&eacute;todos, y el tipo de datos que 
+  devuelve. Est&aacute; descripci&oacute;n del servicio podemos encontrarla en 
+  un fichero WSDL, que puede haber sido publicado por el desarrollador de dicho 
+  servicio.</p>
+<p>Por ejemplo, si queremos que una aplicaci&oacute;n sea capaz de localizar un 
+  servicio (por ejemplo en un registro UDDI), y adem&aacute;s que sea capaz de 
+  invocarlo de forma autom&aacute;tica sin tenerle que decir el usuario manualmente 
+  los m&eacute;todos que debe invocar, y los par&aacute;metros que debe proporcionar, 
+  podremos utilizar la informaci&oacute;n de este documento WSDL. Un uso posible 
+  ser&iacute;a el caso de una aplicaci&oacute;n que a partir de un fichero WSDL, 
+  muestre al usuario todos los m&eacute;todos disponibles en el servicio, y permita 
+  que el usuario los invoque, mostr&aacute;ndole en cada caso un campo de texto 
+  para cada par&aacute;metro que se deba proporcionar al m&eacute;todo.</p>
+<p>Para que una aplicaci&oacute;n pueda tener esta informaci&oacute;n sobre la 
+  interfaz del servicio, deber&aacute; ser capaz de analizar y entender un documento 
+  WSDL. Para ello deberemos contar con un <em>parser</em> de documentos WSDL. 
+  Afortunadamente, contamos con librer&iacute;as que realizar&aacute;n esta tarea, 
+  como es el caso de <em>Java API for WSDL</em>.</p>
+<h3>4.7.1 Java API for WSDL</h3>
+<p>La API <em>Java API for WSDL</em> (JSR-110) nos permitir&aacute; analizar documentos 
+  WSDL de forma sencilla, pudiendo obtener de este documento toda la informaci&oacute;n 
+  contenida en &eacute;l: operaciones, mensajes, tipos, enlaces, puertos, etc.</p>
+<p>Las clases de est&aacute; librer&iacute;a est&aacute;n contenidas en el paquete 
+  <strong>javax.wsdl</strong>, por lo que deberemos importar este paquete y los 
+  subpaquetes necesarios. Para comenzar, deberemos obtener un objeto <strong>WSDLFactory</strong> 
+  que nos permita crear objetos que manipulen documentos WSDL. Crearemos este 
+  objeto de la siguiente forma:</p>
+<pre class="codigo"><strong>WSDLFactory</strong> wsdl_f = <strong>WSDLFactory</strong>.newInstance();</pre>
+<p>Una vez hemos obtenido este objeto, podremos crear a partir de &eacute;l objetos 
+  para analizar (leer) o componer (escribir) documentos WSDL:</p>
+<pre class="codigo"><strong>WSDLReader</strong> wsdl_reader = wsdl_f.<strong>newWSDLReader</strong>();
+<strong>WSDLWriter</strong> wsdl_writer = wsdl_f.<strong>newWSDLWriter</strong>();</pre>
+<p>De esta forma vemos que podemos obtener los siguientes objetos:</p>
+<ul>
+  <li><strong>WSDLReader</strong>: Para leer un documento WSDL. Nos permite analizar 
+    el documento y extraer de &eacute;l toda la informaci&oacute;n necesaria para 
+    describir un servicio.</li>
+  <li><strong>WSDLWriter</strong>: Nos permite escribir un documento WSDL, proporcionando 
+    la informaci&oacute;n del servicio que queramos describir en el documento 
+    WSDL en el que estamos escribiendo.</li>
+</ul>
+<h3>4.7.2 An&aacute;lisis de documentos WSDL</h3>
+<p>Para analizar un documento WSDL deberemos utilizar el objeto <strong>WSDLReader</strong> 
+  que hemos obtenido en el apartado anterior. Lo primero que deberemos hacer es 
+  leer el documento WSDL, llamando al siguiente m&eacute;todo:</p>
+<pre class="codigo"><strong>Definition</strong> def = wsdl_reader.<strong>readWSDL</strong>(
+           &quot;http://www.rvg.ua.es:7001/sw/MiServicio?WSDL&quot;);</pre>
+<p>Tras leer el documento, nos devuelve un objeto <strong>Definition</strong>, 
+  donde tendremos todos los datos del documento WSDL le&iacute;do organizados 
+  en una estructura de clases Java. Dentro de esta clase podremos encontrar una 
+  serie de m&eacute;todos <strong>get*</strong> que nos permitir&aacute;n obtener 
+  todos los componentes del documento WSDL. Estos componentes se representan mediante 
+  diferentes clases Java:</p>
+<ul>
+  <li><strong>Service</strong>: Define un servicio, que contendr&aacute; una serie 
+    de puertos (<strong>Port</strong>) que ofrecer&aacute;n dicho servicio.</li>
+  <li><strong>Types</strong>: Definici&oacute;n de los tipos de datos utilizados 
+    en el documento WSDL, si se utilizan tipos no est&aacute;ndar.</li>
+  <li><strong>Port</strong>: Representa un determinado puerto (<em>endpoint</em>), 
+    que implementa una cierta funcionalidad del servicio. Contendr&aacute; informaci&oacute;n 
+    sobre el protocolo y la codificaci&oacute;n (<strong>Binding</strong>) de 
+    los mensajes que utilizan las operaciones de este puerto.</li>
+  <li><strong>Binding</strong>: Define el protocolo y codificaci&oacute;n que 
+    utilizar&aacute; SOAP para transportar los mensajes de las operaciones definidas. 
+    Tendr&aacute; un enlace al tipo de puerto sobre el que se define (<strong>PortType</strong>), 
+    donde se especifican estas operaciones y mensajes.</li>
+  <li><strong>PortType</strong>: Define un tipo de puerto. Aporta informaci&oacute;n 
+    sobre las operaciones (<strong>Operation</strong>) que se definen en este 
+    tipo de puerto</li>
+  <li><strong>Operation</strong>: Define una operaci&oacute;n, que se compondr&aacute; 
+    de un mensaje de entrada (<strong>Input</strong>), donde se especifican los 
+    par&aacute;metros que se le pasan cuando es llamado, y uno de salida (<strong>Output</strong>) 
+    donde se especifica el tipo de datos que devuelve.</li>
+  <li><strong>Input</strong>: Representa la entrada que toma una operaci&oacute;n 
+    (<strong>Operation</strong>). Se define mediante un mensaje (<strong>Message</strong>).</li>
+  <li><strong>Output</strong>: Representa la salida que devuelve una operaci&oacute;n 
+    (<strong>Operation</strong>). Se define mediante un mensaje (<strong>Message</strong>).</li>
+  <li><strong>Message</strong>: Define un tipo de mensaje, que puede transportar 
+    una serie de datos de distintos tipos. Cada uno de estos datos puede ser cada 
+    uno de los par&aacute;metros en el mensaje de llamada a una operaci&oacute;n, 
+    o bien el dato que devuelve la operaci&oacute;n en el caso del mensaje de 
+    retorno (salida). Cada uno de estos elementos ser&aacute; una parte (<strong>Part</strong>) 
+    en el mensaje.</li>
+  <li><strong>Part</strong>: Define las partes de un mensaje. Estas partes pueden 
+    ser los distintos par&aacute;metros que se transportan en el mensaje de invocaci&oacute;n 
+    de una operaci&oacute;n. Podremos consultar tanto el nombre como el tipo de 
+    estas partes.</li>
+</ul>
+<p>Vamos a ver un ejemplo de un programa que lee un documento WSDL, obteniendo 
+  una lista de las operaciones definidas en &eacute;l, y para cada operaci&oacute;n 
+  sus par&aacute;metros y sus tipos. Como primer paso deberemos leer el fichero 
+  en forma de objeto <strong>Definition</strong>:</p>
+<pre class="codigo"><span class="codigo"><strong>WSDLReader</strong> wsdlReader = <strong>WSDLFactory</strong>.newInstance().<strong>newWSDLReader</strong>();
+</span><strong>Definition</strong> wsdlDefinition = wsdlReader.<strong>readWSDL</strong>(args[0]);</pre>
+<p>Ahora obtendremos todos los tipos de puertos definidos en el fichero y un iterador 
+  para recorrer esta lista:</p>
+<pre class="codigo">Map pts = wsdlDefinition.<strong>getPortTypes</strong>();
+Iterator ptIterator = pts.values().iterator();</pre>
+<p>Recorremos la lista de tipos de puertos, imprimiendo el nombre de cada uno:</p>
+<pre class="codigo">while (ptIterator.hasNext()) {
+  // Get next service element
+<strong>  PortType</strong> pt = (<strong>PortType</strong>) ptIterator.next();
+  System.out.println(&quot;Tipo de puerto: &quot; + 
+                  pt.getQName().getLocalPart());
+ </pre>
+<p>Obtenemos las operaciones definidas para el tipo de puerto actual, y un iterador 
+  para recorrerlas:</p>
+<pre class="codigo">  List ops = pt.<strong>getOperations</strong>();
+<span class="codigo">  Iterator opsIterator = ops.iterator();</span></pre>
+<p>Recorremos todas las operaciones (m&eacute;todos) definidas en el puerto actual, 
+  imprimiendo el nombre de cada una de ellas:</p>
+<pre class="codigo">  while(opsIterator.hasNext()) {
+<strong>    Operation</strong> op = (<strong>Operation</strong>)opsIterator.next();
+    System.out.println(&quot;Operacion = &quot; + op.getName());</pre>
+<p>De cada operaci&oacute;n obtendremos sus par&aacute;metros de entrada, obteniendo 
+  el mensaje que representa la entrada de dicha operaci&oacute;n:</p>
+<pre class="codigo"><strong>    Input</strong> input = op.<strong>getInput</strong>();
+<strong>    Message</strong> mess = input.<strong>getMessage</strong>();
+</pre>
+<p>De este mensaje obtenemos una lista ordenada de los nombres de los par&aacute;metros 
+  definidos en el m&eacute;todo. A partir de estos nombres obtendremos las partes 
+  del mensaje de entrada que representen cada par&aacute;metro, y de cada uno 
+  de estos par&aacute;metro imprimiremos su tipo y su nombre:</p>
+<pre class="codigo">    Iterator partIterator = mess.<strong>getOrderedParts</strong>(null).iterator();<br>    while(partIterator.hasNext()) {<br>      <strong>Part</strong> part = (<strong>Part</strong>)partIterator.next();<br>      System.out.println(&quot;Tipo = &quot; + part.getTypeName() + 
+                         &quot;, Nombre    = &quot; + part.getName());
+    }
+  }
+}
+</pre>
+<h3>4.7.3 Creaci&oacute;n de documentos WSDL</h3>
+<p>Para crear un nuevo documento WSDL deberemos utilizar el objeto <strong>WSDLWriter</strong> 
+  que hemos obtenido anteriormente. Adem&aacute;s, previamente deberemos crear 
+  la definici&oacute;n del servicio en un objeto <strong>Definition</strong>. 
+  Para ello primero obtendremos una definici&oacute;n vac&iacute;a mediante el 
+  <strong>WSDLFactory</strong>:</p>
+<pre class="codigo"><strong>Definition</strong> def = wsdl_f.<strong>newDefinition</strong>();</pre>
+<p>Una vez obtenido este objeto, deberemos introducir en &eacute;l los datos de 
+  la definici&oacute;n del servicio. Dentro del objeto <strong>Definition</strong> 
+  tenemos una serie de m&eacute;todos <strong>create*</strong>, con los que podremos 
+  crear los objetos que representan los diferentes elementos que podemos tener 
+  dentro del documento WSDL. Una vez creados estos objetos, podremos a&ntilde;adirlos 
+  a la estructura del documento WSDL mediante el m&eacute;todo <strong>add* </strong>adecuado.</p>
+<p>Una vez creada la definici&oacute;n como una estructura de objetos Java, podremos 
+  escribirla en forma de un documento WSDL mediante el objeto <strong>WSDLWriter</strong>:</p>
+<pre class="codigo">wsdl_writer.<strong>writeWSDL</strong>(def,out);</pre>
+<p>Donde <em>out</em> puede ser un objeto <strong>OutputStream</strong> o <strong>Writer</strong>, 
+  donde escribiremos el documento WSDL.</p>
+<p>&nbsp;</p>
+</body>
+</html>

@@ -1,0 +1,454 @@
+<html>
+<head>
+<title>Tema 2: Arquitectura CORBA</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<h1><span class="section">2. </span>Proceso de desarrollo CORBA</h1>
+<p>Para ilustrar el proceso de desarrollo CORBA vamos a utilizar un ejemplo sencillo 
+  que llamaremos <i>&quot;Hello world&quot;</i>. La Figura 2.1 muestra la estructura 
+  de dicho ejemplo. </p>
+  <center>
+  <img border="0" src="Fig2-1.gif"> 
+</center>
+<p class="caption">Figura 2.1. Aplicación HelloWorld.</p>
+<p>Los pasos a seguir para crear objetos distribuidos usando CORBA son:</p>
+<ul>
+  <li>Definir la interfaz del objeto u objetos utilizando IDL </li>
+  <li>Compilar el fichero IDL. Esto produce el c&oacute;digo <i>stub</i> y<i> 
+    skeleton</i> que proporciona transparencia en la localizaci&oacute;n. Esto 
+    significa que cooperan con la librer&iacute;a ORB para convertir una referencia 
+    a un objeto en una conexi&oacute;n por red a un servidor remoto y codifican 
+    los argumentos proporcionados en una operaci&oacute;n sobre la referencia 
+    del objeto, la transportan al m&eacute;todo correcto en el objeto denotado 
+    por dicha referencia, ejecutan el m&eacute;todo y devuelven los resultados</li>
+  <li>Identificar las interfaces y clases generadas por el compilador IDL que 
+    necesitaremos usar o especializar para invocar o implementar operaciones</li>
+  <li>Escribir c&oacute;digo para inicializar el ORB e informarle de cualquier 
+    objeto CORBA que hayamos creado</li>
+  <li>Compilar todo el c&oacute;digo generado junto con el c&oacute;digo de nuestra 
+    aplicaci&oacute;n con un compilador Java</li>
+  <li>Ejecutar la aplicaci&oacute;n distribuida.</li>
+</ul>
+
+<p>La Figura 2.2 muestra el uso del lenguaje IDL y del compilador correspondiente 
+  cuando se construye la aplicaci&oacute;n.</p>
+<center>
+  <img border="0" src="Fig2-2.gif"> 
+</center>
+<p class="caption">Figura 2.2. Construcción de la aplicación HelloWorld.</p>
+<p>Cuando se ejecuta el compilador IDL para el ORB de Java que se tenga instalado, 
+  se generan dos conjuntos de ficheros c&oacute;digo Java: (a )c&oacute;digo <i>stub</i> 
+  para crear objetos <i>proxy</i> que un cliente puede usar para realizar invocaciones 
+  sobre las referencias de objetos de los tipos de interfaz definidos en el fichero 
+  IDL, y (b) c&oacute;digo <i>skeleton</i> para acceder a los objetos que soportan 
+  dichas interfaces. </p>
+
+<h2 class="subsection">2.1. Descripci&oacute;n de la interfaz</h2>
+<p>Para cualquier aplicaci&oacute;n CORBA se debe escribir una especificaci&oacute;n 
+  IDL que define los tipos de datos e interfaces, incluyendo atributos y operaciones. 
+  En este caso, un cliente invoca una operaci&oacute;n hello() sobre la interfaz 
+  de un objeto potencialmente remoto de un objeto de tipo GoodDay. El resultado 
+  de la invocaci&oacute;n es un mensaje que se muestra al cliente.</p>
+<p>La interfaz se define en un fichero que denominamos <code>HelloWorld.idl</code>, 
+  en el directorio <code>ejemplo/sesion2/holamundo</code>, que se muestra a continuaci&oacute;n:</p>
+<pre class="codigo">//HelloWorld.idl
+module ejemplo {
+ module sesion2 {
+  module holamundo {
+    interface GoodDay {
+      string hello();
+    };
+  };
+ };
+};</pre>  
+<p>El fichero contiene la especificaci&oacute;n de una jerarqu&iacute;a de m&oacute;dulos. 
+  Es un buen estilo de especificaci&oacute;n el uso de m&oacute;dulos para separar 
+  los espacios de nombres para una aplicaci&oacute;n o sus principales componentes 
+  y seguir la mismas convenciones introducidas para los paquetes Java. Se recomienda 
+  utilizar nombres de m&oacute;dulos que comiencen por letras min&uacute;sculas, 
+  e interfaes que comiencen por may&uacute;scula.</p>
+<p>Dentro del m&oacute;dulo <code>helloWorld</code> definimos una interfaz: <code>GoodDay</code>. 
+  La interfaz no presenta ninguna relaci&oacute;n de herencia, y proporciona una 
+  operaci&oacute;n, <code>hello()</code>. Dicha operaci&oacute;n devuelve un mensaje 
+  de la forma: &quot;Hello world, from <i>location</i>&quot;. </p>  
+<h2 class="subsection">2.2 Compilaci&oacute;n del IDL</h2>
+<p>El siguiente paso en el desarrollo de la aplicaci&oacute;n es compilar el IDL 
+  para general el c&oacute;digo <i>stub</i> y <i>skeleton</i>, mediante la orden:</p>
+<pre class="codigo">idlj -fallTIE HelloWorld.idl
+</pre>
+<p>La opci&oacute;n <code>-fall</code> indica al compilador que debe generar el 
+  c&oacute;digo <i>stub</i> y el <i>skeleton</i>. Para crear solamente uno de 
+  ellos se utilizan las opciones <code>-fclient</code> o <code>-fserver</code>. 
+</p>
+<p>Hay dos formas de crear implementaciones de objetos: la aproximaci&oacute;n 
+  <i>ImplBase</i>, y la aproximaci&oacute;n <i>Tie</i>. </p>
+<p>La <u>aproximaci&oacute;n <i>ImplBase</i></u><i> </i>implica utilizar una clase 
+  generada por el compilador IDL como clase base para la implementaci&oacute;n 
+  del objeto. Por ejemplo, dada la interfaz denominada <code>HelloWorld</code>, 
+  el compilador IDL de Java generar&aacute; una clase denominada <code>_HelloWorldImplBase</code>, 
+  una clase abstracta que podemos usar como base para la implementaci&oacute;n 
+  del objeto. Esta clase base implementa una interfaz Java creada a partir del 
+  interfaz IDL, asegurando as&iacute; que el objeto porporcionar&aacute; una implementaci&oacute;n 
+  de cada m&eacute;todo especificado en la interfaz del objeto CORBA.</p>
+<p>La <u>aproximaci&oacute;n <i>Tie</i></u><i> </i>es &uacute;til cuando nuestra 
+  implementaci&oacute;n del objeto ya extiende otra clase, ya que Java no soporta 
+  herencia m&uacute;ltiple. Esta aproximaci&oacute;n crea un objeto secundario 
+  que extiende la clase <i>skeleton</i> generada al igual que lo hace la aproximaci&oacute;n 
+  <i>ImplBase</i>. Todas las invocaciones CORBA se realizar&aacute;n sobre el 
+  objeto <i>tie</i>, asociando dicho objeto <i>tie</i> con nuestra implementaci&oacute;n 
+  del objeto. El objeto <i>tie</i>, a su vez, delegar&aacute; las invocaciones 
+  en nuestra implementaci&oacute;n real del objeto. Para generar las clases <i>tie</i> 
+  correspondientes se debe usar la opci&oacute;n <code>-ftie</code> en el copilador 
+  IDL. A lo largo del tema utilizaremos la aproximaci&oacute;n <i>Tie.</i></p>
+<p>El compilador IDL &quot;mapea&quot; cada m&oacute;dulo en un paquete Java y 
+  usa las convenciones Java para escribir los paquetes en los directorios. Ambos, 
+  el nombre del paquete y el directorio se nombran despu&eacute;s del m&oacute;dulo 
+  IDL. El paquete Java contiene las interfaces Java y las clases que implementan 
+  el <i>stub</i>, <i>skeleton </i>y c&oacute;digo adicional para soportar la aplicaci&oacute;n 
+  distribuida.</p>
+<p>Mientras que el nombre de las opciones del compilador dependen del vendedor 
+  del mismo, los ficheros generados por cualquier compilador conforme con IDL 
+  son siempre los mismos:</p>
+<ul>
+  <li><code>GoodDay.java </code></li>
+  <li><code>GoodDayHolder.java </code></li>
+  <li><code>_GoodDayStub.java </code></li>
+  <li><code>GoodDayOperations.java</code></li>
+  <li><code>GoodDayHelper.java</code></li>
+  <li><code>GoodDayPOA.java (no se genera en aproximaci&oacute;n <i>ImplBase</i>)</code></li>
+  <li><code>GoodDayPOATie.java (_GoodDayImplBase.java en aproximaci&oacute;n <i>ImplBase</i>)</code></li>
+</ul>
+<p>La interfaz <code>GoodDay</code> se &quot;mapea&quot; a una interfaz Java del 
+  mismo nombre en el fichero <code>GoodDay.java</code>. La clase <code>GoodDayHolder</code> 
+  proporciona soporte para manejar los par&aacute;metros de entrada/salida de 
+  IDL. La clase <code>GoodDayHelper</code> contiene varios m&eacute;todos est&aacute;ticos, 
+  de los cuales el m&aacute;s importante es el m&eacute;todo <code>narrow()</code>.</p>
+<p>Los siguientes ficheros contienen clases con funcionalidades generales. La 
+  clase <code>_GoodDayStub</code> contiene el c&oacute;digo <i>stub</i> que permite 
+  crear un <i>proxy</i> en el lado del cliente para la implementaci&oacute;n del 
+  objeto. La clase <code>GoodDayPOA</code> contiene el c&oacute;digo <i>skeleton</i> 
+  usado por POA. La interfaz <code>GoodDayOperations</code> y la clase <code>GoodDayPOATie</code> 
+  son usadas por el mecanismo <i>Tie</i> en la parte del servidor. </p>
+<h2 class="subsection">2.3. Un cliente como una aplicaci&oacute;n Java</h2>
+<p>Una vez que se crea el <i>skeleton</i> IDL, podemos construir nuestra implementaci&oacute;n 
+  de objeto CORBA y aplicaciones servidor. La implementaci&oacute;n de un cliente 
+  como una aplicaci&oacute;n Java sigue los siguientes pasos:</p>
+<ul>
+  <li>Inicializar del entorno CORBA, es decir, obtener una referencia al ORB</li>
+  <li>Obtener una referencia de objeto para el objeto sobre el que se invocan 
+    las operaciones</li>
+  <li>Invocar las operaciones y procesar los resultados.</li>
+</ul>
+<p>Antes de inicializar el entorno CORBA, veamos cu&aacute;l es la interfaz Java 
+  correspondiente a la implementaci&oacute;n IDL. &Eacute;sta es una interfaz 
+  vac&iacute;a que extiende dos clases bases para objetos CORBA y entidades IDL, 
+  as&iacute; como la interfaz Java <code>GoodDayOperations</code>, que contiene 
+  las signaturas reales de las operaciones: 
+<pre class="codigo">// generated Java - GoodDay.java 
+package ejemplo.sesion2.holamundo;
+public interface GoodDay extends GoodDayOperations,
+                                 org.omg.CORBA.object,
+                                 org.omg.CORBA.portable.IDLEntity
+{
+}</pre>
+<p>La interfaz <code>GoodDayOperations</code> define un m&eacute;todo Java <code>hello()</code> 
+  que devuelve un <code>String</code> Java. La raz&oacute;n de esta divisi&oacute;n 
+  de trabajo entre <code>GoodDay</code> y <code>GoodDayOperations</code> es que 
+  en algunos casos es necesario usar una interfaz de operaciones que no extienda 
+  <code>org.omg.CORBA.object</code>.</p>
+<pre class="codigo">// generated Java - GoodDayOperations.java 
+package ejemplo.sesion2.holamundo;
+public interface GoodDayOperations {
+   public java.lang.String hello();
+}</pre>
+<p>Para inicializar el ORB, definimos una clase Java <code>Client</code> en nuestra 
+  implementaci&oacute;n y un m&eacute;todo <code>main()</code> para dicha clase. 
+  Inicializar el ORB significa obtener una ferencia al pseudo-objeto ORB. El ORB 
+  se llama pseudo-objeto debido a que sus m&eacute;todos ser&aacute;n proporcionados 
+  por una librer&iacute;a en comunicaci&oacute;n con el soporte de ejecuci&oacute;n, 
+  y la referencia a dicho pseudo-objeto no uede pasarse como par&aacute;metro 
+  a las operaciones de la interfaz de CORBA. Excepto esta restricci&oacute;n, 
+  una referencia a un ORB es similar a cualquier otra referencia a objeto.</p>
+<pre class="codigo">import java.io.*;
+import org.omg.CORBA.*;
+ 
+public class Client {
+  public static void main(String args[]) {
+    try {
+      //inicializar el ORB
+      ORB orb = ORB.<b>init</b> (args,null);
+     //resto de sentencias
+  }
+}
+</pre>
+<p>El método estático <code>init()</code> en la clase org.omg.CORBA.ORB devuelve 
+  una instancia de un ORB. </p>
+<p>Las referencias a objetos pueden obtenerse de varias maneras, usaremos una 
+  bastante sencilla. Las referencias a objetos son estructuras de datos opacas; 
+  sin embargo, una referencia a un objeto puede convertirse en un <code>String</code>. 
+  El resultado se denomina <i>stringfied object reference</i>. Este tipo de referencia 
+  puede ser &quot;reconvertida&quot; a una referencia a objeto &quot;viva&quot;. 
+  Para ello se utilizan las operaciones <code>object_to_string()</code> y <code>string_to_object()</code>.</p>
+<pre class="codigo">//get object reference from command-line argument
+orb.omg.CORBA.Object obj = <b>orb.string_to_object</b>(args[0]);</pre>
+<p>En este ejemplo asumimos que la <i>stringfied object reference</i> se proporciona 
+  como argumento del m&eacute;todo <code>string_to_object()</code>. Dicho m&eacute;todo 
+  devuelve una referencia a objeto de tipo CORBA::object, el tipo base de todos 
+  los objetos CORBA. Para hacer uso del objeto, &eacute;ste necesita ser &quot;reducido&quot; 
+  (<i>narrowed</i>) al tipo apropiado. El m&eacute;todo <code>narrow</code> se 
+  define en la clase <code>GoodDayHelper</code>.</p>
+<pre class="codigo">GoodDay goodDay = goodDayHelper.<b>narrow</b>(obj);
+if (goodDay == null) {
+  System.err.println( &quot;stringfied object reference is of wrong type&quot;);
+  System.exit(-1);
+}</pre>
+<p>Una vez que el ORB es inicializado y se obtiene una referencia a un objeto, 
+  la programaci&oacute;n de CORBA es muy parecida a la programaci&oacute;n est&aacute;ndar 
+  orientada a objetos. La invocaci&oacute;n de m&eacute;todos sobre objetos se 
+  realiza de forma id&eacute;ntica para objetos locales y remotos.</p>
+<pre class="codigo">System.out.println(goodDay.hello());
+</pre>
+<p>Nuestro cliente invoca el método <code>hello()</code> sobre el objeto <code>goodDay</code>, 
+  y el resultado se imprime en la salida est&aacute;ndar.</p>
+<p>Lo &uacute;ltimo a considerar es el manejo de excepciones. Debido a que no 
+  hay excepciones lanzadas por el usuario, solamente tendremos que tratar y procesar 
+  las excepciones del sistema que pueden provocarse por cualquier m&eacute;todo 
+  CORBA incluyendo la inicializaci&oacute;n del ORB, la llamada a <code>narrow</code>, 
+  y el m&eacute;todo <code>hello()</code>.</p>
+<pre class="codigo">catch (SystemException ex) {
+         System.err.println(ex);
+}  
+</pre>
+<p>La clase <code>SystemException</code> se define en el paquete <code>org.omg.CORBA</code>.</p>
+<p>Para compilar y ejecutar el cliente utilizaremos el compilador de Java</p>
+<pre class="codigo">javac Client.java
+</pre>
+<p>Para ejecutar el cliente utilizaremos dos argumentos: el nombre de la clase 
+  cliente y una referencia a objeto <i>stringfied</i>, que vamos a llamar <i>IOR</i>. 
+  Veremos como generar dicho <code>String</code> cuando hablemos del servidor.</p>
+<pre class="codigo">java ejemplo/sesion2/holamundo.Client <i>IOR</i></pre>
+<p>El cliente entonces imprime el mensaje esperado. </p>
+<pre class="codigo">Hello World, from Alicante</pre>
+<h2 class="subsection">2.4. Un cliente como un <i>Applet</i></h2>
+<p>Cuando se escribe un cliente como un <i>applet </i> se siguen los mismos pasos 
+  que cuando se trata de una aplicaci&oacute;n clinete, excepto por lo siguiente:</p>
+<ul>
+  <li>Anclar el <i>applet</i> en una página HTML para que pueda estar accesible 
+    y ser cargado</li>
+  <li>Proporcionar un GUI para permitir la interacci&oacute;n con un navegador</li>
+  <li>Extender la clase <i>Applet</i> de Java y sobreescribir alguno de sus m&eacute;todos</li>
+  <li>Usar una inicializaci&oacute;n ORB diferente</li>
+</ul>
+<p>Para hacer que un <i>applet</i> sea accesible a trav&eacute;s de la web, &eacute;ste 
+  necesita anclarse en una p&aacute;gina HTML. Un ejemplo de fichero HTML es:</p>
+<pre class="codigo">&lt;html&gt;
+ &lt;head&gt;
+   &lt;title&gt; Hello world example &lt;/title&gt;
+ &lt;/head&gt;
+ &lt;body&gt;
+   &lt;h1&gt;Hello world example&lt;/h1&gt;
+     &lt;center&gt;
+       &lt;applet code= ejemplo/sesion2/holamundo/Applet.class width=400 height=80&gt;
+       &lt;/applet&gt;
+     &lt;/center&gt;
+ &lt;/body&gt;
+&lt;/html&gt;</pre>
+<p>Para inicializar el <i>applet, </i>definimos nuestra clase <code>Applet</code>, 
+  cuyo c&oacute;digo es el siguiente:</p>
+<pre class="codigo">import java.io.*;
+import java.net.*;
+import java.awt.*;
+import java.awt.event.*;
+import org.omg.CORBA.*;
+ 
+public class Applet extends java.applet.Applet
+                    implements ActionListener {
+
+  private ORB orb;
+  private GoodDay goodDay;
+  private Button helloWorldButton;
+  private TextField textField;
+   
+  public void init() {
+    helloworldButton = new Button(&quot;Invoke remote method&quot;);
+    helloworldButton.setFont( new Font (&quot;Helvetica&quot;, Font.BOLD, 20));
+    helloworldButton.setActionCommand(&quot;invoke&quot;);
+    helloworldButton.addActionListener( (ActionListener)this);
+    textField= new textField();
+    textField.setEditable(false);
+    textField.setFont( new Font (&quot;Helvetica&quot;, Font.BOLD, 14));
+    setLayout (new GridLayout(2,1));
+    add(helloWorldButton);
+    add(textField);
+    //resto de sentencias
+  }
+}</pre>
+<p>Para localizar los objetos, en el apartado 2.3 hemos utilizado una <i>stringfied 
+  object reference</i>. En este caso, y puesto que dicha referencia no se puede 
+  usar como par&aacute;metro de un applet, vamos a considerar que se proporciona 
+  un fichero que contiene el IOR destino en el mismo directorio en el que se encuentra 
+  la p&aacute;gina HTML que contiene al <i>applet</i>.</p>
+<p>Para inicializar el ORB de nuevo utilizamos el m&eacute;todo init(), con el 
+  objeto <i>applet</i> como argumento. Para obtener una referencia al objeto remoto 
+  usamos el m&eacute;todo readIOR(). Dicho m&eacute;todo construye una URL para 
+  la ubicaci&oacute;n en donde se espera el fichero IOR. A continuaci&oacute;n 
+  abre una conexi&oacute;n con dicho recurso y lee una l&iacute;nea de texto que 
+  se asume contiene la <i>stringfied object reference</i>.</p>
+<pre class="codigo">private Sring readIOR() {
+  try {
+    URL iorURL = new URL (getCodeBase().toString()+&quot;ior&quot;);
+    BufferedReader in = new BufferedReader(
+      new InputStreamReader(iorURL.openStream() ));
+    String line = in.readLine();
+    in.close();
+    return line;
+  } catch (Exception ex) {
+     System.err.println(ex);
+  }
+  return null;
+}</pre>
+<p>La inicializaci&oacute;n del <i>applet</i> se completa con la captura y procesamiento 
+  de excepciones:</p>
+<pre class="codigo">try {
+  orb = ORB.init(this,null);
+  org.omg.CORBA.Object obj = orb.string_to_object(readIOR());;
+  goodDay = GoodDayHelper.narrow(obj);
+}
+catch (SystemException ex) {
+  System.err.println(&quot;ORB is not initialized&quot;);
+  System.err.println(ex);
+}</pre>
+<p>Para manejar los eventos desde la interfaz gr&aacute;fica, implementamos el 
+  m&eacute;todo <code>ActionPerformed()</code> de la interfaz <code>java.applet.awt.event.ActionListener</code>.</p>
+<pre class="codigo">public void actionPerformed(ActionEvent e) {
+  if (e.getActionCommand().equals(&quot;invoke&quot;)) {
+   //invoque the operation
+   try { textField.setText(goodDay.hello()); }
+   catch (SystemException ex) {
+    System.err.println(ex);
+   }
+  }
+}</pre>
+<p>Para compilar el <i>applet </i>se utiliza el compilador de java.</p>
+<pre class="codigo">javac -d . Applet.java</pre>
+<h2 class="subsection">2.5 Implementaci&oacute;n del objeto</h2>
+<p>Volviendo a la implementaci&oacute;n del objeto cuya interfaz se ha especificado 
+  en IDL, dicha implementaci&oacute;n se conoce tambi&eacute;n como <i>servant 
+  class. </i>La especificaci&oacute;n de mapeado IDL/Java define una clase <i>(servant 
+  base class</i>) que se nombra despu&eacute;s del nombre de la interfaz IDL: 
+  <i>NombreInterfaz</i>POA (en nuestro ejemplo <code>GoodDayPOA</code>). Esta 
+  clase base es un <i>skeleton</i> generado por el compilador IDL. Como se ha 
+  comentado en el apartado anterior hay dos formas de asociar las clases de implementaci&oacute;n 
+  del objeto con una clase <i>skeleton</i>: por herencia (o <i>ImplBase</i>), 
+  o por delegaci&oacute;n (<i>Tie</i>).</p>
+<p>En nuestro ejemplo, tenemos una clase de implementaci&oacute;n <code>GoodDayImpl</code> 
+  que extiende la clase base <i>servant</i> <code>GoodDayPOA</code>, y que tiene 
+  una variable privada location conteniendo la localizaci&oacute;n geogr&aacute;fica. 
+</p>
+<pre class="codigo">import org.omg.CORBA.*;
+ 
+public class GoodDayImpl extends GoodDayPOA {
+ private String location;
+ GoodDayImpl (String location) {
+   this.location = location;
+ }
+ public String hello() {
+  return &quot;Hello World, from &quot; + location;
+ }
+}
+</pre>
+<p>Implementamos el m&eacute;todo <code>hello()</code> que devuelve un String 
+  compuesto por el mensaje &quot;Hello world, from&quot; y el valor de la variable 
+  location.</p>
+<p>Para compilar el programa se utiliza el compilador de Java.</p>
+<pre class="codigo">javac -d . GoodDayImpl.java</pre>
+<h2 class="subsection">2.6. Creaci&oacute;n del servidor</h2>
+<p>Finalmente tenemos que implementar la clase servidor. Esta clase:</p>
+<ul>
+  <li>Inicializa el entorno ORB</li>
+  <li>Crea la implementaci&oacute;n del objeto </li>
+  <li>Lo hace accesible a los clientes</li>
+  <li>Queda a la escucha de peticiones por parte de los clientes</li>
+</ul>
+<p>La clase servidor de nuestro ejemplo se llama <code>Server</code>. Solamente 
+  implementamos el m&eacute;todo <code>main()</code> en dicha clase. En el m&eacute;todo 
+  main comprobamos el n&uacute;mero correcto de argumentos, uno de los cuales 
+  indica la localizaci&oacute;n del servidor.</p>
+<pre class="codigo">import java.io.*
+import org.omg.CORBA.*;
+import org.omg.PortableServer.*;
+
+ 
+public class Server {
+  public static void main(String[] args) {
+    if (args.length != 1) {
+      System.out.println(
+      &quot;Usage: java ejemplo/sesion2/holamundo.Client &lt;location&gt; &quot;);
+      Systen,exit(1);
+    }
+    try {
+    //inicializar ORB
+    ORB orb = ORB.init (args,null);
+    //crear un objeto GoodDay
+    GoodDayImpl goodDayImpl = new GoodDayImpl(args[0]);
+    //inicializar POA
+    POA poa = POAHelper.narrow(
+         orb.resolve_initial_references(&quot;RootPOA&quot;));
+    poa.the_POAManager().activate();
+    //crear la referencia al objeto
+    org.omg.CORBA.Object obj =
+      poa.servant_to_reference(goodDayImpl);
+    //imprimir la <i>stringfied object reference</i>
+    System.out.println(orb.object_to_string(obj));
+    //esperar peticiones
+    orb.run()
+    }
+    catch (InvalidName e) {
+     System.err.println(e);
+    }
+    catch (UserException e) {
+     System.err.println(e);
+    }
+    catch (SystemException e) {
+     System.err.println(e);
+    }
+  }
+}</pre>
+<p>Para permitir que el objeto <code>goodDayImpl</code> actue como un <i>servant</i> 
+  y reciba invocaciones de operaciones CORBA tenemos que utilizar un <i>object 
+  adapter</i> (en este caso se trata del objeto <code>poa</code>). Para crear 
+  una referencia a un objeto CORBA que podamos exportar, necesitamos primero obtener 
+  una instancia a un POA e inicializarlo. Para ello es suficiente con usar el 
+  ORB de la raiz POA, mediante la llamada al m&eacute;todo <code>resolve_initial_references(&quot;RootPOA&quot;)</code>. 
+  A continuaci&oacute;n activamos el <i>object adapter</i> mediante la llamada 
+  al m&eacute;todo <code>activate()</code>.</p>
+<p>A continuaci&oacute;n ya podemos crear una referencia al objeto mediante el 
+  m&eacute;todo <code>servant_to_reference()</code>.</p>
+<p>Despu&eacute;s de crear la referencia al objeto, imprimimos dicha referencia 
+  <i>stringfied </i>en la salida est&aacute;ndar. Destacar que hemos activado 
+  impl&iacute;citamente el nuevo objeto CORBA con la llamada a <code>servant_to_reference()</code>, 
+  para que est&eacute; preparado para recibir peticiones. Finalmente llamamos 
+  al m&eacute;todo <code>run()</code> que bloquea el hilo prinicipal del servidor 
+  esperando peticiones. </p>
+
+<p>Para compilar el servidor:</p>
+<pre class="codigo">javac -d . Server.java</pre>
+<p>Para ejecutar el servidor:</p>
+<pre class="codigo">java ejemplo.sesion2.holamundo.Server Alicante</pre>
+<p>Esto muestra por pantalla el <i>stringfied </i>IOR que se asemejar&aacute; 
+  a:</p>
+<p>IOR:00000000002143243c4c4cc46757456c34c4c4cbc767c6c5b72736362bdbdbdb0000<br>
+  00000000004c33400000000000000434300000000000000000000fdevbbdf00000000000<br>
+  c34c4c4cbc767c6c5b727363600000000043430000022</p>
+<p>Probablemente sea mejor redireccionar la salida est&aacute;ndar a un fichero. 
+  En nuestro ejemplo podr&iacute;amos utilizar el fichero <code>shw.ior</code>:</p>
+<pre class="codigo">java ejemplo.sesion2.holamundo.Server Alicante &gt; shw.ior</pre>
+<p>Ahora podr&iacute;amos ejecutar los clientes tal y como se ha ilustrado en 
+  los apartados anteriores. Un cliente puede comenzar convenientemente utilizando 
+  el fichero IOR:</p>
+<pre class="codigo">java ejemplo.sesion2.holamundo.Cliente 'cat shw.ior'</pre>  
+</body>
+</html>

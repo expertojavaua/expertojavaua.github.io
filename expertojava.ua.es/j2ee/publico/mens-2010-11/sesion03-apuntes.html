@@ -1,0 +1,587 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.7">
+<meta name="Forrest-skin-name" content="pelt">
+<title>Transacciones. JMS y JavaEE</title>
+<link type="text/css" href="skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="skin/print.css" rel="stylesheet">
+<link type="text/css" href="skin/profile.css" rel="stylesheet">
+<script src="skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<div class="header">
+<div class="grouplogo">
+<a href="http://web.ua.es/especialistajava"><img class="logoImage" alt="jtech" src="images/baner_j2ee_izq.gif" title="Especialista Universitario Java Enterprise"></a>
+</div>
+<div class="projectlogoA1">
+<a href="http://www.dccia.ua.es/"><img class="logoImage" alt="Servicios de Mensajes con JMS" src="images/baner_j2ee_der.gif" title="Servicios de Mensajes con JMS"></a>
+</div>
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="javascript:location.href='../index.html'">Home</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../aplic-web.html'">Aplicaciones Web</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../aplic-ent.html'">Aplicaciones Enterprise</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../charlas.html'">Charlas</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../proy-int/index.html'">Proyecto</a>
+</li>
+<li class="current">
+<a class="base-selected" href="index.html">Servicios de Mensajes con JMS</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<div id="level2tabs"></div>
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<div id="menu">
+<div onclick="SwitchMenu('menu_selected_1.1', 'skin/')" id="menu_selected_1.1Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Servicios de Mensajes con JMS</div>
+<div id="menu_selected_1.1" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="index.html" title="Servicios de Mensajes con JMS">&Iacute;ndice</a>
+</div>
+<div onclick="SwitchMenu('menu_selected_1.1.2', 'skin/')" id="menu_selected_1.1.2Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Teor&iacute;a</div>
+<div id="menu_selected_1.1.2" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="sesion01-apuntes.html" title="1. Introducci&oacute;n a JMS">Sesi&oacute;n 1</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-apuntes.html" title="2. Mensajes. Robustez en JMS">Sesi&oacute;n 2</a>
+</div>
+<div class="menupage">
+<div class="menupagetitle">Sesi&oacute;n 3</div>
+</div>
+<div class="menuitem">
+<a href="sesion04-apuntes.html" title="4. Message Driven Beans">Sesi&oacute;n 4</a>
+</div>
+</div>
+<div onclick="SwitchMenu('menu_1.1.3', 'skin/')" id="menu_1.1.3Title" class="menutitle">Ejercicios</div>
+<div id="menu_1.1.3" class="menuitemgroup">
+<div class="menuitem">
+<a href="sesion01-ejercicios.html" title="1. Introducci&oacute;n a JMS">Sesi&oacute;n 1</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-ejercicios.html" title="2. Mensajes. Robustez en JMS">Sesi&oacute;n 2</a>
+</div>
+<div class="menuitem">
+<a href="sesion03-ejercicios.html" title="3. Durable Subscribers y Transacciones. JMS y JavaEE">Sesi&oacute;n 3</a>
+</div>
+<div class="menuitem">
+<a href="sesion04-ejercicios.html" title="4. Message Driven Beans">Sesi&oacute;n 4</a>
+</div>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<div id="credit2"></div>
+</div>
+<div id="content">
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="sesion03-apuntes.pdf"><img alt="PDF -icon" src="skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1>Transacciones. JMS y JavaEE</h1>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#Transacciones+Locales">Transacciones Locales</a>
+<ul class="minitoc">
+<li>
+<a href="#Ejemplos">Ejemplos</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Transacciones+Distribuidas">Transacciones Distribuidas</a>
+</li>
+<li>
+<a href="#Conexiones+Perdidas">Conexiones Perdidas</a>
+<ul class="minitoc">
+<li>
+<a href="#Ejemplo">Ejemplo</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Uso+de+JMS+en+Aplicaciones+JavaEE">Uso de JMS en Aplicaciones JavaEE</a>
+<ul class="minitoc">
+<li>
+<a href="#Anotaciones+en+Componentes+JavaEE">Anotaciones en Componentes JavaEE</a>
+</li>
+<li>
+<a href="#EJBs+de+Sesi%C3%B3n+para+Producir+y+Recibir+Mensajes+S%C3%ADncronos">EJBs de Sesi&oacute;n para Producir y Recibir Mensajes S&iacute;ncronos</a>
+<ul class="minitoc">
+<li>
+<a href="#Gesti%C3%B3n+de+Recursos">Gesti&oacute;n de Recursos</a>
+</li>
+<li>
+<a href="#Transacciones">Transacciones</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Ejemplo+de+un+EJB+que+Env%C3%ADa+Mensajes">Ejemplo de un EJB que Env&iacute;a Mensajes</a>
+</li>
+<li>
+<a href="#Ejemplo+de+Aplicaci%C3%B3n+Web+que+Env%C3%ADa+Mensajes">Ejemplo de Aplicaci&oacute;n Web que Env&iacute;a Mensajes</a>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+
+<a name="N1000C"></a><a name="Transacciones+Locales"></a>
+<h2 class="underlined_10">Transacciones Locales</h2>
+<div class="section">
+<p>En un cliente JMS se pueden usar transacciones locales para agrupar bien env&iacute;os o bien recepciones en operaciones at&oacute;micas. Ya desde el principio hemos visto que una sesi&oacute;n se puede crear como transaccional o no solamente con poner respectivamente a <span class="codefrag">true</span> o <span class="codefrag">false</span> el primer argumento del m&eacute;todo <span class="codefrag">Connection.createSession()</span> y hasta ahora solamente hemos trabajado con sesiones no transaccionales. De modo, que mediante los siguientes fragmentos de c&oacute;digo crear&iacute;amos una sesi&oacute;n transaccional:</p>
+<pre class="code">Session session = connection.createSession(true, 0);
+QueueSession queueSession = queueConnection.createQueueSession(true, 0);
+TopicSession topicSession = topicConnection.createTopicSession(true, 0);
+</pre>
+<div class="frame note">
+<div class="label">Buenas Pr&aacute;cticas</div>
+<div class="content">
+Es una buena pr&aacute;ctica poner a 0 el segundo argumento del m&eacute;todo (tipo de acuse de recibo), ya que al tratarse de una sesi&oacute;n transaccional, ser&aacute; ignorado.<br>Recordar que el valor 0 es similar a Session.AUTO_ACKNOWLEDGE<br>
+
+<span class="codefrag">session = connection.createSession(true, 0);</span>
+
+</div>
+</div>
+<p>JMS no ofrece ning&uacute;n m&eacute;todo de inicio de transacci&oacute;n de forma expl&iacute;cita, de modo que nada m&aacute;s crear la sesi&oacute;n transaccional, la transacci&oacute;n ha comenzado.</p>
+<p>Adem&aacute;s, JMS aporta los m&eacute;todos <span class="codefrag">Session.commit()</span> y <span class="codefrag">Session.rollback()</span> que pueden usarse en un cliente, y que supondr&aacute;n el final de la transacci&oacute;n. El <em>commit</em> significa que <em>todos los mensajes producidos son enviados y se env&iacute;a acuse de recibo de todos los consumidos</em>. Sin embargo, el <em>rollback</em> en JMS implica que <em>se destruyen todos los mensajes enviados y se recuperan todos los mensajes consumidos y re-enviados aunque hayan expirado</em>.</p>
+<p>Toda transacci&oacute;n forma parte de una sesi&oacute;n transaccional. Tan pronto como se llama a <span class="codefrag">commit</span> o <span class="codefrag">rollback</span>, finaliza una transacci&oacute;n y comienza otra (esto se conoce como <em>transaction chaining</em>). Cerrar una sesi&oacute;n transaccional implica un rollback autom&aacute;tico de la transacci&oacute;n, incluyendo los env&iacute;os y recepciones pendientes.</p>
+<p>Finalmente, los m&eacute;todos anteriores no pueden usarse en EJBs ya que, como veremos en el m&oacute;dulo correspondiente, se usan transacciones distribuidas.</p>
+<p>Un aspecto muy importante es que podemos combinar varios env&iacute;os y recepciones en una transacci&oacute;n local (no distribu&iacute;da), pero en ese caso <em>debemos tener en cuenta el orden de las operaciones</em>. Si una transacci&oacute;n consiste solo en <em>sends</em>, solo en <em>receives</em> o la recepci&oacute;n se realiza antes de enviar no hay problema, pero si intentamos usar un mecanismo <em>request/reply</em> entonces siempre que enviemos un mensaje y esperemos recibirlo dentro de la misma transacci&oacute;n el programa se colgar&aacute;, ya que el env&iacute;o no se hace efectivo hasta que no se hace un commit.</p>
+<pre class="code">
+<strong>// No hacer esto</strong>
+outMsg.setJMSReplyTo(replyQueue);
+producer.send(outQueue, outMsg);
+consumer = session.createConsumer(replyQueue);
+inMsg = consumer.receive();
+session.commit();
+</pre>
+<p>Esto se debe a que al enviar un mensaje dentro de una transacci&oacute;n, realmente no se env&iacute;a hasta que no se realiza el commit de la transacci&oacute;n, por lo tanto, <strong>la transacci&oacute;n no puede contener ninguna recepci&oacute;n que dependa de un mensaje enviado previamente</strong>.</p>
+<p>Es m&aacute;s, la producci&oacute;n y el consumo de un mensaje no puede ser parte de la misma transacci&oacute;n ya que el intermediario es JMS, el cual interviene entre la producci&oacute;n y la consumici&oacute;n del mensaje. En ese caso debemos hacer una transacci&oacute;n desde el productor al recurso JMS y otra desde &eacute;ste al consumidor. Analicemos el siguiente gr&aacute;fico:</p>
+<p>
+    
+<img alt="JMS como intermediario" content-width="11cm" src="imagenes/sesion3/jms-localTransactions.gif" width="397">
+</p>
+<p>El env&iacute;o de uno o m&aacute;s mensajes a uno o m&aacute;s destinos por parte del cliente 1 puede formar una transacci&oacute;n (<em>producci&oacute;n transaccional</em>), ya que conforma un conjunto de interacciones con el proveedor JMS mediante una &uacute;nica sesi&oacute;n. Del mismo modo, la recepci&oacute;n de uno o m&aacute;s mensajes (<em>consumici&oacute;n transaccional</em>) desde uno o m&aacute;s destinos por parte del cliente 2 tambi&eacute;n forma una &uacute;nica transacci&oacute;n, y que se realiza desde una sola sesi&oacute;n. Pero como ambos clientes no tienen interacciones directas y est&aacute;n utilizando dos sesiones diferentes, no se puede producir una transacci&oacute;n entre ellos.</p>
+<div class="frame note">
+<div class="label">En Resumen</div>
+<div class="content">
+El hecho de producir y/o consumir mensajes dentro de <strong>una sesi&oacute;n puede ser transaccional</strong>, pero el hecho de producir y consumir un mensaje espec&iacute;fico entre <strong>diferentes sesiones no puede ser transaccional</strong>.
+</div>
+</div>
+<a name="N1008E"></a><a name="Ejemplos"></a>
+<h3 class="underlined_5">Ejemplos</h3>
+<p>Como hemos comentado, los m&eacute;todos de <em>commit</em> y <em>rollback</em> de una transacci&oacute;n local est&aacute;n asociados con la sesi&oacute;n. Podemos combinar operaciones con colas y t&oacute;picos dentro de una &uacute;nica transacci&oacute;n siempre y cuando utilicemos la misma sesi&oacute;n. Por ejemplo, podemos utilizar la misma sesi&oacute;n para recibir un mensaje desde una cola y enviar un mensaje a un t&oacute;pico dentro de la misma transacci&oacute;n:</p>
+<pre class="code">public void recibirSincronoPublicarCommit() throws JMSException {
+    Connection connection = null;
+    Session session = null;
+    QueueReceiver receiver = null;
+    TopicPublisher publisher = null;
+
+    try {
+        connection = connectionFactory.createConnection();
+        connection.start();
+        <em>// Creamos una sesion transaccional</em>
+        <strong>session = connection.createSession(true, 0);</strong>
+
+        <em>// Creamos el consumidor a partir de una cola</em>
+        receiver = (QueueReceiver) session.createConsumer(queue);
+        <em>// Creamos el productor a partir de un topico</em>
+        publisher = (TopicPublisher) session.createProducer(topic);
+
+        <em>// Consumimos y luego publicamos</em>
+        TextMessage message = (TextMessage) receiver.receive();
+        System.out.println("Recibido mensaje [" + message.getText() + "]");
+        publisher.publish(message);
+
+        <strong>session.commit();</strong>
+    } catch (JMSException jmse) {
+        System.err.println("Rollback por " + jmse.getMessage());
+        <strong>session.rollback();</strong>
+    } catch (Exception e) {
+        System.err.println("Rollback por " + e.getMessage());
+        <strong>session.rollback();</strong>
+    } finally {
+        publisher.close();
+        receiver.close();
+        session.close();
+        connection.close();
+    }
+}
+</pre>
+<p>Adem&aacute;s, podemos pasar la sesi&oacute;n de un cliente al constructor de un listener de mensajes y utilizarla para crear un productor de mensajes. De este modo, podemos utilizar la misma sesi&oacute;n para recibir y enviar mensajes dentro de un consumidor de mensajes as&iacute;ncrono.</p>
+<pre class="code">public void recibirAsincronoPublicarCommit() throws JMSException {
+    Connection connection = null;
+    Session session = null;
+    QueueReceiver receiver = null;
+    TextListener listener = null;
+
+    try {
+        connection = connectionFactory.createConnection();
+        <em>// Creamos una sesion transaccional</em>
+        session = connection.createSession(true, 0);
+
+        <em>// Creamos el consumidor a partir de una cola</em>
+        receiver = (QueueReceiver) session.createConsumer(queue);
+
+        <strong>listener = new TextListener(session);
+        receiver.setMessageListener(listener);</strong>
+        <em>// Llamamos a start() para empezar a consumir</em>
+        connection.start();
+        <em>// Sacamos el mensaje por consola</em>
+        System.out.println("Fin asincrono");
+    } catch (JMSException jmse) {
+        System.err.println("Rollback por " + jmse.getMessage());
+        session.rollback();
+    } catch (Exception e) {
+        System.err.println("Rollback por " + e.getMessage());
+        session.rollback();
+    } finally {
+        receiver.close();
+        session.close();
+        connection.close();
+    }
+}
+</pre>
+<p>De modo que el listener puede hacer commit o rollback conforme necesite:</p>
+<pre class="code">private class TextListener implements MessageListener {
+
+    private Session session;
+
+    public TextListener(Session session) {
+        this.session = session;
+    }
+    
+    public void onMessage(Message message) {
+        TopicPublisher publisher = null;
+        TextMessage msg = null;
+
+        <em>// Consumimos y luego publicamos</em>
+        try {
+            msg = (TextMessage) message;
+            System.out.println("Recibido mensaje asincrono [" + msg.getText() + "]");
+            publisher = (TopicPublisher) session.createProducer(topic);
+            publisher.publish(message);
+
+            <strong>session.commit();</strong>
+        } catch (JMSException e) {
+            System.err.println("Rollback en onMessage(): " + e.toString());
+            try {
+                <strong>session.rollback();</strong>
+            } catch (JMSException ex) {
+            }
+        }
+    }
+}
+</pre>
+</div>
+
+
+<a name="N100E1"></a><a name="Transacciones+Distribuidas"></a>
+<h2 class="underlined_10">Transacciones Distribuidas</h2>
+<div class="section">
+<p>Los sistemas distribuidos en ocasiones utilizan un proceso de <em>two-phase commit</em> (2PC) que permite a m&uacute;ltiples recursos distribuidos participar en una transacci&oacute;n. Esto implica el uso de un gestor de transacciones que se encarga de cordinar la preparaci&oacute;n, commit o rollback de cada recurso que participa en la transacci&oacute;n. Lo m&aacute;s com&uacute;n es que estos recursos sean BBDD, pero tambi&eacute;n pueden ser proveedores de mensajes.</p>
+<p>El proceso de 2PC se realiza bajo el interfaz XA (<em>eXtended Architecture</em>), y en JavaEE lo implementa JTA (<em>Java Transaction API</em>) y los interfaces XA (<span class="codefrag">javax.transaction</span> y <span class="codefrag">javax.transaction.xa</span>). Cualquier recurso que implementa estos interfaces puede unirse a una transacci&oacute;n global mediante un gestor de transacciones que soporte estos interfaces.</p>
+<p>Los proveedor JMS que implementan los interfaces XA puede participar en transacciones distribuidas. La especificaci&oacute;n JMS ofrece versiones XA de los siguientes objetos:<span class="codefrag">XAConnectionFactory</span>, <span class="codefrag">XAQueueConnection</span>, <span class="codefrag">XAQueueConnectionFactory</span>, <span class="codefrag">XAQueueSession</span>, <span class="codefrag">XASession</span>, <span class="codefrag">XATopicConnectionFactory</span>, <span class="codefrag">XATopicConnection</span> y <span class="codefrag">XATopicSession</span>.</p>
+<p>Cada uno de estos objetos trabajar de modo similar a los no-XA. El gestor de transacciones de un servidor de aplicaciones utiliza los interfaces XA directamente, pero el cliente JMS solo ve las versiones no-transaccionales. As&iacute; pues, los interfaces XA no estan pensados para que lo utilicen los desarrolladores, sino que los provedores JMS son los que deben implementarlos. En resumen, no debemos preocuparnos en usar estos interfaces, s&oacute;lo de si nuestro servidor de aplicaciones soporta 2PC, y &eacute;ste ya se encargar&aacute; de incluir nuestra operaci&oacute;n dentro de una transacci&oacute;n global.</p>
+</div>
+
+
+<a name="N1011B"></a><a name="Conexiones+Perdidas"></a>
+<h2 class="underlined_10">Conexiones Perdidas</h2>
+<div class="section">
+<p>Cuando lo conexi&oacute;n de red entre el cliente y el servidor se pierde, el proveedor JMS intentar&aacute; restablecer la conexi&oacute;n. Si el proveedor no consiguiese la reconexi&oacute;n, debe notificar al cliente de la situaci&oacute;n, mediante el lanzamiento de una excepci&oacute;n.</p>
+<p>El problema viene cuando tenemos un consumidor as&iacute;ncrono, el cual no realiza ninguna llamada de env&iacute;o o recepci&oacute;n. Este consumidor no esta invocando ning&uacute;n m&eacute;todo JMS, s&oacute;lo est&aacute; escuchando mensajes, por lo que puede no llegar a detectar la p&eacute;rdida de la conexi&oacute;n.</p>
+<p>JMS ofrece la interfaz <span class="codefrag">ExceptionListener</span> para capturar todas las conexiones perdidas y notificar a los clientes de dicha situaci&oacute;n. Este listener se asocia a la conexi&oacute;n. La definci&oacute;n del listener es la siguiente:</p>
+<pre class="code">public interface ExceptionListener {
+   void onException(JMSException exception);
+}</pre>
+<p>El proveedor JMS se responsabilizar&aacute; de llamar a este m&eacute;todo de todos los listeners registrados cuando no pueda realizar la reconexi&oacute;n autom&aacute;tica. Por lo tanto, el consumidor as&iacute;ncrono podr&aacute; implementar este interfaz para poder actuar en esta situaci&oacute;n, e intentar la reconexi&oacute;n de modo manual.</p>
+<a name="N10134"></a><a name="Ejemplo"></a>
+<h3 class="underlined_5">Ejemplo</h3>
+<p>Por ejemplo, podremos modificar nuestro consumidor para que en el caso de perder la conexi&oacute;n, realice una reconexi&oacute;n manual:</p>
+<pre class="code">public class ConsumidorAsincrono implements <strong>ExceptionListener</strong> {
+
+    @Resource(mappedName = "jms/ConnectionFactory")
+    private static ConnectionFactory connectionFactory;
+    @Resource(mappedName = "jms/Queue")
+    private static Queue queue;
+    
+    private Connection connection = null;
+
+    private void estableceConexion() {
+        try {
+            connection = connectionFactory.createConnection();
+            <strong>connection.setExceptionListener(this);</strong>
+        } catch (JMSException ex) {
+            ex.printStackTrace(System.err);
+        }
+    }
+
+    @Override
+    <strong>public void onException(JMSException exception)</strong> {
+        System.err.println("Ha ocurrido un error con la conexion");
+        exception.printStackTrace(System.err);
+
+        this.estableceConexion();
+    }
+
+    public void recibeMensajeAsincronoCola() throws JMSException {
+        Session session = null;
+        MessageConsumer consumer = null;
+        TextoListener listener = null;
+
+        try {
+            this.estableceConexion();
+            session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            consumer = session.createConsumer(queue);
+
+            listener = new TextoListener();
+            consumer.setMessageListener(listener);
+
+            connection.start();
+        } finally {
+            consumer.close();
+            session.close();
+            connection.close();
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+        ConsumidorAsincrono p = new ConsumidorAsincrono();
+        p.recibeMensajeAsincronoCola();
+    }
+}
+</pre>
+</div>
+
+
+<a name="N1014C"></a><a name="Uso+de+JMS+en+Aplicaciones+JavaEE"></a>
+<h2 class="underlined_10">Uso de JMS en Aplicaciones JavaEE</h2>
+<div class="section">
+<p>En esta secci&oacute;n veremos las diferentes maneras de usar JMS desde una aplicaci&oacute;n JavaEE, y sus diferencias respecto a una aplicaci&oacute;n cliente.</p>
+<div class="frame note">
+<div class="label">Importante</div>
+<div class="content">
+Los componentes web y EJBs no deben crear m&aacute;s de una sesi&oacute;n activa (sin cerrar) por conexi&oacute;n
+</div>
+</div>
+<a name="N10159"></a><a name="Anotaciones+en+Componentes+JavaEE"></a>
+<h3 class="underlined_5">Anotaciones en Componentes JavaEE</h3>
+<p>Cuando utilizamos la anotaci&oacute;n <span class="codefrag">@Resource</span> en una aplicaci&oacute;n cliente, normalmente la declaramos como un recurso est&aacute;tico:</p>
+<pre class="code">@Resource(mappedName="jms/ConnectionFactory")
+private <strong>static</strong> ConnectionFactory connectionFactory;
+
+@Resource(mappedName="jms/Queue")
+private <strong>static</strong> Queue queue;
+</pre>
+<p>Sin embargo, cuando utilizamos estas anotaciones en un ejb de sesi&oacute;n, un MDB o un componente web, <strong>no</strong> declararemos el recurso est&aacute;tico:</p>
+<pre class="code">@Resource(mappedName="jms/ConnectionFactory")
+private ConnectionFactory connectionFactory;
+
+@Resource(mappedName="jms/Topic")
+private Topic topic;
+</pre>
+<p>Si lo declaramos est&aacute;ticos, obtendremos errores de tiempo de ejecuci&oacute;n.</p>
+<a name="N1017D"></a><a name="EJBs+de+Sesi%C3%B3n+para+Producir+y+Recibir+Mensajes+S%C3%ADncronos"></a>
+<h3 class="underlined_5">EJBs de Sesi&oacute;n para Producir y Recibir Mensajes S&iacute;ncronos</h3>
+<p>Una aplicaci&oacute;n JavaEE que produce mensajes o que los consume de manera s&iacute;ncrona <em>puede</em> utilizar un EJB de sesi&oacute;n para realizar estas tareas. Pero como la consumici&oacute;n dentro de un bloque s&iacute;ncrono reduce los recursos del servidor, no es una buena pr&aacute;ctica realizar un <span class="codefrag">receive</span> dentro de un EJB. Por ello, se suele utilizar un <span class="codefrag">receive</span> con timeout, o un MDB para recibir los mensajes de una manera as&iacute;ncrona.</p>
+<p>El uso de JMS dentro de una aplicaci&oacute;n JavaEE es muy similar al realizado en una aplicaci&oacute;n cliente, salvando las diferencias en cuanto a la gesti&oacute;n de los recursos y las transacciones.</p>
+<a name="N10192"></a><a name="Gesti%C3%B3n+de+Recursos"></a>
+<h4>Gesti&oacute;n de Recursos</h4>
+<p>Los recursos JMS son la conexi&oacute;n y la sesi&oacute;n. Normalmente, es importante liberar los recursos JMS cuando dejan de utilizarse. Algunas pr&aacute;cticas &uacute;tiles son:</p>
+<ul>
+    
+<li>Si queremos mantener un recurso &uacute;nicamente durante la vida de un m&eacute;todo de negocio, es una buena idea cerrar el recurso en el bloque <span class="codefrag">finally</span> dentro del m&eacute;todo.</li>
+    
+<li>Si queremos mantener un recurso durante la vida de una instancia EJB, es conveniente utilizar un m&eacute;todo anotado con <span class="codefrag">@PostConstruct</span> para crear el recurso y otro m&eacute;todo anotado con <span class="codefrag">@PreDestroy</span> para cerrarlo. Si utiliz&aacute;semos un EJB de sesi&oacute;n con estado, para mantener el recurso JMS en un estado cacheado, deber&iacute;amos cerrarlo y poner su valor a <span class="codefrag">null</span> mediante un m&eacute;todo anotado con <span class="codefrag">@PrePassivate</span> , y volver a crearlo en un m&eacute;todo anotado como <span class="codefrag">@PostActive</span>.</li>
+
+</ul>
+<a name="N101B7"></a><a name="Transacciones"></a>
+<h4>Transacciones</h4>
+<p>En vez de usar transacciones locales, utilizamos transacciones CMT para m&eacute;todos de los ejbs que realizan env&iacute;os o recepciones de mensajes, permitiendo que el contenedor EJB gestione la demarcaci&oacute;n de las transacciones. Ya que las transacciones CMT son las que se usan por defecto, no tenemos que utilizar ninguna anotaci&oacute;n para especificarlas.</p>
+<p>Tambi&eacute;n podemos utilizar transacciones BMT y el interfaz <span class="codefrag">javax.transaction.UserTransaction</span> para demarcar las transacciones de un modo programativo, pero solo debemos hacerlo as&iacute; si nuestros requisitos son muy complejos y dominamos muy bien los conceptos sobre transacciones. Normalmente, CMT produce el comportamiento m&aacute;s eficiente y correcto.</p>
+<a name="N101C8"></a><a name="Ejemplo+de+un+EJB+que+Env%C3%ADa+Mensajes"></a>
+<h3 class="underlined_5">Ejemplo de un EJB que Env&iacute;a Mensajes</h3>
+<p>A continuaci&oacute;n mostramos un sencillo EJB que realiza la misma funci&oacute;n que el productor de mensajes creado en la primera sesi&oacute;n.</p>
+<p>El interfaz remoto es el siguiente:</p>
+<pre class="code">package es.ua.jtech.jms;
+
+<em>// imports</em>
+
+<strong>@Remote</strong>
+public interface <strong>ProductorSLSBRemote</strong> {
+    void enviaMensajeJMS(String mensaje) throws JMSException;
+}
+</pre>
+<p>Y en cuanto al bean, el c&oacute;digo es muy similar al visto como aplicaci&oacute;n cliente:</p>
+<pre class="code">package es.ua.jtech.jms;
+
+<em>// imports</em>
+
+<strong>@Stateless
+public class ProductorSLSBBean implements ProductorSLSBRemote {</strong>
+
+    <strong>@Resource(name = "jms/ConnectionFactory")
+    private ConnectionFactory connectionFactory;
+    @Resource(name = "jms/Queue")
+    private Queue queue;</strong>
+
+    public void enviaMensajeJMS(String mensaje) throws JMSException {
+        Connection connection = null;
+        Session session = null;
+        try {
+            connection = connectionFactory.createConnection();
+            connection.start();
+            session = connection.createSession(true, 0);
+
+            TextMessage tm = session.createTextMessage(mensaje);
+
+            MessageProducer messageProducer = session.createProducer(queue);
+            messageProducer.send(tm);
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        }
+    }
+}
+</pre>
+<p>Tal como hemos comentado antes, destacar como las instancias de los recursos administrados ya no son est&aacute;ticas, as&iacute; como el cierre de los recursos dentro del bloque <em>finally</em>.</p>
+<a name="N101F8"></a><a name="Ejemplo+de+Aplicaci%C3%B3n+Web+que+Env%C3%ADa+Mensajes"></a>
+<h3 class="underlined_5">Ejemplo de Aplicaci&oacute;n Web que Env&iacute;a Mensajes</h3>
+<p>A continuaci&oacute;n tenemos un <em>Servlet</em> que env&iacute;a un mensaje, igual que el <em>EJB</em> anterior:</p>
+<pre class="code">package es.ua.jtech.jms;
+
+<em>// imports</em>
+
+<strong>public class ProductorJMSServlet extends HttpServlet</strong> {
+
+    <strong>@Resource(name = "jms/ConnectionFactory")
+    private ConnectionFactory connectionFactory;
+    @Resource(name = "jms/Queue")
+    private Queue queue;</strong>
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        PrintWriter out = response.getWriter();
+
+        String mensaje = "Este es un mensaje enviado desde un Servlet";
+
+        try {
+            <strong>this.enviaMensajeJMS(mensaje);</strong>
+            out.println("Enviado mensaje: " + mensaje);
+        } catch (JMSException jmse) {
+            jmse.printStackTrace(System.err);
+        } finally {
+            out.close();
+        }
+    }
+
+    private void enviaMensajeJMS(String mensaje) throws JMSException {
+        Connection connection = null;
+        Session session = null;
+        try {
+            connection = connectionFactory.createConnection();
+            connection.start();
+            session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+
+            TextMessage tm = session.createTextMessage(mensaje);
+
+            MessageProducer messageProducer = session.createProducer(queue);
+            messageProducer.send(tm);
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        }
+    }
+}
+</pre>
+<p>Como pod&eacute;is observar, el m&eacute;todo de env&iacute;o de mensajes es exactamente igual (s&oacute;lo hemos cambiado el m&eacute;todo de <span class="codefrag">public</span> a <span class="codefrag">private</span>).</p>
+<p>Si lo que queremos es que el Servlet env&iacute;e el mensaje a trav&eacute;s del EJB anterior, podr&iacute;amos hacer esto:</p>
+<pre class="code">package es.ua.jtech.jms;
+
+<em>// imports</em>
+
+<strong>public class ProductorEJBServlet extends HttpServlet {</strong>
+
+    <strong>@EJB
+    private ProductorSLSBRemote productorSLSBBean;</strong>
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        PrintWriter out = response.getWriter();
+
+        String mensaje = "Este es un mensaje enviado desde un Servlet que llama a un EJB";
+
+        try {
+            <strong>productorSLSBBean.enviaMensajeJMS(mensaje);</strong>
+            out.println("Enviado mensaje: " + mensaje);
+        } catch (JMSException jmse) {
+            jmse.printStackTrace(System.err);
+        } finally {
+            out.close();
+        }
+    }
+}
+</pre>
+<p>En la siguiente sesi&oacute;n repasaremos el ciclo de vida de los EJBs, y veremos como podr&iacute;amos mejorar el EJB para que tanto la creaci&oacute;n como el cierre de la conexiones se realizase &uacute;nicamente en un sitio, y no una vez por cada m&eacute;todo de negocio que tengamos.</p>
+</div>
+
+
+<p class="pageBreakAfter"></p>
+
+</div>
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+        Copyright &copy;
+         2010-2011 Dept. Ciencia de la Computaci&oacute;n e IA</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,1192 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Aspectos avanzados del Lenguaje Groovy. Metaprogramación.</title>
+
+		<meta name="description" content="Experto en desarrollo de aplicaciones web con JavaEE y Javascript">
+		<meta name="author" content="Francisco José García Rico">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/experto.css" id="theme">
+		
+    	<!-- coloreado de sintaxis con highlight.js -->
+    	<link rel="stylesheet" type="text/css" href="lib/css/github.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+
+	</head>
+
+<body>
+	<div class="reveal">
+	<div class="slides">
+		<!-- todo lo que se ponga aqui (que no sea un <section>) aparecerá
+		en todas las diapositivas -->
+		<div class="header">
+			<div class="logo">
+			 <img src="css/images/logo_small.png">
+			</div>
+			<div class="bar">Experto en desarrollo de aplicaciones web con JavaEE y Javascript</div>
+		</div>
+		<div class="footer">
+			<div class="left">
+				Framework Grails
+			</div>
+			<div class="center">
+				&copy; 2014-15 Dpto. Ciencia de la Computación e I.A.
+			</div>
+			<div class="right">
+				Sesión 2
+			</div>	
+		</div>	
+		<!-- Cada <section> es una slide -->	
+		
+		<section>
+			<!-- al poner el <h1> automáticamente aparece el logo del curso-->
+			<h1>Framework Grails</h1>
+			<h2>Sesión 2: Aspectos avanzados del Lenguaje Groovy. Metaprogramación.</h2>
+		</section>
+		
+		<section>
+			<h2>Índice</h2>
+			<ul>
+				<li>Closures</li>
+				<li>Groovy como lenguaje orientado a objetos</li>
+				<li>Metaprogramación</li>
+				<li>Groovy Builders</li>
+				<li>Tratamiento de archivos XML</li>
+			</ul>
+		</section>
+		
+		<section>			
+			<h2>Closures</h2>
+			<blockquote class="fragment" align=left >Un <em>closure</em> es un trozo de código empaquetado como un objeto y definido entre llaves. Actúa como un método, al cual se le pueden pasar parámetros y pueden devolver valores. Es un objeto normal y corriente al cual se pasa una referencia de la misma forma que se le pasa a cualquier otro objeto.</blockquote>			 
+		</section>
+		
+		<section>			
+			<h2>Declarando closures</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def nombre = 'Juan'
+def imprimeNombre = { println "Mi nombre es $nombre"}
+
+imprimeNombre()
+
+nombre = "Yolanda"
+imprimeNombre()
+				</code>
+			</pre>
+		</section>
+		
+		<section>			
+			<h2>Parámetros en los closures</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def imprimeNombre = { nombre -> println "Mi nombre es ${nombre}"}
+
+imprimeNombre("Juan")
+imprimeNombre "Yolanda" //Los paréntesis son opcionales
+
+//Con múltiples parámetros
+def quintetoInicial = { base, escolta, alero, alapivot, pivot -> println "Quinteto inicial compuesto por: $base, $escolta, $alero, $alapivot y $pivot"}
+   
+quintetoInicial "Calderón", "Navarro", "Jiménez", "Garbajosa", "Pau Gasol"
+				</code>
+			</pre>
+		</section>		
+		
+		<section>			
+			<h2>Parámetro implícito</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def imprimeNombre = { println "Mi nombre es $it" }
+
+imprimeNombre("Juan")
+imprimeNombre "Yolanda"
+				</code>
+			</pre>
+		</section>
+
+		<section>			
+			<h2>Closure desde un método</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+class MetodoClosureEjemplo {
+    int limite
+
+    MetodoClosureEjemplo (int limite){
+        this.limite = limite
+    }
+
+    boolean validar (String valor){
+        return valor.length() <= limite
+    }
+}
+
+MetodoClosureEjemplo primero = new MetodoClosureEjemplo(8)
+MetodoClosureEjemplo segundo = new MetodoClosureEjemplo(5)
+
+Closure primerClosure = primero.&validar
+
+def palabras = ["cadena larga", "mediana", "corta"]
+
+assert "mediana" == palabras.find(primerClosure)
+assert "corta" == palabras.find(segundo.&validar)
+				</code>
+			</pre>
+		</section>
+
+		<section>			
+			<h2>Multimétodos</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+class MultimetodoClosureEjemplo{
+
+    int metodoSobrecargado(String cadena){
+        return cadena.length()
+    } 
+
+    int metodoSobrecargado(List lista){
+        return lista.size()
+    }
+
+    int metodoSobrecargado(int x, int y){
+        return x * y
+    }
+}
+
+MultimetodoClosureEjemplo instancia = new MultimetodoClosureEjemplo()
+Closure multiclosure = instancia.&metodoSobrecargado
+
+assert 21 == multiclosure("una cadena cualquiera")
+assert 4 == multiclosure(['una','lista','de','valores'])
+assert 21 == multiclosure(7, 3)
+				</code>
+			</pre>
+		</section>
+
+		<section>			
+			<h2>Los closures como objetos</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def quintetoInicial = ["Calderón", "Navarro", "Jiménez", "Garbajosa", "Pau Gasol"]
+
+salida = ''
+quintetoInicial.each {
+    salida += it +', '
+}
+assert salida.take(salida.size()-2) == 'Calderón, Navarro, Jiménez, Garbajosa, Pau Gasol'
+				</code>
+			</pre>
+		</section>
+
+		<section>			
+			<h2>Usos de los closures</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def suma = { x, y ->
+x + y
+}
+assert 10 == suma(7,3)
+assert 13 == suma.call(7,6)
+				</code>
+			</pre>
+		</section>
+
+		<section>			
+			<h2>Closure como parámetro</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def campodepruebas(repeticiones, Closure proceso){
+   inicio = System.currentTimeMillis()
+   repeticiones.times{proceso(it)}
+   fin = System.currentTimeMillis()
+   return fin - inicio
+}
+
+lento = campodepruebas(999999) { (int) it / 2 }
+rapido = campodepruebas(999999) { it.intdiv(2) }
+
+//El método lento es al menos 3 más lento que el rápido
+assert rapido * 3 < lento
+				</code>
+			</pre>
+		</section>
+
+		<section>			
+			<h2>Valores por defecto</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def suma = { x, y=3 ->
+  suma = x + y
+}
+assert 7 == suma(4,3)
+assert 7 == suma(4)
+				</code>
+			</pre>
+		</section>
+
+		<section>			
+			<h2>Más métodos de los closures</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def llamador (Closure closure){
+    closure.getParameterTypes().size()
+}
+
+assert llamador { uno -> } == 1
+assert llamador { uno, dos -> } == 2
+				</code>
+			</pre>
+		</section>
+
+		<section>			
+			<h2>Currying</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def suma = { x, y -> x + y }
+def sumaUno = suma.curry(1)
+
+assert suma(4,3) == 7
+assert sumaUno(5) == 6
+				</code>
+			</pre>
+		</section>
+
+		<section>			
+			<h2>Valores devueltos en los closures</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+assert [2,4,6] == [1,2,3].collect { it * 2 } //Implícita
+assert [2,4,6] == [1,2,3].collect { return it * 2 } //Explícita
+				</code>
+			</pre>
+		</section>
+
+		<section>			
+			<h2>Salir de un closure de forma prematura</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+assert [2,2, 6] == [1,2,3].collect {
+    if (it%2==1) 
+        return it * 2
+    return it
+}
+				</code>
+			</pre>
+		</section>
+
+		<section>						
+			<h2>Groovy como lenguaje orientado a objetos</h2>
+			<ul>
+				<li>Clases y scripts</li>
+				<li>Organizando nuestras clases y scripts</li>
+				<li>Características avanzadas del modelo orientado a objetos</li>
+				<li>GroovyBeans</li>
+				<li>Otras características interesantes de Groovy</li>
+			</ul>			
+		</section>
+		
+		<section>						
+			<h2>Clases</h2>
+			<ul>
+				<li>Definición similar a Java</li>
+				<li>Palabra reservada <em>class</em></li>
+				<li>Constructores y métodos</li>
+			</ul>			
+		</section>
+
+		<section>						
+			<h2>Scripts</h2>
+			<ul>
+				<li>Definición de variables</li>
+				<li>Métodos</li>
+				<li>Declaración de clases</li>
+			</ul>			
+		</section>
+
+		<section>						
+			<h2>Modificadores</h2>
+			<ul>
+				<li>private</li>
+				<li>protected</li>
+				<li>public</li>
+				<li>final</li>
+				<li>static</li>
+			</ul>			
+		</section>
+
+		<section>						
+			<h2>Acceso a propiedades de las clases</h2>
+			<ul>
+				<li>objeto.campo</li>
+				<li>objeto['campo']</li>
+			</ul>			
+		</section>
+
+		<section>			
+			<h2>Ejemplo de acceso a propiedades de las clases</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+class miClase {
+    public campo1, campo2, campo3, campo4 = 0
+}
+
+def miobjeto = new miClase()
+
+miobjeto.campo1 = 2
+assert miobjeto.campo1 == 2
+
+miobjeto['campo2'] = 3
+assert miobjeto.campo2 == 3
+
+for(i=1;i<=4;i++)
+    miobjeto['campo'+i] = i - 1
+
+assert miobjeto.campo1 == 0
+assert miobjeto['campo2'] == 1
+assert miobjeto.campo3 == 2
+assert miobjeto['campo4'] == 3
+				</code>
+			</pre>
+		</section>
+
+		<section>			
+			<h2>Ejemplo clase en Groovy</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+class MiClase{
+
+       static main(args){
+           def algo = new MiClase()
+           algo.metodoPublicoVacio()
+           assert "hola" == algo.metodoNoTipado()
+           assert 'adios' == algo.metodoTipado()
+           metodoCombinado()
+       }
+
+       void metodoPublicoVacio(){
+           ;
+       }
+
+       def metodoNoTipado(){
+           return 'hola'
+       }
+
+       String metodoTipado(){
+           return 'adios'
+       }
+
+       protected static final void metodoCombinado(){
+
+       }
+}
+				</code>
+			</pre>
+		</section>
+
+		<section>						
+			<h2>Diferencias</h2>
+			<ul>
+				<li>Método <em>main</em> sin modificador <em>public</em></li>
+				<li>Los parámetros del método no son de tipo <em>String[]</em></li>
+			</ul>
+		</section>
+
+
+		<section>						
+			<h2>Protección con el operador ?.</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def mapa = [a:[b:[c:1]]]
+
+assert mapa.a.b.c == 1
+
+//Protección con cortocircuito
+if (mapa && mapa.a && mapa.a.x){
+    assert mapa.a.x.c == null
+}
+
+//Protección con un bloque try/catch
+try{
+    assert mapa.a.x.c == null
+} catch (NullPointerException npe){}
+
+//Protección con el operador ?.
+assert mapa?.a?.x?.c == null
+				</code>
+			</pre>
+		</section>
+
+		<section>						
+			<h2>Constructores automáticos en Groovy</h2>
+			<ul>
+				<li>Forma tradicional con parámetros en orden</li>
+				<li>Palabra reservada <em>as</em></li>
+				<li>Lista de parámetros</li>
+			</ul>
+		</section>
+
+		<section>						
+			<h2>Constructores automáticos en Groovy</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+class Libro{
+    String titulo, autor
+
+    Libro(titulo, autor){
+        this.titulo = titulo
+        this.autor = autor
+    }
+}
+
+//Forma tradicional
+def primero = new Libro('Groovy in action', 'Dierk König')
+
+//Mediante la palabra reservada as y una lista de parámetros
+def segundo = ['Groovy in action','Dierk König'] as Libro
+
+//Mediante una lista de parámetros
+Libro tercero = ['Groovy in action','Dierk König']
+
+assert primero.getTitulo() == 'Groovy in action'
+assert segundo.getAutor() == 'Dierk König'
+assert tercero.titulo == 'Groovy in action'
+				</code>
+			</pre>
+		</section>
+
+		<section>						
+			<h2>Constructores automáticos en Groovy</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+class Libro {
+  String titulo, autor    
+}
+
+def primero = new Libro()
+def segundo = new Libro(titulo: 'Groovy in action')
+def tercero = new Libro(autor: 'Dierk König')
+def cuarto = new Libro(titulo: 'Groovy in action', autor: 'Dierk König')
+
+assert primero.getTitulo() == null
+assert segundo.titulo == 'Groovy in action'
+assert tercero.getAutor() == 'Dierk König'
+assert cuarto.autor == 'Dierk König'
+				</code>
+			</pre>
+		</section>
+
+		<section>						
+			<h2>Organizando nuestras clases y scripts</h2>
+			<ul>
+				<li>Relación entre clases y ficheros</li>
+				<li>Paquetes y organización jerárquica</li>
+				<li>Alias</li>
+			</ul>
+		</section>
+
+		<section>						
+			<h2>Relación entre clases y ficheros</h2>
+			<ul>
+				<li>Si el fichero <em>.groovy</em> no tiene la declaración de ninguna clase, éste se trata como si fuera un _script_ y automáticamente se genera una clase de tipo _Script_ con el mismo nombre que el fichero <em>.groovy</em></li>
+				<li class="fragment">Si el fichero <em>.groovy</em> contiene una sola clase definida con el mismo nombre que el fichero, la relación es la misma que en Java, es decir, un fichero .class por cada fichero <em>.groovy</em></li>
+			</ul>
+		</section>
+
+		<section>						
+			<h2>Relación entre clases y ficheros</h2>
+			<ul>
+				<li class="fragment">Si el fichero <em>.groovy</em> contiene más de una clase definida, <em>.groovyc</em>, creará tantos ficheros _.class_ como sean necesarios para cada clase definida en el fichero <em>.groovy</em>.</li>
+				<li class="fragment">Un fichero Groovy puede mezclar la definición de clases con el código script. En este caso, el código script se convierte en la clase principal a ejecutar, con lo que no se puede declarar una clase con el mismo nombre que el fichero fuente.</li>
+			</ul>
+		</section>
+		
+		<section>						
+			<h2>Organización de paquetes</h2>
+			<p>Idéntica organización que Java</p>
+		</section>
+
+		<section>						
+			<h2>Archivos compilados</h2>
+			<ul>
+				<li class="fragment">Si no es necesario compilar</li>
+				<li class="fragment">¿Dónde busca entonces los archivos "compilados"</li>
+				<li class="fragment">En el classpath, buscará archivos compilados y sin compilar</li>
+				<li class="fragment">Si está el archivo compilado y sin compilar, se escoge el modificado más recientemente</li>
+			</ul>
+		</section>
+
+		<section>						
+			<h2>Paquetes en Groovy</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+package negocio
+
+class Cliente {
+  String nombre, producto
+  Direccion direccion = new Direccion()
+}
+
+class Direccion {
+  String calle, ciudad, provincia, pais, codigopostal
+}
+				</code>
+			</pre>
+		</section>
+
+		<section>						
+			<h2>Referencia a librerías en Groovy</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+import negocio.*
+
+def clienteua = new Cliente()
+clienteua.nombre = 'Universidad de Alicante'
+clienteua.producto = 'Pizarras digitales'
+
+assert clienteua.getNombre() == 'Universidad de Alicante'
+				</code>
+			</pre>
+		</section>
+
+		<section>						
+			<h2>Alias de paquetes en Groovy</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+import agenteexterno1.OtraClase as OtraClase1
+import agenteexterno2.OtraClase as OtraClase2
+
+def otraClase1 = new OtraClase1()
+def otraClase2 = new OtraClase2()
+				</code>
+			</pre>
+		</section>
+
+		<section>						
+			<h2>Características avanzadas del modelo orientado a objetos</h2>
+			<ul>
+				<li class="fragment">Herencia</li>
+				<li class="fragment">Interfaces</li>
+				<li class="fragment">Multimétodos</li>
+			</ul>
+		</section>		
+
+		<section>						
+			<h2>Herencia</h2>
+			<ul>
+				<li>Posibilidad de añadir campos y métodos a una clase a partir de una clase base.</li>
+				<li>Groovy permite herencia igual que Java</li>
+				<li>Groovy puede extender una clase Java</li>
+				<li>Java puede extender una clase Groovy</li>
+			</ul>
+		</section>	
+
+		<section>						
+			<h2>Interfaces</h2>
+			<ul>
+				<li>Clase especial en la que todos sus métodos son abstractos y públicos pero sin implementar</li>
+				<li>Los métodos están desarrollados en la clase que <em>implementa</em> esta interface</li>
+				<li>Los interfaces son lo más parecido a la herencia múltiple ya que una clase puede implementar más de una clase pero sólo extender una.</li>
+			</ul>
+		</section>
+
+		<section>						
+			<h2>Multimétodos</h2>
+			<ul>
+				<li>El tipo de los datos pasados se eliga de forma dinámica cuando se pasan como parámetros a los métodos</li>
+				<li>Ésto se conoce como multimétodo</li>
+			</ul>
+			<pre class="fragment">
+				<code class="groovy" data-trim style="font-size: 18px;">
+def multimetodo(Object o) { return 'objeto' }
+def multimetodo(String o) { return 'string' }
+
+Object x = 1
+Object y = 'foo'
+
+assert 'objeto' == multimetodo(x)
+assert 'string' == multimetodo(y)//En Java, esta llamada hubiera devuelto la palabra 'objeto'
+				</code>
+			</pre>
+		</section>
+
+		<section>						
+			<h2>GroovyBeans</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+public class Libro implements java.io.Serializable {
+    private String titulo;
+    public String getTitulo(){
+        return titulo;
+    }
+    public void setTitulo(String valor){
+        titulo = valor;
+    }
+}
+				</code>
+			</pre>
+			<pre class="fragment">
+				<code class="groovy" data-trim style="font-size: 18px;">
+class Libro implements java.io.Serializable {
+  String titulo
+}
+				</code>
+			</pre>
+		</section>	
+
+		<section>						
+			<h2>Diferencias entre JavaBean y GroovyBean</h2>
+			<ul>
+				<li>Evidentes diferencias</li>
+				<li>Nos ahorra tener que reescribir constructores al añadir una nueva propiedad</li>
+				<li>Setters y getters generados al vuelo</li>
+				<li>Operador .</li>
+			</ul>
+		</section>			
+
+		<section>						
+			<h2>Getters automáticos</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+class Persona {
+    String nombre, apellidos
+
+    String getNombreCompleto(){
+        return "$nombre $apellidos"
+    }
+}
+
+def juan = new Persona(nombre:"Juan")
+juan.apellidos = "Martínez"
+
+assert juan.nombreCompleto == "Juan Martínez"
+				</code>
+			</pre>
+		</section>	
+
+		<section>						
+			<h2>Acceso a la propiedad original</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+class DobleValor {
+    def valor
+
+    void setValor(valor){
+        this.valor = valor
+    }
+
+    def getValor(){
+        valor * 2
+    }
+}
+
+def doble = new DobleValor(valor: 300)
+
+assert 600 == doble.getValor()
+assert 600 == doble.valor
+assert 300 == doble.@valor
+				</code>
+			</pre>
+		</section>
+
+		<section>						
+			<h2>Operador *</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def getLista(){
+    return [1,2,3,4,5]
+}
+
+def suma(a, b, c, d, e){
+    return a + b + c + d + e
+}
+
+assert 15 == suma(*lista)
+				</code>
+			</pre>
+		</section>
+
+		<section>						
+			<h2>Metaprogramación</h2>
+			<p align="left">
+La metaprogramación consiste en escribir programas que escriben o manipulen otros programas (o a sí mismos) como datos, o que hacen en tiempo de compilación parte del trabajo que, de otra forma, se haría en tiempo de ejecución. Esto permite al programador ahorrar tiempo en la producción de código.
+			</p>
+		</section>
+
+		<section>						
+			<h2>Características de Groovy</h2>
+			<ul>
+				<li>Todo método de cualquier objecto invocado desde Groovy pasa por un intermediario (MOP - MetaObjectProtocol)</li>
+				<li>Posibilidad de interceptar llamadas a métodos o acceso a propiedades</li>
+				<li>Crear y modificar métodos en tiempo de ejecución para por ejemplo extender directamente la clase <em>java.lang.String</em></li>
+			</ul>
+		</section>
+
+		<section>						
+			<h2>Clase Expando</h2>
+			<p align="left">
+				Clase especial que nos permite añadir métodos, constructores, propiedades y métodos estáticos utilizando una sintaxis basada en closures.
+			</p>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def miExpando = new Expando()
+
+miExpando.factor = 5
+
+miExpando.multiplica = { a -> factor * a }
+
+assert miExpando.multiplica(4) == 20
+
+assert miExpando.resto == null
+				</code>
+			</pre>
+		</section>
+
+		<section>						
+			<h2>Clase Expando</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+miExpando.factor = 5
+//Realmente...
+miExpando.setProperty('factor',5)
+
+miExpando.factor
+//Realmente...
+miExpando.getProperty('factor')
+
+miExpando.multiplica(4)
+//Realmente...
+miExpando.invokeMethod('multiplica', [4] as Object[])
+				</code>
+			</pre>
+		</section>
+
+		<section>						
+			<h2>Clase Expando</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+class MiExpando {
+    private dynamicProperties = [:]
+    
+    void setProperty(String propName, val){
+        dynamicProperties[propName] = val
+    }
+    
+    def getProperty(String propName) {
+        dynamicProperties[propName]
+    }
+    
+    def methodMissing(String methodName, args){
+        def prop = dynamicProperties[methodName]
+        if (prop instanceof Closure) {
+            return prop(*args)
+        }
+    }
+}
+
+def miExpando = new MiExpando()
+miExpando.a = 4
+miExpando.b = 5
+miExpando.suma = { x, y -> x + y }
+
+assert miExpando.a == 4
+assert miExpando.b == 5
+assert miExpando.suma(4,5)
+				</code>
+			</pre>
+		</section>
+
+		<section>						
+			<h2>Objeto delegate</h2>
+			<p align="left">
+				Todo closure tiene asociado un objeto conocido como _delegate_ que puede ser cualquier tipo de objeto y es la forma de tener un objeto que responda a determinadas llamadas a métodos y propiedades.
+			</p>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def miclosure = {
+    concat " Mundo!"
+}
+
+def s = "Hola"
+miclosure.delegate = s
+assert miclosure.call() == "Hola Mundo!" 
+				</code>
+			</pre>
+		</section>
+
+		<section>						
+			<h2>Objeto delegate</h2>
+			<p align="left">
+				¿qué pasaría si tuviéramos un método concat(String)? ¿Qué método se ejecutaría al realizar la llamada desde el closure?
+			</p>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def concat(String arg) {
+    return "Concat llamado con arg = $arg"
+}
+
+def miclosure = {
+    concat " Mundo!"
+}
+
+def s = "Hola"
+miclosure.delegate = s
+assert miclosure.call() == "Concat llamado con arg =  Mundo!"
+				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>Estrategías de resolución</h2>
+			<ul>
+				<li>OWNER_FIRST (por defecto)</li>
+				<li>DELEGATE_FIRST</li>
+				<li>OWNER_ONLY</li>
+				<li>DELEGATE_ONLY</li>
+			</ul>
+		</section>
+
+		<section>						
+			<h2>Objeto delegate</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def concat(String arg) {
+    return "Concat llamado con arg = $arg"
+}
+
+def miclosure = {
+    concat " Mundo!"
+}
+
+def s = "Hola"
+miclosure.delegate = s
+
+assert miclosure.resolveStrategy == Closure.OWNER_FIRST
+assert miclosure.call() == "Concat llamado con arg =  Mundo!"
+
+miclosure.resolveStrategy = Closure.OWNER_FIRST
+assert miclosure.call() == "Concat llamado con arg =  Mundo!"
+
+miclosure.resolveStrategy = Closure.DELEGATE_FIRST
+assert miclosure.call() == "Hola Mundo!"
+
+miclosure.resolveStrategy = Closure.OWNER_ONLY
+assert miclosure.call() == "Concat llamado con arg =  Mundo!"
+
+miclosure.resolveStrategy = Closure.DELEGATE_ONLY
+assert miclosure.call() == "Hola Mundo!"
+				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>Objeto delegate</h2>
+			<p>
+				El objeto <em>delegate</em> por defecto de cualquier closure siempre es el propietario del closure.
+			</p>
+		</section>
+
+		<section>
+			<h2>MetaClass</h2>
+			<ul>
+				<li>Toda clase creada en Groovy tiene un objeto asociado conocido como <em>metaClass</em></li>
+				<li>Este objeto es del tipo <em>MetaClassImpl</em></li>
+				<li>Podremos extender en tiempo de ejecución cualquier clase, como por ejemplo <em>java.lang.String</em></li>
+			</ul>
+		</section>
+
+		<section>						
+			<h2>MetaClass</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def textoLargo = """La metaprogramación consiste en escribir programas que escriben o manipulan otros programas 
+(o a sí mismos) como datos, o que hacen en tiempo de compilación parte del trabajo que, de 
+otra forma, se haría en tiempo de ejecución. Esto permite al programador ahorrar tiempo en 
+la producción de código."""
+
+def textoCorto = "La metaprogramación consiste en escribir programas que escriben o manipulan otros programas"
+
+assert textoLargo instanceof java.lang.String
+assert textoCorto instanceof java.lang.String
+                
+                
+String.metaClass.cortaLosPrimeros140Caracteres = {
+    delegate.size() >= 140 ? "${delegate.take(137)}..." : delegate
+}
+
+println textoLargo.cortaLosPrimeros140Caracteres()
+println textoCorto.cortaLosPrimeros140Caracteres()
+				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>MetaClass</h2>
+			<ul>
+				<li>Los objetos también el objeto <em>metaClass</em></li>
+				<li>Nos permitirá modificar únicamente el comportamiento de este objeto y no de toda la clase</li>
+				<li>Muy útil a la hora de realizar tests unitarios</li>
+			</ul>
+		</section>
+
+		<section>						
+			<h2>MetaClass</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def texto1 = "texto 1"
+def texto2 = "texto 2"
+
+texto1.metaClass.foo = {
+    "${delegate}foo"
+}
+
+assert texto1.foo() == "texto 1foo"
+
+try {
+    assert texto2.foo() == "texto 2foo"
+} catch (MissingMethodException mme) {
+    println "El método foo no existe"
+}
+				</code>
+			</pre>
+		</section>
+
+		<section>						
+			<h2>MetaClass</h2>
+			<p>También podemos sobreescribir métodos ya existentes</p>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def texto = "En Groovy podemos sobreescribir métodos ya existentes"
+
+def textoZeroBased = texto.substring(0)
+
+String.metaClass.substring = { int beginIndex ->
+      delegate[beginIndex-1..delegate.size()-1]
+}
+
+def textoOneBased = texto.substring(1)
+
+assert textoOneBased == textoZeroBased
+
+String.metaClass = null
+				</code>
+			</pre>
+		</section>
+
+		<section>						
+			<h2>MetaClass</h2>
+			<p>Para sobrecargar métodos estáticos</p>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+String.metaClass.'static'.valueOf = { Boolean b ->
+    b ? "false" : "true"
+}
+
+assert "false" == String.valueOf(true)
+assert "true" == String.valueOf(false)
+				</code>
+			</pre>
+		</section>
+
+		<section>						
+			<h2>Groovy Builders</h2>
+			<ul>
+				<li>Facilita determinadas tareas complejas</li>
+				<li>Markup Builder</li>
+				<li>JsonBuilder</li>
+			</ul>
+		</section>
+
+		<section>						
+			<h2>Markup Builder</h2>
+			<ul>
+				<li>Formato XML altamente extendido para el intercambio de información entre aplicaciones</li>
+				<li>Se intenta facilitar la escritura y lectura del código que genera el XML</li>
+			</ul>
+		</section>
+
+		<section>						
+			<h2>Generar XML</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def builder = new groovy.xml.MarkupBuilder()
+def facturas = builder.facturas {
+    for (dia in 1..3) {
+        factura(fecha: new Date() - dia) {
+            item(id:dia){
+                producto(nombre: 'Teclado', euros:876)
+            }
+        }
+    }
+}
+
+facturas
+				</code>
+			</pre>
+		</section>
+
+		<section>						
+			<h2>XML generado</h2>
+			<pre>
+				<code class="xml" data-trim style="font-size: 18px;">
+<facturas>
+  <factura fecha='Sun Jan 03 00:00:00 CET 2014'>
+    <item id='1'>
+      <producto nombre='Teclado' euros='876' />
+    </item>
+  </factura>
+  <factura fecha='Mon Jan 02 00:00:00 CET 2014'>
+    <item id='2'>
+      <producto nombre='Teclado' euros='876' />
+    </item>
+  </factura>
+  <factura fecha='Tue Jan 01 00:00:00 CET 2014'>
+    <item id='3'>
+      <producto nombre='Teclado' euros='876' />
+    </item>
+  </factura>
+</facturas>
+				</code>
+			</pre>
+		</section>
+
+		<section>						
+			<h2>Markup Builder</h2>
+			<ul>
+				<li>Código generador muy limpio</li>
+				<li>Tabulado prácticamente idéntico</li>
+				<li>Facilita la lectura por parte de terceros</li>
+			</ul>
+		</section>
+
+		<section>						
+			<h2>HTML generado</h2>
+			<pre>
+				<p align=center><img style="border: 0;" src="imagenes/grails02/htmlgenerado.png"></p>
+			</pre>
+		</section>
+
+		<section>						
+			<h2>Generar HTML</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def builder = new groovy.xml.MarkupBuilder()
+
+builder.html {
+    head {
+        title 'Facturas'
+    }
+
+    body {
+        h1 'Facturas'
+
+        for (dia in 1..3){
+            ul{
+                li (new Date() - dia).toString()
+                ul {
+                    li "$dia.- Teclado => 876euros"
+                }
+            }        
+        }     
+    }
+}
+				</code>
+			</pre>
+		</section>
+
+		<section>						
+			<h2>Generar HTML</h2>
+			<ul>
+				<li>Código HTML compatible con los estándares</li>
+				<li>Conversión automática de determinados caracteres como < </li>
+			</ul>
+		</section>
+
+		<section>						
+			<h2>Json Builder</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def builder = new groovy.json.JsonBuilder()
+def root = builder.teachers {
+   professor {
+       firstName 'Fran'
+       lastName 'Garcia'
+       address(
+               city: 'Oxford',
+               country: 'UK',
+               zip: 12345,
+       )
+       married true
+       modules 'Groovy','Grails'
+   }
+}
+
+assert root instanceof Map
+
+assert builder.toString() == '{"teachers":{"professor":{"firstName":"Fran","lastName":"Garcia","address":{"city":"Oxford","country":"UK","zip":12345},"married":true,"modules":["Groovy","Grails"]}}}'
+				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h1>¿Preguntas...?</h1>
+		</section>
+
+		<section>
+			<h1>Ejercicios</h1>
+		</section>
+	</div>
+</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+				slideNumber: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Parallax scrolling
+				// parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+				// parallaxBackgroundSize: '2100px 900px',
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+
+				]
+			});
+
+		</script>
+
+	</body>
+</html>

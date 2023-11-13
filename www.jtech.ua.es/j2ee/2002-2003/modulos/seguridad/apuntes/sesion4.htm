@@ -1,0 +1,323 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0052)http://www.dccia.ua.es/j2ee/seguridad/apuntes/sesion4.htm -->
+<HTML><HEAD><TITLE>Seguridad en Java</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=iso-8859-1">
+<META content=Sco name=Author><LINK href="../../../apuntes.css"
+type=text/css rel=stylesheet>
+<META content="MSHTML 5.50.4134.100" name=GENERATOR></HEAD>
+<BODY>
+<H1>Tema 5: Integrando Autentificación y Autorización</H1>
+<H2>5.1. JAAS: Java Authentication and Authorization Service</H2>
+<P> Este API está orientado a conceder permisos en función de <I>quién ejecuta</I> el código.
+Se basa en PAMs (<I>Pluggable Authentication Modules</I>) que proporcionan mecanismos de 
+autentificación. El mecanismo por defecto es el de usuario-password: cuando un usuario ejecuta 
+código que require privilegios se pide el nombre de usuario y el password, y si éstos son correctos
+se conceden los permisos. Así, JAAS abarca tanto la autentificación, o verificación de identidad del
+usuario, como la autorización, es decir la concesión de permisos de acceso a los recursos. Como veremos
+más adelante, este es el modelo implementado por BEA WebLogic.</P>
+
+<H2>5.2. javax.security.auth.login: LoginContext y Configuration</H2>
+<P>Supongamos que desde el código de una aplicación (p.e.
+<A href="sesion4_archivos/EjemploJAAS.java.txt">EjemploJAAS.java</A>) se intenta autentificar a un
+usuario a través de su nombre y password. El primer paso es crear lo que se denomina un
+contexto de Login o <B>LoginContext</B> al que pasamos un nombre (p.e. "Ejemplo") seguido de un
+manejador llamado <I>UserPasswordCallbackHandler</I> que parametrizado por el nombre de usuario y su password: </P>
+<PRE class=codigo>
+<B>// 1. LoginContext</B>
+String usuario = args[0];
+char[] password = args[1].toCharArray();
+LoginContext loginContext = new <B>LoginContext</B>(
+	"Ejemplo", new UserPasswordCallbackHandler(usuario, password));
+</PRE>
+
+<P>Para que la autentificación funcione, debemos tener especificado que al contexto <I>Ejemplo</I> se le
+asocia un determinado módulo de login o <B>LoginModule</B> con una determinada configuración. Por ello,
+la clase abstracta <B>Configuration</B> define como deben usarse <B>LoginContext</B> y <B>LoginModule</B>.
+Más concretamente, determina que módulos de login deben ser invocados y cómo su éxito o fracaso afecta
+al proceso de login. Se establecen cuatro posibilidades: </P>
+<table border="1">
+  <tr>
+    <td><B>Required</B></td>
+    <td>El módulo de login debe tener éxito para que el login completo tenga éxito. Si falla, se
+    consulta a otros módulos de login.</td>
+  </tr>
+  <tr>
+    <td><B>Requisite</B></td>
+    <td>El módulo de login debe tener éxito para que el login completo tenga éxito. Si falla, el
+    proceso de login es corto-circuitado y no se llama a ningún otro módulo de login.</td>
+  </tr>
+  <tr>
+    <td><B>Sufficient</B></td>
+    <td>Si este módulo tiene éxito y ningún módulo requerido o de requisito falla, el login completo
+    tiene éxito.</td>
+  </tr>
+  <tr>
+    <td><B>Optional</B></td>
+    <td>El éxito de este módulo no influye en el resto del proceso. Si ningún módulo de los tres tipos
+    anteriores falla, el login completo tiene éxito independientemente de que un módulo opcional tenga
+    éxito.</td>
+  </tr>
+</table>
+
+<P>La asociación del contexto <I>Ejemplo</I> a un determinado módulo de login, llamado
+<I>PasswordLoginModule</I>, con la configuración <I>required</I> pueden alojarse, p.e., en el fichero
+<A href="sesion4_archivos/jaas.config.txt">jaas.config</A>:</P>
+<PRE class=codigo>
+Ejemplo {
+   PasswordLoginModule <B>required;</B>
+};
+</PRE>
+
+<H2>5.3. javax.security.auth.callback: Callback y CallbackHandler</H2>
+<P>El código del manejador se encuentra en
+<A href="http://www.jtech.ua.es/j2ee/2002-2003/seguridad/apuntes/sesion4_archivos/UserPasswordCallbackHandler.java">UserPasswordCallbackHandler.java</A>.
+Dicho código implementa la interfaz <B>CallbackHander</B>. Para ello hay que definir un constructor, que
+simplemente recibirá el nombre de usuario y el password que se le pasa por parámetro desde el código que
+inició la autentificación:</P>
+<PRE class=codigo>
+public UserPasswordCallbackHandler(String usuario, char[] password) {
+	<B>mUsuario</B> = usuario;
+	<B>mPassword</B> = password;
+}
+</PRE>
+<P>A continuación hay que implementar el método <B>handle()</B> que recibe como entrada un array
+de objetos <B>Callback</B>. Sun proporciona diversas implementaciones como <B>PasswordCallback</B> y
+<B>NameCallback</B> con métodos como <B>setName()</B> y <B>setPassword()</B> que inicializan el nombre
+y password del usuario en los respectivos <B>callbacks</B> a los valores definidos por el constructor 
+y que en su momento le pasó la aplicación que realiza la autentificación:</P>
+<PRE class=codigo>
+public void <B>handle</B>(Callback[] callbacks)
+  throws UnsupportedCallbackException {
+  // Iterar los callbacks
+  for(int i=0;i&lt;callbacks.length;i++) {
+     <B>Callback</B> callback = callbacks[i];
+     // Manejar callback según su tipo.
+     if (callback instanceof NameCallback) {
+       <B>NameCallback</B> nameCallback = (NameCallback)callback;
+       nameCallback.<B>setName(mUsuario);</B>
+     } else if (callback instanceof PasswordCallback) {
+       <B>PasswordCallback</B> passwordCallback = (PasswordCallback)callback;
+       passwordCallback.<B>setPassword(mPassword);</B>
+     } else {
+       throw new UnsupportedCallbackException(callback, "Tipo de callback no soportado");
+     }
+   }
+}
+</PRE>
+
+<H2>5.4. Interfaz javax.security.auth.spi.LoginModule</H2>
+<P>Volviendo a la aplicación <A href="sesion4_archivos/EjemploJAAS.java.txt">EjemploJAAS.java</A>,
+entra en juego la interfaz <B>LoginModule</B> que se encuentra implementada en el código
+<A href="sesion4_archivos/PasswordLoginModule.java.txt">PasswordLoginModule.java</A>.
+En esta interfaz tenemos los siguientes métodos:</P>
+<table border="1">
+  <tr>
+    <td><B>initialize()</B></td>
+    <td>Dado un objeto inicializa el <B>LoginModule</B> para un intento de login.</td>
+  </tr>
+  <tr>
+    <td><B>login()</B></td>
+    <td>Comprueba las credenciales del sujeto anterior. Esto es dependiente de la implementación:
+    Puede consistir en un acceso a BD, leer un fichero de passwords, etc.</td>
+  </tr>
+  <tr>
+    <td><B>commit()</B></td>
+    <td>Se invoca solo si <B>login()</B> tiene éxito. Este método añade las identidades y credenciales
+    necesarias para el sujeto. El módulo login debe limpiar su estado durante el commit. Una vez
+    que el commit tenga éxito, JAAS añadira el sujeto al contexto actual.</td>
+  </tr>
+  <tr>
+    <td><B>abort()</B></td>
+    <td>Si el <B>login()</B> falló, se invoca este método y se limpia el estado del login.</td>
+  </tr>
+  <tr>
+    <td><B>logout()</B></td>
+    <td>Hace logout borrando las identidades y credenciales que sea necesario.</td>
+  </tr>
+</table>
+<P>Desde la aplicación llamaremos a <B>login()</B> de la siguiente forma:</P>
+<PRE class=codigo>
+<B>// 2. login()</B>
+logincontext.login();
+</PRE>
+<P>Concretamente el método <B>login()</B> define el array de <I>callbacks</I> y llama al método
+<B>handle()</B> del manejador para darle valor al nombre de usuario y al password. A continuación
+se accede a los <I>callbacks</I> devueltos mediante los métodos <B>getName()</B> y <B>getPassword()</B>. 
+Estos valores son los que en su momento se pasarón desde la aplicación que realiza la autentificación. </P>
+<PRE class=codigo>
+// Crear dos callbacks: uno para usuario y el otro para password.
+<B>Callback[] callbacks = new Callback[2];</B>
+callbacks[0] = new NameCallback("Usuario");
+callbacks[1] = new PasswordCallback("Password", false);
+
+try {
+  // Llamar al callbackhandler para rellenar informacion
+  mCallbackHandler.<B>handle(callbacks);</B>
+  mUsuario = ((NameCallback)callbacks[0]).<B>getName();</B>
+  char[] tempPassword = ((PasswordCallback)callbacks[1]).<B>getPassword();</B>
+  mPassword = new char[tempPassword.length];
+  System.arraycopy(tempPassword, 0, mPassword, 0, tempPassword.length);
+  // Borrar password en el callback
+  ((PasswordCallback)callbacks[1]).<B>clearPassword();</B>
+} catch (IOException ioe) {
+     throw new LoginException(ioe.toString());
+} catch (UnsupportedCallbackException uce) {
+     throw new LoginException(uce.toString());
+}
+</PRE>
+
+<P>A continuación se borra el password llamando al método <B>clearPassword()</B> y se produce la validación
+del nombre de usuario y del password. Asumiendo que el usuario es <I>sco</I> y el password es <I>scosco</I>,
+el código de validación podría ser el siguiente:</P>
+<PRE class=codigo>
+// Validar usuario y password
+if (
+   "sco".equals(mUsuario) &&
+   mPassword.length == 6 &&
+   mPassword[0] == 's' &&
+   mPassword[1] == 'c' &&
+   mPassword[2] == 'o' &&
+   mPassword[3] == 's' &&
+   mPassword[4] == 'c' &&
+   mPassword[5] == 'o'
+   ) {
+
+     // Usuario y password son correctos
+     mLoginExito = true;
+     return true;
+   } else {
+     // Fallo de autentificación. Borrar estado y lanzar excepción
+     mLoginExito = false;
+     mUsuario = null;
+     clearPassword();
+     throw new FailedLoginException("Password Incorrecto");
+   }
+</PRE>
+
+<P>de tal manera que si se detecta un fallo de autentificación se borra el password y se lanza una
+excepción. Esto hace que JAAS automáticamente lance el <B>abort()</B> que a su vez puede desencadenar
+un <B>logout()</B>.Si por el contrario todo va bien, JAAS ejecutará el método <B>commit()</B>. Este método
+va a crear un objeto de la clase <B>Subject</B>.</P>
+
+
+<H2>5.5. Clase javax.security.auth.Subject</H2>
+<P>Un <B>Subject</B> es una <I>entidad</I> (persona o empresa) o sujeto que está utilizando el sistema.
+Una entidad puede poseer una o más <I>identidades</I> o instancias de <B>java.security.Principal</B>.
+Por ejemplo podemos tener dos logins cada uno de los cuales está asociado a una aplicación distinta.
+Para obtener un <B>Set</B> con todas las entidades llamaremos al método <B>getPrincipals()</B>. </P>
+
+<P>Una sujeto contiene una lista de credenciales o instancias de <B>Credentials</B>, objetos tales
+como passwords y certificados, que pueden ser públicos o privados y puede accederse a ellos con
+los métodos <B>getPublicCredentials()</B> y <B>getPrivateCredentials()</B> respectivamente. </P>
+
+<P>Los sujetos representan quién está ejecutando el código y por lo tanto el acceso a determinados
+recursos depende de quién es la entidad activa. Para obtener dicha entidad llamaremos a
+<B>getSubject()</B>. JAAS se encarga, en coordinación con la interfaz <B>LoginModule</B>, de asignar
+entidades. Concretamente, en el método <B>commit()</B> del <B>LoginModule</B> de nuestro ejemplo,
+se crea un <B>Principal</B> llamando a la implementación de esta interfaz que se encuentra en el 
+código <A href="sesion4_archivos/ImplPrincipal.java.txt">ImplPrincipal.java</A>. A continuación 
+a dicho principal se le añade el nombre de usuario, y el principal se añade al sujeto. </P>
+
+<PRE class=codigo>
+public boolean commit() throws LoginException {
+  if (mLoginExito == false) {
+       return false;
+  }
+  // Login con éxito: crear Principal y añadirlo al Subject
+  <B>mPrincipal = new ImplPrincipal(mUsuario);</B>
+  if (!(mSujeto.<B>getPrincipals().contains(mPrincipal)))</B> {
+      mSujeto.<B>getPrincipals().add(mPrincipal);</B>
+  }
+     // Si queremos que el Subject contenga credenciales
+     // este es el momento para añadirlas.
+
+     // Borrar usuario y password.
+     mUsuario = null;
+     clearPassword();
+     mCommitExito = true;
+     return true;
+  }
+</PRE>
+
+<P>Una vez realizado el <B>commit()</B>, desde la aplicación leeremos el contexto y lo imprimiremos:</P>
+<PRE class=codigo>
+<B>// 3. getSubject() e imprimir</B>
+<B>Subject</B> subject = loginContext.<B>getSubject();</B>
+System.out.println(subject);
+</PRE>
+
+<H2>5.6. Probando el ejemplo</H2>
+<P>Para ilustrar el funcionamiento de las clases e interfaces anteriores necesitamos compilar los
+*.java: la aplicación <A href="sesion4_archivos/EjemploJAAS.java.txt">EjemploJAAS.java</A>,
+el manejador <A href="http://www.jtech.ua.es/j2ee/2002-2003/seguridad/apuntes/sesion4_archivos/UserPasswordCallbackHandler.java">UserPasswordCallbakHandler.java</A>,
+el módulo de login <A href="sesion4_archivos/PasswordLoginModule.java.txt">PasswordLoginModule.java</A>,
+y el principal <A href="sesion4_archivos/ImplPrincipal.java.txt">ImplPrincipal.java</A>, y
+debe estar en el mismo directorio el fichero de configuración
+<A href="sesion4_archivos/jaas.config.txt">jaas.config</A>. </P>
+
+<P>A continuación llamaremos a la aplicación haciendo que la máquina virtual de java tome como fichero
+de configuración el fichero <I>jaas.config</I>. Si ponemos el nombre de usuario y el password
+correcto</P>
+<P><I>java -Djava.security.auth.login.config==jaas.config EjemploJAAS sco scosco</I></P>
+<P>el resultado será mostrar el nombre de usuario del sujeto autentificado. Si por el contrario se
+suministra un nombre de usuario o un password incorrectos el login fallará al dispararse una 
+excepción.</P>
+
+<H2>5.7. Autorización programática</H2>
+<P>En ocasiones es conveniente determinar si quien está ejecutando un determinado código está autorizado
+para ello. Supongamos que desde el <B>main()</B> de la aplicación
+<A href="sesion4_archivos/EjemploJAAS2.java.txt">EjemploJAAS2.java</A> definimos un contexto de login 
+para el usuario <I>sco</I> con password <I>scosco</I>. Supongamos que, independientemente de que el login
+tenga éxito o fracase intentamos ejecutar un determinado fragmento de código. Para ello extraemos el sujeto 
+del login y llamamos al método <B>doAs()</B>de la clase <B>Subject</B>:
+<PRE class=codigo>
+sujeto.<B>doAs</B>(sujeto, new AccionEjemplo());
+</PRE>
+<P>donde <B>AccionEjemplo</B> es una clase que implementa la interfaz <B>java.security.PrivilegedAction</B>. 
+Esta interfaz contiene únicamente el método <B>run()</B>. Supongamos que al ejecutarlo llamamos al método 
+<B>getSecretText()</B> definido en la aplicación:
+</P>
+<PRE class=codigo>
+class AccionEjemplo  implements <B>PrivilegedAction</B> {
+
+  public AccionEjemplo() {}
+
+  public Object <B>run()</B> {
+      System.out.println("Texto secreto: " + <B>EjemploJAAS2.getSecretText()</B>);
+      return null;
+  }
+}
+</PRE>
+<P>Hasta el momento hemos permitido el acceso independientemente de que el login haya tenido o no éxito. Sin 
+embargo <B>getSecretText()</B> está diseñado para producir una salida distinta según el caso. ¿Cómo nos enteramos 
+de si el usuario realmente está autorizado o no, y en función de ello emitimos una salida u otra? Necesitamos definir 
+una instancia de la clase <B>java.security.AccessControlContext</B>, que obtendremos mediante llamando al 
+método <B>getContext()</B> de la clase <B>java.security.AccessController</B> y una ver obtenida pasársela como argumento 
+al método <B>getSubject()</B> de la clase <B>Subject</B>:</P>
+<PRE class=codigo>
+AccessControlContext contexto = AccessController.<B>getContext();</B>
+Subject sujeto = Subject.<B>getSubject(contexto);</B>
+</PRE>
+<P>Si el sujeto obtenido es <B>null</B> entonces está claro que se trata de un acceso incorrecto, y en 
+ese caso se emite el texto <I>esto lo puede ver cualquiera</I>. En caso contrario se obtienen todas sus 
+identidades o principales <I>(principals)</I>. Si una de esas entidades corresponde al usuario 
+<I>sco</I> entonces se emite el texto <I>solo para tus ojos</I>.</P>
+<PRE class=codigo>
+if (sujeto == null) {
+   System.out.println("Sujeto null");
+   return TEXTO_GENERICO;
+}
+
+// Obtener todos los principales: instancias de ImplPrincipal.
+// Devolver el texto secreto si el usuario "sco"
+Set principales = sujeto.<B>getPrincipals();</B>
+Iterator iterador = principales.iterator();
+while (iterador.hasNext()) {
+   ImplPrincipal principal = (ImplPrincipal)iterador.next();
+   if (principal.<B>getName()</B>.equals("sco")) {
+       return TEXTO_PARTICULAR;
+   }
+}
+return TEXTO_GENERICO;
+</PRE>
+</BODY></HTML>

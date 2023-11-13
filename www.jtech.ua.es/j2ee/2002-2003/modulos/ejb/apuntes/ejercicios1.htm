@@ -1,0 +1,423 @@
+<head>
+<title>Sesion 1 Enterprise Java Beans</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../../ejercicios.css" type="text/css">
+</head>
+<body>
+
+<h1>Ejercicios sesi&oacute;n 1</h1>
+<p>En los ejercicios de esta primera sesi&oacute;n vamos a:</p>
+
+<ul>
+  <li>Configurar el servidor de aplicaciones BEA WebLogic (<a href="#ejercicio1">ejercicio 
+    1</a>)<br>
+  <li>Compilar, desplegar y probar el primer EJB de ejemplo (<a href="#ejercicio2">ejercicio 
+    2</a>)<br>
+  <li>Realizar una sencilla modificaci&oacute;n del c&oacute;digo fuente del bean 
+    (<a href="#ejercicio3">ejercicio 3</a>)<br>
+  
+</ul>
+
+<h2><a name="ejercicio1"></a>Ejercicio 1: Instalaci&oacute;n de WebLogic 7.0 </h2>
+
+<p>Suponemos que el servidor de aplicaciones est&aacute; instalado en el directorio 
+del usuario. Por ejemplo, en el directorio</p>
+
+<pre class="codigo">
+/home/domingo/bea</pre>
+
+<p>Denominaremos este directorio <code>WL_INSTALL</code>. Vamos a necesitar que las variables 
+de entorno tengan los valores que aparecen en la siguiente tabla<br>
+<br>
+<table align="center" border=1 width=479 height=162>
+  <tr> 
+    <td align=left valign=TOP> Variable de entorno </td>
+    <td align=left valign=TOP> Valor </td>
+  </tr>
+  <tr> 
+    <td align=left valign=TOP> <code>WL_INSTAL</code> </td>
+    <td align=left valign=TOP> Directorio donde se ha instalado el todos los componentes 
+      de la plataforma WebLogic. Por ejemplo: <code>/home/domingo/bea </code></td>
+  </tr>
+  <tr> 
+    <td align=left valign=TOP> <code>WL_HOME </code></td>
+    <td align=left valign=TOP> Directorio donde se ha instalado el servidor WebLogic. 
+      Por ejemplo: <code>$WL_INSTALL/weblogic700/server </code></td>
+  </tr>
+  <tr> 
+    <td align=left valign=TOP> <code>JAVA_HOME</code> </td>
+    <td align=left valign=TOP> Directorio donde se ha instalado la &uacute;ltima 
+      versi&oacute;n de jdk. Por ejemplo:<code> /usr/local/jdk1.3.1</code> </td>
+  </tr>
+  <tr> 
+    <td align=left valign=TOP> <code>CLASSPATH</code> </td>
+    <td align=left valign=TOP> <code>$JAVA_HOME/lib/tools.jar:$WL_HOME/lib/weblogic_sp.jar:$WL_HOME/lib/weblogic.jar:.</code> 
+    </td>
+</table>
+
+<p>1. Edita el fichero <code>$WORK/bin/setEnv</code> y modifica <code>$WL_INSTALL</code> 
+con el valor donde est&aacute; instalado el servidor de aplicaciones</p>
+<p>2. Actualiza las variables de entorno ejecutando el scipt <code>setEnv</code></p>
+<pre class="codigo">
+% cd $WORK/bin
+% . ./setEnv
+</pre>
+
+<h3>Crear el dominio vac&iacute;o <i>moduloejb</i></h3>
+
+<p>El servidor WebLogic 7.0 proporciona un Asistente de Configuraci&oacute;n de Dominio 
+que debe usarse para crear dominios vac&iacute;os. Ejecuta el asistente con los 
+comandos</p>
+
+<pre class="codigo">
+% cd $WL_INSTALL/weblogic70/common/bin
+% ./dmwiz.sh
+</pre>
+
+<p>y crea un dominio vac&iacute;o de un Standalone Server llamado <i>moduloejb</i> 
+siguiendo los sencillos pasos ilustrados en las siguientes figuras:</p>
+
+<p>1. Define el tipo de dominio (WLS Domain sin aplicaciones) y el nombre (moduloejb):</p>
+
+<div align="center"><img src="imagenes/sesion18.png"></div>
+
+<p>2. Define el funcionamiento del servidor. Por sencillez, vamos a preferir que 
+  sea standalone. Despu&eacute;s, todo lo que probemos de esta forma va a poder 
+  funcionar en modo gestionado o incluso en clusters de servidores.</p>
+
+<div align="center"><img src="imagenes/sesion19.png"></div>
+
+<p>3. Define la localizaci&oacute;n del directorio donde se va a instalar el dominio. 
+  Acepta la opci&oacute;n por defecto (<code>$WL_INSTALL/user_projects/moduloejb</code>)</p>
+
+<div align="center"><img src="imagenes/sesion110.png"></div>
+
+<p>4. Define un nombre del servidor y unos puertos de escucha del mismo. Acepta 
+  la opci&oacute;n por defecto.</p>
+  
+<div align="center"><img src="imagenes/sesion111.png"></div>
+
+<p>5. Define el login y password del administrador. Por ejemplo login: <code>system</code>, 
+  password: <code>weblogic</code>.</p>
+
+<p> 6. Termina aceptando las dos pantallas informativas que vienen a continuaci&oacute;n. 
+  El dominio habr&aacute; sido creado en el directorio <code>/home/domingo/bea/user_projects/moduloejb</code> 
+  y en ese directorio estar&aacute; instalado el servidor de aplicaciones preparado 
+  para ese dominio.</p>
+
+<p>En su momento, cuando los ejercicios lo requieran, deber&aacute;s crear los 
+  recursos: pool JDBC, TX DataSource y JMS.</p>
+
+<h3>Arrancar el servidor de aplicaciones</h3>
+ 
+<p> Una vez creado el dominio, ya puedes arrancar el servidor de aplicaciones, con 
+  los siguientes comandos en una ventana del sistema:</p>
+
+<pre class="codigo">
+% cd $WL_INSTALL/user_projects/moduloejb
+% ./startWebLogic.sh
+</pre>
+
+<p>En la misma ventana del sistema te pedir&aacute; el login y contrase&ntilde;a 
+  de administrador. Teclea lo mismo que en la ventana de inicializaci&oacute;n.</p>
+ 
+ <h3>Comprobar que el servidor est&aacute; en marcha</h3>
+  
+ 
+<p> 1. Desde un ordenador cualquiera lanza un navegador y con&eacute;ctarte a 
+  la URL <i>http://servidor:7001/console</i>, siendo servervidor el ordenador 
+  en el que acabamos de arracar el servidor de aplicaciones. Por ejemplo:</p>
+
+<div align="center">
+<img src="imagenes/sesion112.png">
+</div>
+  <br>
+
+<p>2. Introduce el login y la contrase&ntilde;a con la que hemos instalado el servidor 
+  de aplicaciones. Entrar&aacute;s en la aplicaci&oacute;n web con la que podemos 
+  administrar el servidor de aplicaciones.</p>
+ 
+ <div align="center">
+ <img src="imagenes/sesion113.png">
+ </div>
+ 
+ <br>
+<h2><a name="ejercicio2"></a>Ejercicio 2: Compilar y desplegar el bean de sesi&oacute;n</h2>
+
+<p>El proceso de compilaci&oacute;n, empaquetamiento, despliegue y prueba de un 
+  EJB de sesi&oacute;n y una aplicaci&oacute;n cliente consta de los siguientes 
+  pasos:</p>
+
+<ol>
+ <li>Compilar los ficheros JAVA que forman el EJB y la aplicaci&oacute;n cliente
+ <li>Empaquetar los ficheros CLASS y el descriptor de despliegue en un fichero 
+  EJB JAR
+ <li>Personalizar el fichero EJB JAR para el WebLogic con el WebLogic Builder
+ <li>Desplegar el EJB JAR en el servidor de aplicaciones
+ <li>Probar la aplicaci&oacute;n cliente
+</ol>
+
+<p>Pasos previos:</p>
+<ul>
+  <li>Chequear las variables de entorno<br>
+  <li>Descargar el fichero ZIP con los ejemplos y descomprimirlo<br>
+</ul>
+
+<h3>Chequear las variables de entorno</h3>
+
+<p>Asegurate de que las variables de entorno tienen los valores que aparecen en la 
+siguiente tabla. Si no es as&iacute;, actual&iacute;zalas de nuevo tal y como 
+se indica en el ejercicio 1.<p>
+
+<table align="center" border=1 width=479 height=162>
+  <tr> 
+    <td align=left valign=TOP> Variable de entorno </td>
+    <td align=left valign=TOP> Valor </td>
+  </tr>
+  <tr> 
+    <td align=left valign=TOP> <code>WL_INSTAL </code></td>
+    <td align=left valign=TOP> Directorio donde se ha instalado el todos los componentes 
+      de la plataforma WebLogic. Por ejemplo: <code>/home/domingo/bea </code></td>
+  </tr>
+  <tr> 
+    <td align=left valign=TOP> <code>WL_HOME </code></td>
+    <td align=left valign=TOP> Directorio donde se ha instalado el servidor WebLogic. 
+      Por ejemplo: <code>$WL_INSTALL/weblogic700/server </code></td>
+  </tr>
+  <tr> 
+    <td align=left valign=TOP> <code>JAVA_HOME</code> </td>
+    <td align=left valign=TOP> Directorio donde se ha instalado la &uacute;ltima 
+      versi&oacute;n de jdk. Por ejemplo: <code>/usr/local/jdk1.3.1</code> </td>
+  </tr>
+  <tr> 
+    <td align=left valign=TOP> <code>CLASSPATH </code></td>
+    <td align=left valign=TOP> <code>$JAVA_HOME/lib/tools.jar:$WL_HOME/lib/weblogic_sp.jar:$WL_HOME/lib/weblogic.jar:. 
+      </code></td>
+</table>
+
+
+<h3>Obtener el c&oacute;digo fuente con los ejemplos</h3>
+
+<p>El c&oacute;digo fuente para los componentes se encuentra en la misma p&aacute;gina 
+  donde se encuentran estos apuntes, en el fichero <i>ejercicio1.zip</i>.</p>
+<p>1. Supongamos que el directorio de trabajo es</p>
+<pre class="codigo">
+/home/domingo/ejb
+</pre>
+<p>Creamos una variable de entorno para definir el directorio de trabajo.</p>
+<pre class="codigo">
+% export WORK=/home/domingo/ejb
+</pre>
+<p>2. Copiamos y descomprimimos el directorio de ejemplos en el directorio de 
+  trabajo</p>
+
+<pre class="codigo">
+% cp ejercicio1.zip $WORK
+% cd $WORK
+% unzip ejercicio1.zip
+</pre>
+
+<p> Los ficheros que se han descomprimido son:</p>
+<pre class="codigo">
+HelloWorldSLBean/HelloWorldBean.java
+HelloWorldSLBean/HelloWorldRemoteHome.java
+HelloWorldSLBean/HelloWorldRemote.java
+HelloWorldClient.java
+ejb-jar.xml
+</pre>
+<p>En la pr&oacute;xima sesi&oacute;n explicaremos con m&aacute;s detalle el contenido 
+de todos estos ficheros. Todos ellos implementan un bean de sesi&oacute;n sin estado 
+con un &uacute;nico m&eacute;todo, hi(), que devuelve un string con el t&iacute;pico 
+saludo &#147;Hello, world&#148;. Vamos a ver en los pasos siguientes c&oacute;mpilar 
+los ficheros, empaquetar el bean, desplegarlo en el servidor de aplicaciones y probarlo 
+desde una aplicaci&oacute;n cliente. Aunque se pueden utilizar herramientas avanzadas, 
+como el ant, para compilar los beans, hemos preferido hacerlo de la manera m&aacute;s 
+simple posible. As&iacute; sabemos en todo momento qu&eacute; es lo que estamos haciendo.</p>
+
+<p>1. Para compilar los ficheros vamos al directorio de ejemplo y llamamos a <code>javac</code>
+(ya hemos actualizado el <code>CLASSPATH</code> en un paso anterior):</p>
+<pre class="codigo">
+% cd $WORK/HelloWorld
+% javac HelloWorldSLBean/*.java
+</pre>
+
+<p>2. Compilar y ejecutar la aplicaci&oacute;n cliente. Si miramos el c&oacute;digo fuente 
+de la aplicaci&oacute;n, lo &uacute;nico que hace es conectarse con el bean (la llamada 
+clase Home del bean), crear una instancia del bean y pedir el m&eacute;todo <code>hi()</code> 
+de esa instancia. Al no estar el bean desplegado en el servidor de aplicaciones, la 
+aplicaci&oacute;n cliente generar&aacute; un error:</p>
+
+<pre class="codigo">
+% javac HelloWorldClient.java
+% java HelloWorldClient
+javax.naming.NameNotFoundException: Unable to resolve 'HelloWorldEJB' Resolved: '' 
+Unresolved:'HelloWorldEJB' ; remaining name 'HelloWorldEJB'
+        at weblogic.rmi.internal.BasicOutboundRequest.sendReceive(BasicOutboundRequest.java:109)
+        at weblogic.rmi.cluster.ReplicaAwareRemoteRef.invoke(ReplicaAwareRemoteRef.java:262)
+        at weblogic.rmi.cluster.ReplicaAwareRemoteRef.invoke(ReplicaAwareRemoteRef.java:229)
+        at weblogic.jndi.internal.ServerNamingNode_WLStub.lookup(Unknown Source)
+        at weblogic.jndi.internal.WLContextImpl.lookup(WLContextImpl.java:337)
+        at weblogic.jndi.internal.WLContextImpl.lookup(WLContextImpl.java:332)
+        at javax.naming.InitialContext.lookup(InitialContext.java:350)
+        at HelloWorldClient.main(HelloWorldClient.java:15)
+</pre>
+
+<h3>Empaquetar el bean</h3>
+<p>Debemos construir un fichero JAR, que llamaremos <code>helloworld-ejb.jar</code>, 
+con el bean compilado. Para ello:</p>
+
+<pre class="codigo">
+% mkdir META-INF
+% mv ejb-jar.xml META-INF/
+% jar cvf helloworld-ejb.jar META-INF/* HelloWorldSLBean/*.class
+manifest agregado
+agregando: META-INF/ejb-jar.xml(entrada = 663) (salida= 330)(desinflado 50%)
+agregando: HelloWorldSLBean/HelloWorld.class(entrada = 240) (salida= 182)(desinflado 24%)
+agregando: HelloWorldSLBean/HelloWorldBean.class(entrada = 710) (salida= 363)(desinflado 48%)
+agregando: HelloWorldSLBean/HelloWorldHome.class(entrada = 288) (salida= 199)(desinflado 30%)
+</pre>
+
+<h3>Desplegar el bean de sesi&oacute;n usando el WebLogic Builder</h3>
+
+<p>El WebLogic Builder es una aplicaci&oacute;n Java que se distribuye junto con el 
+servidor WebLogic y que tiene como principal utilidad la configuraci&oacute;n de 
+ficheros JAR, WAR y EAR para el posterior despliegue en el servidor. Vamos a ver 
+c&oacute;mo funciona, desplegando el fichero <code>helloworld-ejb.jar</code></p>
+
+<p> 1. Lanzar la aplicaci&oacute;n WebLogic Builder:</p>
+
+<pre class="codigo">
+% cd $WL_INSTALL/weblogic700/server/bin
+% ./startWLBuilder.sh</pre>
+
+<p>2. Abrir el fichero <code>helloworld-ejb.jar</code> con el programa WebLogic Builder</p>
+
+<div align="center"><img src="imagenes/sesion114.png"></div>
+
+<p>Aceptar cuando pregunta si debe crear el fichero de descripciones 
+<code>weblogic-ejb-jar.xml</code> (IMPORTANTE: el fichero <code>weblogic-ejb-jar.xml</code>
+ es necesario para que el bean se despliegue correctamente en el servidor 
+de aplicaciones. Salvar el paquete con la opci&oacute;n <b>File &gt; Save</b> para que el 
+fichero <code>helloworld-ejb.jar</code> se actualize con este fichero).</p>
+
+<p>3. Cambiar el nombre JNDI del bean. Por defecto, el nombre JNDI es el mismo 
+  que el nombre del bean (<code>HelloWorld</code>). Vamos a cambiarlo, poniendo 
+  como nombre <code>HelloWorldEJB</code>. Este nombre es al que se hace referencia 
+  en la aplicaci&oacute;n cliente. Para cambiar el nombre pincha en el bean HelloWorld 
+  que aparece en la parte superior derecha de la ventana. La ventana principal 
+  de la aplicaci&oacute;n cambiar&aacute; y te permitir&aacute; modificar ciertas 
+  propiedades del bean, entre ellas el nombre JNDI. Pon como nombre HelloWorldEJB 
+  y a continuaci&oacute;n salva el bean.<br>
+  <BR>
+
+<div align="center"><img src="imagenes/sesion115.png"></div>
+
+<p>3. Para desplegar el bean en el servidor, primero hay que conectarse a &eacute;l 
+con la aplicaci&oacute;n. Selecciona la opci&oacute;n <b>Tools &gt; Connect to server</b>. 
+Aparece una ventana de di&aacute;logo en la que puedes dar la direcci&oacute;n de red 
+donde se encuentra el servidor, el nombre del servidor, puerto, login y password. 
+Completa el login y password de administrador.</P>
+
+<div align="center"><img src="imagenes/sesion116.png"></div>
+
+<p>4. Selecciona la opci&oacute;n <b>Tools &gt; Deploy Module</b>. </p>
+
+<p> <div align="center"><img src="imagenes/sesion117.png"></div>
+
+<p> Pulsa el bot&oacute;n Deploy Module. Si todo funciona correctamente el bean se 
+desplegar&aacute; en el servidor.</p>
+
+<p>5. Comprueba que el bean se ha desplegado en el servidor de aplicaciones. Para ello 
+con&eacute;ctate con el navegador a la direcci&oacute;n <i>http://localhost:7001/console</i>
+ y selecciona el apartado EJB. All&iacute; debes encontrar el bean que acabas de desplegar.</p>
+
+<h3>Probar la aplicaci&oacute;n cliente</h3>
+
+<p> Ahora la aplicaci&oacute;n cliente debe funcionar correctamente. &iexcl;Pru&eacute;bala!:</p>
+
+<pre class="codigo">
+cd $WORK/ejb/HelloWorld
+% java HelloWorldClient
+Voy a llamar al bean
+Hola; soy Domingo
+He llamado al bean
+</pre>
+
+<h3>Desplegar el bean usando la consola de administraci&oacute;n</h3>
+
+<p>Vamos a ver otra forma de desplegar el bean; ahora usando la consola de administraci&oacute;n. </p>
+
+<p>1. Vamos a volver al instante en que el fichero EJB JAR no estaba desplegado 
+  en el servidor de aplicaciones. Para ello elimina el bean desplegado usando 
+  la consola de administraci&oacute;n. Debes pinchar en el cubo de basura que 
+  hay a la derecha del nombre del bean, en la pantalla <b>moduloejb &gt; EJB Deployments</b></p>
+
+<div align="center"><img src="imagenes/sesion118.png"></div>
+
+<p>Acepta en la pantalla de confirmaci&oacute;n. Con ello el EJB se habr&aacute; eliminado del servidor de aplicaciones. Si ejecutas la aplicaci&oacute;n cliente, ver&aacute;s que aparece el mismo error que la primera vez que lo hicimos.</p>
+
+<p>2. En la consola de administraci&oacute;n escoger la opci&oacute;n <b>EJB</b> 
+  y <b>Configure a new EJB</b>. Entrar&aacute;s en la pantalla <b>Locate Application 
+  or Component to Configure</b>. En esta pantalla puedes subir un EJB JAR al servidor 
+  y despu&eacute;s seleccionarlo para desplegarlo. Como el fichero EJB JAR ya 
+  est&aacute; en el propio servidor (la m&aacute;quina localhost) s&oacute;lo 
+  debes seleccionarlo. </p>
+
+<div align="center"><img src="imagenes/sesion119.png"></div>
+
+<p> Selecciona ahora el servidor en el que quieres desplegar el bean (myserver), 
+acepta el nombre por defecto de la aplicaci&oacute;n y pulsa en <b>Configure and Deploy</b>:
+
+<div align="center"><img src="imagenes/sesion120.png"></div>
+
+<p>3. Prueba la aplicaci&oacute;n cliente. Te seguir&aacute; dando error. &iquest;Porqu&eacute;?</p>
+
+<p>4. Para cambiar el nombre <b>JNDI</b> desde la consola de administraci&oacute;n, 
+  selecciona la opci&oacute;n de Edit Deployment Descriptor. Se abrir&aacute; 
+  una nueva ventana del navegador en la que podr&aacute;s modificar los distintos 
+  aspectos de configuraci&oacute;n del EJB. Despliega el &aacute;rbol WebLogic 
+  EJB Jar, WebLogic Enterprise Beans y selecciona el objeto HelloWorld. Aparece 
+  una pantalla en la que podr&aacute;s modificar el <b>JNDI Name</b>. Escribe 
+  HelloWorldEJB y Apply Changes: </p>
+
+<pre class="codigo">
+<div align="center"><img src="imagenes/sesion121.png"></div>
+</pre>
+
+<p>Comenzar&aacute; a parpadear el icono con la admiraci&oacute;n. Eso significa que debes 
+reiniciar el servidor. Pero primero debes grabar la nueva configuraci&oacute;n del EJB: 
+pulsa en el &aacute;rbo helloworld-ejb.jar y cambiar&aacute; la pantalla de la derecha. 
+Pulsa la opci&oacute;n &#147;Persist&#148;, con lo que se estar&aacute; grabando el fichero 
+<code>helloworld-ejb.jar</code> modificado. Para no tener que personalizar m&aacute;s 
+este fichero, puedes descomprimirlo con el comando:</p>
+
+<pre class="codigo">
+% jar xvf helloworld-ejb.jar</pre>
+
+<p>Si ahora miras en el directorio META-INF ver&aacute;s que est&aacute; el fichero 
+<code>weblogic-ejb-jar.xml</code>. Este fichero es el que ha creado el WebLogic Builder 
+y ha modificado la consola de administraci&oacute;n. Si lo editas, ver&aacute;s que el 
+elemento XML <code>jndi-name</code> tiene el valor HelloWorldEJB.</p>
+
+<p>Reinicia el servidor y prueba la aplicaci&oacute;n cliente. Ahora s&iacute; que debe funcionar.</p>
+
+<h3><a name="ejercicio3"></a>Ejercicio 3: Modificar el c&oacute;digo fuente del 
+  bean</h3>
+
+<p>Modifica el c&oacute;digo fuente del bean para que en lugar de devolver el 
+mensaje &#147;Hola, soy Domingo&#148;, devuelva tu nombre. Para ello:</p>
+
+<UL>
+<LI> Edita el fichero HelloWorldBean.java<BR>
+<LI> Compila todos los ficheros del bean<BR>
+<LI> Empaqueta el bean, ahora en el directorio META-INF ya est&aacute; el fichero de personalizaci&oacute;n para el servidor WebLogic<BR>
+<LI> Arranca el WebLogic Builder<BR>
+<LI> Carga el EJB JAR<BR>
+<LI> Conecta el servidor y despliega el EJB JAR en el servidor<BR>
+<LI> Prueba la aplicaci&oacute;n cliente<BR>
+</UL>
+
+<p>Por &uacute;ltimo, modifica la aplicaci&oacute;n cliente, para que en lugar de 
+conectarse al bean de tu propio servidor de aplicaciones se conecte al de un compa&ntilde;ero.</p>
+</body>
+</html>

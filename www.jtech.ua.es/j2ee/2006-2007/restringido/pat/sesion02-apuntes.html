@@ -1,0 +1,446 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.7">
+<meta name="Forrest-skin-name" content="pelt">
+<title>Charla 2: Patrones para aplicaciones web. Modelo-Vista-Controlador</title>
+<link type="text/css" href="skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="skin/print.css" rel="stylesheet">
+<link type="text/css" href="skin/profile.css" rel="stylesheet">
+<script src="skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<div class="header">
+<div class="grouplogo">
+<a href="http://www.jtech.ua.es/j2ee"><img class="logoImage" alt="J2EE" src="images/baner_j2ee_izq.gif" title="Curso Especialista Universitario J2EE"></a>
+</div>
+<div class="projectlogoA1">
+<a href="http://www.dccia.ua.es/"><img class="logoImage" alt="Patrones de dise&ntilde;o" src="images/baner_j2ee_der.gif" title="Patrones de dise&ntilde;o"></a>
+</div>
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="../index.html">M&oacute;dulos</a>
+</li>
+<li>
+<a class="base-not-selected" href="index.html">Patrones de dise&ntilde;o Java Enterprise</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<div id="level2tabs"></div>
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<div id="menu">
+<div onclick="SwitchMenu('menu_1.1', 'skin/')" id="menu_1.1Title" class="menutitle">Patrones de dise&ntilde;o</div>
+<div id="menu_1.1" class="menuitemgroup">
+<div class="menuitem">
+<a href="index.html" title="RMI">&Iacute;ndice</a>
+</div>
+<div onclick="SwitchMenu('menu_1.1.2', 'skin/')" id="menu_1.1.2Title" class="menutitle">Teor&iacute;a</div>
+<div id="menu_1.1.2" class="menuitemgroup">
+<div class="menuitem">
+<a href="sesion01-apuntes.html">Sesion 1</a>
+</div>
+</div>
+<div class="menuitem">
+<a href="">Ejercicios</a>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<div id="credit2"></div>
+</div>
+<div id="content">
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="sesion02-apuntes.pdf"><img alt="PDF -icon" src="skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1>Charla 2: Patrones para aplicaciones web. Modelo-Vista-Controlador</h1>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#Arquitecturas+para+la+capa+de+presentaci%C3%B3n+en+aplicaciones+web">Arquitecturas para la capa de presentaci&oacute;n en aplicaciones web</a>
+<ul class="minitoc">
+<li>
+<a href="#Aplicaciones+JSP-c%C3%A9ntricas">Aplicaciones JSP-c&eacute;ntricas</a>
+</li>
+<li>
+<a href="#Combinaci%C3%B3n+de+servlets+y+JSP">Combinaci&oacute;n de servlets y JSP</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Modelo-Vista-Controlador+%28MVC%29">Modelo-Vista-Controlador (MVC)</a>
+<ul class="minitoc">
+<li>
+<a href="#Los+componentes+de+la+arquitectura%3A+el+modelo%2C+la+vista+y+el+controlador">Los componentes de la arquitectura: el modelo, la vista y el controlador</a>
+</li>
+<li>
+<a href="#Una+implementaci%C3%B3n+de+MVC">Una implementaci&oacute;n de MVC</a>
+<ul class="minitoc">
+<li>
+<a href="#El+controlador"> El controlador</a>
+</li>
+<li>
+<a href="#El+modelo">El modelo</a>
+</li>
+<li>
+<a href="#La+vista">La vista</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Variantes+de+MVC">Variantes de MVC</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Business+delegate">Business delegate</a>
+</li>
+</ul>
+</div>
+
+<p>En esta charla trataremos patrones para aplicaciones web basadas en servlets y JSP. En la primera
+charla ya vimos algunos ampliamente usados en este tipo de aplicaciones: DAOs, Transfer Objects, fa&ccedil;ades, etc. Estos
+patrones se encuadran dentro de las capas de acceso a datos (DAO y TO) y negocio (TO y fa&ccedil;ade). Por ello, 
+aqu&iacute; nos centraremos en patrones para la capa de presentaci&oacute;n. De todos ellos el m&aacute;s importante y conocido
+es el Modelo-Vista-Controlador (MVC). Antes de presentarlo haremos un breve repaso a las distintas alternativas
+de dise&ntilde;o para la capa de presentaci&oacute;n en una aplicaci&oacute;n web.</p>
+
+<a name="N1000F"></a><a name="Arquitecturas+para+la+capa+de+presentaci%C3%B3n+en+aplicaciones+web"></a>
+<h2 class="underlined_10">Arquitecturas para la capa de presentaci&oacute;n en aplicaciones web</h2>
+<div class="section">
+<p>Teniendo en cuenta que servlets y JSP son equivalentes desde el punto de vista funcional y que es mucho
+menos tedioso desarrollar un interfaz web en JSP que en servlets, la mayor&iacute;a de aplicaciones web suelen
+usar JSPs para la capa de presentaci&oacute;n o una combinaci&oacute;n de JSPs y servlets. Veamos cu&aacute;les son las opciones
+a la hora de dise&ntilde;ar la arquitectura de la capa de presentaci&oacute;n.</p>
+<a name="N10018"></a><a name="Aplicaciones+JSP-c%C3%A9ntricas"></a>
+<h3 class="underlined_5">Aplicaciones JSP-c&eacute;ntricas</h3>
+<p>En estas aplicaciones cada p&aacute;gina JSP contiene todo el procesamiento asociado a un caso de uso (por ejemplo hacer login en la aplicaci&oacute;n) o de parte de un caso de uso
+(por ejemplo, una de las p&aacute;ginas del proceso de registro de nuevo usuario). Lo m&aacute;s inmediato a la hora de programar este tipo de aplicaci&oacute;n es lo que podr&iacute;amos llamar la "<strong>ausencia
+de arquitectura</strong>": poner todo el c&oacute;digo de presentaci&oacute;n, l&oacute;gica de negocio y acceso a datos dentro de los JSPs. En aplicaciones peque&ntilde;as resulta
+una manera sencilla de "estructurar" el sistema, pero por razones evidentes en aplicaciones medianas o grandes
+esto se convierte en una pesadilla de desarrollo
+y mantenimiento .</p>
+<p> Las especificaciones iniciales de JSP hablaban de solucionar
+los problemas anteriores con lo que Sun llam&oacute; el <strong>"modelo 1"</strong> de arquitectura para aplicaciones web. La idea b&aacute;sica 
+es que el c&oacute;digo de negocio y acceso a datos se "saca fuera" de los JSPs de modo que &eacute;stos se encargan
+&uacute;nicamente de la presentaci&oacute;n. La propuesta original habla de usar JavaBeans como encargados de "disparar" la
+l&oacute;gica de negocio y el acceso a datos porque su uso y sintaxis son sencillos y son el modelo de componentes
+"est&aacute;ndar" en Java. 
+Combinando esto con el uso de <em>taglibs</em> propias o est&aacute;ndar (tipo JSTL) se puede eliminar
+ el c&oacute;digo Java del JSP de modo que incluso dise&ntilde;adores web no programadores podr&iacute;an en teor&iacute;a ocuparse
+ en su totalidad de los JSP.</p>
+<p>
+   
+<img alt="Arquitectura 'modelo 1'" content-width="14cm" src="imagenes/modelo1.gif">
+    </p>
+<div class="frame note">
+<div class="label">Nota</div>
+<div class="content">El modelo 1 se conoce en el cat&aacute;logo de Core J2EE patterns como <strong>"View helper"</strong>
+</div>
+</div>
+<a name="N1003B"></a><a name="Combinaci%C3%B3n+de+servlets+y+JSP"></a>
+<h3 class="underlined_5">Combinaci&oacute;n de servlets y JSP</h3>
+<p>Con la arquitectura anterior, el JSP no se dedica &uacute;nicamente a presentar los resultados, sino que tiene
+m&aacute;s responsabilidades. Una alternativa es que para cada caso de uso haya un
+ servlet distinto que se encargue de tomar los par&aacute;metros de la petici&oacute;n, llamar a la l&oacute;gica de negocio y
+  colocar los resultados en alg&uacute;n &aacute;mbito que el JSP pueda consultar(por ejemplo en la petici&oacute;n o en la
+sesi&oacute;n). El JSP se puede limitar a mostrar los resultados obtenidos. </p>
+<p>
+   
+<img alt="Combinaci&oacute;n de servlets y JSP" content-width="14cm" src="imagenes/servlets-jsp.gif">
+</p>
+<p>Aunque parezca que el flujo de ejecuci&oacute;n se complica, en realidad se realizan las mismas tareas, solo que en un
+orden ligeramente diferente y lo m&aacute;s importante: separando responsabilidades.</p>
+<ol>
+
+<li>Un <strong>servlet</strong> recibe la petici&oacute;n HTTP del cliente y analiza los par&aacute;metros</li>
+
+<li>El <strong>servlet</strong> activado dispara la l&oacute;gica de negocio llamando al/los JavaBean/s correspondiente/s</li>
+
+<li>Los <strong>JavaBeans</strong> se encargan de ejecutar la l&oacute;gica de negocio y el acceso a datos</li>
+
+<li>El <strong>servlet</strong> coloca los JavaBeans en alg&uacute;n &aacute;mbito al que un JSP pueda acceder. T&iacute;picamente
+se usar&iacute;a el objeto <span class="codefrag">request</span>. Despu&eacute;s llama al JSP apropiado. </li>
+
+<li>El <strong>JSP</strong> llamado, accede al JavaBean y muestra la informaci&oacute;n que contiene</li>
+
+</ol>
+<p>Este modelo presenta la ventaja con respecto al anterior de que el c&oacute;digo del JSP se simplifica todav&iacute;a
+m&aacute;s. Estamos solo a un paso de la arquitectura m&aacute;s usada en la actualidad para aplicaciones web: Modelo-Vista-Controlador (MVC), 
+que veremos a continuaci&oacute;n.</p>
+</div>
+
+<a name="N10078"></a><a name="Modelo-Vista-Controlador+%28MVC%29"></a>
+<h2 class="underlined_10">Modelo-Vista-Controlador (MVC)</h2>
+<div class="section">
+<p>Esta arquitectura se parece mucho a la combinaci&oacute;n de servlets y JSPs que hemos visto antes, con la &uacute;nica
+diferencia de que <strong>solo hay un servlet</strong>, que es el <strong>que recibe todas las peticiones</strong>. &iquest;C&oacute;mo sabe
+entonces el servlet qu&eacute; l&oacute;gica de negocio hay que disparar y qu&eacute; JSP es el apropiado para mostrar los resultados?. Esto se puede hacer
+por ejemplo pas&aacute;ndole en la petici&oacute;n HTTP alg&uacute;n par&aacute;metro adicional que lo indique, como:  </p>
+<pre class="code">
+http://.../aplicacionMVC/miUnicoServlet?<strong>accion=login</strong>&amp;user=javaee&amp;password=javaee
+</pre>
+<p>En este ejemplo el par&aacute;metro <span class="codefrag">accion</span> es el que le indica al servlet qu&eacute; es lo que hay que hacer. Los
+dem&aacute;s par&aacute;metros se necesitan para poder ejecutar la operaci&oacute;n, aqu&iacute; hacer login en el sistema. Luego veremos
+que hay otras alternativas (m&aacute;s usadas) a la hora de decirle al servlet qu&eacute; operaci&oacute;n hay que ejecutar.</p>
+<a name="N10096"></a><a name="Los+componentes+de+la+arquitectura%3A+el+modelo%2C+la+vista+y+el+controlador"></a>
+<h3 class="underlined_5">Los componentes de la arquitectura: el modelo, la vista y el controlador</h3>
+<p>Veamos de nuevo la arquitectura, pero ahora usando la terminolog&iacute;a habitual de MVC:</p>
+<ul>
+
+<li>El <strong>controlador</strong> (en nuestro caso el servlet) es el encargado de:</li>
+
+</ul>
+<ol>
+
+<li>Averiguar cu&aacute;l es la operaci&oacute;n
+a ejecutar</li>
+
+<li>Tomar los par&aacute;metros de entrada y disparar la l&oacute;gica de negocio apropiada pas&aacute;ndole dichos par&aacute;metros.</li>
+
+<li>Colocar los resultados de la operaci&oacute;n en alg&uacute;n &aacute;mbito accesible a un JSP (normalmente la petici&oacute;n)</li>
+
+<li>Redirigir al navegador al JSP apropiado</li>
+
+</ol>
+<ul>
+
+<li>El <strong>modelo</strong> es la l&oacute;gica de negocio y el c&oacute;digo de acceso a datos. Aunque hasta ahora hemos hablado de JavaBeans,
+esto era una sugerencia de Sun para simplificar el interfaz con el JSP. El modelo puede ser en realidad cualquier cosa:
+EJBs (componentes de negocio distribuidos), clases Java convencionales, JavaBeans, etc.</li>
+
+<li>Las <strong>acciones</strong> son las operaciones a ejecutar para cada caso de uso de la aplicaci&oacute;n. Podemos imaginarnos
+que cada acci&oacute;n encapsula de alguna forma todo el procesamiento asociado a un caso de uso (o a parte de un caso de uso,
+dependiendo de c&oacute;mo modelemos el sistema). Las acciones se suelen considerar como parte del modelo, aunque en realidad
+est&aacute;n en la frontera entre &eacute;ste y el controlador.</li>
+
+<li>La <strong>vista</strong> es el elemento encargado de mostrar los resultados obtenidos en el modelo. En nuestro
+caso, son los JSPs</li>
+
+</ul>
+<p>N&oacute;tese que cada petici&oacute;n HTTP implica una acci&oacute;n distinta y una vista distinta, mientras que solo hay
+un controlador y un modelo, aunque cada petici&oacute;n requerir&aacute; partes distintas del mismo: por ejemplo para buscar
+productos en el cat&aacute;logo har&aacute; falta ejecutar distinta l&oacute;gica y acceder a distintos JavaBeans que para registrarse
+en la web.</p>
+<p>El diagrama de una posible arquitectura MVC (luego veremos que hay variantes) se muestra en la siguiente figura. N&oacute;tese que
+es muy parecido al de la combinaci&oacute;n de servlets y JSPs que ve&iacute;amos antes, con la &uacute;nica diferencia de la
+terminolog&iacute;a y que solo hay un servlet.</p>
+<p>
+   
+<img alt="Modelo-Vista-Controlador" content-width="14cm" src="imagenes/mvc.gif">
+</p>
+<div class="frame note">
+<div class="label">Nota</div>
+<div class="content">El patr&oacute;n de dise&ntilde;o MVC no es ni mucho menos exclusivo de aplicaciones web. Ni siquiera es original del GoF. Fue descrito por
+primera vez en 1979, con el nacimiento del lenguaje Smalltalk en Xerox, y hoy es ampliamente usado en multitud de frameworks, librer&iacute;as
+y entornos GUI (sin
+ir m&aacute;s lejos la librer&iacute;a Swing de Java). La web es solo uno de los contextos en los que se ha aplicado hasta ahora la idea de MVC, y
+es importante tener en cuenta que el patr&oacute;n tal y como se aplica en la web es una adaptaci&oacute;n del patr&oacute;n original al funcionamiento de HTTP. </div>
+</div>
+<a name="N100DE"></a><a name="Una+implementaci%C3%B3n+de+MVC"></a>
+<h3 class="underlined_5">Una implementaci&oacute;n de MVC</h3>
+<p>Al ser &eacute;ste un patr&oacute;n complejo, tener una implementaci&oacute;n concreta ayuda a comprender el funcionamiento. Describiremos 
+a continuaci&oacute;n una implementaci&oacute;n sencilla pero totalmente funcional de MVC.</p>
+<div class="frame warning">
+<div class="label">Aviso</div>
+<div class="content">En una aplicaci&oacute;n real, no es recomendable la estrategia de  "reinventar la rueda". En JavaEE hay disponibles
+multitud de <em>frameworks</em> MVC de probada calidad, de los cuales el est&aacute;ndar <em>de facto</em> es Struts. Con
+un <em>framework</em> nos aseguramos de poder usar c&oacute;digo e ideas ya probadas, nos ser&aacute;
+m&aacute;s f&aacute;cil encontrar desarrolladores ya preparados para trabajar y podremos aprovechar las muchas
+herramientas existentes para facilitar el desarrollo (en forma de plugins para Eclipse y otros IDES). </div>
+</div>
+<a name="N100F3"></a><a name="El+controlador"></a>
+<h4> El controlador</h4>
+<p>En nuestro caso el controlador se implementa mediante un servlet. Esto es bastante
+ t&iacute;pico de la mayor&iacute;a de frameworks MVC.</p>
+<a name="N100FC"></a><a name="Configuraci%C3%B3n+del+web.xml"></a>
+<h5>Configuraci&oacute;n del web.xml</h5>
+<p> El primer paso a realizar es configurar el descriptor de la aplicaci&oacute;n (web.xml) para que 
+las peticiones con determinado patr&oacute;n vayan todas a parar al controlador. 
+As&iacute;, todas las peticiones con un path com&uacute;n (por ejemplo /mvc/*) o con una extensi&oacute;n com&uacute;n 
+(por ejemplo, en Struts se suele usar *.do) ir&aacute;n a dicho servlet,
+ que a partir de la  URL decide cu&aacute;l es la acci&oacute;n a disparar. 
+ En nuestro caso, el servlet se mapear&aacute; a todas las peticiones *.mvc</p>
+<pre class="code">
+
+  &lt;!-- mapeado para el servlet controlador de MVC (fragmento del web.xml)--&gt;
+  &lt;servlet&gt;
+     &lt;servlet-name&gt;Controlador&lt;/servlet-name&gt;
+     &lt;servlet-class&gt;mvc.controlador.Controlador&lt;/servlet-class&gt;
+  &lt;/servlet&gt;
+  &lt;servlet-mapping&gt;
+     &lt;servlet-name&gt;Controlador&lt;/servlet-name&gt;
+     &lt;url-pattern&gt;*.mvc&lt;/url-pattern&gt;
+  &lt;/servlet-mapping&gt;
+  
+</pre>
+<p>Un refinamiento adicional ser&iacute;a restringir el acceso directo a todas las p&aacute;ginas del sitio,
+ para que solo fueran accesibles a trav&eacute;s del controlador. Esto se podr&iacute;a hacer por ejemplo 
+ metiendo todas las p&aacute;ginas en un directorio protegido y
+  especificando mediante una etiqueta <span class="codefrag">&lt;security-constraint&gt;</span> su condici&oacute;n
+   de acceso restringido. No ser&aacute; necesario especificar ning&uacute;n
+    <span class="codefrag">&lt;role-name&gt;</span> si no se desea acceso directo por parte de ning&uacute;n usuario
+     (en cualquier caso dicho acceso ser&aacute; posible a trav&eacute;s del servlet). 
+     Una alternativa a la restricci&oacute;n de ciertas URLs ser&iacute;a colocar la web dentro de WEB-INF, 
+     que no es directamente accesible desde fuera del contenedor web. Hay que tener en cuenta
+      que si se utiliza la restricci&oacute;n de acceso no ser&aacute; posible poner enlaces en las p&aacute;ginas 
+      de la forma habitual. Un simple salto entre p&aacute;ginas tendr&aacute; que ser ejecutado como una 
+      acci&oacute;n a trav&eacute;s del servlet controlador. Esto seg&uacute;n se mire puede ser tedioso (ya que 
+      complicamos una operaci&oacute;n sencilla) o beneficioso (ya que abstraemos la URL de la p&aacute;gina
+       destino, lo que hace posible el cambio sin que por ejemplo queden afectados
+        los bookmarks del usuario).</p>
+<a name="N10113"></a><a name="Las+acciones"></a>
+<h5>Las acciones</h5>
+<p>En el init() del servlet hay que crear la  lista de acciones que el controlador puede ejecutar, y asignarle a cada una un nombre simb&oacute;lico. En nuestro caso la lista de acciones est&aacute; fija en el c&oacute;digo para simplificar el ejemplo, aunque lo m&aacute;s razonable ser&iacute;a mantenerla en un fichero aparte, por ejemplo en formato XML.</p>
+<pre class="code">
+  public void init () throws ServletException {    
+    acciones = new HashMap();
+    acciones.put("prueba", new AccionPrueba());
+    acciones.put("login", new AccionLogin());
+    ... 
+  }
+</pre>
+<p>Cada acci&oacute;n no es m&aacute;s que una instancia de una clase que se disparar&aacute; (ejecutando cierto m&eacute;todo) a petici&oacute;n del controlador.
+Procesamiento de las peticiones HTTP. En nuestro caso, una acci&oacute;n concreta es una clase que
+debe heredar de la clase abstracta <span class="codefrag">Accion</span>, y el disparo se realiza llamando al m&eacute;todo <span class="codefrag">ejecutar</span>.</p>
+<a name="N1012A"></a><a name="Ciclo+de+procesamiento"></a>
+<h5>Ciclo de procesamiento</h5>
+<p>El ciclo de procesamiento de las peticiones es el siguiente:</p>
+<ol>
+   
+<li> A partir de la URL se obtiene el nombre simb&oacute;lico de la acci&oacute;n a ejecutar. En nuestro caso es el nombre del "documento" solicitado, sin la extensi&oacute;n .mvc</li>
+   
+<li> A partir del nombre simb&oacute;lico de la acci&oacute;n, se obtiene una instancia de la acci&oacute;n a ejecutar. En nuestro caso esto es sencillo, ya que se guarda una instancia de cada acci&oacute;n en una tabla hash accesible por nombre.</li>
+   
+<li> Se ejecuta la acci&oacute;n, llamando a un m&eacute;todo. En nuestro caso todas las acciones implementan el interface mvc.modelo.acciones.Accion, que obliga a definir un m&eacute;todo ejecutar. Para que la acci&oacute;n pueda cumplir su tarea habr&aacute; que pasarle la informaci&oacute;n contenida en el HttpServletRequest y probablemente tambi&eacute;n el HttpServletResponse. Frameworks MVC m&aacute;s sofisticados probablemente pasen esta informaci&oacute;n como un objeto independiente del API de servlets, habiendo copiado antes a &eacute;l la informaci&oacute;n relevante, con el objeto de inpendendizar las acciones de la capa HTTP.</li>
+   
+<li> La acci&oacute;n coloca el resultado obtenido en alg&uacute;n sitio al que pueda acceder la vista (por ejemplo, como un atributo en el &aacute;mbito de la petici&oacute;n) y devuelve un valor que le sirve al controlador para determinar la siguiente vista a mostrar. En nuestro caso, la acci&oacute;n devuelve directamente el nombre del JSP a mostrar. En un caso m&aacute;s realista devolver&iacute;a un nombre simb&oacute;lico que servir&iacute;a para determinar el nombre real de la vista (por ejemplo, a trav&eacute;s de un fichero de configuraci&oacute;n).</li>
+
+</ol>
+<div class="frame note">
+<div class="label">Nota</div>
+<div class="content">El encapsulamiento de los datos de la petici&oacute;n y la respuesta en un objeto independiente del protocolo HTTP es un patr&oacute;n
+de dise&ntilde;o que aparece en el cat&aacute;logo de Core J2EE Patterns con el nombre de <strong>Context Object</strong>. En nuestro caso, la aplicaci&oacute;n
+de dicho patr&oacute;n servir&iacute;a para independizar las acciones del protocolo HTTP, lo que permitir&iacute;a su reutilizaci&oacute;n para clientes
+no HTTP, como por ejemplo clientes ricos Swing.</div>
+</div>
+<p>Aqu&iacute; solamente mostramos el esqueleto del procesamiento de peticiones, para ver c&oacute;mo se hace cada parte habr&aacute; que acudir al c&oacute;digo fuente completo.</p>
+<pre class="code">
+  public void doPost (HttpServletRequest request, 
+                      HttpServletResponse response) 
+    throws ServletException, IOException   {
+    String nomAccion;
+    Accion ac;
+    String nomVista = null;
+    
+    try {
+	    //obtener de la URL el nombre de la acci&oacute;n 
+	    nomAccion = obtNomAccion(request);  
+	    //a partir del nombre, obtener la clase asociada a la acci&oacute;n  
+	    ac = getAccion(nomAccion);
+	    //ejecutar la accion 
+	    nomVista = ac.ejecutar(getServletContext(), request, response);
+	    //mostrar la vista asociada a la accion    
+	    if (nomVista!=null)
+	       mostrarVista(nomVista, request, response);
+    }
+    catch(MVCException e) {
+    	   request.setAttribute("exception", e);
+	   mostrarVista(VISTA_ERROR, request, response);    	
+    }
+  }
+</pre>
+<div class="frame note">
+<div class="label">Nota</div>
+<div class="content">Esta implementaci&oacute;n posiblemente deja "demasiadas responsabilidades" en manos del controlador, que tiene
+que hacer todo el trabajo de averiguar la acci&oacute;n a disparar, ejecutarla, pasar el resultado a la vista, etc.
+En el cat&aacute;logo de Core J2EE Patterns se propone el patr&oacute;n <strong>"Application Controller"</strong> que encapsular&iacute;a
+el mapeo de acciones y su ejecuci&oacute;n, lo que da como resultado una mayor modularidad del sistema
+y la posible reutilizaci&oacute;n del "Application Controller" si este se hace independiente
+del protocolo de comunicaci&oacute;n usando un "Context Object" (ver nota anterior).</div>
+</div>
+<a name="N10157"></a><a name="El+modelo"></a>
+<h4>El modelo</h4>
+<p>Este es el punto donde suele terminar la "responsabilidad" del framework MVC y empieza el n&uacute;cleo de nuestra aplicaci&oacute;n.</p>
+<p>Como ya hemos comentado, en nuestro caso las acciones implementan el interface mvc.modelo.acciones.Accion, que obliga a definir el m&eacute;todo ejecutar.En general, lo primero que har&aacute; una acci&oacute;n es comprobar que los par&aacute;metros son del tipo esperado y cumplen una serie de normas de validaci&oacute;n (por ejemplo, determinado formato para datos textuales, o estar en un rango para valores num&eacute;ricos). La mayor parte de frameworks MVC proporcionan medios para que el usuario defina "validadores" de manera m&aacute;s o menos sencilla y configurable.
+Una vez la acci&oacute;n ha terminado su trabajo, debe colocar los resultados en alg&uacute;n lugar accesible a la vista que debe mostrarlos. En nuestro caso, los almacenaremos como atributos de la petici&oacute;n HTTP. Como el controlador se redirige al JSP que hace de vista con un forward, este tendr&aacute; acceso a dichos atributos.</p>
+<p>Las acciones lo que har&aacute;n ser&aacute; modificar y/o obtener el estado del sistema. Dicho estado estar&aacute; representado por un modelo orientado 
+a objetos del dominio, en el cual representaremos las entidades de nuestra aplicaci&oacute;n.
+ La "l&oacute;gica de negocio" son los procesos a realizar para cumplimentar alguna operaci&oacute;n 
+ en el sistema. En una primera aproximaci&oacute;n es tentador introducir toda esta l&oacute;gica 
+ dentro del cuerpo de las acciones. As&iacute;, por ejemplo,
+  la acci&oacute;n RealizarPedido dentro de su m&eacute;todo ejecutar podr&iacute;a 
+  chequear que el pedido es v&aacute;lido y el cliente no es moroso,
+   aplicar el descuento apropiado al tipo de cliente y plazo 
+   de pago e introducir el pedido en la base de datos mediante JDBC. 
+   No obstante, hay que tener en cuenta que en algunos frameworks MVC las acciones 
+    est&aacute;n  "acopladas" a la capa web (por ejemplo en Struts) y por tanto no son el lugar
+     apropiado para introducir dicha l&oacute;gica, que deber&iacute;a ser lo m&aacute;s reutilizable posible
+      para otros clientes (por ejemplo, "clientes ricos" Swing). </p>
+<a name="N10167"></a><a name="La+vista"></a>
+<h4>La vista</h4>
+<p>En nuestro caso una vista ser&aacute; simplemente una p&aacute;gina JSP que se limitar&aacute; a mostrar los datos procesados por la acci&oacute;n. Idealmente, dichos datos estar&aacute;n encapsulados en beans accesibles a trav&eacute;s del &aacute;mbito de la petici&oacute;n,con lo que el c&oacute;digo Java a introducir dentro de la vista se reducir&aacute; al m&iacute;nimo</p>
+<a name="N10172"></a><a name="Variantes+de+MVC"></a>
+<h3 class="underlined_5">Variantes de MVC</h3>
+<p>Siendo un patr&oacute;n complejo, MVC admite multitud de variantes de funcionamiento. No obstante, nos
+vamos a centrar aqu&iacute; en diferenciar dos tipos de MVC: <em>push</em> y <em>pull</em>. El esquema
+que hemos visto hasta el momento es de tipo <em>push</em>, ya que la vista recibe los resultados
+de la ejecuci&oacute;n de la acci&oacute;n, ella no los dispara. En el cat&aacute;logo de Core J2EE patterns esto es
+lo que se conoce como el patr&oacute;n "Service to worker". Un ejemplo real de implementaci&oacute;n de este patr&oacute;n
+es el <em>framework</em> Struts.</p>
+<p>Una alternativa a este modelo ser&iacute;a el modelo <em>pull</em>, en el cual la vista es la responsable
+de disparar la acci&oacute;n. En el cat&aacute;logo de Core J2EE patterns esto es
+lo que se conoce como el patr&oacute;n "Dispatcher view". Un ejemplo real de <em>framework</em> que
+usa este enfoque es JavaServer Faces (JSF), que aunque se conoce b&aacute;sicamente como un modelo de componentes
+GUI para la web tambi&eacute;n incluye un modelo MVC para el desarrollo de las aplicaciones. En JSF, cuando
+se "dibuja" la p&aacute;gina es cuando los beans asociados a la misma disparan la l&oacute;gica de negocio.</p>
+</div>
+
+<a name="N10192"></a><a name="Business+delegate"></a>
+<h2 class="underlined_10">Business delegate</h2>
+<div class="section">
+<p>Para terminar esta discusi&oacute;n sobre patrones para la capa de presentaci&oacute;n hablaremos 
+brevemente del business delegate. Este es el patr&oacute;n que est&aacute; en la frontera entre 
+presentaci&oacute;n y negocio. En realidad, no es m&aacute;s que un caso particular del patr&oacute;n Fa&ccedil;ade
+que ya vimos en la primera charla dedicada a patrones. Es decir, es un objeto que sirve de interfaz
+a la capa de negocio. Normalmente se implementa
+como una clase Java convencional que tiene un m&eacute;todo por cada caso de uso de la aplicaci&oacute;n.</p>
+<p>La misi&oacute;n fundamental del business delegate es ocultar a la capa de presentaci&oacute;n los detalles
+de implementaci&oacute;n de la capa de negocio. De este modo, por ejemplo si la 
+aplicaci&oacute;n pasa a ser distribuida y la capa de negocio se reimplementa con componentes EJB
+la capa de presentaci&oacute;n no tendr&aacute; que cambiar si el interfaz que proporciona el business delegate
+permanece estable.</p>
+</div>
+
+</div>
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+        Copyright &copy;
+         2006-2007 Depto. CCIA</div>
+</div>
+</body>
+</html>

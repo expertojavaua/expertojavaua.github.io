@@ -1,0 +1,2048 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 1.5.2">
+<meta name="author" content="Domingo Gallardo">
+<title>Frameworks de persistencia - JPA</title>
+<style>/*! normalize.css v2.1.2 | MIT License | git.io/normalize */
+/* ========================================================================== HTML5 display definitions ========================================================================== */
+/** Correct `block` display not defined in IE 8/9. */
+article, aside, details, figcaption, figure, footer, header, hgroup, main, nav, section, summary { display: block; }
+
+/** Correct `inline-block` display not defined in IE 8/9. */
+audio, canvas, video { display: inline-block; }
+
+/** Prevent modern browsers from displaying `audio` without controls. Remove excess height in iOS 5 devices. */
+audio:not([controls]) { display: none; height: 0; }
+
+/** Address `[hidden]` styling not present in IE 8/9. Hide the `template` element in IE, Safari, and Firefox < 22. */
+[hidden], template { display: none; }
+
+script { display: none !important; }
+
+/* ========================================================================== Base ========================================================================== */
+/** 1. Set default font family to sans-serif. 2. Prevent iOS text size adjust after orientation change, without disabling user zoom. */
+html { font-family: sans-serif; /* 1 */ -ms-text-size-adjust: 100%; /* 2 */ -webkit-text-size-adjust: 100%; /* 2 */ }
+
+/** Remove default margin. */
+body { margin: 0; }
+
+/* ========================================================================== Links ========================================================================== */
+/** Remove the gray background color from active links in IE 10. */
+a { background: transparent; }
+
+/** Address `outline` inconsistency between Chrome and other browsers. */
+a:focus { outline: thin dotted; }
+
+/** Improve readability when focused and also mouse hovered in all browsers. */
+a:active, a:hover { outline: 0; }
+
+/* ========================================================================== Typography ========================================================================== */
+/** Address variable `h1` font-size and margin within `section` and `article` contexts in Firefox 4+, Safari 5, and Chrome. */
+h1 { font-size: 2em; margin: 0.67em 0; }
+
+/** Address styling not present in IE 8/9, Safari 5, and Chrome. */
+abbr[title] { border-bottom: 1px dotted; }
+
+/** Address style set to `bolder` in Firefox 4+, Safari 5, and Chrome. */
+b, strong { font-weight: bold; }
+
+/** Address styling not present in Safari 5 and Chrome. */
+dfn { font-style: italic; }
+
+/** Address differences between Firefox and other browsers. */
+hr { -moz-box-sizing: content-box; box-sizing: content-box; height: 0; }
+
+/** Address styling not present in IE 8/9. */
+mark { background: #ff0; color: #000; }
+
+/** Correct font family set oddly in Safari 5 and Chrome. */
+code, kbd, pre, samp { font-family: monospace, serif; font-size: 1em; }
+
+/** Improve readability of pre-formatted text in all browsers. */
+pre { white-space: pre-wrap; }
+
+/** Set consistent quote types. */
+q { quotes: "\201C" "\201D" "\2018" "\2019"; }
+
+/** Address inconsistent and variable font size in all browsers. */
+small { font-size: 80%; }
+
+/** Prevent `sub` and `sup` affecting `line-height` in all browsers. */
+sub, sup { font-size: 75%; line-height: 0; position: relative; vertical-align: baseline; }
+
+sup { top: -0.5em; }
+
+sub { bottom: -0.25em; }
+
+/* ========================================================================== Embedded content ========================================================================== */
+/** Remove border when inside `a` element in IE 8/9. */
+img { border: 0; }
+
+/** Correct overflow displayed oddly in IE 9. */
+svg:not(:root) { overflow: hidden; }
+
+/* ========================================================================== Figures ========================================================================== */
+/** Address margin not present in IE 8/9 and Safari 5. */
+figure { margin: 0; }
+
+/* ========================================================================== Forms ========================================================================== */
+/** Define consistent border, margin, and padding. */
+fieldset { border: 1px solid #c0c0c0; margin: 0 2px; padding: 0.35em 0.625em 0.75em; }
+
+/** 1. Correct `color` not being inherited in IE 8/9. 2. Remove padding so people aren't caught out if they zero out fieldsets. */
+legend { border: 0; /* 1 */ padding: 0; /* 2 */ }
+
+/** 1. Correct font family not being inherited in all browsers. 2. Correct font size not being inherited in all browsers. 3. Address margins set differently in Firefox 4+, Safari 5, and Chrome. */
+button, input, select, textarea { font-family: inherit; /* 1 */ font-size: 100%; /* 2 */ margin: 0; /* 3 */ }
+
+/** Address Firefox 4+ setting `line-height` on `input` using `!important` in the UA stylesheet. */
+button, input { line-height: normal; }
+
+/** Address inconsistent `text-transform` inheritance for `button` and `select`. All other form control elements do not inherit `text-transform` values. Correct `button` style inheritance in Chrome, Safari 5+, and IE 8+. Correct `select` style inheritance in Firefox 4+ and Opera. */
+button, select { text-transform: none; }
+
+/** 1. Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio` and `video` controls. 2. Correct inability to style clickable `input` types in iOS. 3. Improve usability and consistency of cursor style between image-type `input` and others. */
+button, html input[type="button"], input[type="reset"], input[type="submit"] { -webkit-appearance: button; /* 2 */ cursor: pointer; /* 3 */ }
+
+/** Re-set default cursor for disabled elements. */
+button[disabled], html input[disabled] { cursor: default; }
+
+/** 1. Address box sizing set to `content-box` in IE 8/9. 2. Remove excess padding in IE 8/9. */
+input[type="checkbox"], input[type="radio"] { box-sizing: border-box; /* 1 */ padding: 0; /* 2 */ }
+
+/** 1. Address `appearance` set to `searchfield` in Safari 5 and Chrome. 2. Address `box-sizing` set to `border-box` in Safari 5 and Chrome (include `-moz` to future-proof). */
+input[type="search"] { -webkit-appearance: textfield; /* 1 */ -moz-box-sizing: content-box; -webkit-box-sizing: content-box; /* 2 */ box-sizing: content-box; }
+
+/** Remove inner padding and search cancel button in Safari 5 and Chrome on OS X. */
+input[type="search"]::-webkit-search-cancel-button, input[type="search"]::-webkit-search-decoration { -webkit-appearance: none; }
+
+/** Remove inner padding and border in Firefox 4+. */
+button::-moz-focus-inner, input::-moz-focus-inner { border: 0; padding: 0; }
+
+/** 1. Remove default vertical scrollbar in IE 8/9. 2. Improve readability and alignment in all browsers. */
+textarea { overflow: auto; /* 1 */ vertical-align: top; /* 2 */ }
+
+/* ========================================================================== Tables ========================================================================== */
+/** Remove most spacing between table cells. */
+table { border-collapse: collapse; border-spacing: 0; }
+
+meta.foundation-mq-small { font-family: "only screen and (min-width: 768px)"; width: 768px; }
+
+meta.foundation-mq-medium { font-family: "only screen and (min-width:1280px)"; width: 1280px; }
+
+meta.foundation-mq-large { font-family: "only screen and (min-width:1440px)"; width: 1440px; }
+
+*, *:before, *:after { -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
+
+html, body { font-size: 97%; }
+
+body { background: white; color: #222222; padding: 0; margin: 0; font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif; font-weight: normal; font-style: normal; line-height: 1; position: relative; cursor: auto; }
+
+a:hover { cursor: pointer; }
+
+img, object, embed { max-width: 100%; height: auto; }
+
+object, embed { height: 100%; }
+
+img { -ms-interpolation-mode: bicubic; }
+
+#map_canvas img, #map_canvas embed, #map_canvas object, .map_canvas img, .map_canvas embed, .map_canvas object { max-width: none !important; }
+
+.left { float: left !important; }
+
+.right { float: right !important; }
+
+.text-left { text-align: left !important; }
+
+.text-right { text-align: right !important; }
+
+.text-center { text-align: center !important; }
+
+.text-justify { text-align: justify !important; }
+
+.hide { display: none; }
+
+.antialiased, body { -webkit-font-smoothing: antialiased; }
+
+img { display: inline-block; vertical-align: middle; }
+
+textarea { height: auto; min-height: 50px; }
+
+select { width: 100%; }
+
+p.lead, .paragraph.lead > p, #preamble > .sectionbody > .paragraph:first-of-type p { font-size: 1.21875em; line-height: 1.6; }
+
+.subheader, .admonitionblock td.content > .title, .audioblock > .title, .exampleblock > .title, .imageblock > .title, .listingblock > .title, .literalblock > .title, .stemblock > .title, .openblock > .title, .paragraph > .title, .quoteblock > .title, table.tableblock > .title, .verseblock > .title, .videoblock > .title, .dlist > .title, .olist > .title, .ulist > .title, .qlist > .title, .hdlist > .title { line-height: 1.4; color: #6f6f6f; font-weight: 300; margin-top: 0.2em; margin-bottom: 0.5em; }
+
+/* Typography resets */
+div, dl, dt, dd, ul, ol, li, h1, h2, h3, #toctitle, .sidebarblock > .content > .title, h4, h5, h6, pre, form, p, blockquote, th, td { margin: 0; padding: 0; direction: ltr; }
+
+/* Default Link Styles */
+a { color: #1164be; text-decoration: none; line-height: inherit; }
+a img { border: none; }
+
+/* Default paragraph styles */
+p { font-family: inherit; font-weight: normal; font-size: 1em; line-height: 1.4; margin-bottom: 1em; text-rendering: optimizeLegibility; }
+p aside { font-size: 0.875em; line-height: 1.35; font-style: italic; }
+
+/* Default header styles */
+h1, h2, h3, #toctitle, .sidebarblock > .content > .title, h4, h5, h6 { font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif; font-weight: bold; font-style: normal; color: #1c355e; text-rendering: optimizeLegibility; margin-top: 1em; margin-bottom: 0.5em; line-height: 1.2125em; }
+h1 small, h2 small, h3 small, #toctitle small, .sidebarblock > .content > .title small, h4 small, h5 small, h6 small { font-size: 60%; color: #6f6f6f; line-height: 0; }
+
+h1 { font-size: 2.125em; }
+
+h2 { font-size: 1.6875em; }
+
+h3, #toctitle, .sidebarblock > .content > .title { font-size: 1.375em; }
+
+h4 { font-size: 1.125em; }
+
+h5 { font-size: 1.125em; }
+
+h6 { font-size: 1em; }
+
+hr { border: solid #dddddd; border-width: 1px 0 0; clear: both; margin: 1.25em 0 1.1875em; height: 0; }
+
+/* Helpful Typography Defaults */
+em, i { font-style: italic; line-height: inherit; }
+
+strong, b { font-weight: bold; line-height: inherit; }
+
+small { font-size: 60%; line-height: inherit; }
+
+code { font-family: Consolas, "Liberation Mono", Courier, monospace; font-weight: bold; }
+
+/* Lists */
+ul, ol, dl { font-size: 1em; line-height: 1.4; margin-bottom: 1.25em; list-style-position: outside; font-family: inherit; }
+
+ul, ol { margin-left: 2.5em; }
+ul.no-bullet, ol.no-bullet { margin-left: 1.5em; }
+
+/* Unordered Lists */
+ul li ul, ul li ol { margin-left: 1.25em; margin-bottom: 0; font-size: 1em; /* Override nested font-size change */ }
+ul.square li ul, ul.circle li ul, ul.disc li ul { list-style: inherit; }
+ul.square { list-style-type: square; }
+ul.circle { list-style-type: circle; }
+ul.disc { list-style-type: disc; }
+ul.no-bullet { list-style: none; }
+
+/* Ordered Lists */
+ol li ul, ol li ol { margin-left: 1.25em; margin-bottom: 0; }
+
+/* Definition Lists */
+dl dt { margin-bottom: 0.3125em; font-weight: bold; }
+dl dd { margin-bottom: 1.25em; }
+
+/* Abbreviations */
+abbr, acronym { text-transform: uppercase; font-size: 90%; color: #222222; border-bottom: 1px dotted #dddddd; cursor: help; }
+
+abbr { text-transform: none; }
+
+/* Blockquotes */
+blockquote { margin: 0 0 1.25em; padding: 0.5625em 1.25em 0 1.1875em; border-left: 1px solid #dddddd; }
+blockquote cite { display: block; font-size: 0.8125em; color: #555555; }
+blockquote cite:before { content: "\2014 \0020"; }
+blockquote cite a, blockquote cite a:visited { color: #555555; }
+
+blockquote, blockquote p { line-height: 1.6; color: #6f6f6f; }
+
+/* Microformats */
+.vcard { display: inline-block; margin: 0 0 1.25em 0; border: 1px solid #dddddd; padding: 0.625em 0.75em; }
+.vcard li { margin: 0; display: block; }
+.vcard .fn { font-weight: bold; font-size: 0.9375em; }
+
+.vevent .summary { font-weight: bold; }
+.vevent abbr { cursor: auto; text-decoration: none; font-weight: bold; border: none; padding: 0 0.0625em; }
+
+/*@media only screen and (min-width: 768px) { h1, h2, h3, #toctitle, .sidebarblock > .content > .title, h4, h5, h6 { line-height: 1.4; }
+  h1 { font-size: 2.75em; }
+  h2 { font-size: 2.3125em; }
+  h3, #toctitle, .sidebarblock > .content > .title { font-size: 1.6875em; }
+  h4 { font-size: 1.4375em; } }*/
+/* Tables */
+table { background: white; margin-bottom: 1.25em; border: solid 1px #dddddd; }
+table thead, table tfoot { background: whitesmoke; font-weight: bold; }
+table thead tr th, table thead tr td, table tfoot tr th, table tfoot tr td { padding: 0.5em 0.625em 0.625em; font-size: inherit; color: #222222; text-align: left; }
+table tr th, table tr td { padding: 0.5625em 0.625em; font-size: inherit; color: #222222; }
+table tr.even, table tr.alt, table tr:nth-of-type(even) { background: #f9f9f9; }
+table thead tr th, table tfoot tr th, table tbody tr td, table tr td, table tfoot tr td { display: table-cell; line-height: 1.4; }
+
+h1, h2, h3, #toctitle, .sidebarblock > .content > .title, h4, h5, h6 { line-height: 1.4; border-bottom: 1px solid #dddddd }
+
+.clearfix:before, .clearfix:after, .float-group:before, .float-group:after { content: " "; display: table; }
+.clearfix:after, .float-group:after { clear: both; }
+
+*:not(pre) > code { font-size: inherit; font-style: normal !important; letter-spacing: 0; padding: 3px 2px 1px 2px; background-color: #eeeeee; border: 1px solid #dddddd; -webkit-border-radius: 0; border-radius: 0; line-height: inherit; font-weight: normal; }
+
+pre, pre > code { line-height: 1.4; color: black; font-family: monospace, serif; font-weight: normal; }
+
+.keyseq { color: #555555; }
+
+kbd { display: inline-block; color: #222222; font-size: 0.75em; line-height: 1.4; background-color: #f7f7f7; border: 1px solid #ccc; -webkit-border-radius: 3px; border-radius: 3px; -webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 0 0 0.1em white inset; box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 0 0 0.1em white inset; margin: -0.15em 0.15em 0 0.15em; padding: 0.2em 0.6em 0.2em 0.5em; vertical-align: middle; white-space: nowrap; }
+
+.keyseq kbd:first-child { margin-left: 0; }
+
+.keyseq kbd:last-child { margin-right: 0; }
+
+.menuseq, .menu { color: #090909; }
+
+b.button:before, b.button:after { position: relative; top: -1px; font-weight: normal; }
+
+b.button:before { content: "["; padding: 0 3px 0 2px; }
+
+b.button:after { content: "]"; padding: 0 2px 0 3px; }
+
+#header, #content, #footnotes, #footer { width: 100%; margin-left: auto; margin-right: auto; margin-top: 0; margin-bottom: 0; max-width: 62.5em; *zoom: 1; position: relative; padding-left: 0.9375em; padding-right: 0.9375em; }
+#header:before, #header:after, #content:before, #content:after, #footnotes:before, #footnotes:after, #footer:before, #footer:after { content: " "; display: table; }
+#header:after, #content:after, #footnotes:after, #footer:after { clear: both; }
+
+#content { margin-top: 1.25em; }
+
+#content:before { content: none; }
+
+#header > h1:first-child { color: black; margin-top: 2.25rem; margin-bottom: 0; }
+#header > h1:first-child + #toc { margin-top: 8px; border-top: 1px solid #dddddd; }
+#header > h1:only-child, body.toc2 #header > h1:nth-last-child(2) { border-bottom: 1px solid #dddddd; padding-bottom: 8px; }
+#header .details { border-bottom: 1px solid #dddddd; line-height: 1.45; padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; color: #555555; display: -ms-flexbox; display: -webkit-flex; display: flex; -ms-flex-flow: row wrap; -webkit-flex-flow: row wrap; flex-flow: row wrap; }
+#header .details span:first-child { margin-left: -0.125em; }
+#header .details span.email a { color: #6f6f6f; }
+#header .details br { display: none; }
+#header .details br + span:before { content: "\00a0\2013\00a0"; }
+#header .details br + span.author:before { content: "\00a0\22c5\00a0"; color: #6f6f6f; }
+#header .details br + span#revremark:before { content: "\00a0|\00a0"; }
+#header #revnumber { text-transform: capitalize; }
+#header #revnumber:after { content: "\00a0"; }
+
+#content > h1:first-child:not([class]) { color: black; border-bottom: 1px solid #dddddd; padding-bottom: 8px; margin-top: 0; padding-top: 1rem; margin-bottom: 1.25rem; }
+
+#floating {
+  position: fixed;
+  z-index: 1000;
+  padding: 0.5em;
+  right: 0;
+  top: 0;
+  background: white;
+  box-shadow: 0 0 1em #777777;
+  -webkit-box-shadow: 0 0 1em #777777;
+  -moz-box-shadow: 0 0 1em #777777;
+  -webkit-border-bottom-left-radius: 5px;
+  -moz-border-radius-bottomleft: 5px;
+  max-height: 80%;
+  overflow: auto;
+}
+
+#floating #full { display: none; } /* Hide the full TOC by default */
+
+#floating:hover #full{
+  display: block; /* Show it on hover */
+}
+
+
+#toc { border-bottom: 1px solid #dddddd; padding-bottom: 0.5em; }
+#toc > ul { margin-left: 0.125em; }
+#toc ul.sectlevel0 > li > a { font-style: italic; }
+#toc ul.sectlevel0 ul.sectlevel1 { margin: 0.5em 0; }
+#toc ul { font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif; list-style-type: none; }
+#toc a { text-decoration: none; }
+#toc a:active { text-decoration: underline; }
+
+#toctitle { color: #6f6f6f; font-size: 1.2em; }
+
+@media only screen and (min-width: 768px) { #toctitle { font-size: 1.375em; }
+  body.toc2 { padding-left: 15em; padding-right: 0; }
+  #toc.toc2 { margin-top: 0 !important; background-color: #f2f2f2; position: fixed; width: 15em; left: 0; top: 0; border-right: 1px solid #dddddd; border-top-width: 0 !important; border-bottom-width: 0 !important; z-index: 1000; padding: 1.25em 1em; height: 100%; overflow: auto; }
+  #toc.toc2 #toctitle { margin-top: 0; font-size: 1.2em; }
+  #toc.toc2 > ul { font-size: 0.9em; margin-bottom: 0; }
+  #toc.toc2 ul ul { margin-left: 0; padding-left: 1em; }
+  #toc.toc2 ul.sectlevel0 ul.sectlevel1 { padding-left: 0; margin-top: 0.5em; margin-bottom: 0.5em; }
+  body.toc2.toc-right { padding-left: 0; padding-right: 15em; }
+  body.toc2.toc-right #toc.toc2 { border-right-width: 0; border-left: 1px solid #dddddd; left: auto; right: 0; } }
+@media only screen and (min-width: 1280px) { body.toc2 { padding-left: 20em; padding-right: 0; }
+  #toc.toc2 { width: 20em; }
+  #toc.toc2 #toctitle { font-size: 1.375em; }
+  #toc.toc2 > ul { font-size: 0.95em; }
+  #toc.toc2 ul ul { padding-left: 1.25em; }
+  body.toc2.toc-right { padding-left: 0; padding-right: 20em; } }
+#content #toc { border-style: solid; border-width: 1px; border-color: #d9d9d9; margin-bottom: 1.25em; padding: 1.25em; background: #f2f2f2; -webkit-border-radius: 0; border-radius: 0; }
+#content #toc > :first-child { margin-top: 0; }
+#content #toc > :last-child { margin-bottom: 0; }
+
+#footer { max-width: 100%; background-color: #222222; padding: 1.25em; }
+
+#footer-text { color: #dddddd; line-height: 1.44; }
+
+.sect1 { padding-bottom: 0.625em; }
+
+@media only screen and (min-width: 768px) { .sect1 { padding-bottom: 1.25em; } }
+.sect1 + .sect1 { border-top: 1px solid #dddddd; }
+
+#content h1 > a.anchor, h2 > a.anchor, h3 > a.anchor, #toctitle > a.anchor, .sidebarblock > .content > .title > a.anchor, h4 > a.anchor, h5 > a.anchor, h6 > a.anchor { position: absolute; z-index: 1001; width: 1.5ex; margin-left: -1.5ex; display: block; text-decoration: none !important; visibility: hidden; text-align: center; font-weight: normal; }
+#content h1 > a.anchor:before, h2 > a.anchor:before, h3 > a.anchor:before, #toctitle > a.anchor:before, .sidebarblock > .content > .title > a.anchor:before, h4 > a.anchor:before, h5 > a.anchor:before, h6 > a.anchor:before { content: "\00A7"; font-size: 0.85em; display: block; padding-top: 0.1em; }
+#content h1:hover > a.anchor, #content h1 > a.anchor:hover, h2:hover > a.anchor, h2 > a.anchor:hover, h3:hover > a.anchor, #toctitle:hover > a.anchor, .sidebarblock > .content > .title:hover > a.anchor, h3 > a.anchor:hover, #toctitle > a.anchor:hover, .sidebarblock > .content > .title > a.anchor:hover, h4:hover > a.anchor, h4 > a.anchor:hover, h5:hover > a.anchor, h5 > a.anchor:hover, h6:hover > a.anchor, h6 > a.anchor:hover { visibility: visible; }
+#content h1 > a.link, h2 > a.link, h3 > a.link, #toctitle > a.link, .sidebarblock > .content > .title > a.link, h4 > a.link, h5 > a.link, h6 > a.link { color: #222222; text-decoration: none; }
+#content h1 > a.link:hover, h2 > a.link:hover, h3 > a.link:hover, #toctitle > a.link:hover, .sidebarblock > .content > .title > a.link:hover, h4 > a.link:hover, h5 > a.link:hover, h6 > a.link:hover { color: #151515; }
+
+.audioblock, .imageblock, .literalblock, .listingblock, .stemblock, .videoblock { margin-bottom: 1.25em; }
+
+.admonitionblock td.content > .title, .audioblock > .title, .exampleblock > .title, .imageblock > .title, .listingblock > .title, .literalblock > .title, .stemblock > .title, .openblock > .title, .paragraph > .title, .quoteblock > .title, table.tableblock > .title, .verseblock > .title, .videoblock > .title, .dlist > .title, .olist > .title, .ulist > .title, .qlist > .title, .hdlist > .title { text-rendering: optimizeLegibility; text-align: left; }
+
+table.tableblock > caption.title { white-space: nowrap; overflow: visible; max-width: 0; }
+
+.paragraph.lead > p, #preamble > .sectionbody > .paragraph:first-of-type p { color: black; }
+
+table.tableblock #preamble > .sectionbody > .paragraph:first-of-type p { font-size: inherit; }
+
+.admonitionblock > table { border-collapse: separate; border: 0; background: none; width: 100%; }
+.admonitionblock > table td.icon { text-align: center; width: 80px; }
+.admonitionblock > table td.icon img { max-width: none; }
+.admonitionblock > table td.icon .title { font-weight: bold; font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif; text-transform: uppercase; }
+.admonitionblock > table td.content { padding-left: 1.125em; padding-right: 1.25em; border-left: 1px solid #dddddd; color: #555555; }
+.admonitionblock > table td.content > :last-child > :last-child { margin-bottom: 0; }
+
+.exampleblock > .content { border-style: solid; border-width: 1px; border-color: #e6e6e6; margin-bottom: 1.25em; padding: 1.25em; background: white; -webkit-border-radius: 0; border-radius: 0; }
+.exampleblock > .content > :first-child { margin-top: 0; }
+.exampleblock > .content > :last-child { margin-bottom: 0; }
+
+.sidebarblock { border-style: solid; border-width: 1px; border-color: #d9d9d9; margin-bottom: 1.25em; padding: 1.25em; background: #f2f2f2; -webkit-border-radius: 0; border-radius: 0; }
+.sidebarblock > :first-child { margin-top: 0; }
+.sidebarblock > :last-child { margin-bottom: 0; }
+.sidebarblock > .content > .title { color: #6f6f6f; margin-top: 0; }
+
+.exampleblock > .content > :last-child > :last-child, .exampleblock > .content .olist > ol > li:last-child > :last-child, .exampleblock > .content .ulist > ul > li:last-child > :last-child, .exampleblock > .content .qlist > ol > li:last-child > :last-child, .sidebarblock > .content > :last-child > :last-child, .sidebarblock > .content .olist > ol > li:last-child > :last-child, .sidebarblock > .content .ulist > ul > li:last-child > :last-child, .sidebarblock > .content .qlist > ol > li:last-child > :last-child { margin-bottom: 0; }
+
+.literalblock pre, .listingblock pre:not(.highlight), .listingblock pre[class="highlight"], .listingblock pre[class^="highlight "], .listingblock pre.CodeRay, .listingblock pre.prettyprint { background: #eeeeee; }
+.sidebarblock .literalblock pre, .sidebarblock .listingblock pre:not(.highlight), .sidebarblock .listingblock pre[class="highlight"], .sidebarblock .listingblock pre[class^="highlight "], .sidebarblock .listingblock pre.CodeRay, .sidebarblock .listingblock pre.prettyprint { background: #f2f1f1; }
+
+.literalblock pre, .literalblock pre[class], .listingblock pre, .listingblock pre[class] { border: 1px solid #cccccc; -webkit-border-radius: 0; border-radius: 0; word-wrap: break-word; padding: 0.8em 0.8em 0.65em 0.8em; font-size: 0.8125em; }
+.literalblock pre.nowrap, .literalblock pre[class].nowrap, .listingblock pre.nowrap, .listingblock pre[class].nowrap { overflow-x: auto; white-space: pre; word-wrap: normal; }
+@media only screen and (min-width: 768px) { .literalblock pre, .literalblock pre[class], .listingblock pre, .listingblock pre[class] { font-size: 0.90625em; } }
+@media only screen and (min-width: 1280px) { .literalblock pre, .literalblock pre[class], .listingblock pre, .listingblock pre[class] { font-size: 1em; } }
+
+.literalblock.output pre { color: #eeeeee; background-color: black; }
+
+.listingblock pre.highlightjs { padding: 0; }
+.listingblock pre.highlightjs > code { padding: 0.8em 0.8em 0.65em 0.8em; -webkit-border-radius: 0; border-radius: 0; }
+
+.listingblock > .content { position: relative; }
+
+.listingblock code[data-lang]:before { display: none; content: attr(data-lang); position: absolute; font-size: 0.75em; top: 0.425rem; right: 0.5rem; line-height: 1; text-transform: uppercase; color: #999; }
+
+.listingblock:hover code[data-lang]:before { display: block; }
+
+.listingblock.terminal pre .command:before { content: attr(data-prompt); padding-right: 0.5em; color: #999; }
+
+.listingblock.terminal pre .command:not([data-prompt]):before { content: "$"; }
+
+table.pyhltable { border-collapse: separate; border: 0; margin-bottom: 0; background: none; }
+
+table.pyhltable td { vertical-align: top; padding-top: 0; padding-bottom: 0; }
+
+table.pyhltable td.code { padding-left: .75em; padding-right: 0; }
+
+pre.pygments .lineno, table.pyhltable td:not(.code) { color: #999; padding-left: 0; padding-right: .5em; border-right: 1px solid #dddddd; }
+
+pre.pygments .lineno { display: inline-block; margin-right: .25em; }
+
+table.pyhltable .linenodiv { background: none !important; padding-right: 0 !important; }
+
+.quoteblock { margin: 0 1em 1.25em 1.5em; display: table; }
+.quoteblock > .title { margin-left: -1.5em; margin-bottom: 0.75em; }
+.quoteblock blockquote, .quoteblock blockquote p { color: #6f6f6f; font-size: 1.15rem; line-height: 1.75; word-spacing: 0.1em; letter-spacing: 0; font-style: italic; text-align: justify; }
+.quoteblock blockquote { margin: 0; padding: 0; border: 0; }
+.quoteblock blockquote:before { content: "\201c"; float: left; font-size: 2.75em; font-weight: bold; line-height: 0.6em; margin-left: -0.6em; color: #6f6f6f; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); }
+.quoteblock blockquote > .paragraph:last-child p { margin-bottom: 0; }
+.quoteblock .attribution { margin-top: 0.5em; margin-right: 0.5ex; text-align: right; }
+.quoteblock .quoteblock { margin-left: 0; margin-right: 0; padding: 0.5em 0; border-left: 3px solid #555555; }
+.quoteblock .quoteblock blockquote { padding: 0 0 0 0.75em; }
+.quoteblock .quoteblock blockquote:before { display: none; }
+
+.verseblock { margin: 0 1em 1.25em 1em; }
+.verseblock pre { font-family: "Open Sans", "DejaVu Sans", sans; font-size: 1.15rem; color: #6f6f6f; font-weight: 300; text-rendering: optimizeLegibility; }
+.verseblock pre strong { font-weight: 400; }
+.verseblock .attribution { margin-top: 1.25rem; margin-left: 0.5ex; }
+
+.quoteblock .attribution, .verseblock .attribution { font-size: 0.8125em; line-height: 1.45; font-style: italic; }
+.quoteblock .attribution br, .verseblock .attribution br { display: none; }
+.quoteblock .attribution cite, .verseblock .attribution cite { display: block; letter-spacing: -0.05em; color: #555555; }
+
+.quoteblock.abstract { margin: 0 0 1.25em 0; display: block; }
+.quoteblock.abstract blockquote, .quoteblock.abstract blockquote p { text-align: left; word-spacing: 0; }
+.quoteblock.abstract blockquote:before, .quoteblock.abstract blockquote p:first-of-type:before { display: none; }
+
+table.tableblock { max-width: 100%; border-collapse: separate; }
+table.tableblock td > .paragraph:last-child p > p:last-child, table.tableblock th > p:last-child, table.tableblock td > p:last-child { margin-bottom: 0; }
+
+table.spread { width: 100%; }
+
+table.tableblock, th.tableblock, td.tableblock { border: 0 solid #dddddd; }
+
+table.grid-all th.tableblock, table.grid-all td.tableblock { border-width: 0 1px 1px 0; }
+
+table.grid-all tfoot > tr > th.tableblock, table.grid-all tfoot > tr > td.tableblock { border-width: 1px 1px 0 0; }
+
+table.grid-cols th.tableblock, table.grid-cols td.tableblock { border-width: 0 1px 0 0; }
+
+table.grid-all * > tr > .tableblock:last-child, table.grid-cols * > tr > .tableblock:last-child { border-right-width: 0; }
+
+table.grid-rows th.tableblock, table.grid-rows td.tableblock { border-width: 0 0 1px 0; }
+
+table.grid-all tbody > tr:last-child > th.tableblock, table.grid-all tbody > tr:last-child > td.tableblock, table.grid-all thead:last-child > tr > th.tableblock, table.grid-rows tbody > tr:last-child > th.tableblock, table.grid-rows tbody > tr:last-child > td.tableblock, table.grid-rows thead:last-child > tr > th.tableblock { border-bottom-width: 0; }
+
+table.grid-rows tfoot > tr > th.tableblock, table.grid-rows tfoot > tr > td.tableblock { border-width: 1px 0 0 0; }
+
+table.frame-all { border-width: 1px; }
+
+table.frame-sides { border-width: 0 1px; }
+
+table.frame-topbot { border-width: 1px 0; }
+
+th.halign-left, td.halign-left { text-align: left; }
+
+th.halign-right, td.halign-right { text-align: right; }
+
+th.halign-center, td.halign-center { text-align: center; }
+
+th.valign-top, td.valign-top { vertical-align: top; }
+
+th.valign-bottom, td.valign-bottom { vertical-align: bottom; }
+
+th.valign-middle, td.valign-middle { vertical-align: middle; }
+
+table thead th, table tfoot th { font-weight: bold; }
+
+tbody tr th { display: table-cell; line-height: 1.4; background: whitesmoke; }
+
+tbody tr th, tbody tr th p, tfoot tr th, tfoot tr th p { color: #222222; font-weight: bold; }
+
+p.tableblock > code:only-child { background: none; padding: 0; }
+
+p.tableblock { font-size: 1em; }
+
+td > div.verse { white-space: pre; }
+
+ol { margin-left: 2.5em; }
+
+ul li ol { margin-left: 1.5em; }
+
+dl dd { margin-left: 1.125em; }
+
+dl dd:last-child, dl dd:last-child > :last-child { margin-bottom: 0; }
+
+ol > li p, ul > li p, ul dd, ol dd, .olist .olist, .ulist .ulist, .ulist .olist, .olist .ulist { margin-bottom: 0.625em; }
+
+ul.unstyled, ol.unnumbered, ul.checklist, ul.none { list-style-type: none; }
+
+ul.unstyled, ol.unnumbered, ul.checklist { margin-left: 0.625em; }
+
+ul.checklist li > p:first-child > .fa-check-square-o:first-child, ul.checklist li > p:first-child > input[type="checkbox"]:first-child { margin-right: 0.25em; }
+
+ul.checklist li > p:first-child > input[type="checkbox"]:first-child { position: relative; top: 1px; }
+
+ul.inline { margin: 0 auto 0.625em auto; margin-left: -1.375em; margin-right: 0; padding: 0; list-style: none; overflow: hidden; }
+ul.inline > li { list-style: none; float: left; margin-left: 1.375em; display: block; }
+ul.inline > li > * { display: block; }
+
+.unstyled dl dt { font-weight: normal; font-style: normal; }
+
+ol.arabic { list-style-type: decimal; }
+
+ol.decimal { list-style-type: decimal-leading-zero; }
+
+ol.loweralpha { list-style-type: lower-alpha; }
+
+ol.upperalpha { list-style-type: upper-alpha; }
+
+ol.lowerroman { list-style-type: lower-roman; }
+
+ol.upperroman { list-style-type: upper-roman; }
+
+ol.lowergreek { list-style-type: lower-greek; }
+
+.hdlist > table, .colist > table { border: 0; background: none; }
+.hdlist > table > tbody > tr, .colist > table > tbody > tr { background: none; }
+
+td.hdlist1 { padding-right: .75em; font-weight: bold; }
+
+td.hdlist1, td.hdlist2 { vertical-align: top; }
+
+.literalblock + .colist, .listingblock + .colist { margin-top: -0.5em; }
+
+.colist > table tr > td:first-of-type { padding: 0 0.75em; line-height: 1; }
+.colist > table tr > td:last-of-type { padding: 0.25em 0; }
+
+.thumb, .th { line-height: 0; display: inline-block; border: solid 4px white; -webkit-box-shadow: 0 0 0 1px #dddddd; box-shadow: 0 0 0 1px #dddddd; }
+
+.imageblock.left, .imageblock[style*="float: left"] { margin: 0.25em 0.625em 1.25em 0; }
+.imageblock.right, .imageblock[style*="float: right"] { margin: 0.25em 0 1.25em 0.625em; }
+.imageblock > .title { margin-bottom: 0; }
+.imageblock.thumb, .imageblock.th { border-width: 6px; }
+.imageblock.thumb > .title, .imageblock.th > .title { padding: 0 0.125em; }
+
+.image.left, .image.right { margin-top: 0.25em; margin-bottom: 0.25em; display: inline-block; line-height: 0; }
+.image.left { margin-right: 0.625em; }
+.image.right { margin-left: 0.625em; }
+
+a.image { text-decoration: none; }
+
+span.footnote, span.footnoteref { vertical-align: super; font-size: 0.875em; }
+span.footnote a, span.footnoteref a { text-decoration: none; }
+span.footnote a:active, span.footnoteref a:active { text-decoration: underline; }
+
+#footnotes { padding-top: 0.75em; padding-bottom: 0.75em; margin-bottom: 0.625em; }
+#footnotes hr { width: 20%; min-width: 6.25em; margin: -.25em 0 .75em 0; border-width: 1px 0 0 0; }
+#footnotes .footnote { padding: 0 0.375em; line-height: 1.3; font-size: 0.875em; margin-left: 1.2em; text-indent: -1.2em; margin-bottom: .2em; }
+#footnotes .footnote a:first-of-type { font-weight: bold; text-decoration: none; }
+#footnotes .footnote:last-of-type { margin-bottom: 0; }
+
+#content #footnotes { margin-top: -0.625em; margin-bottom: 0; padding: 0.75em 0; }
+
+.gist .file-data > table { border: 0; background: #fff; width: 100%; margin-bottom: 0; }
+.gist .file-data > table td.line-data { width: 99%; }
+
+div.unbreakable { page-break-inside: avoid; }
+
+.big { font-size: larger; }
+
+.small { font-size: smaller; }
+
+.underline { text-decoration: underline; }
+
+.overline { text-decoration: overline; }
+
+.line-through { text-decoration: line-through; }
+
+.aqua { color: #00bfbf; }
+
+.aqua-background { background-color: #00fafa; }
+
+.black { color: black; }
+
+.black-background { background-color: black; }
+
+.blue { color: #0000bf; }
+
+.blue-background { background-color: #0000fa; }
+
+.fuchsia { color: #bf00bf; }
+
+.fuchsia-background { background-color: #fa00fa; }
+
+.gray { color: #606060; }
+
+.gray-background { background-color: #7d7d7d; }
+
+.green { color: #006000; }
+
+.green-background { background-color: #007d00; }
+
+.lime { color: #00bf00; }
+
+.lime-background { background-color: #00fa00; }
+
+.maroon { color: #600000; }
+
+.maroon-background { background-color: #7d0000; }
+
+.navy { color: #000060; }
+
+.navy-background { background-color: #00007d; }
+
+.olive { color: #606000; }
+
+.olive-background { background-color: #7d7d00; }
+
+.purple { color: #600060; }
+
+.purple-background { background-color: #7d007d; }
+
+.red { color: #bf0000; }
+
+.red-background { background-color: #fa0000; }
+
+.silver { color: #909090; }
+
+.silver-background { background-color: #bcbcbc; }
+
+.teal { color: #006060; }
+
+.teal-background { background-color: #007d7d; }
+
+.white { color: #bfbfbf; }
+
+.white-background { background-color: #fafafa; }
+
+.yellow { color: #bfbf00; }
+
+.yellow-background { background-color: #fafa00; }
+
+span.icon > .fa { cursor: default; }
+
+.admonitionblock td.icon [class^="fa icon-"] { font-size: 2.5em; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); cursor: default; }
+.admonitionblock td.icon .icon-note:before { content: "\f05a"; color: #207c98; }
+.admonitionblock td.icon .icon-tip:before { content: "\f0eb"; text-shadow: 1px 1px 2px rgba(155, 155, 0, 0.8); color: #111; }
+.admonitionblock td.icon .icon-warning:before { content: "\f071"; color: #bf6900; }
+.admonitionblock td.icon .icon-caution:before { content: "\f06d"; color: #bf3400; }
+.admonitionblock td.icon .icon-important:before { content: "\f06a"; color: #bf0000; }
+
+.conum[data-value] { display: inline-block; color: #fff !important; background-color: #222222; -webkit-border-radius: 100px; border-radius: 100px; text-align: center; font-size: 0.75em; width: 1.67em; height: 1.67em; line-height: 1.67em; font-family: "Open Sans", "DejaVu Sans", sans-serif; font-style: normal; font-weight: bold; }
+.conum[data-value] * { color: #fff !important; }
+.conum[data-value] + b { display: none; }
+.conum[data-value]:after { content: attr(data-value); }
+pre .conum[data-value] { position: relative; top: -0.125em; }
+
+b.conum * { color: inherit !important; }
+
+.conum:not([data-value]):empty { display: none; }
+
+.literalblock pre, .listingblock pre { background: #eeeeee; }
+
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css">
+<style>.listingblock .pygments .hll { background-color: #ffffcc }
+.listingblock .pygments  { background: #f8f8f8; }
+.listingblock .pygments .tok-c { color: #408080; font-style: italic } /* Comment */
+.listingblock .pygments .tok-err { border: 1px solid #FF0000 } /* Error */
+.listingblock .pygments .tok-k { color: #008000; font-weight: bold } /* Keyword */
+.listingblock .pygments .tok-o { color: #666666 } /* Operator */
+.listingblock .pygments .tok-cm { color: #408080; font-style: italic } /* Comment.Multiline */
+.listingblock .pygments .tok-cp { color: #BC7A00 } /* Comment.Preproc */
+.listingblock .pygments .tok-c1 { color: #408080; font-style: italic } /* Comment.Single */
+.listingblock .pygments .tok-cs { color: #408080; font-style: italic } /* Comment.Special */
+.listingblock .pygments .tok-gd { color: #A00000 } /* Generic.Deleted */
+.listingblock .pygments .tok-ge { font-style: italic } /* Generic.Emph */
+.listingblock .pygments .tok-gr { color: #FF0000 } /* Generic.Error */
+.listingblock .pygments .tok-gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.listingblock .pygments .tok-gi { color: #00A000 } /* Generic.Inserted */
+.listingblock .pygments .tok-go { color: #888888 } /* Generic.Output */
+.listingblock .pygments .tok-gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.listingblock .pygments .tok-gs { font-weight: bold } /* Generic.Strong */
+.listingblock .pygments .tok-gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.listingblock .pygments .tok-gt { color: #0044DD } /* Generic.Traceback */
+.listingblock .pygments .tok-kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.listingblock .pygments .tok-kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.listingblock .pygments .tok-kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.listingblock .pygments .tok-kp { color: #008000 } /* Keyword.Pseudo */
+.listingblock .pygments .tok-kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.listingblock .pygments .tok-kt { color: #B00040 } /* Keyword.Type */
+.listingblock .pygments .tok-m { color: #666666 } /* Literal.Number */
+.listingblock .pygments .tok-s { color: #BA2121 } /* Literal.String */
+.listingblock .pygments .tok-na { color: #7D9029 } /* Name.Attribute */
+.listingblock .pygments .tok-nb { color: #008000 } /* Name.Builtin */
+.listingblock .pygments .tok-nc { color: #0000FF; font-weight: bold } /* Name.Class */
+.listingblock .pygments .tok-no { color: #880000 } /* Name.Constant */
+.listingblock .pygments .tok-nd { color: #AA22FF } /* Name.Decorator */
+.listingblock .pygments .tok-ni { color: #999999; font-weight: bold } /* Name.Entity */
+.listingblock .pygments .tok-ne { color: #D2413A; font-weight: bold } /* Name.Exception */
+.listingblock .pygments .tok-nf { color: #0000FF } /* Name.Function */
+.listingblock .pygments .tok-nl { color: #A0A000 } /* Name.Label */
+.listingblock .pygments .tok-nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+.listingblock .pygments .tok-nt { color: #008000; font-weight: bold } /* Name.Tag */
+.listingblock .pygments .tok-nv { color: #19177C } /* Name.Variable */
+.listingblock .pygments .tok-ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
+.listingblock .pygments .tok-w { color: #bbbbbb } /* Text.Whitespace */
+.listingblock .pygments .tok-mb { color: #666666 } /* Literal.Number.Bin */
+.listingblock .pygments .tok-mf { color: #666666 } /* Literal.Number.Float */
+.listingblock .pygments .tok-mh { color: #666666 } /* Literal.Number.Hex */
+.listingblock .pygments .tok-mi { color: #666666 } /* Literal.Number.Integer */
+.listingblock .pygments .tok-mo { color: #666666 } /* Literal.Number.Oct */
+.listingblock .pygments .tok-sb { color: #BA2121 } /* Literal.String.Backtick */
+.listingblock .pygments .tok-sc { color: #BA2121 } /* Literal.String.Char */
+.listingblock .pygments .tok-sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.listingblock .pygments .tok-s2 { color: #BA2121 } /* Literal.String.Double */
+.listingblock .pygments .tok-se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
+.listingblock .pygments .tok-sh { color: #BA2121 } /* Literal.String.Heredoc */
+.listingblock .pygments .tok-si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
+.listingblock .pygments .tok-sx { color: #008000 } /* Literal.String.Other */
+.listingblock .pygments .tok-sr { color: #BB6688 } /* Literal.String.Regex */
+.listingblock .pygments .tok-s1 { color: #BA2121 } /* Literal.String.Single */
+.listingblock .pygments .tok-ss { color: #19177C } /* Literal.String.Symbol */
+.listingblock .pygments .tok-bp { color: #008000 } /* Name.Builtin.Pseudo */
+.listingblock .pygments .tok-vc { color: #19177C } /* Name.Variable.Class */
+.listingblock .pygments .tok-vg { color: #19177C } /* Name.Variable.Global */
+.listingblock .pygments .tok-vi { color: #19177C } /* Name.Variable.Instance */
+.listingblock .pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
+</style>
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>Frameworks de persistencia - JPA</h1>
+<div class="details">
+<span id="author" class="author">Domingo Gallardo</span><br>
+<span id="email" class="email"><a href="mailto:domingo.gallardo@ua.es">domingo.gallardo@ua.es</a></span><br>
+</div>
+<div id="toc" class="toc2">
+<div id="toctitle">Índice de contenidos</div>
+<ul class="sectlevel1">
+<li><a href="#sesion06">6. Transacciones y JPA en aplicaciones Java EE</a>
+<ul class="sectlevel2">
+<li><a href="#_transacciones">6.1. Transacciones</a>
+<ul class="sectlevel3">
+<li><a href="#_atomicidad">6.1.1. Atomicidad</a></li>
+<li><a href="#_transacciones_jta">6.1.2. Transacciones JTA</a></li>
+<li><a href="#_concurrencia_y_niveles_de_aislamiento">6.1.3. Concurrencia y niveles de aislamiento</a></li>
+<li><a href="#_gesti%C3%B3n_concurrencia_con_jpa">6.1.4. Gestión concurrencia con JPA</a></li>
+</ul>
+</li>
+<li><a href="#_jpa_en_aplicaciones_java_ee">6.2. JPA en aplicaciones Java EE</a>
+<ul class="sectlevel3">
+<li><a href="#_jpa_gestionado_por_el_contenedor">6.2.1. JPA gestionado por el contenedor</a></li>
+<li><a href="#_configuraci%C3%B3n_de_la_fuente_de_datos_mysql_en_wildfly">6.2.2. Configuración de la fuente de datos MySQL en WildFly</a></li>
+<li><a href="#_dependencias_maven_en_el_code_pom_xml_code">6.2.3. Dependencias Maven en el <code>pom.xml</code></a></li>
+<li><a href="#_persistence_xml">6.2.4. Persistence.xml</a></li>
+<li><a href="#_inyecci%C3%B3n_de_entity_managers_y_recursos_gestionados_por_el_contenedor">6.2.5. Inyección de entity managers y recursos gestionados por el contenedor</a></li>
+</ul>
+</li>
+<li><a href="#_ejercicios">6.3. Ejercicios</a>
+<ul class="sectlevel3">
+<li><a href="#__0_5_puntos_ejercicios_sobre_transacciones">6.3.1. (0,5 puntos) Ejercicios sobre transacciones</a></li>
+<li><a href="#__1_punto_aplicaci%C3%B3n_b%C3%A1sica_jpa_en_web">6.3.2. (1 punto) Aplicación básica JPA en web</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div style="page-break-after: always;"></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="sesion06">6. Transacciones y JPA en aplicaciones Java EE</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_transacciones">6.1. Transacciones</h3>
+<div class="paragraph">
+<p>La gestión de transacciones es fundamental en cualquier aplicación que trabaja con de datos. Idealmente, una transacción define una <em>unidad de trabajo</em> que debe cumplir los criterios ACID: Atomicidad, Consistencia, Aislamiento (la "I" viene del inglés <em>Isolation</em>) y Durabilidad. La consistencia la debe proporcionar el programador, realizando operaciones que lleven los datos de un estado consistente a otro. La durabilidad la proporciona el hecho de que usemos un sistema de bases de datos. Las dos características restantes, la <em>atomicidad</em> y el <em>aislamiento</em> son las más interesantes, y las que vienen determinadas por el sistema de gestión de persistencia que usemos. Veámoslas con más detalle.</p>
+</div>
+<div class="paragraph">
+<p>Una transacción debe ser atómica. Esto es, todas las operaciones de una transacción deben terminar con exito o la transacción debe abortar completamente, dejando el sistema en el mismo estado que antes de comenzar la transacción. En el primer caso se dice que la transacción ha realizado un commit y en el segundo que ha efectuado un rollback. Por esta propiedad, una transacción se debe tratar como una unidad de computación.</p>
+</div>
+<div class="paragraph">
+<p>Para garantizar la atomicidad en JDBC se llama al método <code>setAutoCommit(false)</code> de la conexión para demarcar el comienzo de la transacción y a <code>commit()</code> o <code>rollback()</code> al final de la transacción para confirmar los cambios o deshacerlos. Veremos que JPA que utiliza una demarcación explícita de las transacciones, marcando su comienzo con una llamada a un método <code>begin()</code> y su final también con llamadas a <code>commit()</code> o <code>rollback()</code>. Siempre debemos tener muy presente que JPA (cuando no utilizamos un servidor de aplicaciones) se basará completamente en la implementación de JDBC para tratar con la base de datos.</p>
+</div>
+<div class="paragraph">
+<p>Un transacción también debe ejecutarse de forma aislada. Esto es, no se deben exponer a otras transacciones concurrentes datos que todavía no se han consolidado con un commit. La concurrencia de acceso a los recursos afectados en una transacción hace muy complicado mantener esta propiedad. Veremos que JPA proporciona un enfoque moderno basado en <em>bloqueos optimistas</em> (<em>optimistic locking</em>) para tratar la concurrencia entre transacciones.</p>
+</div>
+<div class="sect3">
+<h4 id="_atomicidad">6.1.1. Atomicidad</h4>
+<div class="paragraph">
+<p>El <em>entity manager</em> de JPA define la interfaz <code>EntityTransaction</code> para gestionar las transacciones. Esta interfaz intenta imitar el API de Java para gestión de transacciones distribuidas: JTA. Pero tengamos siempre en cuenta que para su implementación se utiliza el propio sistema de transacciones de la base de datos definida en la unidad de persistencia, utilizando los métodos de transacciones de la interfaz <code>Connection</code> de JDBC. Estas transacciones son locales (no distribuidas) y no se pueden anidar ni extender.</p>
+</div>
+<div class="paragraph">
+<p>Estas transacciones locales se usan cuando estamos trabajando con JPA en aplicaciones Java SE. Cuando desarrollamos aplicaciones JPA en entornos web debemos utilizar el estándar de transacciones JTA, que hace que la transacción la controle el propio servidor de aplicaciones.</p>
+</div>
+<div class="paragraph">
+<p>Para definir una transacción local hay que obtener un <code>EntityTransaction</code> a partir del entity manager. El método del entity manager que se utiliza para ello es <code>getTransaction()</code>. Una vez obtenida la transacción, podemos utilizar uno de los métodos de su interfaz:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-kd">public</span> <span class="tok-kd">interface</span> <span class="tok-nc">EntityTransaction</span> <span class="tok-o">{</span>
+   <span class="tok-kd">public</span> <span class="tok-kt">void</span> <span class="tok-nf">begin</span><span class="tok-o">();</span>
+   <span class="tok-kd">public</span> <span class="tok-kt">void</span> <span class="tok-nf">commit</span><span class="tok-o">();</span>
+   <span class="tok-kd">public</span> <span class="tok-kt">void</span> <span class="tok-nf">rollback</span><span class="tok-o">();</span>
+   <span class="tok-kd">public</span> <span class="tok-kt">void</span> <span class="tok-nf">setRollbackOnly</span><span class="tok-o">();</span>
+   <span class="tok-kd">public</span> <span class="tok-kt">boolean</span> <span class="tok-nf">getRollbackOnly</span><span class="tok-o">();</span>
+   <span class="tok-kd">public</span> <span class="tok-kt">boolean</span> <span class="tok-nf">isActive</span><span class="tok-o">();}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Sólo hay seis métodos en la interfaz <code>EntityTransaction</code>. El método <code>begin()</code> comienza una nueva transacción en el recurso. Si la transacción está activa, <code>isActive()</code> devolverá <code>true</code>. Si se intenta comenzar una nueva transacción cuando ya hay una activa se genera una excepción <code>IllegalStateException</code>. Una vez activa, la transacción puede finalizarse invocando a <code>commit()</code> o deshacerse invocando a <code>rollback()</code>. Ambas operaciones fallan con una <code>IllegalStateException</code> si no hay ninguna transacción activa. El método <code>setRollbackOnly()</code> marca una transacción para que su único final posible sea un <code>rollback()</code>.</p>
+</div>
+<div class="paragraph">
+<p>Se lanzará una <code>PersistenceException</code> si ocurre un error durante el rollback y se lanzará una <code>RollbackException</code> (un subtipo de <code>PersistenceException</code>) si falla el commit. Tanto <code>PersistenceException</code> como <code>IllegalException</code> son excepciones de tipo <code>RuntimeException</code>.</p>
+</div>
+<div class="paragraph">
+<p>El método <code>setRollbackOnly()</code> se utiliza para marcar la transacción actual como inválida y obligar a realizar un rollback cuando se ejecuta JPA con transacciones gestionadas por el contenedor de EJB (CMT: <em>Containter Managed Transactions</em>). En ese caso la aplicación no define explícitamente las transacciones, sino que es el propio componente EJB el que abre y cierra una transacción en cada método.</p>
+</div>
+<div class="paragraph">
+<p>Hemos comentado que en JPA todas las excepciones son de tipo <code>RunTimeException</code>. Esto es debido a que son fatales y casi nunca se puede hacer nada para recuperarlas. En muchas ocasiones ni siquiera se capturan en el fragmento de código en el que se originan, sino en el único lugar de la aplicación en el que se capturan las excepciones de este tipo.</p>
+</div>
+<div class="paragraph">
+<p>La forma habitual de definir las transacciones en JPA es la definida en el siguiente código:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-n">EntityManagerFactory</span> <span class="tok-n">emf</span> <span class="tok-o">=</span> <span class="tok-n">Persistence</span>
+            <span class="tok-o">.</span><span class="tok-na">createEntityManagerFactory</span><span class="tok-o">(</span><span class="tok-s">&quot;empleados-mysql&quot;</span><span class="tok-o">);</span>
+<span class="tok-n">EntityManager</span> <span class="tok-n">em</span> <span class="tok-o">=</span> <span class="tok-n">emf</span><span class="tok-o">.</span><span class="tok-na">createEntityManager</span><span class="tok-o">();</span>
+<span class="tok-n">EntityTransaction</span> <span class="tok-n">tx</span> <span class="tok-o">=</span> <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">getTransaction</span><span class="tok-o">();</span>
+<span class="tok-k">try</span> <span class="tok-o">{</span>
+    <span class="tok-n">tx</span><span class="tok-o">.</span><span class="tok-na">begin</span><span class="tok-o">();</span>
+    <span class="tok-c1">// Operaciones sobre entidades</span>
+    <span class="tok-n">tx</span><span class="tok-o">.</span><span class="tok-na">commit</span><span class="tok-o">();</span>
+<span class="tok-o">}</span> <span class="tok-k">catch</span> <span class="tok-o">(</span><span class="tok-n">RuntimeException</span> <span class="tok-n">ex</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+    <span class="tok-k">try</span> <span class="tok-o">{</span>
+        <span class="tok-n">tx</span><span class="tok-o">.</span><span class="tok-na">rollback</span><span class="tok-o">();</span>
+        <span class="tok-n">logger</span><span class="tok-o">.</span><span class="tok-na">error</span><span class="tok-o">(</span><span class="tok-s">&quot;Transacción deshecha&quot;</span><span class="tok-o">,</span> <span class="tok-n">ex</span><span class="tok-o">);</span>
+    <span class="tok-o">}</span> <span class="tok-k">catch</span> <span class="tok-o">(</span><span class="tok-n">RuntimeException</span> <span class="tok-n">rbEx</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+        <span class="tok-n">logger</span><span class="tok-o">.</span><span class="tok-na">error</span><span class="tok-o">(</span><span class="tok-s">&quot;No se ha podido deshacer la transacción&quot;</span><span class="tok-o">,</span> <span class="tok-n">rbEx</span><span class="tok-o">);</span>
+    <span class="tok-o">}</span>
+    <span class="tok-k">throw</span> <span class="tok-n">ex</span><span class="tok-o">;</span>
+<span class="tok-o">}</span> <span class="tok-k">finally</span> <span class="tok-o">{</span>
+        <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">close</span><span class="tok-o">();</span>
+        <span class="tok-n">emf</span><span class="tok-o">.</span><span class="tok-na">close</span><span class="tok-o">();</span>
+    <span class="tok-o">}</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Primero se obtiene la transacción y se llama al método <code>begin()</code>. Después se realizan todas las operaciones dentro de la transacción y se realiza un <code>commit()</code>. Todo ello se engloba en un bloque de <code>try/catch</code>. Si alguna operación falla lanza una excepción que se captura y se ejecuta el <code>rollback()</code>. Un último <code>try/catch</code> captura una posible excepción en el caso en que el rollback produzca alguna excepción. En cualquier caso se cierra el entity manager.</p>
+</div>
+<div class="paragraph">
+<p>Cuando se deshace una transacción en la base de datos todos los cambios realizados durante la transacción se deshacen también. La base de datos vuelve al estado previo al comienzo de la transacción. Sin embargo, el modelo de memoria de Java no es transaccional. No hay forma de obtener una instantánea de un objeto y revertir su estado a ese momento si algo va mal. Una de las cuestiones más complicadas de un mapeo entidad-relación es que mientras que podemos utilizar una semántica transaccional para decidir qué cambios se realizan en la base de datos, no podemos aplicar las mismas técnicas en el contexto de persistencia en el que viven las instancias de entidades.</p>
+</div>
+<div class="paragraph">
+<p>Siempre que tenemos cambios que deben sincronizarse en una base de datos, estamos trabajado con un contexto de persistencia sincronizado con una transacción. En un momento dado durante la vida de la transacción, normalmente justo antes de que se realice un commit, esos cambios se traducirán en sentencias SQL y se enviarán a la base de datos.</p>
+</div>
+<div class="paragraph">
+<p>Si la transacción hace un rollback pasarán entonces dos cosas. Lo primero es que la transacción en la base de datos será deshecha. Lo siguiente que sucederá será que el contexto de persistencia se limpiará (<em>clear</em>), desconectando todas las entidades que se gestionaban. Tendremos entonces un montón de entidades desconectadas de la base de datos con un estado no sincronizado con la base de datos.</p>
+</div>
+<div class="paragraph">
+<p>Un ejemplo del código anterior es el siguiente programa, en el que se suma 1000.0 al sueldo de un empleado. Se pide una entrada de texto para provocar una excepción y deshacer la transacción:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-kd">public</span> <span class="tok-kd">class</span> <span class="tok-nc">SubeSueldo</span> <span class="tok-o">{</span>
+
+    <span class="tok-kd">private</span> <span class="tok-kd">static</span> <span class="tok-n">Log</span> <span class="tok-n">logger</span> <span class="tok-o">=</span> <span class="tok-n">LogFactory</span><span class="tok-o">.</span><span class="tok-na">getLog</span><span class="tok-o">(</span><span class="tok-n">SubeSueldo</span><span class="tok-o">.</span><span class="tok-na">class</span><span class="tok-o">);</span>
+
+    <span class="tok-kd">public</span> <span class="tok-kd">static</span> <span class="tok-kt">void</span> <span class="tok-nf">main</span><span class="tok-o">(</span><span class="tok-n">String</span><span class="tok-o">[]</span> <span class="tok-n">args</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+
+        <span class="tok-n">EntityManagerFactory</span> <span class="tok-n">emf</span> <span class="tok-o">=</span> <span class="tok-n">Persistence</span>
+                <span class="tok-o">.</span><span class="tok-na">createEntityManagerFactory</span><span class="tok-o">(</span><span class="tok-s">&quot;empleados-mysql&quot;</span><span class="tok-o">);</span>
+        <span class="tok-n">EntityManager</span> <span class="tok-n">em</span> <span class="tok-o">=</span> <span class="tok-n">emf</span><span class="tok-o">.</span><span class="tok-na">createEntityManager</span><span class="tok-o">();</span>
+        <span class="tok-n">EntityTransaction</span> <span class="tok-n">tx</span> <span class="tok-o">=</span> <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">getTransaction</span><span class="tok-o">();</span>
+        <span class="tok-n">EmpleadoDao</span> <span class="tok-n">empleadoDao</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-nf">EmpleadoDao</span><span class="tok-o">(</span><span class="tok-n">em</span><span class="tok-o">);</span>
+
+        <span class="tok-k">try</span> <span class="tok-o">{</span>
+            <span class="tok-n">tx</span><span class="tok-o">.</span><span class="tok-na">begin</span><span class="tok-o">();</span>
+            <span class="tok-n">Empleado</span> <span class="tok-n">emp1</span> <span class="tok-o">=</span> <span class="tok-n">empleadoDao</span><span class="tok-o">.</span><span class="tok-na">find</span><span class="tok-o">(</span><span class="tok-mi">1L</span><span class="tok-o">);</span>
+            <span class="tok-n">System</span><span class="tok-o">.</span><span class="tok-na">out</span><span class="tok-o">.</span><span class="tok-na">println</span><span class="tok-o">(</span><span class="tok-s">&quot;Sueldo antiguo: &quot;</span> <span class="tok-o">+</span> <span class="tok-n">emp1</span><span class="tok-o">.</span><span class="tok-na">getSueldo</span><span class="tok-o">());</span>
+            <span class="tok-n">emp1</span><span class="tok-o">.</span><span class="tok-na">setSueldo</span><span class="tok-o">(</span><span class="tok-n">emp1</span><span class="tok-o">.</span><span class="tok-na">getSueldo</span><span class="tok-o">()</span> <span class="tok-o">+</span> <span class="tok-mf">1000.0</span><span class="tok-o">);</span>
+            <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">flush</span><span class="tok-o">();</span>
+            <span class="tok-n">System</span><span class="tok-o">.</span><span class="tok-na">out</span><span class="tok-o">.</span><span class="tok-na">println</span><span class="tok-o">(</span><span class="tok-s">&quot;Sueldo nuevo: &quot;</span> <span class="tok-o">+</span> <span class="tok-n">emp1</span><span class="tok-o">.</span><span class="tok-na">getSueldo</span><span class="tok-o">());</span>
+            <span class="tok-n">String</span> <span class="tok-n">excepcion</span> <span class="tok-o">=</span> <span class="tok-n">leerTexto</span><span class="tok-o">(</span><span class="tok-s">&quot;¿Proovocamos excepción? (s/n)&quot;</span><span class="tok-o">);</span>
+            <span class="tok-k">if</span> <span class="tok-o">(</span><span class="tok-n">excepcion</span><span class="tok-o">.</span><span class="tok-na">equals</span><span class="tok-o">(</span><span class="tok-s">&quot;s&quot;</span><span class="tok-o">))</span> <span class="tok-o">{</span>
+                <span class="tok-k">throw</span> <span class="tok-k">new</span> <span class="tok-nf">RuntimeException</span><span class="tok-o">(</span><span class="tok-s">&quot;Runtime exception&quot;</span><span class="tok-o">);</span>
+            <span class="tok-o">}</span>
+            <span class="tok-n">tx</span><span class="tok-o">.</span><span class="tok-na">commit</span><span class="tok-o">();</span>
+        <span class="tok-o">}</span> <span class="tok-k">catch</span> <span class="tok-o">(</span><span class="tok-n">RuntimeException</span> <span class="tok-n">ex</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+            <span class="tok-k">try</span> <span class="tok-o">{</span>
+                <span class="tok-n">tx</span><span class="tok-o">.</span><span class="tok-na">rollback</span><span class="tok-o">();</span>
+                <span class="tok-n">logger</span><span class="tok-o">.</span><span class="tok-na">error</span><span class="tok-o">(</span><span class="tok-s">&quot;Transacción deshecha&quot;</span><span class="tok-o">,</span> <span class="tok-n">ex</span><span class="tok-o">);</span>
+            <span class="tok-o">}</span> <span class="tok-k">catch</span> <span class="tok-o">(</span><span class="tok-n">RuntimeException</span> <span class="tok-n">rbEx</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+                <span class="tok-n">logger</span><span class="tok-o">.</span><span class="tok-na">error</span><span class="tok-o">(</span><span class="tok-s">&quot;No se ha podido deshacer la transacción&quot;</span><span class="tok-o">,</span> <span class="tok-n">rbEx</span><span class="tok-o">);</span>
+            <span class="tok-o">}</span>
+            <span class="tok-k">throw</span> <span class="tok-n">ex</span><span class="tok-o">;</span>
+        <span class="tok-o">}</span> <span class="tok-k">finally</span> <span class="tok-o">{</span>
+            <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">close</span><span class="tok-o">();</span>
+            <span class="tok-n">emf</span><span class="tok-o">.</span><span class="tok-na">close</span><span class="tok-o">();</span>
+        <span class="tok-o">}</span>
+    <span class="tok-o">}</span>
+
+    <span class="tok-kd">static</span> <span class="tok-kd">private</span> <span class="tok-n">String</span> <span class="tok-nf">leerTexto</span><span class="tok-o">(</span><span class="tok-n">String</span> <span class="tok-n">mensaje</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+        <span class="tok-n">String</span> <span class="tok-n">texto</span><span class="tok-o">;</span>
+        <span class="tok-k">try</span> <span class="tok-o">{</span>
+            <span class="tok-n">BufferedReader</span> <span class="tok-n">in</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-nf">BufferedReader</span><span class="tok-o">(</span><span class="tok-k">new</span> <span class="tok-nf">InputStreamReader</span><span class="tok-o">(</span>
+                    <span class="tok-n">System</span><span class="tok-o">.</span><span class="tok-na">in</span><span class="tok-o">));</span>
+            <span class="tok-n">System</span><span class="tok-o">.</span><span class="tok-na">out</span><span class="tok-o">.</span><span class="tok-na">print</span><span class="tok-o">(</span><span class="tok-n">mensaje</span><span class="tok-o">);</span>
+            <span class="tok-n">texto</span> <span class="tok-o">=</span> <span class="tok-n">in</span><span class="tok-o">.</span><span class="tok-na">readLine</span><span class="tok-o">();</span>
+        <span class="tok-o">}</span> <span class="tok-k">catch</span> <span class="tok-o">(</span><span class="tok-n">IOException</span> <span class="tok-n">e</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+            <span class="tok-n">texto</span> <span class="tok-o">=</span> <span class="tok-s">&quot;Error&quot;</span><span class="tok-o">;</span>
+        <span class="tok-o">}</span>
+        <span class="tok-k">return</span> <span class="tok-n">texto</span><span class="tok-o">;</span>
+    <span class="tok-o">}</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_transacciones_jta">6.1.2. Transacciones JTA</h4>
+<div class="paragraph">
+<p>JTA (<em>Java Transaction API</em>) es el estándar propuesto por Java EE para gestionar transacciones distribuidas y transacciones dentro del servidor de aplicaciones. Es posible utilizar JTA en componentes del servidor de aplicaciones (servlets, enterprise beans y clientes enterprise).</p>
+</div>
+<div class="paragraph">
+<p>El API JTA tiene su origen en el protocolo <em>two-phase commit</em> (2PC) para gestionar transacciones distribuidas.</p>
+</div>
+<div class="paragraph">
+<p>La especificación JTA define una arquitectura para la construcción de servidores de aplicaciones transaccionales y define un conjunto de 	interfaces para los componentes de esta arquitectura. Los componentes son los mismos que se define en el protocolo 2PC: la aplicación, los gestores de recursos, el gestor de transacciones y el gestor de comunicaciones. De esta forma se define una arquitectura que posibilita la definición de transacciones distribuidas utilizando el algoritmo.</p>
+</div>
+<div class="paragraph">
+<p>Un requisito fundamental para que un recurso pueda incorporarse a las transacciones JTA es que las conexiones con el recurso sean de tipo <code>XAConnection</code>. Para ello, en el caso de una base de datos JDBC, es necesario un driver JDBC que implemente las interfaces <code>javax.sql.XADataSource</code>, <code>javax.sql.XAConnection</code> y <code>javax.sql.XAResource</code>. Es necesario también configurar
+una fuente de datos XA con el servidor de aplicaciones y darle un nombre JNDI.</p>
+</div>
+<div class="sect4">
+<h5 id="_gestión_de_la_transacción">Gestión de la transacción</h5>
+<div class="paragraph">
+<p>Para gestionar una transacción deberemos en primer lugar obtener del servidor de aplicaciones el objeto <code>javax.transacion.UserTransaction</code>. Este es un recurso CDI que puede inyectarse en cualquier recurso gestionado por el servidor de aplicaciones (servlet, ejb, backing bean):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-nd">@Resource</span> <span class="tok-n">UserTransaction</span> <span class="tok-n">utx</span><span class="tok-o">;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Una vez obtenido el objeto <code>UserTransaction</code> podemos usar los métodos de la interfaz para demarcar la transacción:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>public void begin()</code></p>
+</li>
+<li>
+<p><code>public void commit()</code></p>
+</li>
+<li>
+<p><code>public void rollback()</code></p>
+</li>
+<li>
+<p><code>public int getStatus()</code></p>
+</li>
+<li>
+<p><code>public void setRollbackOnly()</code></p>
+</li>
+<li>
+<p><code>public void setTransactionTimeout(int segundos)</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Para comenzar una transacción la aplicación se debe llamar a <code>begin()</code>. Para finalizarla, la transacción debe llamar o bien a <code>commit()</code> o bien a <code>rollback()</code>.</p>
+</div>
+<div class="paragraph">
+<p>El método <code>setRollbackOnly()</code> modifica la transacción actual de forma que el único resultado posible de la misma sea de rollback (falllo).</p>
+</div>
+<div class="paragraph">
+<p>El método <code>setTransactionTimeout(int segundos)</code> permite modificar el timeout asociado con la transacción actual. El parámetro determina la duración del timeout en segundos. Si se le pasa como valor cero, el timeout de la transacción es el definido por defecto.</p>
+</div>
+<div class="paragraph">
+<p>El siguiente ejemplo muestra el uso de JTA en un sencillo servlet que utiliza un Dao para acceder a las entidades. Este es sólo un ejemplo rápido para comprobar el funcionamiento de JTA. La forma final de definir las capas de nuestra aplicación será utilizando componentes EJB para implementar la capa de servicios. Lo veremos en el siguiente módulo.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-nd">@WebServlet</span><span class="tok-o">(</span><span class="tok-n">name</span><span class="tok-o">=</span><span class="tok-s">&quot;holamundo&quot;</span><span class="tok-o">,</span> <span class="tok-n">urlPatterns</span><span class="tok-o">=</span><span class="tok-s">&quot;/holamundo&quot;</span><span class="tok-o">)</span>
+<span class="tok-kd">public</span> <span class="tok-kd">class</span> <span class="tok-nc">HolaMundo</span> <span class="tok-kd">extends</span> <span class="tok-n">HttpServlet</span> <span class="tok-o">{</span>
+
+    <span class="tok-nd">@PersistenceUnit</span><span class="tok-o">(</span><span class="tok-n">unitName</span> <span class="tok-o">=</span> <span class="tok-s">&quot;mensajes&quot;</span><span class="tok-o">)</span>
+    <span class="tok-n">EntityManagerFactory</span> <span class="tok-n">emf</span><span class="tok-o">;</span>
+    <span class="tok-nd">@Resource</span>
+    <span class="tok-n">UserTransaction</span> <span class="tok-n">tx</span><span class="tok-o">;</span>
+
+    <span class="tok-kd">protected</span> <span class="tok-kt">void</span> <span class="tok-nf">doGet</span><span class="tok-o">(</span><span class="tok-n">HttpServletRequest</span> <span class="tok-n">request</span><span class="tok-o">,</span> <span class="tok-n">HttpServletResponse</span> <span class="tok-n">response</span><span class="tok-o">)</span>
+        <span class="tok-kd">throws</span> <span class="tok-n">ServletException</span><span class="tok-o">,</span> <span class="tok-n">IOException</span> <span class="tok-o">{</span>
+        <span class="tok-n">EntityManager</span> <span class="tok-n">em</span> <span class="tok-o">=</span> <span class="tok-n">emf</span><span class="tok-o">.</span><span class="tok-na">createEntityManager</span><span class="tok-o">();</span>
+        <span class="tok-k">try</span> <span class="tok-o">{</span>
+            <span class="tok-n">tx</span><span class="tok-o">.</span><span class="tok-na">begin</span><span class="tok-o">();</span> <i class="conum" data-value="1"></i><b>(1)</b>
+            <span class="tok-n">response</span><span class="tok-o">.</span><span class="tok-na">setContentType</span><span class="tok-o">(</span><span class="tok-s">&quot;text/html&quot;</span><span class="tok-o">);</span>
+            <span class="tok-n">PrintWriter</span> <span class="tok-n">out</span> <span class="tok-o">=</span> <span class="tok-n">response</span><span class="tok-o">.</span><span class="tok-na">getWriter</span><span class="tok-o">();</span>
+            <span class="tok-n">out</span><span class="tok-o">.</span><span class="tok-na">println</span><span class="tok-o">(</span><span class="tok-s">&quot;&lt;!DOCTYPE HTML PUBLIC \&quot;&quot;</span> <span class="tok-o">+</span>
+                    <span class="tok-s">&quot;-//W3C//DTD HTML 4.0 &quot;</span> <span class="tok-o">+</span>
+                    <span class="tok-s">&quot;Transitional//EN\&quot;&gt;&quot;</span><span class="tok-o">);</span>
+            <span class="tok-n">out</span><span class="tok-o">.</span><span class="tok-na">println</span><span class="tok-o">(</span><span class="tok-s">&quot;&lt;HTML&gt;&quot;</span><span class="tok-o">);</span>
+            <span class="tok-n">out</span><span class="tok-o">.</span><span class="tok-na">println</span><span class="tok-o">(</span><span class="tok-s">&quot;&lt;BODY&gt;&quot;</span><span class="tok-o">);</span>
+            <span class="tok-n">out</span><span class="tok-o">.</span><span class="tok-na">println</span><span class="tok-o">(</span><span class="tok-s">&quot;&lt;h1&gt;Lista&lt;/h1&gt;&quot;</span><span class="tok-o">);</span>
+            <span class="tok-n">out</span><span class="tok-o">.</span><span class="tok-na">println</span><span class="tok-o">(</span><span class="tok-s">&quot;&lt;ul&gt;&quot;</span><span class="tok-o">);</span>
+            <span class="tok-n">AutorDao</span> <span class="tok-n">autorDao</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-nf">AutorDao</span><span class="tok-o">(</span><span class="tok-n">em</span><span class="tok-o">);</span>
+            <span class="tok-n">Autor</span> <span class="tok-n">autor</span> <span class="tok-o">=</span> <span class="tok-n">autorDao</span><span class="tok-o">.</span><span class="tok-na">find</span><span class="tok-o">(</span><span class="tok-mi">1L</span><span class="tok-o">);</span>
+            <span class="tok-n">autor</span><span class="tok-o">.</span><span class="tok-na">setNombre</span><span class="tok-o">(</span><span class="tok-s">&quot;Nuevo Nombre&quot;</span><span class="tok-o">);</span>
+            <span class="tok-n">List</span><span class="tok-o">&lt;</span><span class="tok-n">Autor</span><span class="tok-o">&gt;</span> <span class="tok-n">lista</span> <span class="tok-o">=</span> <span class="tok-n">autorDao</span><span class="tok-o">.</span><span class="tok-na">listAllAutores</span><span class="tok-o">();</span>
+            <span class="tok-k">for</span> <span class="tok-o">(</span><span class="tok-n">Autor</span> <span class="tok-nl">a:</span> <span class="tok-n">lista</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+                <span class="tok-n">out</span><span class="tok-o">.</span><span class="tok-na">println</span><span class="tok-o">(</span><span class="tok-s">&quot;&lt;li&gt; &quot;</span> <span class="tok-o">+</span> <span class="tok-n">a</span><span class="tok-o">.</span><span class="tok-na">getNombre</span><span class="tok-o">()</span> <span class="tok-o">+</span> <span class="tok-s">&quot;&lt;/li&gt;&quot;</span><span class="tok-o">);</span>
+            <span class="tok-o">}</span>
+	    <span class="tok-n">tx</span><span class="tok-o">.</span><span class="tok-na">commit</span><span class="tok-o">();</span> <i class="conum" data-value="2"></i><b>(2)</b>
+            <span class="tok-n">out</span><span class="tok-o">.</span><span class="tok-na">println</span><span class="tok-o">(</span><span class="tok-s">&quot;&lt;/ul&gt;&quot;</span><span class="tok-o">);</span>
+            <span class="tok-n">out</span><span class="tok-o">.</span><span class="tok-na">println</span><span class="tok-o">(</span><span class="tok-s">&quot;&lt;/BODY&gt;&quot;</span><span class="tok-o">);</span>
+            <span class="tok-n">out</span><span class="tok-o">.</span><span class="tok-na">println</span><span class="tok-o">(</span><span class="tok-s">&quot;&lt;/HTML&quot;</span><span class="tok-o">);</span>
+        <span class="tok-o">}</span> <span class="tok-k">catch</span> <span class="tok-o">(</span><span class="tok-n">Exception</span> <span class="tok-n">e</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+            <span class="tok-k">try</span> <span class="tok-o">{</span>
+                <span class="tok-n">tx</span><span class="tok-o">.</span><span class="tok-na">rollback</span><span class="tok-o">();</span> <i class="conum" data-value="3"></i><b>(3)</b>
+            <span class="tok-o">}</span> <span class="tok-k">catch</span> <span class="tok-o">(</span><span class="tok-n">javax</span><span class="tok-o">.</span><span class="tok-na">transaction</span><span class="tok-o">.</span><span class="tok-na">SystemException</span> <span class="tok-n">e1</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+                <span class="tok-n">e1</span><span class="tok-o">.</span><span class="tok-na">printStackTrace</span><span class="tok-o">();</span>
+                <span class="tok-k">throw</span> <span class="tok-k">new</span> <span class="tok-nf">ServletException</span><span class="tok-o">(</span><span class="tok-n">e1</span><span class="tok-o">);</span>
+            <span class="tok-o">}</span>
+        <span class="tok-o">}</span>
+    <span class="tok-o">}</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Comienzo de la transacción</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Commit para confirmar los cambios</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Si ha habido un error se captura la excepción y se hace un <em>rollback</em></td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_concurrencia_y_niveles_de_aislamiento">6.1.3. Concurrencia y niveles de aislamiento</h4>
+<div class="paragraph">
+<p>La gestión de la concurrencia en transacciones es un problema complejo. Por ejemplo, supongamos un sistema de reservas de vuelos. Sería fatal que se vendiera el mismo asiento de un vuelo a dos personas distintas por el hecho de que se han realizado dos accesos concurrentes al siguiente método:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-kd">public</span> <span class="tok-kt">void</span> <span class="tok-nf">reservaAsiento</span><span class="tok-o">(</span><span class="tok-n">Pasajero</span> <span class="tok-n">pasajero</span><span class="tok-o">,</span> <span class="tok-kt">int</span> <span class="tok-n">numAsiento</span><span class="tok-o">,</span> <span class="tok-kt">long</span> <span class="tok-n">numVuelo</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+   <span class="tok-n">EntityManager</span> <span class="tok-n">em</span> <span class="tok-o">=</span> <span class="tok-n">emf</span><span class="tok-o">.</span><span class="tok-na">createEntityManager</span><span class="tok-o">();</span>
+   <span class="tok-n">AsientoKey</span> <span class="tok-n">key</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-nf">AsientoKey</span><span class="tok-o">(</span><span class="tok-n">numAsiento</span><span class="tok-o">,</span> <span class="tok-n">numVuelo</span><span class="tok-o">);</span>
+   <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">getTransaction</span><span class="tok-o">().</span><span class="tok-na">begin</span><span class="tok-o">();</span>
+   <span class="tok-n">Asiento</span> <span class="tok-n">asiento</span> <span class="tok-o">=</span> <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">find</span><span class="tok-o">(</span><span class="tok-n">Asiento</span><span class="tok-o">.</span><span class="tok-na">class</span><span class="tok-o">,</span> <span class="tok-n">key</span><span class="tok-o">);</span>
+   <span class="tok-k">if</span> <span class="tok-o">(!</span> <span class="tok-n">asiento</span><span class="tok-o">.</span><span class="tok-na">getOcupado</span><span class="tok-o">())</span> <span class="tok-o">{</span>
+      <span class="tok-n">asiento</span><span class="tok-o">.</span><span class="tok-na">setOcupado</span><span class="tok-o">(</span><span class="tok-kc">true</span><span class="tok-o">);</span>
+      <span class="tok-n">asiento</span><span class="tok-o">.</span><span class="tok-na">setPasajero</span><span class="tok-o">(</span><span class="tok-n">pasajero</span><span class="tok-o">);</span>
+      <span class="tok-n">pasajero</span><span class="tok-o">.</span><span class="tok-na">setAsiento</span><span class="tok-o">(</span><span class="tok-n">asiento</span><span class="tok-o">);</span>
+   <span class="tok-o">}</span>
+   <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">getTransaction</span><span class="tok-o">().</span><span class="tok-na">commit</span><span class="tok-o">();</span>
+   <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">close</span><span class="tok-o">();</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Si no se controlara el acceso concurrente de las transacciones a la tabla de asientos, podría suceder que dos transacciones concurrentes accedieran al estado del asiento a la misma vez (antes de haberse realizado el UPDATE de su atributo <code>ocupado</code>), lo vieran libre y se lo asignaran a un pasajero y después a otro. Uno de los pasajeros se quedaría sin billete.</p>
+</div>
+<div class="paragraph">
+<p>Se han propuesto múltiples soluciones para resolver el acceso concurrente a los datos. El estándar SQL define los llamados <em>niveles de aislamiento</em> (isolation levels) que tratan este problema. Los niveles más bajos solucionan los problemas más comunes y permiten al mismo tiempo que la aplicación responda sin generar bloqueos. El nivel más alto alto garantiza que todas las transacciones son serilizables, pero obliga a que se definan un número excesivo de bloqueos.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_gestión_concurrencia_con_jpa">6.1.4. Gestión concurrencia con JPA</h4>
+<div class="paragraph">
+<p>Existe concurrencia cuando múltiples aplicaciones acceden al mismo tiempo a las mismas entidades. La gestión de la concurrencia asegura que la integridad subyacente de la base de datos se preserva a pesar del acceso concurrente.</p>
+</div>
+<div class="paragraph">
+<p>Una configuración habitual a la hora de trabajar con transacciones es mantener bloqueos de lectura de corta duración y bloqueos de escritura de larga duración. Debido a esto la mayoría de los proveedores de persistencia retrasan la escritura en la base de datos hasta el final de la transacción, excepto cuando se llama explícitamente a <code>flush</code> o se realiza una query.</p>
+</div>
+<div class="paragraph">
+<p>Por defecto, los proveedores de persistencia utilizan un bloqueo optimista en el que, antes de realizar un commit que modifique los datos, se comprueba que ninguna otra transacción ha modificado o borrado el dato desde que fue leído. Esto se consigue definiendo una columna <code>versión</code> en la tabla de la base de datos, con su correspondiente atributo en la entidad. Cuando una fila se modifica, el valor de versión se incrementa. La transacción original comprueba si la versión ha sido modificada por otra transacción y si es así se lanza una excepción <code>javax.persistence.OptimisticLockException</code> y la transacción se deshace.</p>
+</div>
+<div class="paragraph">
+<p>El bloqueo pesimista va más allá que el optimista. El proveedor de persistencia crea una transacción que obtiene un bloqueo de larga duración sobre los datos hasta que la transacción se completa. Este bloque previene a otras transacciones de modificar o borrar los datos hasta que el bloque termina. El bloque pesimista es una estrategia mejor que el optimista cuando los datos se acceden frecuentemente y son modificados simultáneamente por múltiples transacciones. Sin embargo, el uso de bloqueos pesimistas en entidades a las que no se accede frecuentemente puede causar una caída en el rendimiento de la aplicación.</p>
+</div>
+<div class="sect4">
+<h5 id="_control_optimista_de_la_concurrencia">Control optimista de la concurrencia</h5>
+<div class="paragraph">
+<p>El control optimista supone que todo irá bien y que van a existir pocos conflictos en la modificación de datos. El control optimista de la concurrencia lanza un error sólo al final de una unidad de trabajo, cuando se escriben los datos.</p>
+</div>
+<div class="paragraph">
+<p>Para que JPA pueda trabajar con versiones es necesario que los objetos tengan un atributo marcado con la anotación <code>@Version</code>. Este atributo puede ser del tipo <code>int</code>, <code>Integer</code>, <code>short</code>, <code>Short</code>, <code>long</code>, <code>Long</code> y <code>java.sql.Timestamp</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-nd">@Entity</span>
+<span class="tok-kd">public</span> <span class="tok-kd">class</span> <span class="tok-nc">Autor</span> <span class="tok-o">{</span>
+   <span class="tok-nd">@Id</span>
+   <span class="tok-kd">private</span> <span class="tok-n">String</span> <span class="tok-n">nombre</span><span class="tok-o">;</span>
+   <span class="tok-nd">@Version</span>
+   <span class="tok-kd">private</span> <span class="tok-kt">int</span> <span class="tok-n">version</span><span class="tok-o">;</span>
+   <span class="tok-kd">private</span> <span class="tok-n">String</span> <span class="tok-n">correo</span><span class="tok-o">;</span>
+   <span class="tok-o">...</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Aunque el estándar no lo permite, en Hibernate es posible definir un comportamiento optimista en entidades que no definen una columna de versión. Para ello basta con definir la entidad de la siguiente forma:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-nd">@Entity</span>
+<span class="tok-nd">@org.hibernate.annotations.Entity</span> <span class="tok-o">(</span>
+   <span class="tok-n">optimisticLock</span> <span class="tok-o">=</span> <span class="tok-n">OptimisticLockType</span><span class="tok-o">.</span><span class="tok-na">ALL</span><span class="tok-o">,</span>
+   <span class="tok-n">dynamicUpdate</span> <span class="tok-o">=</span> <span class="tok-kc">true</span>
+<span class="tok-o">)</span>
+<span class="tok-kd">public</span> <span class="tok-kd">class</span> <span class="tok-nc">Autor</span> <span class="tok-o">{</span>
+   <span class="tok-nd">@Id</span>
+   <span class="tok-kd">private</span> <span class="tok-n">String</span> <span class="tok-n">nombre</span><span class="tok-o">;</span>
+   <span class="tok-kd">private</span> <span class="tok-n">String</span> <span class="tok-n">correo</span><span class="tok-o">;</span>
+   <span class="tok-o">...</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_modos_de_bloqueo">Modos de bloqueo</h5>
+<div class="paragraph">
+<p>En la última versión de JPA es posible especificar el modo de bloqueo aplicado a una entidad usando una llamada al método <code>lock</code> o al método <code>find</code> del <em>entity manager</em>. Por ejemplo:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-n">EntityManager</span> <span class="tok-n">em</span> <span class="tok-o">=</span> <span class="tok-o">...;</span>
+<span class="tok-n">Person</span> <span class="tok-n">person</span> <span class="tok-o">=</span> <span class="tok-o">...;</span>
+<span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">lock</span><span class="tok-o">(</span><span class="tok-n">person</span><span class="tok-o">,</span> <span class="tok-n">LockModeType</span><span class="tok-o">.</span><span class="tok-na">OPTIMISTIC</span><span class="tok-o">);</span>
+<span class="tok-n">String</span> <span class="tok-n">personPK</span> <span class="tok-o">=</span> <span class="tok-o">...;</span>
+<span class="tok-n">Person</span> <span class="tok-n">person</span> <span class="tok-o">=</span> <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">find</span><span class="tok-o">(</span><span class="tok-n">Person</span><span class="tok-o">.</span><span class="tok-na">class</span><span class="tok-o">,</span> <span class="tok-n">personPK</span><span class="tok-o">,</span>
+    <span class="tok-n">LockModeType</span><span class="tok-o">.</span><span class="tok-na">PESSIMISTIC_WRITE</span><span class="tok-o">);</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>El tipo de bloqueo puede ser uno de los siguientes:</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Tipo de bloque</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>OPTIMISTIC</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Obtiene un bloqueo de lectura optimista en la entidad si tiene un atributo de versión</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>OPTIMISTIC_FORCE_INCREMENT</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Obtiene un bloqueo de lectura optimista en la entidad si tiene un atributo de versión e incrementa el valor de versión del atributo</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PESSIMISTIC_READ</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Obtiene un bloqueo de lectura de larga duración sobre un dato para prevenir que sea borrado o modificado. Otras transacciones pueden leer los datos mientras que se mantiene el bloque, pero no pueden modificarlo o borrarlo.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PESSIMISTIC_WRITE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Obtiene un bloque de escritura de larga duración sobre un dato para prevenir que sea leído, modificado o borrado.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PESSIMISTIC_FORCE_INCREMENT</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Obtiene un bloqueo e incrementa el atributo de versión</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>READ</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sinónimo de <code>OPTIMISTIC</code>. Es preferible utilizar este último.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>WRITE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sinónimo de <code>OPTIMISTIC_FORCE_INCREMENT</code>. Es preferible usar este último.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>NONE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No se realiza ningún bloqueo sobre los datos.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Por ejemplo, si se quisiera evitar el problema del asiento del vuelo bloqueando explícitamente el registro, podríamos escribir el siguiente código:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-kd">public</span> <span class="tok-kt">void</span> <span class="tok-nf">reservaAsiento</span><span class="tok-o">(</span><span class="tok-n">Pasajero</span> <span class="tok-n">pasajero</span><span class="tok-o">,</span> <span class="tok-kt">int</span> <span class="tok-n">numAsiento</span><span class="tok-o">,</span> <span class="tok-kt">long</span> <span class="tok-n">numVuelo</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+   <span class="tok-n">EntityManager</span> <span class="tok-n">em</span> <span class="tok-o">=</span> <span class="tok-n">emf</span><span class="tok-o">.</span><span class="tok-na">createEntityManager</span><span class="tok-o">();</span>
+   <span class="tok-n">AsientoKey</span> <span class="tok-n">key</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-nf">AsientoKey</span><span class="tok-o">(</span><span class="tok-n">numAsiento</span><span class="tok-o">,</span> <span class="tok-n">numVuelo</span><span class="tok-o">);</span>
+   <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">getTransaction</span><span class="tok-o">().</span><span class="tok-na">begin</span><span class="tok-o">();</span>
+   <span class="tok-n">Asiento</span> <span class="tok-n">asiento</span> <span class="tok-o">=</span> <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">find</span><span class="tok-o">(</span><span class="tok-n">Asiento</span><span class="tok-o">.</span><span class="tok-na">class</span><span class="tok-o">,</span> <span class="tok-n">key</span><span class="tok-o">);</span>
+   <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">lock</span><span class="tok-o">(</span><span class="tok-n">asiento</span><span class="tok-o">,</span><span class="tok-n">LockType</span><span class="tok-o">.</span><span class="tok-na">READ</span><span class="tok-o">);</span>
+   <span class="tok-k">if</span> <span class="tok-o">(!</span> <span class="tok-n">asiento</span><span class="tok-o">.</span><span class="tok-na">getOcupado</span><span class="tok-o">())</span> <span class="tok-o">{</span>
+      <span class="tok-n">asiento</span><span class="tok-o">.</span><span class="tok-na">setOcupado</span><span class="tok-o">(</span><span class="tok-kc">true</span><span class="tok-o">);</span>
+      <span class="tok-n">asiento</span><span class="tok-o">.</span><span class="tok-na">setPasajero</span><span class="tok-o">(</span><span class="tok-n">pasajero</span><span class="tok-o">);</span>
+      <span class="tok-n">pasajero</span><span class="tok-o">.</span><span class="tok-na">setAsiento</span><span class="tok-o">(</span><span class="tok-n">asiento</span><span class="tok-o">);</span>
+   <span class="tok-o">}</span>
+   <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">getTransaction</span><span class="tok-o">().</span><span class="tok-na">commit</span><span class="tok-o">();</span>
+   <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">close</span><span class="tok-o">();</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Un problema del estándar JPA es que el funcionamiento correcto de estos bloqueos es dependiente del proveedor de persistencia y del <em>nivel de aislamiento</em> definido en la conexión de la base de datos. El nivel de aislamiento se puede configurar en JPA en la unidad de persistencia, en el fichero <code>persistence.xml</code> y es dependiente del proveedor de persistencia. En el caso de Hibernate, se define con la propiedad <code>hibernate.connection.isolation</code>, que puede tener los siguientes valores. El valor por defecto de MySQL es 4.</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Valor</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TRANSACTION_READ_UNCOMMITTED</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TRANSACTION_READ_COMMITTED</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TRANSACTION_REPEATABLE_READ</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TRANSACTION_SERIALIZABLE</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_jpa_en_aplicaciones_java_ee">6.2. JPA en aplicaciones Java EE</h3>
+<div class="paragraph">
+<p>En las sesiones anteriores hemos descrito el funcionamiento de JPA <em>gestionado por la aplicación</em>. En este modo las clases de la aplicación se encargan de obtener el entity manager y de gestionar las transacciones. La forma de obtener el entity manager es llamando explícitamente al método <code>createEntityManager()</code> de la unidad de persistencia. Después hay que comprobar en los DAO si las transacciones están correctamente abiertas y controlar con cuidado su rollback.</p>
+</div>
+<div class="paragraph">
+<p>Además, la unidad de persistencia debe configurarse en la propia aplicación, describiendo sus características en el fichero <code>persistence.xml</code></p>
+</div>
+<div class="sect3">
+<h4 id="_jpa_gestionado_por_el_contenedor">6.2.1. JPA gestionado por el contenedor</h4>
+<div class="paragraph">
+<p>A diferencia de las aplicaciones <em>standalone</em> Java SE, en las aplicaciones web el código de la aplicación (servlets, páginas JSP, clases Java, etc.) se ejecuta dentro de un contenedor. Es el contenedor quien llama al servlet, o a las clases Java cuando lo determina el ciclo de vida de la aplicación.</p>
+</div>
+<div class="paragraph">
+<p>Lo mismo sucede con los recursos. El contenedor se encarga de comunicarse y gestionar los recursos externos, no la aplicación. Le da nombre a esos recursos y la aplicación los utiliza. En el caso de una conexión con la base de datos, se debe definir en el contenedor una <em>fuente de datos</em> y darle un nombre. El contenedor será el responsable de gestionar las peticiones a la fuente de datos. Por ejemplo, construirá un pool de conexiones que hará mucho más eficiente la conexión.</p>
+</div>
+<div class="paragraph">
+<p>También habrá diferencia con la gestión de transacciones. Se trabajará con transacciones JTA gestionadas por el servidor de aplicaciones, no por la propia base de datos. Debido a esto ya no crearemos la transacciones a partir del <em>entity manager</em>, sino que utilizaremos objetos <code>UserTransaction</code> inyectados por el servidor de aplicaciones. Además en los DAO ya no comprobaremos si estamos dentro de una transacción porque el método del <em>entity manager</em> sólo funciona cuando se trata de transacciones locales no JTA.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_configuración_de_la_fuente_de_datos_mysql_en_wildfly">6.2.2. Configuración de la fuente de datos MySQL en WildFly</h4>
+<div class="paragraph">
+<p>Cuando estamos trabajando con JPA en una aplicación web el acceso a la base de datos hay que hacerlo a través de una <strong>fuente de datos</strong> creada y gestionada por el servidor de aplicaciones.</p>
+</div>
+<div class="paragraph">
+<p>Vamos a ver cómo configurar una fuente de datos MySQL en WildFly.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>En primer lugar localiza el driver MySQL <code>mysql-connector-java-5.1.33.jar</code> (lo puedes encontrar en el repositorio local de Maven <code>.m2/repository/mysql/mysql-connector-java/5.1.33/</code> y copialo a alguna carpeta que no esté oculta:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="shell">$ cp /home/expertojava/.m2/repository/mysql/mysql-connector-java/5.1.33/mysql-connector-java-5.1.33.jar $HOME/Escritorio</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Conéctate a la consola de administración de WildFly y selecciona la opción <em>Deployments &gt; Add</em></p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><em>Runtime &gt; Manage Deployments &gt; Add</em> y añade el JAR. Ponle como nombre <em>mysql_connector</em> (no es importante) y activa la opción <em>Enable</em></p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/jpa06/datasource01.png" alt="" width="50%">
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>En <em>Configuration &gt; Connector &gt; Datasources</em> pulsa en la pestaña <em>XA DATASOURCES</em> para crear una nueva fuente de datos de tipo XA. Pulsa el botón <em>Add</em> e introduce los siguientes nombres:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><em>Name</em>: <code>MensajesDS</code></p>
+</li>
+<li>
+<p><em>JNDI Name</em>: <code>java:/datasources/MensajesDS</code></p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/jpa06/datasource02.png" alt="" width="50%">
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Selecciona el driver que acabamos de añadir y escribe como nombre de clase XA DataSource: <code>com.mysql.jdbc.jdbc2.optional.MysqlXADataSource</code>:</p>
+</li>
+</ol>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/jpa06/datasource03.png" alt="" width="50%">
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Añade la propiedad <code>URL</code> y el valor <code>jdbc:mysql://localhost:3306/jpa_mensajes</code></p>
+</li>
+<li>
+<p>Y en la última pantalla define el usuario y la contraseña de la conexión</p>
+<div class="ulist">
+<ul>
+<li>
+<p><em>Username</em>: <code>root</code></p>
+</li>
+<li>
+<p><em>Password</em>: <code>expertojava</code></p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Y prueba la conexión pulsando el botón.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Por último activamos la fuente de datos:</p>
+</li>
+</ol>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/jpa06/datasource04.png" alt="" width="66%">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_dependencias_maven_en_el_code_pom_xml_code">6.2.3. Dependencias Maven en el <code>pom.xml</code></h4>
+<div class="paragraph">
+<p>Todas las librerías necesarias para implementar JPA ya las tiene el servidor de aplicaciones. La única dependencia necesaria para evitar los errores de compilación es la siguiente, que incluye todas las librerías de Java EE:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="xml"><span class="tok-nt">&lt;groupId&gt;</span>javax<span class="tok-nt">&lt;/groupId&gt;</span>
+   <span class="tok-nt">&lt;artifactId&gt;</span>javaee-web-api<span class="tok-nt">&lt;/artifactId&gt;</span>
+   <span class="tok-nt">&lt;version&gt;</span>7.0<span class="tok-nt">&lt;/version&gt;</span>
+   <span class="tok-nt">&lt;scope&gt;</span>provided<span class="tok-nt">&lt;/scope&gt;</span>
+<span class="tok-nt">&lt;/dependency&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Sí que necesitamos las librerías de implementación de JPA para ejecutar los tests, por lo que podemos cambiar su <code>scope</code> a <code>test</code>. El POM completo es el siguiente:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="xml"><span class="tok-cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="tok-nt">&lt;project</span> <span class="tok-na">xmlns=</span><span class="tok-s">&quot;http://maven.apache.org/POM/4.0.0&quot;</span> <span class="tok-na">xmlns:xsi=</span><span class="tok-s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span> <span class="tok-na">xsi:schemaLocation=</span><span class="tok-s">&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;</span><span class="tok-nt">&gt;</span>
+    <span class="tok-nt">&lt;modelVersion&gt;</span>4.0.0<span class="tok-nt">&lt;/modelVersion&gt;</span>
+
+    <span class="tok-nt">&lt;groupId&gt;</span>org.expertojava.jpa<span class="tok-nt">&lt;/groupId&gt;</span>
+    <span class="tok-nt">&lt;artifactId&gt;</span>mensajes-web<span class="tok-nt">&lt;/artifactId&gt;</span>
+    <span class="tok-nt">&lt;version&gt;</span>1.0-SNAPSHOT<span class="tok-nt">&lt;/version&gt;</span>
+    <span class="tok-nt">&lt;packaging&gt;</span>war<span class="tok-nt">&lt;/packaging&gt;</span>
+
+    <span class="tok-nt">&lt;name&gt;</span>mensajes-web<span class="tok-nt">&lt;/name&gt;</span>
+
+    <span class="tok-nt">&lt;properties&gt;</span>
+        <span class="tok-nt">&lt;project.build.sourceEncoding&gt;</span>UTF-8<span class="tok-nt">&lt;/project.build.sourceEncoding&gt;</span>
+    <span class="tok-nt">&lt;/properties&gt;</span>
+
+    <span class="tok-nt">&lt;dependencies&gt;</span>
+        <span class="tok-nt">&lt;dependency&gt;</span>
+            <span class="tok-nt">&lt;groupId&gt;</span>javax<span class="tok-nt">&lt;/groupId&gt;</span>
+            <span class="tok-nt">&lt;artifactId&gt;</span>javaee-web-api<span class="tok-nt">&lt;/artifactId&gt;</span>
+            <span class="tok-nt">&lt;version&gt;</span>7.0<span class="tok-nt">&lt;/version&gt;</span>
+            <span class="tok-nt">&lt;scope&gt;</span>provided<span class="tok-nt">&lt;/scope&gt;</span>
+        <span class="tok-nt">&lt;/dependency&gt;</span>
+
+        <span class="tok-c">&lt;!-- Test --&gt;</span>
+
+        <span class="tok-nt">&lt;dependency&gt;</span>
+            <span class="tok-nt">&lt;groupId&gt;</span>org.dbunit<span class="tok-nt">&lt;/groupId&gt;</span>
+            <span class="tok-nt">&lt;artifactId&gt;</span>dbunit<span class="tok-nt">&lt;/artifactId&gt;</span>
+            <span class="tok-nt">&lt;version&gt;</span>2.5.0<span class="tok-nt">&lt;/version&gt;</span>
+            <span class="tok-nt">&lt;scope&gt;</span>test<span class="tok-nt">&lt;/scope&gt;</span>
+        <span class="tok-nt">&lt;/dependency&gt;</span>
+
+        <span class="tok-nt">&lt;dependency&gt;</span>
+            <span class="tok-nt">&lt;groupId&gt;</span>mysql<span class="tok-nt">&lt;/groupId&gt;</span>
+            <span class="tok-nt">&lt;artifactId&gt;</span>mysql-connector-java<span class="tok-nt">&lt;/artifactId&gt;</span>
+            <span class="tok-nt">&lt;version&gt;</span>5.1.33<span class="tok-nt">&lt;/version&gt;</span>
+            <span class="tok-nt">&lt;scope&gt;</span>test<span class="tok-nt">&lt;/scope&gt;</span>
+        <span class="tok-nt">&lt;/dependency&gt;</span>
+
+        <span class="tok-nt">&lt;dependency&gt;</span>
+            <span class="tok-nt">&lt;groupId&gt;</span>org.hibernate.javax.persistence<span class="tok-nt">&lt;/groupId&gt;</span>
+            <span class="tok-nt">&lt;artifactId&gt;</span>hibernate-jpa-2.1-api<span class="tok-nt">&lt;/artifactId&gt;</span>
+            <span class="tok-nt">&lt;version&gt;</span>1.0.0.Final<span class="tok-nt">&lt;/version&gt;</span>
+            <span class="tok-nt">&lt;scope&gt;</span>test<span class="tok-nt">&lt;/scope&gt;</span>
+        <span class="tok-nt">&lt;/dependency&gt;</span>
+
+        <span class="tok-nt">&lt;dependency&gt;</span>
+            <span class="tok-nt">&lt;groupId&gt;</span>org.hibernate<span class="tok-nt">&lt;/groupId&gt;</span>
+            <span class="tok-nt">&lt;artifactId&gt;</span>hibernate-entitymanager<span class="tok-nt">&lt;/artifactId&gt;</span>
+            <span class="tok-nt">&lt;version&gt;</span>4.3.7.Final<span class="tok-nt">&lt;/version&gt;</span>
+            <span class="tok-nt">&lt;scope&gt;</span>test<span class="tok-nt">&lt;/scope&gt;</span>
+        <span class="tok-nt">&lt;/dependency&gt;</span>
+
+        <span class="tok-nt">&lt;dependency&gt;</span>
+            <span class="tok-nt">&lt;groupId&gt;</span>org.slf4j<span class="tok-nt">&lt;/groupId&gt;</span>
+            <span class="tok-nt">&lt;artifactId&gt;</span>slf4j-api<span class="tok-nt">&lt;/artifactId&gt;</span>
+            <span class="tok-nt">&lt;version&gt;</span>1.7.7<span class="tok-nt">&lt;/version&gt;</span>
+            <span class="tok-nt">&lt;scope&gt;</span>test<span class="tok-nt">&lt;/scope&gt;</span>
+        <span class="tok-nt">&lt;/dependency&gt;</span>
+
+        <span class="tok-c">&lt;!-- Hibernate validator --&gt;</span>
+
+        <span class="tok-nt">&lt;dependency&gt;</span>
+            <span class="tok-nt">&lt;groupId&gt;</span>org.hibernate<span class="tok-nt">&lt;/groupId&gt;</span>
+            <span class="tok-nt">&lt;artifactId&gt;</span>hibernate-validator<span class="tok-nt">&lt;/artifactId&gt;</span>
+            <span class="tok-nt">&lt;version&gt;</span>5.1.3.Final<span class="tok-nt">&lt;/version&gt;</span>
+            <span class="tok-nt">&lt;scope&gt;</span>test<span class="tok-nt">&lt;/scope&gt;</span>
+        <span class="tok-nt">&lt;/dependency&gt;</span>
+
+        <span class="tok-nt">&lt;dependency&gt;</span>
+            <span class="tok-nt">&lt;groupId&gt;</span>javax.el<span class="tok-nt">&lt;/groupId&gt;</span>
+            <span class="tok-nt">&lt;artifactId&gt;</span>javax.el-api<span class="tok-nt">&lt;/artifactId&gt;</span>
+            <span class="tok-nt">&lt;version&gt;</span>2.2.4<span class="tok-nt">&lt;/version&gt;</span>
+            <span class="tok-nt">&lt;scope&gt;</span>test<span class="tok-nt">&lt;/scope&gt;</span>
+        <span class="tok-nt">&lt;/dependency&gt;</span>
+
+        <span class="tok-nt">&lt;dependency&gt;</span>
+            <span class="tok-nt">&lt;groupId&gt;</span>org.glassfish.web<span class="tok-nt">&lt;/groupId&gt;</span>
+            <span class="tok-nt">&lt;artifactId&gt;</span>el-impl<span class="tok-nt">&lt;/artifactId&gt;</span>
+            <span class="tok-nt">&lt;version&gt;</span>2.2<span class="tok-nt">&lt;/version&gt;</span>
+            <span class="tok-nt">&lt;scope&gt;</span>test<span class="tok-nt">&lt;/scope&gt;</span>
+        <span class="tok-nt">&lt;/dependency&gt;</span>
+
+    <span class="tok-nt">&lt;/dependencies&gt;</span>
+
+    <span class="tok-nt">&lt;build&gt;</span>
+        <span class="tok-nt">&lt;finalName&gt;</span>${project.name}<span class="tok-nt">&lt;/finalName&gt;</span>
+        <span class="tok-nt">&lt;plugins&gt;</span>
+            <span class="tok-nt">&lt;plugin&gt;</span>
+                <span class="tok-nt">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="tok-nt">&lt;/groupId&gt;</span>
+                <span class="tok-nt">&lt;artifactId&gt;</span>maven-compiler-plugin<span class="tok-nt">&lt;/artifactId&gt;</span>
+                <span class="tok-nt">&lt;version&gt;</span>3.1<span class="tok-nt">&lt;/version&gt;</span>
+                <span class="tok-nt">&lt;configuration&gt;</span>
+                    <span class="tok-nt">&lt;source&gt;</span>1.7<span class="tok-nt">&lt;/source&gt;</span>
+                    <span class="tok-nt">&lt;target&gt;</span>1.7<span class="tok-nt">&lt;/target&gt;</span>
+                <span class="tok-nt">&lt;/configuration&gt;</span>
+            <span class="tok-nt">&lt;/plugin&gt;</span>
+            <span class="tok-nt">&lt;plugin&gt;</span>
+                <span class="tok-nt">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="tok-nt">&lt;/groupId&gt;</span>
+                <span class="tok-nt">&lt;artifactId&gt;</span>maven-war-plugin<span class="tok-nt">&lt;/artifactId&gt;</span>
+                <span class="tok-nt">&lt;version&gt;</span>2.3<span class="tok-nt">&lt;/version&gt;</span>
+                <span class="tok-nt">&lt;configuration&gt;</span>
+                    <span class="tok-nt">&lt;failOnMissingWebXml&gt;</span>false<span class="tok-nt">&lt;/failOnMissingWebXml&gt;</span>
+                <span class="tok-nt">&lt;/configuration&gt;</span>
+            <span class="tok-nt">&lt;/plugin&gt;</span>
+            <span class="tok-nt">&lt;plugin&gt;</span>
+                <span class="tok-nt">&lt;groupId&gt;</span>org.wildfly.plugins<span class="tok-nt">&lt;/groupId&gt;</span>
+                <span class="tok-nt">&lt;artifactId&gt;</span>wildfly-maven-plugin<span class="tok-nt">&lt;/artifactId&gt;</span>
+                <span class="tok-nt">&lt;version&gt;</span>1.0.2.Final<span class="tok-nt">&lt;/version&gt;</span>
+                <span class="tok-nt">&lt;configuration&gt;</span>
+                    <span class="tok-nt">&lt;hostname&gt;</span>localhost<span class="tok-nt">&lt;/hostname&gt;</span>
+                    <span class="tok-nt">&lt;port&gt;</span>9990<span class="tok-nt">&lt;/port&gt;</span>
+                <span class="tok-nt">&lt;/configuration&gt;</span>
+            <span class="tok-nt">&lt;/plugin&gt;</span>
+        <span class="tok-nt">&lt;/plugins&gt;</span>
+    <span class="tok-nt">&lt;/build&gt;</span>
+<span class="tok-nt">&lt;/project&gt;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_persistence_xml">6.2.4. Persistence.xml</h4>
+<div class="paragraph">
+<p>Una vez creada la fuente de datos y configurado su nombre JNDI basta con referenciarlo en el fichero <code>META-INF/persistence.xml</code> (dentro del directorio <code>resources</code>)</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="xml"><span class="tok-cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="tok-nt">&lt;persistence</span> <span class="tok-na">version=</span><span class="tok-s">&quot;2.0&quot;</span>
+   <span class="tok-na">xmlns=</span><span class="tok-s">&quot;http://java.sun.com/xml/ns/persistence&quot;</span> <span class="tok-na">xmlns:xsi=</span><span class="tok-s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+   <span class="tok-na">xsi:schemaLocation=</span><span class="tok-s">&quot;</span>
+<span class="tok-s">        http://java.sun.com/xml/ns/persistence</span>
+<span class="tok-s">        http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd&quot;</span><span class="tok-nt">&gt;</span>
+   <span class="tok-nt">&lt;persistence-unit</span> <span class="tok-na">name=</span><span class="tok-s">&quot;mensajes&quot;</span><span class="tok-nt">&gt;</span>
+      <span class="tok-nt">&lt;jta-data-source&gt;</span>java:/datasources/MensajesDS<span class="tok-nt">&lt;/jta-data-source&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
+      <span class="tok-nt">&lt;properties&gt;</span>
+         <span class="tok-nt">&lt;property</span> <span class="tok-na">name=</span><span class="tok-s">&quot;hibernate.dialect&quot;</span>
+                   <span class="tok-na">value=</span><span class="tok-s">&quot;org.hibernate.dialect.MySQLDialect&quot;</span><span class="tok-nt">/&gt;</span>
+          <span class="tok-nt">&lt;property</span> <span class="tok-na">name=</span><span class="tok-s">&quot;hibernate.id.new_generator_mappings&quot;</span> <span class="tok-na">value=</span><span class="tok-s">&quot;false&quot;</span><span class="tok-nt">/&gt;</span> <i class="conum" data-value="2"></i><b>(2)</b>
+          <span class="tok-nt">&lt;property</span> <span class="tok-na">name=</span><span class="tok-s">&quot;hibernate.hbm2ddl.auto&quot;</span> <span class="tok-na">value=</span><span class="tok-s">&quot;update&quot;</span> <span class="tok-nt">/&gt;</span>
+         <span class="tok-nt">&lt;property</span> <span class="tok-na">name=</span><span class="tok-s">&quot;hibernate.show_sql&quot;</span> <span class="tok-na">value=</span><span class="tok-s">&quot;true&quot;</span> <span class="tok-nt">/&gt;</span>
+      <span class="tok-nt">&lt;/properties&gt;</span>
+   <span class="tok-nt">&lt;/persistence-unit&gt;</span>
+<span class="tok-nt">&lt;/persistence&gt;</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Nombre de la fuente de datos</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Necesario para que la generación automática de claves primarias funcione sin crear una tabla adicional. Si no se define esta propiedad, Hibernate crea una nueva tabla llamda <code>sequence_generator</code> donde guarda la secuencia de claves primarias.</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_inyección_de_entity_managers_y_recursos_gestionados_por_el_contenedor">6.2.5. Inyección de entity managers y recursos gestionados por el contenedor</h4>
+<div class="paragraph">
+<p>La forma de obtener entity managers también cambia, ya que la aplicación no puede crear explícitamente contextos de persistencia sino
+que es el contenedor el que se encarga de gestionarlos y proporcionarlos a los objetos de la aplicación. Esta forma de
+trabajar con JPA se llama <em>persistencia gestionada por el contenedor</em>.</p>
+</div>
+<div class="paragraph">
+<p>La forma más sencilla de obtener los recursos es utilizando la inyección de dependencias. El contenedor se encarga de
+crear el recurso y de configurarlo según se haya indicado en el fichero de configuración del servidor de aplicaciones.
+Una vez listo, lo inyecta en la variable que hayamos definido como <em>punto de inyección</em> utilizando la anotación propia del recurso. Por ejemplo, para usar un entity manager, basta con declararlo y anotarlo de forma apropiada:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-nd">@PersistenceContext</span><span class="tok-o">(</span><span class="tok-n">unitName</span><span class="tok-o">=</span><span class="tok-s">&quot;mensajes&quot;</span><span class="tok-o">)</span>
+<span class="tok-n">EntityManager</span> <span class="tok-n">em</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>La especificación CDI define los siguientes tipos de recursos que pueden inyectarse en componentes:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Fuentes de datos JDBC, colas JMS, tópicos y factorías de conexiones (<em>ConenectionFactorys</em>), sesiones JavaMail y otros recursos transaccionales que incluyen conectores JCA</p>
+</li>
+<li>
+<p>Entity managers (<em>EntityManagers</em>) y factorías de entity managers (<em>EntityManagerFactorys</em>) JPA</p>
+</li>
+<li>
+<p>Componentes EJB locales y remotos</p>
+</li>
+<li>
+<p>Servicios web RESTful</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Recordemos que en JPA se definen dos tipos de recursos, entity managers y factorías de entity managers. Se definen las anotaciones
+<code>@PersistenceContext</code> y <code>@PersistenceUnit</code> para inyectar estos recursos.</p>
+</div>
+<div class="paragraph">
+<p>La anotación <code>@PersistenceContext</code> puede tener los siguientes elementos adicionales:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>unitName</code>: el nombre de la unidad de persistencia (definido en el fichero de configuración <code>persistence.xml</code>)</p>
+</li>
+<li>
+<p><code>type</code>: tipo de contexto de persistencia: <code>PersistenceContextType.TRANSACTION</code> (valor por defecto) o <code>PersistenceContextType.EXTENDED</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>El tipo de contexto de persistencia (<code>TRANSACTION</code> o <code>EXTENDED</code>) define el ámbito (<em>scope</em>) del entity manager, la extensión de su ciclo de vida. En JPA gestionado por el contenedor el programador no tiene que llamar explícitamente al método <code>close()</code> para cerrar el entity manager. Se encarga de ello el contenedor dependiendo del alcance definido.</p>
+</div>
+<div class="paragraph">
+<p>Si el ámbito es tipo <code>TRANSACTION</code>, el entity manager tiene la misma vida que la transacción. Cuando comienza una
+transacción se crea y se cierra cuando la transacción termina. Al final de la transacción las entidades quedan desconectadas.</p>
+</div>
+<div class="paragraph">
+<p>El ámbito de tipo <code>EXTENDED</code> se utiliza en beans de sesión con estado, que extienden su vida a lo largo de múltiples
+transacciones. En este caso las entidades continúan gestionadas una vez ha terminado la transacción. Lo veremos con más detalle en el módulo de EJB.</p>
+</div>
+<div class="paragraph">
+<p>Además, JPA define desde la especificación 2.1 la anotación <code>@Transactional</code> con la que podemos anotar métodos o nombres de clases.</p>
+</div>
+<div class="paragraph">
+<p>Utilizando CDIs podemos además inyectar los DAOs y la clase de servicios, quedando un código muy limpio. El servidor de aplicaciones se encarga de instanciar los DAOs e inyectarles el <em>entity manager</em> correcto.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+Recuerda que para trabajar con CDIs tienes que crear el fichero <code>beans.xml</code> en <code>webapp/WEB-INF/beans.xml</code>. Puedes hacerlo pulsando el botón derecho sobre la carpeta <code>WEB-INF</code> y seleccionando <em>New &gt; XML Configuration file &gt; beans.xml</em>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Copiamos a continuación todo el código del ejemplo <code>mensajes-web</code> que puedes encontrar en el repositorio <code>ejemplos-jpa</code>, dentro del directorio <code>mensajes-web</code>.</p>
+</div>
+<div class="sect4">
+<h5 id="_página_jsp_y_configuración">Página JSP y configuración</h5>
+<div class="listingblock">
+<div class="title">src/main/webapp/index.jsp</div>
+<div class="content">
+<pre class="pygments highlight"><code data-lang="jsp"><span class="tok-cp">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0 Transitional//EN&quot;&gt;</span>
+<span class="tok-nt">&lt;html&gt;</span>
+    <span class="tok-nt">&lt;head&gt;</span>
+        <span class="tok-nt">&lt;title&gt;</span>Start Page<span class="tok-nt">&lt;/title&gt;</span>
+        <span class="tok-nt">&lt;meta</span> <span class="tok-na">http-equiv=</span><span class="tok-s">&quot;Content-Type&quot;</span> <span class="tok-na">content=</span><span class="tok-s">&quot;text/html; charset=UTF-8&quot;</span><span class="tok-nt">&gt;</span>
+    <span class="tok-nt">&lt;/head&gt;</span>
+    <span class="tok-nt">&lt;body&gt;</span>
+        <span class="tok-nt">&lt;h1&gt;</span>Hello World!<span class="tok-nt">&lt;/h1&gt;</span>
+        <span class="tok-nt">&lt;h2&gt;</span>Nuevo mensaje<span class="tok-nt">&lt;/h2&gt;</span>
+        <span class="tok-nt">&lt;form</span> <span class="tok-na">action=</span><span class="tok-s">&quot;</span><span class="tok-k">&lt;%=</span><span class="tok-n">request</span><span class="tok-o">.</span><span class="tok-na">getContextPath</span><span class="tok-o">()</span><span class="tok-k">%&gt;</span><span class="tok-s">/nuevoAutorMensaje&quot;</span><span class="tok-nt">&gt;</span>
+        <span class="tok-nt">&lt;p&gt;</span>Introduce tu login: <span class="tok-nt">&lt;input</span> <span class="tok-na">type=</span><span class="tok-s">&quot;text&quot;</span> <span class="tok-na">name=</span><span class="tok-s">&quot;login&quot;</span><span class="tok-nt">&gt;&lt;br/&gt;</span>
+        Introduce tu mensaje: <span class="tok-nt">&lt;input</span> <span class="tok-na">type=</span><span class="tok-s">&quot;text&quot;</span> <span class="tok-na">name=</span><span class="tok-s">&quot;mensaje&quot;</span><span class="tok-nt">&gt;&lt;/p&gt;</span>
+        <span class="tok-nt">&lt;input</span> <span class="tok-na">type=</span><span class="tok-s">&quot;submit&quot;</span> <span class="tok-na">value=</span><span class="tok-s">&quot;Enviar&quot;</span><span class="tok-nt">&gt;</span>
+        <span class="tok-nt">&lt;/form&gt;</span>
+    <span class="tok-nt">&lt;h2&gt;</span>Acciones<span class="tok-nt">&lt;/h2&gt;</span>
+    <span class="tok-nt">&lt;ul&gt;</span>
+        <span class="tok-nt">&lt;li&gt;&lt;a</span> <span class="tok-na">href=</span><span class="tok-s">&quot;</span><span class="tok-k">&lt;%=</span><span class="tok-n">request</span><span class="tok-o">.</span><span class="tok-na">getContextPath</span><span class="tok-o">()</span><span class="tok-k">%&gt;</span><span class="tok-s">/listaAutores&quot;</span><span class="tok-nt">&gt;</span>Listar autores<span class="tok-nt">&lt;/a&gt;&lt;/li&gt;</span>
+    <span class="tok-nt">&lt;/ul&gt;</span>
+    <span class="tok-nt">&lt;/body&gt;</span>
+<span class="tok-nt">&lt;/html&gt;</span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">src/main/webapp/WEB-INF/beans.xml</div>
+<div class="content">
+<pre class="pygments highlight"><code data-lang="xml"><span class="tok-cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="tok-nt">&lt;beans</span>
+        <span class="tok-na">xmlns=</span><span class="tok-s">&quot;http://xmlns.jcp.org/xml/ns/javaee&quot;</span>
+        <span class="tok-na">xmlns:xsi=</span><span class="tok-s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+        <span class="tok-na">xsi:schemaLocation=</span><span class="tok-s">&quot;http://xmlns.jcp.org/xml/ns/javaee</span>
+<span class="tok-s">                      http://xmlns.jcp.org/xml/ns/javaee/beans_1_1.xsd&quot;</span>
+        <span class="tok-na">bean-discovery-mode=</span><span class="tok-s">&quot;all&quot;</span><span class="tok-nt">&gt;</span>
+<span class="tok-nt">&lt;/beans&gt;</span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">src/main/resources/META-INF/persistence.xml</div>
+<div class="content">
+<pre class="pygments highlight"><code data-lang="xml"><span class="tok-cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="tok-nt">&lt;persistence</span> <span class="tok-na">version=</span><span class="tok-s">&quot;2.0&quot;</span>
+   <span class="tok-na">xmlns=</span><span class="tok-s">&quot;http://java.sun.com/xml/ns/persistence&quot;</span> <span class="tok-na">xmlns:xsi=</span><span class="tok-s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+   <span class="tok-na">xsi:schemaLocation=</span><span class="tok-s">&quot;</span>
+<span class="tok-s">        http://java.sun.com/xml/ns/persistence</span>
+<span class="tok-s">        http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd&quot;</span><span class="tok-nt">&gt;</span>
+   <span class="tok-nt">&lt;persistence-unit</span> <span class="tok-na">name=</span><span class="tok-s">&quot;mensajes&quot;</span><span class="tok-nt">&gt;</span>
+      <span class="tok-nt">&lt;jta-data-source&gt;</span>java:/datasources/MensajesDS<span class="tok-nt">&lt;/jta-data-source&gt;</span>
+      <span class="tok-nt">&lt;properties&gt;</span>
+         <span class="tok-nt">&lt;property</span> <span class="tok-na">name=</span><span class="tok-s">&quot;hibernate.dialect&quot;</span>
+                   <span class="tok-na">value=</span><span class="tok-s">&quot;org.hibernate.dialect.MySQLDialect&quot;</span><span class="tok-nt">/&gt;</span>
+          <span class="tok-nt">&lt;property</span> <span class="tok-na">name=</span><span class="tok-s">&quot;hibernate.id.new_generator_mappings&quot;</span> <span class="tok-na">value=</span><span class="tok-s">&quot;false&quot;</span><span class="tok-nt">/&gt;</span>
+         <span class="tok-nt">&lt;property</span> <span class="tok-na">name=</span><span class="tok-s">&quot;hibernate.hbm2ddl.auto&quot;</span> <span class="tok-na">value=</span><span class="tok-s">&quot;update&quot;</span> <span class="tok-nt">/&gt;</span>
+         <span class="tok-nt">&lt;property</span> <span class="tok-na">name=</span><span class="tok-s">&quot;hibernate.show_sql&quot;</span> <span class="tok-na">value=</span><span class="tok-s">&quot;true&quot;</span> <span class="tok-nt">/&gt;</span>
+      <span class="tok-nt">&lt;/properties&gt;</span>
+   <span class="tok-nt">&lt;/persistence-unit&gt;</span>
+<span class="tok-nt">&lt;/persistence&gt;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_servlets">Servlets</h5>
+<div class="listingblock">
+<div class="title">src/main/java/org/expertojava/jpa/mensajes/servlets/ListaAutores.java</div>
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-kn">package</span> <span class="tok-n">org</span><span class="tok-o">.</span><span class="tok-na">expertojava</span><span class="tok-o">.</span><span class="tok-na">jpa</span><span class="tok-o">.</span><span class="tok-na">mensajes</span><span class="tok-o">.</span><span class="tok-na">servlets</span><span class="tok-o">;</span>
+
+<span class="tok-kn">import</span> <span class="tok-nn">org.expertojava.jpa.mensajes.modelo.Autor</span><span class="tok-o">;</span>
+<span class="tok-kn">import</span> <span class="tok-nn">org.expertojava.jpa.mensajes.servicio.AutorServicio</span><span class="tok-o">;</span>
+
+
+<span class="tok-kn">import</span> <span class="tok-nn">javax.inject.Inject</span><span class="tok-o">;</span>
+<span class="tok-kn">import</span> <span class="tok-nn">javax.servlet.ServletException</span><span class="tok-o">;</span>
+<span class="tok-kn">import</span> <span class="tok-nn">javax.servlet.annotation.WebServlet</span><span class="tok-o">;</span>
+<span class="tok-kn">import</span> <span class="tok-nn">javax.servlet.http.HttpServlet</span><span class="tok-o">;</span>
+<span class="tok-kn">import</span> <span class="tok-nn">javax.servlet.http.HttpServletRequest</span><span class="tok-o">;</span>
+<span class="tok-kn">import</span> <span class="tok-nn">javax.servlet.http.HttpServletResponse</span><span class="tok-o">;</span>
+<span class="tok-kn">import</span> <span class="tok-nn">java.io.IOException</span><span class="tok-o">;</span>
+<span class="tok-kn">import</span> <span class="tok-nn">java.io.PrintWriter</span><span class="tok-o">;</span>
+<span class="tok-kn">import</span> <span class="tok-nn">java.util.List</span><span class="tok-o">;</span>
+
+<span class="tok-nd">@WebServlet</span><span class="tok-o">(</span><span class="tok-n">name</span><span class="tok-o">=</span><span class="tok-s">&quot;listaAutores&quot;</span><span class="tok-o">,</span> <span class="tok-n">urlPatterns</span><span class="tok-o">=</span><span class="tok-s">&quot;/listaAutores&quot;</span><span class="tok-o">)</span>
+<span class="tok-kd">public</span> <span class="tok-kd">class</span> <span class="tok-nc">ListaAutores</span> <span class="tok-kd">extends</span> <span class="tok-n">HttpServlet</span> <span class="tok-o">{</span>
+
+    <span class="tok-nd">@Inject</span>
+    <span class="tok-n">AutorServicio</span> <span class="tok-n">autorServicio</span><span class="tok-o">;</span>
+
+    <span class="tok-kd">protected</span> <span class="tok-kt">void</span> <span class="tok-nf">doPost</span><span class="tok-o">(</span><span class="tok-n">HttpServletRequest</span> <span class="tok-n">request</span><span class="tok-o">,</span> <span class="tok-n">HttpServletResponse</span> <span class="tok-n">response</span><span class="tok-o">)</span> <span class="tok-kd">throws</span>
+            <span class="tok-n">ServletException</span><span class="tok-o">,</span>
+            <span class="tok-n">IOException</span> <span class="tok-o">{</span>
+
+    <span class="tok-o">}</span>
+
+    <span class="tok-kd">protected</span> <span class="tok-kt">void</span> <span class="tok-nf">doGet</span><span class="tok-o">(</span><span class="tok-n">HttpServletRequest</span> <span class="tok-n">request</span><span class="tok-o">,</span> <span class="tok-n">HttpServletResponse</span> <span class="tok-n">response</span><span class="tok-o">)</span> <span class="tok-kd">throws</span> <span class="tok-n">ServletException</span><span class="tok-o">,</span> <span class="tok-n">IOException</span> <span class="tok-o">{</span>
+        <span class="tok-n">response</span><span class="tok-o">.</span><span class="tok-na">setContentType</span><span class="tok-o">(</span><span class="tok-s">&quot;text/html&quot;</span><span class="tok-o">);</span>
+        <span class="tok-n">PrintWriter</span> <span class="tok-n">out</span> <span class="tok-o">=</span> <span class="tok-n">response</span><span class="tok-o">.</span><span class="tok-na">getWriter</span><span class="tok-o">();</span>
+        <span class="tok-n">out</span><span class="tok-o">.</span><span class="tok-na">println</span><span class="tok-o">(</span><span class="tok-s">&quot;&lt;!DOCTYPE HTML PUBLIC \&quot;&quot;</span> <span class="tok-o">+</span>
+                <span class="tok-s">&quot;-//W3C//DTD HTML 4.0 &quot;</span> <span class="tok-o">+</span>
+                <span class="tok-s">&quot;Transitional//EN\&quot;&gt;&quot;</span><span class="tok-o">);</span>
+        <span class="tok-n">out</span><span class="tok-o">.</span><span class="tok-na">println</span><span class="tok-o">(</span><span class="tok-s">&quot;&lt;HTML&gt;&quot;</span><span class="tok-o">);</span>
+        <span class="tok-n">out</span><span class="tok-o">.</span><span class="tok-na">println</span><span class="tok-o">(</span><span class="tok-s">&quot;&lt;BODY&gt;&quot;</span><span class="tok-o">);</span>
+        <span class="tok-n">out</span><span class="tok-o">.</span><span class="tok-na">println</span><span class="tok-o">(</span><span class="tok-s">&quot;&lt;h1&gt;Lista de autores&lt;/h1&gt;&quot;</span><span class="tok-o">);</span>
+        <span class="tok-n">out</span><span class="tok-o">.</span><span class="tok-na">println</span><span class="tok-o">(</span><span class="tok-s">&quot;&lt;ul&gt;&quot;</span><span class="tok-o">);</span>
+        <span class="tok-n">List</span><span class="tok-o">&lt;</span><span class="tok-n">Autor</span><span class="tok-o">&gt;</span> <span class="tok-n">lista</span> <span class="tok-o">=</span> <span class="tok-n">autorServicio</span><span class="tok-o">.</span><span class="tok-na">listAllAutores</span><span class="tok-o">();</span>
+        <span class="tok-k">for</span> <span class="tok-o">(</span><span class="tok-n">Autor</span> <span class="tok-n">a</span> <span class="tok-o">:</span> <span class="tok-n">lista</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+            <span class="tok-n">out</span><span class="tok-o">.</span><span class="tok-na">println</span><span class="tok-o">(</span><span class="tok-s">&quot;&lt;li&gt; &quot;</span> <span class="tok-o">+</span> <span class="tok-n">a</span><span class="tok-o">.</span><span class="tok-na">getNombre</span><span class="tok-o">()</span> <span class="tok-o">+</span> <span class="tok-s">&quot;&lt;/li&gt;&quot;</span><span class="tok-o">);</span>
+        <span class="tok-o">}</span>
+        <span class="tok-n">out</span><span class="tok-o">.</span><span class="tok-na">println</span><span class="tok-o">(</span><span class="tok-s">&quot;&lt;/ul&gt;&quot;</span><span class="tok-o">);</span>
+        <span class="tok-n">out</span><span class="tok-o">.</span><span class="tok-na">println</span><span class="tok-o">(</span><span class="tok-s">&quot;&lt;/BODY&gt;&quot;</span><span class="tok-o">);</span>
+        <span class="tok-n">out</span><span class="tok-o">.</span><span class="tok-na">println</span><span class="tok-o">(</span><span class="tok-s">&quot;&lt;/HTML&quot;</span><span class="tok-o">);</span>
+    <span class="tok-o">}</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">src/main/java/org/expertojava/jpa/mensajes/servlets/NuevoAutorMensaje.java</div>
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-kn">package</span> <span class="tok-n">org</span><span class="tok-o">.</span><span class="tok-na">expertojava</span><span class="tok-o">.</span><span class="tok-na">jpa</span><span class="tok-o">.</span><span class="tok-na">mensajes</span><span class="tok-o">.</span><span class="tok-na">servlets</span><span class="tok-o">;</span>
+
+<span class="tok-kn">import</span> <span class="tok-nn">org.expertojava.jpa.mensajes.modelo.Autor</span><span class="tok-o">;</span>
+<span class="tok-kn">import</span> <span class="tok-nn">org.expertojava.jpa.mensajes.servicio.AutorServicio</span><span class="tok-o">;</span>
+
+
+<span class="tok-kn">import</span> <span class="tok-nn">javax.inject.Inject</span><span class="tok-o">;</span>
+<span class="tok-kn">import</span> <span class="tok-nn">javax.servlet.ServletException</span><span class="tok-o">;</span>
+<span class="tok-kn">import</span> <span class="tok-nn">javax.servlet.annotation.WebServlet</span><span class="tok-o">;</span>
+<span class="tok-kn">import</span> <span class="tok-nn">javax.servlet.http.HttpServlet</span><span class="tok-o">;</span>
+<span class="tok-kn">import</span> <span class="tok-nn">javax.servlet.http.HttpServletRequest</span><span class="tok-o">;</span>
+<span class="tok-kn">import</span> <span class="tok-nn">javax.servlet.http.HttpServletResponse</span><span class="tok-o">;</span>
+<span class="tok-kn">import</span> <span class="tok-nn">java.io.IOException</span><span class="tok-o">;</span>
+<span class="tok-kn">import</span> <span class="tok-nn">java.io.PrintWriter</span><span class="tok-o">;</span>
+
+<span class="tok-nd">@WebServlet</span><span class="tok-o">(</span><span class="tok-n">name</span><span class="tok-o">=</span><span class="tok-s">&quot;nuevoAutorMensaje&quot;</span><span class="tok-o">,</span> <span class="tok-n">urlPatterns</span><span class="tok-o">=</span><span class="tok-s">&quot;/nuevoAutorMensaje&quot;</span><span class="tok-o">)</span>
+<span class="tok-kd">public</span> <span class="tok-kd">class</span> <span class="tok-nc">NuevoAutorMensaje</span> <span class="tok-kd">extends</span> <span class="tok-n">HttpServlet</span> <span class="tok-o">{</span>
+
+    <span class="tok-nd">@Inject</span>
+    <span class="tok-n">AutorServicio</span> <span class="tok-n">autorServicio</span><span class="tok-o">;</span>
+
+    <span class="tok-kd">protected</span> <span class="tok-kt">void</span> <span class="tok-nf">doPost</span><span class="tok-o">(</span><span class="tok-n">HttpServletRequest</span> <span class="tok-n">request</span><span class="tok-o">,</span> <span class="tok-n">HttpServletResponse</span> <span class="tok-n">response</span><span class="tok-o">)</span> <span class="tok-kd">throws</span>
+            <span class="tok-n">ServletException</span><span class="tok-o">,</span>
+            <span class="tok-n">IOException</span> <span class="tok-o">{</span>
+
+    <span class="tok-o">}</span>
+
+    <span class="tok-kd">protected</span> <span class="tok-kt">void</span> <span class="tok-nf">doGet</span><span class="tok-o">(</span><span class="tok-n">HttpServletRequest</span> <span class="tok-n">request</span><span class="tok-o">,</span> <span class="tok-n">HttpServletResponse</span> <span class="tok-n">response</span><span class="tok-o">)</span> <span class="tok-kd">throws</span> <span class="tok-n">ServletException</span><span class="tok-o">,</span> <span class="tok-n">IOException</span> <span class="tok-o">{</span>
+        <span class="tok-n">String</span> <span class="tok-n">login</span> <span class="tok-o">=</span> <span class="tok-n">request</span><span class="tok-o">.</span><span class="tok-na">getParameter</span><span class="tok-o">(</span><span class="tok-s">&quot;login&quot;</span><span class="tok-o">);</span>
+        <span class="tok-n">String</span> <span class="tok-n">mensaje</span> <span class="tok-o">=</span> <span class="tok-n">request</span><span class="tok-o">.</span><span class="tok-na">getParameter</span><span class="tok-o">(</span><span class="tok-s">&quot;mensaje&quot;</span><span class="tok-o">);</span>
+        <span class="tok-n">System</span><span class="tok-o">.</span><span class="tok-na">out</span><span class="tok-o">.</span><span class="tok-na">println</span><span class="tok-o">(</span><span class="tok-n">login</span><span class="tok-o">);</span>
+        <span class="tok-n">System</span><span class="tok-o">.</span><span class="tok-na">out</span><span class="tok-o">.</span><span class="tok-na">println</span><span class="tok-o">(</span><span class="tok-n">mensaje</span><span class="tok-o">);</span>
+
+        <span class="tok-n">autorServicio</span><span class="tok-o">.</span><span class="tok-na">createAutorMensaje</span><span class="tok-o">(</span><span class="tok-n">login</span><span class="tok-o">,</span> <span class="tok-n">login</span><span class="tok-o">,</span> <span class="tok-n">mensaje</span><span class="tok-o">);</span>
+
+        <span class="tok-n">response</span><span class="tok-o">.</span><span class="tok-na">setContentType</span><span class="tok-o">(</span><span class="tok-s">&quot;text/html&quot;</span><span class="tok-o">);</span>
+        <span class="tok-n">PrintWriter</span> <span class="tok-n">out</span> <span class="tok-o">=</span> <span class="tok-n">response</span><span class="tok-o">.</span><span class="tok-na">getWriter</span><span class="tok-o">();</span>
+        <span class="tok-n">out</span><span class="tok-o">.</span><span class="tok-na">println</span><span class="tok-o">(</span><span class="tok-s">&quot;&lt;!DOCTYPE HTML PUBLIC \&quot;&quot;</span> <span class="tok-o">+</span>
+                <span class="tok-s">&quot;-//W3C//DTD HTML 4.0 &quot;</span> <span class="tok-o">+</span>
+                <span class="tok-s">&quot;Transitional//EN\&quot;&gt;&quot;</span><span class="tok-o">);</span>
+        <span class="tok-n">out</span><span class="tok-o">.</span><span class="tok-na">println</span><span class="tok-o">(</span><span class="tok-s">&quot;&lt;HTML&gt;&quot;</span><span class="tok-o">);</span>
+        <span class="tok-n">out</span><span class="tok-o">.</span><span class="tok-na">println</span><span class="tok-o">(</span><span class="tok-s">&quot;&lt;BODY&gt;&quot;</span><span class="tok-o">);</span>
+        <span class="tok-n">out</span><span class="tok-o">.</span><span class="tok-na">println</span><span class="tok-o">(</span><span class="tok-s">&quot;&lt;h3&gt;Autor y mensaje correctos&lt;/h3&gt;&quot;</span><span class="tok-o">);</span>
+        <span class="tok-n">out</span><span class="tok-o">.</span><span class="tok-na">println</span><span class="tok-o">(</span><span class="tok-s">&quot;&lt;/BODY&gt;&quot;</span><span class="tok-o">);</span>
+        <span class="tok-n">out</span><span class="tok-o">.</span><span class="tok-na">println</span><span class="tok-o">(</span><span class="tok-s">&quot;&lt;/HTML&quot;</span><span class="tok-o">);</span>
+    <span class="tok-o">}</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_servicio">Servicio</h5>
+<div class="listingblock">
+<div class="title">src/main/java/org/expertojava/jpa/mensajes/servicio/AutorServicio.java</div>
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-kn">package</span> <span class="tok-n">org</span><span class="tok-o">.</span><span class="tok-na">expertojava</span><span class="tok-o">.</span><span class="tok-na">jpa</span><span class="tok-o">.</span><span class="tok-na">mensajes</span><span class="tok-o">.</span><span class="tok-na">servicio</span><span class="tok-o">;</span>
+
+<span class="tok-kn">import</span> <span class="tok-nn">org.expertojava.jpa.mensajes.modelo.Autor</span><span class="tok-o">;</span>
+<span class="tok-kn">import</span> <span class="tok-nn">org.expertojava.jpa.mensajes.modelo.Mensaje</span><span class="tok-o">;</span>
+<span class="tok-kn">import</span> <span class="tok-nn">org.expertojava.jpa.mensajes.persistencia.AutorDao</span><span class="tok-o">;</span>
+<span class="tok-kn">import</span> <span class="tok-nn">org.expertojava.jpa.mensajes.persistencia.MensajeDao</span><span class="tok-o">;</span>
+
+<span class="tok-kn">import</span> <span class="tok-nn">javax.inject.Inject</span><span class="tok-o">;</span>
+<span class="tok-kn">import</span> <span class="tok-nn">javax.persistence.EntityManager</span><span class="tok-o">;</span>
+<span class="tok-kn">import</span> <span class="tok-nn">javax.persistence.PersistenceContext</span><span class="tok-o">;</span>
+<span class="tok-kn">import</span> <span class="tok-nn">javax.transaction.Transactional</span><span class="tok-o">;</span>
+<span class="tok-kn">import</span> <span class="tok-nn">java.util.List</span><span class="tok-o">;</span>
+
+<span class="tok-nd">@Transactional</span>
+<span class="tok-kd">public</span> <span class="tok-kd">class</span> <span class="tok-nc">AutorServicio</span> <span class="tok-o">{</span>
+
+    <span class="tok-nd">@Inject</span>
+    <span class="tok-n">AutorDao</span> <span class="tok-n">autorDao</span><span class="tok-o">;</span>
+    <span class="tok-nd">@Inject</span>
+    <span class="tok-n">MensajeDao</span> <span class="tok-n">mensajeDao</span><span class="tok-o">;</span>
+
+    <span class="tok-kd">public</span> <span class="tok-n">Autor</span> <span class="tok-nf">createAutorMensaje</span><span class="tok-o">(</span><span class="tok-n">String</span> <span class="tok-n">nombre</span><span class="tok-o">,</span>
+                                    <span class="tok-n">String</span> <span class="tok-n">correo</span><span class="tok-o">,</span>
+                                    <span class="tok-n">String</span> <span class="tok-n">texto</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+        <span class="tok-n">Autor</span> <span class="tok-n">autor</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-nf">Autor</span><span class="tok-o">(</span><span class="tok-n">nombre</span><span class="tok-o">,</span> <span class="tok-n">correo</span><span class="tok-o">);</span>
+        <span class="tok-n">autor</span> <span class="tok-o">=</span> <span class="tok-n">autorDao</span><span class="tok-o">.</span><span class="tok-na">create</span><span class="tok-o">(</span><span class="tok-n">autor</span><span class="tok-o">);</span>
+        <span class="tok-n">Mensaje</span> <span class="tok-n">mensaje</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-nf">Mensaje</span><span class="tok-o">(</span><span class="tok-n">texto</span><span class="tok-o">,</span> <span class="tok-n">autor</span><span class="tok-o">);</span>
+        <span class="tok-n">mensaje</span> <span class="tok-o">=</span> <span class="tok-n">mensajeDao</span><span class="tok-o">.</span><span class="tok-na">create</span><span class="tok-o">(</span><span class="tok-n">mensaje</span><span class="tok-o">);</span>
+        <span class="tok-k">return</span> <span class="tok-n">autor</span><span class="tok-o">;</span>
+    <span class="tok-o">}</span>
+
+    <span class="tok-kd">public</span> <span class="tok-n">List</span><span class="tok-o">&lt;</span><span class="tok-n">Autor</span><span class="tok-o">&gt;</span> <span class="tok-nf">listAllAutores</span><span class="tok-o">()</span> <span class="tok-o">{</span>
+        <span class="tok-n">List</span><span class="tok-o">&lt;</span><span class="tok-n">Autor</span><span class="tok-o">&gt;</span> <span class="tok-n">autores</span> <span class="tok-o">=</span> <span class="tok-n">autorDao</span><span class="tok-o">.</span><span class="tok-na">listAllAutores</span><span class="tok-o">();</span>
+        <span class="tok-k">return</span> <span class="tok-n">autores</span><span class="tok-o">;</span>
+    <span class="tok-o">}</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_daos">DAOs</h5>
+<div class="listingblock">
+<div class="title">src/main/java/org/expertojava/jpa/mensajes/persistencia/Dao.java</div>
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-kn">package</span> <span class="tok-n">org</span><span class="tok-o">.</span><span class="tok-na">expertojava</span><span class="tok-o">.</span><span class="tok-na">jpa</span><span class="tok-o">.</span><span class="tok-na">mensajes</span><span class="tok-o">.</span><span class="tok-na">persistencia</span><span class="tok-o">;</span>
+
+<span class="tok-kn">import</span> <span class="tok-nn">javax.persistence.EntityManager</span><span class="tok-o">;</span>
+<span class="tok-kn">import</span> <span class="tok-nn">javax.persistence.PersistenceContext</span><span class="tok-o">;</span>
+
+<span class="tok-kd">abstract</span> <span class="tok-kd">class</span> <span class="tok-nc">Dao</span><span class="tok-o">&lt;</span><span class="tok-n">T</span><span class="tok-o">,</span> <span class="tok-n">K</span><span class="tok-o">&gt;</span> <span class="tok-o">{</span>
+
+    <span class="tok-nd">@PersistenceContext</span><span class="tok-o">(</span><span class="tok-n">unitName</span> <span class="tok-o">=</span> <span class="tok-s">&quot;mensajes&quot;</span><span class="tok-o">)</span>
+    <span class="tok-n">EntityManager</span> <span class="tok-n">em</span><span class="tok-o">;</span>
+
+    <span class="tok-kd">public</span> <span class="tok-n">T</span> <span class="tok-nf">create</span><span class="tok-o">(</span><span class="tok-n">T</span> <span class="tok-n">t</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+        <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">persist</span><span class="tok-o">(</span><span class="tok-n">t</span><span class="tok-o">);</span>
+        <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">flush</span><span class="tok-o">();</span>
+        <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">refresh</span><span class="tok-o">(</span><span class="tok-n">t</span><span class="tok-o">);</span>
+        <span class="tok-k">return</span> <span class="tok-n">t</span><span class="tok-o">;</span>
+    <span class="tok-o">}</span>
+
+    <span class="tok-kd">public</span> <span class="tok-n">T</span> <span class="tok-nf">update</span><span class="tok-o">(</span><span class="tok-n">T</span> <span class="tok-n">t</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+        <span class="tok-k">return</span> <span class="tok-o">(</span><span class="tok-n">T</span><span class="tok-o">)</span> <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">merge</span><span class="tok-o">(</span><span class="tok-n">t</span><span class="tok-o">);</span>
+    <span class="tok-o">}</span>
+
+    <span class="tok-kd">public</span> <span class="tok-kt">void</span> <span class="tok-nf">delete</span><span class="tok-o">(</span><span class="tok-n">T</span> <span class="tok-n">t</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+        <span class="tok-n">t</span> <span class="tok-o">=</span> <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">merge</span><span class="tok-o">(</span><span class="tok-n">t</span><span class="tok-o">);</span>
+        <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">remove</span><span class="tok-o">(</span><span class="tok-n">t</span><span class="tok-o">);</span>
+    <span class="tok-o">}</span>
+
+    <span class="tok-kd">public</span> <span class="tok-kd">abstract</span> <span class="tok-n">T</span> <span class="tok-nf">find</span><span class="tok-o">(</span><span class="tok-n">K</span> <span class="tok-n">id</span><span class="tok-o">);</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">src/main/java/org/expertojava/jpa/mensajes/persistencia/AutorDao.java</div>
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-kn">package</span> <span class="tok-n">org</span><span class="tok-o">.</span><span class="tok-na">expertojava</span><span class="tok-o">.</span><span class="tok-na">jpa</span><span class="tok-o">.</span><span class="tok-na">mensajes</span><span class="tok-o">.</span><span class="tok-na">persistencia</span><span class="tok-o">;</span>
+
+<span class="tok-kn">import</span> <span class="tok-nn">org.expertojava.jpa.mensajes.modelo.Autor</span><span class="tok-o">;</span>
+
+<span class="tok-kn">import</span> <span class="tok-nn">javax.persistence.Query</span><span class="tok-o">;</span>
+<span class="tok-kn">import</span> <span class="tok-nn">java.util.List</span><span class="tok-o">;</span>
+
+<span class="tok-kd">public</span> <span class="tok-kd">class</span> <span class="tok-nc">AutorDao</span> <span class="tok-kd">extends</span> <span class="tok-n">Dao</span><span class="tok-o">&lt;</span><span class="tok-n">Autor</span><span class="tok-o">,</span> <span class="tok-n">Long</span><span class="tok-o">&gt;</span> <span class="tok-o">{</span>
+    <span class="tok-n">String</span> <span class="tok-n">FIND_ALL_AUTORES</span> <span class="tok-o">=</span> <span class="tok-s">&quot;SELECT a FROM Autor a &quot;</span><span class="tok-o">;</span>
+
+    <span class="tok-nd">@Override</span>
+    <span class="tok-kd">public</span> <span class="tok-n">Autor</span> <span class="tok-nf">find</span><span class="tok-o">(</span><span class="tok-n">Long</span> <span class="tok-n">id</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+        <span class="tok-k">return</span> <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">find</span><span class="tok-o">(</span><span class="tok-n">Autor</span><span class="tok-o">.</span><span class="tok-na">class</span><span class="tok-o">,</span> <span class="tok-n">id</span><span class="tok-o">);</span>
+    <span class="tok-o">}</span>
+
+    <span class="tok-kd">public</span> <span class="tok-n">List</span><span class="tok-o">&lt;</span><span class="tok-n">Autor</span><span class="tok-o">&gt;</span> <span class="tok-nf">listAllAutores</span><span class="tok-o">()</span> <span class="tok-o">{</span>
+        <span class="tok-n">Query</span> <span class="tok-n">query</span> <span class="tok-o">=</span> <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">createQuery</span><span class="tok-o">(</span><span class="tok-n">FIND_ALL_AUTORES</span><span class="tok-o">);</span>
+        <span class="tok-k">return</span> <span class="tok-o">(</span><span class="tok-n">List</span><span class="tok-o">&lt;</span><span class="tok-n">Autor</span><span class="tok-o">&gt;)</span> <span class="tok-n">query</span><span class="tok-o">.</span><span class="tok-na">getResultList</span><span class="tok-o">();</span>
+    <span class="tok-o">}</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">src/main/java/org/expertojava/jpa/mensajes/persistencia/AutorDao.java</div>
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-kn">package</span> <span class="tok-n">org</span><span class="tok-o">.</span><span class="tok-na">expertojava</span><span class="tok-o">.</span><span class="tok-na">jpa</span><span class="tok-o">.</span><span class="tok-na">mensajes</span><span class="tok-o">.</span><span class="tok-na">persistencia</span><span class="tok-o">;</span>
+
+<span class="tok-kn">import</span> <span class="tok-nn">org.expertojava.jpa.mensajes.modelo.Mensaje</span><span class="tok-o">;</span>
+
+<span class="tok-kn">import</span> <span class="tok-nn">javax.persistence.Query</span><span class="tok-o">;</span>
+<span class="tok-kn">import</span> <span class="tok-nn">java.util.List</span><span class="tok-o">;</span>
+
+<span class="tok-kd">public</span> <span class="tok-kd">class</span> <span class="tok-nc">MensajeDao</span> <span class="tok-kd">extends</span> <span class="tok-n">Dao</span><span class="tok-o">&lt;</span><span class="tok-n">Mensaje</span><span class="tok-o">,</span> <span class="tok-n">Long</span><span class="tok-o">&gt;</span> <span class="tok-o">{</span>
+    <span class="tok-n">String</span> <span class="tok-n">FIND_ALL_MENSAJES</span> <span class="tok-o">=</span> <span class="tok-s">&quot;SELECT m FROM Mensaje m&quot;</span><span class="tok-o">;</span>
+
+    <span class="tok-nd">@Override</span>
+    <span class="tok-kd">public</span> <span class="tok-n">Mensaje</span> <span class="tok-nf">find</span><span class="tok-o">(</span><span class="tok-n">Long</span> <span class="tok-n">id</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+        <span class="tok-k">return</span> <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">find</span><span class="tok-o">(</span><span class="tok-n">Mensaje</span><span class="tok-o">.</span><span class="tok-na">class</span><span class="tok-o">,</span> <span class="tok-n">id</span><span class="tok-o">);</span>
+    <span class="tok-o">}</span>
+
+    <span class="tok-kd">public</span> <span class="tok-n">List</span><span class="tok-o">&lt;</span><span class="tok-n">Mensaje</span><span class="tok-o">&gt;</span> <span class="tok-nf">listAllMensajes</span><span class="tok-o">()</span> <span class="tok-o">{</span>
+        <span class="tok-n">Query</span> <span class="tok-n">query</span> <span class="tok-o">=</span> <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">createQuery</span><span class="tok-o">(</span><span class="tok-n">FIND_ALL_MENSAJES</span><span class="tok-o">);</span>
+        <span class="tok-k">return</span> <span class="tok-o">(</span><span class="tok-n">List</span><span class="tok-o">&lt;</span><span class="tok-n">Mensaje</span><span class="tok-o">&gt;)</span> <span class="tok-n">query</span><span class="tok-o">.</span><span class="tok-na">getResultList</span><span class="tok-o">();</span>
+    <span class="tok-o">}</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_ejercicios">6.3. Ejercicios</h3>
+<div class="sect3">
+<h4 id="__0_5_puntos_ejercicios_sobre_transacciones">6.3.1. (0,5 puntos) Ejercicios sobre transacciones</h4>
+<div class="paragraph">
+<p>Escribe en el módulo <code>mensajes</code> uno o varios programas que permitan probar el funcionamiento de al menos dos de los distintos modos de bloqueos vistos en la sesión de teoría. Prueba a ejecutar concurrentemente el programa lanzando varios procesos desde IntelliJ.</p>
+</div>
+<div class="paragraph">
+<p>Puedes parar la ejecución del programa cuando te interese, llamando por ejemplo a la siguiente función que se queda a la espera de una entrada del usuario.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-kd">private</span> <span class="tok-kd">static</span> <span class="tok-kt">void</span> <span class="tok-nf">pulsaIntro</span><span class="tok-o">(</span><span class="tok-n">String</span> <span class="tok-n">msg</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+   <span class="tok-k">try</span> <span class="tok-o">{</span>
+      <span class="tok-n">BufferedReader</span> <span class="tok-n">in</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-nf">BufferedReader</span><span class="tok-o">(</span>
+            <span class="tok-k">new</span> <span class="tok-nf">InputStreamReader</span><span class="tok-o">(</span><span class="tok-n">System</span><span class="tok-o">.</span><span class="tok-na">in</span><span class="tok-o">));</span>
+      <span class="tok-n">System</span><span class="tok-o">.</span><span class="tok-na">out</span><span class="tok-o">.</span><span class="tok-na">println</span><span class="tok-o">(</span><span class="tok-n">msg</span><span class="tok-o">);</span>
+      <span class="tok-n">in</span><span class="tok-o">.</span><span class="tok-na">readLine</span><span class="tok-o">();</span>
+   <span class="tok-o">}</span> <span class="tok-k">catch</span> <span class="tok-o">(</span><span class="tok-n">IOException</span> <span class="tok-n">e</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+   <span class="tok-o">}</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Escribe un pequeño informe con las conclusiones que hayas encontrado en el fichero <code>ejercicio6.txt</code> en la raíz del repositorio.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="__1_punto_aplicación_básica_jpa_en_web">6.3.2. (1 punto) Aplicación básica JPA en web</h4>
+<div class="paragraph">
+<p>Crea en el proyecto de ejercicios un nuevo módulo Maven llamado <code>mensajes-web</code> con las siguientes coordenadas:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="xml"><span class="tok-nt">&lt;groupId&gt;</span>org.expertojava.jpa<span class="tok-nt">&lt;/groupId&gt;</span>
+<span class="tok-nt">&lt;artifactId&gt;</span>mensajes-web<span class="tok-nt">&lt;artifactId&gt;</span>
+<span class="tok-nt">&lt;version&gt;</span>1.0-SNAPSHOT<span class="tok-nt">&lt;/version&gt;</span>
+<span class="tok-nt">&lt;packaging&gt;</span>war<span class="tok-nt">&lt;/packaging&gt;</span>
+
+<span class="tok-nt">&lt;name&gt;</span>mensajes-web<span class="tok-nt">&lt;/name&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Y crea en él la aplicación ejemplo <code>mensajes-web</code> que puedes encontrar en el repositorio <code>ejemplos-jpa</code> de Bitbucket.</p>
+</div>
+<div class="paragraph">
+<p>Comprueba que todo funciona correctamente, y añade como mínimo 2 nuevos métodos de negocio en la clase <code>AutorServicio</code> (o puedes también crear otra clase de servicio sobre mensajes). Añade los servlets asociados y completa la página principal de la aplicación para poder invocarlos.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2015-09-25 07:54:21 CEST
+</div>
+</div>
+</body>
+</html>

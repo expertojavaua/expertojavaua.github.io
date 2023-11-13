@@ -1,0 +1,118 @@
+package org.expertojava.jbibrest.rest;
+
+import org.expertojava.jbibrest.modelo.Libro;
+import org.expertojava.jbibrest.modelo.PrestadoJuntoCon;
+import org.expertojava.jbibrest.servicio.LibroServicio;
+
+import javax.ejb.EJB;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collection;
+
+@Path("/libros")
+public class LibroResource {
+    @Context UriInfo uriInfo;
+    @EJB
+    LibroServicio libroServicio;
+    String uriIBaseImagen = "http://expertojava.ua.es/media/";
+
+    @OPTIONS
+    @Consumes({"application/json"})
+    @Path("{isbn}")
+    public Response getLibroOptions(@PathParam("isbn") String isbn) {
+        return Response.ok().build();
+    }
+
+    @GET
+    @Produces({"application/json"})
+    @Path("{isbn}")
+    public LibroDetalle getLibro(@PathParam("isbn") String isbn) {
+        Libro libro = libroServicio.obtenerLibroIsbn(isbn);
+        if (libro == null)
+            throw new RestException(RestException.LIBRO_NO_EXISTENTE);
+        LibroDetalle libroDetalle = new LibroDetalle(libro);
+        libroDetalle.disponibles = libroServicio.ejemplaresDisponibles(libro.getId()).size();
+        libroDetalle.imagen = uriIBaseImagen + libroDetalle.imagen;
+        libroDetalle.uri = getLibroUri(uriInfo.getBaseUriBuilder(), libro.getIsbn());
+        return libroDetalle;
+    }
+
+    @OPTIONS
+    @Consumes({"application/json"})
+    public Response getTodosLibrosOptions() {
+        return Response.ok().build();
+    }
+
+    @GET
+    @Produces({"application/json"})
+    public Collection<LibroItem> getTodosLibros(@QueryParam("autor") String autor,
+                                                @QueryParam("titulo") String titulo) {
+        Collection<Libro> libros;
+        Collection<LibroItem> librosItems = new ArrayList<LibroItem>();
+        if (autor != null && titulo != null)
+            throw new RestException(RestException.BUSQUEDA_POR_TITULO_Y_AUTOR_NO_IMPLEMENTADA);
+        else if (autor != null)
+            libros = libroServicio.buscaLibrosAutor(autor);
+        else if (titulo != null)
+            libros = libroServicio.buscaLibrosTitulo(titulo);
+        else
+            libros = libroServicio.listaLibros();
+        for (Libro libro : libros) {
+            LibroItem libroItem = new LibroItem(libro);
+            libroItem.uri = getLibroUri(uriInfo.getBaseUriBuilder(), libro.getIsbn());
+            libroItem.imagen = uriIBaseImagen + nombreFicheroMini(libroItem.imagen);
+            librosItems.add(libroItem);
+        }
+        return librosItems;
+    }
+
+    @OPTIONS
+    @Produces({"application/json"})
+    @Path("{isbn}/recomendaciones")
+    public Response getRecomendacionesOptions(@PathParam("isbn") String isbn, @QueryParam("num") int num) {
+
+        return Response.ok().build();
+    }
+
+    @GET
+    @Produces({"application/json"})
+    @Path("{isbn}/recomendaciones")
+    public Collection<LibroItem> getRecomendaciones(@PathParam("isbn") String isbn,
+                                                    @QueryParam("num") int num) {
+        Collection<LibroItem> librosItems = new ArrayList<>();
+        Libro libro = libroServicio.obtenerLibroIsbn(isbn);
+        if (libro == null)
+            throw new RestException(RestException.LIBRO_NO_EXISTENTE);
+        Collection<PrestadoJuntoCon> listaPrestadoCon = libroServicio.listaRecomendaciones(libro.getId(), num);
+        for (PrestadoJuntoCon prestadoCon : listaPrestadoCon) {
+            libro = prestadoCon.getLibro2();
+            LibroItem libroItem = new LibroItem(libro);
+            libroItem.uri = getLibroUri(uriInfo.getBaseUriBuilder(), libro.getIsbn());
+            libroItem.imagen = uriIBaseImagen + nombreFicheroMini(libroItem.imagen);
+            librosItems.add(libroItem);
+        }
+        return librosItems;
+    }
+
+    // Obtiene la URI de una petición de un libro.
+    // Ejemplo: "03042424" -> "http://localhost:8080/jbib-rest/api/libros/0321127420"
+    public String getLibroUri(UriBuilder baseUriBuilder, String isbn) {
+        baseUriBuilder.path(LibroResource.class)
+                .path(LibroResource.class, "getLibro");
+        URI uri = baseUriBuilder.build(isbn);
+        return  uri.toString();
+    }
+
+    // Devuelve el nombre de fichero de la versión pequeña
+    // de la portada de un libro, añadiendo el sufijo "small".
+    // Ejemplo: 03042424.jpg ->  03042424-small.jpg
+    private String nombreFicheroMini(String nombreFichero) {
+        String[] splitString = nombreFichero.split("\\.");
+        return splitString[0] + "-small." + splitString[1];
+    }
+}

@@ -1,0 +1,352 @@
+<html>
+<head>
+<title>Tema 5: Construcci&oacute;n de un cliente</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<h1><span class="section">5. </span>Construcci&oacute;n de un cliente</h1>
+<p>Los clientes RMI apenas se diferencian de objetos locales: reciben u obtienen 
+  objetos, invocan m&eacute;todos de dichos objetos, usan los resultados, y capturan 
+  excepciones provocadas en los m&eacute;todos. Cada m&eacute;todo exportado por 
+  una interfaz remota puede lanzar una excepci&oacute;n, que debe ser capturada 
+  en el cliente. La &uacute;nica cuesti&oacute;n a tener en cuenta es la del fallo 
+  remoto.</p>
+<p>Cuando se dise&ntilde;a y escribe un cliente remoto puede darse la posibilidad 
+  de que se produzca un fallo remoto. Cada cliente debe estar preparado para tratar 
+  excepciones remotas de forma adecuada. Una excepci&oacute;n remota puede originarse 
+  tanto localmente como de forma remota, y puede ser lanzada por diversos motivos: 
+  errores de c&oacute;digo, errores de instalaci&oacute;n, errores en la red, 
+  errores de Java, o errores con los recursos del sistema.</p>
+<p>En el caso de que ocurra una excepti&oacute;n remota, no est&aacute; siempre 
+  claro si la invocaci&oacute;n del m&eacute;todo remoto ha fallado completamente 
+  o s&oacute;lo parcialmente. Por ejemplo, un servidor remoto puede haber completado 
+  una transacci&oacute;n en una base de datos, pero puede haberse producido un 
+  fallo en la transmisi&oacute;n del par&aacute;metro resultado, con lo que para 
+  el servidor todo habr&aacute; funcionado bien, mientras que el cliente experimentar&aacute; 
+  un error.</p>
+<p>Una de las razones de por qu&eacute; pueden ocurrir errores parciales, y la 
+  principal diferencia entre una invocaci&oacute;n normal sobre objetos locales 
+  y otra remota es que las llamdas a m&eacute;todos locales usan el mecanismo 
+  de llamada/retorno existente en la JVM (que a efectos pr&aacute;cticos es infalible), 
+  y RMI usa la red para llamadas y retorno de resultados. El dise&ntilde;o de 
+  RMI hace imposible distinguir entre errores en la fase de llamada y errores 
+  en la fase de retorno. Esto hace que sea importante el considerar la aparici&oacute;n 
+  de fallos parciales.</p>
+<p>En el ejemplo que estamos utilizando del Chat, vamos a considerar que un fallo 
+  parcial no va a tener repercusiones graves, ya que si un cliente percibe un 
+  fallo como consecuencia del env&iacute;o de un mensaje que en realidad se ha 
+  enviado correctamente, se puede enviar de nuevo el mensaje sin que por ello 
+  se &quot;molesten&quot; los interlocutores del Chat.</p>
+<p>Como se ha comentado en el tema anterior, en realidad los clientes act&uacute;an 
+  tambi&eacute;n como servidores, ya que exportan un objeto que se usa para invocar 
+  de forma remota el m&eacute;todo <code>chatNotify()</code> definido en la interfaz 
+  <code>Chat</code>.</p>
+<p>Vamos a ver c&oacute;mo se construye un cliente que implementa la interfaz 
+  <code>Chat</code> y usa el servidor del tema anterior para distribuir mensajes 
+  y dibujos entre el resto de participantes.</p>
+<p>Antes de comenzar con el cliente, vamos a describir la clase <code>Message</code>, 
+  que encapsula un mensaje de texto, un posible objeto <code>Line</code>, y el 
+  nombre del cliente que origina el mensaje. Definimos dos constructores para 
+  que se pueda crear un mensaje de texto y un mensaje de dibujo. Tal y como se 
+  vi&oacute; en el tema 3, dicha clase debe implementar la interfaz <code>Serializable</code> 
+  para que puedan enviarse los mensajes a trav&eacute;s de la red.</p>
+<pre class="codigo">public class Message implements java.io.Serializable {
+  private String sender = null; 
+  private String message = null; 
+  private line l = null; 
+
+  
+  public Message (String sender, String message) {
+    this.sender = sender;
+    this.message = message;
+  }
+
+
+  public Message (String sender, Line l) {
+    this.sender = sender;
+    this.l = l;
+  }
+
+
+  public String getSender () {
+    return sender;
+  }
+
+
+  public String getMessage () {
+    return message;
+  }
+
+  
+  public Line getLine() {
+    return l;
+  }
+}</pre>
+<p>Tambi&eacute;n es necesario proporcionar una representaci&oacute;n de un segmento 
+  de l&iacute;nea, que ser&aacute; usada por el cliente del Chat para compartir 
+  l&iacute;neas de dibujo.</p>
+<pre class="codigo">public class Line implements java.io.Serializable {
+  public int x,y,dx,dy;  
+    
+  public Line (int x, int y, int dx, int dy) {
+    this.x = x;
+    this.y = y;
+    this.dx = dx;
+    this.dy = dy;
+  }
+
+}</pre>
+<h2 class="subsection">5.1. Arquitectura b&aacute;sica del cliente</h2>
+<p>La implementaci&oacute;n se escribe como un <i>applet</i>. Puesto que Java 
+  no soporta herencia m&uacute;ltiple (una clase solamente puede tener una superclase), 
+  debemos exportar las interfaces remotas de forma manual, en vez de hacerlo de 
+  forma impl&iacute;cita extendiendo la clase <code>UnicastRemoteObject</code>, 
+  tal y como se ha hecho con el servidor. Despu&eacute;s de la invocaci&oacute;n, 
+  dicho applet primero pregunta al usuario el nombre a usar para comunicarse con 
+  el resto de clientes. Cualquier mensaje enviado incluir&aacute; el nombre proporcionado. 
+</p>
+<p>Una vez asignado el nombre, el <i>applet</i> intentar&aacute; localizar un 
+  objeto <code>Registry</code> que se corresponda con la aplicaci&oacute;n servidor 
+  descrita en el tema anterior. A continuaci&oacute;n, el <i>applet</i> se registra 
+  en el servidor y construye su interfaz de usuario (consistente en un panel de 
+  objetos <code>Button</code>, un <code>TextArea</code> que lista los mensajes 
+  de los participantes, un objeto <code>TextField</code> utilizado para teclear 
+  los mensajes enviados, y un <code>Canvas</code>, usado como pizarra virtual 
+  compartida).</p>
+<p>Seguidamente el <i>applet</i> queda a la espera de que se cree un evento a 
+  partir de la interacci&oacute;n con el usuario o el m&eacute;todo <code>chatNotify</code> 
+  sea invocado por el servidor en el que se ha registrado dicho <i>applet</i>. 
+  Si se teclea un mensaje en el <code>TextField</code>, o se dibuja algo en el 
+  canvas, el <i>applet </i>a&ntilde;ade los datos asociados a un hilo de ejecuci&oacute;n 
+  denominado <code>ServerTalker</code>, que mantiene una cola de mensajes salientes 
+  y los env&iacute;a hacia el servidor. Se utiliza un <i>thread</i> para permitir 
+  que la herramienta de dibujo y la interacci&oacute;n b&aacute;sica con el usuario 
+  se realice lo m&aacute;s r&aacute;pidamente posible sin tener que esperar a 
+  que las llamadas remotas terminen.</p>
+<p>Cuando un mensaje es devuelto al <i>applet </i>a trav&eacute;s del m&eacute;todo 
+  <code>chatNotify()</code>, cualquier mensaje de datos se a&ntilde;ade al objeto 
+  <code>TextArea</code>, cualquier objeto <code>Line</code> se a&ntilde;ade a 
+  un <i>buffer</i> de pantalla, y el <i>applet</i> se redibuja (se utiliza un 
+  <i>buffer </i>para evitar parpadeos entre refrescos sucesivos). Una vez que 
+  el hilo de ejecuci&oacute;n haya vaciado su cola de mensajes, y todas las peticiones 
+  de refresco (como resultado de llamadas a <code>chatNotify</code>) se hayan 
+  realizado, el <i>applet</i> vuelve a quedar ocioso en espera del siguiente evento 
+  GUI o notificaci&oacute;n <code>chatNotify()</code>.</p>
+<p>El <i>applet</i> define un conjunto sencillo de elementos visuales para la 
+  interacci&oacute;n con el usuario. Se crea un panel de botones para permitir 
+  al usuario desconectarse del servidor, interrogar al servidor para objener una 
+  lista de participantes, y borrar el <code>TextArea</code> o el <code>Canvas</code> 
+  de cualquier texto o dibujos acumulados. Las operaciones de borrado tienen solamente 
+  efecto local y no borran las pizarras o <code>TextAreas</code> de otros clientes 
+  que participan en la conversaci&oacute;n.</p>
+
+<h2 class="subsection">5.2. Interfaz del cliente</h2>
+<p>Como ya se ha visto en el tema anterior la interfaz Chat declara dos m&eacute;todos: 
+  un m&eacute;todo <code>chatNotify()</code>, usado para enviar mensajes a un 
+  cliente Chat, y un m&eacute;todo <code>getName()</code>, que puede usarse para 
+  preguntarle al cliente su nombre. 
+<pre class="codigo">public interface Chat extends Remote {
+
+
+  public void chatNotify(Message m) throws RemoteException;
+
+  
+  public String getName() throws RemoteException;
+
+}</pre>
+<p>Como tambi&eacute;n se ha comentado, la implementaci&oacute;n del cliente (<code>ChatImpl</code>) 
+  es un <i>applet</i>, por lo que no puede extender la clase <code>UnicastRemoteObject</code> 
+  directamente. En su lugar exportaremos el objeto remoto expl&iacute;citamente 
+  cuando se inicialice el <i>applet. </i>Tambi&eacute;n especificaremos la interfaz 
+  <code>ChatApplet</code>, que ser&aacute; usada por la pizarra para notificar 
+  el dibujo de objetos <code>Line</code>. </p> 
+<pre class="codigo">public class ChatImpl extends Applet
+                      implements Chat, ChatApplet {
+  private TestArea ta;
+  private TextField tf;
+  private ChatServer cs;       //referencia al servidor
+  private String name = null;  //nombre de usuario
+  private DrawPad dp;
+  private NameDialog nd;       //para pedir el nombre de ususario
+  private ServerTalker st;     //thread para manejo de envio de mensajes
+   
+  public ChatImpl() throws RemoteException {
+     System.out.println(&quot;Inicializando el Chat&quot;);
+  }
+}</pre>
+
+<p>Cuando el <i>applet</i> sea cargado por un navegador, o un visor de <i>applets</i>, 
+  se realiza una llamada al m&eacute;todo <code>init()</code>. En dicho m&eacute;todo 
+  crearemos los componentes GUI, los a&ntilde;adiremos al panel <i>Applet</i>, 
+  pediremos al usuario un nombre, y llamaremos a una rutina para registrar el 
+  <i>applet</i> en el servidor.</p>
+<pre class="codigo">public void init() {
+  
+  ...//crear el Panel y a&ntilde;adir los botones
+  ...//crear la ventana de mensajes, el campo de texto y la pizarra
+  ...//a&ntilde;adir todos los componentes al <i>applet</i>         
+  ...//crear el cuadro de di&aacute;logo para obtener el nombre de usuario &quot;nd&quot;
+  
+  registerChatter();  //registro del <i>applet</i> en el servidor
+}</pre>
+<p>Para registrar el <i>applet </i> se debe hacer de forma expl&iacute;cita mediante 
+  una llamada al m&eacute;todo <code>UnicastRemoteObject.exportObject()</code>, 
+  que espera un objeto <code>Remote</code> como par&aacute;metro. Debido a que 
+  el <i>applet</i> implementa la interfaz <code>Chat</code>, que a su vez extiende 
+  la interfaz <code>Remote</code>, simplemente utilizamos this como par&aacute;metro, 
+  y los m&eacute;todos declarados en la interfaz <code>Chat</code> estar&aacute;n 
+  accesibles para los clientes remotos (o servidores, en este caso).</p>
+<p>Una vez que el <i>applet</i> ha sido exportado, se debe obtener el nombre del 
+  servidor mediante la clase <code>Naming</code>. Debido a que un <i>applet</i> 
+  solamente puede crear conexiones de red con la misma m&aacute;quina que la que 
+  proviene, debemos usar la variable <code>Codebase</code> desde el <i>applet</i> 
+  para crear la URL usada para buscar el servidor del objeto remoto. Una vez registrado 
+  en el servidor, crearemos el <i>thread </i> <code>ServerTalker</code> con un 
+  enlace a los m&eacute;todos del servidor remoto. Este <i>thread</i> mantiene 
+  una cola de mensajes y los env&iacute;a al servidor invocando sus m&eacute;todos 
+  remotos.</p>
+<pre class="codigo">public void registerChatter() {
+  name = nd.getName();
+  nd.setVisible(false);
+  nd = null;
+  
+  try {
+    UnicastRemoteObject.exportObject(this);
+    cs= (ChatServer)Naming.lookup(&quot;rmi://&quot; + getCodeBas().getHost() +
+                                  &quot;:5050/ChatServerImpl&quot;);
+    cs.register(this,name);
+    st= new ServerTalker(cs.name);        
+  }
+  catch (RemoteException e) {
+    System.out.println(&quot;No he podido localizar el registro&quot;);
+    System.exit(0);
+  }
+  catch (MalFormedURLException e) {
+    System.out.println(&quot;Error en URL&quot;);
+    System.exit(0);
+  }
+  catch (NotBoundException e) {
+    System.out.println(&quot;Servicio no enlazado&quot;);
+    System.exit(0);
+  }
+}</pre>
+
+<p>Debemos implementar un manejador de eventos para la interacci&oacute;n b&aacute;sica 
+  con el usuario. </p>
+<pre class="codigo">public boolean handleEvent(Event e) { 
+    //c&oacute;digo para manejar los eventos de interacci&oacute;n con el usuario 
+}</pre>
+<p>El m&eacute;todo <code>sendMessage()</code> declarado en el interfaz ChatApplet 
+  es usado por la pizarra para enviar l&iacute;neas al <i>applet</i> el cual las 
+  convierte en objetos <code>Message</code> y las a&ntilde;ade al <i>thread</i> 
+  <code>ServerTalker</code>. </p>
+<pre class="codigo">public void sendMessage(Line l) { 
+    if (!st.addMessage(new Message(name,l)))
+      ta.append(&quot;***Error en el servidor***\n&quot;); 
+}</pre>
+<p>Cuando un usuario &quot;pincha&quot; el bot&oacute;n para pedir una lista de 
+  usuarios conectados, el manejador de eventos realiza una llamada al m&eacute;todo 
+  <code>getUserList()</code> el cual llama al m&eacute;todo <code>listChatters()</code> 
+  del servidor, y devuelve un vector de <code>Strings</code> que representan los 
+  nombres de los clientes registrados. Cada uno de los nombres se a&ntilde;ade 
+  al objeto <code>TextArea</code>. </p>
+<pre class="codigo">public void getUserList() { 
+   String users[] = null;
+   try {
+     users = cs.listChatters();   
+   }
+   catch (RemoteException e) {
+     System.out.println(e);
+     users = new String[1];
+     users[0] = &quot;***Error&quot;);
+   }
+   for (int i=0; i &lt; users.length; i++)
+     ta.append(&quot;***&quot;+user[i]+&quot;\n);
+}</pre>
+<p>Finalmente debemos implementar los m&eacute;todos declarados en la interfaz 
+  <code>Chat</code>: <code>getName()</code>, y <code>chatNotify()</code>.</p>
+<pre class="codigo">public synchronized void chatNofity (Message m) {
+  throws RemoteException {
+
+  
+  if(m.getMessage()!= nill)
+    ta.append(m.getSender()+ &quot;: &quot; + m.getMessage() + &quot;\n&quot;);
+    
+  if (m.getLIne()!= null &amp;&amp; |m.getSender().equals(name))<br>    dp.addLine(m.getLine));
+}
+
+public String getName() {
+   return name;
+}</pre>
+
+<h2 class="subsection">5.3. Uso de <i>threads</i> en el cliente</h2>
+<p>La clase ServerTalker crea un hilo de ejecuci&oacute;n (<i>thread</i>) y mantiene 
+  un <code>Vector</code> de mensajes para ser enviados al servidor. Si la cola 
+  est&aacute; vac&iacute;a, el <i>thread</i> espera hasta que es &quot;despertado&quot; 
+  cuando se a&ntilde;ade algo a la cola. Esto permite a&ntilde;adir nuevos mensajes 
+  independientemente de la velocidad de comunicaci&oacute;n con el servidor. </p>
+<p>En nuestra aplicaci&oacute;n servidor, el objeto <code>Talker</code> comprueba 
+  si hay mensajes en su cola. Mientras haya mensajes, intenta enviarlos al cliente. 
+  Tan pronto como la cola de mensajes est&eacute; vac&iacute;a, el <i>thread</i> 
+  se mantiene en modo &quot;espera&quot; hasta que se a&ntilde;adan m&aacute;s 
+  mensajes a la cola. </p>
+<pre class="codigo">public class ServerTalker extends Thread {
+  private Vector messages = new Vector();
+  private ChatServer cs;
+
+ 
+  public ServerTalker(ChatServer cs, String name) {
+    this.cs = cs;
+    messages.addElement(new
+          Message(&quot;***&quot;, name + &quot; se acaba de conectar***&quot;)); 
+    this.start();
+  }
+
+  
+  public boolean addMessage(Message e) {
+    if(cs==null) {
+      System.out.println(&quot;La referencia al servidor es nula&quot;);
+    return false;
+    resume();
+    messages.addElement(e);
+    return true;
+  }
+
+  
+  public void run() {
+    while (true) {
+      try {
+        if (messages.isEmpty()) suspend();
+        cs.postMessage((Message)messages.elementAt(0));
+        messages.removeElementAt(0);
+      }
+      catch (RemoteException e) {
+        System.out.println(&quot;Error del servidor&quot;);
+        cs = null;
+        this.stop();
+      }  
+      yield();
+  }
+}</pre>
+
+<p>Puesto que el cliente es un <i>applet</i>, se debe definir el c&oacute;digo 
+  HTML correspondiente: </p>
+<pre class="codigo">&lt;APPLET code=&quot;ChatImpl.class&quot;
+        codebase = &quot;/MyClasses/&quot;
+        width= 800
+        height= 400 &gt;
+&lt;/APPLET&gt;
+</pre>
+<p>Finalmente se debe compilar los c&oacute;digos fuente, as&iacute; como las 
+  clases <i>stub</i> y <i>skeleton</i> par la clase <code>ChatImpl</code>. Para 
+  ejecutar la aplicaci&oacute;n debemos asegurarnos de que el servidor est&aacute; 
+  en marcha. </p>
+<pre class="codigo">javac -d /usr/MyClasses/ *.java   //compilamos los fuentes
+ 
+rmic -d /usr/MyClasses ChatImpl  //generamos las clases <i>stub</i> y <i>skeleton</i> 
+
+java ChatServerImpl &amp;     //arrancamos el servidor</pre>
+</body>
+</html>

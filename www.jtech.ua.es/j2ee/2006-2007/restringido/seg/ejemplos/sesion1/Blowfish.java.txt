@@ -1,0 +1,32 @@
+import javax.crypto.*; 
+import java.security.*;
+
+public class Blowfish {
+
+  // Definimos cadena a encriptar
+  public static final String cadena = "Esto es un test.";
+
+  public static void main(String[] args) throws Exception {
+
+    System.out.println("El texto original es: " + cadena);
+    // Generar una clave Blowfish
+    System.out.println("Intentando coger una clave Blowfish....");
+    KeyGenerator generador = KeyGenerator.getInstance("Blowfish");
+    
+    Provider provider=generador.getProvider(); 
+    System.out.println(String.valueOf(provider.getName())); 
+    generador.init(128);
+    SecretKey clave = generador.generateKey();
+    System.out.println("OK");
+
+    // Intentar encriptar texto
+    System.out.print("Intentando coger un cifrado y encriptar...");
+    Cipher cifrador = Cipher.getInstance("Blowfish/ECB/PKCS5Padding");
+    cifrador.init(Cipher.ENCRYPT_MODE, clave);
+    byte[] textoCifrado = cifrador.doFinal(cadena.getBytes("UTF8"));
+    System.out.println("Ok"); 
+    System.out.println("El texto cifrado es: " + textoCifrado);
+    
+    System.out.println("Test completado con exito");
+    }
+  }

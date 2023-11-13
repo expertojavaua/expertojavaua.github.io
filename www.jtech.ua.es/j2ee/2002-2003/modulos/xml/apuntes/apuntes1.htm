@@ -1,0 +1,619 @@
+<html>
+<head>
+<title>Tema 1: XML: conceptos b&aacute;sicos</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<h1>Tema 1. XML: conceptos básicos</h1>
+<h2>1.1. Estructura de un documento XML</h2>
+<p>El siguiente es un ejemplo de documento XML, que podr&iacute;a describir las 
+  novedades del mes en una hipot&eacute;tica tienda web de discos y libros:</p>
+<pre class="codigo">&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot; standalone=&quot;yes&quot;?&gt;
+&lt;?xml-stylesheet type=&quot;text/css&quot; href=&quot;novedades.css&quot; ?&gt;
+&lt;novedades&gt;
+   &lt;fecha&gt; Diciembre 2002 &lt;/fecha&gt;
+   &lt;disco genero=&quot;pop&quot;&gt;
+      &lt;titulo&gt;O sea&lt;/titulo&gt;
+      &lt;interprete&gt;Enrique Iglesias&lt;/interprete&gt;
+      &lt;direccion&gt;http://www.enriqueiglesias.com&lt;/direccion&gt;
+   &lt;/disco&gt;
+   &lt;libro&gt;
+      &lt;titulo&gt;Programaci&oacute;n de aplicaciones web&lt;/titulo&gt;
+      &lt;autor&gt;John McCarra&lt;/autor&gt;
+      &lt;autor&gt;Frank Webini&lt;/autor&gt;
+      &lt;direccion&gt;http://www.paw.org&lt;/direccion&gt;
+   &lt;/libro&gt;
+   &lt;libro&gt;
+      &lt;titulo&gt;Manolito Gafotas&lt;/titulo&gt;
+      &lt;autor&gt;Elvira Lindo&lt;/autor&gt;
+      &lt;direccion&gt;http://www.manolitogafotas.com&lt;/direccion&gt;
+   &lt;/libro&gt;
+&lt;/novedades&gt;</pre>
+<p>Como puede observarse, el aspecto general del fichero es vagamente similar 
+  al de un texto HTML. La diferencia fundamental es que las etiquetas no son est&aacute;ndar, 
+  sino que han sido definidas por el usuario.</p>
+<h3>1.1.1. Partes del documento</h3>
+<p> En general, un documento XML bien formado tiene tres partes: </p>
+<ul>
+  <li><b>Pr&oacute;logo:</b> que contiene la declaraci&oacute;n de documento XML, 
+    la declaraci&oacute;n de tipo de documento (que define la gram&aacute;tica 
+    que debe cumplir el mismo), y una parte adicional, que puede incluir comentarios 
+    o instrucciones de procesamiento </li>
+  <li> <b>Elemento ra&iacute;z:</b> una etiqueta que contiene (envuelve) a las 
+    dem&aacute;s etiquetas del documento</li>
+  <li><b>Miscel&aacute;nea:</b> una parte final, opcional, que puede contener 
+    comentarios y/o instrucciones de procesamiento</li>
+</ul>
+<h3>1.1.2 Declaraci&oacute;n de documento XML</h3>
+<p>Se recomienda que todos los documentos XML comiencen con esta declaraci&oacute;n, 
+  que los identifica como tales. En caso de estar presente, debe ser la primera 
+  l&iacute;nea del documento. Esta declaraci&oacute;n proporciona informaci&oacute;n 
+  general: la versi&oacute;n de XML, el juego de caracteres y si hace referencia 
+  a entidades externas. Por ejemplo:</p>
+<pre class="codigo">&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot; standalone=&quot;yes&quot;?&gt;</pre>
+<p>El atributo <code>version</code> indica la versi&oacute;n de XML empleada (la 
+  actual y &uacute;nica existente hasta la fecha es la 1.0). El atributo opcional 
+  <code>encoding</code> especifica el juego de caracteres empleado (en este caso 
+  el europeo occidental y latinoamericano, si no se especifica por defecto se 
+  supone el ingl&eacute;s). Finalmente, el atributo opcional <code>standalone</code> 
+  indica si se hace referencia a entidades externas al documento (en ese caso, 
+  el documento no es &quot;independiente&quot; o <i>standalone</i>).</p>
+<p>La declaraci&oacute;n de documento XML es un caso particular de las llamadas 
+  instrucciones de procesamiento.</p>
+<h3>1.1.3. Instrucciones de procesamiento</h3>
+<p> Son las instrucciones que comienzan con los s&iacute;mbolos <code>&lt;?</code> 
+  y terminan con <code>?&gt;</code>. Estas instrucciones van destinadas al software 
+  que analice o procese el documento XML, y por tanto son dependientes del mismo. 
+  Por ejemplo, la instrucci&oacute;n <code>&lt;?xml-stylesheet?&gt;</code> le 
+  indica a los procesadores que sean capaces de reconocerlo que el estilo visual 
+  asociado al documento est&aacute; almacenado en una hoja de estilo determinada.</p>
+<h3> 1.1.4 Etiquetas y elementos</h3>
+  
+<p> La parte principal de un documento XML son las etiquetas de marcado (que, 
+  al estilo de HTML, van entre s&iacute;mbolos <code>&lt;</code> y <code>&gt;</code>). 
+  Un par de etiquetas de marcado, una de apertura y una de cierre, con un texto 
+  en medio, constituyen lo que se denomina un <b>elemento</b>, por ejemplo</p>
+<pre class="codigo">&lt;interprete&gt; Enrique Iglesias &lt;/interprete&gt;</pre>
+<p>En XML, cada etiqueta de apertura debe tener su correspondiente de cierre (esto 
+  no se cumple en HTML con etiquetas como <code>&lt;br&gt; </code>o <code>&lt;hr&gt;</code>). 
+  No obstante, se pueden crear etiquetas vac&iacute;as, poniendo una barra al 
+  final del nombre. Por ejemplo, la etiqueta <code>&lt;br&gt;</code> de HTML, 
+  expresada en sintaxis v&aacute;lida de XML ser&iacute;a <code>&lt;br/&gt;</code>. 
+  XML diferencia entre may&uacute;sculas y min&uacute;sculas, por lo que &lt;/INTERPRETE&gt; 
+  no se considerar&iacute;a como etiqueta de cierre v&aacute;lida en el ejemplo 
+  anterior.</p>
+<h4> 
+  Elemento ra&iacute;z</h4>
+  
+<p>En cada fichero XML debe haber uno y solo un elemento ra&iacute;z, que contiene 
+  al resto de elementos del documento. En el documento del ejemplo, el elemento 
+  ra&iacute;z ser&iacute;a <code>&lt;novedades&gt;</code>.<br>
+</p>
+<h4>Atributos</h4>
+<p>  Las etiquetas pueden contener atributos, pero a diferencia de HTML, se exige 
+  que est&eacute;n entre comillas:</p>
+<pre class="codigo">&lt;disco genero=&quot;pop&quot;&gt;</pre>
+<h4>Entidades predefinidas</h4>
+<p>Algunos caracteres, como <code>&lt;</code> y <code>&gt;</code> tienen un significado 
+  especial en XML y por tanto no pueden emplearse en el texto que va entre las 
+  etiquetas. Para incluir estos y otros s&iacute;mbolos se emplean unas secuencias 
+  de escape, al estilo de las de HTML. La siguiente tabla recoge la equivalencia 
+  entre s&iacute;mbolos y secuencias de escape</p>
+  <div align="center">
+  <table border="1">
+  <tr>
+  <th>S&iacute;mbolo</th> <th>Secuencia</th>
+  </tr>
+  <tr>
+  <td>&amp;</td> <td>&amp;amp;</td>
+  </tr>
+  <tr><td>&lt;</td> <td>&amp;lt;</td></tr>
+  <tr><td>&gt; </td><td>&amp;gt;</td></tr>
+  <tr><td>' (ap&oacute;strofe) </td><td>&amp;apos;</td></tr>
+  <tr><td>&quot; (comillas dobles)</td> <td>&amp;quot;</td></tr>
+  </table>
+  </div>
+<p>A estas secuencias de escape se las suele denominar entidades predefinidas. 
+  Aunque son las &uacute;nicas que incorpora el est&aacute;ndar, el usuario puede 
+  definir sus propias entidades.</p>
+ <h4> Secciones CDATA </h4>
+  
+<p>Si en un documento se usan muchas entidades predefinidas (como puede ser el 
+  caso de un XML que contenga JavaScript, donde los operadores &lt; y &gt; son 
+  comunes), el texto se hace farragoso y dif&iacute;cil de leer. Para evitar esto, 
+  se puede incluir en una secci&oacute;n CDATA, que indica al procesador que est&eacute; 
+  analizando el XML que debe dejar esa secci&oacute;n sin analizar y tratarla 
+  como texto puro. Una secci&oacute;n CDATA comienza con los s&iacute;mbolos <code>&lt;![CDATA[</code> 
+  y termina con <code>]]&gt;</code>.</p>
+<h2>1.2. Validación de documentos XML </h2>
+<p> Cuando un documento XML tiene la estructura descrita en el apartado anterior, 
+  se dice que est&aacute; <b>bien formado</b>. No obstante, si varias personas 
+  van a escribir documentos XML del mismo tipo ser&iacute;a conveniente que pudieran 
+  especificar qu&eacute; etiquetas son v&aacute;lidas y en qu&eacute; orden deben 
+  figurar en el documento. Esto ser&iacute;a el equivalente a definir una <b>gram&aacute;tica</b> 
+  para cierto tipo de documento XML. En la actualidad existen dos formas de definir 
+  gram&aacute;ticas para XML (dos lenguajes de definici&oacute;n):</p>
+<ul>
+  <li><b>DTD</b>s: lenguaje sencillo pero con expresividad limitada. No obstante, 
+    es un est&aacute;ndar ampliamente soportado en todo el software que procesa 
+    XML.</li>
+  <li><b>Schemas</b>: lenguaje m&aacute;s complejo pero m&aacute;s potente (se 
+    pueden especificar los tipos de datos permisibles dentro de una etiqueta). 
+    Es un est&aacute;ndar m&aacute;s reciente, y hay software (aunque cada vez 
+    menos) que no lo implementa.</li>
+</ul>
+<p>Un documento bien formado que adem&aacute;s cumple la gram&aacute;tica definida 
+  por el usuario se dice que es un documento <b>v&aacute;lido</b>.</p>
+<h2>1.3. Espacios de nombres</h2>
+<p>
+  Al definir cada usuario su propio conjunto de etiquetas, podr&iacute;a darse 
+  el caso de que dos usuarios definieran la misma etiqueta con fines diferentes. 
+  Por ejemplo, en un documento XML que almacenara un pedido, podr&iacute;a haber 
+  una etiqueta <code>&lt;direccion&gt;</code>, que se refiriera a la direcci&oacute;n de env&iacute;o 
+  del pedido (y no a una URL como en el caso del ejemplo). Esto no es un problema 
+  en tanto en cuanto los documentos se mantengan separados, pero s&iacute; lo 
+  ser&iacute;a si se fusionan (por ejemplo, podr&iacute;a ser interesante enviarle 
+  al usuario una lista de discos recomendados, del mismo estilo que el que ha 
+  pedido). Para evitar problemas se introduce el concepto de <b>espacio de nombres</b>, que permite 
+  tener dos etiquetas distintas con el mismo nombre, siempre que se sit&uacute;en 
+  en distinto &quot;espacio&quot;.<p>
+  
+<h3>1.3.1 Definir un espacio de nombres</h3>
+  <p>
+  Cada espacio de nombres se define mediante un nombre corto y un nombre largo. 
+  Estos nombres se especifican en el atributo <code>xmlns</code> de la etiqueta ra&iacute;z 
+  (normalmente). Es decir:</p>
+<pre class="codigo">&lt;<var>etiqueta-raiz</var> xmlns:<var>nombre-corto</var>=<var>nombre-largo</var>&gt;</pre>
+<p>El nombre corto lo define el usuario. Si el espacio de nombres es propio, el 
+  nombre largo tambi&eacute;n lo define &eacute;l. El &uacute;nico requisito que 
+  debe cumplir el nombre largo es ser una URI, un identificador &uacute;nico. 
+  Normalmente se suelen usar direcciones web pertenecientes al usuario, ya que 
+  es una forma sencilla de asegurar que es un identificador &uacute;nico.
+  Por ejemplo, supongamos que se ha generado un fichero recomendaciones.xml, que 
+  contiene los datos del usuario (tomados de pedido.xml) junto con datos de discos 
+  y libros recomendados (tomados de novedades.xml). Para definir los dos espacios 
+  de nombres:</p>
+<pre class="codigo">&lt;recomendaciones <b>xmlns:</b>pedido=&quot;http://www.discolibro.com/pedidos&quot;
+  <b>xmlns:</b>novedad=&quot;http://www.discolibro.com/novedades&quot;&gt;</pre>
+<p>Es importante tener en cuenta que las URL elegidas en realidad 
+  no tienen por qu&eacute; existir, ni se accede a ellas durante el procesamiento 
+  del documento XML. Se tratan simplemente como identificadores. 
+  
+  
+<h3>1.3.2. Emplear espacios de nombres en un documento </h3>
+ <p> Si se ha definido el atributo <code>xmlns</code> en una etiqueta del documento, dentro de ella podemos especificar que una subetiqueta pertenece a un espacio de nombres simplemente precediéndola de su nombre corto. Por ejemplo, si queremos diferenciar entre una <code>&lt;direccion&gt;</code> de pedido y una que se refiera a una URL, har&iacute;amos:</p>
+<pre class="codigo">&lt;datospedido&gt;
+  <b>&lt;pedido:direccion&gt;</b>C/ Cisne, 27 <b>&lt;/pedido:direccion&gt;</b>
+  &lt;cliente&gt; Pedro P&eacute;rez &lt;/cliente&gt;
+&lt;/datospedido&gt;
+...
+&lt;disco&gt;
+  &lt;titulo&gt; Supernatural &lt;/titulo&gt;
+  &lt;interprete&gt; Santana &lt;/interprete&gt;
+  <b>&lt;novedad:direccion&gt;</b>http://www.carlossantana.com<b>&lt;/novedad:direccion&gt;</b>
+&lt;/disco&gt;
+</pre>
+<h2> 1.4. XPath </h2>
+<p><b>XPath</b> es un lenguaje que permite acceder a una parte concreta de un 
+  documento XML. Podemos utilizarlo para buscar informaci&oacute;n en un documento 
+  (por ejemplo, mostrar el t&iacute;tulo de todos los discos del documento de 
+  novedades). Su sintaxis es similar a la que se usa en sistemas de ficheros estilo 
+  UNIX para expresar rutas de directorios (de ah&iacute; el nombre de <b>Path</b>). 
+  El problema de especificar c&oacute;mo acceder a determinadas partes de un documento 
+  XML se puede ver como una versi&oacute;n m&aacute;s compleja de las rutas de 
+  directorios, ya que podemos modelar un documento XML como un &aacute;rbol cuyos 
+  nodos son las etiquetas.</p>
+<h3>1.4.1. Trayectorias</h3>
+<p>La parte m&aacute;s importante del est&aacute;ndar XPath es la definici&oacute;n 
+  de <b>trayectorias</b> (<i>location paths</i>). En principio, las trayectorias 
+  parten por defecto del denominado <b>nodo de contexto</b> (que ser&iacute;a 
+  algo as&iacute; como el equivalente al &quot;directorio actual&quot; en UNIX). 
+  Si el primer s&iacute;mbolo de la misma es una barra, entonces se considera 
+  que la trayectoria parte del nodo ra&iacute;z del documento. Por ejemplo, la 
+  expresi&oacute;n XPath</p>
+<pre class="codigo">/novedades/libro</pre>
+<p>Se refiere a las etiquetas</p>
+<pre class="codigo">&lt;libro&gt;
+  &lt;titulo&gt;Programaci&oacute;n de aplicaciones web&lt;/titulo&gt;
+  &lt;autor&gt;John McCarra&lt;/autor&gt;
+  &lt;autor&gt;Frank Webini&lt;/autor&gt;
+  &lt;direccion&gt;http://www.paw.org&lt;/direccion&gt;
+&lt;/libro&gt;
+&lt;libro&gt;
+ &lt;titulo&gt;Manolito Gafotas&lt;/titulo&gt;
+ &lt;autor&gt;Elvira Lindo&lt;/autor&gt;
+ &lt;direccion&gt;http://www.manolitogafotas.com&lt;/direccion&gt;
+&lt;/libro&gt;</pre>
+<p> Como puede verse, una expresi&oacute;n XPath puede referirse a un conjunto 
+  de nodos (a diferencia de una ruta de directorios, que siempre se refiere solo 
+  a uno).</p>
+<p>En general, una trayectoria est&aacute; compuesta por un conjunto de pasos 
+  separados por un s&iacute;mbolo /. El conjunto de nodos seleccionados en un 
+  paso es la base para el paso siguiente. Adem&aacute;s, en cada paso se puede 
+  aplicar opcionalmente un <b>predicado</b> (funci&oacute;n booleana entre corchetes) 
+  que restringe el conjunto de nodos seleccionados. As&iacute;, el formato general 
+  de una trayectoria es</p>
+<pre class="codigo">paso1[predicado1]/paso2[predicado2]...</pre>
+<p>Por ejemplo, para seleccionar los autores del primer libro del documento se 
+  har&iacute;a</p>
+<pre class="codigo">/novedades/libro[position()=1]/autor</pre>
+<p>Donde la funci&oacute;n <code>position()</code> devuelve el orden que ocupa 
+  un nodo en un conjunto de nodos seleccionados.</p>
+<p>En la siguiente tabla se resumen algunos de los operadores que permiten expresar 
+  caminos.</p>
+<table width="100%" border="1" cellspacing="0" cellpadding="5">
+  <tr> 
+    <th>Operador</th>
+    <th>Significado</th>
+    <th>Ejemplo</th>
+    <th>Resultado</th>
+  </tr>
+  <tr> 
+    <td><code>//</code></td>
+    <td>nodo hijo o descendiente</td>
+    <td><code>/novedades//titulo</code> (todos los t&iacute;tulos dentro de la 
+      etiqueta <code>novedades</code> - a cualquier nivel del &aacute;rbol)</td>
+    <td> 
+      <pre><code>&lt;titulo&gt;O sea&lt;/titulo&gt;
+&lt;titulo&gt;Programaci&oacute;n de 
+        aplicaciones web&lt;/titulo&gt; </code>
+<code>&lt;titulo&gt;Manolito Gafotas&lt;/titulo&gt; </code></pre>
+    </td>
+  </tr>
+  <tr> 
+    <td><code>*</code></td>
+    <td>cualquier nodo</td>
+    <td><code>/novedades/*/titulo</code></td>
+    <td> 
+      <pre><code>mismo que el anterior</code></pre>
+    </td>
+  </tr>
+  <tr> 
+    <td><code>@</code></td>
+    <td>atributo</td>
+    <td><code>/novedades/disco/@genero</code></td>
+    <td> 
+      <pre><code>pop</code></pre>
+    </td>
+  </tr>
+  <tr>
+    <td>.</td>
+    <td>el propio nodo</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr> 
+    <td>..</td>
+    <td>nodo padre</td>
+    <td><code>/novedades/disco/titulo/..</code></td>
+    <td> 
+      <pre><code>&lt;disco genero=&quot;pop&quot;&gt;
+   &lt;titulo&gt;O sea&lt;/titulo&gt; 
+   &lt;interprete&gt;
+     Enrique Iglesias
+   &lt;/interprete&gt;
+   &lt;direccion&gt;
+    http://www.enriqueiglesias.com
+   &lt;/direccion&gt; 
+&lt;/disco&gt;</code></pre>
+    </td>
+  </tr>
+  <tr> 
+    <td><code>text()</code></td>
+    <td>nodo de texto</td>
+    <td><code>/novedades/disco/titulo/text()</code></td>
+    <td> 
+      <pre><code>O sea</code></pre>
+    </td>
+  </tr>
+  <tr> 
+    <td><code>processing-instruction()</code></td>
+    <td>instrucci&oacute;n de procesamiento</td>
+    <td><code>/processing-instruction()</code></td>
+    <td> 
+      <pre><code>&lt;?xml-stylesheet 
+     type=&quot;text/css&quot; 
+     href=&quot;novedades.css&quot; ?&gt;</code></pre>
+    </td>
+  </tr>
+  <tr> 
+    <td><code>comment()</code></td>
+    <td>comentario</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+</table>
+<h3>1.4.2. Predicados</h3>
+<p> Se utilizan para restringir el conjunto de nodos seleccionados. Se seleccionar&aacute;n 
+  finalmente aquellos que cumplan el predicado, que no es m&aacute;s que una expresi&oacute;n 
+  entre corchetes que devuelve un resultado booleano. XPath dispone de un conjunto 
+  de operadores y funciones bastante extenso que podemos emplear a la hora de 
+  definir predicados.</p>
+<h4>Operadores</h4>
+<p> En XPath hay operadores de distintos tipos:</p>
+<ul>
+  <li><b>Relacionales: </b>=, !=, &lt;, &gt;, &gt;=, &lt;=</li>
+  <li><b>Aritm&eacute;ticos: </b>+, -, *, <code>div</code> (en lugar de /)</li>
+  <li><b>L&oacute;gicos:</b> <code>not()</code>, <code>and</code>, <code>or</code> 
+  </li>
+</ul>
+<h4>Funciones</h4>
+<p> XPath tiene un gran n&uacute;mero de funciones, algunas de las cuales se resumen 
+  en la tabla siguiente. En las siguientes funciones, el nodo de contexto es el 
+  nodo que se est&aacute; evaluando en este momento, y la lista de nodos de contexto 
+  es el conjunto de nodos seleccionados.</p>
+<table border="1">
+  <tr> 
+    <th>Función</th>
+    <th>Tipo de retorno</th>
+    <th>Descripción</th>
+  </tr>
+  <tr> 
+    <td><code>position()</code></td>
+    <td>número</td>
+    <td>devuelve la posición del nodo de contexto en la lista de nodos de contexto. 
+      Las posiciones empiezan por el 1.</td>
+  </tr>
+  <tr> 
+    <td><code>last()</code></td>
+    <td>número</td>
+    <td>devuelve el número de nodos en la lista de contexto</td>
+  </tr>
+  <tr> 
+    <td><code>count(conj-nodos)</code></td>
+    <td>número</td>
+    <td>devuelve el número de nodos en conj-nodos</td>
+  </tr>
+  <tr> 
+    <td><code>local-name(conj-nodos)</code></td>
+    <td>cadena</td>
+    <td>devuelve la parte local (lo que viene detrás del prefijo de espacio de 
+      nombres) del primer nodo del conj-nodos. Si se llama sin argumentos opera 
+      sobre el nodo de contexto</td>
+  </tr>
+  <tr> 
+    <td><code>generate-id(conj-nodos)</code></td>
+    <td>cadena</td>
+    <td>devuelve un identificador único para el primer nodo de conj-nodos. Si 
+      se usa sin argumento, lo devuelve para el nodo de contexto.</td>
+  </tr>
+  </table>
+<p>&nbsp;</p>
+<p>Podemos utilizar operadores y funciones para definir predicados. Por ejemplo</p>
+<table width="100%" border="1" cellspacing="0" cellpadding="5">
+  <tr> 
+    <th>Expresi&oacute;n</th>
+    <th>Significado</th>
+  </tr>
+  <tr> 
+    <td> 
+      <pre><code>/novedades/disco[@genero='pop']</code></pre>
+    </td>
+    <td>todos los discos de g&eacute;nero pop</td>
+  </tr>
+  <tr> 
+    <td>
+      <pre><code>/novedades/disco[titulo='O sea']/interprete</code></pre>
+    </td>
+    <td>el int&eacute;rprete del disco titulado 'O sea'</td>
+  </tr>
+  <tr> 
+    <td> 
+      <pre><code>/novedades/libro[position()=1]/autor[position()=last()]</code></pre>
+    </td>
+    <td>el &uacute;ltimo autor del primer libro</td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<h2></h2>
+<h3>1.4.3. Ejes</h3>
+<p> Las expresiones XPath vistas hasta el momento utilizan lo que se conoce como 
+  <b>sintaxis abreviada</b>. XPath tiene operadores m&aacute;s complejos, que 
+  permiten seleccionar cualquier conjunto de nodos relativo a una posici&oacute;n 
+  en el &aacute;rbol. Estos operadores son los <b>ejes</b>, que se resumen en 
+  la tabla siguiente.</p>
+<table border="1">
+  <tr> 
+    <th>Eje</th>
+    <th>Descripción</th>
+  </tr>
+  <tr> 
+    <td><code>ancestor</code></td>
+    <td>antepasado del nodo actual (padre, "abuelo, etc)</td>
+  </tr>
+  <tr> 
+    <td><code>ancestor-or-self</code></td>
+    <td>los anteriores contando también al propio nodo</td>
+  </tr>
+  <tr> 
+    <td><code>attribute</code></td>
+    <td>los atributos del nodo actual</td>
+  </tr>
+  <tr> 
+    <td><code>child</code></td>
+    <td>los hijos del nodo actual</td>
+  </tr>
+  <tr> 
+    <td><code>descendant</code></td>
+    <td>hijos, "nietos&quot;, etc, del nodo actual</td>
+  </tr>
+  <tr> 
+    <td><code>descendant-or-self</code></td>
+    <td>los anteriores contando también al propio nodo</td>
+  </tr>
+  <tr> 
+    <td><code>following</code></td>
+    <td>nodos que comienzan después que el nodo actual en el orden del documento 
+      (no se cuentan atributos ni declaraciones de espacios de nombres)</td>
+  </tr>
+  <tr> 
+    <td><code>following-sibling</code></td>
+    <td>nodos que comienzan después que el actual en el orden del documento y 
+      además tienen el mismo padre (&quot;hermanos siguientes&quot;)</td>
+  </tr>
+  <tr> 
+    <td><code>namespace</code></td>
+    <td>espacio de nombres del nodo actual</td>
+  </tr>
+  <tr> 
+    <td><code>parent</code></td>
+    <td>nodo padre del nodo actual</td>
+  </tr>
+  <tr> 
+    <td><code>preceding</code></td>
+    <td>nodos que comienzan antes que el nodo actual en el orden del documento 
+      (no se cuentan atributos ni declaraciones de espacios de nombres)</td>
+  </tr>
+  <tr> 
+    <td><code>preceding-sibling</code></td>
+    <td>nodos que comienzan antes que el actual en el orden del documento y además 
+      tienen el mismo padre</td>
+  </tr>
+  <tr> 
+    <td><code>self</code></td>
+    <td>el nodo actual</td>
+  </tr>
+ 
+</table>
+<p>La forma de utilizar los ejes es poner su nombre seguido de los caracteres 
+  <code>::</code> y una expresi&oacute;n que restrinja los nodos seleccionados. 
+  Por ejemplo:</p>
+<pre class="codigo">/novedades/disco/titulo/following-sibling::*</pre>
+<p>Seleccionar&iacute;a todos (s&iacute;mbolo <code>*</code>) los &quot;siguientes 
+  hermanos&quot; (<code>following-sibling</code>) del t&iacute;tulo de los discos. 
+  En este caso, al mismo nivel que t&iacute;tulo vienen interprete y direcci&oacute;n, 
+  con lo que el resultado ser&iacute;a </p>
+<pre class="codigo">&lt;interprete&gt; Enrique Iglesias &lt;/interprete&gt;
+&lt;direccion&gt;http://www.enriqueiglesias.com&lt;/direccion&gt;</pre>
+<p></p>
+<p>En la notaci&oacute;n abreviada que hemos visto hasta ahora hay formas de expresar 
+  m&aacute;s brevemente algunos de los ejes. No obstante, otros ejes no tienen 
+  &quot;traducci&oacute;n abreviada&quot;</p>
+<div align="center">
+  <table width="75%" border="1" cellspacing="0" cellpadding="5">
+    <tr> 
+      <th>Notaci&oacute;n abreviada</th>
+      <th>Notaci&oacute;n con ejes</th>
+    </tr>
+    <tr> 
+      <td><code>/novedades/disco</code></td>
+      <td><code>/child::novedades/child::disco</code></td>
+    </tr>
+    <tr> 
+      <td><code>/novedades//titulo</code></td>
+      <td><code>/novedades/descendant::titulo</code></td>
+    </tr>
+  </table>
+</div>
+<p>&nbsp;</p>
+
+<h3>1.5. XSLT </h3>
+<p>El intercambio de documentos XML a veces requiere adem&aacute;s cambiar su 
+  formato. Por ejemplo, aunque dos organizaciones con distinto software utilicen 
+  XML para almacenar los mismos datos, pueden emplear etiquetas con distinto nombre 
+  o en distinto orden. O en otros casos, puede ser necesario generar documentos 
+  (como en el ejemplo del pedido en el apartado 1.3) que fusionen distintos documentos. 
+  <b>XSLT</b> es un lenguaje espec&iacute;ficamente dise&ntilde;ado para transformar 
+  documentos XML, cambiando su estructura, fusionando documentos, o filtrando 
+  datos para generar nuevos documentos. Estos nuevos documentos pueden ser XML, 
+  pero tambi&eacute;n pueden emplear cualquier lenguaje de marcado (por ejemplo, 
+  HTML) o incluso pueden ser simplemente texto.</p>
+<h3>1.5.1. Estructura de un documento XSLT</h3>
+<p>Podemos considerar un documento XSLT como un programa, escrito con sintaxis 
+  XML, que especifica c&oacute;mo procesar un documento XML para transformarlo 
+  en otro. El XSLT toma como entrada el documento a transformar en forma de &aacute;rbol, 
+  y empieza a procesarlo por la ra&iacute;z, descendiendo sucesivamente por los 
+  nodos. Un documento XSLT no es m&aacute;s que un conjunto de plantillas (<b>templates</b>) 
+  que especifican qu&eacute; salida generar cuando el procesamiento alcanza un 
+  nodo determinado.</p>
+<p>Por ejemplo, supongamos que se desea obtener un documento XML &uacute;nicamente 
+  con los libros del ejemplo anterior. Adem&aacute;s, de cada libro solo nos interesa 
+  el primer autor, que debe venir expresado con la etiqueta <code>&lt;autorPrinc&gt;</code> 
+  en lugar de <code>&lt;autor&gt;</code>. El siguiente es un documento XSLT que 
+  realiza la tarea:</p>
+<pre class="codigo">&lt;xsl:stylesheet version=&quot;1.0&quot; xmlns:xsl=&quot;http://www.w3.org/1999/XSL/Transform&quot;&gt;
+
+   <b>&lt;!--seguir procesando desde la ra&iacute;z del &aacute;rbol--&gt;</b>
+   &lt;xsl:template match=&quot;/&quot;&gt;<br>      &lt;xsl:apply-templates/&gt;<br>   &lt;/xsl:template&gt;
+<p>
+<b>   &lt;!-- ignorar la fecha --&gt;</b>
+   &lt;xsl:template match=&quot;fecha&quot;&gt;<br>   &lt;/xsl:template&gt;</p><b>   &lt;!--ignorar los discos --&gt;</b>
+   &lt;xsl:template match=&quot;disco&quot;&gt;<br>   &lt;/xsl:template&gt;
+
+   <b>&lt;!-- de los libros, procesar &uacute;nicamente el t&iacute;tulo y el primer autor --&gt;</b>
+<p>   &lt;xsl:template match=&quot;libro&quot;&gt;<br>     &lt;libro&gt;<br>      &lt;xsl:apply-templates select=&quot;titulo&quot;/&gt;<br>      &lt;xsl:apply-templates select=&quot;autor[position()=1]&quot;/&gt;<br>     &lt;/libro&gt;<br>   &lt;/xsl:template&gt;</p><b>   &lt;!-- en los t&iacute;tulos, generar la misma etiqueta --&gt; </b>
+   &lt;xsl:template match=&quot;titulo&quot;&gt;<br>      &lt;titulo&gt;<br>      &lt;xsl:value-of select=&quot;.&quot;/&gt;<br>      &lt;/titulo&gt;<br>   &lt;/xsl:template&gt;
+<p>
+   <b>&lt;!-- en los autores, generar la etiqueta autorPrinc --&gt; </b>
+   &lt;xsl:template match=&quot;autor&quot;&gt;<br>      &lt;autorPrinc&gt;<br>      &lt;xsl:value-of select=&quot;.&quot;/&gt;<br>      &lt;/autorPrinc&gt;<br>   &lt;/xsl:template&gt;</p><p>&lt;/xsl:stylesheet&gt;</pre>
+<p>Como puede verse, el documento sigue la sintaxis XML. Las etiquetas que son 
+  instrucciones propias del lenguaje XSLT vienen precedidas del prefijo de espacio 
+  de nombres <code>xsl</code> (este prefijo es arbitrario, y lo que importa es 
+  que en la ra&iacute;z del documento est&eacute; asociado con el espacio de nombres 
+  &quot;oficial&quot; de XSLT).</p>
+<h3>1.5.2. Procesamiento de un documento XSLT</h3>
+<p>El procesamiento se realiza de la siguiente manera: el &quot;int&eacute;rprete&quot; 
+  XSLT tiene en cada momento un <b>nodo actual </b>en el &aacute;rbol del documento 
+  XML a transformar. Adem&aacute;s hay una <b>salida</b> a donde se ir&aacute; 
+  enviando el resultado del procesamiento. Este comienza por la ra&iacute;z, buscando 
+  alg&uacute;n <b><code>template</code></b> cuyo <b><code>match</code></b> coincida 
+  con el nodo actual. En ese caso, se ejecutan las instrucciones de dentro del 
+  <i>template</i>, que b&aacute;sicamente pueden ser dos (aunque hay muchas m&aacute;s 
+  en el lenguaje):</p>
+<ul>
+  <li><b><code>&lt;xsl:apply-templates&gt;</code></b>: significa que el int&eacute;rprete 
+    XSLT debe descender un nivel m&aacute;s en el &aacute;rbol, procesando por 
+    defecto todos los nodos hijos del actual. Mediante el atributo <b><code>select</code></b> 
+    se puede especificar si deseamos procesar un conjunto distinto de nodos.</li>
+  <li><b><code>&lt;xsl:value-of&gt;</code></b>: significa que el int&eacute;rprete 
+    XSLT debe enviar a la salida el valor del nodo especificado mediante el atributo 
+    <b><code>select</code></b>.</li>
+</ul>
+<p>El valor que puede tener un atributo <b><code>match</code></b> es m&aacute;s 
+  o menos el de una expresi&oacute;n <b>XPath</b> con notaci&oacute;n abreviada 
+  (por ejemplo, no se pueden utilizar ejes). En los atributos <b><code>select</code></b> 
+  se puede colocar cualquier expresi&oacute;n XPath v&aacute;lida.</p>
+<p>Cuando dentro de un <i>template</i> se pone texto o etiquetas que no pertenecen 
+  al espacio de nombres XSLT (en el ejemplo, no llevan el prefijo <i>xsl</i>), 
+  el int&eacute;rprete xslt las copia en la salida.</p>
+<h3>1.5.3 <i>Templates</i> por defecto</h3>
+<p>En XSLT no es necesario escribir <i>templates</i> para procesar todos los nodos 
+  del documento XML original, ya que el est&aacute;ndar exige que el int&eacute;rprete 
+  XSLT aplique una serie de <i>templates</i> por defecto para algunos casos (si 
+  el usuario no define <i>templates</i> para ellos). Estos casos son:</p>
+<ul>
+  <li><b>Nodos no-hoja del &aacute;rbol</b>: el comportamiento por defecto del 
+    int&eacute;rprete es bajar a procesar todos los hijos del nodo actual. Por 
+    ello, se puede considerar que el <i>template</i> del ejemplo que encaja con 
+    la ra&iacute;z del &aacute;rbol es superfluo. Esta es la raz&oacute;n, adem&aacute;s, 
+    de que haya que definir <i>templates</i> vac&iacute;os para aquellos nodos 
+    que no deseamos seguir procesando.</li>
+  <li><b>Nodos hoja:</b> el comportamiento por defecto es imprimir el texto que 
+    contienen, como si se hubiera incluido una sentencia <code>&lt;xsl:value-of 
+    select=&quot;.&quot;/&gt;</code></li>
+  <li><b>Comentarios e instrucciones de procesamiento:</b> el comportamiento por 
+    defecto es ignorarlos.</li>
+</ul>
+<h3>1.5.4. Generar etiquetas con atributos</h3>
+<p>Como se ha comentado, cualquier etiqueta o texto que no pertenezca al espacio 
+  de nombres de XSLT, se env&iacute;a directamente a la salida. No obstante, si 
+  queremos generar etiquetas con atributos que tomen valor del documento XML original, 
+  podemos tener problemas. Por ejemplo, el siguiente <i>template</i> (que es <b>incorrecto</b>) 
+  intenta transformar la etiqueta &quot;disco&quot; en una etiqueta que contiene 
+  como atributo el t&iacute;tulo.</p>
+<pre class="codigo">&lt;xsl:template match=&quot;disco&quot;&gt;
+<b>   &lt;disco titulo=&quot;&lt;xsl:value-of select=&quot;titulo&quot;&gt;/&gt;</b>
+&lt;/xsl:template&gt;</pre>
+<p>El problema con el <i>template</i> anterior es que no es XML bien formado, 
+  ya que una etiqueta no puede ir &quot;incrustada&quot; dentro de otra. Por ello, 
+  hay una forma alternativa de expresar el <i>select</i> para estos casos que 
+  consiste en ponerlo entre llaves.</p>
+<pre class="codigo">&lt;xsl:template match=&quot;disco&quot;&gt;
+<b>   &lt;disco titulo=&quot;{titulo}&quot;/&gt;</b>
+&lt;/xsl:template&gt;</pre>
+<p></p>
+<p>&nbsp;</p>
+</body>
+</html>

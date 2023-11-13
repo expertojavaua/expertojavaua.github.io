@@ -1,0 +1,477 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+  <title>Tema 4: Comunicaci&oacute;n</title>
+                             
+  <meta content="text/html; charset=iso-8859-1"
+ http-equiv="Content-Type">
+               
+  <link href="../../../apuntes.css" rel="stylesheet" type="text/css">
+                 
+  <meta content="Microsoft FrontPage 4.0" name="GENERATOR">
+</head>
+  <body bgcolor="#ffffff" text="#000000">
+         
+<h1>4. Comunicaci&oacute;n</h1>
+         
+<p>En este tema veremos los elementos que podemos utilizar para establecer
+  una    comunicaci&oacute;n entre los distintos servlets de una aplicaci&oacute;n
+  web,    as&iacute; como la comunicaci&oacute;n entre los servlets y otros
+  elementos    de la aplicaci&oacute;n web.</p>
+         
+<h2>4.1 Contexto global de los servlets</h2>
+         
+<p>Vamos a comenzar estudiando el contexto de los servlets (<i>Servlet Context</i>).
+     Este objeto de contexto es propio de cada aplicaci&oacute;n web, es
+decir,   tendremos    un objeto <b>ServletContext</b> por aplicaci&oacute;n
+web, por  lo que nos servir&aacute;    para comunicar los servlets de dicha
+aplicaci&oacute;n.</p>
+         
+<pre class="codigo">public void init(<b>ServletConfig</b> config)</pre>
+         
+<p>En la inicializaci&oacute;n del servlet (m&eacute;todo<b> init</b>), se
+  nos    proporcionar&aacute; un objeto <b>ServletConfig</b> como par&aacute;metro.
+  Mediante    este objeto podemos:</p>
+         
+<ul>
+       <li>Obtener el nombre del servlet, que figurar&aacute; en el descriptor
+  de despliegue      de la aplicaci&oacute;n web (<i>web.xml</i> en Tomcat).</li>
+         
+</ul>
+         
+<pre class="codigo">String nombre = config.<b>getServletName</b>();</pre>
+         
+<ul>
+       
+  <li>Obtener los valores de los par&aacute;metros de inicializaci&oacute;n del 
+    servlet, que se hayan establecido en el descriptor de despliegue. Tanto los 
+    nombres como los valores de los par&aacute;metros son cadenas de texto (<b>String</b>).</li>
+         
+</ul>
+         
+<pre class="codigo">String valor_param = config.<b>getInitParameter</b>(nombre_param);<br>Enumeration nombres_params = config.<b>getInitParameterNames</b>();</pre>
+         
+<ul>
+       <li>Acceder al objeto de contexto de la aplicaci&oacute;n a la que 
+pertenece       el servlet. </li>
+         
+</ul>
+         
+<pre class="codigo">ServletContext context = config.<b>getServletContext</b>();</pre>
+         
+<p>Esta &uacute;ltima funci&oacute;n es la m&aacute;s importante, ya que
+nos permite    acceder al objeto de contexto global de la aplicaci&oacute;n,
+con el que podremos    realizar una serie de operaciones que veremos a continuaci&oacute;n.</p>
+         
+<div align="center"><img src="imagenes/comunicacion/context.gif" alt=""
+ width="340" height="285" align="top">
+    <br>
+   </div>
+          
+<p class="caption">Figura 1. Contexto global de los servlets<br>
+   </p>
+     
+<p>Tanto el objeto <strong>ServletConfig</strong> como <strong>ServletContext</strong>
+     pueden ser obtenidos directamente desde dentro de nuestro servlet llamando
+  a    los m&eacute;todos <strong>getServletConfig</strong> y <strong>getServletContext
+     </strong>respectivamente, definidos en <strong>GenericServlet</strong>,
+  y por    lo tanto disponibles en cualquier servlet.</p>
+         
+<h3>4.1.1 Atributos de contexto</h3>
+         
+<p>Dentro del objeto de contexto de nuestra aplicaci&oacute;n podremos establecer
+     una serie de atributos, que ser&aacute;n globales dentro de ella. Estos
+  atributos    son un conjunto de pares <i>&lt;nombre, valor&gt; </i>que
+podemos   establecer    y consultar desde los distintos servlets de nuestra
+aplicaci&oacute;n   web. El    nombre del atributo ser&aacute; una cadena
+de texto (<b>String</b>),   mientras    que el valor podr&aacute; ser cualquier
+objeto java (<b>Object</b>).</p>
+         
+<p>Para consultar el valor de un atributo utilizaremos:</p>
+         
+<pre class="codigo">Object valor = context.<b>getAttribute</b>(nombre);</pre>
+         
+<p>Daremos valor a un atributo con:</p>
+         
+<pre class="codigo">context.<b>setAttribute</b>(nombre, valor);</pre>
+         
+<p>Podemos tambi&eacute;n eliminar un atributo:</p>
+         
+<pre class="codigo">context.<b>removeAttribute</b>(nombre);</pre>
+         
+<p>Lo cual dejar&aacute; el atributo a <i>null</i>, igual que si nunca le
+  hubiesemos    asignado un valor. Por &uacute;ltimo, con</p>
+         
+<pre class="codigo">Enumeration enum = context.<b>getAttributeNames</b>();</pre>
+         
+<p>Obtenemos la lista de nombres de atributos definidos en el contexto.</p>
+         
+<p>Hay que hacer notar en este punto, que el objeto de contexto a parte de
+  ser    propio de cada aplicaci&oacute;n web, es propio de cada m&aacute;quina
+  virtual    Java. Cuando trabajemos en un contexto distribuido, cada m&aacute;quina
+  ejecutar&aacute;    una VM distinta, por lo que tendr&aacute;n tambi&eacute;n
+  objetos de contexto    diferentes. Esto har&aacute; que si los servlets
+de  una aplicaci&oacute;n se    alojan en m&aacute;quinas distintas, tendr&aacute;n
+  contextos distintos y este    objeto ya no nos servir&aacute; para comunicarnos
+  entre ellos. Veremos m&aacute;s    adelante formas alternativas de comunicaci&oacute;n
+  para estos casos.</p>
+         
+<h3>4.1.2 Par&aacute;metros de inicializaci&oacute;n</h3>
+         
+<p>El objeto <b>ServletConfig</b> nos proporcionaba acceso a los par&aacute;metros
+     de inicializaci&oacute;n del servlet en el que nos encontramos. Con
+<b>ServletContext</b>,      tendremos acceso a los par&aacute;metros de inicializaci&oacute;n
+globales   de    nuestra aplicaci&oacute;n web. Los m&eacute;todos para obtener
+dichos   par&aacute;metros    son an&aacute;logos a los que usabamos en <b>ServletConfig</b>:</p>
+         
+<pre class="codigo">String valor_param = context.<b>getInitParameter</b>(nombre_param);<br>Enumeration nombres_params = context.<b>getInitParameterNames</b>();</pre>
+            
+<h3>4.1.3 Acceso a recursos est&aacute;ticos</h3>
+         
+<p>Este objeto nos permite adem&aacute;s acceder a recursos est&aacute;ticos
+  alojados    en nuestro sitio web. Utilizaremos los m&eacute;todos:</p>
+         
+<pre class="codigo">URL url = context.<b>getResource</b>(nombre_recurso);<br>InputStream in = context.<b>getResourceAsStream</b>(nombre_recurso);</pre>
+         
+<p>El nombre del recurso que proporcionamos ser&aacute; una cadena que comience
+     por <i>"/"</i>, lo cual indica el directorio raiz dentro del contexto
+    de nuestra aplicaci&oacute;n, por lo tanto ser&aacute;n direcciones relativas
+     a la ruta de nuestra aplicaci&oacute;n web.</p>
+         
+<p>El primer m&eacute;todo nos devuelve la URL de dicho recurso, mientras
+  que    el segundo nos devuelve directamente un flujo de entrada para leer
+  dicho recurso.</p>
+         
+<p>Hay que se&ntilde;alar que esto nos permitir&aacute; leer cualquier recurso
+     de nuestra aplicaci&oacute;n como est&aacute;tico. Es decir, si proporcionamos
+     como recurso <i>"/index.jsp"</i>, lo que har&aacute; ser&aacute; leer
+    el c&oacute;digo fuente del JSP, no se obtendr&aacute; la salida procesada
+  que    genera dicho JSP.</p>
+         
+<p>Podemos tambi&eacute;n obtener una lista de recursos de nuestra aplicaci&oacute;n
+     web, con:</p>
+         
+<pre class="codigo">Set recursos = context.<b>getResourcePaths</b>(String ruta);</pre>
+         
+<p>Nos devolver&aacute; el conjunto de todos los recursos que haya en la
+ruta    indicada (relativa al contexto de la aplicaci&oacute;n), o en cualquier
+  subdirectorio    de ella.</p>
+         
+<h3>4.1.4 Redirecciones</h3>
+         
+<p>Si lo que queremos es acceder a recursos din&aacute;micos, el m&eacute;todo
+     anterior no nos sirve. Para ello utilizaremos estas redirecciones. Utilizaremos
+ el objeto <b>RequestDispatcher</b> que nos proporciona  <b>ServletContext</b>.</p>
+         
+<p>Hemos de distinguir estas redirecciones de la que se producen cuando ejecutamos</p>
+         
+<pre class="codigo">response.<b>sendRedirect</b>();</pre>
+         
+<p>Con <b>sendRedirect</b> lo que estamos haciendo es devolver al cliente
+  una    respuesta de redirecci&oacute;n. Es decir, ser&aacute; el cliente,
+  quien tras    recibir esta respuesta solicite la p&aacute;gina a la que
+debe  redirigirse.</p>
+         
+<p>Con <b>RequestDispatcher</b> es el servidor internamente quien solicita
+  el    recurso al que nos redirigimos, y devuelve la salida generada por
+&eacute;ste     al cliente, pero todo ello de forma transparente al cliente.
+En cliente  no sabr&aacute;    en ning&uacute;n momento que se ha producido
+una redirecci&oacute;n.</p>
+         
+<p>Para obtener un objeto <b>RequestDispatcher </b>podemos usar los siguientes
+     m&eacute;todos de <b>ServletContext</b>:</p>
+         
+<pre class="codigo">RequestDispatcher rd = context.<b>getRequestDispatcher</b>(ruta);<br>RequestDispatcher rd = context.<b>getNamedDispatcher</b>(ruta);</pre>
+         
+<p>Como ruta proporcionaremos la ruta relativa al contexto de nuestra aplicaci&oacute;n,
+     comenzando por el car&aacute;cter <i>"/"</i>, del recurso al que nos
+   queramos redirigir. Tambi&eacute;n podemos obtener este objeto proporcionando
+     una ruta relativa respecto al recurso actual, utilizando para ello el
+ m&eacute;todo<b>    getRequestDispatcher</b> del objeto <b>ServletRequest</b>,
+ en lugar de <b>ServletContext</b>:</p>
+         
+<pre class="codigo">RequestDispatcher rd = request.<b>getRequestDispatcher</b>(ruta);</pre>
+         
+<p>Podemos utilizar el <b>RequestDispatcher</b> de dos formas distintas:
+llamando    a su m&eacute;todo<b> include</b> o a<b> forward</b>.</p>
+         
+<pre class="codigo">rd.<b>include</b>(request, response);</pre>
+         
+<p>El m&eacute;todo<b> include</b> incluir&aacute; el contenido generado
+por el    recurso al que redireccionamos en la respuesta, permitiendo que
+se escriba este    contenido en el objeto <b>ServletResponse</b> a continuaci&oacute;n
+  de lo que    se haya escrito ya por parte de nuestro servlet. Se podr&aacute;
+  llamar a este    m&eacute;todo en cualquier momento. Lo que no podr&aacute;
+  hacer el recurso    al que redireccionamos es cambiar las cabeceras de
+la   respuesta, ya que lo &uacute;nico    que estamos haciendo es incluir
+contenido   en ella. Cualquier intento de cambiar    cabeceras en la llamada
+a include   ser&aacute; ignorado.</p>
+         
+<p>Si hemos realizado la redirecci&oacute;n utilizando un m&eacute;todo <b>getRequestDispatcher</b>
+     (no mediante <b>getNamedDispatcher</b>), en la petici&oacute;n del servlet
+  al    que redireccionamos podremos acceder a los siguientes atributos:</p>
+         
+<pre class="codigo">javax.servlet.include.request_uri<br>javax.servlet.include.context_path<br>javax.servlet.include.servlet_path<br>javax.servlet.include.path_info<br>javax.servlet.include.query_string</pre>
+         
+<p>Con los que podr&aacute; consultar la ruta desde donde fu&eacute; invocado.</p>
+         
+<pre class="codigo">rd.<b>forward</b>(request, response);</pre>
+         
+<p>El m&eacute;todo<b> forward</b> s&oacute;lo podr&aacute; ser invocado
+cuando    todav&iacute;a no se ha escrito nada en la respuesta del servlet.
+Esto es as&iacute;    porque esta llamada devolver&aacute; &uacute;nicamente
+la salida del objeto    al que nos redirigimos. Si esto no fuese as&iacute;,
+  se producir&iacute;a una    excepci&oacute;n<b> IllegalStateException</b>.
+  Una vez el m&eacute;todo<b> forward</b>    haya devuelto el control, la
+salida  ya habr&aacute; sido escrita completamente    en la respuesta.</p>
+         
+<p>Si el recurso al que redireccionamos utiliza direcciones relativas, est&aacute;s
+     direcciones se considerar&aacute;n relativas al servlet que ha hecho
+la  redirecci&oacute;n,    por lo que si se encuentran en rutas distintas
+se producir&aacute; un error.    Tenemos que hacer que las direcciones sean
+relativas a la raiz del servidor    para que funcione correctamente (direcciones
+que comiencen por <i>"/"</i>).</p>
+         
+<h3>4.1.5 Otros m&eacute;todos</h3>
+         
+<p>La clase <b>ServletContext</b> nos proporciona otros m&eacute;todos de
+  utilidad,    que podremos consultar accediendo a su documentaci&oacute;n
+ JavaDoc.</p>
+         
+<p>Un m&eacute;todo de inter&eacute;s es<b> log</b>, que nos permite escribir
+     texto en el fichero de log del servlet:</p>
+         
+<pre class="codigo">context.<b>log</b>(mensaje);</pre>
+         
+<p>Esto ser&aacute; util para tener un registro de eventos que ocurren en
+  nuestra    web, o bien para depurar errores.<br>
+  </p>
+   
+<h3>4.1.6 Listeners de contexto<br>
+  </h3>
+   
+<p>Existen objetos que permanecen a la escucha de los distintos eventos que 
+pueden ocurrir en el objeto de contexto de servlets, <b>ServletContext</b>. 
+<br>
+ </p>
+ 
+<p>Un primer listener, es el <b>ServletContextListener</b>, que nos permitir&aacute; 
+dar respuesta a los eventos de creaci&oacute;n y destrucci&oacute;n del contexto 
+del servlet. El c&oacute;digo para este listener ser&aacute; como sigue a 
+continuaci&oacute;n:<br>
+ </p>
+ 
+<pre class="codigo">import javax.servlet.*;<br><br>public class MiContextListener implements <b>ServletContextListener</b> {<br><br>&nbsp;&nbsp;&nbsp; public void <b>contextDestroyed</b>(ServletContextEvent sce) {<br>        // Destruccion del contexto<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; public void <b>contextInitialized</b>(ServletContextEvent sce) {<br>        // Inicializaci&oacute;n del contexto<br>&nbsp;&nbsp;&nbsp; }<br>}<br></pre>
+ 
+<p>Esto nos ser&aacute; de gran utilidad si necesitamos inicializar ciertas 
+estructuras de datos que van a utilizar varios servlets. De esta forma el 
+contexto se habr&aacute; inicializado antes de que los servlets puedan ejecutarse.<br>
+ </p>
+ 
+<p>Si lo que queremos es saber cuando se ha a&ntilde;adido, eliminado, o modificado
+alguno de los atributos del contexto global, podemos utilizar un listener
+<b>ServletContextAttributeListener</b>. Los m&eacute;todos que deberemos
+definir en este caso son los siguientes:</p>
+ 
+<pre class="codigo">import javax.servlet.*;<br><br>public class MiContextAttributeListener 
+                    implements <b>ServletContextAttributeListener</b> {<br><br>&nbsp;&nbsp;&nbsp; public void <b>attributeAdded</b>(ServletContextAttributeEvent scae) {<br>        // Se ha a&ntilde;adido un nuevo atributo<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; public void <b>attributeRemoved</b>(ServletContextAttributeEvent scae) {<br>        // Se ha eliminado un atributo<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; public void <b>attributeReplaced</b>(ServletContextAttributeEvent scae) {<br>        // Un atributo ha cambiado de valor<br>&nbsp;&nbsp;&nbsp; }<br>}<br></pre>
+ 
+<p>Para hacer que estos objetos se registren como listeners y permanezcan 
+a la escucha, deberemos registrarlos como tales en el descriptor de despliegue 
+de la aplicaci&oacute;n. Deberemos a&ntilde;adir un elemento <i>&lt;listener&gt;</i> 
+para cada objeto listener que queramos registrar:<br>
+ </p>
+ 
+<pre class="codigo">&lt;<b>listener</b>&gt;<br>    &lt;<b>listener-class</b>&gt;MiContextListener&lt;/<b>listener-class</b>&gt;<br>&lt;/<b>listener</b>&gt;<br><br>&lt;<b>listener</b>&gt;<br>    &lt;<b>listener-class</b>&gt;MiContextAttributeListener&lt;/<b>listener-class</b>&gt;<br>&lt;/<b>listener</b>&gt;<br></pre>
+         
+<h2>4.2 Otros m&eacute;todos de comunicaci&oacute;n entre servlets</h2>
+         
+<p>Como hemos dicho anteriormente, el contexto de los servlets tiene el inconveniente
+     de que se crear&aacute; uno por cada VM. Por lo tanto, si el contenedor
+  de los    servlets se encuentra distribuido en varias m&aacute;quinas,
+y  los tenemos alojados    en distintas VM, acceder&aacute;n a contextos
+distintos,   aunque pertenezcan    a una misma aplicaci&oacute;n web.</p>
+         
+<p>Por lo tanto, en estos casos el contexto no nos servir&aacute; para comunicar
+     todos los servlets de la aplicaci&oacute;n web. Si queremos hacer una
+ comunicaci&oacute;n    totalmente global, tendremos que utilizar otros m&eacute;todos,
+ como almacenar    los datos en una base de datos, en sesiones, o bien en 
+Enterprise Java Beans    (EJB). </p>
+         
+<h2>4.3 Servlets y JSPs</h2>
+         
+<p>Los servlets y los JSPs son tecnolog&iacute;as complementar&iacute;as.
+  Cada    una de ellas es m&aacute;s apropiada para realizar ciertas tareas.
+  Por lo tanto,    lo m&aacute;s adecuado ser&aacute; integrar ambas tecnolog&iacute;as,
+  y realizar    con cada una las tareas m&aacute;s apropiadas para ella.</p>
+         
+<p>Los servlets ser&aacute;n adecuados cuando se requiere mucha programaci&oacute;n.
+     Por el contrario, los JSPs ser&aacute;n m&aacute;s apropiados para generar
+  HTML,    ya que son mejores para separar el c&oacute;digo y la presentaci&oacute;n.</p>
+         
+<p>Podremos integrar ambas tecnolog&iacute;as, realizando la programaci&oacute;n
+     en el servlet, y redirigiendo al JSP adecuado para que produzca la presentaci&oacute;n,
+     utilizando el <b>RequestDispatcher</b> visto anteriormente, bien por
+el  m&eacute;todo<b>    forward </b>o<b> include</b>.</p>
+         
+<p>Puede ser necesario que el servlet proporcione cierta informaci&oacute;n
+  al    JSP, ya que el servlet en el procesamiento puede haber establecido
+ ciertos datos    que el JSP deber&aacute; presentar. Una forma para proporcionar
+ estos datos    es establecerlos como atributos en el objeto <b>ServletRequest</b>:</p>
+         
+<pre class="codigo"><span class="codigo">MiClase valor = generaDatos();<br></span>request.<b>setAttribute</b>("nombre", valor);</pre>
+         
+<p>Este valor podr&aacute; ser cualquier objeto Java (<b>Object</b>). En
+el JSP    podremos obtener dicho objeto de la petici&oacute;n:</p>
+         
+<pre class="codigo">&lt;% MiClase valor = (MiClase)request.<b>getAttribute</b>("nombre"); %&gt;</pre>
+         
+<p>Podemos tambi&eacute;n incluir estos datos en &aacute;mbito del contexto
+  de    la aplicaci&oacute;n o de la sesi&oacute;n, y obtenerla en el JSP
+como  un <i>bean</i>.    En el &aacute;mbito de la aplicaci&oacute;n (contexto)
+  haremos lo siguiente:</p>
+         
+<pre class="codigo">context.<b>setAttribute</b>("nombre", valor);</pre>
+         
+<p>Que puede ser importado por el JSP como <i>bean</i> de la siguiente forma:</p>
+         
+<pre class="codigo">&lt;jsp:useBean id="nombre" class="MiClase" scope="application"/&gt;</pre>
+         
+<p>Si queremos incluir la informaci&oacute;n en el &aacute;mbito de la sesi&oacute;n,
+     lo haremos de forma similar:</p>
+         
+<pre class="codigo">session.<b>setAttribute</b>("nombre", valor);</pre>
+         
+<p>Que puede ser importado por el JSP como<i> bean</i> de la siguiente forma:</p>
+         
+<pre class="codigo">&lt;jsp:useBean id="nombre" class="MiClase" scope="session" /&gt;</pre>
+            
+<h2>4.4 Servlets y Applets</h2>
+         
+<p>Vamos a ver a continuaci&oacute;n distintas formas de usar los applets
+  como    <i>front-end</i> de los servlets. De igual forma, podremos hacer
+ una aplicaci&oacute;n <i>stand-alone</i> que actue como <i>front-end</i>
+del servlet.</p>
+         
+<p>La forma m&aacute;s sencilla de invocar la funcionalidad de un servlet
+  desde    un applet es llamando a <b>showDocument</b> para, mediante un
+petici&oacute;n      GET, invocar el servlet y que el navegador muestre la
+salida generada  por dicho    servlet. Ocurre de igual forma que cuando ejecutamos
+un link  a un servlet en    el navegador, siendo en este caso el applet el
+que ha ejecutado el link llamando    al m&eacute;todo <b>showDocument</b>.</p>
+         
+<pre class="codigo">getAppletContext().<b>showDocument</b>(url); </pre>
+         
+<p>Con esto lo &uacute;nico que conseguiremos es hacer que el navegador muestre
+     el contenido generado por el servlet, invocando dicha acci&oacute;n
+desde   el    applet. Por lo tanto, para esto si ser&aacute; necesario encontrarnos
+ dentro en un applet que se encuentre en un navegador web. En una aplicaci&oacute;n
+ stand-alone no podremos.</p>
+         
+<p><b>HTTP Tunneling</b><br>
+ </p>
+ 
+<p>Si queremos tener control desde el applet de lo que genera el servlet deberemos 
+  utilizar otro m&eacute;todo para obtener el resultado. Este segundo m&eacute;todo 
+  se denomina<i> HTTP tunneling</i>. Lo que haremos ser&aacute; construir un objeto 
+  <b>URL</b> con la URL del servlet que queramos utilizar, y abrir una conexi&oacute;n 
+  con dicha URL para realizar la petici&oacute;n y recibir el resultado generado 
+  por el servlet.</p>
+         
+<p>Una vez hemos construido la URL abriremos una conexi&oacute;n con dicha URL 
+  e indicamos que no utilice la cach&eacute;, para que siempre se solicite al 
+  servidor que genere nuevamente el contenido:</p>
+         
+<pre class="codigo">URLConnection con = url.<b>openConnection</b>();<br>con.<b>setUseCaches</b>(false);</pre>
+         
+<p>Ahora podemos establecer las cabeceras de la petici&oacute;n que queramos:</p>
+         
+<pre class="codigo">con.<b>setRequestProperty</b>("header", "valor");</pre>
+         
+<p>Entonces ya podemos crear la conexi&oacute;n con la URL:</p>
+         
+<pre class="codigo">InputStream in = con.<b>getInputStream</b>();</pre>
+         
+<p>Es en este momento cuando se establece la conexi&oacute;n con el servlet
+  y    &eacute;ste genera el resultado. Mediante el flujo de entrada que
+obtenemos      podremos leer desde nuestro applet el contenido generado.
+Este flujo de  entrada    podr&aacute; ser de cualquier tipo, seg&uacute;n
+el tipo de contenido  generado    por el servlet. Podemos leer directamente
+la secuencia de bytes,  o transformarlo    a un flujo de car&aacute;cteres
+(<b>BufferedReader </b>por  ejemplo). </p>
+         
+<p><b>Paso de objetos</b><br>
+ </p>
+ 
+<p>Tambi&eacute;n podremos hacer que el servlet nos devuelva objetos. Si
+el servlet    serializa un objeto y lo escribe en la respuesta (utilizando
+un <b>ObjectOutputStream</b>),    desde el applet podremos utilizar un <b>ObjectInputStream</b>
+  para leer dicho    objeto:</p>
+         
+<pre class="codigo">ObjectInputStream ois = new ObjectInputStream(in);<br>MiClase obj = (MiClase)ois.<b>readObject</b>();</pre>
+         
+<p>Por &uacute;ltimo, una vez leido todo el contenido, cerraremos el flujo
+  de    entrada:</p>
+         
+<pre class="codigo">in.<b>close</b>();</pre>
+         
+<p>Para que el servlet devuelva un objeto deber&aacute; especificar como
+tipo    del contenido generado el siguiente tipo MIME:</p>
+         
+<pre class="codigo">application/x-java-serialized-object</pre>
+         
+<p>Y lo &uacute;nico que tendr&aacute; que hace entonces ser&aacute; obtener
+  un    <b>ObjectOutputStream</b> a partir del flujo de salida de la respuesta,
+  y escribir    el objeto en &eacute;l:</p>
+         
+<pre class="codigo">MiClase result = generaObjetoResultante();<br>response.<b>setContentType</b>("application/x-java-serialized-object");<br>ObjectOutputStream oos = new ObjectOutputStream(response.getOutputStream());<br>oos.<b>writeObject</b>(oos);<br>oos.<b>flush</b>();</pre>
+         
+<p>Hemos visto que el applet podr&aacute; realizar una petici&oacute;n GET
+  al    servlet, y como resultado podr&aacute; devolvernos cualquier tipo
+de  datos,    pudiendo incluso enviarnos un objeto. Sin embargo, lo que no
+podremos  hacer    de esta forma es enviar objetos del applet al servlet,
+ya que los  par&aacute;metros    proporcionados en una petici&oacute;n GET
+est&aacute;n  en la misma URL, y por    lo tanto tienen que ser texto.</p>
+         
+<p><b>Petici&oacute;n POST</b><br>
+ </p>
+ 
+<p>Para poder pasar objetos como par&aacute;metros tendremos que hacer una
+  petici&oacute;n    POST. Para ello la conexi&oacute;n que abrimos con la
+ URL debe ser de lectura/escritura:</p>
+         
+<pre class="codigo">URLConnection con = url.<b>openConnection</b>();<br>con.<b>setUseCaches</b>(false);<br>con.<b>setDoOutput</b>(true);</pre>
+         
+<p>A continuaci&oacute;n crearemos un array de bytes donde escribiremos la
+  informaci&oacute;n    de los par&aacute;metros que pasamos por POST:</p>
+         
+<pre class="codigo">ByteArrayOutputStream baos = new ByteArrayOutputStream(512);</pre>
+         
+<p>Podemos usar distintos tipos de flujos sobre este objeto, seg&uacute;n
+  vayamos    a escribir car&aacute;cteres (<b>PrintWriter</b>) u objetos
+(<b>ObjectOutputStream</b>)      como par&aacute;metros.</p>
+         
+<p>Una vez escrito este contenido, deberemos establecer una cabecera con
+la longitud    de dicho contenido:</p>
+         
+<pre class="codigo">con.setRequestProperty("<b>Content-Length</b>", String.valueOf(baos.size()));</pre>
+         
+<p>Por cuesti&oacute;n de compatibilidad entre navegadores, ser&aacute; conveniente
+     establecer manualmente el tipo de contenido: </p>
+         
+<pre class="codigo">connection.setRequestProperty("<b>Content-Type</b>", "application/x-www-form-urlencoded");</pre>
+         
+<p>Y en este momento ya podremos escribir los par&aacute;metros en el flujo
+  de    salida de la conexi&oacute;n:</p>
+         
+<pre class="codigo">baos.writeTo(connection.<b>getOutputStream</b>());</pre>
+         
+<p>Una vez hecho esto ya podemos obtener el flujo de entrada de la conexi&oacute;n,
+     para leer el contenido que genera el servlet de la misma forma que lo
+ haciamos    en el caso de la petici&oacute;n GET.</p>
+     <br>
+     <br>
+  <br>
+ <br>
+</body>
+</html>

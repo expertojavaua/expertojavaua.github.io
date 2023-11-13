@@ -1,0 +1,841 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.7">
+<meta name="Forrest-skin-name" content="pelt">
+<title>Autentificaci&oacute;n-Autorizaci&oacute;n(JAAS) y Comunicaci&oacute;n Segura (SSL)</title>
+<link type="text/css" href="skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="skin/print.css" rel="stylesheet">
+<link type="text/css" href="skin/profile.css" rel="stylesheet">
+<script src="skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<div class="header">
+<div class="grouplogo">
+<a href="http://www.jtech.ua.es/j2ee"><img class="logoImage" alt="J2EE" src="images/baner_j2ee_izq.gif" title="Curso Especialista Universitario J2EE"></a>
+</div>
+<div class="projectlogoA1">
+<a href="http://www.dccia.ua.es/"><img class="logoImage" alt="Servidores Web" src="images/baner_j2ee_der.gif" title="Servidores Web"></a>
+</div>
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="../index.html">M&oacute;dulos</a>
+</li>
+<li class="current">
+<a class="base-selected" href="index.html">Servidores Web</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<div id="level2tabs"></div>
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<div id="menu">
+<div onclick="SwitchMenu('menu_selected_1.1', 'skin/')" id="menu_selected_1.1Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Seguridad en JEEE</div>
+<div id="menu_selected_1.1" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="index.html" title="Seguridad en JEE">&Iacute;ndice</a>
+</div>
+<div onclick="SwitchMenu('menu_selected_1.1.2', 'skin/')" id="menu_selected_1.1.2Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Teor&iacute;a</div>
+<div id="menu_selected_1.1.2" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="sesion01-apuntes.html">Sesion 1</a>
+</div>
+<div class="menupage">
+<div class="menupagetitle">Sesion 2</div>
+</div>
+<div class="menuitem">
+<a href="sesion03-apuntes.html">Sesion 3</a>
+</div>
+<div class="menuitem">
+<a href="sesion04-apuntes.html">Sesion 4</a>
+</div>
+<div class="menuitem">
+<a href="roadmap-apuntes.html">Roadmap</a>
+</div>
+</div>
+<div onclick="SwitchMenu('menu_1.1.3', 'skin/')" id="menu_1.1.3Title" class="menutitle">Ejercicios</div>
+<div id="menu_1.1.3" class="menuitemgroup">
+<div class="menuitem">
+<a href="sesion01-ejercicios.html">Sesion 1</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-ejercicios.html">Sesion 2</a>
+</div>
+<div class="menuitem">
+<a href="sesion03-ejercicios.html">Sesion 3</a>
+</div>
+<div class="menuitem">
+<a href="sesion04-ejercicios.html">Sesion 4</a>
+</div>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<div id="credit2"></div>
+</div>
+<div id="content">
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="sesion02-apuntes.pdf"><img alt="PDF -icon" src="skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1>Autentificaci&oacute;n-Autorizaci&oacute;n(JAAS) y Comunicaci&oacute;n Segura (SSL)</h1>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#Integrando+Autentificaci%C3%B3n+y+Autorizaci%C3%B3n">Integrando Autentificaci&oacute;n y Autorizaci&oacute;n</a>
+<ul class="minitoc">
+<li>
+<a href="#JAAS%3A+Java+Authentication+and+Authorization+Service">JAAS: Java Authentication and Authorization Service</a>
+</li>
+<li>
+<a href="#javax.security.auth.login%3A+LoginContext+y+Configuration">javax.security.auth.login: LoginContext y Configuration</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#javax.security.auth.callback%3A+Callback+y+CallbackHandler">javax.security.auth.callback: Callback y CallbackHandler</a>
+</li>
+<li>
+<a href="#Interfaz+javax.security.auth.spi.LoginModule">Interfaz javax.security.auth.spi.LoginModule</a>
+</li>
+<li>
+<a href="#Clase+javax.security.auth.Subject">Clase javax.security.auth.Subject</a>
+</li>
+<li>
+<a href="#Probando+el+ejemplo">Probando el ejemplo</a>
+</li>
+<li>
+<a href="#Autorizaci%C3%B3n+program%C3%A1tica">Autorizaci&oacute;n program&aacute;tica</a>
+</li>
+<li>
+<a href="#Certificados+y+SSL">Certificados y SSL</a>
+<ul class="minitoc">
+<li>
+<a href="#SSL+B%C3%A1sico%3A+Funcionamiento+y+HTTPS">SSL B&aacute;sico: Funcionamiento y HTTPS</a>
+</li>
+<li>
+<a href="#Cliente+y+servidor+HTTPS">Cliente y servidor HTTPS</a>
+</li>
+<li>
+<a href="#Autentificaci%C3%B3n+del+cliente">Autentificaci&oacute;n del cliente</a>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+<a name="N1000C"></a><a name="Integrando+Autentificaci%C3%B3n+y+Autorizaci%C3%B3n"></a>
+<h2 class="underlined_10">Integrando Autentificaci&oacute;n y Autorizaci&oacute;n</h2>
+<div class="section">
+<a name="N10011"></a><a name="JAAS%3A+Java+Authentication+and+Authorization+Service"></a>
+<h3 class="underlined_5">JAAS: Java Authentication and Authorization Service</h3>
+<p>Este API est&aacute; orientado a conceder permisos en funci&oacute;n de <em>qui&eacute;n 
+ejecuta</em> el c&oacute;digo. Se basa en PAMs (<em>Pluggable Authentication Modules</em>) 
+que proporcionan mecanismos de autentificaci&oacute;n. El mecanismo por defecto es el 
+de usuario-password: cuando un usuario ejecuta c&oacute;digo que require privilegios se 
+pide el nombre de usuario y el password, y si &eacute;stos son correctos se conceden 
+los permisos. As&iacute;, JAAS abarca tanto la autentificaci&oacute;n, o verificaci&oacute;n de 
+identidad del usuario, como la autorizaci&oacute;n, es decir la concesi&oacute;n de permisos 
+de acceso a los recursos. Como veremos m&aacute;s adelante, este es el modelo 
+implementado por BEA WebLogic. El esquema general se muestra en la imagen siguiente:</p>
+<p>
+
+<img alt="Modelo JAAS" content-width="12cm" src="imagenes/sesion2/jaas.gif" width="600">
+</p>
+<a name="N10029"></a><a name="javax.security.auth.login%3A+LoginContext+y+Configuration"></a>
+<h3 class="underlined_5">javax.security.auth.login: LoginContext y Configuration</h3>
+<p>Supongamos que desde el c&oacute;digo de una aplicaci&oacute;n (p.e. <a href="ejemplos/sesion2/EjemploJAAS.java.txt">EjemploJAAS.java</a>) 
+se intenta autentificar a un usuario a trav&eacute;s de su nombre y password. El primer 
+paso es crear lo que se denomina un contexto de Login o <strong>LoginContext</strong> al 
+que pasamos un nombre (p.e. "Ejemplo") seguido de un manejador llamado 
+<em>UserPasswordCallbackHandler</em> que parametrizado por el nombre de usuario y 
+su password:</p>
+<pre class="code">
+
+<strong>// 1. LoginContext</strong>
+String usuario = args[0];
+char[] password = args[1].toCharArray();
+LoginContext loginContext = new <strong>LoginContext</strong>(
+    "Ejemplo", new UserPasswordCallbackHandler(usuario, password));
+</pre>
+<p>Para que la autentificaci&oacute;n funcione, debemos tener especificado que al 
+contexto <em>Ejemplo</em> se le asocia un determinado m&oacute;dulo de login o 
+<strong>LoginModule</strong> con una determinada configuraci&oacute;n. Por ello, la clase 
+abstracta <strong>Configuration</strong> define como deben usarse <strong>LoginContext</strong> y 
+<strong>LoginModule</strong>. M&aacute;s concretamente, determina que m&oacute;dulos de login deben ser 
+invocados y c&oacute;mo su &eacute;xito o fracaso afecta al proceso de login. Se establecen 
+cuatro posibilidades: </p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+  
+<tr>
+    
+<td colspan="1" rowspan="1"><strong>Required</strong></td>
+    <td colspan="1" rowspan="1">El m&oacute;dulo de login debe tener &eacute;xito para que el login completo tenga 
+      &eacute;xito. Incluso si falla, se consulta a otros m&oacute;dulos de login.</td>
+</tr>
+  
+<tr>
+    
+<td colspan="1" rowspan="1"><strong>Requisite</strong></td>
+    <td colspan="1" rowspan="1">El m&oacute;dulo de login debe tener &eacute;xito para que el login completo tenga 
+      &eacute;xito. Si falla, el proceso de login es corto-circuitado y no se llama a 
+      ning&uacute;n otro m&oacute;dulo de login.</td>
+</tr>
+  
+<tr>
+    
+<td colspan="1" rowspan="1"><strong>Sufficient</strong></td>
+    <td colspan="1" rowspan="1">Si este m&oacute;dulo tiene &eacute;xito y ning&uacute;n m&oacute;dulo requerido o de requisito 
+      falla, el login completo tiene &eacute;xito.</td>
+</tr>
+  
+<tr>
+    
+<td colspan="1" rowspan="1"><strong>Optional</strong></td>
+    <td colspan="1" rowspan="1">El &eacute;xito de este m&oacute;dulo no influye en el resto del proceso. Si ning&uacute;n 
+      m&oacute;dulo de los tres tipos anteriores falla, el login completo tiene &eacute;xito 
+      independientemente de que un m&oacute;dulo opcional tenga &eacute;xito.</td>
+  
+</tr>
+
+</table>
+<p>La asociaci&oacute;n del contexto <em>Ejemplo</em> a un determinado m&oacute;dulo de login, 
+llamado <em>PasswordLoginModule</em>, con la configuraci&oacute;n <em>required</em> pueden 
+alojarse, p.e., en el fichero <a href="ejemplos/sesion2/jaas.config.txt">jaas.config</a>:</p>
+<pre class="code">Ejemplo {
+   PasswordLoginModule <strong>required;</strong>
+};
+</pre>
+</div>
+
+<a name="N100A7"></a><a name="javax.security.auth.callback%3A+Callback+y+CallbackHandler"></a>
+<h2 class="underlined_10">javax.security.auth.callback: Callback y CallbackHandler</h2>
+<div class="section">
+<p>El c&oacute;digo del manejador se encuentra en 
+<a href="ejemplos/sesion2/UserPasswordCallbackHandler.java.txt">UserPasswordCallbackHandler.java</a>. 
+Dicho c&oacute;digo implementa la interfaz <strong>CallbackHander</strong>. Para ello hay que 
+definir un constructor, que simplemente recibir&aacute; el nombre de usuario y el 
+password que se le pasa por par&aacute;metro desde el c&oacute;digo que inici&oacute; la 
+autentificaci&oacute;n:</p>
+<pre class="code">
+  public UserPasswordCallbackHandler(String usuario, char[] password) {
+    <strong>mUsuario</strong> = usuario;
+    <strong>mPassword</strong> = password;
+}
+</pre>
+<p>A continuaci&oacute;n hay que implementar el m&eacute;todo <strong>handle()</strong> que recibe como 
+entrada un array de objetos <strong>Callback</strong>. Sun proporciona diversas 
+implementaciones como <strong>PasswordCallback</strong> y <strong>NameCallback</strong> con m&eacute;todos 
+como <strong>setName()</strong> y <strong>setPassword()</strong> que inicializan el nombre y 
+password del usuario en los respectivos <strong>callbacks</strong> a los valores definidos 
+por el constructor y que en su momento le pas&oacute; la aplicaci&oacute;n que realiza la 
+autentificaci&oacute;n:</p>
+<pre class="code">
+public void <strong>handle</strong>(Callback[] callbacks)
+  throws UnsupportedCallbackException {
+  // Iterar los callbacks
+  for(int i=0;i&lt;callbacks.length;i++) {
+     <strong>Callback</strong> callback = callbacks[i];
+     // Manejar callback seg&uacute;n su tipo.
+     if (callback instanceof NameCallback) {
+       <strong>NameCallback</strong> nameCallback = (NameCallback)callback;
+       nameCallback.<strong>setName(mUsuario);</strong>
+     } else if (callback instanceof PasswordCallback) {
+       <strong>PasswordCallback</strong> passwordCallback = (PasswordCallback)callback;
+       passwordCallback.<strong>setPassword(mPassword);</strong>
+     } else {
+       throw new UnsupportedCallbackException(callback, "Tipo de callback no soportado");
+     }
+   }
+}
+</pre>
+</div>
+
+<a name="N100EF"></a><a name="Interfaz+javax.security.auth.spi.LoginModule"></a>
+<h2 class="underlined_10">Interfaz javax.security.auth.spi.LoginModule</h2>
+<div class="section">
+<p>Volviendo a la aplicaci&oacute;n <a href="ejemplos/sesion2/EjemploJAAS.java.txt">EjemploJAAS.java</a>, 
+entra en juego la interfaz <strong>LoginModule</strong> que se encuentra implementada en 
+el c&oacute;digo <a href="ejemplos/sesion2/PasswordLoginModule.java.txt">PasswordLoginModule.java</a>. 
+En esta interfaz tenemos los siguientes m&eacute;todos:</p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+  
+<tr>
+    
+<td colspan="1" rowspan="1"><strong>initialize()</strong></td>
+    <td colspan="1" rowspan="1">Dado un objeto inicializa el <strong>LoginModule</strong> para un intento de 
+      login.</td>
+</tr>
+  
+<tr>
+    
+<td colspan="1" rowspan="1"><strong>login()</strong></td>
+    <td colspan="1" rowspan="1">Comprueba las credenciales del sujeto anterior. Esto es dependiente de 
+      la implementaci&oacute;n: Puede consistir en un acceso a BD, leer un fichero de 
+      passwords, etc.</td>
+</tr>
+  
+<tr>
+    
+<td colspan="1" rowspan="1"><strong>commit()</strong></td>
+    <td colspan="1" rowspan="1">Se invoca solo si <strong>login()</strong> tiene &eacute;xito. Este m&eacute;todo a&ntilde;ade las 
+      identidades y credenciales necesarias para el sujeto. El m&oacute;dulo login debe 
+      limpiar su estado durante el commit. Una vez que el commit tenga &eacute;xito, 
+      JAAS a&ntilde;adira el sujeto al contexto actual.</td>
+</tr>
+  
+<tr>
+    
+<td colspan="1" rowspan="1"><strong>abort()</strong></td>
+    <td colspan="1" rowspan="1">Si el <strong>login()</strong> fall&oacute;, se invoca este m&eacute;todo y se limpia el 
+      estado del login.</td>
+</tr>
+  
+<tr>
+    
+<td colspan="1" rowspan="1"><strong>logout()</strong></td>
+    <td colspan="1" rowspan="1">Hace logout borrando las identidades y credenciales que sea necesario.</td>
+  
+</tr>
+
+</table>
+<p>Desde la aplicaci&oacute;n llamaremos a <strong>login()</strong> de la siguiente forma:</p>
+<pre class="code">
+
+<strong>// 2. login()</strong>
+logincontext.login();
+</pre>
+<p>Concretamente el m&eacute;todo <strong>login()</strong> define el array de <em>callbacks</em> y 
+llama al m&eacute;todo <strong>handle()</strong> del manejador para darle valor al nombre de 
+usuario y al password. A continuaci&oacute;n se accede a los <em>callbacks</em> devueltos 
+mediante los m&eacute;todos <strong>getName()</strong> y <strong>getPassword()</strong>. Estos valores son 
+los que en su momento se pasar&oacute;n desde la aplicaci&oacute;n que realiza la 
+autentificaci&oacute;n.</p>
+<pre class="code">
+// Crear dos callbacks: uno para usuario y el otro para password.
+<strong>Callback[] callbacks = new Callback[2];</strong>
+callbacks[0] = new NameCallback("Usuario");
+callbacks[1] = new PasswordCallback("Password", false);
+
+try {
+  // Llamar al callbackhandler para rellenar informacion
+  mCallbackHandler.<strong>handle(callbacks);</strong>
+  mUsuario = ((NameCallback)callbacks[0]).<strong>getName();</strong>
+  char[] tempPassword = ((PasswordCallback)callbacks[1]).<strong>getPassword();</strong>
+  mPassword = new char[tempPassword.length];
+  System.arraycopy(tempPassword, 0, mPassword, 0, tempPassword.length);
+  // Borrar password en el callback
+  ((PasswordCallback)callbacks[1]).<strong>clearPassword();</strong>
+} catch (IOException ioe) {
+     throw new LoginException(ioe.toString());
+} catch (UnsupportedCallbackException uce) {
+     throw new LoginException(uce.toString());
+}
+</pre>
+<p>A continuaci&oacute;n se borra el password llamando al m&eacute;todo <strong>clearPassword()</strong> 
+y se produce la validaci&oacute;n del nombre de usuario y del password. Asumiendo que 
+el usuario es <em>sco</em> y el password es <em>scosco</em>, el c&oacute;digo de validaci&oacute;n 
+podr&iacute;a ser el siguiente:</p>
+<pre class="code">
+// Validar usuario y password
+if (
+   "sco".equals(mUsuario) &amp;&amp;
+   mPassword.length == 6 &amp;&amp;
+   mPassword[0] == 's' &amp;&amp;
+   mPassword[1] == 'c' &amp;&amp;
+   mPassword[2] == 'o' &amp;&amp;
+   mPassword[3] == 's' &amp;&amp;
+   mPassword[4] == 'c' &amp;&amp;
+   mPassword[5] == 'o'
+   ) {
+
+     // Usuario y password son correctos
+     mLoginExito = true;
+     return true;
+   } else {
+     // Fallo de autentificaci&oacute;n. Borrar estado y lanzar excepci&oacute;n
+     mLoginExito = false;
+     mUsuario = null;
+     clearPassword();
+     throw new FailedLoginException("Password Incorrecto");
+   }
+</pre>
+<p>de tal manera que si se detecta un fallo de autentificaci&oacute;n se borra el 
+password y se lanza una excepci&oacute;n. Esto hace que JAAS autom&aacute;ticamente lance el 
+<strong>abort()</strong> que a su vez puede desencadenar un <strong>logout()</strong>.Si por el 
+contrario todo va bien, JAAS ejecutar&aacute; el m&eacute;todo <strong>commit()</strong>. Este m&eacute;todo va 
+a crear un objeto de la clase <strong>Subject</strong>.</p>
+</div>
+
+<a name="N101A5"></a><a name="Clase+javax.security.auth.Subject"></a>
+<h2 class="underlined_10">Clase javax.security.auth.Subject</h2>
+<div class="section">
+<p>Un <strong>Subject</strong> es una <em>entidad</em> (persona o empresa) o sujeto que est&aacute; 
+utilizando el sistema. Una entidad puede poseer una o m&aacute;s <em>identidades</em> o 
+instancias de <strong>java.security.Principal</strong>. Por ejemplo podemos tener dos 
+logins (identidades) cada uno de los cuales est&aacute; asociado a una aplicaci&oacute;n 
+distinta. Para obtener un <strong>Set</strong> con todas las identidades llamaremos al 
+m&eacute;todo <strong>getPrincipals()</strong>. </p>
+<p>Una sujeto contiene una lista de credenciales o instancias de 
+<strong>Credentials</strong>, objetos tales como passwords y certificados, que pueden ser 
+p&uacute;blicos o privados y puede accederse a ellos con los m&eacute;todos 
+<strong>getPublicCredentials()</strong> y <strong>getPrivateCredentials()</strong> respectivamente.</p>
+<p>Los sujetos representan qui&eacute;n est&aacute; ejecutando el c&oacute;digo y por lo tanto el 
+acceso a determinados recursos depende de qui&eacute;n es la entidad activa. Para 
+obtener dicha entidad llamaremos a <strong>getSubject()</strong>. JAAS se encarga, en 
+coordinaci&oacute;n con la interfaz <strong>LoginModule</strong>, de asignar entidades. 
+Concretamente, en el m&eacute;todo <strong>commit()</strong> del <strong>LoginModule</strong> de nuestro 
+ejemplo, se crea un <strong>Principal</strong> llamando a la implementaci&oacute;n de esta 
+interfaz que se encuentra en el c&oacute;digo 
+<a href="ejemplos/sesion2/ImplPrincipal.java.txt">ImplPrincipal.java</a>. 
+A continuaci&oacute;n a dicho principal se le a&ntilde;ade el nombre de usuario, y el 
+principal se a&ntilde;ade al sujeto. </p>
+<pre class="code">
+public boolean commit() throws LoginException {
+  if (mLoginExito == false) {
+       return false;
+  }
+  // Login con &eacute;xito: crear Principal y a&ntilde;adirlo al Subject
+  <strong>mPrincipal = new ImplPrincipal(mUsuario);</strong>
+  if (!(mSujeto.<strong>getPrincipals().contains(mPrincipal)))</strong> {
+      mSujeto.<strong>getPrincipals().add(mPrincipal);</strong>
+  }
+     // Si queremos que el Subject contenga credenciales
+     // este es el momento para a&ntilde;adirlas.
+
+     // Borrar usuario y password.
+     mUsuario = null;
+     clearPassword();
+     mCommitExito = true;
+     return true;
+  }
+</pre>
+<p>Una vez realizado el <strong>commit()</strong>, desde la aplicaci&oacute;n leeremos el 
+contexto y lo imprimiremos:</p>
+<pre class="code">
+
+<strong>// 3. getSubject() e imprimir</strong>
+<strong>Subject</strong> subject = loginContext.<strong>getSubject();</strong>
+System.out.println(subject);
+</pre>
+</div>
+
+<a name="N10202"></a><a name="Probando+el+ejemplo"></a>
+<h2 class="underlined_10">Probando el ejemplo</h2>
+<div class="section">
+<p>Para ilustrar el funcionamiento de las clases e interfaces anteriores 
+necesitamos compilar los *.java: la aplicaci&oacute;n <a href="ejemplos/sesion2/EjemploJAAS.java.txt">EjemploJAAS.java</a>, 
+el manejador <a href="ejemplos/sesion2/UserPasswordCallbackHandler.java.txt">UserPasswordCallbakHandler.java</a>, 
+el m&oacute;dulo de login <a href="ejemplos/sesion2/PasswordLoginModule.java.txt">PasswordLoginModule.java</a>, 
+y el principal <a href="ejemplos/sesion2/ImplPrincipal.java.txt">ImplPrincipal.java</a>, 
+y debe estar en el mismo directorio el fichero de configuraci&oacute;n 
+<a href="ejemplos/sesion2/jaas.config.txt">jaas.config</a>. 
+</p>
+<p>A continuaci&oacute;n llamaremos a la aplicaci&oacute;n haciendo que la m&aacute;quina virtual de 
+java tome como fichero de configuraci&oacute;n el fichero <em>jaas.config</em>. Si 
+ponemos el nombre de usuario y el password correcto</p>
+<p>
+<em>java -Djava.security.auth.login.config=jaas.config EjemploJAAS sco 
+scosco</em>
+</p>
+<p>el resultado ser&aacute; mostrar el nombre de usuario del sujeto autentificado. Si 
+por el contrario se suministra un nombre de usuario o un password incorrectos el 
+login fallar&aacute; al dispararse una excepci&oacute;n.</p>
+</div>
+
+<a name="N1022C"></a><a name="Autorizaci%C3%B3n+program%C3%A1tica"></a>
+<h2 class="underlined_10">Autorizaci&oacute;n program&aacute;tica</h2>
+<div class="section">
+<p>En ocasiones es conveniente determinar si quien est&aacute; ejecutando un 
+determinado c&oacute;digo est&aacute; autorizado para ello. Supongamos que desde el 
+<strong>main()</strong> de la aplicaci&oacute;n 
+<a href="ejemplos/sesion2/EjemploJAAS2.java.txt">EjemploJAAS2.java</a> 
+definimos un contexto de login para el usuario <em>sco</em> con password 
+<em>scosco</em>. Supongamos que, independientemente de que el login tenga &eacute;xito o 
+fracase intentamos ejecutar un determinado fragmento de c&oacute;digo. Para ello 
+extraemos el sujeto del login y llamamos al m&eacute;todo <strong>doAs()</strong>de la clase 
+<strong>Subject</strong>:</p>
+<pre class="code">
+ sujeto.<strong>doAs</strong>(sujeto, new AccionEjemplo());
+</pre>
+<p>donde <strong>AccionEjemplo</strong> es una clase que implementa la interfaz 
+<strong>java.security.PrivilegedAction</strong>. Esta interfaz contiene &uacute;nicamente el 
+m&eacute;todo <strong>run()</strong>. Supongamos que al ejecutarlo llamamos al m&eacute;todo 
+<strong>getSecretText()</strong> definido en la aplicaci&oacute;n: </p>
+<pre class="code">
+class AccionEjemplo  implements <strong>PrivilegedAction</strong> {
+
+  public AccionEjemplo() {}
+
+  public Object <strong>run()</strong> {
+      System.out.println("Texto secreto: " + <strong>EjemploJAAS2.getSecretText()</strong>);
+      return null;
+  }
+}
+</pre>
+<p>Hasta el momento hemos permitido el acceso independientemente de que el login 
+haya tenido o no &eacute;xito. Sin embargo <strong>getSecretText()</strong> est&aacute; dise&ntilde;ado para 
+producir una salida distinta seg&uacute;n el caso. &iquest;C&oacute;mo nos enteramos de si el usuario 
+realmente est&aacute; autorizado o no, y en funci&oacute;n de ello emitimos una salida u otra? 
+Necesitamos definir una instancia de la clase 
+<strong>java.security.AccessControlContext</strong>, que obtendremos mediante llamando al 
+m&eacute;todo <strong>getContext()</strong> de la clase <strong>java.security.AccessController</strong> y 
+una ver obtenida pas&aacute;rsela como argumento al m&eacute;todo <strong>getSubject()</strong> de la 
+clase <strong>Subject</strong>: </p>
+<pre class="code">
+AccessControlContext contexto = AccessController.<strong>getContext();</strong>
+Subject sujeto = Subject.<strong>getSubject(contexto);</strong>
+
+</pre>
+<p>Si el sujeto obtenido es <strong>null</strong> entonces est&aacute; claro que se trata de un 
+acceso incorrecto, y en ese caso se emite el texto <em>esto lo puede ver 
+cualquiera</em>. En caso contrario se obtienen todas sus identidades o 
+principales <em>(principals)</em>. Si una de esas identidades corresponde al 
+usuario <em>sco</em> entonces se emite el texto <em>solo para tus ojos</em>.</p>
+<pre class="code">
+if (sujeto == null) {
+   System.out.println("Sujeto null");
+   return TEXTO_GENERICO;
+}
+
+// Obtener todos los principales: instancias de ImplPrincipal.
+// Devolver el texto secreto si el usuario "sco"
+Set principales = sujeto.<strong>getPrincipals();</strong>
+Iterator iterador = principales.iterator();
+while (iterador.hasNext()) {
+   ImplPrincipal principal = (ImplPrincipal)iterador.next();
+   if (principal.<strong>getName()</strong>.equals("sco")) {
+       return TEXTO_PARTICULAR;
+   }
+}
+return TEXTO_GENERICO;
+</pre>
+</div>
+
+<a name="N102A6"></a><a name="Certificados+y+SSL"></a>
+<h2 class="underlined_10">Certificados y SSL</h2>
+<div class="section">
+<a name="N102AC"></a><a name="SSL+B%C3%A1sico%3A+Funcionamiento+y+HTTPS"></a>
+<h3 class="underlined_5">SSL B&aacute;sico: Funcionamiento y HTTPS</h3>
+<p>SSL es el protocolo habitualmente usado para encriptar la
+comunicaci&oacute;n cliente-servidor. Casi todo el tr&aacute;fico en la red puede
+encriptarse con SSL: POP, IMAP, telnet, FTP, etc, pero es
+especialmente interesante para dotar de seguridad al protocolo
+HTTP, es decir como base del HTTPS.</p>
+<p>La implementaci&oacute;n de SSL es una extensi&oacute;n de los <em>sockets</em>
+que permite establecer un canal <em>(stream)</em>de comunicaci&oacute;n.
+Dicha comunicaci&oacute;n se inicia con un <em>handshake</em> durante el
+cual, el cliente y el servidor construyen una <em>session-key</em>
+(clave sim&eacute;trica encriptada con un esquema asim&eacute;trico)
+compartida para verificar su identidad m&uacute;tua:</p>
+<p>1.Cliente env&iacute;a un mensaje <em>client_hello</em> que contiene:
+versiones SSL soportadas por el cliente, 32 bytes aleatorios que
+crea el cliente, ID de sesi&oacute;n, lista de cifradores soporados, lista
+de m&eacute;todos de compresi&oacute;n sopordados.</p>
+<p>2. Servidor responde con <em>server_hello</em>: selecci&oacute;n de las
+versiones SSL de la lista del cliente, 32 bytes aleatorios creados
+por el servidor, ID de sesi&oacute;n, cifradores escogidos de la lista del
+cliente (p.e. RSA y RC4) y m&eacute;todo de compresi&oacute;n usado (usualmente
+ninguno).</p>
+<p>A continuaci&oacute;n, el servidor env&iacute;a su certificado X.509 firmado
+por una CA y que contiene la clave p&uacute;blica del servidor (as&iacute; el
+cliente puede enviarle mensajes cifrados con ella, de manera que
+solo quien posea la clave privada puede descrifrarlos).
+Seguidamente el servidor puede pedir un certificado al cliente pero
+usualmente al cliente se le considera an&oacute;nimo. Despu&eacute;s el servidor
+env&iacute;a un <em>server_hello_done</em> y queda a la espera.</p>
+<p>3. Cliente verifica el mensaje del servidor y si se le requiere
+un certificado se lo env&iacute;a. Seguidamente env&iacute;a un
+<em>client_key_exchange</em> con 48 bytes (sacados de los 32 del
+cliente y de los 32 del servidor) que se usan para construir la
+<em>session-key</em> que a su vez es encriptada con la clave p&uacute;blica
+del certificado del servidor.</p>
+<p>A continuaci&oacute;n, si al cliente se le pidi&oacute; un certificado, &eacute;ste
+env&iacute;a un <em>certificate_verify</em>. En cualquier caso, despu&eacute;s el
+cliente construye una clave sim&eacute;trica con RC4 y una clave para el
+MAC que se usar&aacute; para comprobar la integridad de los datos. Despu&eacute;s
+env&iacute;a un <em>change_cipher_spec</em> para indicar los par&aacute;metros de
+cifrado y seguidamente un <em>finished</em>.</p>
+<p>4. Servidor responde con su propio <em>change_cipher_spec</em> y
+su propio <em>finished</em>.</p>
+<p>A partir de este punto, la comunicaci&oacute;n cliente-servidor ser&aacute;
+encriptada por clave sim&eacute;trica, lo cual es transparente para las
+librer&iacute;as Java SSL como JSSE (Java Secure Sockets Extension).</p>
+<p>
+
+<img alt="Handshake en SSL" content-width="8cm" src="imagenes/sesion2/ssl.gif" width="400">
+</p>
+<p>JSSE es un API para usar SSL en Java. Se incluye a partir de J2sdk1.4
+de tal forma que el fichero
+<em>$JAVA_HOME/jre/lib/security/java.security</em> contendr&aacute; una l&iacute;nea similar a esta:</p>
+<pre class="code">
+security.provider.x=com.sun.net.ssl.internal.ssl.Provider
+</pre>
+<a name="N1030B"></a><a name="Cliente+y+servidor+HTTPS"></a>
+<h3 class="underlined_5">Cliente y servidor HTTPS</h3>
+<p>Para ejecutar un cliente HTTPS que acceda a una determinada URL
+que se le pasa desde la l&iacute;nea de comandos (ver <a href="ejemplos/sesion2/ClienteHTTPS.java.txt">ClienteHTTPS.java</a>) hay que
+indicarle al manejador de URLs d&oacute;nde est&aacute;n las clases HTTPS:</p>
+<p>
+<em>java
+-Djava.protocol.handler.pkgs=com.sun.net.ssl.internal.www.protocol
+ClienteHTTPS https://www.thawte.com/</em>
+</p>
+<p>Altnerativamente el manejador puede configurarse usando el
+m&eacute;todo <strong>setProperty()</strong>:</p>
+<pre class="code">
+System.<strong>setProperty</strong>(
+   "java.protocol.handler.pkgs", "com.sun.net.ssl.internal.www.protocol");
+</pre>
+<p>En cuanto al servidor (ver <a href="ejemplos/sesion2/ServidorHTTPS.java.txt">ServidorHTTPS.java</a>), lo
+primero es crear un socket SSL. Para ello utlizamos el m&eacute;todo
+<strong>getDefault()</strong> de la clase
+<strong>javax.net.ssl.SSLServerSocketFactory</strong> para obtener una
+<strong>SSLServerSocketFactory</strong>, y luego llamaremos al m&eacute;todo
+<strong>createServerSocket</strong> de esta clase para crear un
+<strong>ServerSocket</strong>:</p>
+<pre class="code">
+
+<strong>SSLServerSocketFactory</strong> ssf =
+      (SSLServerSocketFactory)SSLServerSocketFactory.<strong>getDefault();</strong>
+    <strong>ServerSocket</strong> ss = ssf.<strong>createServerSocket(8080);</strong>
+
+</pre>
+<p>y este socket puede usarse como un socket est&aacute;ndard. As&iacute;, a
+partir de aqu&iacute; no hay ninguna referencia a SSL y el servidor
+trabaja de forma transparente. Con un <strong>accept()</strong> espera
+llamadas desde un cliente, define un <strong>InputStream</strong> para leer
+la entrada del cliente y un <strong>OutputStream</strong> para escribirla en
+la pantalla. Despu&eacute;s construye una p&aacute;gina HTML, y finalmente cierra
+los streams y el socket.</p>
+<p>Sin embargo, si intentamos ejecutar este ejemplo con <em>java
+ServidorHTTPS</em>, se lanza una excepci&oacute;n al detectarse que no se
+ha creado un certificado y una clave privada para el servidor SSL.
+Para ello, llamaremos a <em>keytool</em> desde el directorio desde
+donde ejecutamos el servidor:</p>
+<p>
+<em>keytool -genkey -v -keyalg RSA -keystore .keystore</em>
+</p>
+<p>y ponemos como nombre el nombre de la m&aacute;quina, p.e.
+<em>localhost</em>. As&iacute;, para lanzar el servidor HTTPS indicaremos a
+la m&aacute;quina virtual el almanc&eacute;n que contiene el certificado y el
+password para acceder a &eacute;l. Desde l&iacute;nea de comandos esto queda
+como:</p>
+<p>
+<em>java -Djavax.net.ssl.keyStore=.keystore
+-Djavax.net.ssl.keyStorePassword=scosco ServidorHTTPS</em>
+</p>
+<p>Tras esperar unos segundos para dejar que el servidor se
+inicialice, pediremos desde el navegador la URL
+<em>https://localhost:8080</em> atacando al puerto donde est&aacute;
+escuchando el servidor. Sin embargo, dado que el certificado que
+hemos utilizado es auto-firmado, el navegador no lo reconocer&aacute;
+aunque nos pedir&aacute; si queremos aceptarlo. Si decimos que s&iacute;, se
+muestra una p&aacute;gina web con el mensaje <em>Hola!</em>.</p>
+<p>Para salvar las advertencias del navegador hemos de conseguir un
+certificado firmado por una CA reconocida, como Verisign.</p>
+<p>Cuando un cliente ataca un servidor SSL, el servidor env&iacute;a un
+certificado al cliente para verificar que el cliente conoce la
+identidad del servidor. El cliente entonces valida el certificado y
+conf&iacute;a en la CA que lo firm&oacute;. Como el certificado de nuestro
+servidor es auto-firmado hemos de decirle al cliente que nos acepte
+como CA. Desde l&iacute;nea de comando haremos lo siguiente:</p>
+<p>
+<em>java -Djavax.net.ssl.trustStore=.keystore ClienteHTTPS
+https://localhost:8080/</em>
+</p>
+<p>y el resultado ser&aacute; el c&oacute;digo HTML de la p&aacute;gina web que sirve el
+servidor HTTPS.</p>
+<p>Hay que tener en cuenta que el <em>trustStore</em> por defecto es
+el fichero <em>$JRE_HOME/lib/security/cacerts</em> que contiene todos
+los certificados en los que Java conf&iacute;a, aunque podemos importar
+otros desde <em>keytool</em>.</p>
+<a name="N10395"></a><a name="Autentificaci%C3%B3n+del+cliente"></a>
+<h3 class="underlined_5">Autentificaci&oacute;n del cliente</h3>
+<p>Como hemos visto, en HTTPS solamente se autentifica el servidor
+presentando un certificado digital, mientras que el cliente se
+considera an&oacute;mino. Si queremos que, para m&aacute;s seguridad, tambi&eacute;n el
+cliente se autentifique ante el servidor, &eacute;ste deber&aacute; presenstar un
+certificado digital.</p>
+<p>Para forzar que el cliente se autentifique modificaremos el
+c&oacute;digo del servidor <a href="ejemplos/sesion2/ServidorHTTPS.java.txt">ServidorHTTPS.java</a> de
+manera que incluya las l&iacute;neas</p>
+<pre class="code">
+// Utilizar una SocketFactory para crear sockets SSL:
+SSLServerSocketFactory ssf =
+  (SSLServerSocketFactory)SSLServerSocketFactory.getDefault();
+  <strong>SSLServerSocket</strong> ss = (SSLServerSocket)ssf.createServerSocket(8080);
+
+// Requerir autentificaci&oacute;n del cliente
+ss.<strong>setNeedClientAuth</strong>(true);
+</pre>
+<p>Es decir, que utilice sockets de la clase <strong>SSLServerSocket</strong>
+para llamar al m&eacute;todo <strong>setNeedClientAuth()</strong> de dicha clase. El
+resultado es el c&oacute;digo <a href="ejemplos/sesion2/ServidorHTTPSAutorizando.java.txt">ServidorHTTPSAutorizando.java</a>.
+As&iacute;, el cliente <a href="ejemplos/sesion2/ClienteHTTPS.java.txt">ClienteHTTPS.java</a> podr&aacute;
+conectarse a este servidor para que le muestre una p&aacute;gina web. Pero
+antes, la autorizaci&oacute;n m&uacute;tua fuerza a que el cliente incorpore en
+su <em>trustStore</em> un certificado del servidor y &eacute;ste incorpore
+en el suyo un certificado del cliente. Ve&aacute;moslo paso a paso:</p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+
+<td colspan="1" rowspan="1">1. Keystore del cliente</td>
+<td colspan="1" rowspan="1"><em>keytool -genkey -v -keyalg RSA -keystore ks_cliente</em> con
+"CN=sco" y clave "scosco"</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1">2. Keystore del servidor</td>
+<td colspan="1" rowspan="1"><em>keytool -genkey -v -keyalg RSA -keystore ks_servidor</em> con
+"CN=localhost" y clave "dcciadccia"</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1">3. Certificado del servidor</td>
+<td colspan="1" rowspan="1"><em>keytool -export -v -file servidor.cer -keystore
+ks_servidor</em></td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1">4. Truststore del cliente</td>
+<td colspan="1" rowspan="1"><em>keytool -import -v -alias certservidor -file servidor.cer
+-keystore ts_cliente</em> con clave "scosco" reconociendo que
+confiamos en el certificado</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1">5. Certificado del cliente</td>
+<td colspan="1" rowspan="1"><em>keytool -export -v -file cliente.cer -keystore
+ks_cliente</em></td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1">6. Truststore del servidor</td>
+<td colspan="1" rowspan="1"><em>keytool -import -v -alias certcliente -file cliente.cer
+-keystore ts_servidor</em> con clave "dcciadccia" respondiendo que
+confiamos en el certificado</td>
+
+</tr>
+
+</table>
+<p>As&iacute;, lanzaremos el servidor de la siguiente forma</p>
+<p>
+<em>java -S.keyStore=ks_servidor -S.keyStorePassword=dcciadccia
+-S.trustStore=ts_servidor ServidorHTTPSAutorizando</em>
+</p>
+<p>donde hay que sustituir S por <em>Djavax.net.ssl</em> al escribir
+el comando. De la misma manera, en otra ventana lanzaremos el
+cliente:</p>
+<p>
+<em>java -S.keyStore=ks_cliente -S.keyStorePassword=scosco
+-S.trustStore=ts_cliente ClienteHTTPS
+https://localhost:8080</em>
+</p>
+<p>donde de nuevo hay que sustituir S por su valor al escribir el
+comando. El resultado es que el cliente puede acceder a la pagina
+web.</p>
+<p>Siguiendo con el esquema otra posibilidad es que autentifiquemos al cliente 
+no en base a un certificado completo sino a ciertos datos contenidos en el 
+certificado, como por ejemplo el CN del mismo. Para ello, dentro del servidor 
+hemos de incluir, tras el <strong>accept()</strong>, el siguiente fragmento de codigo</p>
+<pre class="code">
+boolean permitido = false;
+
+// Obtener la sesion
+<strong>SSLSession</strong> sesion = ((SSLSocket) s).<strong>getSession();</strong>
+
+// Comprobar la autentificaci&oacute;n del cliente con el AutentificadorCN
+<strong>AutentificadorCN</strong> autentificador = new AutentificadorCN(sesion);
+try {
+  autentificador.<strong>comprobarPermiso()</strong>;
+  permitido = true;
+} catch (<strong>ExcepcionAutentificacion</strong> ea) {
+  permitido = false;
+  System.out.println("Acceso denegado." + ea);
+}
+</pre>
+<p>resultando el c&oacute;digo 
+<a href="ejemplos/sesion2/ServidorHTTPSAutorizando2.java.txt">ServidorHTTPSAutorizando2.java</a>. 
+En definitiva, lo que hace el servidor es acceder a la <strong>SSLSession</strong> para 
+obtener la sesi&oacute;n del socket y usarla para crear un objeto de la clase 
+<strong>AutentificadorCN</strong> que implementa la inferfaz <strong>AutentificadorSSL</strong>. El 
+&uacute;nico m&eacute;todo de dicha interfaz es <strong>comprobarPermiso()</strong> 
+(ver <a href="ejemplos/sesion2/AutentificadorCN.java.txt">AutentificadorCN.java</a>) 
+y b&aacute;sicamente hace lo siguiente:</p>
+<pre class="code">
+
+<strong>// 1. Obtener la secuencia de certificados.</strong>
+X509Certificate[] certChain = null;
+try {
+   certChain = mSession.getPeerCertificateChain();
+} catch (SSLPeerUnverifiedException spue) {
+   // No hay!
+   throw new ExcepcionAutentificacion("Error cadena");
+}
+<strong>// 2. Obtener el certificado del cliente</strong>
+X509Certificate clientCert = certChain[0];
+<strong>// 3. Obtener el principal correspondiente al cliente</strong>
+java.security.Principal client = clientCert.getSubjectDN();
+<strong>// 4. Obtener el nombre del cliente</strong>
+String name = client.getName();
+<strong>// 5. Comprobar que CN=sco</strong>
+if (name.indexOf("CN=sco,")!=0) {
+  throw new ExcepcionAutentificacion("Cliente no es sco");
+}
+</pre>
+<p>Es decir, en caso de que el CN no coincida con "sco" se lanza una 
+<strong>ExcepcionAutentificacion</strong> que causar&aacute; que se deniege el acceso al cliente. 
+Para probar este esquema podemos utilizar los almancenes creados para el ejemplo 
+anterior ya que en el keystore del cliente los certificados tenian CN=sco.Si 
+volvemos a ejecutar el ejemplo anterior pero con este nuevo servidor el 
+resultado ser&aacute; o bien acceder correctamente a una p&aacute;gina web que nos da la 
+bienvenida o a una p&aacute;gina web con un mensaje de rechazo, lo que ocurrir&aacute; si 
+utilizamos un certificado con otro CN aunque todo lo dem&aacute;s sea 
+correcto.</p>
+</div>
+
+<p class="pageBreakAfter"></p>
+
+</div>
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+        Copyright &copy;
+         2006 Depto. CCIA</div>
+</div>
+</body>
+</html>

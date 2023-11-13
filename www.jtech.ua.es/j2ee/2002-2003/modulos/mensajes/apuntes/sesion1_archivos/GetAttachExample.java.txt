@@ -1,0 +1,95 @@
+import java.io.*;
+import java.util.Properties;
+import javax.mail.*;
+import javax.mail.internet.*;
+
+public class GetAttachExample {
+  public static void main (String args[]) throws Exception {
+    String host = args[0];
+    String username = args[1];
+    String password = args[2];
+
+    // Create empty properties
+    Properties props = new Properties();
+
+    // Get session
+    Session session = Session.getDefaultInstance(props, null);
+
+    // Get the store
+    Store store = session.getStore("pop3");
+
+    // Connect to store
+    store.connect(host, username, password);
+
+    // Get folder
+    Folder folder = store.getFolder("INBOX");
+
+    // Open read-only
+    folder.open(Folder.READ_ONLY);
+
+    BufferedReader reader = new BufferedReader (
+      new InputStreamReader(System.in));
+
+    // Get directory
+    Message message[] = folder.getMessages();
+
+    for (int i=0, n=message.length; i<n; i++) {
+
+       // Display from field and subject
+       System.out.println(i + ": " + message[i].getFrom()[0] 
+         + "\t" + message[i].getSubject());
+
+      System.out.println("Do you want to read message? [YES to read/QUIT to end]");
+      String line = reader.readLine();
+      if ("YES".equals(line)) {
+
+        // Crear una multipart
+        Multipart mp = (Multipart)(message[i].getContent());
+        
+        // Bucle para extraer las parts
+        for (int j=0, m=mp.getCount(); j<m; j++) {
+
+           // Obtener las partes y su disposición
+           Part part = mp.getBodyPart(j);
+           String disposition = part.getDisposition();
+
+           // Testar Attachment
+           if ((disposition != null) && 
+               (disposition.equals(Part.ATTACHMENT) || disposition.equals(Part.INLINE))) {
+                saveFile(part.getFileName(), part.getInputStream());
+           }
+
+        }
+        
+
+      } else if ("QUIT".equals(line)) {
+        break;
+      }
+    }
+
+    // Close connection 
+    folder.close(false);
+    store.close();
+  }
+
+  public static void saveFile(String filename, InputStream fis) {
+  
+    // Leer de fis y escribir en fos
+    try {
+
+    // Definir un output-stream
+    // Ponemos extensión ".sco" para no borrar nuestros ficheros
+    FileOutputStream fos = new FileOutputStream(filename+".sco"); 
+      int palabra;
+      while ((palabra = fis.read())!= -1) {
+        fos.write(palabra);  
+      }
+       
+    fis.close();
+    fos.close();
+
+    } catch (IOException ioe) {System.out.println("File error"); }
+
+  }
+
+}

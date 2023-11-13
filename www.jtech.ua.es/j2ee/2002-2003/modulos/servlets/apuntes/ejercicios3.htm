@@ -1,0 +1,163 @@
+<!-- saved from url=(0022)http://internet.e-mail -->
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+                                                            
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+                                                            
+  <meta name="Author" content="Nacho">
+                                                            
+  <meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+                                                        
+  <link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+  <title>Ejercicios de Servlets</title>
+</head>
+  <body>
+      <b>      
+<h1>Conceptos avanzados</h1>
+<h2>&nbsp;</h2>
+      </b><p><b>1. (SUBASTA) </b>Hasta ahora, la aplicación de subastas hace un
+      seguimiento de usuarios valiéndose de un objeto <i>Vector</i> que los
+      almacena. Ahora vamos a pasar a tratar a los usuarios mediante una base de
+      datos. </p>
+           
+      <p>Para ello, en el ZIP de la plantilla, se proporciona la clase <i>PoolConexiones</i>
+      vista en la parte de teoría, y el fichero JAR para poder comunicar con
+      una base de datos MySQL. Copiad la clase Java en el directorio <i>WEB-INF/classes</i>
+      de la aplicación de subastas, y el fichero JAR en el directorio <i>WEB-INF/lib</i>. </p>
+           
+      <p>Una vez hecho eso, modificamos el servlet <i>ServletMain</i> para poder
+      utilizar una <a href="ejercicios/bdsubasta.zip"> base de datos</a> en lugar del vector <i>usuarios</i> utilizado
+      hasta ahora. Los cambios a realizar son: </p>
+           
+      <p>&nbsp; </p>
+           
+      <p><b>a) </b>Sustituir el campo <i>usuarios</i>: </p>
+           
+      <pre class="codigo">Vector usuarios = new Vector();</pre>
+           
+      <p>Por un pool de conexiones de unas 30 conexiones, a la base de datos
+      &quot;subasta&quot;. Definimos el campo al principio de la clase: </p>
+           
+      <pre class="codigo">PoolConexiones pc;</pre>
+           
+      <p>Y luego le asignamos memoria en el método <b>init()</b>: </p>
+           
+      <pre class="codigo">pc = new PoolConexiones(30, &quot;subasta&quot;);</pre>
+           
+      <p>Podemos añadir un método <b>destroy()</b> para liberar las conexiones
+      al finalizar el servlet: </p>
+           
+      <pre class="codigo">public void destroy() 
+{
+	for (int i = 0; i &lt; pc.getMaxConexiones(); i++) 
+	{ 
+		pc.cierraConexion(i); 
+	} 
+}</pre>
+           
+      <p>&nbsp; </p>
+           
+      <p><b>b)</b> Después, modificamos los métodos <i>registraUsuario()</i>, <i>validaUsuario()</i>
+      y <i>buscaUsuario()</i>, para que no utilicen el vector <i>usuarios</i>
+      antiguo, sino que acudan a la base de datos: </p>
+           
+      <p>El método <b>buscaUsuario(login)</b> ya no nos hace falta, así que
+      podemos eliminarlo. También podemos eliminar la clase interna <b>Usuario</b>. </p>
+           
+      <p>En <b>registraUsuario(login, password, email)</b>: </p>
+           
+      <ul>
+        <li>Obtenemos una conexión libre para acceder a la base de datos:<pre class="codigo">Connection con = null;
+do {
+	con = pc.conexionLibre();
+} while (con == null);</pre>
+           
+        </li>
+        <li>Intentamos insertar datos en la base de datos:<pre class="codigo">Statement stmt = con.createStatement();
+int res = stmt.executeUpdate(
+   &quot;INSERT INTO usuarios(login, password, email) VALUES('&quot; +
+   login + &quot;','&quot; + password + &quot;','&quot; + email + &quot;')&quot;);</pre>
+           
+        </li>
+        <li>Finalmente, liberamos la conexión:<pre class="codigo">pc.liberaConexion(con);</pre>
+           
+        </li>
+      </ul>
+      <ul>
+        <li>Si <i>res</i> es mayor que 0 es que se ha añadido el registro, si
+          no, no se ha podido registrar el usuario:<pre class="codigo">return (res &gt; 0);</pre>
+           
+        </li>
+      </ul>
+      <p>En <b>validaUsuario(login, password)</b>:</p>
+      <ul>
+        <li>Obtenemos una conexión libre para acceder a la base de datos:<pre class="codigo">Connection con = null;
+do {
+	con = pc.conexionLibre();
+} while (con == null);</pre>
+           
+        </li>
+        <li>Buscamos un usuario en la base de datos con ese login y password:<pre class="codigo">Statement stmt = con.createStatement();
+ResultSet rs = stmt.executeQuery(
+   &quot;SELECT * FROM usuarios WHERE login='&quot; + login + 
+   &quot;' AND password = '&quot; + password + &quot;'&quot;);</pre>
+           
+        </li>
+        <li>Finalmente, liberamos la conexión:<pre class="codigo">pc.liberaConexion(con);</pre>
+           
+        </li>
+        <li>Si existe usuario, devolvemos verdadero, si no, falso:<pre class="codigo">return (rs.next());</pre>
+           
+        </li>
+      </ul>
+      <p><b>NOTA</b>: para poder utilizar los objetos <i>Connection</i>, <i>ResultSet</i>,
+      etc, deberemos importar el paquete <b>java.sql.*</b>.</p>
+      <p><b>NOTA</b>: algunas líneas de código de las expuestas anteriormente
+      es posible que necesiten ir en bloques <i>try... catch... </i>para
+      capturar excepciones propias del manejo de base de datos. Se omiten los
+      bloques <i>try...catch</i> por simplicidad.</p>
+           
+      <p>&nbsp;</p>
+      <p>Para&nbsp; instalar la base de datos, debéis seguir estos pasos:</p>
+<ul>
+  <li>Si tenéis un usuario creado con login <i>root</i> y password <i>mysql</i>,
+    seguid los pasos siguientes (si no, cambiad dicho login y password por el
+    que tengáis, a la hora de seguir los pasos):
+    <ul>
+      <li>Lanzad el servidor de MySQL</li>
+      <li>Descomprimid el ZIP de la base de datos. Es un fichero de texto con
+        las sentencias para crear la base de datos. Lo que hay que hacer para
+        crearla es pasárselo como entrada al cliente de MySQL:</li>
+    </ul>
+  </li>
+</ul>
+      <blockquote>
+        <blockquote>
+          <pre class="codigo">mysql -uroot -pmysql &lt; subasta.sql</pre>
+           
+        </blockquote>
+<ul type="circle">
+  <li>Lanzad el cliente MySQL (si no estáis ya dentro)</li>
+</ul>
+        <blockquote>
+          <pre class="codigo">mysql -uroot -pmysql</pre>
+           
+        </blockquote>
+<ul type="circle">
+  <li>Ejecutad los siguientes comandos, para dar permiso al usuario <i>root</i>
+    sobre la base de datos <i>subasta</i>:</li>
+</ul>
+        <blockquote>
+          <pre class="codigo">GRANT ALL PRIVILEGES ON subasta.* to 
+'root'@'localhost.localdomain' 
+identified by 'mysql';
+
+FLUSH PRIVILEGES;</pre>
+           
+        </blockquote>
+      </blockquote>
+      <p>&nbsp;</p>
+           
+        </body>
+        </html>

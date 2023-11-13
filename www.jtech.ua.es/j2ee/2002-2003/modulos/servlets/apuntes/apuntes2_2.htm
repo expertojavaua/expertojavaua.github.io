@@ -1,0 +1,392 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="Nacho">
+   <meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+   <title>Tema 2: Manejo de Cookies y Sesiones</title>
+<link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+</head>
+<body>
+
+<h2>2.2. Seguimiento de sesiones</h2>
+<p>El seguimiento de sesiones es un mecanismo empleado por los servlets para
+gestionar un estado sobre las peticiones realizadas desde un mismo cliente (un
+mismo navegador) a lo largo de un período de tiempo determinado. Las sesiones
+se comparten por los servlets a los que accede un cliente (algo útil si
+queremos construir una aplicación basada en múltiples servlets).</p>
+<p>Para utilizar el seguimiento de sesiones se tienen los pasos:</p>
+<ul>
+  <li>Utilizar una sesión (objeto <b>HttpSession</b>) para un usuario</li>
+  <li>Almacenar u obtener datos del objeto <i>HttpSession</i></li>
+  <li>Opcionalmente, invalidar la sesión</li>
+</ul>
+<h3>2.2.1. Obtener una sesión</h3>
+<p>El método <b>getSession()</b> del objeto <b>HttpServletRequest </b>obtiene
+una sesión de usuario.</p>
+<pre class="codigo">public HttpSession getSession()
+public HttpSession getSession(boolean crear)</pre>
+           
+<p>El primer método obtiene la sesión actual, o crea una si no existe. Con el segundo método
+podemos establecer, mediante el flag booleano, si queremos crear una nueva si no
+existe (<i>true</i>) o no (<i>false</i>). Si la sesión es nueva, el método <b>isNew()</b> del <i>HttpSession</i>
+devuelve <i>true</i>, y la sesión no tiene ningún dato asociado. Deberemos ir
+añadiéndole datos tras crearla.</p>
+<p>Para mantener la sesión de forma adecuada, debemos llamar a <i>getSession()</i>
+antes de que se escriba nada en la respuesta <i>HttpServletResponse</i> (y si
+utilizamos un <i>Writer</i>, debemos obtenerla antes de obtener el <i>Writer</i>,
+no antes de escribir datos).</p>
+<p>Por ejemplo:</p>
+<pre class="codigo">public class MiServlet extends HttpServlet 
+{ 
+	public void doGet (HttpServletRequest request, 
+			   HttpServletResponse response) 
+	throws ServletException, IOException
+	{	
+		HttpSession sesion = request.getSession(true);
+		...
+		PrintWriter out = response.getWriter();
+		...
+	}
+}</pre>
+           
+<h3>2.2.2. Guardar y obtener datos de la sesión</h3>
+<p>La interfaz <b>HttpSession </b>proporciona métodos que permiten almacenar y
+obtener:</p>
+<ul>
+  <li>Propiedades de la sesión, como por ejemplo su identificador:</li>
+</ul>
+<blockquote>
+  <pre class="codigo">public String getId()</pre>
+           
+</blockquote>
+<ul>
+  <li>Datos de la aplicación, que se almacenan y obtienen como pares
+    nombre-valor, donde el nombre es un <i>String</i> que identifica al dato, y
+    el valor es un <i>Object</i> con el valor asociado. Tendremos que tener
+    cuidado de no sobreescribir datos de un servlet desde otro accidentalmente.
+    Se tienen los métodos:</li>
+</ul>
+<blockquote>
+  <pre class="codigo">public Object getAttribute(String nombre)
+public void   setAttribute(String nombre, Object valor)
+public void   removeAttribute(String nombre)</pre>
+           
+  <p>que obtienen / establecen / eliminan, respectivamente, valores de atributos. Estos
+  métodos eran <i>getValue()</i>, <i>putValue()</i>  y <i>removeValue()
+  </i>hasta la versión
+  2.2 de servlets. Se tienen además métodos como <i>getAttributeNames()</i>
+  para obtener los nombres de los atributos que se tienen almacenados para la
+  sesión, y otros métodos de utilidad en la clase <i>HttpSession</i>.</p>
+</blockquote>
+<p>Por ejemplo:</p>
+<pre class="codigo">public class MiServlet extends HttpServlet 
+{ 
+	public void doGet (HttpServletRequest request, 
+			   HttpServletResponse response) 
+	throws ServletException, IOException
+	{	
+		HttpSession sesion = request.getSession(true);
+		String nombreUsuario = 
+		   (String)(sesion.getAttribute(&quot;nombre&quot;));
+		sesion.setAttribute(&quot;password&quot;, &quot;secreto&quot;);
+	}
+}</pre>
+           
+<p>El ejemplo lee el atributo &quot;nombre&quot; de la sesión, y establece el
+atributo &quot;password&quot; al valor &quot;secreto&quot;.</p>
+
+<h3>2.2.3. Invalidar la sesión</h3>
+<p>Una sesión de usuario puede invalidarse manualmente, o automáticamente
+(dependiendo de dónde esté ejecutando el servlet). Esto implica eliminar el
+objeto <i>HttpSession</i><b> </b>y sus valores de la memoria. Se tienen los
+métodos de <i>HttpSession</i>:</p>
+<pre class="codigo">public int getMaxInactiveInterval()
+public void invalidate()</pre>
+           
+<p>Para invalidarla automáticamente, la sesión expira cuando transcurre el
+tiempo indicado por el método <b>getMaxInactiveInterval()</b> entre dos accesos
+del cliente (en segundos)</p>
+<p>Para invalidar manualmente una sesión, se emplea el método <b>invalidate()</b>
+de la misma. Esto puede ser interesante por ejemplo en comercio electrónico:
+podemos mantener una sesión donde se vayan acumulando los productos que un
+usuario quiera comprar, e invalidar la sesión (borrarla) cuando el usuario
+compre los productos.</p>
+<p>Por ejemplo:</p>
+<pre class="codigo">public class MiServlet extends HttpServlet 
+{ 
+	public void doGet (HttpServletRequest request, 
+			   HttpServletResponse response) 
+	throws ServletException, IOException
+	{	
+		HttpSession sesion = request.getSession(true);
+		...
+		sesion.invalidate();
+		...
+	}
+}</pre>
+           
+<h3>2.2.4. Compatibilidad con los navegadores</h3>
+<p>Una alternativa para el seguimiento de sesiones consiste en la <b>reescritura
+de URLs</b>. Con esta técnica, se añaden como parámetros de la URL los datos
+relativos a la sesión actual, de forma que se van conservando entre las
+páginas.</p>
+<p>El seguimiento de sesiones por defecto emplea cookies para almacenar el
+identificador de una sesión. Para poder utilizar seguimiento de sesiones con
+usuarios que accedan desde navegadores que no utilicen cookies, los servlets
+aplican automáticamente
+la reescritura de URLs cuando no se utilizan cookies.&nbsp;</p>
+<p>Para poder utilizar esto, debemos codificar todas las URLs que referenciemos.
+Para esto se emplean los métodos:</p>
+<pre class="codigo">public String encodeURL(String url)
+public String encodeRedirectURL(String url) </pre>
+           
+<p>El primero se emplea para asociar identificadores con URLs, se utilizará
+cuando pongamos urls en el contenido de la página que generamos. El segundo se
+utiliza para
+asociar identificadores con redirecciones. Lo emplearemos cuando utilicemos
+métodos <i>sendRedirect()</i>, para codificar la URL que se le pasa. Ambos devuelven la URL sobreescrita
+si la sobreescritura ha sido necesaria, o la misma URL si no ha sido necesario
+sobreescribir.</p>
+<p>Por ejemplo:</p>
+<pre class="codigo">public class MiServlet extends HttpServlet 
+{ 
+	public void doGet (HttpServletRequest request, 
+			   HttpServletResponse response) 
+	throws ServletException, IOException
+	{			
+		...
+		String url = response.encodeURL(
+		   &quot;http://localhost:8080/mipagina.html&quot;);
+		out.println (&quot;&lt;a href=\&quot;&quot; + url + &quot;\&quot;&gt;...&lt;/a&gt;&quot;);
+		...
+		String url2 = response.encodeRedirectURL(
+		   &quot;http://otrapagina.com&quot;);
+		response.sendRedirect(url2);
+	}
+}</pre>
+           
+<h3>2.2.5. Oyentes</h3>
+<p>Existen tres tipos de oyentes (<i>listeners</i>) que podemos utilizar en
+sesiones:</p>
+<ul>
+  <li><b>HttpSessionListener</b> se emplea para eventos de crear la sesión y
+    terminarla. Tiene los métodos:</li>
+</ul>
+<blockquote>
+  <pre class="codigo">public void sessionCreated(HttpSessionEvent e)
+public void sessionDestroyed(HttpSessionEvent e)</pre>
+           
+  <p>El objeto que implemente esta interfaz ejecutará el código de <i>sessionCreated()</i>
+  cuando se inicie la sesión, y el de <i>sessionDestroyed()</i> cuando se
+  termine. Las clases que implementen este oyente deben configurarse en el
+  fichero descriptor de la aplicación, mediante etiquetas <b>&lt;listener&gt;</b>:</p>
+  <pre class="codigo">&lt;listener&gt;
+	&lt;listener-class&gt;clase&lt;/listener-class&gt;
+&lt;/listener&gt;</pre>
+           
+  <p>donde en <b>&lt;listener-class&gt;</b> se pone el nombre (completo) de la
+  clase que implementa el listener. Así, el listener se registra, y el servidor
+  ya sabe que tiene que notificarle en los momentos oportunos. Veremos ejemplos
+  de uso de estos objetos con los oyentes de contexto (<i>ServletContextListener</i>),
+  más adelante.</p>
+</blockquote>
+<ul>
+  <li><b>HttpSessionBindingListener</b>: si un objeto asociado a una sesión
+    implementa esta interfaz, la sesión se encarga de notificarle de cuándo
+    son añadidos y eliminados de la sesión. Para ello la interfaz tiene los
+    métodos:&nbsp;</li>
+</ul>
+<blockquote>
+  <pre class="codigo">public void valueBound(HttpSessionBindingEvent e)
+public void valueUnbound(HttpSessionBindingEvent e)</pre>
+           
+  <p>El objeto que implemente esta interfaz ejecutará el código de <i>valueBound()</i>
+  cuando la sesión lo añada, y el método <i>valueUnbound()</i> cuando la
+  sesión lo elimine.</p>
+</blockquote>
+<ul>
+  <li><b>HttpSessionActivationListener</b>: si un objeto asociado a una sesión
+    implementa esta interfaz, la sesión se encarga de notificarles de cuándo
+    el contenedor cambia la sesión entre máquinas virtuales distintas, para un
+    sistema distribuido. Para ello tiene los
+    métodos:&nbsp;</li>
+</ul>
+<blockquote>
+  <pre class="codigo">public void sessionDidActivate(HttpSessionEvent e)
+public void sessionWillPassivate(HttpSessionEvent e)</pre>
+           
+  <p>El objeto que implemente esta interfaz ejecutará el código de <i>sessionDidActivate()</i>
+  cuando la sesión se active, y <i>sessionWillPassivate() </i>cuando se vuelva
+  pasiva.</p>
+           
+</blockquote>
+           
+<h3>2.2.6. Ejemplos</h3>
+<p>Aquí tenéis un <a href="ejemplos/sesiones/ejemplosesiones.war.zip">WAR</a> con un ejemplo de uso de sesiones.
+El servlet <i>ServletSesiones</i> cuenta el número de visitas a una
+    página en una sola sesión (en una sola ventana de navegador).</p>
+
+<pre class="codigo">import java.io.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
+
+public class ServletSesiones extends HttpServlet
+{
+   <b>// Metodo para GET
+</b>	
+   public void doGet(HttpServletRequest request, 
+		     HttpServletResponse response) 
+   throws ServletException, IOException
+   {
+	response.setContentType(&quot;text/html&quot;);
+	response.setHeader(&quot;Cache-Control&quot;, &quot;no-cache&quot;);
+		
+	HttpSession sesion = request.getSession();
+	PrintWriter out = response.getWriter();
+
+	if (sesion.isNew())
+	{
+<b>	   // Mostramos un mensaje de primera visita
+</b>
+	   out.println (&quot;&lt;HTML&gt;&quot;);			
+	   out.println (&quot;&lt;BODY&gt;&quot;);			
+	   out.println (&quot;Primera visita a la pagina&quot;);
+	   out.println (&quot;&lt;BR&gt;&quot;);
+	   out.println (&quot;&lt;/BODY&gt;&quot;);			
+	   out.println (&quot;&lt;/HTML&gt;&quot;);			
+			
+	   sesion.setAttribute(&quot;contador&quot;, new Integer(1));
+			
+	} else {
+
+	<b>   // Mostramos el numero de visitas 
+	   // y actualizamos el contador
+</b>			
+	   int contador = ((Integer)
+	   (sesion.getAttribute(&quot;contador&quot;))).intValue();
+	   contador++;
+
+	   out.println (&quot;&lt;HTML&gt;&quot;);			
+	   out.println (&quot;&lt;BODY&gt;&quot;);			
+	   out.println (&quot;Visita numero &quot; + 
+			contador + 
+			&quot; a la pagina en esta sesion&quot;);
+	   out.println (&quot;&lt;BR&gt;&quot;);
+	   out.println (&quot;&lt;/BODY&gt;&quot;);
+	   out.println (&quot;&lt;/HTML&gt;&quot;);
+			
+	   sesion.setAttribute(&quot;contador&quot;, 
+		               new Integer(contador));
+	}		
+   }	
+}</pre>
+           
+<p>Copiad el ejemplo en el directorio <i>webapps</i> de Tomcat, reiniciar el
+servidor y probadlo con:</p>
+
+<pre class="codigo">http://localhost:8080/ejemplosesiones/servlet/ServletSesiones </pre>
+           
+<p>&nbsp;</p>
+
+<p>El siguiente servlet utiliza como atributo de sesión una clase interna <i>ObjetoSesion</i>,
+que implementa la interfaz <i>HttpSessionBindingListener</i>. Dicho objeto tiene
+dentro un valor entero, y una cadena. Cada vez que el objeto se añade a la
+sesión se modifica un mensaje de texto, mostrando el valor entero actual del
+objeto:</p>
+
+<pre class="codigo">import java.io.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
+
+public class EjemploServletListener extends HttpServlet
+{
+   public void doGet(HttpServletRequest request, 
+		     HttpServletResponse response) 
+   throws ServletException, IOException
+   {
+	response.setContentType(&quot;text/html&quot;);
+	response.setHeader(&quot;Cache-Control&quot;, 
+			   &quot;no-cache&quot;);
+		
+	HttpSession sesion = request.getSession();
+	PrintWriter out = response.getWriter();
+
+	if (sesion.isNew())
+	{
+<b>	   // Mostramos mensaje de inicio
+</b>
+	   out.println (&quot;&lt;HTML&gt;&lt;BODY&gt;&quot; + 
+			&quot;Mensaje de inicio&quot; + 
+			&quot;&lt;/BODY&gt;&lt;/HTML&gt;&quot;);
+	   sesion.setAttribute(&quot;contador&quot;, 
+			       new ObjetoSesion(1));
+			
+	} else {
+
+<b>	   // Mostramos el valor actual del 
+	   // objeto &quot;contador&quot;
+</b>			
+	   int contador = ((ObjetoSesion)
+	      (sesion.getAttribute(&quot;contador&quot;))).getValor();
+	   String mensaje = ((ObjetoSesion)
+	      (sesion.getAttribute(&quot;contador&quot;))).getEnlazado();
+
+	   out.println (&quot;&lt;HTML&gt;&lt;BODY&gt;&quot;);			
+	   out.println (&quot;Valor: &quot; + contador + 
+			&quot;&lt;br&gt;Enlazado: &quot; + mensaje);
+	   out.println (&quot;&lt;/BODY&gt;&lt;/HTML&gt;&quot;);			
+		
+	   sesion.setAttribute(&quot;contador&quot;, 
+	      new ObjetoSesion(contador+1));
+	}		
+   }	
+}
+
+class ObjetoSesion implements HttpSessionBindingListener
+{
+   int valor;
+   String enlazado = &quot;NO&quot;;
+	
+   public ObjetoSesion(int valor)
+   {
+	this.valor = valor;
+   }
+	
+   public void valueBound(HttpSessionBindingEvent e)
+   {
+	enlazado = &quot;Objeto enlazado a la sesion &quot; + 
+		   valor + &quot; veces&quot;;
+   }
+	
+   public void valueUnbound(HttpSessionBindingEvent e)
+   {
+   }
+	
+   public String getEnlazado()
+   {
+	return enlazado;
+   }
+	
+   public int getValor()
+   {
+  	return valor;
+   }
+}</pre>
+           
+<p>Si cargamos el servlet por primera vez en la sesión, muestra el mensaje:</p>
+
+  <pre class="codigo">Mensaje de bienvenida</pre>
+           
+<p>Luego, cada vez que recarguemos el servlet se entrará en el bloque <i>else</i>,
+y al llamar al método <i>setAttribute()</i> se disparará el método <i>valueBound()</i>,
+actualizando la cadena. Con esto, con cada recarga se mostrará el mensaje:</p>
+
+  <pre class="codigo">Valor: i
+Enlazado: Objeto enlazado a la sesion i veces</pre>
+           
+<p>siendo <i>i</i> el número de veces que se ha enlazado (que coincide con el
+número de veces que se ha cargado el servlet, en este caso).</p>
+
+</body>
+</html>

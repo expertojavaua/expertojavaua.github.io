@@ -1,0 +1,2217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 1.5.2">
+<meta name="author" content="Fran García">
+<title>Grails</title>
+<style>/*! normalize.css v2.1.2 | MIT License | git.io/normalize */
+/* ========================================================================== HTML5 display definitions ========================================================================== */
+/** Correct `block` display not defined in IE 8/9. */
+article, aside, details, figcaption, figure, footer, header, hgroup, main, nav, section, summary { display: block; }
+
+/** Correct `inline-block` display not defined in IE 8/9. */
+audio, canvas, video { display: inline-block; }
+
+/** Prevent modern browsers from displaying `audio` without controls. Remove excess height in iOS 5 devices. */
+audio:not([controls]) { display: none; height: 0; }
+
+/** Address `[hidden]` styling not present in IE 8/9. Hide the `template` element in IE, Safari, and Firefox < 22. */
+[hidden], template { display: none; }
+
+script { display: none !important; }
+
+/* ========================================================================== Base ========================================================================== */
+/** 1. Set default font family to sans-serif. 2. Prevent iOS text size adjust after orientation change, without disabling user zoom. */
+html { font-family: sans-serif; /* 1 */ -ms-text-size-adjust: 100%; /* 2 */ -webkit-text-size-adjust: 100%; /* 2 */ }
+
+/** Remove default margin. */
+body { margin: 0; }
+
+/* ========================================================================== Links ========================================================================== */
+/** Remove the gray background color from active links in IE 10. */
+a { background: transparent; }
+
+/** Address `outline` inconsistency between Chrome and other browsers. */
+a:focus { outline: thin dotted; }
+
+/** Improve readability when focused and also mouse hovered in all browsers. */
+a:active, a:hover { outline: 0; }
+
+/* ========================================================================== Typography ========================================================================== */
+/** Address variable `h1` font-size and margin within `section` and `article` contexts in Firefox 4+, Safari 5, and Chrome. */
+h1 { font-size: 2em; margin: 0.67em 0; }
+
+/** Address styling not present in IE 8/9, Safari 5, and Chrome. */
+abbr[title] { border-bottom: 1px dotted; }
+
+/** Address style set to `bolder` in Firefox 4+, Safari 5, and Chrome. */
+b, strong { font-weight: bold; }
+
+/** Address styling not present in Safari 5 and Chrome. */
+dfn { font-style: italic; }
+
+/** Address differences between Firefox and other browsers. */
+hr { -moz-box-sizing: content-box; box-sizing: content-box; height: 0; }
+
+/** Address styling not present in IE 8/9. */
+mark { background: #ff0; color: #000; }
+
+/** Correct font family set oddly in Safari 5 and Chrome. */
+code, kbd, pre, samp { font-family: monospace, serif; font-size: 1em; }
+
+/** Improve readability of pre-formatted text in all browsers. */
+pre { white-space: pre-wrap; }
+
+/** Set consistent quote types. */
+q { quotes: "\201C" "\201D" "\2018" "\2019"; }
+
+/** Address inconsistent and variable font size in all browsers. */
+small { font-size: 80%; }
+
+/** Prevent `sub` and `sup` affecting `line-height` in all browsers. */
+sub, sup { font-size: 75%; line-height: 0; position: relative; vertical-align: baseline; }
+
+sup { top: -0.5em; }
+
+sub { bottom: -0.25em; }
+
+/* ========================================================================== Embedded content ========================================================================== */
+/** Remove border when inside `a` element in IE 8/9. */
+img { border: 0; }
+
+/** Correct overflow displayed oddly in IE 9. */
+svg:not(:root) { overflow: hidden; }
+
+/* ========================================================================== Figures ========================================================================== */
+/** Address margin not present in IE 8/9 and Safari 5. */
+figure { margin: 0; }
+
+/* ========================================================================== Forms ========================================================================== */
+/** Define consistent border, margin, and padding. */
+fieldset { border: 1px solid #c0c0c0; margin: 0 2px; padding: 0.35em 0.625em 0.75em; }
+
+/** 1. Correct `color` not being inherited in IE 8/9. 2. Remove padding so people aren't caught out if they zero out fieldsets. */
+legend { border: 0; /* 1 */ padding: 0; /* 2 */ }
+
+/** 1. Correct font family not being inherited in all browsers. 2. Correct font size not being inherited in all browsers. 3. Address margins set differently in Firefox 4+, Safari 5, and Chrome. */
+button, input, select, textarea { font-family: inherit; /* 1 */ font-size: 100%; /* 2 */ margin: 0; /* 3 */ }
+
+/** Address Firefox 4+ setting `line-height` on `input` using `!important` in the UA stylesheet. */
+button, input { line-height: normal; }
+
+/** Address inconsistent `text-transform` inheritance for `button` and `select`. All other form control elements do not inherit `text-transform` values. Correct `button` style inheritance in Chrome, Safari 5+, and IE 8+. Correct `select` style inheritance in Firefox 4+ and Opera. */
+button, select { text-transform: none; }
+
+/** 1. Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio` and `video` controls. 2. Correct inability to style clickable `input` types in iOS. 3. Improve usability and consistency of cursor style between image-type `input` and others. */
+button, html input[type="button"], input[type="reset"], input[type="submit"] { -webkit-appearance: button; /* 2 */ cursor: pointer; /* 3 */ }
+
+/** Re-set default cursor for disabled elements. */
+button[disabled], html input[disabled] { cursor: default; }
+
+/** 1. Address box sizing set to `content-box` in IE 8/9. 2. Remove excess padding in IE 8/9. */
+input[type="checkbox"], input[type="radio"] { box-sizing: border-box; /* 1 */ padding: 0; /* 2 */ }
+
+/** 1. Address `appearance` set to `searchfield` in Safari 5 and Chrome. 2. Address `box-sizing` set to `border-box` in Safari 5 and Chrome (include `-moz` to future-proof). */
+input[type="search"] { -webkit-appearance: textfield; /* 1 */ -moz-box-sizing: content-box; -webkit-box-sizing: content-box; /* 2 */ box-sizing: content-box; }
+
+/** Remove inner padding and search cancel button in Safari 5 and Chrome on OS X. */
+input[type="search"]::-webkit-search-cancel-button, input[type="search"]::-webkit-search-decoration { -webkit-appearance: none; }
+
+/** Remove inner padding and border in Firefox 4+. */
+button::-moz-focus-inner, input::-moz-focus-inner { border: 0; padding: 0; }
+
+/** 1. Remove default vertical scrollbar in IE 8/9. 2. Improve readability and alignment in all browsers. */
+textarea { overflow: auto; /* 1 */ vertical-align: top; /* 2 */ }
+
+/* ========================================================================== Tables ========================================================================== */
+/** Remove most spacing between table cells. */
+table { border-collapse: collapse; border-spacing: 0; }
+
+meta.foundation-mq-small { font-family: "only screen and (min-width: 768px)"; width: 768px; }
+
+meta.foundation-mq-medium { font-family: "only screen and (min-width:1280px)"; width: 1280px; }
+
+meta.foundation-mq-large { font-family: "only screen and (min-width:1440px)"; width: 1440px; }
+
+*, *:before, *:after { -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
+
+html, body { font-size: 97%; }
+
+body { background: white; color: #222222; padding: 0; margin: 0; font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif; font-weight: normal; font-style: normal; line-height: 1; position: relative; cursor: auto; }
+
+a:hover { cursor: pointer; }
+
+img, object, embed { max-width: 100%; height: auto; }
+
+object, embed { height: 100%; }
+
+img { -ms-interpolation-mode: bicubic; }
+
+#map_canvas img, #map_canvas embed, #map_canvas object, .map_canvas img, .map_canvas embed, .map_canvas object { max-width: none !important; }
+
+.left { float: left !important; }
+
+.right { float: right !important; }
+
+.text-left { text-align: left !important; }
+
+.text-right { text-align: right !important; }
+
+.text-center { text-align: center !important; }
+
+.text-justify { text-align: justify !important; }
+
+.hide { display: none; }
+
+.antialiased, body { -webkit-font-smoothing: antialiased; }
+
+img { display: inline-block; vertical-align: middle; }
+
+textarea { height: auto; min-height: 50px; }
+
+select { width: 100%; }
+
+p.lead, .paragraph.lead > p, #preamble > .sectionbody > .paragraph:first-of-type p { font-size: 1.21875em; line-height: 1.6; }
+
+.subheader, .admonitionblock td.content > .title, .audioblock > .title, .exampleblock > .title, .imageblock > .title, .listingblock > .title, .literalblock > .title, .stemblock > .title, .openblock > .title, .paragraph > .title, .quoteblock > .title, table.tableblock > .title, .verseblock > .title, .videoblock > .title, .dlist > .title, .olist > .title, .ulist > .title, .qlist > .title, .hdlist > .title { line-height: 1.4; color: #6f6f6f; font-weight: 300; margin-top: 0.2em; margin-bottom: 0.5em; }
+
+/* Typography resets */
+div, dl, dt, dd, ul, ol, li, h1, h2, h3, #toctitle, .sidebarblock > .content > .title, h4, h5, h6, pre, form, p, blockquote, th, td { margin: 0; padding: 0; direction: ltr; }
+
+/* Default Link Styles */
+a { color: #1164be; text-decoration: none; line-height: inherit; }
+a img { border: none; }
+
+/* Default paragraph styles */
+p { font-family: inherit; font-weight: normal; font-size: 1em; line-height: 1.4; margin-bottom: 1em; text-rendering: optimizeLegibility; }
+p aside { font-size: 0.875em; line-height: 1.35; font-style: italic; }
+
+/* Default header styles */
+h1, h2, h3, #toctitle, .sidebarblock > .content > .title, h4, h5, h6 { font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif; font-weight: bold; font-style: normal; color: #1c355e; text-rendering: optimizeLegibility; margin-top: 1em; margin-bottom: 0.5em; line-height: 1.2125em; }
+h1 small, h2 small, h3 small, #toctitle small, .sidebarblock > .content > .title small, h4 small, h5 small, h6 small { font-size: 60%; color: #6f6f6f; line-height: 0; }
+
+h1 { font-size: 2.125em; }
+
+h2 { font-size: 1.6875em; }
+
+h3, #toctitle, .sidebarblock > .content > .title { font-size: 1.375em; }
+
+h4 { font-size: 1.125em; }
+
+h5 { font-size: 1.125em; }
+
+h6 { font-size: 1em; }
+
+hr { border: solid #dddddd; border-width: 1px 0 0; clear: both; margin: 1.25em 0 1.1875em; height: 0; }
+
+/* Helpful Typography Defaults */
+em, i { font-style: italic; line-height: inherit; }
+
+strong, b { font-weight: bold; line-height: inherit; }
+
+small { font-size: 60%; line-height: inherit; }
+
+code { font-family: Consolas, "Liberation Mono", Courier, monospace; font-weight: bold; }
+
+/* Lists */
+ul, ol, dl { font-size: 1em; line-height: 1.4; margin-bottom: 1.25em; list-style-position: outside; font-family: inherit; }
+
+ul, ol { margin-left: 2.5em; }
+ul.no-bullet, ol.no-bullet { margin-left: 1.5em; }
+
+/* Unordered Lists */
+ul li ul, ul li ol { margin-left: 1.25em; margin-bottom: 0; font-size: 1em; /* Override nested font-size change */ }
+ul.square li ul, ul.circle li ul, ul.disc li ul { list-style: inherit; }
+ul.square { list-style-type: square; }
+ul.circle { list-style-type: circle; }
+ul.disc { list-style-type: disc; }
+ul.no-bullet { list-style: none; }
+
+/* Ordered Lists */
+ol li ul, ol li ol { margin-left: 1.25em; margin-bottom: 0; }
+
+/* Definition Lists */
+dl dt { margin-bottom: 0.3125em; font-weight: bold; }
+dl dd { margin-bottom: 1.25em; }
+
+/* Abbreviations */
+abbr, acronym { text-transform: uppercase; font-size: 90%; color: #222222; border-bottom: 1px dotted #dddddd; cursor: help; }
+
+abbr { text-transform: none; }
+
+/* Blockquotes */
+blockquote { margin: 0 0 1.25em; padding: 0.5625em 1.25em 0 1.1875em; border-left: 1px solid #dddddd; }
+blockquote cite { display: block; font-size: 0.8125em; color: #555555; }
+blockquote cite:before { content: "\2014 \0020"; }
+blockquote cite a, blockquote cite a:visited { color: #555555; }
+
+blockquote, blockquote p { line-height: 1.6; color: #6f6f6f; }
+
+/* Microformats */
+.vcard { display: inline-block; margin: 0 0 1.25em 0; border: 1px solid #dddddd; padding: 0.625em 0.75em; }
+.vcard li { margin: 0; display: block; }
+.vcard .fn { font-weight: bold; font-size: 0.9375em; }
+
+.vevent .summary { font-weight: bold; }
+.vevent abbr { cursor: auto; text-decoration: none; font-weight: bold; border: none; padding: 0 0.0625em; }
+
+/*@media only screen and (min-width: 768px) { h1, h2, h3, #toctitle, .sidebarblock > .content > .title, h4, h5, h6 { line-height: 1.4; }
+  h1 { font-size: 2.75em; }
+  h2 { font-size: 2.3125em; }
+  h3, #toctitle, .sidebarblock > .content > .title { font-size: 1.6875em; }
+  h4 { font-size: 1.4375em; } }*/
+/* Tables */
+table { background: white; margin-bottom: 1.25em; border: solid 1px #dddddd; }
+table thead, table tfoot { background: whitesmoke; font-weight: bold; }
+table thead tr th, table thead tr td, table tfoot tr th, table tfoot tr td { padding: 0.5em 0.625em 0.625em; font-size: inherit; color: #222222; text-align: left; }
+table tr th, table tr td { padding: 0.5625em 0.625em; font-size: inherit; color: #222222; }
+table tr.even, table tr.alt, table tr:nth-of-type(even) { background: #f9f9f9; }
+table thead tr th, table tfoot tr th, table tbody tr td, table tr td, table tfoot tr td { display: table-cell; line-height: 1.4; }
+
+h1, h2, h3, #toctitle, .sidebarblock > .content > .title, h4, h5, h6 { line-height: 1.4; border-bottom: 1px solid #dddddd }
+
+.clearfix:before, .clearfix:after, .float-group:before, .float-group:after { content: " "; display: table; }
+.clearfix:after, .float-group:after { clear: both; }
+
+*:not(pre) > code { font-size: inherit; font-style: normal !important; letter-spacing: 0; padding: 3px 2px 1px 2px; background-color: #eeeeee; border: 1px solid #dddddd; -webkit-border-radius: 0; border-radius: 0; line-height: inherit; font-weight: normal; }
+
+pre, pre > code { line-height: 1.4; color: black; font-family: monospace, serif; font-weight: normal; }
+
+.keyseq { color: #555555; }
+
+kbd { display: inline-block; color: #222222; font-size: 0.75em; line-height: 1.4; background-color: #f7f7f7; border: 1px solid #ccc; -webkit-border-radius: 3px; border-radius: 3px; -webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 0 0 0.1em white inset; box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 0 0 0.1em white inset; margin: -0.15em 0.15em 0 0.15em; padding: 0.2em 0.6em 0.2em 0.5em; vertical-align: middle; white-space: nowrap; }
+
+.keyseq kbd:first-child { margin-left: 0; }
+
+.keyseq kbd:last-child { margin-right: 0; }
+
+.menuseq, .menu { color: #090909; }
+
+b.button:before, b.button:after { position: relative; top: -1px; font-weight: normal; }
+
+b.button:before { content: "["; padding: 0 3px 0 2px; }
+
+b.button:after { content: "]"; padding: 0 2px 0 3px; }
+
+#header, #content, #footnotes, #footer { width: 100%; margin-left: auto; margin-right: auto; margin-top: 0; margin-bottom: 0; max-width: 62.5em; *zoom: 1; position: relative; padding-left: 0.9375em; padding-right: 0.9375em; }
+#header:before, #header:after, #content:before, #content:after, #footnotes:before, #footnotes:after, #footer:before, #footer:after { content: " "; display: table; }
+#header:after, #content:after, #footnotes:after, #footer:after { clear: both; }
+
+#content { margin-top: 1.25em; }
+
+#content:before { content: none; }
+
+#header > h1:first-child { color: black; margin-top: 2.25rem; margin-bottom: 0; }
+#header > h1:first-child + #toc { margin-top: 8px; border-top: 1px solid #dddddd; }
+#header > h1:only-child, body.toc2 #header > h1:nth-last-child(2) { border-bottom: 1px solid #dddddd; padding-bottom: 8px; }
+#header .details { border-bottom: 1px solid #dddddd; line-height: 1.45; padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; color: #555555; display: -ms-flexbox; display: -webkit-flex; display: flex; -ms-flex-flow: row wrap; -webkit-flex-flow: row wrap; flex-flow: row wrap; }
+#header .details span:first-child { margin-left: -0.125em; }
+#header .details span.email a { color: #6f6f6f; }
+#header .details br { display: none; }
+#header .details br + span:before { content: "\00a0\2013\00a0"; }
+#header .details br + span.author:before { content: "\00a0\22c5\00a0"; color: #6f6f6f; }
+#header .details br + span#revremark:before { content: "\00a0|\00a0"; }
+#header #revnumber { text-transform: capitalize; }
+#header #revnumber:after { content: "\00a0"; }
+
+#content > h1:first-child:not([class]) { color: black; border-bottom: 1px solid #dddddd; padding-bottom: 8px; margin-top: 0; padding-top: 1rem; margin-bottom: 1.25rem; }
+
+#floating {
+  position: fixed;
+  z-index: 1000;
+  padding: 0.5em;
+  right: 0;
+  top: 0;
+  background: white;
+  box-shadow: 0 0 1em #777777;
+  -webkit-box-shadow: 0 0 1em #777777;
+  -moz-box-shadow: 0 0 1em #777777;
+  -webkit-border-bottom-left-radius: 5px;
+  -moz-border-radius-bottomleft: 5px;
+  max-height: 80%;
+  overflow: auto;
+}
+
+#floating #full { display: none; } /* Hide the full TOC by default */
+
+#floating:hover #full{
+  display: block; /* Show it on hover */
+}
+
+
+#toc { border-bottom: 1px solid #dddddd; padding-bottom: 0.5em; }
+#toc > ul { margin-left: 0.125em; }
+#toc ul.sectlevel0 > li > a { font-style: italic; }
+#toc ul.sectlevel0 ul.sectlevel1 { margin: 0.5em 0; }
+#toc ul { font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif; list-style-type: none; }
+#toc a { text-decoration: none; }
+#toc a:active { text-decoration: underline; }
+
+#toctitle { color: #6f6f6f; font-size: 1.2em; }
+
+@media only screen and (min-width: 768px) { #toctitle { font-size: 1.375em; }
+  body.toc2 { padding-left: 15em; padding-right: 0; }
+  #toc.toc2 { margin-top: 0 !important; background-color: #f2f2f2; position: fixed; width: 15em; left: 0; top: 0; border-right: 1px solid #dddddd; border-top-width: 0 !important; border-bottom-width: 0 !important; z-index: 1000; padding: 1.25em 1em; height: 100%; overflow: auto; }
+  #toc.toc2 #toctitle { margin-top: 0; font-size: 1.2em; }
+  #toc.toc2 > ul { font-size: 0.9em; margin-bottom: 0; }
+  #toc.toc2 ul ul { margin-left: 0; padding-left: 1em; }
+  #toc.toc2 ul.sectlevel0 ul.sectlevel1 { padding-left: 0; margin-top: 0.5em; margin-bottom: 0.5em; }
+  body.toc2.toc-right { padding-left: 0; padding-right: 15em; }
+  body.toc2.toc-right #toc.toc2 { border-right-width: 0; border-left: 1px solid #dddddd; left: auto; right: 0; } }
+@media only screen and (min-width: 1280px) { body.toc2 { padding-left: 20em; padding-right: 0; }
+  #toc.toc2 { width: 20em; }
+  #toc.toc2 #toctitle { font-size: 1.375em; }
+  #toc.toc2 > ul { font-size: 0.95em; }
+  #toc.toc2 ul ul { padding-left: 1.25em; }
+  body.toc2.toc-right { padding-left: 0; padding-right: 20em; } }
+#content #toc { border-style: solid; border-width: 1px; border-color: #d9d9d9; margin-bottom: 1.25em; padding: 1.25em; background: #f2f2f2; -webkit-border-radius: 0; border-radius: 0; }
+#content #toc > :first-child { margin-top: 0; }
+#content #toc > :last-child { margin-bottom: 0; }
+
+#footer { max-width: 100%; background-color: #222222; padding: 1.25em; }
+
+#footer-text { color: #dddddd; line-height: 1.44; }
+
+.sect1 { padding-bottom: 0.625em; }
+
+@media only screen and (min-width: 768px) { .sect1 { padding-bottom: 1.25em; } }
+.sect1 + .sect1 { border-top: 1px solid #dddddd; }
+
+#content h1 > a.anchor, h2 > a.anchor, h3 > a.anchor, #toctitle > a.anchor, .sidebarblock > .content > .title > a.anchor, h4 > a.anchor, h5 > a.anchor, h6 > a.anchor { position: absolute; z-index: 1001; width: 1.5ex; margin-left: -1.5ex; display: block; text-decoration: none !important; visibility: hidden; text-align: center; font-weight: normal; }
+#content h1 > a.anchor:before, h2 > a.anchor:before, h3 > a.anchor:before, #toctitle > a.anchor:before, .sidebarblock > .content > .title > a.anchor:before, h4 > a.anchor:before, h5 > a.anchor:before, h6 > a.anchor:before { content: "\00A7"; font-size: 0.85em; display: block; padding-top: 0.1em; }
+#content h1:hover > a.anchor, #content h1 > a.anchor:hover, h2:hover > a.anchor, h2 > a.anchor:hover, h3:hover > a.anchor, #toctitle:hover > a.anchor, .sidebarblock > .content > .title:hover > a.anchor, h3 > a.anchor:hover, #toctitle > a.anchor:hover, .sidebarblock > .content > .title > a.anchor:hover, h4:hover > a.anchor, h4 > a.anchor:hover, h5:hover > a.anchor, h5 > a.anchor:hover, h6:hover > a.anchor, h6 > a.anchor:hover { visibility: visible; }
+#content h1 > a.link, h2 > a.link, h3 > a.link, #toctitle > a.link, .sidebarblock > .content > .title > a.link, h4 > a.link, h5 > a.link, h6 > a.link { color: #222222; text-decoration: none; }
+#content h1 > a.link:hover, h2 > a.link:hover, h3 > a.link:hover, #toctitle > a.link:hover, .sidebarblock > .content > .title > a.link:hover, h4 > a.link:hover, h5 > a.link:hover, h6 > a.link:hover { color: #151515; }
+
+.audioblock, .imageblock, .literalblock, .listingblock, .stemblock, .videoblock { margin-bottom: 1.25em; }
+
+.admonitionblock td.content > .title, .audioblock > .title, .exampleblock > .title, .imageblock > .title, .listingblock > .title, .literalblock > .title, .stemblock > .title, .openblock > .title, .paragraph > .title, .quoteblock > .title, table.tableblock > .title, .verseblock > .title, .videoblock > .title, .dlist > .title, .olist > .title, .ulist > .title, .qlist > .title, .hdlist > .title { text-rendering: optimizeLegibility; text-align: left; }
+
+table.tableblock > caption.title { white-space: nowrap; overflow: visible; max-width: 0; }
+
+.paragraph.lead > p, #preamble > .sectionbody > .paragraph:first-of-type p { color: black; }
+
+table.tableblock #preamble > .sectionbody > .paragraph:first-of-type p { font-size: inherit; }
+
+.admonitionblock > table { border-collapse: separate; border: 0; background: none; width: 100%; }
+.admonitionblock > table td.icon { text-align: center; width: 80px; }
+.admonitionblock > table td.icon img { max-width: none; }
+.admonitionblock > table td.icon .title { font-weight: bold; font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif; text-transform: uppercase; }
+.admonitionblock > table td.content { padding-left: 1.125em; padding-right: 1.25em; border-left: 1px solid #dddddd; color: #555555; }
+.admonitionblock > table td.content > :last-child > :last-child { margin-bottom: 0; }
+
+.exampleblock > .content { border-style: solid; border-width: 1px; border-color: #e6e6e6; margin-bottom: 1.25em; padding: 1.25em; background: white; -webkit-border-radius: 0; border-radius: 0; }
+.exampleblock > .content > :first-child { margin-top: 0; }
+.exampleblock > .content > :last-child { margin-bottom: 0; }
+
+.sidebarblock { border-style: solid; border-width: 1px; border-color: #d9d9d9; margin-bottom: 1.25em; padding: 1.25em; background: #f2f2f2; -webkit-border-radius: 0; border-radius: 0; }
+.sidebarblock > :first-child { margin-top: 0; }
+.sidebarblock > :last-child { margin-bottom: 0; }
+.sidebarblock > .content > .title { color: #6f6f6f; margin-top: 0; }
+
+.exampleblock > .content > :last-child > :last-child, .exampleblock > .content .olist > ol > li:last-child > :last-child, .exampleblock > .content .ulist > ul > li:last-child > :last-child, .exampleblock > .content .qlist > ol > li:last-child > :last-child, .sidebarblock > .content > :last-child > :last-child, .sidebarblock > .content .olist > ol > li:last-child > :last-child, .sidebarblock > .content .ulist > ul > li:last-child > :last-child, .sidebarblock > .content .qlist > ol > li:last-child > :last-child { margin-bottom: 0; }
+
+.literalblock pre, .listingblock pre:not(.highlight), .listingblock pre[class="highlight"], .listingblock pre[class^="highlight "], .listingblock pre.CodeRay, .listingblock pre.prettyprint { background: #eeeeee; }
+.sidebarblock .literalblock pre, .sidebarblock .listingblock pre:not(.highlight), .sidebarblock .listingblock pre[class="highlight"], .sidebarblock .listingblock pre[class^="highlight "], .sidebarblock .listingblock pre.CodeRay, .sidebarblock .listingblock pre.prettyprint { background: #f2f1f1; }
+
+.literalblock pre, .literalblock pre[class], .listingblock pre, .listingblock pre[class] { border: 1px solid #cccccc; -webkit-border-radius: 0; border-radius: 0; word-wrap: break-word; padding: 0.8em 0.8em 0.65em 0.8em; font-size: 0.8125em; }
+.literalblock pre.nowrap, .literalblock pre[class].nowrap, .listingblock pre.nowrap, .listingblock pre[class].nowrap { overflow-x: auto; white-space: pre; word-wrap: normal; }
+@media only screen and (min-width: 768px) { .literalblock pre, .literalblock pre[class], .listingblock pre, .listingblock pre[class] { font-size: 0.90625em; } }
+@media only screen and (min-width: 1280px) { .literalblock pre, .literalblock pre[class], .listingblock pre, .listingblock pre[class] { font-size: 1em; } }
+
+.literalblock.output pre { color: #eeeeee; background-color: black; }
+
+.listingblock pre.highlightjs { padding: 0; }
+.listingblock pre.highlightjs > code { padding: 0.8em 0.8em 0.65em 0.8em; -webkit-border-radius: 0; border-radius: 0; }
+
+.listingblock > .content { position: relative; }
+
+.listingblock code[data-lang]:before { display: none; content: attr(data-lang); position: absolute; font-size: 0.75em; top: 0.425rem; right: 0.5rem; line-height: 1; text-transform: uppercase; color: #999; }
+
+.listingblock:hover code[data-lang]:before { display: block; }
+
+.listingblock.terminal pre .command:before { content: attr(data-prompt); padding-right: 0.5em; color: #999; }
+
+.listingblock.terminal pre .command:not([data-prompt]):before { content: "$"; }
+
+table.pyhltable { border-collapse: separate; border: 0; margin-bottom: 0; background: none; }
+
+table.pyhltable td { vertical-align: top; padding-top: 0; padding-bottom: 0; }
+
+table.pyhltable td.code { padding-left: .75em; padding-right: 0; }
+
+pre.pygments .lineno, table.pyhltable td:not(.code) { color: #999; padding-left: 0; padding-right: .5em; border-right: 1px solid #dddddd; }
+
+pre.pygments .lineno { display: inline-block; margin-right: .25em; }
+
+table.pyhltable .linenodiv { background: none !important; padding-right: 0 !important; }
+
+.quoteblock { margin: 0 1em 1.25em 1.5em; display: table; }
+.quoteblock > .title { margin-left: -1.5em; margin-bottom: 0.75em; }
+.quoteblock blockquote, .quoteblock blockquote p { color: #6f6f6f; font-size: 1.15rem; line-height: 1.75; word-spacing: 0.1em; letter-spacing: 0; font-style: italic; text-align: justify; }
+.quoteblock blockquote { margin: 0; padding: 0; border: 0; }
+.quoteblock blockquote:before { content: "\201c"; float: left; font-size: 2.75em; font-weight: bold; line-height: 0.6em; margin-left: -0.6em; color: #6f6f6f; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); }
+.quoteblock blockquote > .paragraph:last-child p { margin-bottom: 0; }
+.quoteblock .attribution { margin-top: 0.5em; margin-right: 0.5ex; text-align: right; }
+.quoteblock .quoteblock { margin-left: 0; margin-right: 0; padding: 0.5em 0; border-left: 3px solid #555555; }
+.quoteblock .quoteblock blockquote { padding: 0 0 0 0.75em; }
+.quoteblock .quoteblock blockquote:before { display: none; }
+
+.verseblock { margin: 0 1em 1.25em 1em; }
+.verseblock pre { font-family: "Open Sans", "DejaVu Sans", sans; font-size: 1.15rem; color: #6f6f6f; font-weight: 300; text-rendering: optimizeLegibility; }
+.verseblock pre strong { font-weight: 400; }
+.verseblock .attribution { margin-top: 1.25rem; margin-left: 0.5ex; }
+
+.quoteblock .attribution, .verseblock .attribution { font-size: 0.8125em; line-height: 1.45; font-style: italic; }
+.quoteblock .attribution br, .verseblock .attribution br { display: none; }
+.quoteblock .attribution cite, .verseblock .attribution cite { display: block; letter-spacing: -0.05em; color: #555555; }
+
+.quoteblock.abstract { margin: 0 0 1.25em 0; display: block; }
+.quoteblock.abstract blockquote, .quoteblock.abstract blockquote p { text-align: left; word-spacing: 0; }
+.quoteblock.abstract blockquote:before, .quoteblock.abstract blockquote p:first-of-type:before { display: none; }
+
+table.tableblock { max-width: 100%; border-collapse: separate; }
+table.tableblock td > .paragraph:last-child p > p:last-child, table.tableblock th > p:last-child, table.tableblock td > p:last-child { margin-bottom: 0; }
+
+table.spread { width: 100%; }
+
+table.tableblock, th.tableblock, td.tableblock { border: 0 solid #dddddd; }
+
+table.grid-all th.tableblock, table.grid-all td.tableblock { border-width: 0 1px 1px 0; }
+
+table.grid-all tfoot > tr > th.tableblock, table.grid-all tfoot > tr > td.tableblock { border-width: 1px 1px 0 0; }
+
+table.grid-cols th.tableblock, table.grid-cols td.tableblock { border-width: 0 1px 0 0; }
+
+table.grid-all * > tr > .tableblock:last-child, table.grid-cols * > tr > .tableblock:last-child { border-right-width: 0; }
+
+table.grid-rows th.tableblock, table.grid-rows td.tableblock { border-width: 0 0 1px 0; }
+
+table.grid-all tbody > tr:last-child > th.tableblock, table.grid-all tbody > tr:last-child > td.tableblock, table.grid-all thead:last-child > tr > th.tableblock, table.grid-rows tbody > tr:last-child > th.tableblock, table.grid-rows tbody > tr:last-child > td.tableblock, table.grid-rows thead:last-child > tr > th.tableblock { border-bottom-width: 0; }
+
+table.grid-rows tfoot > tr > th.tableblock, table.grid-rows tfoot > tr > td.tableblock { border-width: 1px 0 0 0; }
+
+table.frame-all { border-width: 1px; }
+
+table.frame-sides { border-width: 0 1px; }
+
+table.frame-topbot { border-width: 1px 0; }
+
+th.halign-left, td.halign-left { text-align: left; }
+
+th.halign-right, td.halign-right { text-align: right; }
+
+th.halign-center, td.halign-center { text-align: center; }
+
+th.valign-top, td.valign-top { vertical-align: top; }
+
+th.valign-bottom, td.valign-bottom { vertical-align: bottom; }
+
+th.valign-middle, td.valign-middle { vertical-align: middle; }
+
+table thead th, table tfoot th { font-weight: bold; }
+
+tbody tr th { display: table-cell; line-height: 1.4; background: whitesmoke; }
+
+tbody tr th, tbody tr th p, tfoot tr th, tfoot tr th p { color: #222222; font-weight: bold; }
+
+p.tableblock > code:only-child { background: none; padding: 0; }
+
+p.tableblock { font-size: 1em; }
+
+td > div.verse { white-space: pre; }
+
+ol { margin-left: 2.5em; }
+
+ul li ol { margin-left: 1.5em; }
+
+dl dd { margin-left: 1.125em; }
+
+dl dd:last-child, dl dd:last-child > :last-child { margin-bottom: 0; }
+
+ol > li p, ul > li p, ul dd, ol dd, .olist .olist, .ulist .ulist, .ulist .olist, .olist .ulist { margin-bottom: 0.625em; }
+
+ul.unstyled, ol.unnumbered, ul.checklist, ul.none { list-style-type: none; }
+
+ul.unstyled, ol.unnumbered, ul.checklist { margin-left: 0.625em; }
+
+ul.checklist li > p:first-child > .fa-check-square-o:first-child, ul.checklist li > p:first-child > input[type="checkbox"]:first-child { margin-right: 0.25em; }
+
+ul.checklist li > p:first-child > input[type="checkbox"]:first-child { position: relative; top: 1px; }
+
+ul.inline { margin: 0 auto 0.625em auto; margin-left: -1.375em; margin-right: 0; padding: 0; list-style: none; overflow: hidden; }
+ul.inline > li { list-style: none; float: left; margin-left: 1.375em; display: block; }
+ul.inline > li > * { display: block; }
+
+.unstyled dl dt { font-weight: normal; font-style: normal; }
+
+ol.arabic { list-style-type: decimal; }
+
+ol.decimal { list-style-type: decimal-leading-zero; }
+
+ol.loweralpha { list-style-type: lower-alpha; }
+
+ol.upperalpha { list-style-type: upper-alpha; }
+
+ol.lowerroman { list-style-type: lower-roman; }
+
+ol.upperroman { list-style-type: upper-roman; }
+
+ol.lowergreek { list-style-type: lower-greek; }
+
+.hdlist > table, .colist > table { border: 0; background: none; }
+.hdlist > table > tbody > tr, .colist > table > tbody > tr { background: none; }
+
+td.hdlist1 { padding-right: .75em; font-weight: bold; }
+
+td.hdlist1, td.hdlist2 { vertical-align: top; }
+
+.literalblock + .colist, .listingblock + .colist { margin-top: -0.5em; }
+
+.colist > table tr > td:first-of-type { padding: 0 0.75em; line-height: 1; }
+.colist > table tr > td:last-of-type { padding: 0.25em 0; }
+
+.thumb, .th { line-height: 0; display: inline-block; border: solid 4px white; -webkit-box-shadow: 0 0 0 1px #dddddd; box-shadow: 0 0 0 1px #dddddd; }
+
+.imageblock.left, .imageblock[style*="float: left"] { margin: 0.25em 0.625em 1.25em 0; }
+.imageblock.right, .imageblock[style*="float: right"] { margin: 0.25em 0 1.25em 0.625em; }
+.imageblock > .title { margin-bottom: 0; }
+.imageblock.thumb, .imageblock.th { border-width: 6px; }
+.imageblock.thumb > .title, .imageblock.th > .title { padding: 0 0.125em; }
+
+.image.left, .image.right { margin-top: 0.25em; margin-bottom: 0.25em; display: inline-block; line-height: 0; }
+.image.left { margin-right: 0.625em; }
+.image.right { margin-left: 0.625em; }
+
+a.image { text-decoration: none; }
+
+span.footnote, span.footnoteref { vertical-align: super; font-size: 0.875em; }
+span.footnote a, span.footnoteref a { text-decoration: none; }
+span.footnote a:active, span.footnoteref a:active { text-decoration: underline; }
+
+#footnotes { padding-top: 0.75em; padding-bottom: 0.75em; margin-bottom: 0.625em; }
+#footnotes hr { width: 20%; min-width: 6.25em; margin: -.25em 0 .75em 0; border-width: 1px 0 0 0; }
+#footnotes .footnote { padding: 0 0.375em; line-height: 1.3; font-size: 0.875em; margin-left: 1.2em; text-indent: -1.2em; margin-bottom: .2em; }
+#footnotes .footnote a:first-of-type { font-weight: bold; text-decoration: none; }
+#footnotes .footnote:last-of-type { margin-bottom: 0; }
+
+#content #footnotes { margin-top: -0.625em; margin-bottom: 0; padding: 0.75em 0; }
+
+.gist .file-data > table { border: 0; background: #fff; width: 100%; margin-bottom: 0; }
+.gist .file-data > table td.line-data { width: 99%; }
+
+div.unbreakable { page-break-inside: avoid; }
+
+.big { font-size: larger; }
+
+.small { font-size: smaller; }
+
+.underline { text-decoration: underline; }
+
+.overline { text-decoration: overline; }
+
+.line-through { text-decoration: line-through; }
+
+.aqua { color: #00bfbf; }
+
+.aqua-background { background-color: #00fafa; }
+
+.black { color: black; }
+
+.black-background { background-color: black; }
+
+.blue { color: #0000bf; }
+
+.blue-background { background-color: #0000fa; }
+
+.fuchsia { color: #bf00bf; }
+
+.fuchsia-background { background-color: #fa00fa; }
+
+.gray { color: #606060; }
+
+.gray-background { background-color: #7d7d7d; }
+
+.green { color: #006000; }
+
+.green-background { background-color: #007d00; }
+
+.lime { color: #00bf00; }
+
+.lime-background { background-color: #00fa00; }
+
+.maroon { color: #600000; }
+
+.maroon-background { background-color: #7d0000; }
+
+.navy { color: #000060; }
+
+.navy-background { background-color: #00007d; }
+
+.olive { color: #606000; }
+
+.olive-background { background-color: #7d7d00; }
+
+.purple { color: #600060; }
+
+.purple-background { background-color: #7d007d; }
+
+.red { color: #bf0000; }
+
+.red-background { background-color: #fa0000; }
+
+.silver { color: #909090; }
+
+.silver-background { background-color: #bcbcbc; }
+
+.teal { color: #006060; }
+
+.teal-background { background-color: #007d7d; }
+
+.white { color: #bfbfbf; }
+
+.white-background { background-color: #fafafa; }
+
+.yellow { color: #bfbf00; }
+
+.yellow-background { background-color: #fafa00; }
+
+span.icon > .fa { cursor: default; }
+
+.admonitionblock td.icon [class^="fa icon-"] { font-size: 2.5em; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); cursor: default; }
+.admonitionblock td.icon .icon-note:before { content: "\f05a"; color: #207c98; }
+.admonitionblock td.icon .icon-tip:before { content: "\f0eb"; text-shadow: 1px 1px 2px rgba(155, 155, 0, 0.8); color: #111; }
+.admonitionblock td.icon .icon-warning:before { content: "\f071"; color: #bf6900; }
+.admonitionblock td.icon .icon-caution:before { content: "\f06d"; color: #bf3400; }
+.admonitionblock td.icon .icon-important:before { content: "\f06a"; color: #bf0000; }
+
+.conum[data-value] { display: inline-block; color: #fff !important; background-color: #222222; -webkit-border-radius: 100px; border-radius: 100px; text-align: center; font-size: 0.75em; width: 1.67em; height: 1.67em; line-height: 1.67em; font-family: "Open Sans", "DejaVu Sans", sans-serif; font-style: normal; font-weight: bold; }
+.conum[data-value] * { color: #fff !important; }
+.conum[data-value] + b { display: none; }
+.conum[data-value]:after { content: attr(data-value); }
+pre .conum[data-value] { position: relative; top: -0.125em; }
+
+b.conum * { color: inherit !important; }
+
+.conum:not([data-value]):empty { display: none; }
+
+.literalblock pre, .listingblock pre { background: #eeeeee; }
+
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css">
+<style>.listingblock .pygments .hll { background-color: #ffffcc }
+.listingblock .pygments  { background: #f8f8f8; }
+.listingblock .pygments .tok-c { color: #408080; font-style: italic } /* Comment */
+.listingblock .pygments .tok-err { border: 1px solid #FF0000 } /* Error */
+.listingblock .pygments .tok-k { color: #008000; font-weight: bold } /* Keyword */
+.listingblock .pygments .tok-o { color: #666666 } /* Operator */
+.listingblock .pygments .tok-cm { color: #408080; font-style: italic } /* Comment.Multiline */
+.listingblock .pygments .tok-cp { color: #BC7A00 } /* Comment.Preproc */
+.listingblock .pygments .tok-c1 { color: #408080; font-style: italic } /* Comment.Single */
+.listingblock .pygments .tok-cs { color: #408080; font-style: italic } /* Comment.Special */
+.listingblock .pygments .tok-gd { color: #A00000 } /* Generic.Deleted */
+.listingblock .pygments .tok-ge { font-style: italic } /* Generic.Emph */
+.listingblock .pygments .tok-gr { color: #FF0000 } /* Generic.Error */
+.listingblock .pygments .tok-gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.listingblock .pygments .tok-gi { color: #00A000 } /* Generic.Inserted */
+.listingblock .pygments .tok-go { color: #888888 } /* Generic.Output */
+.listingblock .pygments .tok-gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.listingblock .pygments .tok-gs { font-weight: bold } /* Generic.Strong */
+.listingblock .pygments .tok-gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.listingblock .pygments .tok-gt { color: #0044DD } /* Generic.Traceback */
+.listingblock .pygments .tok-kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.listingblock .pygments .tok-kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.listingblock .pygments .tok-kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.listingblock .pygments .tok-kp { color: #008000 } /* Keyword.Pseudo */
+.listingblock .pygments .tok-kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.listingblock .pygments .tok-kt { color: #B00040 } /* Keyword.Type */
+.listingblock .pygments .tok-m { color: #666666 } /* Literal.Number */
+.listingblock .pygments .tok-s { color: #BA2121 } /* Literal.String */
+.listingblock .pygments .tok-na { color: #7D9029 } /* Name.Attribute */
+.listingblock .pygments .tok-nb { color: #008000 } /* Name.Builtin */
+.listingblock .pygments .tok-nc { color: #0000FF; font-weight: bold } /* Name.Class */
+.listingblock .pygments .tok-no { color: #880000 } /* Name.Constant */
+.listingblock .pygments .tok-nd { color: #AA22FF } /* Name.Decorator */
+.listingblock .pygments .tok-ni { color: #999999; font-weight: bold } /* Name.Entity */
+.listingblock .pygments .tok-ne { color: #D2413A; font-weight: bold } /* Name.Exception */
+.listingblock .pygments .tok-nf { color: #0000FF } /* Name.Function */
+.listingblock .pygments .tok-nl { color: #A0A000 } /* Name.Label */
+.listingblock .pygments .tok-nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+.listingblock .pygments .tok-nt { color: #008000; font-weight: bold } /* Name.Tag */
+.listingblock .pygments .tok-nv { color: #19177C } /* Name.Variable */
+.listingblock .pygments .tok-ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
+.listingblock .pygments .tok-w { color: #bbbbbb } /* Text.Whitespace */
+.listingblock .pygments .tok-mb { color: #666666 } /* Literal.Number.Bin */
+.listingblock .pygments .tok-mf { color: #666666 } /* Literal.Number.Float */
+.listingblock .pygments .tok-mh { color: #666666 } /* Literal.Number.Hex */
+.listingblock .pygments .tok-mi { color: #666666 } /* Literal.Number.Integer */
+.listingblock .pygments .tok-mo { color: #666666 } /* Literal.Number.Oct */
+.listingblock .pygments .tok-sb { color: #BA2121 } /* Literal.String.Backtick */
+.listingblock .pygments .tok-sc { color: #BA2121 } /* Literal.String.Char */
+.listingblock .pygments .tok-sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.listingblock .pygments .tok-s2 { color: #BA2121 } /* Literal.String.Double */
+.listingblock .pygments .tok-se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
+.listingblock .pygments .tok-sh { color: #BA2121 } /* Literal.String.Heredoc */
+.listingblock .pygments .tok-si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
+.listingblock .pygments .tok-sx { color: #008000 } /* Literal.String.Other */
+.listingblock .pygments .tok-sr { color: #BB6688 } /* Literal.String.Regex */
+.listingblock .pygments .tok-s1 { color: #BA2121 } /* Literal.String.Single */
+.listingblock .pygments .tok-ss { color: #19177C } /* Literal.String.Symbol */
+.listingblock .pygments .tok-bp { color: #008000 } /* Name.Builtin.Pseudo */
+.listingblock .pygments .tok-vc { color: #19177C } /* Name.Variable.Class */
+.listingblock .pygments .tok-vg { color: #19177C } /* Name.Variable.Global */
+.listingblock .pygments .tok-vi { color: #19177C } /* Name.Variable.Instance */
+.listingblock .pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
+</style>
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>Grails</h1>
+<div class="details">
+<span id="author" class="author">Fran García</span><br>
+<span id="email" class="email">&lt;<a href="mailto:fgarciarico@gmail.com">fgarciarico@gmail.com</a>&gt;</span><br>
+</div>
+<div id="toc" class="toc2">
+<div id="toctitle">Índice de contenidos</div>
+<ul class="sectlevel1">
+<li><a href="#sesion04">4. Patrón MVC: Vistas y controladores.</a>
+<ul class="sectlevel2">
+<li><a href="#_estructura_de_las_vistas_en_grails">4.1. Estructura de las vistas en Grails</a></li>
+<li><a href="#_plantillas">4.2. Plantillas</a></li>
+<li><a href="#_p%C3%A1ginas">4.3. Páginas</a></li>
+<li><a href="#_etiquetas">4.4. Etiquetas</a></li>
+<li><a href="#_librer%C3%ADa_de_etiquetas">4.5. Librería de etiquetas</a></li>
+<li><a href="#_controladores">4.6. Controladores</a></li>
+<li><a href="#_filtros">4.7. Filtros</a></li>
+<li><a href="#_ejercicios">4.8. Ejercicios</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div style="page-break-after: always;"></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="sesion04">4. Patrón MVC: Vistas y controladores.</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Tras una primera sesión introductoria a Grails en la que ya hemos visto como crear una sencilla aplicación utilizando el scaffolding que nos ofrece Grails. Aunque en esta primera sesión no hemos comentado nada sobre las vistas, ya podemos suponer como Grails las organiza siguiendo el principio de <em>convención sobre configuración</em>.</p>
+</div>
+<div class="paragraph">
+<p>En esta sesión profundizaremos en más aspectos relativos a las vistas, tales como creación de plantillas o etiquetas. También aprovecharemos para hablar más detalladamente sobre los controladores en Grails.</p>
+</div>
+<div class="sect2">
+<h3 id="_estructura_de_las_vistas_en_grails">4.1. Estructura de las vistas en Grails</h3>
+<div class="paragraph">
+<p>Lo primero que hay que comentar es que en Grails los archivos de las vistas de nuestras aplicaciones tienen extensión <em>GSP</em>. Además, y siguiendo con el paradigma de <em>convención sobre configuración</em>, Grails aconseja que las vistas utilizadas en nuestra aplicación se alojen en el directorio <em>grails-app/views</em>. Dentro de este directorio, al crear nuestro proyecto se ha creado también el subdirectorio <em>layouts</em>. Este directorio viene por defecto con un archivo <em>main.gsp</em>, que podríamos decir que es el encargado de pintar la apariencia de toda la aplicación en Grails.</p>
+</div>
+<div class="paragraph">
+<p>Como comentábamos en la sesión de introducción a Grails, éste utiliza el framework Sitemesh para renderizar una aplicación en Grails y una de las características de Sitemesh es que utiliza lo que podríamos llamar un archivo padre (layout) y dentro de este archivo padre se pintarán todas las vistas de la aplicación. Veamos ahora el contenido del único archivo (<em>/grails-app/views/layouts/main.gsp</em>) que aparece por el momento en el directorio <em>layouts</em>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="html"><span class="tok-cp">&lt;!DOCTYPE html&gt;</span>
+<span class="tok-c">&lt;!--[if lt IE 7 ]&gt; &lt;html lang=&quot;en&quot; class=&quot;no-js ie6&quot;&gt; &lt;![endif]--&gt;</span>
+<span class="tok-c">&lt;!--[if IE 7 ]&gt;    &lt;html lang=&quot;en&quot; class=&quot;no-js ie7&quot;&gt; &lt;![endif]--&gt;</span>
+<span class="tok-c">&lt;!--[if IE 8 ]&gt;    &lt;html lang=&quot;en&quot; class=&quot;no-js ie8&quot;&gt; &lt;![endif]--&gt;</span>
+<span class="tok-c">&lt;!--[if IE 9 ]&gt;    &lt;html lang=&quot;en&quot; class=&quot;no-js ie9&quot;&gt; &lt;![endif]--&gt;</span>
+<span class="tok-c">&lt;!--[if (gt IE 9)|!(IE)]&gt;&lt;!--&gt;</span>
+<span class="tok-nt">&lt;html</span> <span class="tok-na">lang=</span><span class="tok-s">&quot;en&quot;</span> <span class="tok-na">class=</span><span class="tok-s">&quot;no-js&quot;</span><span class="tok-nt">&gt;</span><span class="tok-c">&lt;!--&lt;![endif]--&gt;</span>
+    <span class="tok-nt">&lt;head&gt;</span>
+        <span class="tok-nt">&lt;meta</span> <span class="tok-na">http-equiv=</span><span class="tok-s">&quot;Content-Type&quot;</span> <span class="tok-na">content=</span><span class="tok-s">&quot;text/html; charset=UTF-8&quot;</span><span class="tok-nt">&gt;</span>
+        <span class="tok-nt">&lt;meta</span> <span class="tok-na">http-equiv=</span><span class="tok-s">&quot;X-UA-Compatible&quot;</span> <span class="tok-na">content=</span><span class="tok-s">&quot;IE=edge,chrome=1&quot;</span><span class="tok-nt">&gt;</span>
+        <span class="tok-nt">&lt;title&gt;&lt;g:layoutTitle</span> <span class="tok-na">default=</span><span class="tok-s">&quot;Grails&quot;</span><span class="tok-nt">/&gt;&lt;/title&gt;</span>
+        <span class="tok-nt">&lt;meta</span> <span class="tok-na">name=</span><span class="tok-s">&quot;viewport&quot;</span> <span class="tok-na">content=</span><span class="tok-s">&quot;width=device-width, initial-scale=1.0&quot;</span><span class="tok-nt">&gt;</span>
+        <span class="tok-nt">&lt;link</span> <span class="tok-na">rel=</span><span class="tok-s">&quot;shortcut icon&quot;</span> <span class="tok-na">href=</span><span class="tok-s">&quot;${assetPath(src: &#39;favicon.ico&#39;)}&quot;</span> <span class="tok-na">type=</span><span class="tok-s">&quot;image/x-icon&quot;</span><span class="tok-nt">&gt;</span>
+        <span class="tok-nt">&lt;link</span> <span class="tok-na">rel=</span><span class="tok-s">&quot;apple-touch-icon&quot;</span> <span class="tok-na">href=</span><span class="tok-s">&quot;${assetPath(src: &#39;apple-touch-icon.png&#39;)}&quot;</span><span class="tok-nt">&gt;</span>
+        <span class="tok-nt">&lt;link</span> <span class="tok-na">rel=</span><span class="tok-s">&quot;apple-touch-icon&quot;</span> <span class="tok-na">sizes=</span><span class="tok-s">&quot;114x114&quot;</span> <span class="tok-na">href=</span><span class="tok-s">&quot;${assetPath(src: &#39;apple-touch-icon-retina.png&#39;)}&quot;</span><span class="tok-nt">&gt;</span>
+        <span class="tok-nt">&lt;asset:stylesheet</span> <span class="tok-na">src=</span><span class="tok-s">&quot;application.css&quot;</span><span class="tok-nt">/&gt;</span>
+        <span class="tok-nt">&lt;asset:javascript</span> <span class="tok-na">src=</span><span class="tok-s">&quot;application.js&quot;</span><span class="tok-nt">/&gt;</span>
+        <span class="tok-nt">&lt;g:layoutHead/&gt;</span>
+    <span class="tok-nt">&lt;/head&gt;</span>
+    <span class="tok-nt">&lt;body&gt;</span>
+        <span class="tok-nt">&lt;div</span> <span class="tok-na">id=</span><span class="tok-s">&quot;grailsLogo&quot;</span> <span class="tok-na">role=</span><span class="tok-s">&quot;banner&quot;</span><span class="tok-nt">&gt;&lt;a</span> <span class="tok-na">href=</span><span class="tok-s">&quot;http://grails.org&quot;</span><span class="tok-nt">&gt;&lt;asset:image</span> <span class="tok-na">src=</span><span class="tok-s">&quot;grails_logo.png&quot;</span> <span class="tok-na">alt=</span><span class="tok-s">&quot;Grails&quot;</span><span class="tok-nt">/&gt;&lt;/a&gt;&lt;/div&gt;</span>
+        <span class="tok-nt">&lt;g:layoutBody/&gt;</span>
+        <span class="tok-nt">&lt;div</span> <span class="tok-na">class=</span><span class="tok-s">&quot;footer&quot;</span> <span class="tok-na">role=</span><span class="tok-s">&quot;contentinfo&quot;</span><span class="tok-nt">&gt;&lt;/div&gt;</span>
+        <span class="tok-nt">&lt;div</span> <span class="tok-na">id=</span><span class="tok-s">&quot;spinner&quot;</span> <span class="tok-na">class=</span><span class="tok-s">&quot;spinner&quot;</span> <span class="tok-na">style=</span><span class="tok-s">&quot;display:none;&quot;</span><span class="tok-nt">&gt;&lt;g:message</span> <span class="tok-na">code=</span><span class="tok-s">&quot;spinner.alt&quot;</span> <span class="tok-na">default=</span><span class="tok-s">&quot;Loading&amp;hellip;&quot;</span><span class="tok-nt">/&gt;&lt;/div&gt;</span>
+    <span class="tok-nt">&lt;/body&gt;</span>
+<span class="tok-nt">&lt;/html&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Si analizamos un poco el código fuente de este archivo <em>main.gsp</em>, comprobaremos la existencia de una serie de etiqueta que veremos posteriormente cuyo espacio de nombres es <em>g</em>, como por ejemplo <em>&lt;g:layoutTitle default="Grails"/&gt;</em>, <em>&lt;g:layoutHead/&gt;</em> o <em>&lt;g:layoutBody/&gt;</em>. Estas tres etiquetas están indicando a Grails que deben ser sustituidas por el título, la cabecera y el contenido de las páginas que estemos renderizando.</p>
+</div>
+<div class="paragraph">
+<p>Por ejemplo, otro archivo que ha creado Grails automáticamente es el archivo que se encuentra en la raiz del directorio <em>views</em> llamado <em>error.gsp</em>. El contenido de este archivo es el siguiente</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="html"><span class="tok-cp">&lt;!DOCTYPE html&gt;</span>
+<span class="tok-nt">&lt;html&gt;</span>
+    <span class="tok-nt">&lt;head&gt;</span>
+        <span class="tok-nt">&lt;title&gt;</span>
+            <span class="tok-nt">&lt;g:if</span> <span class="tok-na">env=</span><span class="tok-s">&quot;development&quot;</span><span class="tok-nt">&gt;</span>Grails Runtime Exception<span class="tok-nt">&lt;/g:if&gt;&lt;g:else&gt;</span>Error<span class="tok-nt">&lt;/g:else&gt;</span>
+        <span class="tok-nt">&lt;/title&gt;</span>
+        <span class="tok-nt">&lt;meta</span> <span class="tok-na">name=</span><span class="tok-s">&quot;layout&quot;</span> <span class="tok-na">content=</span><span class="tok-s">&quot;main&quot;</span><span class="tok-nt">&gt;</span>
+        <span class="tok-nt">&lt;g:if</span> <span class="tok-na">env=</span><span class="tok-s">&quot;development&quot;</span><span class="tok-nt">&gt;&lt;asset:stylesheet</span> <span class="tok-na">src=</span><span class="tok-s">&quot;errors.css&quot;</span><span class="tok-nt">/&gt;&lt;/g:if&gt;</span>
+    <span class="tok-nt">&lt;/head&gt;</span>
+    <span class="tok-nt">&lt;body&gt;</span>
+        <span class="tok-nt">&lt;g:if</span> <span class="tok-na">env=</span><span class="tok-s">&quot;development&quot;</span><span class="tok-nt">&gt;</span>
+            <span class="tok-nt">&lt;g:renderException</span> <span class="tok-na">exception=</span><span class="tok-s">&quot;${exception}&quot;</span> <span class="tok-nt">/&gt;</span>
+        <span class="tok-nt">&lt;/g:if&gt;</span>
+        <span class="tok-nt">&lt;g:else&gt;</span>
+            <span class="tok-nt">&lt;ul</span> <span class="tok-na">class=</span><span class="tok-s">&quot;errors&quot;</span><span class="tok-nt">&gt;</span>
+                <span class="tok-nt">&lt;li&gt;</span>An error has occurred<span class="tok-nt">&lt;/li&gt;</span>
+            <span class="tok-nt">&lt;/ul&gt;</span>
+        <span class="tok-nt">&lt;/g:else&gt;</span>
+    <span class="tok-nt">&lt;/body&gt;</span>
+<span class="tok-nt">&lt;/html&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>¿Cómo actuaría Grails cuando quiera pintar este archivo <em>error.gsp</em>? En primer lugar, detecta que este archivo se tiene que pintar envuelto en el layout <em>main</em> puesto que tenemos la etiqueta <em>&lt;meta name="layout" content="main"&gt;</em>. Una vez Grails ya sabe que esa página debe ser pintada utilizando un envoltorio (layout), realizará las sustituciones correspondientes en las etiquetas de dicho envoltorio <em>&lt;g:layoutTitle default="Grails"/&gt;</em> (sustituida por el texto Grails Runtime Exception), <em>&lt;g:layoutHead/&gt;</em> (sustituido por todo lo que esté dentro de la cabecera de <em>error.gsp</em>, que en este caso es únicamente la referencia a los estilos <em>&lt;g:layoutHead/&gt;</em>) y <em>&lt;g:layoutBody/&gt;</em>, que será sustituido por la salida que produzca la etiqueta <em>&lt;g:renderException exception="${exception}" /&gt;</em> en caso de que estemos en el entorno de desarrollo o bien por un texto indicando <em>"An error has ocurred"</em>.</p>
+</div>
+<div class="paragraph">
+<p>Una vez tenemos claro como se organizan las vistas en un proyecto desarrollado en Grails, ¿cómo podemos organizar estas vistas de forma lógica? En Grails vamos a distinguir dos tipos de vistas: las plantillas y las vistas. Básicamente las primeras serán fragmentos de código que podremos utilizar en varias partes de nuestra aplicación mientras que las vistas se corresponderán con páginas renderizadas gracias a una llamada de un controlador.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_plantillas">4.2. Plantillas</h3>
+<div class="paragraph">
+<p>En Grails las plantillas se diferencian de las vistas porque en las primeras su nombre siempre empieza por un subrayado bajo. Otra diferencia notable entre las vistas y las plantillas, es su utilidad y es que las plantillas normalmente las utilizaremos insertadas en vistas y nos facilitará la labor en aquellas partes de las interfaz de usuario que aparezca en varias páginas. Un buen ejemplo de una plantilla podría ser el menú con todas las opciones de nuestra aplicación.</p>
+</div>
+<div class="paragraph">
+<p>Las buenas prácticas de Grails indican que cualquier plantilla relacionada con una clase de dominio deben estar alojadas todas en un directorio, como por ejemplo <em>grails-app/views/todo/_mytemplate.gsp</em>. De igual forma, aquellas plantillas que vayan a ser utilizadas de una forma más genérica en varias clases de dominio, deben alojarse en un lugar común, por ejemplo en <em>grails-app/views/common</em>. Las plantillas tendrán extensión GSP que son las siglas de <em>Groovy Server Pages</em>.</p>
+</div>
+<div class="sect3">
+<h4 id="_plantilla_de_pie_de_página">4.2.1. Plantilla de pie de página</h4>
+<div class="paragraph">
+<p>Para comprobar el funcionamiento de las plantillas en Grails, vamos a crear una que nos permita mostrar un pie de página en toda nuestra aplicación que sustituirá al que Grails ha creado por nosotros. Como es una plantilla común a toda la aplicación, la almacenaremos en el directorio <em>grails-app/views/common</em> y la vamos a llamar <em>_footer.gsp</em> y su contenido será algo parecido a esto:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-o">&lt;</span><span class="tok-n">div</span> <span class="tok-n">class</span><span class="tok-o">=</span><span class="tok-s2">&quot;footer&quot;</span> <span class="tok-n">role</span><span class="tok-o">=</span><span class="tok-s2">&quot;contentinfo&quot;</span><span class="tok-o">&gt;</span>
+    <span class="tok-o">&amp;</span><span class="tok-n">copy</span><span class="tok-o">;</span> <span class="tok-mi">2015</span> <span class="tok-n">Experto</span> <span class="tok-n">en</span> <span class="tok-n">Desarrollo</span> <span class="tok-n">de</span> <span class="tok-n">Aplicaciones</span> <span class="tok-n">Web</span> <span class="tok-n">con</span> <span class="tok-n">JavaEE</span> <span class="tok-n">y</span> <span class="tok-n">Javascript</span><span class="tok-o">&lt;</span><span class="tok-n">br</span><span class="tok-s">/&gt;</span>
+<span class="tok-s">    Aplicación Todo creada por Francisco José García Rico (21.542.334F)</span>
+<span class="tok-s">&lt;/</span><span class="tok-n">div</span><span class="tok-o">&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Una vez creada la plantilla, necesitamos poder incrustarla en nuestro proyecto. Para ello, vamos a modificar el layout <em>main.gsp</em> para incluir la llamada correspondiente a esta plantilla. Nosotros vamos a añadir esta plantilla justo después de la etiqueta <em>&lt;g:layoutBody/&gt;</em>, quedando de esta forma:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-o">...</span>
+<span class="tok-o">&lt;</span><span class="tok-nl">g:</span><span class="tok-n">layoutBody</span><span class="tok-s">/&gt;</span>
+<span class="tok-s">&lt;g:render template=&quot;/</span><span class="tok-n">common</span><span class="tok-s">/footer&quot;/</span><span class="tok-o">&gt;</span>
+<span class="tok-o">&lt;</span><span class="tok-n">div</span> <span class="tok-n">id</span><span class="tok-o">=</span><span class="tok-s2">&quot;spinner&quot;</span><span class="tok-o">...</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Para pintar la plantilla correspondiente hemos utilizado la etiqueta de Grails <em>g:render</em> y como habrás podido comprobar, no es necesario poner ni el subrayado bajo ni la extensión gsp en el parámetro <em>template</em>, puesto que Grails ya lo hace por nosotros.</p>
+</div>
+<div class="paragraph">
+<p>Nuestra aplicación ya dispone de un pie de página con la información sobre los creadores de la aplicación. Pero, ¿qué pasa si queremos modificar la apariencia de como se muestra este pie de página para por ejemplo centrar el texto? Esto lo conseguiremos editando la información relativa a los estilos de la página (CSS). Las hojas de estilos de las aplicaciones en Grails se encuentran en el directorio <em>grails-app/assets/stylesheets/</em>, y concretamente tenemos un archivo llamado <em>main.css</em>. Lo que vamos a hacer a continuación es modificar la clase correspondiente al pie de página (<em>.footer</em>). Abrimos la hoja de estilos <em>main.css</em> y localizamos la clase <em>.footer</em> para dejarla de la siguiente forma.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="css"><span class="tok-nc">.footer</span> <span class="tok-p">{</span>
+    <span class="tok-k">background</span><span class="tok-o">:</span> <span class="tok-m">#abbf78</span><span class="tok-p">;</span>
+    <span class="tok-k">color</span><span class="tok-o">:</span> <span class="tok-m">#000</span><span class="tok-p">;</span>
+    <span class="tok-k">clear</span><span class="tok-o">:</span> <span class="tok-k">both</span><span class="tok-p">;</span>
+    <span class="tok-k">font-size</span><span class="tok-o">:</span> <span class="tok-m">0.8em</span><span class="tok-p">;</span>
+    <span class="tok-k">margin-top</span><span class="tok-o">:</span> <span class="tok-m">1.5em</span><span class="tok-p">;</span>
+    <span class="tok-k">padding</span><span class="tok-o">:</span> <span class="tok-m">1em</span><span class="tok-p">;</span>
+    <span class="tok-k">min-height</span><span class="tok-o">:</span> <span class="tok-m">1em</span><span class="tok-p">;</span>
+    <span class="tok-k">text-align</span><span class="tok-o">:</span><span class="tok-k">center</span><span class="tok-p">;</span>
+<span class="tok-p">}</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_plantilla_de_encabezado">4.2.2. Plantilla de encabezado</h4>
+<div class="paragraph">
+<p>La primera plantilla que hemos creado no nos ha supuesto mucha complicación y era muy sencilla de implementar, pero al menos nos ha servido como introducción al sistema de plantillas de Grails y a comprender como se renderizan estas plantillas en el sistema. La segunda plantilla que vamos a implementar nos va a complicar algo más la vida.</p>
+</div>
+<div class="paragraph">
+<p>Aunque nuestra aplicación todavía no tiene el concepto de usuario (es algo que añadiremos en la sesión 7), esta plantilla será la encargada de mostrar un enlace indicando la palabra <em>login</em> para que cuando los futuros usuarios hagan clic sobre ella, aparezca un formulario donde el usuario podrá identificarse en el sistema. Ahora bien, ¿qué pasa si el usuario ya se ha identificado? Pues lo que se hace habitualmente es modificar esa primera línea para que en lugar de mostrar un enlace con la palabra <em>login</em>, se muestre una línea con el nombre completo del usuario en cuestión y un enlace para que abandone el sistema de forma segura. Eso es lo que vamos a hacer con esta segunda plantilla.</p>
+</div>
+<div class="paragraph">
+<p>En primer lugar, vamos a modificar el archivo <em>grails-app/views/layout/main.gsp</em> para que en la parte superior de la aplicación, aparezca un encabezado que definiremos posteriormente. El archivo <em>main.gsp</em> quedaría así:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="html">...
+<span class="tok-nt">&lt;body&gt;</span>
+<span class="tok-nt">&lt;g:render</span> <span class="tok-na">template=</span><span class="tok-s">&quot;/common/header&quot;</span><span class="tok-nt">/&gt;</span>
+<span class="tok-nt">&lt;div</span> <span class="tok-na">id=</span><span class="tok-s">&quot;grailsLogo&quot;</span> <span class="tok-na">role=</span><span class="tok-s">&quot;banner&quot;</span><span class="tok-nt">&gt;</span>
+    <span class="tok-nt">&lt;a</span> <span class="tok-na">href=</span><span class="tok-s">&quot;http://grails.org&quot;</span><span class="tok-nt">&gt;</span>
+        <span class="tok-nt">&lt;img</span> <span class="tok-na">src=</span><span class="tok-s">&quot;${resource(dir: &#39;images&#39;, file: &#39;grails_logo.png&#39;)}&quot;</span> <span class="tok-na">alt=</span><span class="tok-s">&quot;Grails&quot;</span><span class="tok-nt">/&gt;</span>
+    <span class="tok-nt">&lt;/a&gt;</span>
+<span class="tok-nt">&lt;/div&gt;</span>
+<span class="tok-nt">&lt;g:layoutBody/&gt;</span>
+<span class="tok-nt">&lt;g:render</span> <span class="tok-na">template=</span><span class="tok-s">&quot;/common/footer&quot;</span><span class="tok-nt">/&gt;</span>
+...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Si intentas actualizar ahora la aplicación, verás como Grails nos devuelve un error y esto es debido a que todavía no hemos creado la correspondiente plantilla <em>_header.gsp</em>, así que antes de continuar vamos a crearla en el directorio <em>grails-app/views/common/</em>, puesto que es una plantilla que se utilizará a lo largo de toda la aplicación independientemente de la clase que estemos utilizando en cada momento. Vamos a ver el contenido de esta nueva plantilla y luego lo comentamos más ampliamente.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="html"><span class="tok-nt">&lt;div</span> <span class="tok-na">id=</span><span class="tok-s">&quot;menu&quot;</span><span class="tok-nt">&gt;</span>
+    <span class="tok-nt">&lt;nobr&gt;</span>
+        <span class="tok-nt">&lt;g:if</span> <span class="tok-na">test=</span><span class="tok-s">&quot;${isUserLoggedIn}&quot;</span><span class="tok-nt">&gt;</span>
+            <span class="tok-nt">&lt;b&gt;</span>${userInstance?.name} ${userInstance?.surnames}<span class="tok-nt">&lt;/b&gt;</span> |
+            <span class="tok-nt">&lt;g:link</span> <span class="tok-na">controller=</span><span class="tok-s">&quot;user&quot;</span> <span class="tok-na">action=</span><span class="tok-s">&quot;logout&quot;</span><span class="tok-nt">&gt;</span>Logout<span class="tok-nt">&lt;/g:link&gt;</span>
+        <span class="tok-nt">&lt;/g:if&gt;</span>
+        <span class="tok-nt">&lt;g:else&gt;</span>
+            <span class="tok-nt">&lt;g:link</span> <span class="tok-na">controller=</span><span class="tok-s">&quot;user&quot;</span> <span class="tok-na">action=</span><span class="tok-s">&quot;login&quot;</span><span class="tok-nt">&gt;</span>Login<span class="tok-nt">&lt;/g:link&gt;</span>
+        <span class="tok-nt">&lt;/g:else&gt;</span>
+    <span class="tok-nt">&lt;/nobr&gt;</span>
+<span class="tok-nt">&lt;/div&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Si actualizamos ahora la aplicación en el navegador, veremos como el enlace con la palabra <em>Login</em> queda a la izquierda, lo que no es lo habitual en las aplicaciones web, donde suele aparecer casi siempre en la parte superior derecha de la pantalla. Para solucionar esto, volvemos a editar los estilos de nuestra aplicación y le añadimos las siguientes entradas:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="css"><span class="tok-nf">#header</span> <span class="tok-p">{</span>
+    <span class="tok-k">text-align</span><span class="tok-o">:</span><span class="tok-k">left</span><span class="tok-p">;</span>
+    <span class="tok-k">margin</span><span class="tok-o">:</span> <span class="tok-m">0px</span><span class="tok-p">;</span>
+    <span class="tok-k">padding</span><span class="tok-o">:</span> <span class="tok-m">0</span><span class="tok-p">;</span>
+<span class="tok-p">}</span>
+
+<span class="tok-nf">#header</span> <span class="tok-nf">#menu</span><span class="tok-p">{</span>
+    <span class="tok-k">float</span><span class="tok-o">:</span> <span class="tok-k">right</span><span class="tok-p">;</span>
+    <span class="tok-k">width</span><span class="tok-o">:</span> <span class="tok-m">240px</span><span class="tok-p">;</span>
+    <span class="tok-k">text-align</span><span class="tok-o">:</span><span class="tok-k">right</span><span class="tok-p">;</span>
+    <span class="tok-k">font-size</span><span class="tok-o">:</span><span class="tok-m">12px</span><span class="tok-p">;</span>
+    <span class="tok-k">padding</span><span class="tok-o">:</span><span class="tok-m">4px</span><span class="tok-p">;</span>
+<span class="tok-p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Ya tenemos alineado a la derecha el texto con la palabra <em>Login</em>, que además, aparecerá en cualquier página de la aplicación. Antes de continuar, vamos a explicar el contenido del archivo <em>grails-app/views/common/_header.gsp</em>. Podemos comprobar como se hace una comprobación para saber si el usuario actual se ha identificado o no en nuestro sistema. Para realizar esta comprobación utilizamos la etiqueta <em>&lt;g:if&gt;</em>, a la que se le pasa el parámetro <em>test</em> con la variable <em>${isUserLoggedIn}</em> (variable que todavía no existe). En caso de que esta variable esté ya definida (el usuario ya se ha identificado en el sistema), se mostrará su nombre y apellidos seguido de un enlace para que abandone la aplicación de forma segura. En caso contrario, se le mostrará un enlace con la palabra <em>Login</em> para que se identifique. En ambos casos, se utiliza la etiqueta <em>&lt;g:link&gt;</em> que permite crear enlaces que apunten a una determinada acción de un controlador, tal y como veremos más adelante.</p>
+</div>
+<div class="paragraph">
+<p>Si ahora hacemos clic sobre <em>Login</em>, veremos como Grails nos devuelve un error del tipo 404, puesto que no hemos definido nada para que la aplicación actúe en consecuencia. Lo dejaremos así hasta que nuestra aplicación soporte usuarios que veremos en la sesión de Spring Security.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_páginas">4.3. Páginas</h3>
+<div class="paragraph">
+<p>Las páginas en Grails podemos definirlas como aquellos archivos de la interfaz de usuario que se pintarán a partir de una llamada realizada desde un controlador. Por ejemplo, si nuestra aplicación necesita una sección con las preguntas más frecuentes de la aplicación, podríamos crear una vista llamada <em>faqs.gsp</em> que se encargue de esto. Además, como esta vista no va a pertenecer a ninguna clase de dominio en cuestión sino que será común a toda la aplicación, la ubicaremos en el directorio <em>/grails-app/views/common</em>. Más adelante crearemos un controlador que se encargará de pintar las preguntas más frecuentes de nuestra aplicación.</p>
+</div>
+<div class="paragraph">
+<p>Aunque ya te habrás dado cuenta, a diferencia de las plantillas, las vistas no deben utilizar un subrayado bajo al inicio del nombre pero también deben tener extensión GSP.</p>
+</div>
+<div class="sect3">
+<h4 id="_variables_y_alcance_de_las_mismas_en_páginas">4.3.1. Variables y alcance de las mismas en páginas</h4>
+<div class="paragraph">
+<p>En GSP podemos utilizar podemos utilizar los símbolos <em>&lt;%  %&gt;</em> de la siguiente forma</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-o">&lt;%</span> <span class="tok-n">now</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-n">Date</span><span class="tok-o">()</span> <span class="tok-o">%&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Y de forma similar podemos acceder a esa variables con</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-o">&lt;%=</span> <span class="tok-n">now</span> <span class="tok-o">%&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Dentro del alcance de una página GSP, tendremos a nuestra disposición una serie de variables predefinidas, que son:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>application - Instancia de <a href="http://docs.oracle.com/javaee/7/api/javax/servlet/ServletContext.html">javax.servlet.ServletContext</a></p>
+</li>
+<li>
+<p>applicationContext - Instancia de Spring ApplicationContext</p>
+</li>
+<li>
+<p>flash - El objecto flash que veremos más adelante en la sección de los controladores</p>
+</li>
+<li>
+<p>grailsApplication - Instancia de GrailsApplication</p>
+</li>
+<li>
+<p>out - Un response writer para escribir la salida</p>
+</li>
+<li>
+<p>params - Los parámetros pasados en la petición</p>
+</li>
+<li>
+<p>request - Instnaica de <a href="http://docs.oracle.com/javaee/7/api/javax/servlet/http/HttpServletRequest.html">HttpServletRequest</a></p>
+</li>
+<li>
+<p>response - Instancia de <a href="http://docs.oracle.com/javaee/7/api/javax/servlet/http/HttpServletResponse.html">HttpServletResponse</a></p>
+</li>
+<li>
+<p>session - Instancia de <a href="http://docs.oracle.com/javaee/7/api/javax/servlet/http/HttpSession.html">HttpSession</a></p>
+</li>
+<li>
+<p>webRequest - Instancia de <a href="http://grails.org/doc/latest/api/org/codehaus/groovy/grails/web/servlet/mvc/GrailsWebRequest.html">GrailsWebRequest</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Utilizando los símbolos &lt;% y %&gt; vamos a poder realizar bucles:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-o">&lt;</span><span class="tok-n">html</span><span class="tok-o">&gt;</span>
+   <span class="tok-o">&lt;</span><span class="tok-n">body</span><span class="tok-o">&gt;</span>
+      <span class="tok-o">&lt;%</span> <span class="tok-o">[</span><span class="tok-mi">1</span><span class="tok-o">,</span><span class="tok-mi">2</span><span class="tok-o">,</span><span class="tok-mi">3</span><span class="tok-o">,</span><span class="tok-mi">4</span><span class="tok-o">].</span><span class="tok-na">each</span> <span class="tok-o">{</span> <span class="tok-n">num</span> <span class="tok-o">-&gt;</span> <span class="tok-o">%&gt;</span>
+         <span class="tok-o">&lt;</span><span class="tok-n">p</span><span class="tok-o">&gt;&lt;%=</span><span class="tok-s2">&quot;Hello ${num}!&quot;</span> <span class="tok-o">%&gt;&lt;</span><span class="tok-s">/p&gt;</span>
+<span class="tok-s">      &lt;%}%&gt;</span>
+<span class="tok-s">   &lt;/</span><span class="tok-n">body</span><span class="tok-o">&gt;</span>
+<span class="tok-o">&lt;/</span><span class="tok-n">html</span><span class="tok-o">&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>así como comprobaciónes lógicas:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-o">&lt;</span><span class="tok-n">html</span><span class="tok-o">&gt;</span>
+   <span class="tok-o">&lt;</span><span class="tok-n">body</span><span class="tok-o">&gt;</span>
+      <span class="tok-o">&lt;%</span> <span class="tok-k">if</span> <span class="tok-o">(</span><span class="tok-n">params</span><span class="tok-o">.</span><span class="tok-na">hello</span> <span class="tok-o">==</span> <span class="tok-s1">&#39;true&#39;</span><span class="tok-o">)%&gt;</span>
+      <span class="tok-o">&lt;%=</span><span class="tok-s2">&quot;Hello!&quot;</span><span class="tok-o">%&gt;</span>
+      <span class="tok-o">&lt;%</span> <span class="tok-k">else</span> <span class="tok-o">%&gt;</span>
+      <span class="tok-o">&lt;%=</span><span class="tok-s2">&quot;Goodbye!&quot;</span><span class="tok-o">%&gt;</span>
+   <span class="tok-o">&lt;</span><span class="tok-s">/body&gt;</span>
+<span class="tok-s">&lt;/</span><span class="tok-n">html</span><span class="tok-o">&gt;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_directivas_de_páginas">4.3.2. Directivas de páginas</h4>
+<div class="paragraph">
+<p>Las páginas GSP soportan además algunas directivas típicas de las JSP tales como <em>importar clases</em>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-o">&lt;%</span><span class="tok-err">@</span> <span class="tok-n">page</span> <span class="tok-n">import</span><span class="tok-o">=</span><span class="tok-s2">&quot;java.awt.*&quot;</span> <span class="tok-o">%&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>o incluso las directivas para especificar el tipo de contenido de la página visualizada:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-o">&lt;%</span><span class="tok-err">@</span> <span class="tok-n">page</span> <span class="tok-n">contentType</span><span class="tok-o">=</span><span class="tok-s2">&quot;text/json&quot;</span> <span class="tok-o">%&gt;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_expresiones">4.3.3. Expresiones</h4>
+<div class="paragraph">
+<p>La sintaxis vista en el punto anterior que utiliza los símbolos &lt;% y %&gt; sin embargo no es tan utilizada debido a la existencia de las expresiones GSP, que son similares a las expresiones JSP EL y tienen la forma <em>${expresion}</em>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-o">&lt;</span><span class="tok-n">html</span><span class="tok-o">&gt;</span>
+  <span class="tok-o">&lt;</span><span class="tok-n">body</span><span class="tok-o">&gt;</span>
+    <span class="tok-n">Hello</span> <span class="tok-n">$</span><span class="tok-o">{</span><span class="tok-n">params</span><span class="tok-o">.</span><span class="tok-na">name</span><span class="tok-o">}</span>
+  <span class="tok-o">&lt;</span><span class="tok-s">/body&gt;</span>
+<span class="tok-s">&lt;/</span><span class="tok-n">html</span><span class="tok-o">&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_etiquetas">4.4. Etiquetas</h3>
+<div class="paragraph">
+<p>En los ejemplos que hemos visto hasta el momento, han aparecido algunas de las etiquetas más utilizadas en Grails. Sin embargo, son muchas más las disponibles y a continuación vamos a ver algunas de ellas. El número de etiquetas de Grails crece continuamente gracias al aporte de la cada vez mayor comunidad de usuarios con sus plugins. A continuación vamos a ver aquellas etiquetas que vienen con el <em>core</em> de Grails.</p>
+</div>
+<div class="sect3">
+<h4 id="_etiquetas_lógicas">4.4.1. Etiquetas lógicas</h4>
+<div class="paragraph">
+<p>Estas etiquetas nos permitirán realizar comprobaciones del tipo <em>si-entonces-sino</em>.</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 33%;">
+<col style="width: 33%;">
+<col style="width: 33%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Etiqueta</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
+<th class="tableblock halign-left valign-top">API</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;g:if&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Evalúa una expresión y actúa en consecuencia</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.grails.org/doc/latest/ref/Tags/if.html" class="bare">http://www.grails.org/doc/latest/ref/Tags/if.html</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;g:else&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La parte <em>else</em> del bloque <em>if</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.grails.org/doc/latest/ref/Tags/else.html" class="bare">http://www.grails.org/doc/latest/ref/Tags/else.html</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;g:elseif&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La parte <em>elseif</em> del bloque <em>if</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.grails.org/doc/latest/ref/Tags/elseif.html" class="bare">http://www.grails.org/doc/latest/ref/Tags/elseif.html</a></p></td>
+</tr>
+</tbody>
+</table>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="html"><span class="tok-nt">&lt;g:if</span> <span class="tok-na">test=</span><span class="tok-s">&quot;${userInstance?.type == &#39;admin&#39;}&quot;</span><span class="tok-nt">&gt;</span>
+   <span class="tok-err">&lt;</span>%-- mostrar funciones de administrador --%&gt;
+<span class="tok-nt">&lt;/g:if&gt;</span>
+<span class="tok-nt">&lt;g:else&gt;</span>
+   <span class="tok-err">&lt;</span>%-- mostrar funciones básicas --%&gt;
+<span class="tok-nt">&lt;/g:else&gt;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_etiquetas_de_iteración">4.4.2. Etiquetas de iteración</h4>
+<div class="paragraph">
+<p>Son utilizadas para iterar a través de colecciones de datos o hasta que una determinada condición se evalúe a falso.</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 33%;">
+<col style="width: 33%;">
+<col style="width: 33%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Etiqueta</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
+<th class="tableblock halign-left valign-top">API</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;g:while&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ejecuta un bloque de código mientras una condición se evalúe a cierto</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.grails.org/doc/latest/ref/Tags/while.html" class="bare">http://www.grails.org/doc/latest/ref/Tags/while.html</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;g:each&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Itera sobre una colección de objetos</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.grails.org/doc/latest/ref/Tags/each.html" class="bare">http://www.grails.org/doc/latest/ref/Tags/each.html</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;g:collect&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Itera sobre una colección y transforma los resultados tal y como se defina en el parámetro <em>expr</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.grails.org/doc/latest/ref/Tags/collect.html" class="bare">http://www.grails.org/doc/latest/ref/Tags/collect.html</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;g:findAll&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Itera sobre una colección donde los elementos se corresponden con la expresión GPath definida en el parámetro <em>expr</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.grails.org/doc/latest/ref/Tags/findAll.html" class="bare">http://www.grails.org/doc/latest/ref/Tags/findAll.html</a></p></td>
+</tr>
+</tbody>
+</table>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-o">&lt;</span><span class="tok-nl">g:</span><span class="tok-n">set</span> <span class="tok-n">var</span><span class="tok-o">=</span><span class="tok-s2">&quot;num&quot;</span> <span class="tok-n">value</span><span class="tok-o">=</span><span class="tok-s2">&quot;${1}&quot;</span> <span class="tok-s">/&gt;</span>
+<span class="tok-s">&lt;g:while test=&quot;${num &lt; 5 }&quot;&gt;</span>
+<span class="tok-s">    &lt;p&gt;Number ${num++}</span>
+<span class="tok-s">&lt;/</span><span class="tok-nl">g:</span><span class="tok-k">while</span><span class="tok-o">&gt;</span>
+
+<span class="tok-cm">/*************************************/</span>
+
+<span class="tok-o">&lt;</span><span class="tok-nl">g:</span><span class="tok-n">each</span> <span class="tok-k">in</span><span class="tok-o">=</span><span class="tok-s2">&quot;${[1,2,3]}&quot;</span> <span class="tok-n">var</span><span class="tok-o">=</span><span class="tok-s2">&quot;num&quot;</span><span class="tok-o">&gt;</span>
+   <span class="tok-o">&lt;</span><span class="tok-n">p</span><span class="tok-o">&gt;</span><span class="tok-n">Number</span> <span class="tok-n">$</span><span class="tok-o">{</span><span class="tok-n">num</span><span class="tok-o">}&lt;</span><span class="tok-s">/p&gt;</span>
+<span class="tok-s">&lt;/</span><span class="tok-nl">g:</span><span class="tok-n">each</span><span class="tok-o">&gt;</span>
+
+<span class="tok-cm">/*************************************/</span>
+<span class="tok-n">Stephen</span> <span class="tok-n">King</span><span class="tok-s1">&#39;s Books:</span>
+<span class="tok-s1">&lt;g:findAll in=&quot;${books}&quot; expr=&quot;it.author == &#39;</span><span class="tok-n">Stephen</span> <span class="tok-n">King</span><span class="tok-err">&#39;&quot;</span><span class="tok-o">&gt;</span>
+     <span class="tok-o">&lt;</span><span class="tok-n">p</span><span class="tok-o">&gt;</span><span class="tok-nl">Title:</span> <span class="tok-n">$</span><span class="tok-o">{</span><span class="tok-n">it</span><span class="tok-o">.</span><span class="tok-na">title</span><span class="tok-o">}</span>
+<span class="tok-o">&lt;/</span><span class="tok-nl">g:</span><span class="tok-n">findAll</span><span class="tok-o">&gt;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_etiquetas_de_asignación">4.4.3. Etiquetas de asignación</h4>
+<div class="paragraph">
+<p>Nos servirán para asignar valores a variables.</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 33%;">
+<col style="width: 33%;">
+<col style="width: 33%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Etiqueta</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
+<th class="tableblock halign-left valign-top">API</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;g:set&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Define y establece el valor de una variable utilizada en una página GSP</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.grails.org/doc/latest/ref/Tags/set.html" class="bare">http://www.grails.org/doc/latest/ref/Tags/set.html</a></p></td>
+</tr>
+</tbody>
+</table>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-o">&lt;</span><span class="tok-nl">g:</span><span class="tok-n">set</span> <span class="tok-n">var</span><span class="tok-o">=</span><span class="tok-s2">&quot;now&quot;</span> <span class="tok-n">value</span><span class="tok-o">=</span><span class="tok-s2">&quot;${new Date()}&quot;</span> <span class="tok-s">/&gt;</span>
+
+<span class="tok-s">/</span><span class="tok-o">*************************************</span><span class="tok-s">/</span>
+<span class="tok-s">&lt;g:set var=&quot;myHTML&quot;&gt;</span>
+<span class="tok-s">   Some re-usable code on: ${new Date()}</span>
+<span class="tok-s">&lt;/</span><span class="tok-nl">g:</span><span class="tok-n">set</span><span class="tok-o">&gt;</span>
+
+<span class="tok-cm">/*************************************/</span>
+<span class="tok-o">&lt;</span><span class="tok-nl">g:</span><span class="tok-n">set</span> <span class="tok-n">var</span><span class="tok-o">=</span><span class="tok-s2">&quot;now&quot;</span> <span class="tok-n">value</span><span class="tok-o">=</span><span class="tok-s2">&quot;${new Date()}&quot;</span> <span class="tok-n">scope</span><span class="tok-o">=</span><span class="tok-s2">&quot;request&quot;</span> <span class="tok-o">/&gt;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_etiquetas_de_enlaces">4.4.4. Etiquetas de enlaces</h4>
+<div class="paragraph">
+<p>Crean enlaces a partir de los parámetros pasados.</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 33%;">
+<col style="width: 33%;">
+<col style="width: 33%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Etiqueta</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
+<th class="tableblock halign-left valign-top">API</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;g:link&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Crea un enlace HTML utilizando los parámetros pasados</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.grails.org/doc/latest/ref/Tags/link.html" class="bare">http://www.grails.org/doc/latest/ref/Tags/link.html</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;g:createLink&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Crea un enlace HTML que puede ser utilizado dentro de otras etiquetas</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.grails.org/doc/latest/ref/Tags/createLink.html" class="bare">http://www.grails.org/doc/latest/ref/Tags/createLink.html</a></p></td>
+</tr>
+</tbody>
+</table>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="html"><span class="tok-nt">&lt;g:link</span> <span class="tok-na">action=</span><span class="tok-s">&quot;show&quot;</span> <span class="tok-na">id=</span><span class="tok-s">&quot;1&quot;</span><span class="tok-nt">&gt;</span>Book 1<span class="tok-nt">&lt;/g:link&gt;</span>
+<span class="tok-nt">&lt;g:link</span> <span class="tok-na">action=</span><span class="tok-s">&quot;show&quot;</span> <span class="tok-na">id=</span><span class="tok-s">&quot;${currentBook.id}&quot;</span><span class="tok-nt">&gt;</span>${currentBook.name}<span class="tok-nt">&lt;/g:link&gt;</span>
+<span class="tok-nt">&lt;g:link</span> <span class="tok-na">controller=</span><span class="tok-s">&quot;book&quot;</span><span class="tok-nt">&gt;</span>Book Home<span class="tok-nt">&lt;/g:link&gt;</span>
+<span class="tok-nt">&lt;g:link</span> <span class="tok-na">controller=</span><span class="tok-s">&quot;book&quot;</span> <span class="tok-na">action=</span><span class="tok-s">&quot;list&quot;</span><span class="tok-nt">&gt;</span>Book List<span class="tok-nt">&lt;/g:link&gt;</span>
+<span class="tok-nt">&lt;g:link</span> <span class="tok-na">url=</span><span class="tok-s">&quot;[action: &#39;list&#39;, controller: &#39;book&#39;]&quot;</span><span class="tok-nt">&gt;</span>Book List<span class="tok-nt">&lt;/g:link&gt;</span>
+<span class="tok-nt">&lt;g:link</span> <span class="tok-na">params=</span><span class="tok-s">&quot;[sort: &#39;title&#39;, order: &#39;asc&#39;, author: currentBook.author]&quot;</span> <span class="tok-na">action=</span><span class="tok-s">&quot;list&quot;</span><span class="tok-nt">&gt;</span>
+    Book List
+<span class="tok-nt">&lt;/g:link&gt;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_etiquetas_de_formularios">4.4.5. Etiquetas de formularios</h4>
+<div class="paragraph">
+<p>Las utilizaremos para crear nuestros propios formularios HTML.</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 33%;">
+<col style="width: 33%;">
+<col style="width: 33%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Etiqueta</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
+<th class="tableblock halign-left valign-top">API</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;g:actionSubmit&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Crea un botón de tipo <em>submit</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.grails.org/doc/latest/ref/Tags/actionSubmit.html" class="bare">http://www.grails.org/doc/latest/ref/Tags/actionSubmit.html</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;g:actionSubmitImage&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Crea un botón de tipo <em>submit</em> con una imagen</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.grails.org/doc/latest/ref/Tags/actionSubmitImage.html" class="bare">http://www.grails.org/doc/latest/ref/Tags/actionSubmitImage.html</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;g:checkBox&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Crea un elemento de formulario de tipo checkbox</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.grails.org/doc/latest/ref/Tags/checkBox.html" class="bare">http://www.grails.org/doc/latest/ref/Tags/checkBox.html</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;g:currencySelect&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Crea un campo de tipo <em>select</em> con un listado de monedas</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.grails.org/doc/latest/ref/Tags/currencySelect.html" class="bare">http://www.grails.org/doc/latest/ref/Tags/currencySelect.html</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;g:datePicker&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Crea un elemento de formulario para seleccionar una fecha con día, mes, año, hora, minutos y segundos</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.grails.org/doc/latest/ref/Tags/datePicker.html" class="bare">http://www.grails.org/doc/latest/ref/Tags/datePicker.html</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;g:form&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Crea un formulario</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.grails.org/doc/latest/ref/Tags/form.html" class="bare">http://www.grails.org/doc/latest/ref/Tags/form.html</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;g:hiddenField&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Crea un campo oculto</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.grails.org/doc/latest/ref/Tags/hiddenField.html" class="bare">http://www.grails.org/doc/latest/ref/Tags/hiddenField.html</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;g:localeSelect&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Crea un elemento de formulario de tipo <em>select</em> con un listado de posibles localizaciones</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.grails.org/doc/latest/ref/Tags/localeSelect.html" class="bare">http://www.grails.org/doc/latest/ref/Tags/localeSelect.html</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;g:radio&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Crea un elemento de formulario de tipo radio</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.grails.org/doc/latest/ref/Tags/radio.html" class="bare">http://www.grails.org/doc/latest/ref/Tags/radio.html</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;g:radioGroup&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Crea un grupo de elementos de formulario de tipo radio</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.grails.org/doc/latest/ref/Tags/radioGroup.html" class="bare">http://www.grails.org/doc/latest/ref/Tags/radioGroup.html</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;g:select&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Crea un elemento de formulario de tipo <em>select combo box</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.grails.org/doc/latest/ref/Tags/select.html" class="bare">http://www.grails.org/doc/latest/ref/Tags/select.html</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;g:textField&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Crea un elemento de formulario de tipo <em>text</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.grails.org/doc/latest/ref/Tags/textField.html" class="bare">http://www.grails.org/doc/latest/ref/Tags/textField.html</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;g:passwordField&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Crea un elemento de formulario de tipo <em>password</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.grails.org/doc/latest/ref/Tags/passwordField.html" class="bare">http://www.grails.org/doc/latest/ref/Tags/passwordField.html</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;g:textArea&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Crea un elemento de formulario de tipo <em>textarea</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.grails.org/doc/latest/ref/Tags/textArea.html" class="bare">http://www.grails.org/doc/latest/ref/Tags/textArea.html</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;g:timeZoneSelect&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Crea un elemento de formulario de tipo <em>select</em> con un listado de zonas horarias</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.grails.org/doc/latest/ref/Tags/timeZoneSelect.html" class="bare">http://www.grails.org/doc/latest/ref/Tags/timeZoneSelect.html</a></p></td>
+</tr>
+</tbody>
+</table>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-o">&lt;</span><span class="tok-nl">g:</span><span class="tok-n">form</span> <span class="tok-n">name</span><span class="tok-o">=</span><span class="tok-s2">&quot;myForm&quot;</span> <span class="tok-n">url</span><span class="tok-o">=</span><span class="tok-s2">&quot;[controller:&#39;book&#39;,action:&#39;list&#39;]&quot;</span><span class="tok-o">&gt;...&lt;</span><span class="tok-s">/g:form&gt;</span>
+
+<span class="tok-s">/</span><span class="tok-o">*************************************</span><span class="tok-s">/</span>
+<span class="tok-s">&lt;g:textField name=&quot;myField&quot; value=&quot;${myValue}&quot; /</span><span class="tok-o">&gt;</span>
+
+<span class="tok-cm">/*************************************/</span>
+<span class="tok-o">&lt;</span><span class="tok-nl">g:</span><span class="tok-n">actionSubmit</span> <span class="tok-n">value</span><span class="tok-o">=</span><span class="tok-s2">&quot;Some update label&quot;</span> <span class="tok-n">action</span><span class="tok-o">=</span><span class="tok-s2">&quot;update&quot;</span> <span class="tok-o">/&gt;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_etiquetas_de_renderizado">4.4.6. Etiquetas de renderizado</h4>
+<div class="paragraph">
+<p>Permite renderizar las páginas web de nuestras aplicaciones utilizando las plantillas.</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 33%;">
+<col style="width: 33%;">
+<col style="width: 33%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Etiqueta</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
+<th class="tableblock halign-left valign-top">API</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;g:applyLayout&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Aplica un determinado diseño a una página o una plantilla</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.grails.org/doc/latest/ref/Tags/applyLayout.html" class="bare">http://www.grails.org/doc/latest/ref/Tags/applyLayout.html</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;g:formatDate&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Aplica el formato <em>SimpleDateFormat</em> a una fecha</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.grails.org/doc/latest/ref/Tags/formatDate.html" class="bare">http://www.grails.org/doc/latest/ref/Tags/formatDate.html</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;g:formatNumber&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Aplica el formato <em>DecimalFormat</em> a un número</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.grails.org/doc/latest/ref/Tags/formatNumber.html" class="bare">http://www.grails.org/doc/latest/ref/Tags/formatNumber.html</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;g:layoutHead&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Muestra una determinada cabecera para una página</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.grails.org/doc/latest/ref/Tags/layoutHead.html" class="bare">http://www.grails.org/doc/latest/ref/Tags/layoutHead.html</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;g:layoutBody&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Muestra un determinado contenido para una página</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.grails.org/doc/latest/ref/Tags/layoutBody.html" class="bare">http://www.grails.org/doc/latest/ref/Tags/layoutBody.html</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;g:layoutTitle&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Muestra un determinado título para una página</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.grails.org/doc/latest/ref/Tags/layoutTitle.html" class="bare">http://www.grails.org/doc/latest/ref/Tags/layoutTitle.html</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;g:meta&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Muestra las propiedades del archivo <em>application.properties</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.grails.org/doc/latest/ref/Tags/meta.html" class="bare">http://www.grails.org/doc/latest/ref/Tags/meta.html</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;g:render&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Muestra un modelo utilizando una plantilla</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.grails.org/doc/latest/ref/Tags/render.html" class="bare">http://www.grails.org/doc/latest/ref/Tags/render.html</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;g:renderErrors&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Muestra los errores producidos en una página</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.grails.org/doc/latest/ref/Tags/renderErrors.html" class="bare">http://www.grails.org/doc/latest/ref/Tags/renderErrors.html</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;g:pageProperty&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Muestra una propiedad de una página</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.grails.org/doc/latest/ref/Tags/pageProperty.html" class="bare">http://www.grails.org/doc/latest/ref/Tags/pageProperty.html</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;g:paginate&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Muestra los típicos botones <em>Anterior</em> y <em>Siguiente</em> y las <em>migas de pan</em> cuando se devuelven muchos resultados</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.grails.org/doc/latest/ref/Tags/paginate.html" class="bare">http://www.grails.org/doc/latest/ref/Tags/paginate.html</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;g:sortableColumn&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Muestra una columna de una tabla con la posibilidad de ordenarla</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.grails.org/doc/latest/ref/Tags/sortableColumn.html" class="bare">http://www.grails.org/doc/latest/ref/Tags/sortableColumn.html</a></p></td>
+</tr>
+</tbody>
+</table>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-o">&lt;</span><span class="tok-nl">g:</span><span class="tok-n">render</span> <span class="tok-n">template</span><span class="tok-o">=</span><span class="tok-s2">&quot;bookTemplate&quot;</span> <span class="tok-n">model</span><span class="tok-o">=</span><span class="tok-s2">&quot;[book: myBook]&quot;</span> <span class="tok-s">/&gt;</span>
+
+<span class="tok-s">/</span><span class="tok-o">*************************************</span><span class="tok-s">/</span>
+<span class="tok-s">&lt;g:render template=&quot;bookTemplate&quot; var=&quot;book&quot; collection=&quot;${bookList}&quot; /</span><span class="tok-o">&gt;</span>
+
+<span class="tok-cm">/*************************************/</span>
+<span class="tok-o">&lt;</span><span class="tok-n">img</span> <span class="tok-n">src</span><span class="tok-o">=</span><span class="tok-s2">&quot;&lt;g:createLinkTo dir=&quot;</span><span class="tok-n">images</span><span class="tok-s2">&quot; file=&quot;</span><span class="tok-n">logo</span><span class="tok-o">.</span><span class="tok-na">jpg</span><span class="tok-s2">&quot; /&gt;&quot;</span> <span class="tok-o">/&gt;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_etiquetas_de_validación">4.4.7. Etiquetas de validación</h4>
+<div class="paragraph">
+<p>Se utilizan para mostrar errores y mensajes de advertencia.</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 33%;">
+<col style="width: 33%;">
+<col style="width: 33%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Etiqueta</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
+<th class="tableblock halign-left valign-top">API</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;g:eachError&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Itera a través de los errores producidos en un bean o un modelo</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.grails.org/doc/latest/ref/Tags/eachError.html" class="bare">http://www.grails.org/doc/latest/ref/Tags/eachError.html</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;g:hasErrors&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Comprueba si se ha producido algún error en un bean o un modelo</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.grails.org/doc/latest/ref/Tags/hasErrors.html" class="bare">http://www.grails.org/doc/latest/ref/Tags/hasErrors.html</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;g:message&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Muestra un mensaje a partir de la propiedad pasada por parámetro</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.grails.org/doc/latest/ref/Tags/message.html" class="bare">http://www.grails.org/doc/latest/ref/Tags/message.html</a></p></td>
+</tr>
+</tbody>
+</table>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-o">&lt;</span><span class="tok-nl">g:</span><span class="tok-n">eachError</span> <span class="tok-n">bean</span><span class="tok-o">=</span><span class="tok-s2">&quot;${book}&quot;</span><span class="tok-o">&gt;</span>
+    <span class="tok-o">&lt;</span><span class="tok-n">li</span><span class="tok-o">&gt;</span><span class="tok-n">$</span><span class="tok-o">{</span><span class="tok-n">it</span><span class="tok-o">}&lt;</span><span class="tok-s">/li&gt;</span>
+<span class="tok-s">&lt;/</span><span class="tok-nl">g:</span><span class="tok-n">eachError</span><span class="tok-o">&gt;</span>
+
+<span class="tok-cm">/*************************************/</span>
+<span class="tok-o">&lt;</span><span class="tok-nl">g:</span><span class="tok-n">message</span> <span class="tok-n">code</span><span class="tok-o">=</span><span class="tok-s2">&quot;my.message.code&quot;</span> <span class="tok-o">/&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_librería_de_etiquetas">4.5. Librería de etiquetas</h3>
+<div class="paragraph">
+<p>Como acabamos de ver, Grails nos ofrece la posibilidad de utilizar un amplio rango de etiquetas tanto JSP como GSP, pero en ocasiones, es probable que necesitemos crear nuestras propias etiquetas. Estas etiquetas nos van a permitir realizar tareas repetitivas de forma rápida y sencilla.</p>
+</div>
+<div class="paragraph">
+<p>Las librerías de etiquetas no requieren ninguna tarea de configuración y, como casi siempre, se recargan automáticamente sin reiniciar el servidor.</p>
+</div>
+<div class="paragraph">
+<p>En Grails tenemos dos métodos para crear etiquetas. Por un lado mediante el comando <em>grails create-tag-lib</em> y por otro creando una nueva clase en el directorio <em>grails-app/taglib</em> cuyo nombre termine en <em>TagLib</em>. Nosotros utilizaremos como hasta ahora el comando <em>grails create-tag-lib es.ua.expertojava.todo.Todo</em>.</p>
+</div>
+<div class="paragraph">
+<p>Este será el resultado de la nueva librería de etiquetas creada:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-kn">package</span> <span class="tok-n">es</span><span class="tok-o">.</span><span class="tok-na">ua</span><span class="tok-o">.</span><span class="tok-na">expertojava</span><span class="tok-o">.</span><span class="tok-na">todo</span>
+
+<span class="tok-kd">class</span> <span class="tok-nc">TodoTagLib</span> <span class="tok-o">{</span>
+    <span class="tok-kd">static</span> <span class="tok-n">defaultEncodeAs</span> <span class="tok-o">=</span> <span class="tok-o">[</span><span class="tok-nl">taglib:</span><span class="tok-s1">&#39;html&#39;</span><span class="tok-o">]</span>
+    <span class="tok-c1">//static encodeAsForTags = [tagName: [taglib:&#39;html&#39;], otherTagName: [taglib:&#39;none&#39;]]</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Las dos propiedades estáticas creadas nos servirán para indicar de forma global o por etiqueta como queremos renderizarlas. Por ejemplo, con <em>static defaultEncodeAs = [taglib:'html']</em> estamos indicando que cuando la etiqueta imprima el símbolo <em>&lt;</em> o <em>&gt;</em> lo hará por su correspondiente entidad, ésto es, &amp;lt; o &amp;gt;.</p>
+</div>
+<div class="paragraph">
+<p>Además de definirlo de forma global, también vamos a poder especificarlo por etiqueta utilizando la variable <em>encodeAsForTags</em> y por supuesto modificando las claves utilizadas en el ejemplo por los nombres de nuestras etiquetas.</p>
+</div>
+<div class="paragraph">
+<p>En nuestros ejemplos, vamos a tener que modificar la variable <em>defaultEncodeAs</em> por el siguiente valor: <em>[taglib:'html']</em>.</p>
+</div>
+<div class="sect3">
+<h4 id="_etiquetas_simples">4.5.1. Etiquetas simples</h4>
+<div class="paragraph">
+<p>El primer ejemplo de etiqueta que vamos a crear será una etiqueta que permita la inclusión de archivos de funciones javascript en el código de nuestras páginas GSPs. Para ello definimos un método en la nueva clase <em>TodoTagLib</em> con el siguiente contenido:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-kt">def</span> <span class="tok-n">includeJs</span> <span class="tok-o">=</span> <span class="tok-o">{</span><span class="tok-n">attrs</span> <span class="tok-o">-&gt;</span>
+    <span class="tok-n">out</span> <span class="tok-o">&lt;&lt;</span> <span class="tok-s2">&quot;&lt;script src=&#39;scripts/${attrs[&#39;script&#39;]}.js&#39; &gt;&lt;/script&gt;&quot;</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>La creación de la etiqueta necesita como parámetro los atributos de la misma. En este primer ejemplo, sólo vamos a utilizar un atributo que será el nombre del archivo javascript que queremos invocar en nuestra página GSP.</p>
+</div>
+<div class="paragraph">
+<p>Una vez creada la etiqueta, para realizar la invocación de la misma en las páginas GSP utilizaremos el siguiente código.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-o">&lt;</span><span class="tok-nl">g:</span><span class="tok-n">includeJs</span> <span class="tok-n">script</span><span class="tok-o">=</span><span class="tok-s2">&quot;miscript&quot;</span><span class="tok-o">/&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Para invocar la nueva librería creada se utiliza el <em>namespace</em> genérico <em>&lt;g&gt;</em>. Sin embargo, Grails nos permite crear nuestro propio espacio de nombres para que el código generado sea sencillo de leer. El espacio de nombres que vamos a utilizar será <em>me</em>, acrónimo de <em>mis etiquetas</em>. Para ello debemos definir una variable estática al inicio de la clase <em>TodoTagLib</em> llamada <em>namespace</em> e indicándole el valor del nuevo espacio de nombres, tal y como aparece en el siguiente fragmento de código.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-kn">package</span> <span class="tok-n">es</span><span class="tok-o">.</span><span class="tok-na">ua</span><span class="tok-o">.</span><span class="tok-na">expertojava</span><span class="tok-o">.</span><span class="tok-na">todo</span>
+
+<span class="tok-kd">class</span> <span class="tok-nc">TodoTagLib</span> <span class="tok-o">{</span>
+
+    <span class="tok-kd">static</span> <span class="tok-n">defaultEncodeAs</span> <span class="tok-o">=</span> <span class="tok-o">[</span><span class="tok-nl">taglib:</span><span class="tok-s1">&#39;html&#39;</span><span class="tok-o">]</span>
+    <span class="tok-c1">//static encodeAsForTags = [tagName: [taglib:&#39;html&#39;], otherTagName: [taglib:&#39;none&#39;]]</span>
+
+    <span class="tok-kd">static</span> <span class="tok-n">namespace</span> <span class="tok-o">=</span> <span class="tok-s1">&#39;me&#39;</span>
+
+    <span class="tok-kt">def</span> <span class="tok-n">includeJs</span> <span class="tok-o">=</span> <span class="tok-o">{</span><span class="tok-n">attrs</span> <span class="tok-o">-&gt;</span>
+        <span class="tok-n">out</span> <span class="tok-o">&lt;&lt;</span> <span class="tok-s2">&quot;&lt;script src=&#39;scripts/${attrs[&#39;script&#39;]}.js&#39;/&gt;&quot;</span>
+    <span class="tok-o">}</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>De esta forma, en nuestras páginas GSP ya no tendríamos que utilizar <em>&lt;g:includeJs script="miscript"/&gt;</em> sino que podríamos emplear <em>&lt;me:includeJs script="miscript"/&gt;</em>, con lo que la persona que lea el código podrá detectar que esa etiqueta es una etiqueta propia de la aplicación.</p>
+</div>
+<div class="paragraph">
+<p>En ocasiones, es posible que sea necesario referenciar a nuestras etiquetas desde controladores o desde otras etiquetas y no nos va a ser posible referenciar a estas etiqueta de la forma habitual. En este caso deberíamos llamar a la etiqueta de la siguiente forma:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-kt">def</span> <span class="tok-n">renderImage</span> <span class="tok-o">=</span> <span class="tok-o">{</span> <span class="tok-n">attrs</span> <span class="tok-o">-&gt;</span>
+    <span class="tok-n">println</span> <span class="tok-s2">&quot;Rendering the image ${attrs.image}&quot;</span>
+    <span class="tok-n">asset</span><span class="tok-o">.</span><span class="tok-na">image</span><span class="tok-o">(</span><span class="tok-nl">src:</span><span class="tok-n">attrs</span><span class="tok-o">.</span><span class="tok-na">image</span><span class="tok-o">)</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>En este ejemplo, en primer lugar imprimimos un log para saber que estamos renderizando una image y después utilizamos una librería de etiquetas disponible en el plugin <em>asset-pipeline</em> que nos permite renderizar imágenes de forma optimizada en todos los entornos.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_etiquetas_lógicas_2">4.5.2. Etiquetas lógicas</h4>
+<div class="paragraph">
+<p>Con Grails también es posible crear etiquetas lógicas que evalúen una cierta condición y actúen en consecuencia en función de dicha evaluación. El siguiente ejemplo es una etiqueta que comprueba si el usuario autenticado es un administrador. El siguiente método realiza esta comprobación y en caso de ser cierto, se mostraría el contenido encerrado entre la etiqueta.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-kt">def</span> <span class="tok-n">esAdmin</span> <span class="tok-o">=</span> <span class="tok-o">{</span> <span class="tok-n">attrs</span><span class="tok-o">,</span> <span class="tok-n">body</span> <span class="tok-o">-&gt;</span>
+    <span class="tok-kt">def</span> <span class="tok-n">usuario</span> <span class="tok-o">=</span> <span class="tok-n">attrs</span><span class="tok-o">[</span><span class="tok-s1">&#39;usuario&#39;</span><span class="tok-o">]</span>
+    <span class="tok-k">if</span><span class="tok-o">(</span><span class="tok-n">usuario</span> <span class="tok-o">!=</span> <span class="tok-kc">null</span> <span class="tok-o">&amp;&amp;</span> <span class="tok-n">usuario</span><span class="tok-o">.</span><span class="tok-na">tipo</span><span class="tok-o">==</span><span class="tok-s2">&quot;administrador&quot;</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+        <span class="tok-n">out</span> <span class="tok-o">&lt;&lt;</span> <span class="tok-n">body</span><span class="tok-o">()</span>
+    <span class="tok-o">}</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>En esta ocasión, la nueva etiqueta no sólo recibe el atributo <em>attrs</em> sino que también necesita del atributo <em>body</em>, que se refiere a aquello que esté encerrado entre la apertura y el cierre de la etiqueta. El método comprueba si el usuario pasado por parámetro es un administrador. En la página GSP correspondiente deberíamos indicar el siguiente código.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-o">&lt;</span><span class="tok-nl">me:</span><span class="tok-n">esAdmin</span> <span class="tok-n">usuario</span><span class="tok-o">=</span><span class="tok-s2">&quot;${session.usuario}&quot;</span><span class="tok-o">&gt;</span>
+    <span class="tok-n">Dar</span> <span class="tok-n">de</span> <span class="tok-n">baja</span> <span class="tok-n">a</span> <span class="tok-n">usuario</span>
+<span class="tok-o">&lt;/</span><span class="tok-nl">me:</span><span class="tok-n">esAdmin</span><span class="tok-o">&gt;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_generador_de_código_hmtl">4.5.3. Generador de código HMTL</h4>
+<div class="paragraph">
+<p>Grails ofrece la posibilidad de generar código HTML de forma muy sencilla gracias a un Builder conocido como <em>MarkupBuilder</em>. Para comprobar el funcionamiento de este Builder, vamos a crear una nueva etiqueta que imprima un enlace cuyo atributo <em>href</em> coincida con el título. Por ejemplo, para imprimir un enlace a la página de Google, normalmente debemos incluir el código &lt;a href="http://www.google.com"&gt;<a href="http://www.google.com" class="bare">http://www.google.com</a>&lt;/a&gt;. Con esta etiqueta que vamos a crear nos ahorraremos escribir la dirección url dos veces.</p>
+</div>
+<div class="paragraph">
+<p>En primer lugar creamos un nuevo método en el archivo <em>TodoTagLib.groovy</em> y lo llamaremos <em>printLink()</em>. Este método utilizará el <em>MarkupBuilder</em> e imprimirá un enlace con el valor del atributo <em>href</em> igual al contenido.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-kt">def</span> <span class="tok-n">printLink</span> <span class="tok-o">=</span> <span class="tok-o">{</span> <span class="tok-n">attrs</span><span class="tok-o">,</span> <span class="tok-n">body</span> <span class="tok-o">-&gt;</span>
+    <span class="tok-kt">def</span> <span class="tok-n">mkp</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-n">groovy</span><span class="tok-o">.</span><span class="tok-na">xml</span><span class="tok-o">.</span><span class="tok-na">MarkupBuilder</span><span class="tok-o">(</span><span class="tok-n">out</span><span class="tok-o">)</span>
+    <span class="tok-n">mkp</span><span class="tok-o">.</span><span class="tok-na">a</span><span class="tok-o">(</span><span class="tok-nl">href:</span><span class="tok-n">body</span><span class="tok-o">(),</span><span class="tok-n">body</span><span class="tok-o">())</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Ahora en la vista podemos añadir una etiqueta como <em>&lt;me:printLink&gt;<a href="http://www.google.com" class="bare">http://www.google.com</a>&lt;/me:printLink&gt;</em>, la cual será traducida al código HTML <em>&lt;a href="http://www.google.com"&gt;<a href="http://www.google.com" class="bare">http://www.google.com</a>&lt;/a&gt;</em>.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_controladores">4.6. Controladores</h3>
+<div class="paragraph">
+<p>Una vez visto a fondo todo lo relativo a las vistas en las aplicaciones en Grails, vamos a analizar los controladores. En la sesión anterior generábamos el scaffolding de forma estática de tal forma que ahora vamos a analizar con más detalle todos los aspectos relativos a los controladores.</p>
+</div>
+<div class="sect3">
+<h4 id="_acciones_en_los_controladores">4.6.1. Acciones en los controladores</h4>
+<div class="paragraph">
+<p>Como veíamos anteriormente, los controladores en Grails se ubican en el directorio <em>grails-app/controllers</em>. Si recordamos la imagen donde se explicaba el proceso típico de una aplicación que utiliza el patrón Módelo Vista Controlador, los controladores se encargan básicamente de dirigir las llamadas a nuestra aplicación y de ponerse en contacto tanto con las clases de dominio, las vistas y los servicios para ponerlos de acuerdo.</p>
+</div>
+<div class="paragraph">
+<p>Para analizar el formato de los controladores en Grails, veamos uno cualquiera de los generados en la sesión anterior, como por ejemplo <em>TodoController.groovy</em>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-kn">package</span> <span class="tok-n">es</span><span class="tok-o">.</span><span class="tok-na">ua</span><span class="tok-o">.</span><span class="tok-na">expertojava</span><span class="tok-o">.</span><span class="tok-na">todo</span>
+
+<span class="tok-kn">import</span> <span class="tok-nn">static</span> <span class="tok-n">org</span><span class="tok-o">.</span><span class="tok-na">springframework</span><span class="tok-o">.</span><span class="tok-na">http</span><span class="tok-o">.</span><span class="tok-na">HttpStatus</span><span class="tok-o">.*</span>
+<span class="tok-kn">import</span> <span class="tok-nn">grails.transaction.Transactional</span>
+
+<span class="tok-nd">@Transactional</span><span class="tok-o">(</span><span class="tok-n">readOnly</span> <span class="tok-o">=</span> <span class="tok-kc">true</span><span class="tok-o">)</span>
+<span class="tok-kd">class</span> <span class="tok-nc">TodoController</span> <span class="tok-o">{</span>
+
+    <span class="tok-kd">static</span> <span class="tok-n">allowedMethods</span> <span class="tok-o">=</span> <span class="tok-o">[</span><span class="tok-nl">save:</span> <span class="tok-s2">&quot;POST&quot;</span><span class="tok-o">,</span> <span class="tok-nl">update:</span> <span class="tok-s2">&quot;PUT&quot;</span><span class="tok-o">,</span> <span class="tok-nl">delete:</span> <span class="tok-s2">&quot;DELETE&quot;</span><span class="tok-o">]</span>
+
+    <span class="tok-kt">def</span> <span class="tok-nf">index</span><span class="tok-o">(</span><span class="tok-n">Integer</span> <span class="tok-n">max</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+        <span class="tok-n">params</span><span class="tok-o">.</span><span class="tok-na">max</span> <span class="tok-o">=</span> <span class="tok-n">Math</span><span class="tok-o">.</span><span class="tok-na">min</span><span class="tok-o">(</span><span class="tok-n">max</span> <span class="tok-o">?:</span> <span class="tok-mi">10</span><span class="tok-o">,</span> <span class="tok-mi">100</span><span class="tok-o">)</span>
+        <span class="tok-n">respond</span> <span class="tok-n">Todo</span><span class="tok-o">.</span><span class="tok-na">list</span><span class="tok-o">(</span><span class="tok-n">params</span><span class="tok-o">),</span> <span class="tok-nl">model:</span><span class="tok-o">[</span><span class="tok-nl">todoInstanceCount:</span> <span class="tok-n">Todo</span><span class="tok-o">.</span><span class="tok-na">count</span><span class="tok-o">()]</span>
+    <span class="tok-o">}</span>
+
+    <span class="tok-o">....</span>
+
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>En primer lugar vemos que se especifica mediante la anotación <em>@Transactional</em> la transaccionalidad de todos los métodos del controlador. En la siguiente sesión aprovecharemos para hablar sobre los diferentes niveles de transaccionalidad cuando veamos los servicios en Grails.</p>
+</div>
+<div class="paragraph">
+<p>La variable estática <em>allowedMethods</em> nos permite especificar para determinados métodos de nuestros controladores, el tipo de petición aceptada. En el caso del controlador generado vemos como el método <em>save()</em> sólo puede ser procesado por una petición de tipo <em>POST</em>, las actualizaciones por peticiones de tipo <em>PUT</em> y por último los borrados sólo serán válidos cuando se hagan mediante una petición de tipo <em>DELETE</em>.</p>
+</div>
+<div class="paragraph">
+<p>Los parámetros pasados a los métodos serán mapeados directamente por Grails a partir de los parámetros pasados en la petición. Por ejemplo, si efectuamos la petición <em><a href="http://localhost:8080/todo/todo/index?max=20" class="bare">http://localhost:8080/todo/todo/index?max=20</a></em>, el parámetro max de la petición con valor 20 será pasado como parámetro al método index.</p>
+</div>
+<div class="paragraph">
+<p>Como has podido comprobar en el ejemplo anterior, no es necesario especificar lo que van a devolver los método de los controladores con lo que podemos dejar que sea Grails quien se encargue de definirlo especificando la palabra reservada <em>def</em>.</p>
+</div>
+<div class="paragraph">
+<p>Comentar también que en la últimas versiones de Grails se ha añadido el método <em>respond</em> que provocará una salida diferente en función de la petición HTTP efectuada. Por ejemplo, si abrimos un terminal y ejecutamos:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-n">curl</span> <span class="tok-o">-</span><span class="tok-n">v</span> <span class="tok-o">-</span><span class="tok-n">H</span> <span class="tok-s2">&quot;Accept: application/json&quot;</span> <span class="tok-o">-</span><span class="tok-n">H</span> <span class="tok-s2">&quot;Content-type: application/json&quot;</span> <span class="tok-o">-</span><span class="tok-n">X</span> <span class="tok-n">GET</span>  <span class="tok-nl">http:</span><span class="tok-c1">//localhost:8080/todo/todo/index</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>veremos que la salida del método será en formato json, mientras que si ejecutamos</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-n">curl</span> <span class="tok-o">-</span><span class="tok-n">v</span> <span class="tok-o">-</span><span class="tok-n">H</span> <span class="tok-s2">&quot;Accept: text/xml&quot;</span> <span class="tok-o">-</span><span class="tok-n">H</span> <span class="tok-s2">&quot;Content-type: text/xml&quot;</span> <span class="tok-o">-</span><span class="tok-n">X</span> <span class="tok-n">GET</span>  <span class="tok-nl">http:</span><span class="tok-c1">//localhost:8080/todo/todo/index</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>veremos que la salida del método será en formato xml, mientras que si desde un navegador vamos a la dirección <em><a href="http://localhost:8080/todo/todo/index" class="bare">http://localhost:8080/todo/todo/index</a></em>, Grails renderizará una página html siguiendo una serie de convenios que veremos a continuación.</p>
+</div>
+<div class="paragraph">
+<p>Además, cada controlador en Grails tiene un método por defecto que sigue las siguientes reglas:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Si sólo hay un método, por supuesto ese será el método por defecto</p>
+</li>
+<li>
+<p>Si hay un método con el nombre <em>index()</em>, ese será el método por defecto</p>
+</li>
+<li>
+<p>Si la clase define la propiedad <em>defaultAction</em>, el método especificado será el escogido por defecto</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-kd">static</span> <span class="tok-n">defaultAction</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;list&quot;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_Ámbitos_de_los_controladores">4.6.2. Ámbitos de los controladores</h4>
+<div class="paragraph">
+<p>Los ámbitos (<em>scopes</em>) son una serie de objetos que nos permitirán almacenar variables en una aplicación en Grails. Tenemos los siguientes ámbitos:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>servletContext</em>: también conocido con el ámbito <em>aplicación</em> y que nos servirá para compartir variables a través de cualquier artefacto de la aplicación. Hablaremos de él cuando veamos como configurar una aplicación en Grails.</p>
+</li>
+<li>
+<p><em>session</em>: es utilizada para controlar el estado de un determinado usuario de nuestra aplicación. Habitualmente, se utilizan cookies para asociar la <em>session</em> con el usuario.</p>
+</li>
+<li>
+<p><em>request</em>: contendrá toda la información de la petición.</p>
+</li>
+<li>
+<p><em>params</em>: es un mapa con la información pasada a la petición en forma de parámetro <em>GET</em> o <em>POST</em>.</p>
+</li>
+<li>
+<p><em>flash</em>: es una variable <em>efímera</em> de tal forma que sólo dura una petición y la siguiente, con lo que no es necesario destruirla a mano. Un ejemplo de su uso es el paso de mensajes de error a las vistas.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_relación_entre_vistas_y_controladores">4.6.3. Relación entre vistas y controladores</h4>
+<div class="paragraph">
+<p>Las vistas serán las encargadas de mostrar al usuario aquello que el controlador quiera mostrar. Si echamos un vistazo a los métodos del controlador <em>TodoController</em> nos costará entender esa relación pues apenas se hace mención a ninguna vista en este controlador. Esto es debido a que cuando no se especifica de forma explícita que vista renderizar, Grails utiliza lo que comentábamos en la sesión anterior al respecto de "convención sobre configuración" y directamente trata de renderizar una vista que coincida con el patrón <em>nombre-del-controlador/nombre-del-método.gsp</em>, con lo que por ejemplo, en el método</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-kt">def</span> <span class="tok-nf">show</span><span class="tok-o">(</span><span class="tok-n">Todo</span> <span class="tok-n">todoInstance</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+    <span class="tok-n">respond</span> <span class="tok-n">todoInstance</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>al no haber indicado ninguna vista en el método <em>respond()</em>, Grails renderizará la vista ubicada en el directorio <em>grails-app/todo/show.gsp</em>. Como comentábamos anteriormente, el método <em>respond()</em> se encarga de decidir como renderizar la salida pero si tiene que renderizar una vista en HTML, bien buscará una siguiendo el patrón mencionado o bien le podemos pasar una de forma de implícita, como por ejemplo vemos en el método <em>save()</em> del controlador <em>TodoController</em></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy">    <span class="tok-o">...</span>
+    <span class="tok-k">if</span> <span class="tok-o">(</span><span class="tok-n">todoInstance</span><span class="tok-o">.</span><span class="tok-na">hasErrors</span><span class="tok-o">())</span> <span class="tok-o">{</span>
+        <span class="tok-n">respond</span> <span class="tok-n">todoInstance</span><span class="tok-o">.</span><span class="tok-na">errors</span><span class="tok-o">,</span> <span class="tok-nl">view:</span><span class="tok-s1">&#39;create&#39;</span>
+        <span class="tok-k">return</span>
+    <span class="tok-o">}</span>
+    <span class="tok-o">...</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Sigamos con la relación entre vistas y controladores. Si vemos las vistas y los métodos del controlador <em>TodoController</em> generados automáticamente por el scaffolding estático nos daremos cuenta rápidamente que cuatro de esos métodos tienen vistas asociadas (index, create, edit y show) mientras que otros tres no tienen ninguna vista asociada (save, update y delete). Esto es debido a que estos tres últimos métodos serán los encargados únicamente de crear, actualizar o eliminar una tarea y serán los otros métodos los encargados de renderizar las vistas correspondientes.</p>
+</div>
+<div class="paragraph">
+<p>Si abrimos la vista <em>todo/create.gsp</em> veremos que el formulario se debe procesar con la acción <em>save()</em></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-o">&lt;</span><span class="tok-nl">g:</span><span class="tok-n">form</span> <span class="tok-n">url</span><span class="tok-o">=</span><span class="tok-s2">&quot;[resource:todoInstance, action:&#39;save&#39;]&quot;</span> <span class="tok-o">&gt;</span>
+    <span class="tok-o">&lt;</span><span class="tok-n">fieldset</span> <span class="tok-n">class</span><span class="tok-o">=</span><span class="tok-s2">&quot;form&quot;</span><span class="tok-o">&gt;</span>
+        <span class="tok-o">&lt;</span><span class="tok-nl">g:</span><span class="tok-n">render</span> <span class="tok-n">template</span><span class="tok-o">=</span><span class="tok-s2">&quot;form&quot;</span><span class="tok-s">/&gt;</span>
+<span class="tok-s">    &lt;/</span><span class="tok-n">fieldset</span><span class="tok-o">&gt;</span>
+    <span class="tok-o">&lt;</span><span class="tok-n">fieldset</span> <span class="tok-n">class</span><span class="tok-o">=</span><span class="tok-s2">&quot;buttons&quot;</span><span class="tok-o">&gt;</span>
+        <span class="tok-o">&lt;</span><span class="tok-nl">g:</span><span class="tok-n">submitButton</span> <span class="tok-n">name</span><span class="tok-o">=</span><span class="tok-s2">&quot;create&quot;</span> <span class="tok-n">class</span><span class="tok-o">=</span><span class="tok-s2">&quot;save&quot;</span> <span class="tok-n">value</span><span class="tok-o">=</span><span class="tok-s2">&quot;${message(code: &#39;default.button.create.label&#39;, default: &#39;Create&#39;)}&quot;</span> <span class="tok-s">/&gt;</span>
+<span class="tok-s">    &lt;/</span><span class="tok-n">fieldset</span><span class="tok-o">&gt;</span>
+<span class="tok-o">&lt;/</span><span class="tok-nl">g:</span><span class="tok-n">form</span><span class="tok-o">&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>con esto conseguimos que al enviar el formulario, el encargado de procesarlo sea el método <em>save()</em>.</p>
+</div>
+<div class="paragraph">
+<p>Veamos ahora todo el proceso de creación de una tarea. Si arrancamos nuestra aplicación y accedemos en el navegador a la dirección <em><a href="http://localhost:8080/todo/todo/create" class="bare">http://localhost:8080/todo/todo/create</a></em>, el método que sale al rescate es <em>TodoController.create()</em>. Este método con una sóla línea de código es capaz de renderizar una vista con una tarea asociada, que en principio tendrá todos sus campos vacios.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-kt">def</span> <span class="tok-nf">create</span><span class="tok-o">()</span> <span class="tok-o">{</span>
+    <span class="tok-n">respond</span> <span class="tok-k">new</span> <span class="tok-nf">Todo</span><span class="tok-o">(</span><span class="tok-n">params</span><span class="tok-o">)</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Este método renderizará la vista <em>todo/create.gsp</em> y le pasará una variable llamada <em>todoInstance</em> que contendrá una tarea con sus campos vacios.</p>
+</div>
+<div class="paragraph">
+<p>Si abrimos ahora la vista <em>todo/create.gsp</em> vemos como esa vista únicamente llama a la plantilla <em>todo/_form.gsp</em> que es la que contiene los elementos de formulario necesarios para crear una tarea.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-o">&lt;</span><span class="tok-nl">g:</span><span class="tok-n">form</span> <span class="tok-n">url</span><span class="tok-o">=</span><span class="tok-s2">&quot;[resource:todoInstance, action:&#39;save&#39;]&quot;</span> <span class="tok-o">&gt;</span>
+    <span class="tok-o">&lt;</span><span class="tok-n">fieldset</span> <span class="tok-n">class</span><span class="tok-o">=</span><span class="tok-s2">&quot;form&quot;</span><span class="tok-o">&gt;</span>
+        <span class="tok-o">&lt;</span><span class="tok-nl">g:</span><span class="tok-n">render</span> <span class="tok-n">template</span><span class="tok-o">=</span><span class="tok-s2">&quot;form&quot;</span><span class="tok-s">/&gt;</span>
+<span class="tok-s">    &lt;/</span><span class="tok-n">fieldset</span><span class="tok-o">&gt;</span>
+    <span class="tok-o">&lt;</span><span class="tok-n">fieldset</span> <span class="tok-n">class</span><span class="tok-o">=</span><span class="tok-s2">&quot;buttons&quot;</span><span class="tok-o">&gt;</span>
+        <span class="tok-o">&lt;</span><span class="tok-nl">g:</span><span class="tok-n">submitButton</span> <span class="tok-n">name</span><span class="tok-o">=</span><span class="tok-s2">&quot;create&quot;</span> <span class="tok-n">class</span><span class="tok-o">=</span><span class="tok-s2">&quot;save&quot;</span> <span class="tok-n">value</span><span class="tok-o">=</span><span class="tok-s2">&quot;${message(code: &#39;default.button.create.label&#39;, default: &#39;Create&#39;)}&quot;</span> <span class="tok-s">/&gt;</span>
+<span class="tok-s">    &lt;/</span><span class="tok-n">fieldset</span><span class="tok-o">&gt;</span>
+<span class="tok-o">&lt;/</span><span class="tok-nl">g:</span><span class="tok-n">form</span><span class="tok-o">&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Una vez el usuario envía la información, el método encargado de procesar esa petición será <em>TodoController.save()</em></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-nd">@Transactional</span>
+<span class="tok-kt">def</span> <span class="tok-nf">save</span><span class="tok-o">(</span><span class="tok-n">Todo</span> <span class="tok-n">todoInstance</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+    <span class="tok-k">if</span> <span class="tok-o">(</span><span class="tok-n">todoInstance</span> <span class="tok-o">==</span> <span class="tok-kc">null</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+        <span class="tok-n">notFound</span><span class="tok-o">()</span>
+        <span class="tok-k">return</span>
+    <span class="tok-o">}</span>
+
+    <span class="tok-k">if</span> <span class="tok-o">(</span><span class="tok-n">todoInstance</span><span class="tok-o">.</span><span class="tok-na">hasErrors</span><span class="tok-o">())</span> <span class="tok-o">{</span>
+        <span class="tok-n">respond</span> <span class="tok-n">todoInstance</span><span class="tok-o">.</span><span class="tok-na">errors</span><span class="tok-o">,</span> <span class="tok-nl">view:</span><span class="tok-s1">&#39;create&#39;</span>
+        <span class="tok-k">return</span>
+    <span class="tok-o">}</span>
+
+    <span class="tok-n">todoInstance</span><span class="tok-o">.</span><span class="tok-na">save</span> <span class="tok-nl">flush:</span><span class="tok-kc">true</span>
+
+    <span class="tok-n">request</span><span class="tok-o">.</span><span class="tok-na">withFormat</span> <span class="tok-o">{</span>
+        <span class="tok-n">form</span> <span class="tok-n">multipartForm</span> <span class="tok-o">{</span>
+            <span class="tok-n">flash</span><span class="tok-o">.</span><span class="tok-na">message</span> <span class="tok-o">=</span> <span class="tok-n">message</span><span class="tok-o">(</span><span class="tok-nl">code:</span> <span class="tok-s1">&#39;default.created.message&#39;</span><span class="tok-o">,</span> <span class="tok-nl">args:</span> <span class="tok-o">[</span><span class="tok-n">message</span><span class="tok-o">(</span><span class="tok-nl">code:</span> <span class="tok-s1">&#39;todo.label&#39;</span><span class="tok-o">,</span> <span class="tok-k">default</span><span class="tok-o">:</span> <span class="tok-s1">&#39;Todo&#39;</span><span class="tok-o">),</span> <span class="tok-n">todoInstance</span><span class="tok-o">.</span><span class="tok-na">id</span><span class="tok-o">])</span>
+            <span class="tok-n">redirect</span> <span class="tok-n">todoInstance</span>
+        <span class="tok-o">}</span>
+        <span class="tok-s1">&#39;*&#39;</span> <span class="tok-o">{</span> <span class="tok-n">respond</span> <span class="tok-n">todoInstance</span><span class="tok-o">,</span> <span class="tok-o">[</span><span class="tok-nl">status:</span> <span class="tok-n">CREATED</span><span class="tok-o">]</span> <span class="tok-o">}</span>
+    <span class="tok-o">}</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Pongámonos en el caso en que no hayamos completado correctamente todos los campos requeridos. Si ésto sucede, el método volverá a renderizar la vista <em>todo/create.gsp</em> con los errores que se hayan producido.</p>
+</div>
+<div class="paragraph">
+<p>En caso de que todo vaya bien, se almacena la nueva tarea</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-n">todoInstance</span><span class="tok-o">.</span><span class="tok-na">save</span> <span class="tok-nl">flush:</span><span class="tok-kc">true</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>y se trata de renderizar el resultado en función del tipo de petición realizada. En caso de que hayamos envíado un formulario se redirige la aplicación para mostrar esa tarea recien creada con una variable de tipo flash para mostrar un mensaje indicando que la tarea se ha creado correctamente.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-n">flash</span><span class="tok-o">.</span><span class="tok-na">message</span> <span class="tok-o">=</span> <span class="tok-n">message</span><span class="tok-o">(</span><span class="tok-nl">code:</span> <span class="tok-s1">&#39;default.created.message&#39;</span><span class="tok-o">,</span> <span class="tok-nl">args:</span> <span class="tok-o">[</span><span class="tok-n">message</span><span class="tok-o">(</span><span class="tok-nl">code:</span> <span class="tok-s1">&#39;todo.label&#39;</span><span class="tok-o">,</span> <span class="tok-k">default</span><span class="tok-o">:</span> <span class="tok-s1">&#39;Todo&#39;</span><span class="tok-o">),</span> <span class="tok-n">todoInstance</span><span class="tok-o">.</span><span class="tok-na">id</span><span class="tok-o">])</span>
+<span class="tok-n">redirect</span> <span class="tok-n">todoInstance</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Cuando hacemos esta redirección Grails buscará el método <em>show()</em> y lo renderizará. Este método pintará en el navegador la vista <em>todo/show.gsp</em>. Esta vista, como prácticamente cualquier vista, tiene un fragmento de código que comprueba la presencia de una variable de tipo <em>flash</em> para actuar en consecuencia. En este caso simplemente mostrará el mensaje que hemos completado en el método <em>save()</em> del <em>TodoController</em>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-o">&lt;</span><span class="tok-nl">g:</span><span class="tok-k">if</span> <span class="tok-n">test</span><span class="tok-o">=</span><span class="tok-s2">&quot;${flash.message}&quot;</span><span class="tok-o">&gt;</span>
+    <span class="tok-o">&lt;</span><span class="tok-n">div</span> <span class="tok-n">class</span><span class="tok-o">=</span><span class="tok-s2">&quot;message&quot;</span> <span class="tok-n">role</span><span class="tok-o">=</span><span class="tok-s2">&quot;status&quot;</span><span class="tok-o">&gt;</span><span class="tok-n">$</span><span class="tok-o">{</span><span class="tok-n">flash</span><span class="tok-o">.</span><span class="tok-na">message</span><span class="tok-o">}&lt;</span><span class="tok-s">/div&gt;</span>
+<span class="tok-s">&lt;/</span><span class="tok-nl">g:</span><span class="tok-k">if</span><span class="tok-o">&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Si en lugar de haber envíado un formulario a través de una página HTML, la petición es de cualquier otro tipo, se trata de renderizar una salida acorde al tipo de petición.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-s1">&#39;*&#39;</span> <span class="tok-o">{</span> <span class="tok-n">respond</span> <span class="tok-n">todoInstance</span><span class="tok-o">,</span> <span class="tok-o">[</span><span class="tok-nl">status:</span> <span class="tok-n">CREATED</span><span class="tok-o">]</span> <span class="tok-o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Si por ejemplo lanzamos desde la terminal el siguiente comando</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-n">curl</span> <span class="tok-o">-</span><span class="tok-n">v</span> <span class="tok-o">-</span><span class="tok-n">H</span> <span class="tok-s2">&quot;Accept: application/json&quot;</span> <span class="tok-o">-</span><span class="tok-n">H</span> <span class="tok-s2">&quot;Content-type: application/json&quot;</span> <span class="tok-o">-</span><span class="tok-n">X</span> <span class="tok-n">POST</span> <span class="tok-o">-</span><span class="tok-n">d</span> <span class="tok-s2">&quot;{&#39;title&#39;:&#39;Hacer los ejercicios de Groovy&#39;,&#39;date_day&#39;:25,&#39;date_month&#39;:3,&#39;date_year&#39;:2015,&#39;date&#39;:&#39;date.struct&#39;}&quot;</span> <span class="tok-nl">http:</span><span class="tok-c1">//localhost:8080/todo/todo/save</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>la aplicación nos creará una nueva tarea y nos devolverá el resultado en formato json. Si por el contrario ejecutamos</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-n">curl</span> <span class="tok-o">-</span><span class="tok-n">v</span> <span class="tok-o">-</span><span class="tok-n">H</span> <span class="tok-s2">&quot;Accept: text/xml&quot;</span> <span class="tok-o">-</span><span class="tok-n">H</span> <span class="tok-s2">&quot;Content-type: application/json&quot;</span> <span class="tok-o">-</span><span class="tok-n">X</span> <span class="tok-n">POST</span> <span class="tok-o">-</span><span class="tok-n">d</span> <span class="tok-s2">&quot;{&#39;title&#39;:&#39;Hacer los ejercicios de Grails&#39;,&#39;date_day&#39;:26,&#39;date_month&#39;:3,&#39;date_year&#39;:2015,&#39;date&#39;:&#39;date.struct&#39;}&quot;</span> <span class="tok-nl">http:</span><span class="tok-c1">//localhost:8080/todo/todo/save</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Con esto hemos podido comprobar como Grails con muy pocas líneas de código es capaz de generar una aplicación que será capaz de responder al cliente de varias formas con lo que podemos tener una aplicación multiplataforma todo integrado en el mismo código fuente.</p>
+</div>
+<div class="sect4">
+<h5 id="_renderizando_vistas">Renderizando vistas</h5>
+<div class="paragraph">
+<p>En ocasiones, sobre todo cuando realicemos aplicaciones web, tendremos que simplemente renderizar vistas o fragmentos de texto. Para ello Grails dispone del método <em>render()</em> que puede renderizar desde un trozo de texto hasta una plantilla.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-n">render</span> <span class="tok-s2">&quot;Hello World!&quot;</span>
+
+<span class="tok-n">render</span> <span class="tok-o">{</span>
+   <span class="tok-mi">10</span><span class="tok-o">.</span><span class="tok-na">times</span> <span class="tok-o">{</span>
+      <span class="tok-n">div</span><span class="tok-o">(</span><span class="tok-nl">id:</span> <span class="tok-n">it</span><span class="tok-o">,</span> <span class="tok-s2">&quot;Div ${it}&quot;</span><span class="tok-o">)</span>
+   <span class="tok-o">}</span>
+<span class="tok-o">}</span>
+
+<span class="tok-n">render</span><span class="tok-o">(</span><span class="tok-nl">view:</span> <span class="tok-s1">&#39;show&#39;</span><span class="tok-o">)</span>
+
+<span class="tok-n">render</span><span class="tok-o">(</span><span class="tok-nl">template:</span> <span class="tok-s1">&#39;book_template&#39;</span><span class="tok-o">,</span> <span class="tok-nl">collection:</span> <span class="tok-n">Book</span><span class="tok-o">.</span><span class="tok-na">list</span><span class="tok-o">())</span>
+
+<span class="tok-n">render</span><span class="tok-o">(</span><span class="tok-nl">text:</span> <span class="tok-s2">&quot;&lt;xml&gt;some xml&lt;/xml&gt;&quot;</span><span class="tok-o">,</span> <span class="tok-nl">contentType:</span> <span class="tok-s2">&quot;text/xml&quot;</span><span class="tok-o">,</span> <span class="tok-nl">encoding:</span> <span class="tok-s2">&quot;UTF-8&quot;</span><span class="tok-o">)</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_redirecciones_y_encadenamientos">Redirecciones y encadenamientos</h5>
+<div class="paragraph">
+<p>Tal y como veíamos anteriormente, en ocasiones necesitaremos redireccionar nuestra aplicación a otros métodos. Para ello, disponemos del método <em>redirect()</em> que acepta varios parámetros, como en los siguientes ejemplos:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-c1">//Redirección que se hace dentro del mismo controlador</span>
+<span class="tok-n">redirect</span><span class="tok-o">(</span><span class="tok-nl">action:</span> <span class="tok-n">login</span><span class="tok-o">)</span>
+
+<span class="tok-c1">//Redirección que se hace a otro controlador</span>
+<span class="tok-n">redirect</span><span class="tok-o">(</span><span class="tok-nl">controller:</span> <span class="tok-s1">&#39;home&#39;</span><span class="tok-o">,</span> <span class="tok-nl">action:</span> <span class="tok-s1">&#39;index&#39;</span><span class="tok-o">)</span>
+
+<span class="tok-c1">//Redirección a una uri explícitamente</span>
+<span class="tok-n">redirect</span><span class="tok-o">(</span><span class="tok-nl">uri:</span> <span class="tok-s2">&quot;/login.html&quot;</span><span class="tok-o">)</span>
+
+<span class="tok-c1">//Redirección a una url absoluta</span>
+<span class="tok-n">redirect</span><span class="tok-o">(</span><span class="tok-nl">url:</span> <span class="tok-s2">&quot;http://grails.org&quot;</span><span class="tok-o">)</span>
+
+<span class="tok-c1">//Redirección pasando parámetros</span>
+<span class="tok-n">redirect</span><span class="tok-o">(</span><span class="tok-nl">action:</span> <span class="tok-s1">&#39;myaction&#39;</span><span class="tok-o">,</span> <span class="tok-nl">params:</span> <span class="tok-o">[</span><span class="tok-nl">myparam:</span> <span class="tok-s2">&quot;myvalue&quot;</span><span class="tok-o">])</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Además, Grails también ofrece la posibilidad de encadenar acciones. El beneficio de encadenar acciones en lugar de redirigir es que el modelo se pasa de una acción a la siguiente:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-kd">class</span> <span class="tok-nc">ExampleChainController</span> <span class="tok-o">{</span>
+    <span class="tok-kt">def</span> <span class="tok-nf">first</span><span class="tok-o">()</span> <span class="tok-o">{</span>
+        <span class="tok-n">chain</span><span class="tok-o">(</span><span class="tok-nl">action:</span> <span class="tok-n">second</span><span class="tok-o">,</span> <span class="tok-nl">model:</span> <span class="tok-o">[</span><span class="tok-nl">one:</span> <span class="tok-mi">1</span><span class="tok-o">])</span>
+    <span class="tok-o">}</span>
+
+    <span class="tok-kt">def</span> <span class="tok-nf">second</span> <span class="tok-o">()</span> <span class="tok-o">{</span>
+        <span class="tok-n">chain</span><span class="tok-o">(</span><span class="tok-nl">action:</span> <span class="tok-n">third</span><span class="tok-o">,</span> <span class="tok-nl">model:</span> <span class="tok-o">[</span><span class="tok-nl">two:</span> <span class="tok-mi">2</span><span class="tok-o">])</span>
+    <span class="tok-o">}</span>
+
+    <span class="tok-kt">def</span> <span class="tok-nf">third</span><span class="tok-o">()</span> <span class="tok-o">{</span>
+        <span class="tok-o">[</span><span class="tok-nl">three:</span> <span class="tok-mi">3</span><span class="tok-o">])</span>
+    <span class="tok-o">}</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Esta cadena de acciones terminaría con el método <em>third()</em> recibiendo los modelos</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-o">[</span><span class="tok-nl">one:</span> <span class="tok-mi">1</span><span class="tok-o">,</span> <span class="tok-nl">two:</span> <span class="tok-mi">2</span><span class="tok-o">,</span> <span class="tok-nl">three:</span> <span class="tok-mi">3</span><span class="tok-o">]</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Si necesitamos acceder a los modelos dentro de una cadena, podemos utilizar la variable dinámica <em>chainModel</em> que es un mapa con todos los modelos generados en la cadena.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-kd">class</span> <span class="tok-nc">ChainController</span> <span class="tok-o">{</span>
+    <span class="tok-kt">def</span> <span class="tok-nf">nextInChain</span><span class="tok-o">()</span> <span class="tok-o">{</span>
+        <span class="tok-kt">def</span> <span class="tok-n">model</span> <span class="tok-o">=</span> <span class="tok-n">chainModel</span><span class="tok-o">.</span><span class="tok-na">myModel</span>
+        <span class="tok-err">…</span>
+    <span class="tok-o">}</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_filtros">4.7. Filtros</h3>
+<div class="paragraph">
+<p>Los filtros en una aplicación Grails permiten ejecutar acciones antes y después de que los métodos de los controladores sean invocados. El típico ejemplo de uso de los filtros es el de asegurar las peticiones a nuestra aplicación para comprobar si el usuario tiene acceso a un determinado recurso.</p>
+</div>
+<div class="paragraph">
+<p>Otro ejemplo util de los filtros puede ser el de mantener un log cada vez que se ejecuta una petición en nuestra aplicación, es decir, que cada vez que llamemos a un método de un controlador, imprimimos algo por pantalla.</p>
+</div>
+<div class="paragraph">
+<p>Por supuesto que podríamos hacerlo directamente en cada método de los controladores, pero sin duda es algo poco mantenible y no es una buena práctica, con lo que vamos a utilizar los filtros.</p>
+</div>
+<div class="paragraph">
+<p>En Grails, los filtros se generan creando una nueva clase que termine con la palabra <em>Filters</em> o bien mediante el comando <em>grails create-filters</em> para que sea Grails quien lo haga por nosotros y nos cree además un esqueleto de la clase en cuestión. Estas nuevas clases se deben crear en el directorio <em>grails-app/conf</em>. Cada filtro implementa la lógica a ejecutar antes y después de las acciones así como sobre que acciones se debe hacer. En nuestro caso, debemos crear un filtro ejecutando el comando <em>grails create-filters log</em> que se ubicará en el directorio <em>grails-app/conf/todo</em> y se llamará <em>LogFilters.groovy</em>. El esqueleto que Grails ha creado para este filtro es el siguiente:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-kn">package</span> <span class="tok-n">todo</span>
+
+<span class="tok-kd">class</span> <span class="tok-nc">LogFilters</span> <span class="tok-o">{</span>
+
+    <span class="tok-kt">def</span> <span class="tok-n">filters</span> <span class="tok-o">=</span> <span class="tok-o">{</span>
+        <span class="tok-n">all</span><span class="tok-o">(</span><span class="tok-nl">controller:</span><span class="tok-s1">&#39;*&#39;</span><span class="tok-o">,</span> <span class="tok-nl">action:</span><span class="tok-s1">&#39;*&#39;</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+            <span class="tok-n">before</span> <span class="tok-o">=</span> <span class="tok-o">{</span>
+
+            <span class="tok-o">}</span>
+            <span class="tok-n">after</span> <span class="tok-o">=</span> <span class="tok-o">{</span> <span class="tok-n">Map</span> <span class="tok-n">model</span> <span class="tok-o">-&gt;</span>
+
+            <span class="tok-o">}</span>
+            <span class="tok-n">afterView</span> <span class="tok-o">=</span> <span class="tok-o">{</span> <span class="tok-n">Exception</span> <span class="tok-n">e</span> <span class="tok-o">-&gt;</span>
+
+            <span class="tok-o">}</span>
+        <span class="tok-o">}</span>
+    <span class="tok-o">}</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Tal y como vemos en el código del esqueleto generado por Grails, podemos ejecutar el filtro antes (<em>before</em>) o después (<em>after</em>) de que se ejecute el método correspondiente del controlador o bien hacerlo después de que se genere la vista. Además, también podemos especificar sobre que controladores queremos aplicar estos filtros.</p>
+</div>
+<div class="paragraph">
+<p>Nuestro filtro se aplicará a todos los controladores de nuestra aplicación pero sólo a aquellas acciones que traten de renderizar una vista, que serán <em>index, create, edit y show</em> con lo que podríamos tener algo así:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-kn">package</span> <span class="tok-n">todo</span>
+
+<span class="tok-kd">class</span> <span class="tok-nc">LogFilters</span> <span class="tok-o">{</span>
+
+    <span class="tok-kt">def</span> <span class="tok-n">filters</span> <span class="tok-o">=</span> <span class="tok-o">{</span>
+        <span class="tok-n">all</span><span class="tok-o">(</span><span class="tok-nl">controller:</span><span class="tok-s1">&#39;todo|category|tag&#39;</span><span class="tok-o">,</span> <span class="tok-nl">action:</span><span class="tok-s1">&#39;create|edit|index|show&#39;</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+            <span class="tok-n">before</span> <span class="tok-o">=</span> <span class="tok-o">{</span>
+
+            <span class="tok-o">}</span>
+            <span class="tok-n">after</span> <span class="tok-o">=</span> <span class="tok-o">{</span> <span class="tok-n">Map</span> <span class="tok-n">model</span> <span class="tok-o">-&gt;</span>
+                <span class="tok-n">println</span> <span class="tok-s2">&quot;Controlador ${controllerName} - Accion ${actionName} - Modelo ${model}&quot;</span>
+            <span class="tok-o">}</span>
+            <span class="tok-n">afterView</span> <span class="tok-o">=</span> <span class="tok-o">{</span> <span class="tok-n">Exception</span> <span class="tok-n">e</span> <span class="tok-o">-&gt;</span>
+
+            <span class="tok-o">}</span>
+        <span class="tok-o">}</span>
+    <span class="tok-o">}</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>La clase LogFilters únicamente dispone de un filtro, el denominado <em>all()</em>, pero una misma clase puede tener tantos filtros como queramos.</p>
+</div>
+<div style="page-break-after: always;"></div>
+</div>
+<div class="sect2">
+<h3 id="_ejercicios">4.8. Ejercicios</h3>
+<div class="sect3">
+<h4 id="_modificando_las_vistas_0_25_puntos">4.8.1. Modificando las vistas (0.25 puntos)</h4>
+<div class="paragraph">
+<p>Si hacemos un rápido test de usabilidad en nuestra aplicación veremos que cada vez que necesitamos editar o eliminar una tarea, tenemos que hacer dos clicks sobre la misma, uno para ver la tarea y otro para editarla. Vamos a solucionar este problema de usabilidad modificando el listado de las tareas para añadir una nueva columna a la izquierda de cada tarea para mostrar dos opciones, una para editar y otra para eliminar una tarea.</p>
+</div>
+<div class="paragraph">
+<p>Aprovecharemos también para eliminar las columnas <em>Description</em> y <em>Reminder Date</em> del listado de las tareas.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_etiqueta_para_valores_booleanos_0_50_puntos">4.8.2. Etiqueta para valores booleanos (0.50 puntos)</h4>
+<div class="paragraph">
+<p>Vamos a crear una etiqueta que nos permita, a partir de un valor booleano, imprimir un icono u otro. La etiqueta se llamara <em>printIconFromBoolean</em> y únicamente recibirá como parámetro el atributo <em>value</em>. Modifica también el namespace de la librería creada para que podamos a ella a través del namespace <em>todo</em> con lo que para llamar a nuestra etiqueta tendríamos que ejecutar algo como:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-o">&lt;</span><span class="tok-nl">todo:</span><span class="tok-n">printIconFromBoolean</span> <span class="tok-n">value</span><span class="tok-o">=</span><span class="tok-n">$</span><span class="tok-o">{</span><span class="tok-n">todoInstance</span><span class="tok-o">.</span><span class="tok-na">done</span><span class="tok-o">}/&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Y deberíamos imprimir algo parecido a esto:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/grails04/listadoejercicio2.png" alt="Icono desde un booleano" width="50%">
+</div>
+</div>
+<div class="paragraph">
+<p>Sería aconsejable que utilizaras el método <em>image()</em> de la librería de etiquetas del plugin <em>asset pipeline</em>. Aquí tienes un ejemplo:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-n">asset</span><span class="tok-o">.</span><span class="tok-na">image</span><span class="tok-o">(</span><span class="tok-nl">src:</span><span class="tok-s2">&quot;icon.png&quot;</span><span class="tok-o">)</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_página_de_confirmación_de_eliminación_de_etiquetas_0_50_puntos">4.8.3. Página de confirmación de eliminación de etiquetas (0.50 puntos)</h4>
+<div class="paragraph">
+<p>Cuando deseamos eliminar una etiqueta, al hacer click sobre el botón eliminar se nos muestra un mensaje en Javascript para confirmar si realmente queremos eliminar esta etiqueta. Vamos a modificar este sistema para que en lugar de mostrar un mensaje en Javascript, nos muestre una nueva página para pedir confirmación. Esto nos permitirá añadir algo más de seguridad en lo que el usuario está realizando ya que podemos mostrar un mensaje de alerta más evidente, como por ejemplo éste:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/grails04/screenshotejercicio3.png" alt="Mensaje confirmación eliminación de etiquetas" width="50%">
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2015-10-05 20:14:58 CEST
+</div>
+</div>
+</body>
+</html>

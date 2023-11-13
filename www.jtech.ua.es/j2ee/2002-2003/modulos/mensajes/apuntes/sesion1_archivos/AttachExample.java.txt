@@ -1,0 +1,66 @@
+import java.util.Properties;
+import javax.mail.*;
+import javax.mail.internet.*;
+import javax.activation.*;
+
+public class AttachExample {
+  public static void main (String args[]) throws Exception {
+    String host = args[0];
+    String from = args[1];
+    String to = args[2];
+    String filename = args[3];
+
+    // Get system properties
+    Properties props = System.getProperties();
+
+    // Setup mail server
+    props.put("mail.smtp.host", host);
+
+    // Get session
+    Session session = Session.getInstance(props, null);
+
+    // Define message
+    Message message = new MimeMessage(session);
+    message.setFrom(new InternetAddress(from));
+    message.addRecipient(Message.RecipientType.TO, 
+      new InternetAddress(to));
+    message.setSubject("Hello JavaMail Attachment");
+
+    // Create the message part 
+    BodyPart messageBodyPart = new MimeBodyPart();
+
+    // Fill the message
+    messageBodyPart.setText("Here's the file");
+
+    // Create a Multipart
+    Multipart multipart = new MimeMultipart();
+
+    // Add part one
+    multipart.addBodyPart(messageBodyPart);
+
+    //
+    // Part two is attachment
+    //
+
+    // Create second body part
+    messageBodyPart = new MimeBodyPart();
+
+    // Get the attachment
+    DataSource source = new FileDataSource(filename);
+
+    // Set the data handler to the attachment
+    messageBodyPart.setDataHandler(new DataHandler(source));
+
+    // Set the filename
+    messageBodyPart.setFileName(filename);
+
+    // Add part two
+    multipart.addBodyPart(messageBodyPart);
+
+    // Put parts in message
+    message.setContent(multipart);
+
+    // Send the message
+    Transport.send(message);
+  }
+}

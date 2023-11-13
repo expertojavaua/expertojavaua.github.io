@@ -1,0 +1,319 @@
+<!-- saved from url=(0022)http://internet.e-mail -->
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+                                                            
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+                                                            
+  <meta name="Author" content="Nacho">
+                                                            
+  <meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+                                                        
+  <link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+  <title>Conceptos Previos</title>
+</head>
+  <body>
+      <b>      
+<h1>C. Configurar Aplicaciones Web con Servlets o JSP</h1>
+<h2>&nbsp;</h2>
+<h2>C.1. Estructura de directorios de una aplicación web</h2>
+      </b><p> Una aplicación web que utilice servlets o páginas JSP debe tener una
+      estructura de ficheros y directorios determinada: </p>
+           
+      <ul>
+        <li>En el directorio raíz de la aplicación se colocan las páginas HTML o JSP
+          (podemos dividirlas también en directorios si queremos)</li>
+        <li>Colgando del directorio inicial de la aplicación, se tiene un directorio <b>WEB-INF</b>, que contiene la información
+          Web relevante para la aplicación. Esta información se divide en:
+          <ul>
+            <li>Fichero <b>descriptor de despliegue</b> de la aplicación: es el fichero descriptor de la
+              aplicación web. Es un fichero XML (<i>web.xml </i>en Tomcat o
+              Resin, por ejemplo) que contiene información
+              genérica sobre la aplicación. Lo veremos con más detalle más
+              adelante</li>
+            <li>Subdirectorio <b>classes</b>: en él irán todas las clases Java
+              utilizadas en la aplicación (ficheros <i>.class</i>), es decir, clases
+              externas a la API de Java que se
+              utilicen en las páginas JSP, servlets, etc. Las clases deberán
+              mantener la estructura de paquetes, es decir, si queremos colocar
+              la clase <i>paquete1.subpaquete1.MiClase</i> dentro de <i>classes</i>,
+              se quedará almacenada en el directorio <i>classes/paquete1/subpaquete1/MiClase</i>.</li>
+            <li>Subdirectorio <b>lib</b>: aquí colocaremos las clases Java que
+              estén empaquetadas en ficheros JAR (es decir, colocaremos los
+              ficheros JAR de nuestra aplicación Web, y las librerías ajenas a
+              la API de JDK o de servlets y JSP que se necesiten)</li>
+            <li>El resto de elementos de la aplicación (imágenes, etc),
+              podemos estructurarlos como nos convenga.</li>
+          </ul>
+        </li>
+        <li>El resto de elementos de la aplicación (imágenes, etc),
+              podemos estructurarlos como nos convenga.</li>
+      </ul>
+      <p>Notar que se separan los ficheros <i>.class</i> de los ficheros JAR,
+      colocando los primeros en el directorio <i>classes</i> y los segundos en <i>lib</i>.</p>
+      <p>Esta estructura estará contenida dentro de algún directorio, que será el
+      directorio
+      correspondiente a la aplicación Web, y que podremos, si lo hacemos
+      convenientemente, copiar en el servidor que nos convenga. Es decir,
+      cualquier servidor Web soporta esta estructura en una aplicación Web,
+      sólo tendremos que copiarla en el directorio adecuado de cada servidor.</p>
+           
+      <h4>C.1.1. Rutas relativas en la aplicación</h4>
+           
+      <p>Supongamos que tenemos alguna imagen o recurso al que queremos acceder
+      desde otro, en nuestra aplicacion Web. Por ejemplo, supongamos que colgando del directorio raíz de
+      la aplicación tenemos la imagen <i>miImagen.jpg</i> dentro de la carpeta <i>imagenes
+      </i>(es decir, <i>imagenes/miImagen.jpg</i>).</p>
+      <p>Podemos acceder a esta imagen de varias formas, aunque a veces podemos
+      tener problemas con alguna, porque luego el contenedor Web tome la ruta
+      relativa al lugar desde donde queremos cargar la imagen (o recurso, en
+      general). Este problema lo podemos tener accediendo a elementos desde
+      servlets, sobre todo.</p>
+      <p>Una solución para evitar esto es acceder a todos los elementos de la
+      aplicación a partir del nombre del directorio de la aplicación. Por
+      ejemplo, si tenemos toda nuestra aplicación en el directorio <i>miAplicacion</i>,
+      para acceder a la imagen desde una página HTML, pondríamos:</p>
+      <pre class="codigo">&lt;img src=&quot;/miAplicacion/imagenes/miImagen.jpg&quot;&gt;</pre>
+           
+      <p>&nbsp;</p>
+      <b>      
+           
+      <h2>C.2. El fichero descriptor de la aplicación</h2>
+           
+      </b>
+      <p>Como hemos dicho anteriormente, el directorio <i>WEB-INF</i> de una
+      aplicación web con servlets y/o páginas JSP, debe haber un fichero
+      descriptor de despliegue (llamado <b>web.xml</b>
+      en servidores como Tomcat, entre otros) que contenga la información relativa a la aplicación.</p>
+      <p>Es un fichero XML, que comienza con una cabecera XML que indica la
+      versión y la codificación de caracteres, y un DOCTYPE que indica el tipo
+      de documento, y la especificación de servlets que se sigue. La etiqueta
+      raíz del documento XML es <b>web-app</b>. Así, un ejemplo de fichero
+      podría ser:</p>
+      <pre class="codigo">&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot;?&gt;
+&lt;!DOCTYPE web-app PUBLIC 
+ &quot;-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN&quot; 
+ &quot;http://java.sun.com/j2ee/dtds/web-app_2_2.dtd&quot;&gt;
+
+&lt;web-app&gt;
+        &lt;!-- Resto de elementos --&gt;
+&lt;/web-app&gt;</pre>
+           
+      <p>En este caso se utiliza la especificación 2.2 de servlets o anteriores
+      (para utilizar versiones posteriores habría que cambiar la
+      especificación en la línea de DOCTYPE). Algunos servidores permiten
+      omitir la cabecera XML y el DOCTYPE, pero sí es una buena costumbre el ponerlas. </p>
+           
+      <p>Dentro de la etiqueta raíz <i>&lt;web-app&gt;</i> podemos colocar
+      otros elementos que ayuden a establecer la configuración de nuestra
+      aplicación web. Dichos elementos deben seguir un orden: podemos omitir
+      los que no se necesiten, pero los que pongamos deben tener una colocación
+      adecuada en el documento. Veremos a continuación algunos de ellos, en el
+      orden en que deben aparecer si aparecen (existen otras etiquetas que no
+      veremos aquí, y que debéis consultar el orden en que ponerlas). En
+      algunos elementos profundizaremos un poco más, por tratarse de elementos
+      genéricos de una aplicación web (variables globales, etc). En otros (servlets,
+      filtros, etc), simplemente se indicará qué elementos se tratan, pero su
+      configuración se explicará en temas más específicos. </p>
+           
+      <h4>C.2.1. Orden en las etiquetas del fichero descriptor</h4>
+           
+      <blockquote>
+        <h4>C.2.1.1. Información general de la aplicación</h4>
+           
+        <p>Primero tenemos etiquetas con información general: </p>
+           
+      <ul>
+        <li><b>&lt;display-name&gt;</b>: nombre con que deben utilizar las aplicaciones
+          gráficas para referenciar a la aplicación</li>
+        <li><b>&lt;description&gt;</b>: texto descriptivo de la aplicación</li>
+      </ul>
+        <blockquote>
+          <h4>C.2.1.1.1. Variables globales</h4>
+           
+          <p>Podemos tener varias etiquetas: </p>
+           
+          <ul>
+            <li><b>&lt;context-param&gt;</b>: para declarar las variables
+              globales a toda la aplicación web, y sus valores. Dentro tiene
+              dos subetiquetas:
+              <ul>
+                <li><b>&lt;param-name&gt;</b>: nombre de la variable o
+                  parámetro</li>
+                <li><b>&lt;param-value&gt;</b>: valor de la variable o
+                  parámetro</li>
+              </ul>
+            </li>
+          </ul>
+          <p>Un ejemplo:</p>
+          <pre class="codigo">&lt;context-param&gt;
+	&lt;param-name&gt;param1&lt;/param-name&gt;
+	&lt;param-value&gt;valor1&lt;/param-value&gt;
+&lt;/context-param&gt;</pre>
+           
+          <p>Estos parámetros pueden leerse desde servlets con el método <b>getInitParameter()</b>
+          del objeto <i>ServletContext</i>.</p>
+        </blockquote>
+        <h4>C.2.1.2. Filtros</h4>
+           
+        <p>Para el tratamiento de filtros se tienen las etiquetas: </p>
+           
+        <ul>
+          <li><b>&lt;filter&gt;</b>: para asociar un nombre identificativo con
+            la clase que implementa el filtro</li>
+          <li><b>&lt;filter-mapping&gt;</b>: para asociar un nombre
+            identificativo de filtro con una URL o patrón de URL</li>
+        </ul>
+        <p>Se pueden tener varias de estas etiquetas, cada una para un filtro.</p>
+        <h4>C.2.1.3. Oyentes</h4>
+           
+        <p>Se tiene la etiqueta: </p>
+           
+        <ul>
+          <li><b>&lt;listener&gt;</b>: para definir una clase oyente que
+            responde ante eventos en sesiones y contextos (al iniciar, al
+            cerrar, al modificar).</li>
+        </ul>
+      </blockquote>
+      <blockquote>
+        <h4>C.2.1.4 Servlets</h4>
+           
+        Para definir los servlets en nuestro fichero de configuración, se
+        tienen las etiquetas:
+           
+      <ul>
+        <li><b>&lt;servlet&gt;</b>: asocia un nombre identificativo con una clase Java
+          que implementa un servlet</li>
+        <li><b>&lt;servlet-mapping&gt;</b>: asocia un
+          nombre identificativo de servlet con una URL o patrón de URL.</li>
+      </ul>
+        <p>Se pueden tener varias de estas etiquetas, cada una para un servlet.</p>
+        <h4>C.2.1.5 Configuración de sesión</h4>
+           
+        <p>Se tiene la etiqueta: </p>
+           
+        <ul>
+          <li><b>&lt;session-config&gt;</b>: para indicar parámetros de
+            configuración de las sesiones.</li>
+        </ul>
+        <p>Por ejemplo, podemos indicar el tiempo (en minutos) que le damos a
+        una sesión de usuario antes de que el servidor la finalice:</p>
+        <pre class="codigo">&lt;session-config&gt;
+	&lt;session-timeout&gt;30&lt;/session-timeout&gt;
+&lt;/session-config&gt;</pre>
+           
+        <h4>C.2.1.6 Páginas de inicio</h4>
+           
+        <p>Se tiene la etiqueta: </p>
+           
+        <ul>
+          <li><b>&lt;welcome-file-list&gt;</b>: para indicar qué páginas debe
+            buscar Tomcat como páginas de inicio en el caso de que en la URL se
+            indique el directorio, pero no la página, como por ejemplo:</li>
+        </ul>
+        <blockquote>
+          <pre class="codigo">http://localhost:8080/unadireccion/dir/</pre>
+           
+          <p>Para ello, esta etiqueta tiene una o varias subetiquetas <b>&lt;welcome-file&gt;
+          </b>para indicar cada una de las posibles páginas</p>
+        </blockquote>
+        <p>Por ejemplo, podemos indicar que las páginas por defecto sean <i>index.html
+        </i>o <i>index.jsp </i>con:</p>
+        <pre class="codigo">&lt;welcome-file-list&gt;
+	&lt;welcome-file&gt;index.html&lt;/welcome-file&gt;
+	&lt;welcome-file&gt;index.jsp&lt;/welcome-file&gt;
+&lt;/welcome-file-list&gt;</pre>
+           
+        <p>Las páginas se buscan en el orden en que se especifican en esta
+        etiqueta.</p>
+           
+        <h4>C.2.1.7 Librerías de tags</h4>
+           
+        <p>Se tiene la etiqueta: </p>
+           
+      <ul>
+        <li><b>taglib</b>: para cargar una librería de tags para utilizar en
+          páginas JSP. Podemos tener una o varias de estas etiquetas.</li>
+      </ul>
+        <h4>C.2.1.8 Seguridad</h4>
+           
+        <p>Para gestionar la seguridad en las aplicaciones Web se tienen las
+        etiquetas: </p>
+           
+      <ul>
+        <li><b>security-constraint</b>: permite especificar qué URLs de la
+          aplicación deben protegerse</li>
+        <li><b>login-config</b>: indica cómo debe autorizar el servidor a los
+          usuarios que quieran acceder a las URLs protegidas (indicadas con <i>security-constraint</i>)</li>
+        <li><b>security-role</b>: da una lista de roles en los que se
+          encuadrarán los usuarios que intenten acceder a recursos protegidos.&nbsp;</li>
+      </ul>
+        <p>Existen otras etiquetas internas, relacionadas con la
+        seguridad, que no se encuentran detalladas aquí. </p>
+           
+        <p>&nbsp; </p>
+           
+      </blockquote>
+           
+      <h2>C.3. Ficheros WAR</h2>
+           
+      <p>Una forma alternativa de distribuir aplicaciones Web con Tomcat es
+      empaquetar toda la aplicación (a partir de su directorio inicial) dentro de un fichero WAR (de forma parecida
+      a como se hace con un TAR o un JAR), y distribuir dicho fichero. Podemos
+      crear un fichero WAR de la misma forma que creamos un JAR, utilizando la
+      herramienta JAR.&nbsp;</p>
+           
+      <p>Por ejemplo, si tenemos en el directorio <i>C:/web/ejemplo</i> los
+      siguientes ficheros:</p>
+           
+      <pre class="codigo">C:/web/ejemplo/
+		index.html
+		WEB-INF/
+			web.xml
+			classes/
+				ClaseServlet.class</pre>
+           
+      <p>Para crear la aplicación WAR se siguen los pasos:</p>
+           
+      <ul>
+        <li>Crear el WAR colocándonos en dicho directorio <i>C:/web/ejemplo</i>
+          y escribiendo:</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo">jar cMvf ejemplo.war *</pre>
+           
+        <p>Las opciones <i>c</i>, <i> v</i> y <i> f</i> son para crear el WAR como un JAR comprimido normal. La
+        opción M (mayúscula) es para que no se añada el fichero <i>Manifest</i>.&nbsp;</p>
+           
+        <p>También es IMPORTANTE destacar que no debe haber subdirectorios
+        desde la raíz de la aplicación, es decir, la estructura del fichero
+        WAR debe ser:</p>
+           
+        <pre class="codigo">index.html
+WEB-INF/
+	web.xml
+	classes/
+		ClaseServlet.class</pre>
+           
+        <p>sin ningún subdirectorio previo (ni <i>ejemplo/</i> ni <i>web/ejemplo/</i>
+        ni nada por el estilo).</p>
+           
+      </blockquote>
+      <ul>
+        <li>Colocar el fichero WAR en el directorio de aplicaciones del servidor donde lo vayamos a ejecutar
+          (dicho directorio es <i>webapps </i>en Tomcat, por ejemplo).</li>
+        <li>Deberemos arrancar el servidor tras hacer esto. Al arrancarlo, vemos que
+          se creará en el directorio de aplicaciones un directorio con el mismo nombre que el
+          fichero WAR, y donde se habrán descomprimido todos sus ficheros (por eso
+          decíamos que no podía haber subdirectorios previos en el fichero WAR,
+          porque entonces se habría descomprimido con esos
+          subdirectorios).&nbsp;</li>
+        <li>Con esto ya podemos llamar a la aplicación de la misma forma que se
+          llamaría sin el WAR.</li>
+      </ul>
+      <b>      
+<h2>&nbsp;</h2>
+      </b>
+           
+        </body>
+        </html>

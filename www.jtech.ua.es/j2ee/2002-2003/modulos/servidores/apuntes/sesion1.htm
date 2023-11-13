@@ -1,0 +1,203 @@
+<html>
+<head>
+<title>Servidores de aplicaciones</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="Author" content="Miguel">
+<link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+</head>
+
+<body>
+<h1>Tema 1: Introducci&oacute;n a los servidores de aplicaciones</h1>
+<p>En este tema veremos una peque&ntilde;a introducci&oacute;n a los servidores 
+  de aplicaciones. Comentaremos los t&eacute;rminos m&aacute;s utilizados y los 
+  conceptos que usaremos m&aacute;s adelante.</p>
+<h2>1.1. Aplicaciones de empresa</h2>
+<p>El concepto de servidor de aplicaciones est&aacute; relacionado con el concepto 
+  de sistema distribuido. Un sistema distribuido, en oposici&oacute;n a un sistema 
+  monol&iacute;tico, permite mejorar tres aspectos fundamentales en una aplicaci&oacute;n: 
+  la alta disponibilidad, la escalabilidad y el mantenimiento. En un sistema monol&iacute;tico 
+  un cambio en las necesidades del sistema (aumento considerable del n&uacute;mero 
+  de visitas, aumento del n&uacute;mero de aplicaciones, etc.) provoca un colapso 
+  y la adaptaci&oacute;n a dicho cambio puede resultar catastr&oacute;fica. Vamos 
+  a ver estas caracter&iacute;sticas con ejemplos. </p>
+<ul>
+  <li>La <b>alta disponibilidad</b> hace referencia a que un sistema debe estar 
+    funcionando las 24 horas de d&iacute;a los 365 d&iacute;as al a&ntilde;o. 
+    Para poder alcanzar esta caracter&iacute;stica es necesario el uso de t&eacute;cnicas 
+    de balanceo de carga y de recuperaci&oacute;n ante fallos (<i>failover</i>). 
+  </li>
+  <li>La <b>escalabilidad</b> es la capacidad de hacer crecer un sistema cuando 
+    se incrementa la carga de trabajo (el n&uacute;mero de peticiones). Cada m&aacute;quina 
+    tiene una capacidad finita de recursos y por lo tanto s&oacute;lo puede servir 
+    un n&uacute;mero limitado de peticiones. Si, por ejemplo, tenemos una tienda 
+    que incrementa la demanda de servicio, debemos ser capaces de incorporar nuevas 
+    m&aacute;quinas para dar servicio.</li>
+  <li>El <b>mantenimiento</b> tiene que ver con la versatilidad a la hora de actualizar, 
+    depurar fallos y mantener un sistema. La soluci&oacute;n al mantenimiento 
+    es la construcci&oacute;n de la l&oacute;gica de negocio en unidades reusables 
+    y modulares.</li>
+</ul>
+<h2>1.2. &iquest;Qu&eacute; es un servidor de aplicaciones?</h2>
+<p>El est&aacute;ndar J2EE permite el desarrollo de aplicaciones de empresa de 
+  una manera sencilla y eficiente. Una aplicaci&oacute;n desarrollada con las 
+  tecnolog&iacute;as J2EE permite ser desplegada en cualquier servidor de aplicaciones 
+  o servidor web que cumpla con el est&aacute;ndar. Un servidor de aplicaciones 
+  es una implementaci&oacute;n de la especificaci&oacute;n J2EE. La arquitectura 
+  J2EE es la siguiente:</p>
+<center><img src="primera.jpg"></center>
+<p class="caption">Figura 1. Arquitectura J2EE.</p>
+<p>Definimos a continuaci&oacute;n algunos de los conceptos que aparecen en la 
+  figura 1:</p>
+<ul>
+  <li><b>Cliente web</b>: Es usualmente un navegador e interact&uacute;a con el 
+    contenedor web haciendo uso de HTTP. Recibe p&aacute;ginas HTML o XML y puede 
+    ejecutar applets y c&oacute;digo JavaScript. </li>
+  <li><b>Aplicaci&oacute;n cliente</b>: Son clientes que no se ejecutan dentro 
+    de un navegador y pueden utilizar cualquier tecnolog&iacute;a para comunicarse 
+    con el contenedor web o directamente con la base de datos.</li>
+  <li><b>Contenedor web</b>: Es lo que com&uacute;nmente denominamos servidor 
+    web. Es la parte <i>visible</i> del servidor de aplicaciones. Utiliza los 
+    protocolos HTTP y SSL (seguro) para comunicarse.</li>
+  <li><b>Servidor de aplicaciones</b>: Proporciona servicios que soportan la ejecuci&oacute;n 
+    y disponibilidad de las aplicaciones desplegadas. Es el coraz&oacute;n de 
+    un gran sistema distribuido. </li>
+</ul>
+<p>Frente a la tradicional estructura en dos capas de un servidor web (ver Figura 
+  2) un servidor de aplicaciones proporciona una estructura en tres capas que 
+  permite estructurar nuestro sistema de forma m&aacute;s eficiente. Un concepto 
+  que debe quedar claro desde el principio es que no todas las aplicaciones de 
+  empresa necesitan un servidor de aplicaciones para funcionar. Una peque&ntilde;a 
+  aplicaci&oacute;n que acceda a una base de datos no muy compleja y que no sea 
+  distribuida probablemente no necesitar&aacute; un servidor de aplicaciones, 
+  tan solo con un servidor web (usando servlets y jsp) sea suficiente. </p>
+<center><img src="septima.jpg"></center>
+<p class="caption">Figura 2. Arquitectura en dos capas frente a tres capas utilizando el servidor de aplicaciones.</p>
+<p>Como hemos comentado, un servidor de aplicaciones es una implementaci&oacute;n 
+  de la especificaci&oacute;n J2EE. Existen diversas implementaciones, cada una 
+  con sus propias caracter&iacute;sticas que la pueden hacer m&aacute;s atractiva 
+  en el desarrollo de un determinado sistema. Algunas de las implementaciones 
+  m&aacute;s utilizadas son las siguientes:</p>
+<ul>
+  <li>BEA WebLogic</li>
+  <li>IBM WebSphere</li>
+  <li>Sun-Netscape IPlanet</li>
+  <li>Oracle IAS</li>
+  <li>Borland AppServer</li>
+  <li>HP Bluestone</li>
+</ul>
+<p>Los dos primeros son los m&aacute;s utilizados en el mercado. Nosotros vamos 
+  a utilizar el servidor BEA WebLogic. La principal ventaja de WebLogic es que 
+  podemos crear un sistema con varias m&aacute;quinas con distintos sistemas operativos: 
+  Linux, Unix, Windows NT, etc. El sistema funciona sin importarle en qu&eacute; 
+  m&aacute;quina est&aacute; corriendo el servidor. En la versi&oacute;n 7.1 WebLogic 
+  presenta las siguientes compatibilidades:</p>
+<table width="193" >
+  <tr> 
+    <td><b>Est&aacute;ndar</b></td>
+    <td valign="top"><b>Versi&oacute;n</b></td>
+  </tr>
+  <tr> 
+    <td>HTTP</td>
+    <td valign="top">1.1</td>
+  </tr>
+  <tr> 
+    <td>Arquitectura de conector J2EE</td>
+    <td valign="top">1.0</td>
+  </tr>
+  <tr> 
+    <td>EJB</td>
+    <td valign="top">2.0</td>
+  </tr>
+  <tr> 
+    <td>JDBC</td>
+    <td valign="top">2.0</td>
+  </tr>
+  <tr> 
+    <td>JNDI</td>
+    <td valign="top">1.2</td>
+  </tr>
+  <tr> 
+    <td>JSP</td>
+    <td valign="top">1.2</td>
+  </tr>
+  <tr> 
+    <td>JTA</td>
+    <td valign="top">1.0.1a</td>
+  </tr>
+  <tr> 
+    <td>JMS</td>
+    <td valign="top">1.0.2b</td>
+  </tr>
+  <tr> 
+    <td>RMI</td>
+    <td valign="top">1.0</td>
+  </tr>
+  <tr> 
+    <td>RMI/IIOP</td>
+    <td valign="top">1.0</td>
+  </tr>
+  <tr> 
+    <td>Servlet</td>
+    <td valign="top">2.3</td>
+  </tr>
+  <tr> 
+    <td>LDAP</td>
+    <td valign="top">2</td>
+  </tr>
+  <tr> 
+    <td>SSL</td>
+    <td valign="top">3</td>
+  </tr>
+  <tr> 
+    <td>X.509</td>
+    <td valign="top">3</td>
+  </tr>
+</table>
+<p>Otros conceptos que aparecer&aacute;n a lo largo de este m&oacute;dulo:</p>
+<ul>
+  <li><b>Servidor proxy</b>: Centraliza peticiones de los clientes y las reenv&iacute;a 
+    hacia otras m&aacute;quinas. Puede servir como nivel de indirecci&oacute;n 
+    y seguridad. Tambi&eacute;n puede ser usado para realizar balanceo de carga.</li>
+  <li><b>Cortafuegos</b> (<i><b>firewall</b></i>): Proporciona servicios de filtrado, 
+    autorizaci&oacute;n y autentificaci&oacute;n. Puede actuar como proxy y ayuda 
+    a manejar los ataques de los <i>hackers.</i></li>
+  <li><b>M&aacute;quina</b>: Representa una unidad f&iacute;sica donde reside 
+    un servidor. Una m&aacute;quina se define como tipo Unix o no Unix (Windows 
+    NT, etc.). </li>
+  <li><b>Servidor</b>: Un servidor es una instancia de la clase <i>weblogic.Server</i> 
+    ejecut&aacute;ndose dentro de una m&aacute;quina virtual de Java. Un servidor 
+    est&aacute; alojado en una m&aacute;quina, pero una m&aacute;quina puede contener 
+    varios servidores. Si un servidor no lo declaramos en ninguna m&aacute;quina 
+    WLS asume que est&aacute; en una creada por defecto.</li>
+  <li><b>Dominio</b>: Un dominio es una unidad administrativa. Sirve para declarar 
+    varios servidores, aplicaciones, etc. y que todos ellos est&eacute;n asociados 
+    mediante el nombre del dominio.</li>
+  <li><b><i>Clustering</i></b> (<b>asociaci&oacute;n</b>): Los <i>clusters</i> 
+    permiten asociar maquinas y servidores para que act&uacute;en de forma conjunta 
+    como una &uacute;nica instancia. La creaci&oacute;n de un cluster va a permitir 
+    el balanceo de carga y la recuperaci&oacute;n frente a fallos.</li>
+  <li><b>Balanceo de carga</b>: Es una t&eacute;cnica utilizada para distribuir 
+    las peticiones entre varios servidores de tal forma que todos los servidores 
+    respondan al mismo n&uacute;mero de peticiones.</li>
+  <li><b>Recuperaci&oacute;n ante fallos</b> (<b><i>failover</i></b>): Permite 
+    evitar la ca&iacute;da de un sistema cuando una m&aacute;quina deja de funcionar 
+    o funciona incorrectamente. </li>
+  <li><b>Puerto de escucha</b>: Un servidor tiene varios puertos por los que puede 
+    &quot;escuchar&quot; las peticiones. Existen puertos ya asignados a aplicaciones 
+    concretas, como por ejemplo el puerto de http que suele ser el 80. Los puertos 
+    permiten que varias aplicaciones puedan atender distintas peticiones en la 
+    misma m&aacute;quina. Un puerto en una direcci&oacute;n se especifica de la 
+    siguiente manera: <i>http://localhost:7001/direc</i> . Con :7001 indicamos 
+    el puerto que estamos <i>atacando</i>. Los puertos del 0 al 1023 son reservados 
+    por el sistema. Podemos disponer de los puertos del 1024 al 65536. Hay que 
+    tener en cuenta que dos servicios no pueden estar escuchando en el mismo puerto.</li>
+  <li><b>Modo producci&oacute;n y modo desarrollo</b>. Hablaremos muy a menudo 
+    de modo desarrollo y modo producci&oacute;n. El modo desarrollo es cuando 
+    nos encontramos desarrollando nuestra aplicaci&oacute;n y no est&aacute; disponible 
+    exteriormente. El modo producci&oacute;n es cuando est&aacute; funcionando 
+    a pleno rendimiento y tenemos clientes que se encuentran utiliz&aacute;ndola. 
+    Por defecto, un dominio se arranca en modo desarrollo.</li>
+</ul>
+<center><img src="segunda.jpg"></center>
+</body>
+</html>

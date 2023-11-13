@@ -1,0 +1,167 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0052)http://www.dccia.ua.es/j2ee/seguridad/apuntes/sesion2.htm -->
+<HTML><HEAD><TITLE>Seguridad en Java</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=iso-8859-1">
+<META content=Sco name=Author><LINK href="../../../apuntes.css"
+type=text/css rel=stylesheet>
+<META content="MSHTML 5.50.4134.100" name=GENERATOR></HEAD>
+<BODY>
+<H1>Tema 3: Encriptación Asimétrica</H1>
+<H2>3.1. Clave Pública y Clave Privada</H2>
+<P> El esquema asimétrico resuelve el problema de necesitar una clave pre-establecida.
+Se divide la clave en dos partes <I>par de claves</I>): la <I>clave pública</I> y la <I>clave privada</I>. Dichas claves son complementarias: Un
+mensaje encriptado con la clave pública sólo puede ser desencriptado con la correspondiente 
+clave privada. Por lo tanto, el conocimiento de la clave pública no implica capacidad de 
+desencriptación. Así, una persona podrá difundir su clave pública para que cualquiera pueda 
+enviarle un mensaje cifrado que solamente podrá desencriptarse con la clave privada.</P>
+<P>El algoritmo RSA es el más conocido para manejar esquemas asimétricos. Una característica 
+interesante de este método es que las claves son intercambiables a efectos de figurar como 
+públicas o privadas.</P>
+<P>En cuanto a la longitud de las claves, esta deberá ser mayor que en el caso simétrco para 
+proporcionar el mismo nivel de seguridad: una clave asimétrica de 1024 bits proporciona la 
+misma seguridad que una simétrica de 128 bits. Esto hace el esquema asimétrico 1000 veces 
+más lento que su homólogo simétrico.</P>
+
+<H2>3.2. Clases e Interfaces en Java</H2>
+<P>Para aplicar encriptación asimétrica usaremos básicamente las siguientes clases de
+<B>java.security</B>:</P>
+
+<table border="1">
+  <tr>
+    <td><B>KeyPair</B></td>
+    <td>Encapsula un par de claves. <B>getPublic()</B> devuelve la clave pública y
+    <B>getPrivate()</B> la privada</td>
+  </tr>
+  <tr>
+    <td><B>PublicKey</B></td>
+    <td>Interface para claves públicas. En el package <B>java.security.interfaces</B> está 
+    la sub-interface <B>RSAPublicKey</B> que define las claves para el algoritmo RSA y 
+    permite acceder a información de las claves RSA.</td>
+  </tr>
+  <tr>
+    <td><B>PrivateKey</B></td>
+    <td>Similar a la anterior, para la clave privada. Hay que considerar las sub-interfaces
+    <B>RSAPrivateKey</B> y <B>RSAPrivateCrtKey</B> que contienen métodos extra para coger 
+    parámetros de estas claves. </td>
+  </tr>
+  <tr>
+    <td><B>KeyPairGenerator</B></td> 
+    <td>Las claves pública y privada siempre se generan juntas con el método 
+    <B>genKeyPair().</B></td>
+  </tr>
+</table>
+
+<H2>3.3. Encriptación de Clave-de-Sesión</H2>
+<P>La encriptación asimétrica, lenta por naturaleza, es especialmente útil para encriptar
+claves simétricas. En el modelo de clave-de-sesión (<I>session-key</I>) un mensaje se encripta
+con una clave secreta y ésta a su vez es encriptada con la clave con la clave pública del
+receptor del mensaje. Cuando éste lo recibe solo tiene que utilizar su clave privada para
+desencriptar la clave secreta y ésta a su vez para desencriptar el mensaje.</P>
+
+<P>Veamos como realizar este tipo de estrategia en el ejemplo
+<A href="sesion2_archivos/RSA.java.txt">RSA.java</A>.
+En primer lugar creamos una clave simétrica, tipo Blowfish de 128 bits, para cifrar 
+el texto.</P>
+<PRE class=codigo>
+System.out.println("Generando clave Blowfish...");
+KeyGenerator generador = KeyGenerator.getInstance("Blowfish");
+generador.init(128);
+Key claveBlowfish = generador.generateKey();
+System.out.println("Formato: "+claveBlowfish.getFormat());
+</PRE>
+
+<P>A continuación generamos el par de claves RSA (publica y privada).</P>
+<PRE class=codigo>
+System.out.println("Generando par de claves RSA...");
+<B>KeyPairGenerator</B> generadorRSA = KeyPairGenerator.getInstance("RSA");
+generadorRSA.initialize(1024);
+<B>KeyPair</B> claves = generadorRSA.genKeyPair();
+System.out.println("Generada la clave asimétrica.");
+</PRE>
+
+<P>Ya podemos crear e inicializar el cifrador RSA que se va a encargar de encriptar
+la clave Blowfish con la parte pública del par RSA.</P>
+<PRE class=codigo>>
+Cipher cifradorRSA= Cipher.getInstance("RSA/ECB/PKCS1Padding");
+cifradorRSA.init(Cipher.ENCRYPT_MODE, claves.<B>getPublic()</B>);
+</PRE>
+
+<P>Una vez tenemos este cifrador cogemos los byte de la clave Blowfish y los encriptamos</P>
+<PRE class=codigo>
+byte[] bytesClaveBlowfish = claveBlowfish.<B>getEncoded();</B>
+byte[] claveBlowfishCifrada = cifradorRSA.<B>doFinal(bytesClaveBlowfish);</B>
+</PRE>
+
+<P>Desencriptamos la clave Blowfish con la parte privada del par RSA.
+<PRE class=codigo>
+cifradorRSA.init(Cipher.DECRYPT_MODE, claves.<B>getPrivate()</B>);
+byte[] bytesClaveBlowfish2 = cifradorRSA.<B>doFinal(claveBlowfishCifrada);</B>
+</PRE>
+
+<P>Finalmente recreamos la clave Blowfish.</P>
+<PRE class=codigo>
+<B>SecretKey</B> nuevaClaveBlowfish = new <B>SecretKeySpec(bytesClaveBlowfish2, "Blowfish");</B>
+</PRE>
+
+
+<H2>3.4. Codificación de Claves Públicas y Privadas</H2>
+<P>Las claves asimétricas también se pueden codificar, como hicimos con las simétricas, para 
+guardarlas en fichero. Sin embargo, debido a su mayor complejidad, la parte pública de una clave asimétrica se codifica usando X.509
+mientras que la parte privada se codifica usando el estándar PKCS#8. Llamando a 
+<B>getEncoded()</B> se realiza la codificación con el protocolo adecuado. En cuanto a la 
+decodificación ya no consiste en usar un <B>SecretKeySpec</B> sino que se recurre a un 
+<I>Spec</I> específico. Por ejemplo, para decodificar la clave pública se usa
+<B>X509EncodedKeySpec</B> y se le pasa a un <B>KeyFactory</B>:</P>
+<PRE class=codigo>
+X509EncodedKeySpec spec = new <B>X509EncodedKeySpec(bytesClave);</B>
+KeyFactory factoria = KeyFactory.getInstance("RSA");
+PublicKey clavePublica = factoria.<B>generatePublic(spec);</B>
+</PRE>
+
+Algo similar sucede con la clave privada pero usando <B>PKCS8EncodedKeySpec</B> y pasándolo de 
+nuevo a un <B>KeyFactory</B>
+<PRE class=codigo>
+PKCS8EncodedKeySpec spec = new <B>PKCS8EncodedKeySpec(bytesClave);</B>
+KeyFactory factoria = KeyFactory.getInstance("RSA");
+PublicKey clavePublica = factoria.<B>generatePrivate(spec);</B>
+</PRE>
+
+<H2>3.5. Encriptación de Ficheros con RSA</H2>
+<P>Para ilustrar la aplicación de RSA a ficheros vamos a ver un ejemplo en el que generaremos
+un par de claves RSA y posteriormente usaremos la parte pública para encriptar un fichero y
+la parte privada para desencriptarlo.</P>
+<P>La primera fase del proceso consiste en generar un par RSA y almacenarlo convenientemente
+en el sistema de ficheros. Como la parte pública puede ser conocida por otros puede almacenarse 
+de forma débilmente encriptada, esto es codificada con X.509. Sin embargo, la parte privada vamos 
+a encriptarla con un password (con el método <B>encriptarPBE</B>) y guardarla codificada con PKCS#8. Esto es lo que hace el
+método <B>crearClave()</B> de 
+<A href="sesion2_archivos/RSAFicheros.java.txt">RSAFicheros.java</A>.<P>
+
+<P>La segunda fase del proceso la lleva a cabo el método <B>encriptar()</B> usando la
+clave pública. Se abre el fichero que contiene la clave pública. Como dicha
+clave está en X.509 lo primero es transformarla en <B>PublicKey</B>. Siguiendo el esquema 
+<I>session-key</I> dicha clave pública se utilizará para encriptar una clave simétrica (p.e. 
+basada en Rijndael) en la que que a su vez  se basará la encriptación propiamente dicha del 
+fichero de entrada. Por seguridad la clave simétrica encriptada se guardará, precedida de
+su longitud, al principio del fichero de salida.</P>
+<P>Seguidamente tiene lugar la encriptación con la clave sesión del fichero de entrada.
+Como se va a utilizar un cifrador de <I>stream</I>, lo primero es generar un IV y guardarlo 
+a continuación de la clave simétrica encriptada en el fichero de salida. Luego creamos un
+cifrador Rijndael en modo CBC y lo aplicamos para añadir el texto cifrado al fichero de
+salida. Así, el resultado devuelto es un fichero con la siguiente estructura:
+<I>Long_clave_sesión_encriptada + clave_sesión_encriptada + iv + texto_cifrado</I>.</P>
+
+<P>La segunda fase consiste en llevar a cabo el desencriptado del anterior fichero.
+Esta tarea la realiza el método <B>desencriptar()</B>. Lo primero que hay que tener
+en cuenta es que dicha clave reside, encriptada por un password en un determinado fichero.
+Así que procedemos a extraerla y llamamos al método <B>desencriptarPBE()</B> para obtener
+la clave privada original. Sin embargo, como dicha clave está en PKCS#8 hay que
+traducirla a un objeto <B>PrivateKey</B>.</P>
+<P>Una vez que tenemos la clave privada, ya podemos utilizarla para desencriptar la clave
+de sesión que está contenida en la cabecera del fichero a desencriptar. Así pués lo que 
+hay que hacer es leer esta cabecera, inicializar un descifrador RSA, desencriptar la 
+clave y traducirla a un objeto <B>SecretKey</B>. La cabecera termina con el IV necesario 
+para inicializar el descrifrador simétrico que trabaja en modo CBC. Aplicando este descifrador 
+conseguimos finalmente desencriptar el texto.</P>
+
+</BODY></HTML>

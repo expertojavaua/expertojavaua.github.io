@@ -1,0 +1,1839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 1.5.2">
+<meta name="author" content="José Luis Zamora Sánchez">
+<title>Servidores web y PaaS</title>
+<style>/*! normalize.css v2.1.2 | MIT License | git.io/normalize */
+/* ========================================================================== HTML5 display definitions ========================================================================== */
+/** Correct `block` display not defined in IE 8/9. */
+article, aside, details, figcaption, figure, footer, header, hgroup, main, nav, section, summary { display: block; }
+
+/** Correct `inline-block` display not defined in IE 8/9. */
+audio, canvas, video { display: inline-block; }
+
+/** Prevent modern browsers from displaying `audio` without controls. Remove excess height in iOS 5 devices. */
+audio:not([controls]) { display: none; height: 0; }
+
+/** Address `[hidden]` styling not present in IE 8/9. Hide the `template` element in IE, Safari, and Firefox < 22. */
+[hidden], template { display: none; }
+
+script { display: none !important; }
+
+/* ========================================================================== Base ========================================================================== */
+/** 1. Set default font family to sans-serif. 2. Prevent iOS text size adjust after orientation change, without disabling user zoom. */
+html { font-family: sans-serif; /* 1 */ -ms-text-size-adjust: 100%; /* 2 */ -webkit-text-size-adjust: 100%; /* 2 */ }
+
+/** Remove default margin. */
+body { margin: 0; }
+
+/* ========================================================================== Links ========================================================================== */
+/** Remove the gray background color from active links in IE 10. */
+a { background: transparent; }
+
+/** Address `outline` inconsistency between Chrome and other browsers. */
+a:focus { outline: thin dotted; }
+
+/** Improve readability when focused and also mouse hovered in all browsers. */
+a:active, a:hover { outline: 0; }
+
+/* ========================================================================== Typography ========================================================================== */
+/** Address variable `h1` font-size and margin within `section` and `article` contexts in Firefox 4+, Safari 5, and Chrome. */
+h1 { font-size: 2em; margin: 0.67em 0; }
+
+/** Address styling not present in IE 8/9, Safari 5, and Chrome. */
+abbr[title] { border-bottom: 1px dotted; }
+
+/** Address style set to `bolder` in Firefox 4+, Safari 5, and Chrome. */
+b, strong { font-weight: bold; }
+
+/** Address styling not present in Safari 5 and Chrome. */
+dfn { font-style: italic; }
+
+/** Address differences between Firefox and other browsers. */
+hr { -moz-box-sizing: content-box; box-sizing: content-box; height: 0; }
+
+/** Address styling not present in IE 8/9. */
+mark { background: #ff0; color: #000; }
+
+/** Correct font family set oddly in Safari 5 and Chrome. */
+code, kbd, pre, samp { font-family: monospace, serif; font-size: 1em; }
+
+/** Improve readability of pre-formatted text in all browsers. */
+pre { white-space: pre-wrap; }
+
+/** Set consistent quote types. */
+q { quotes: "\201C" "\201D" "\2018" "\2019"; }
+
+/** Address inconsistent and variable font size in all browsers. */
+small { font-size: 80%; }
+
+/** Prevent `sub` and `sup` affecting `line-height` in all browsers. */
+sub, sup { font-size: 75%; line-height: 0; position: relative; vertical-align: baseline; }
+
+sup { top: -0.5em; }
+
+sub { bottom: -0.25em; }
+
+/* ========================================================================== Embedded content ========================================================================== */
+/** Remove border when inside `a` element in IE 8/9. */
+img { border: 0; }
+
+/** Correct overflow displayed oddly in IE 9. */
+svg:not(:root) { overflow: hidden; }
+
+/* ========================================================================== Figures ========================================================================== */
+/** Address margin not present in IE 8/9 and Safari 5. */
+figure { margin: 0; }
+
+/* ========================================================================== Forms ========================================================================== */
+/** Define consistent border, margin, and padding. */
+fieldset { border: 1px solid #c0c0c0; margin: 0 2px; padding: 0.35em 0.625em 0.75em; }
+
+/** 1. Correct `color` not being inherited in IE 8/9. 2. Remove padding so people aren't caught out if they zero out fieldsets. */
+legend { border: 0; /* 1 */ padding: 0; /* 2 */ }
+
+/** 1. Correct font family not being inherited in all browsers. 2. Correct font size not being inherited in all browsers. 3. Address margins set differently in Firefox 4+, Safari 5, and Chrome. */
+button, input, select, textarea { font-family: inherit; /* 1 */ font-size: 100%; /* 2 */ margin: 0; /* 3 */ }
+
+/** Address Firefox 4+ setting `line-height` on `input` using `!important` in the UA stylesheet. */
+button, input { line-height: normal; }
+
+/** Address inconsistent `text-transform` inheritance for `button` and `select`. All other form control elements do not inherit `text-transform` values. Correct `button` style inheritance in Chrome, Safari 5+, and IE 8+. Correct `select` style inheritance in Firefox 4+ and Opera. */
+button, select { text-transform: none; }
+
+/** 1. Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio` and `video` controls. 2. Correct inability to style clickable `input` types in iOS. 3. Improve usability and consistency of cursor style between image-type `input` and others. */
+button, html input[type="button"], input[type="reset"], input[type="submit"] { -webkit-appearance: button; /* 2 */ cursor: pointer; /* 3 */ }
+
+/** Re-set default cursor for disabled elements. */
+button[disabled], html input[disabled] { cursor: default; }
+
+/** 1. Address box sizing set to `content-box` in IE 8/9. 2. Remove excess padding in IE 8/9. */
+input[type="checkbox"], input[type="radio"] { box-sizing: border-box; /* 1 */ padding: 0; /* 2 */ }
+
+/** 1. Address `appearance` set to `searchfield` in Safari 5 and Chrome. 2. Address `box-sizing` set to `border-box` in Safari 5 and Chrome (include `-moz` to future-proof). */
+input[type="search"] { -webkit-appearance: textfield; /* 1 */ -moz-box-sizing: content-box; -webkit-box-sizing: content-box; /* 2 */ box-sizing: content-box; }
+
+/** Remove inner padding and search cancel button in Safari 5 and Chrome on OS X. */
+input[type="search"]::-webkit-search-cancel-button, input[type="search"]::-webkit-search-decoration { -webkit-appearance: none; }
+
+/** Remove inner padding and border in Firefox 4+. */
+button::-moz-focus-inner, input::-moz-focus-inner { border: 0; padding: 0; }
+
+/** 1. Remove default vertical scrollbar in IE 8/9. 2. Improve readability and alignment in all browsers. */
+textarea { overflow: auto; /* 1 */ vertical-align: top; /* 2 */ }
+
+/* ========================================================================== Tables ========================================================================== */
+/** Remove most spacing between table cells. */
+table { border-collapse: collapse; border-spacing: 0; }
+
+meta.foundation-mq-small { font-family: "only screen and (min-width: 768px)"; width: 768px; }
+
+meta.foundation-mq-medium { font-family: "only screen and (min-width:1280px)"; width: 1280px; }
+
+meta.foundation-mq-large { font-family: "only screen and (min-width:1440px)"; width: 1440px; }
+
+*, *:before, *:after { -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
+
+html, body { font-size: 97%; }
+
+body { background: white; color: #222222; padding: 0; margin: 0; font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif; font-weight: normal; font-style: normal; line-height: 1; position: relative; cursor: auto; }
+
+a:hover { cursor: pointer; }
+
+img, object, embed { max-width: 100%; height: auto; }
+
+object, embed { height: 100%; }
+
+img { -ms-interpolation-mode: bicubic; }
+
+#map_canvas img, #map_canvas embed, #map_canvas object, .map_canvas img, .map_canvas embed, .map_canvas object { max-width: none !important; }
+
+.left { float: left !important; }
+
+.right { float: right !important; }
+
+.text-left { text-align: left !important; }
+
+.text-right { text-align: right !important; }
+
+.text-center { text-align: center !important; }
+
+.text-justify { text-align: justify !important; }
+
+.hide { display: none; }
+
+.antialiased, body { -webkit-font-smoothing: antialiased; }
+
+img { display: inline-block; vertical-align: middle; }
+
+textarea { height: auto; min-height: 50px; }
+
+select { width: 100%; }
+
+p.lead, .paragraph.lead > p, #preamble > .sectionbody > .paragraph:first-of-type p { font-size: 1.21875em; line-height: 1.6; }
+
+.subheader, .admonitionblock td.content > .title, .audioblock > .title, .exampleblock > .title, .imageblock > .title, .listingblock > .title, .literalblock > .title, .stemblock > .title, .openblock > .title, .paragraph > .title, .quoteblock > .title, table.tableblock > .title, .verseblock > .title, .videoblock > .title, .dlist > .title, .olist > .title, .ulist > .title, .qlist > .title, .hdlist > .title { line-height: 1.4; color: #6f6f6f; font-weight: 300; margin-top: 0.2em; margin-bottom: 0.5em; }
+
+/* Typography resets */
+div, dl, dt, dd, ul, ol, li, h1, h2, h3, #toctitle, .sidebarblock > .content > .title, h4, h5, h6, pre, form, p, blockquote, th, td { margin: 0; padding: 0; direction: ltr; }
+
+/* Default Link Styles */
+a { color: #1164be; text-decoration: none; line-height: inherit; }
+a img { border: none; }
+
+/* Default paragraph styles */
+p { font-family: inherit; font-weight: normal; font-size: 1em; line-height: 1.4; margin-bottom: 1em; text-rendering: optimizeLegibility; }
+p aside { font-size: 0.875em; line-height: 1.35; font-style: italic; }
+
+/* Default header styles */
+h1, h2, h3, #toctitle, .sidebarblock > .content > .title, h4, h5, h6 { font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif; font-weight: bold; font-style: normal; color: #1c355e; text-rendering: optimizeLegibility; margin-top: 1em; margin-bottom: 0.5em; line-height: 1.2125em; }
+h1 small, h2 small, h3 small, #toctitle small, .sidebarblock > .content > .title small, h4 small, h5 small, h6 small { font-size: 60%; color: #6f6f6f; line-height: 0; }
+
+h1 { font-size: 2.125em; }
+
+h2 { font-size: 1.6875em; }
+
+h3, #toctitle, .sidebarblock > .content > .title { font-size: 1.375em; }
+
+h4 { font-size: 1.125em; }
+
+h5 { font-size: 1.125em; }
+
+h6 { font-size: 1em; }
+
+hr { border: solid #dddddd; border-width: 1px 0 0; clear: both; margin: 1.25em 0 1.1875em; height: 0; }
+
+/* Helpful Typography Defaults */
+em, i { font-style: italic; line-height: inherit; }
+
+strong, b { font-weight: bold; line-height: inherit; }
+
+small { font-size: 60%; line-height: inherit; }
+
+code { font-family: Consolas, "Liberation Mono", Courier, monospace; font-weight: bold; }
+
+/* Lists */
+ul, ol, dl { font-size: 1em; line-height: 1.4; margin-bottom: 1.25em; list-style-position: outside; font-family: inherit; }
+
+ul, ol { margin-left: 2.5em; }
+ul.no-bullet, ol.no-bullet { margin-left: 1.5em; }
+
+/* Unordered Lists */
+ul li ul, ul li ol { margin-left: 1.25em; margin-bottom: 0; font-size: 1em; /* Override nested font-size change */ }
+ul.square li ul, ul.circle li ul, ul.disc li ul { list-style: inherit; }
+ul.square { list-style-type: square; }
+ul.circle { list-style-type: circle; }
+ul.disc { list-style-type: disc; }
+ul.no-bullet { list-style: none; }
+
+/* Ordered Lists */
+ol li ul, ol li ol { margin-left: 1.25em; margin-bottom: 0; }
+
+/* Definition Lists */
+dl dt { margin-bottom: 0.3125em; font-weight: bold; }
+dl dd { margin-bottom: 1.25em; }
+
+/* Abbreviations */
+abbr, acronym { text-transform: uppercase; font-size: 90%; color: #222222; border-bottom: 1px dotted #dddddd; cursor: help; }
+
+abbr { text-transform: none; }
+
+/* Blockquotes */
+blockquote { margin: 0 0 1.25em; padding: 0.5625em 1.25em 0 1.1875em; border-left: 1px solid #dddddd; }
+blockquote cite { display: block; font-size: 0.8125em; color: #555555; }
+blockquote cite:before { content: "\2014 \0020"; }
+blockquote cite a, blockquote cite a:visited { color: #555555; }
+
+blockquote, blockquote p { line-height: 1.6; color: #6f6f6f; }
+
+/* Microformats */
+.vcard { display: inline-block; margin: 0 0 1.25em 0; border: 1px solid #dddddd; padding: 0.625em 0.75em; }
+.vcard li { margin: 0; display: block; }
+.vcard .fn { font-weight: bold; font-size: 0.9375em; }
+
+.vevent .summary { font-weight: bold; }
+.vevent abbr { cursor: auto; text-decoration: none; font-weight: bold; border: none; padding: 0 0.0625em; }
+
+/*@media only screen and (min-width: 768px) { h1, h2, h3, #toctitle, .sidebarblock > .content > .title, h4, h5, h6 { line-height: 1.4; }
+  h1 { font-size: 2.75em; }
+  h2 { font-size: 2.3125em; }
+  h3, #toctitle, .sidebarblock > .content > .title { font-size: 1.6875em; }
+  h4 { font-size: 1.4375em; } }*/
+/* Tables */
+table { background: white; margin-bottom: 1.25em; border: solid 1px #dddddd; }
+table thead, table tfoot { background: whitesmoke; font-weight: bold; }
+table thead tr th, table thead tr td, table tfoot tr th, table tfoot tr td { padding: 0.5em 0.625em 0.625em; font-size: inherit; color: #222222; text-align: left; }
+table tr th, table tr td { padding: 0.5625em 0.625em; font-size: inherit; color: #222222; }
+table tr.even, table tr.alt, table tr:nth-of-type(even) { background: #f9f9f9; }
+table thead tr th, table tfoot tr th, table tbody tr td, table tr td, table tfoot tr td { display: table-cell; line-height: 1.4; }
+
+h1, h2, h3, #toctitle, .sidebarblock > .content > .title, h4, h5, h6 { line-height: 1.4; border-bottom: 1px solid #dddddd }
+
+.clearfix:before, .clearfix:after, .float-group:before, .float-group:after { content: " "; display: table; }
+.clearfix:after, .float-group:after { clear: both; }
+
+*:not(pre) > code { font-size: inherit; font-style: normal !important; letter-spacing: 0; padding: 3px 2px 1px 2px; background-color: #eeeeee; border: 1px solid #dddddd; -webkit-border-radius: 0; border-radius: 0; line-height: inherit; font-weight: normal; }
+
+pre, pre > code { line-height: 1.4; color: black; font-family: monospace, serif; font-weight: normal; }
+
+.keyseq { color: #555555; }
+
+kbd { display: inline-block; color: #222222; font-size: 0.75em; line-height: 1.4; background-color: #f7f7f7; border: 1px solid #ccc; -webkit-border-radius: 3px; border-radius: 3px; -webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 0 0 0.1em white inset; box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 0 0 0.1em white inset; margin: -0.15em 0.15em 0 0.15em; padding: 0.2em 0.6em 0.2em 0.5em; vertical-align: middle; white-space: nowrap; }
+
+.keyseq kbd:first-child { margin-left: 0; }
+
+.keyseq kbd:last-child { margin-right: 0; }
+
+.menuseq, .menu { color: #090909; }
+
+b.button:before, b.button:after { position: relative; top: -1px; font-weight: normal; }
+
+b.button:before { content: "["; padding: 0 3px 0 2px; }
+
+b.button:after { content: "]"; padding: 0 2px 0 3px; }
+
+#header, #content, #footnotes, #footer { width: 100%; margin-left: auto; margin-right: auto; margin-top: 0; margin-bottom: 0; max-width: 62.5em; *zoom: 1; position: relative; padding-left: 0.9375em; padding-right: 0.9375em; }
+#header:before, #header:after, #content:before, #content:after, #footnotes:before, #footnotes:after, #footer:before, #footer:after { content: " "; display: table; }
+#header:after, #content:after, #footnotes:after, #footer:after { clear: both; }
+
+#content { margin-top: 1.25em; }
+
+#content:before { content: none; }
+
+#header > h1:first-child { color: black; margin-top: 2.25rem; margin-bottom: 0; }
+#header > h1:first-child + #toc { margin-top: 8px; border-top: 1px solid #dddddd; }
+#header > h1:only-child, body.toc2 #header > h1:nth-last-child(2) { border-bottom: 1px solid #dddddd; padding-bottom: 8px; }
+#header .details { border-bottom: 1px solid #dddddd; line-height: 1.45; padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; color: #555555; display: -ms-flexbox; display: -webkit-flex; display: flex; -ms-flex-flow: row wrap; -webkit-flex-flow: row wrap; flex-flow: row wrap; }
+#header .details span:first-child { margin-left: -0.125em; }
+#header .details span.email a { color: #6f6f6f; }
+#header .details br { display: none; }
+#header .details br + span:before { content: "\00a0\2013\00a0"; }
+#header .details br + span.author:before { content: "\00a0\22c5\00a0"; color: #6f6f6f; }
+#header .details br + span#revremark:before { content: "\00a0|\00a0"; }
+#header #revnumber { text-transform: capitalize; }
+#header #revnumber:after { content: "\00a0"; }
+
+#content > h1:first-child:not([class]) { color: black; border-bottom: 1px solid #dddddd; padding-bottom: 8px; margin-top: 0; padding-top: 1rem; margin-bottom: 1.25rem; }
+
+#floating {
+  position: fixed;
+  z-index: 1000;
+  padding: 0.5em;
+  right: 0;
+  top: 0;
+  background: white;
+  box-shadow: 0 0 1em #777777;
+  -webkit-box-shadow: 0 0 1em #777777;
+  -moz-box-shadow: 0 0 1em #777777;
+  -webkit-border-bottom-left-radius: 5px;
+  -moz-border-radius-bottomleft: 5px;
+  max-height: 80%;
+  overflow: auto;
+}
+
+#floating #full { display: none; } /* Hide the full TOC by default */
+
+#floating:hover #full{
+  display: block; /* Show it on hover */
+}
+
+
+#toc { border-bottom: 1px solid #dddddd; padding-bottom: 0.5em; }
+#toc > ul { margin-left: 0.125em; }
+#toc ul.sectlevel0 > li > a { font-style: italic; }
+#toc ul.sectlevel0 ul.sectlevel1 { margin: 0.5em 0; }
+#toc ul { font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif; list-style-type: none; }
+#toc a { text-decoration: none; }
+#toc a:active { text-decoration: underline; }
+
+#toctitle { color: #6f6f6f; font-size: 1.2em; }
+
+@media only screen and (min-width: 768px) { #toctitle { font-size: 1.375em; }
+  body.toc2 { padding-left: 15em; padding-right: 0; }
+  #toc.toc2 { margin-top: 0 !important; background-color: #f2f2f2; position: fixed; width: 15em; left: 0; top: 0; border-right: 1px solid #dddddd; border-top-width: 0 !important; border-bottom-width: 0 !important; z-index: 1000; padding: 1.25em 1em; height: 100%; overflow: auto; }
+  #toc.toc2 #toctitle { margin-top: 0; font-size: 1.2em; }
+  #toc.toc2 > ul { font-size: 0.9em; margin-bottom: 0; }
+  #toc.toc2 ul ul { margin-left: 0; padding-left: 1em; }
+  #toc.toc2 ul.sectlevel0 ul.sectlevel1 { padding-left: 0; margin-top: 0.5em; margin-bottom: 0.5em; }
+  body.toc2.toc-right { padding-left: 0; padding-right: 15em; }
+  body.toc2.toc-right #toc.toc2 { border-right-width: 0; border-left: 1px solid #dddddd; left: auto; right: 0; } }
+@media only screen and (min-width: 1280px) { body.toc2 { padding-left: 20em; padding-right: 0; }
+  #toc.toc2 { width: 20em; }
+  #toc.toc2 #toctitle { font-size: 1.375em; }
+  #toc.toc2 > ul { font-size: 0.95em; }
+  #toc.toc2 ul ul { padding-left: 1.25em; }
+  body.toc2.toc-right { padding-left: 0; padding-right: 20em; } }
+#content #toc { border-style: solid; border-width: 1px; border-color: #d9d9d9; margin-bottom: 1.25em; padding: 1.25em; background: #f2f2f2; -webkit-border-radius: 0; border-radius: 0; }
+#content #toc > :first-child { margin-top: 0; }
+#content #toc > :last-child { margin-bottom: 0; }
+
+#footer { max-width: 100%; background-color: #222222; padding: 1.25em; }
+
+#footer-text { color: #dddddd; line-height: 1.44; }
+
+.sect1 { padding-bottom: 0.625em; }
+
+@media only screen and (min-width: 768px) { .sect1 { padding-bottom: 1.25em; } }
+.sect1 + .sect1 { border-top: 1px solid #dddddd; }
+
+#content h1 > a.anchor, h2 > a.anchor, h3 > a.anchor, #toctitle > a.anchor, .sidebarblock > .content > .title > a.anchor, h4 > a.anchor, h5 > a.anchor, h6 > a.anchor { position: absolute; z-index: 1001; width: 1.5ex; margin-left: -1.5ex; display: block; text-decoration: none !important; visibility: hidden; text-align: center; font-weight: normal; }
+#content h1 > a.anchor:before, h2 > a.anchor:before, h3 > a.anchor:before, #toctitle > a.anchor:before, .sidebarblock > .content > .title > a.anchor:before, h4 > a.anchor:before, h5 > a.anchor:before, h6 > a.anchor:before { content: "\00A7"; font-size: 0.85em; display: block; padding-top: 0.1em; }
+#content h1:hover > a.anchor, #content h1 > a.anchor:hover, h2:hover > a.anchor, h2 > a.anchor:hover, h3:hover > a.anchor, #toctitle:hover > a.anchor, .sidebarblock > .content > .title:hover > a.anchor, h3 > a.anchor:hover, #toctitle > a.anchor:hover, .sidebarblock > .content > .title > a.anchor:hover, h4:hover > a.anchor, h4 > a.anchor:hover, h5:hover > a.anchor, h5 > a.anchor:hover, h6:hover > a.anchor, h6 > a.anchor:hover { visibility: visible; }
+#content h1 > a.link, h2 > a.link, h3 > a.link, #toctitle > a.link, .sidebarblock > .content > .title > a.link, h4 > a.link, h5 > a.link, h6 > a.link { color: #222222; text-decoration: none; }
+#content h1 > a.link:hover, h2 > a.link:hover, h3 > a.link:hover, #toctitle > a.link:hover, .sidebarblock > .content > .title > a.link:hover, h4 > a.link:hover, h5 > a.link:hover, h6 > a.link:hover { color: #151515; }
+
+.audioblock, .imageblock, .literalblock, .listingblock, .stemblock, .videoblock { margin-bottom: 1.25em; }
+
+.admonitionblock td.content > .title, .audioblock > .title, .exampleblock > .title, .imageblock > .title, .listingblock > .title, .literalblock > .title, .stemblock > .title, .openblock > .title, .paragraph > .title, .quoteblock > .title, table.tableblock > .title, .verseblock > .title, .videoblock > .title, .dlist > .title, .olist > .title, .ulist > .title, .qlist > .title, .hdlist > .title { text-rendering: optimizeLegibility; text-align: left; }
+
+table.tableblock > caption.title { white-space: nowrap; overflow: visible; max-width: 0; }
+
+.paragraph.lead > p, #preamble > .sectionbody > .paragraph:first-of-type p { color: black; }
+
+table.tableblock #preamble > .sectionbody > .paragraph:first-of-type p { font-size: inherit; }
+
+.admonitionblock > table { border-collapse: separate; border: 0; background: none; width: 100%; }
+.admonitionblock > table td.icon { text-align: center; width: 80px; }
+.admonitionblock > table td.icon img { max-width: none; }
+.admonitionblock > table td.icon .title { font-weight: bold; font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif; text-transform: uppercase; }
+.admonitionblock > table td.content { padding-left: 1.125em; padding-right: 1.25em; border-left: 1px solid #dddddd; color: #555555; }
+.admonitionblock > table td.content > :last-child > :last-child { margin-bottom: 0; }
+
+.exampleblock > .content { border-style: solid; border-width: 1px; border-color: #e6e6e6; margin-bottom: 1.25em; padding: 1.25em; background: white; -webkit-border-radius: 0; border-radius: 0; }
+.exampleblock > .content > :first-child { margin-top: 0; }
+.exampleblock > .content > :last-child { margin-bottom: 0; }
+
+.sidebarblock { border-style: solid; border-width: 1px; border-color: #d9d9d9; margin-bottom: 1.25em; padding: 1.25em; background: #f2f2f2; -webkit-border-radius: 0; border-radius: 0; }
+.sidebarblock > :first-child { margin-top: 0; }
+.sidebarblock > :last-child { margin-bottom: 0; }
+.sidebarblock > .content > .title { color: #6f6f6f; margin-top: 0; }
+
+.exampleblock > .content > :last-child > :last-child, .exampleblock > .content .olist > ol > li:last-child > :last-child, .exampleblock > .content .ulist > ul > li:last-child > :last-child, .exampleblock > .content .qlist > ol > li:last-child > :last-child, .sidebarblock > .content > :last-child > :last-child, .sidebarblock > .content .olist > ol > li:last-child > :last-child, .sidebarblock > .content .ulist > ul > li:last-child > :last-child, .sidebarblock > .content .qlist > ol > li:last-child > :last-child { margin-bottom: 0; }
+
+.literalblock pre, .listingblock pre:not(.highlight), .listingblock pre[class="highlight"], .listingblock pre[class^="highlight "], .listingblock pre.CodeRay, .listingblock pre.prettyprint { background: #eeeeee; }
+.sidebarblock .literalblock pre, .sidebarblock .listingblock pre:not(.highlight), .sidebarblock .listingblock pre[class="highlight"], .sidebarblock .listingblock pre[class^="highlight "], .sidebarblock .listingblock pre.CodeRay, .sidebarblock .listingblock pre.prettyprint { background: #f2f1f1; }
+
+.literalblock pre, .literalblock pre[class], .listingblock pre, .listingblock pre[class] { border: 1px solid #cccccc; -webkit-border-radius: 0; border-radius: 0; word-wrap: break-word; padding: 0.8em 0.8em 0.65em 0.8em; font-size: 0.8125em; }
+.literalblock pre.nowrap, .literalblock pre[class].nowrap, .listingblock pre.nowrap, .listingblock pre[class].nowrap { overflow-x: auto; white-space: pre; word-wrap: normal; }
+@media only screen and (min-width: 768px) { .literalblock pre, .literalblock pre[class], .listingblock pre, .listingblock pre[class] { font-size: 0.90625em; } }
+@media only screen and (min-width: 1280px) { .literalblock pre, .literalblock pre[class], .listingblock pre, .listingblock pre[class] { font-size: 1em; } }
+
+.literalblock.output pre { color: #eeeeee; background-color: black; }
+
+.listingblock pre.highlightjs { padding: 0; }
+.listingblock pre.highlightjs > code { padding: 0.8em 0.8em 0.65em 0.8em; -webkit-border-radius: 0; border-radius: 0; }
+
+.listingblock > .content { position: relative; }
+
+.listingblock code[data-lang]:before { display: none; content: attr(data-lang); position: absolute; font-size: 0.75em; top: 0.425rem; right: 0.5rem; line-height: 1; text-transform: uppercase; color: #999; }
+
+.listingblock:hover code[data-lang]:before { display: block; }
+
+.listingblock.terminal pre .command:before { content: attr(data-prompt); padding-right: 0.5em; color: #999; }
+
+.listingblock.terminal pre .command:not([data-prompt]):before { content: "$"; }
+
+table.pyhltable { border-collapse: separate; border: 0; margin-bottom: 0; background: none; }
+
+table.pyhltable td { vertical-align: top; padding-top: 0; padding-bottom: 0; }
+
+table.pyhltable td.code { padding-left: .75em; padding-right: 0; }
+
+pre.pygments .lineno, table.pyhltable td:not(.code) { color: #999; padding-left: 0; padding-right: .5em; border-right: 1px solid #dddddd; }
+
+pre.pygments .lineno { display: inline-block; margin-right: .25em; }
+
+table.pyhltable .linenodiv { background: none !important; padding-right: 0 !important; }
+
+.quoteblock { margin: 0 1em 1.25em 1.5em; display: table; }
+.quoteblock > .title { margin-left: -1.5em; margin-bottom: 0.75em; }
+.quoteblock blockquote, .quoteblock blockquote p { color: #6f6f6f; font-size: 1.15rem; line-height: 1.75; word-spacing: 0.1em; letter-spacing: 0; font-style: italic; text-align: justify; }
+.quoteblock blockquote { margin: 0; padding: 0; border: 0; }
+.quoteblock blockquote:before { content: "\201c"; float: left; font-size: 2.75em; font-weight: bold; line-height: 0.6em; margin-left: -0.6em; color: #6f6f6f; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); }
+.quoteblock blockquote > .paragraph:last-child p { margin-bottom: 0; }
+.quoteblock .attribution { margin-top: 0.5em; margin-right: 0.5ex; text-align: right; }
+.quoteblock .quoteblock { margin-left: 0; margin-right: 0; padding: 0.5em 0; border-left: 3px solid #555555; }
+.quoteblock .quoteblock blockquote { padding: 0 0 0 0.75em; }
+.quoteblock .quoteblock blockquote:before { display: none; }
+
+.verseblock { margin: 0 1em 1.25em 1em; }
+.verseblock pre { font-family: "Open Sans", "DejaVu Sans", sans; font-size: 1.15rem; color: #6f6f6f; font-weight: 300; text-rendering: optimizeLegibility; }
+.verseblock pre strong { font-weight: 400; }
+.verseblock .attribution { margin-top: 1.25rem; margin-left: 0.5ex; }
+
+.quoteblock .attribution, .verseblock .attribution { font-size: 0.8125em; line-height: 1.45; font-style: italic; }
+.quoteblock .attribution br, .verseblock .attribution br { display: none; }
+.quoteblock .attribution cite, .verseblock .attribution cite { display: block; letter-spacing: -0.05em; color: #555555; }
+
+.quoteblock.abstract { margin: 0 0 1.25em 0; display: block; }
+.quoteblock.abstract blockquote, .quoteblock.abstract blockquote p { text-align: left; word-spacing: 0; }
+.quoteblock.abstract blockquote:before, .quoteblock.abstract blockquote p:first-of-type:before { display: none; }
+
+table.tableblock { max-width: 100%; border-collapse: separate; }
+table.tableblock td > .paragraph:last-child p > p:last-child, table.tableblock th > p:last-child, table.tableblock td > p:last-child { margin-bottom: 0; }
+
+table.spread { width: 100%; }
+
+table.tableblock, th.tableblock, td.tableblock { border: 0 solid #dddddd; }
+
+table.grid-all th.tableblock, table.grid-all td.tableblock { border-width: 0 1px 1px 0; }
+
+table.grid-all tfoot > tr > th.tableblock, table.grid-all tfoot > tr > td.tableblock { border-width: 1px 1px 0 0; }
+
+table.grid-cols th.tableblock, table.grid-cols td.tableblock { border-width: 0 1px 0 0; }
+
+table.grid-all * > tr > .tableblock:last-child, table.grid-cols * > tr > .tableblock:last-child { border-right-width: 0; }
+
+table.grid-rows th.tableblock, table.grid-rows td.tableblock { border-width: 0 0 1px 0; }
+
+table.grid-all tbody > tr:last-child > th.tableblock, table.grid-all tbody > tr:last-child > td.tableblock, table.grid-all thead:last-child > tr > th.tableblock, table.grid-rows tbody > tr:last-child > th.tableblock, table.grid-rows tbody > tr:last-child > td.tableblock, table.grid-rows thead:last-child > tr > th.tableblock { border-bottom-width: 0; }
+
+table.grid-rows tfoot > tr > th.tableblock, table.grid-rows tfoot > tr > td.tableblock { border-width: 1px 0 0 0; }
+
+table.frame-all { border-width: 1px; }
+
+table.frame-sides { border-width: 0 1px; }
+
+table.frame-topbot { border-width: 1px 0; }
+
+th.halign-left, td.halign-left { text-align: left; }
+
+th.halign-right, td.halign-right { text-align: right; }
+
+th.halign-center, td.halign-center { text-align: center; }
+
+th.valign-top, td.valign-top { vertical-align: top; }
+
+th.valign-bottom, td.valign-bottom { vertical-align: bottom; }
+
+th.valign-middle, td.valign-middle { vertical-align: middle; }
+
+table thead th, table tfoot th { font-weight: bold; }
+
+tbody tr th { display: table-cell; line-height: 1.4; background: whitesmoke; }
+
+tbody tr th, tbody tr th p, tfoot tr th, tfoot tr th p { color: #222222; font-weight: bold; }
+
+p.tableblock > code:only-child { background: none; padding: 0; }
+
+p.tableblock { font-size: 1em; }
+
+td > div.verse { white-space: pre; }
+
+ol { margin-left: 2.5em; }
+
+ul li ol { margin-left: 1.5em; }
+
+dl dd { margin-left: 1.125em; }
+
+dl dd:last-child, dl dd:last-child > :last-child { margin-bottom: 0; }
+
+ol > li p, ul > li p, ul dd, ol dd, .olist .olist, .ulist .ulist, .ulist .olist, .olist .ulist { margin-bottom: 0.625em; }
+
+ul.unstyled, ol.unnumbered, ul.checklist, ul.none { list-style-type: none; }
+
+ul.unstyled, ol.unnumbered, ul.checklist { margin-left: 0.625em; }
+
+ul.checklist li > p:first-child > .fa-check-square-o:first-child, ul.checklist li > p:first-child > input[type="checkbox"]:first-child { margin-right: 0.25em; }
+
+ul.checklist li > p:first-child > input[type="checkbox"]:first-child { position: relative; top: 1px; }
+
+ul.inline { margin: 0 auto 0.625em auto; margin-left: -1.375em; margin-right: 0; padding: 0; list-style: none; overflow: hidden; }
+ul.inline > li { list-style: none; float: left; margin-left: 1.375em; display: block; }
+ul.inline > li > * { display: block; }
+
+.unstyled dl dt { font-weight: normal; font-style: normal; }
+
+ol.arabic { list-style-type: decimal; }
+
+ol.decimal { list-style-type: decimal-leading-zero; }
+
+ol.loweralpha { list-style-type: lower-alpha; }
+
+ol.upperalpha { list-style-type: upper-alpha; }
+
+ol.lowerroman { list-style-type: lower-roman; }
+
+ol.upperroman { list-style-type: upper-roman; }
+
+ol.lowergreek { list-style-type: lower-greek; }
+
+.hdlist > table, .colist > table { border: 0; background: none; }
+.hdlist > table > tbody > tr, .colist > table > tbody > tr { background: none; }
+
+td.hdlist1 { padding-right: .75em; font-weight: bold; }
+
+td.hdlist1, td.hdlist2 { vertical-align: top; }
+
+.literalblock + .colist, .listingblock + .colist { margin-top: -0.5em; }
+
+.colist > table tr > td:first-of-type { padding: 0 0.75em; line-height: 1; }
+.colist > table tr > td:last-of-type { padding: 0.25em 0; }
+
+.thumb, .th { line-height: 0; display: inline-block; border: solid 4px white; -webkit-box-shadow: 0 0 0 1px #dddddd; box-shadow: 0 0 0 1px #dddddd; }
+
+.imageblock.left, .imageblock[style*="float: left"] { margin: 0.25em 0.625em 1.25em 0; }
+.imageblock.right, .imageblock[style*="float: right"] { margin: 0.25em 0 1.25em 0.625em; }
+.imageblock > .title { margin-bottom: 0; }
+.imageblock.thumb, .imageblock.th { border-width: 6px; }
+.imageblock.thumb > .title, .imageblock.th > .title { padding: 0 0.125em; }
+
+.image.left, .image.right { margin-top: 0.25em; margin-bottom: 0.25em; display: inline-block; line-height: 0; }
+.image.left { margin-right: 0.625em; }
+.image.right { margin-left: 0.625em; }
+
+a.image { text-decoration: none; }
+
+span.footnote, span.footnoteref { vertical-align: super; font-size: 0.875em; }
+span.footnote a, span.footnoteref a { text-decoration: none; }
+span.footnote a:active, span.footnoteref a:active { text-decoration: underline; }
+
+#footnotes { padding-top: 0.75em; padding-bottom: 0.75em; margin-bottom: 0.625em; }
+#footnotes hr { width: 20%; min-width: 6.25em; margin: -.25em 0 .75em 0; border-width: 1px 0 0 0; }
+#footnotes .footnote { padding: 0 0.375em; line-height: 1.3; font-size: 0.875em; margin-left: 1.2em; text-indent: -1.2em; margin-bottom: .2em; }
+#footnotes .footnote a:first-of-type { font-weight: bold; text-decoration: none; }
+#footnotes .footnote:last-of-type { margin-bottom: 0; }
+
+#content #footnotes { margin-top: -0.625em; margin-bottom: 0; padding: 0.75em 0; }
+
+.gist .file-data > table { border: 0; background: #fff; width: 100%; margin-bottom: 0; }
+.gist .file-data > table td.line-data { width: 99%; }
+
+div.unbreakable { page-break-inside: avoid; }
+
+.big { font-size: larger; }
+
+.small { font-size: smaller; }
+
+.underline { text-decoration: underline; }
+
+.overline { text-decoration: overline; }
+
+.line-through { text-decoration: line-through; }
+
+.aqua { color: #00bfbf; }
+
+.aqua-background { background-color: #00fafa; }
+
+.black { color: black; }
+
+.black-background { background-color: black; }
+
+.blue { color: #0000bf; }
+
+.blue-background { background-color: #0000fa; }
+
+.fuchsia { color: #bf00bf; }
+
+.fuchsia-background { background-color: #fa00fa; }
+
+.gray { color: #606060; }
+
+.gray-background { background-color: #7d7d7d; }
+
+.green { color: #006000; }
+
+.green-background { background-color: #007d00; }
+
+.lime { color: #00bf00; }
+
+.lime-background { background-color: #00fa00; }
+
+.maroon { color: #600000; }
+
+.maroon-background { background-color: #7d0000; }
+
+.navy { color: #000060; }
+
+.navy-background { background-color: #00007d; }
+
+.olive { color: #606000; }
+
+.olive-background { background-color: #7d7d00; }
+
+.purple { color: #600060; }
+
+.purple-background { background-color: #7d007d; }
+
+.red { color: #bf0000; }
+
+.red-background { background-color: #fa0000; }
+
+.silver { color: #909090; }
+
+.silver-background { background-color: #bcbcbc; }
+
+.teal { color: #006060; }
+
+.teal-background { background-color: #007d7d; }
+
+.white { color: #bfbfbf; }
+
+.white-background { background-color: #fafafa; }
+
+.yellow { color: #bfbf00; }
+
+.yellow-background { background-color: #fafa00; }
+
+span.icon > .fa { cursor: default; }
+
+.admonitionblock td.icon [class^="fa icon-"] { font-size: 2.5em; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); cursor: default; }
+.admonitionblock td.icon .icon-note:before { content: "\f05a"; color: #207c98; }
+.admonitionblock td.icon .icon-tip:before { content: "\f0eb"; text-shadow: 1px 1px 2px rgba(155, 155, 0, 0.8); color: #111; }
+.admonitionblock td.icon .icon-warning:before { content: "\f071"; color: #bf6900; }
+.admonitionblock td.icon .icon-caution:before { content: "\f06d"; color: #bf3400; }
+.admonitionblock td.icon .icon-important:before { content: "\f06a"; color: #bf0000; }
+
+.conum[data-value] { display: inline-block; color: #fff !important; background-color: #222222; -webkit-border-radius: 100px; border-radius: 100px; text-align: center; font-size: 0.75em; width: 1.67em; height: 1.67em; line-height: 1.67em; font-family: "Open Sans", "DejaVu Sans", sans-serif; font-style: normal; font-weight: bold; }
+.conum[data-value] * { color: #fff !important; }
+.conum[data-value] + b { display: none; }
+.conum[data-value]:after { content: attr(data-value); }
+pre .conum[data-value] { position: relative; top: -0.125em; }
+
+b.conum * { color: inherit !important; }
+
+.conum:not([data-value]):empty { display: none; }
+
+.literalblock pre, .listingblock pre { background: #eeeeee; }
+
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css">
+<style>.listingblock .pygments .hll { background-color: #ffffcc }
+.listingblock .pygments  { background: #f8f8f8; }
+.listingblock .pygments .tok-c { color: #408080; font-style: italic } /* Comment */
+.listingblock .pygments .tok-err { border: 1px solid #FF0000 } /* Error */
+.listingblock .pygments .tok-k { color: #008000; font-weight: bold } /* Keyword */
+.listingblock .pygments .tok-o { color: #666666 } /* Operator */
+.listingblock .pygments .tok-cm { color: #408080; font-style: italic } /* Comment.Multiline */
+.listingblock .pygments .tok-cp { color: #BC7A00 } /* Comment.Preproc */
+.listingblock .pygments .tok-c1 { color: #408080; font-style: italic } /* Comment.Single */
+.listingblock .pygments .tok-cs { color: #408080; font-style: italic } /* Comment.Special */
+.listingblock .pygments .tok-gd { color: #A00000 } /* Generic.Deleted */
+.listingblock .pygments .tok-ge { font-style: italic } /* Generic.Emph */
+.listingblock .pygments .tok-gr { color: #FF0000 } /* Generic.Error */
+.listingblock .pygments .tok-gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.listingblock .pygments .tok-gi { color: #00A000 } /* Generic.Inserted */
+.listingblock .pygments .tok-go { color: #888888 } /* Generic.Output */
+.listingblock .pygments .tok-gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.listingblock .pygments .tok-gs { font-weight: bold } /* Generic.Strong */
+.listingblock .pygments .tok-gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.listingblock .pygments .tok-gt { color: #0044DD } /* Generic.Traceback */
+.listingblock .pygments .tok-kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.listingblock .pygments .tok-kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.listingblock .pygments .tok-kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.listingblock .pygments .tok-kp { color: #008000 } /* Keyword.Pseudo */
+.listingblock .pygments .tok-kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.listingblock .pygments .tok-kt { color: #B00040 } /* Keyword.Type */
+.listingblock .pygments .tok-m { color: #666666 } /* Literal.Number */
+.listingblock .pygments .tok-s { color: #BA2121 } /* Literal.String */
+.listingblock .pygments .tok-na { color: #7D9029 } /* Name.Attribute */
+.listingblock .pygments .tok-nb { color: #008000 } /* Name.Builtin */
+.listingblock .pygments .tok-nc { color: #0000FF; font-weight: bold } /* Name.Class */
+.listingblock .pygments .tok-no { color: #880000 } /* Name.Constant */
+.listingblock .pygments .tok-nd { color: #AA22FF } /* Name.Decorator */
+.listingblock .pygments .tok-ni { color: #999999; font-weight: bold } /* Name.Entity */
+.listingblock .pygments .tok-ne { color: #D2413A; font-weight: bold } /* Name.Exception */
+.listingblock .pygments .tok-nf { color: #0000FF } /* Name.Function */
+.listingblock .pygments .tok-nl { color: #A0A000 } /* Name.Label */
+.listingblock .pygments .tok-nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+.listingblock .pygments .tok-nt { color: #008000; font-weight: bold } /* Name.Tag */
+.listingblock .pygments .tok-nv { color: #19177C } /* Name.Variable */
+.listingblock .pygments .tok-ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
+.listingblock .pygments .tok-w { color: #bbbbbb } /* Text.Whitespace */
+.listingblock .pygments .tok-mb { color: #666666 } /* Literal.Number.Bin */
+.listingblock .pygments .tok-mf { color: #666666 } /* Literal.Number.Float */
+.listingblock .pygments .tok-mh { color: #666666 } /* Literal.Number.Hex */
+.listingblock .pygments .tok-mi { color: #666666 } /* Literal.Number.Integer */
+.listingblock .pygments .tok-mo { color: #666666 } /* Literal.Number.Oct */
+.listingblock .pygments .tok-sb { color: #BA2121 } /* Literal.String.Backtick */
+.listingblock .pygments .tok-sc { color: #BA2121 } /* Literal.String.Char */
+.listingblock .pygments .tok-sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.listingblock .pygments .tok-s2 { color: #BA2121 } /* Literal.String.Double */
+.listingblock .pygments .tok-se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
+.listingblock .pygments .tok-sh { color: #BA2121 } /* Literal.String.Heredoc */
+.listingblock .pygments .tok-si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
+.listingblock .pygments .tok-sx { color: #008000 } /* Literal.String.Other */
+.listingblock .pygments .tok-sr { color: #BB6688 } /* Literal.String.Regex */
+.listingblock .pygments .tok-s1 { color: #BA2121 } /* Literal.String.Single */
+.listingblock .pygments .tok-ss { color: #19177C } /* Literal.String.Symbol */
+.listingblock .pygments .tok-bp { color: #008000 } /* Name.Builtin.Pseudo */
+.listingblock .pygments .tok-vc { color: #19177C } /* Name.Variable.Class */
+.listingblock .pygments .tok-vg { color: #19177C } /* Name.Variable.Global */
+.listingblock .pygments .tok-vi { color: #19177C } /* Name.Variable.Instance */
+.listingblock .pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
+</style>
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>Servidores web y PaaS</h1>
+<div class="details">
+<span id="author" class="author">José Luis Zamora Sánchez</span><br>
+<span id="email" class="email">&lt;<a href="mailto:joseluiszamora.jlz@gmail.com">joseluiszamora.jlz@gmail.com</a>&gt;</span><br>
+</div>
+<div id="toc" class="toc2">
+<div id="toctitle">Índice de contenidos</div>
+<ul class="sectlevel1">
+<li><a href="#sesion06">6. Plataforma como Servicio</a>
+<ul class="sectlevel2">
+<li><a href="#_conceptos_propios_de_openshift">6.1. Conceptos propios de OpenShift</a></li>
+<li><a href="#_c%C3%B3mo_funciona_openshift">6.2. Cómo funciona OpenShift</a>
+<ul class="sectlevel3">
+<li><a href="#_creaci%C3%B3n_de_aplicaciones">6.2.1. Creación de aplicaciones</a></li>
+<li><a href="#_a%C3%B1adir_cartridges_de_base_de_datos">6.2.2. Añadir Cartridges de base de datos</a></li>
+<li><a href="#_port_forwarding">6.2.3. Port forwarding</a></li>
+<li><a href="#_modificaci%C3%B3n_y_despliegue_de_las_aplicaciones">6.2.4. Modificación y despliegue de las aplicaciones</a></li>
+<li><a href="#_consulta_de_logs">6.2.5. Consulta de Logs</a></li>
+<li><a href="#_borrado_de_aplicaciones">6.2.6. Borrado de aplicaciones</a></li>
+<li><a href="#_gesti%C3%B3n_del_dominio">6.2.7. Gestión del dominio</a></li>
+</ul>
+</li>
+<li><a href="#_marketplace">6.3. Marketplace</a></li>
+<li><a href="#_monitorizaci%C3%B3n">6.4. Monitorización</a>
+<ul class="sectlevel3">
+<li><a href="#_herramientas_est%C3%A1ndar_de_monitorizaci%C3%B3n">6.4.1. Herramientas estándar de monitorización</a></li>
+<li><a href="#_cartridges_de_terceros">6.4.2. Cartridges de terceros</a></li>
+</ul>
+</li>
+<li><a href="#_referencias">6.5. Referencias</a></li>
+<li><a href="#_ejercicios_de_plataforma_como_servicio">6.6. Ejercicios de Plataforma como servicio</a>
+<ul class="sectlevel3">
+<li><a href="#_despliegue_desde_un_repositorio_externo_0_2_puntos">6.6.1. Despliegue desde un repositorio externo (0.2 puntos)</a></li>
+<li><a href="#_desarrollo_mixto_local_cloud_0_8_puntos">6.6.2. Desarrollo mixto local/cloud  (0.8 puntos)</a></li>
+<li><a href="#_monitorizaci%C3%B3n_de_una_aplicaci%C3%B3n_0_2_puntos">6.6.3. Monitorización de una aplicación (0.2 puntos)</a></li>
+<li><a href="#_entrega">6.6.4. Entrega</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div style="page-break-after: always;"></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="sesion06">6. Plataforma como Servicio</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_conceptos_propios_de_openshift">6.1. Conceptos propios de OpenShift</h3>
+<div class="paragraph">
+<p>A nivel de infraestructura, OpenShift se apoya en dos unidades funcionales básicas: el <em>broker</em> y los <em>Node Servers</em></p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Broker</dt>
+<dd>
+<p>Este elemento es el punto de entrada para todas las tareas de administración. Es el encargado de administrar los login, la resolución DNS, el estado de las aplicaciones y la orquestación general . Los desarrolladores no trabajan directamente contra este elemento, si no que se invoca indirectamente a través de las herramientas de administración, que veremos a continuación. El broker utiliza un frameworks de orquestación de procesos en paralelo, llamado <em>MCollective</em> para enviar instrucciones a los node servers.</p>
+</dd>
+<dt class="hdlist1">Node Servers</dt>
+<dd>
+<p>Son las máquinas host que ejecutan tanto los Cartridges como los Gear  por tanto serán los encargados de alojar y ejecutar nuestras aplicaciones. Los Node Server también utilizan un cliente MCollective para recibir las instrucciones del broker.</p>
+</dd>
+</dl>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+La comunicación entre los clientes MCollective del broker y los node server se realiza asíncronamente, mediante un sistema de cola de mensajes.
+</td>
+</tr>
+</table>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Application</dt>
+<dd>
+<p>Será la aplicación propiamente dicha que despleguemos en la nube. En principio OpenShift está orientado hacia aplicaciones Web (en distintos lenguajes) por lo que los puertos a través de los cuales se podrá acceder a ellas son los típicos  de HTTP (80), HTTPS(443) y SSH (22). Adicionalmente se ofrece soporte beta a conectividad basada en WebSockets, a través de los puertos 8000 y 8443.</p>
+</dd>
+</dl>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/paas06/applications.png" alt="applications" width="50%">
+</div>
+</div>
+<div class="paragraph">
+<p>Las direcciones de las aplicaciones seguirán el siguiente patrón:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="console"><span class="tok-go">https://[APPNAME]-[DOMAIN].rhcloud.com</span></code></pre>
+</div>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Gear</dt>
+<dd>
+<p>Un gear es una partición de un Node server (CPU, memoria y almacenamiento) , que proporciona los recursos necesarios para ejecutar las aplicaciones. Se dividen en tres categorías: small (512Mb RAM), medium (1Gb) y large (2Gb). Para pequeñas aplicaciones suele ser suficiente el gear más limitado, sin embargo hay configuraciones concretas que recomiendan al menos 1Gb de RAM, como en el caso de querer trabajar con JBoss EAP. Cada Gear tendra una estructura de directorios como la siguiente:</p>
+</dd>
+</dl>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/paas06/openshift4.png" alt="openshift4">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Si nuestra aplicación supera el límite de memoria impuesto al gear, OpenShift matará automáticamente el proceso y lo relanzará.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Técnicamante, para aislar los procesos del Gear se utiliza Security-Enhanced Linux (SELinux) y para establecer las cuotas de memoria, cpu y disco se utiliza Control Groups (Cgroups). No se indica explícitamente la CPU y de E/S permitida para cada gear, pero Red Hat muestra estas cifras de ejemplo:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/paas06/openshift25.png" alt="openshift25">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Recientemente se ha anunciado una nueva configuración, denominada <em>Small.highcpu</em> que mantiene el tamaño máximo de memoria pero duplica la capacidad de proceso. También es posible contratar máquinas dedicadas privadas.
+</td>
+</tr>
+</table>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Cartridge</dt>
+<dd>
+<p>Son los recursos que necesitan las aplicaciones para poder ejecutarse dentro de un gear.  La idea es <em>paquetizar</em> los distintos elementos (servidor de aplicaciones, base de datos, proxy, etc.) en cajas negras y permitir que el desarrollador pueda "insertar" aquellos <em>cartuchos</em> que considere necesarios dentro del gear. En definitiva una forma de abstraer la gestión de la infraestructura y es lo que lo diferencia de un modelo IaaS, si bien como veremos luego tendremos cierta libertad de hacer cambios en estos cartuchos. Hay dos categorías de cartridges:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Standalone</strong>:  Son los runtime de los lenguajes o bien servidores de aplicaciones y los principales responsables de poder desplegar una aplicación. Ejemplo: JBoss, Tomcat, Python o Node.js.</p>
+</li>
+<li>
+<p><strong>Embedded</strong>: Proporcionan funcionalidades extendidas como almacenamiento en base de datos o ejecución de tareas planificadas (Cron), pero por si mismos no son suficientes para ejecutar una aplicación.</p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">Application Scaling</dt>
+<dd>
+<p>Es una funcionalidad de escalado automática que permite adecuar la capacidad de proceso a la carga de trabajo actual. Si está activada, OpenShift monitoriza el tráfico de entrada y la carga de trabajo de los gear actuales y puede añadir nuevos gears para atender  un pico de trabajo y liberarlos cuando ya no sean necesarios. Mas adelante hablaremos de esta funcionalidad con más detalle.</p>
+</dd>
+<dt class="hdlist1">Proxy Ports</dt>
+<dd>
+<p>Permiten a los Gear exponer servicios que estén en ejecución. Cada Gear permite exponer hasta 5 servicios distintos.</p>
+</dd>
+<dt class="hdlist1">Herramientas de administración</dt>
+<dd>
+<p>OpenShift proporciona tres herramientas distintas:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>RHC</strong> una herramienta de administración en línea de comandos desarrollada en Ruby y portable a todas las plataformas. Veremos que al contrario de Jboss-cli, rhc si puede considerarse ser la herramienta principal de trabajo de administración.</p>
+</li>
+<li>
+<p><strong>API REST</strong> Gran parte de la funcionalidad de RHC se expone también como un API Rest integrable en otras aplicaciones.</p>
+</li>
+<li>
+<p><strong>Consola de administración Web</strong> que nos ofrece un entorno más amigable pero más limitada que RHC.</p>
+</li>
+<li>
+<p><strong>JBoss Tools</strong> Se trata de una serie de plugins para Eclipse que integran en el IDE tanto el trabajo con JBoss/WildFly como el despliegue en cloud. Hay una versión específica de Eclipse llamada <em>JBoss Developer Studio</em> que ya lleva integrados estos plugins.</p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">SSH</dt>
+<dd>
+<p>OpenShift permite el acceso remoto a los gear desde nuestras máquinas locales mediante una conexión segura SSH. Como parte del proceso de configuración de la herramienta RHC se generan dos elementos de seguridad:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Un par de claves, pública y privada, asociadas a nuestra máquina. Sería algo parecido a la autenticación basada en certificados que estudiamos en la sesión 4 pero en este caso lo que se hace es subir a OpenShift la clave pública, y en el handshake de la conexión, el equipo envía un mensaje encriptado con la clave privada y OpenShift lo desencripta con la clave pública. Estos ficheros se almacenan en la capreta <em>./ssh</em> del directorio home en los ficheros id_rsa e id_rsa.pub.</p>
+</li>
+<li>
+<p>Un token de autorización que será el que nos identifique en cada conexión evitando el tener que estar introduciendo usuario y clave para autenticarnos. Los token se almacenan en la carpeta <em>./openshift</em> del directorio HOME.</p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>Dentro de una sesión SSH podremos acceder a los log de un gear, hacer cambios en la configuración e interactuar con los servicios desplegados pero no podremos realizar acciones que requieran ser superusuario. Mediante SSH también podremos activar una funcionalidad denominadad <em>port-forwarding</em> que permite mapear puertos de nuestra máquina local con puertos del gear permitiendo realizar tareas de administración desde nuestra máquina local de forma transparente. Lo veremos con más detalle en la siguiente sesión.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Git</dt>
+<dd>
+<p>Git es la herramienta de control de versiones que utiliza OpenShift. Toda aplicación desplegada en OpenShift tiene un repositorio Git asociado que se crea automáticamente al dar de alta la aplicación. Este repositorio contendrá tanto los fuentes de la aplicación como los elementos de configuración y plugins asociados. OpenShift tiene la particularidad de que cuando hacemos <em>push</em> a este respositorio, no sólo subimos los ficheros sino que aplicamos cambios de configuración, recompilarmos la aplicación y finalmente la redesplegamos, todo ello de forma automática.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_cómo_funciona_openshift">6.2. Cómo funciona OpenShift</h3>
+<div class="paragraph">
+<p>Esta sería la representación de la arquitectura de OpenShift, en base a los elementos que ya conocemos:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/paas06/openshift3.png" alt="openshift3">
+</div>
+</div>
+<div class="paragraph">
+<p>Cuando un cliente realiza una petición HTTP a una aplicación, en primer lugar se ubica el node server en el que corre la aplicación, mediante la resolución DNS. Cada node server tiene un servidor apache con el módulo de proxy habilitado,  y es quien encamina la petición al gear correspondiente, en función del nombre de la aplicación..</p>
+</div>
+<div class="paragraph">
+<p>El siguiente gráfico describe el proceso de creación de una nueva aplicación:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/paas06/newapp.png" alt="newapp">
+</div>
+</div>
+<div class="sect3">
+<h4 id="_creación_de_aplicaciones">6.2.1. Creación de aplicaciones</h4>
+<div class="paragraph">
+<p>Vamos a crear una aplicación web mediante la herramienta rhc. Si ejecutamos <em>rhc</em> sin parámetros, se mostrará la ayuda y un listado con todas las opciones disponibles. A continuación enumeraremos las más comunes:</p>
+</div>
+<div class="paragraph">
+<p>Listado de cartridges:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="console"><span class="tok-go">rhc cartridge list</span></code></pre>
+</div>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/paas06/rhc1.png" alt="rhc1">
+</div>
+</div>
+<div class="paragraph">
+<p>La opción cartridge indica que vamos a ejecutar comandos relacionados con cartridges y  <em>list</em> indica es la instrucción para que se muestren los cartridges disponibles. Una particularidad es que en la consola web muestra cartridges adicionales desarrollados por la comunidad y para los que Red Hat no ofrece soporte mientras que en la herramienta rhc no aparecen.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Es conveniente actualizar periódicamente las herramientas rhc, con el comando <em>gem update rhc</em>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Para crear un aplicación debemos tener claro en qué lenguaje vamos a trabajar y una idea de que cartridges vamos a necesitar. Con esta información ejecutaremos el siguiente comando:</p>
+</div>
+<div class="paragraph">
+<p>Crear una aplicación</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="console"><span class="tok-go">rhc app-create  [nombre_app]  [cartridge ...]</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Ejemplo:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="console"><span class="tok-go">rhc app create miapp python-2.7</span></code></pre>
+</div>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/paas06/rhc2.png" alt="rhc2">
+</div>
+</div>
+<div class="paragraph">
+<p>Con esta instrucción crearemos un nuevo gear, un repositorio Git, un servidor Apache con el módulo _ mod_wsgi_  y una aplicación plantilla en Python desplegada. También se ejecutará un comando <em>git clone</em> y nos descargaremos el código fuente en una carpeta con el mismo nombre que la aplicación. ¡Fácil y rápido!</p>
+</div>
+<div class="paragraph">
+<p>Este comando tiene parámetros adicionales que pueden ser de utilidad:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">-n, --namespace NAME</dt>
+<dd>
+<p>Permite especificar el dominio de la aplicación.</p>
+</dd>
+<dt class="hdlist1">-g, --gear-size SIZE</dt>
+<dd>
+<p>Permite especificar el tamaño del gear. Si no se especifica se utiliza el tamaño por defecto (small)</p>
+</dd>
+<dt class="hdlist1">-s, --[no-]scaling</dt>
+<dd>
+<p>Habilita el Application Scaling</p>
+</dd>
+<dt class="hdlist1">--from-app NAME</dt>
+<dd>
+<p>Permite crear una aplicación tomando otra como plantilla.</p>
+</dd>
+<dt class="hdlist1">--from-code URL</dt>
+<dd>
+<p>Permite especificar un repositorio Git como origen del código fuente de la aplicación, en lugar de la plantilla.</p>
+</dd>
+<dt class="hdlist1">--region</dt>
+<dd>
+<p>Zona geográfica donde se creará el gear: (aws-eu-west-1, aws-us-east-1)</p>
+</dd>
+</dl>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="title">Ubicación geográfica</div>
+Desde septiembre de 2014 es posible especificar la zona en la que queremos que se cree nuestra aplicación. Hasta esa fecha únicamente se trabajaba sobre infraestructura de Amazon ubicada en Estados Unidos y a partir de ahora se puede trabajar sobre AWS en Irlanda.  Hay que tener en cuenta que OpenShift sólo permite especificar la región si tenemos un plan de pago y vamos a utilizar un gear superior a <em>small</em>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Si queremos crear una aplicación basada en un tipo de servidor que no esté en la lista de cartridges que muestra OpenShift tenemos dos opciones:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Utilizar el cartridge <em>Do-It-Yourself</em> y configurar a mano un gear como si se tratase de una plataforma IaaS.</p>
+</li>
+<li>
+<p>Recurrir a los cartridges desarrollados por la comunidad de usuarios de OpenShift. De hecho, a la fecha de redacción de esta sesión WildFly 8 no tiene aún un cartridge soportado directamente por Red Hat.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Hay que tener claro a la hora de elegir un cartridge, el tipo de soporte que tendrá. La inmensa mayoría de cartridges mantenidos por OpenShift tienen soporte automático de parches de seguridad, con lo que podemos despreocuparnos de este aspecto.  Si escogemos un cartridge desarrollado por terceros, debemos esta pendientes de aplicar estas actualizaciones. En un entorno de producción, sólo se deberían utilizar cartridges mantenidos por OpenShift, o en todo caso, generados por nosotros con el método genérico de Do-It-Yourself.</p>
+</div>
+<div class="paragraph">
+<p>Para añadir un cartridge desarrollado por terceros se puede utilizar el siguiente comando</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="console"><span class="tok-go">rhc app create &lt;APP&gt; &lt;URL&gt;</span>
+
+<span class="tok-go">rhc wildfly8 create https://cartreflect-claytondev.rhcloud.com/reflect?github=OpenShift-cartridges/OpenShift-wildfly-cartridge</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>El comando creará una aplicación llamada <em>wildfly8</em> y descargará el cartridge de la dirección inidicada. Concretamente la URL tiene que apuntar a un fichero denominado <em>manifest.yml</em> que contiene la definición del cartridge.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Ya es posible crear una aplicación basada en WildFly sin necesidad de utilizar un cartridge externo a OpenShift. El nuevo cartridge se llama <em>jboss-wildfly-8</em>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Desde la consola web, el proceso de creación es muy similar, basta con elegir un tipo de aplicación y rellenar los datos que se solicitan. Alternativamente es posible indicar la URL de un cartridge descargable para crear una aplicación diferente a las enumeradas:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/paas06/altaApp.png" alt="altaApp">
+</div>
+</div>
+<div class="paragraph">
+<p>Otra característica propia de la consola web es que podemos crear una aplicación a partir de un <em>Quickstart</em>. Los quickstart tienen la apariencia de un cartridge normal, si bien son combinaciones de cartridges ya predefinidas para desplegar un tipo de aplicación, además de una configuración de inicio para dicha aplicación. OpenShift tiene bastantes quickstarts con lo que merece la pena buscar uno que se adapte a nuestro proyecto.</p>
+</div>
+<div class="paragraph">
+<p>Una vez creada la aplicación, normalmente se muestra por pantalla las claves de administración del nuevo servidor. No será habitual tener que acceder a la consolta web, dado que la filosofía de OpenShift es desplegar y configurar la aplicación desde el repositorio Git, puede ser muy útil tener estas claves para hacer alguna prueba o un cambio puntual en una instancia que no queramos reiniciar.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/paas06/claves.png" alt="claves">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_añadir_cartridges_de_base_de_datos">6.2.2. Añadir Cartridges de base de datos</h4>
+<div class="paragraph">
+<p>Ya conocemos los cartridge que permiten crear aplicaciones pero ahora veremos qué cartridges podemos añadir que proporcionen funciones adicionales como almacenamiento de datos, ejecución de tareas programadas o monitorización.</p>
+</div>
+<div class="paragraph">
+<p>La forma más sencilla de crear estos módulos es simplemente indicarlos en el momento de crear la aplicación.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="console"><span class="tok-go">rhc app create  [nombre_app]  [cartridge1] ... [cartridgen]</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Aunque es perfectamente posible añadirlos o quitarlos a posteriori, con el comando:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="console"><span class="tok-go">rhc cartridge-add [cartridge] --app [nombre_app]</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>En el siguiente ejemplo, añadiremos una instancia de MySQL:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/paas06/bd1.png" alt="bd1">
+</div>
+</div>
+<div class="paragraph">
+<p>Si estamos trabajando desde la web, lo habitual es crear la aplicación y al seleccionarla, OpenShift nos ofrecerá directamente la posibilidad de añadir estos módulos.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Hay determinados catridges que sólo se pueden incluir tras instalar uno específico, como por ejemplo, el módulo de administración de BD phpMyAdmin, que sólo se puede instalar si ya hemos incorporado una base de datos MySQL al proyecto.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Al añadir un nuevo cartridge de base de datos, tanto desde la consola web como mediante rhc se nos informa del usuario y password de administración de dicha base de datos. En este caso, no es necesario apuntarnos esta información porque siempre la podremos recuperar desde l/a consola web. Lo que sí que es muy recomendable es <strong>reiniciar la aplicación</strong> para que el gear cargue las variables de entorno necesarias para poder acceder a la nueva base de datos:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/paas06/bd2.png" alt="bd2">
+</div>
+</div>
+<div class="sect4">
+<h5 id="_creación_de_datasources">Creación de DataSources</h5>
+<div class="paragraph">
+<p>Si examinamos la configuración del servidor, dentro del repositorio GIT:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="console"><span class="tok-go"> .openshift/config/standalone.xml</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Veremos que por defecto trae configurados tres datasources, uno para una base de datos en memoria, otro para MySQL y otro para PostgreSQL. Si hemos añadido una BD MySQL y hemos reiniciado la aplicación como se indicaba en el paso anterior, WildFly automáticamente activará su DataSource:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/paas06/bd3.png" alt="bd3">
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_port_forwarding">6.2.3. Port forwarding</h4>
+<div class="paragraph">
+<p>Repasando lo aprendido hasta ahora, hemos creado una aplicación Java, hemos añadido una base de datos y la hemos desplegado en un servidor.  También sabemos que podemos modificar la configuración del servidor de aplicaciones y otros elementos haciendo cambios en los ficheros correspondientes del repositorio Git. Por ejemplo para definir un DataSource podríamos editar el fichero de configuración, creando uno nuevo a partir de los Datasources de ejemplo.</p>
+</div>
+<div class="paragraph">
+<p>Pero ahora, al disponer de una base de datos necesitaremos trabajar directamente contra el servidor de base de datos, como por ejemplo para crear la BD de trabajo y sus datos. OpenShift permite hacer esto de varias formas, pero a continuación veremos un mecanismo que permite gestionar la configuración de los servicios desplegados en cloud, como si fueran servicios locales en la máquina del desarrollador.</p>
+</div>
+<div class="paragraph">
+<p>El principal obstáculo que nos encontramos es que los puertos de administración <strong>no</strong> son visibles desde el exterior del servidor con lo que necesitamos algo que nos permita llegar a través de los puertos que sí son accesibles (https,ssh).</p>
+</div>
+<div class="paragraph">
+<p>OpenShift proporciona para ello el comando <strong>port-forward</strong>. Se ejecuta especificando una aplicación:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="console"><span class="tok-go">rhc port-forward &lt;app&gt;</span></code></pre>
+</div>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/paas06/portforward.png" alt="portforward">
+</div>
+</div>
+<div class="paragraph">
+<p>Se trata de una utilidad que busca puertos libres en nuestro equipo de desarrollo y enlaza con los puertos administrativos de los servicios que se ejecutan en un gear, todo esto a través de un canal ssh. Mientras el comando esté en ejecución podremos administrar los servicios del gear configurando las herramientas de administración para que se conecten al puerto correspondiente de <em>localhost</em> .</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_modificación_y_despliegue_de_las_aplicaciones">6.2.4. Modificación y despliegue de las aplicaciones</h4>
+<div class="paragraph">
+<p>La estructura de un repositorio de una aplicación desplegada en OpenShift varía según la tecnología. En el caso de JBossAS 7 / WildFly es la siguiente:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/paas06/repo.png" alt="repo">
+</div>
+</div>
+<div class="paragraph">
+<p><a href="https://developers.OpenShift.com/en/jbossas-overview.html" class="bare">https://developers.OpenShift.com/en/jbossas-overview.html</a></p>
+</div>
+<div class="paragraph">
+<p>Si hemos creado el proyecto con rhc ya tendremos el proyecto en nuestro ordenador, pero si sólo hemos creado la aplicación desde la consola web, debemos descargarnos una copia del repositorio Git de OpenShift, podemos hacerlo de varias formas:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Ejecutar <em>git clone</em> desde un terminal con la url que se muestra en las propiedades de la aplicación:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="console"><span class="tok-go">git clone ssh://5408af5a4382ece19c00020f@wildfly8-jlzamora.rhcloud.com/~/git/wildfly8.git/</span></code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Utilizar el comando <em>git-clone</em> de <em>rhc</em></p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="console"><span class="tok-go">rhc git-clone &lt;app&gt;</span></code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+rhc añade información adicional al repositorio de modo que los siguientes comandos rhc que lancemos desde dentro de el automáticamente identifiquen la aplicación. Si hemos creado el repositorio con otras herramientas, será necesario especificar manualmente el nombre de la aplicación.
+</td>
+</tr>
+</table>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Desde IntelliJ, con la opción  <em>Check Out from Version Control</em></p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Si la instancia está en estado <em>idle</em> por inactividad, es necesario acceder a la aplicación web para que se inicie porque si no el clonado del repositorio también fallará.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Una vez importado en IntelliJ podemos editar el fichero pom.xml del proyecto. En él, veremos una característica propia de OpenShift:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="xml"><span class="tok-nt">&lt;profiles&gt;</span>
+    <span class="tok-nt">&lt;profile&gt;</span>
+     <span class="tok-c">&lt;!-- When built in openshift the &#39;openshift&#39; profile will be used when invoking mvn. --&gt;</span>
+     <span class="tok-c">&lt;!-- Use this profile for any OpenShift specific customization your app will need. --&gt;</span>
+     <span class="tok-c">&lt;!-- By default that is to put the resulting archive into the &#39;deployments&#39; folder. --&gt;</span>
+     <span class="tok-c">&lt;!-- http://maven.apache.org/guides/mini/guide-building-for-different-environments.html --&gt;</span>
+     <span class="tok-nt">&lt;id&gt;</span>openshift<span class="tok-nt">&lt;/id&gt;</span>
+     <span class="tok-nt">&lt;build&gt;</span>
+        <span class="tok-nt">&lt;finalName&gt;</span>wildfly8<span class="tok-nt">&lt;/finalName&gt;</span>
+        <span class="tok-nt">&lt;plugins&gt;</span>
+          <span class="tok-nt">&lt;plugin&gt;</span>
+                <span class="tok-nt">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="tok-nt">&lt;/groupId&gt;</span>
+                <span class="tok-nt">&lt;artifactId&gt;</span>maven-war-plugin<span class="tok-nt">&lt;/artifactId&gt;</span>
+                <span class="tok-nt">&lt;version&gt;</span>2.4<span class="tok-nt">&lt;/version&gt;</span>
+                <span class="tok-nt">&lt;configuration&gt;</span>
+                    <span class="tok-nt">&lt;failOnMissingWebXml&gt;</span>false<span class="tok-nt">&lt;/failOnMissingWebXml&gt;</span>
+                    <span class="tok-nt">&lt;outputDirectory&gt;</span>deployments<span class="tok-nt">&lt;/outputDirectory&gt;</span>
+              		  <span class="tok-nt">&lt;warName&gt;</span>ROOT<span class="tok-nt">&lt;/warName&gt;</span>
+                <span class="tok-nt">&lt;/configuration&gt;</span>
+            <span class="tok-nt">&lt;/plugin&gt;</span>
+        <span class="tok-nt">&lt;/plugins&gt;</span>
+      <span class="tok-nt">&lt;/build&gt;</span>
+    <span class="tok-nt">&lt;/profile&gt;</span>
+  <span class="tok-nt">&lt;/profiles&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>OpenShift se apoya en el sistema de profiles de Maven para  modificar las características del proyecto generado según estemos trabajando en nuestro equipo o estemos desplegando en la nube. La forma habitual de desplegar aplicaciones web en JBossAS7/WildFly consiste en copiar una aplicación empaquetada WAR/EAR a la carpeta deployments <strong>del repositorio GIT</strong>, con nombre de fichero ROOT.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Si el War/Ear tiene nombre ROOT, se podrá acceder a la aplicación con la URL <a href="http://app-domain.rhcloud.com/mywebsite" class="bare">http://app-domain.rhcloud.com/mywebsite</a>. Si tuviera otro nombre, se accederá por el nombre específico: <a href="http://app_name-namespace.rhcloud.com/nombre_app" class="bare">http://app_name-namespace.rhcloud.com/nombre_app</a>.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Los goals por defecto que indica OpenShift a la hora de construir una aplicación son  “clean package -Popenshift -DskipTests“.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Una vez tenemos el proyecto importado podemos hacer los cambios que consideremos sobre él, manteniendo el profile OpenShift y utilizar una instancia local de WildfFly para hacer las pruebas que consideremos convenientes. Podemos proteger los cambios haciendo <strong>commit</strong> con la herramienta git, pero será cuando hagamos <strong>push</strong> cuando subamos los cambios al repositorio de OpenShift y desencadenemos la compilación y despliegue del proyecto en cloud.</p>
+</div>
+<div class="paragraph">
+<p>Alternativamente en IntelliJ se puede definir la configuración de despliegue <em>Openshift Deployment</em> de modo que para el IDE sea análogo a desplegar en cualquier otro servidor de aplicaciones. De hecho, podemos tener dos configuraciones, una <em>local</em> donde hacer nuestras pruebas y otra configuración, <em>cloud</em> para desplegar en OpenShift.</p>
+</div>
+<div class="paragraph">
+<p>Una limitación de IntelliJ 13.1 es que no detecta si una aplicación requere Java EE 7 y presupone que vamos a trabajar con Java EE 6. Por este motivo cuando despleguemos una nueva aplicación en cloud, dicho plugin intentará crear un gear basado en JbossAS7 y desplegar en él nuestra aplicación. La forma de salvar este comportamiento es la siguiente:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Crear una aplicación Wildfly8 desde la consola web.</p>
+</li>
+<li>
+<p>En IntelliJ desde la opción  <em>Run&#8594;Edit configurations</em> crear un nuevo "OpenShift Deployment":</p>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/paas06/deploy1.png" alt="deploy1">
+</div>
+</div>
+<div class="paragraph">
+<p>Es muy importante marcar <em>use custom application name</em> porque ahí vamos a indicar el nombre de la aplicación que hemos creado en el punto anterior. IntelliJ si detecta que ya existe el gear en lugar de crearlo trabajará contra su repositorio Git. El plugin se encargará de eliminar el contenido antiguo del repositorio y subir los ficheros específicos para hacer el despliegue de la nueva aplicación.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/paas06/deploy2.png" alt="deploy2">
+</div>
+</div>
+</li>
+<li>
+<p>Añadir el profile "openshift" al fichero pom.xml, especificando como finalname el nombre de la aplicación (gear)</p>
+</li>
+<li>
+<p>Ejecutar la aplicación seleccionando la configuración de IntelliJ que hemos creado y pulsando el botón "Play".</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Si elimináis un gear y lo volvéis a crear con el mismo nombre, no os va a funciona el despliegue desde IntelliJ porque las claves del gear cambian. Es necesario "parar" y "arrancar" OpenShift desde la vista de <em>Application Servers</em> para que se reeenvíe esta información.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_consulta_de_logs">6.2.5. Consulta de Logs</h4>
+<div class="paragraph">
+<p>Todas las aplicaciones suelen generar información de depuración para poder verificar su correcto funcionamiento, o tener información adicional acerca de un error que se esté produciendo. Para poder consultar el log de una aplicación existe un comando específico de RHC:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="console"><span class="tok-go">rhc tail &lt;APP&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Con este comando se ejecutará en remoto el comando unix tail, y se visualizarán los logs de todos los cartridges definidos en el gear. En el caso de tener un servidor de aplicaciones y una base de datos, se devolvería la información de ambos. Admite los siguientes parámetros:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">-f files</dt>
+<dd>
+<p>Permite especificar una o varias carpetas o ficheros a mostrará</p>
+</dd>
+<dt class="hdlist1">-o 'opciones'</dt>
+<dd>
+<p>Permite pasar parámetros al comando tail, como por ejemplo el número de líneas a devolver</p>
+<div class="literalblock">
+<div class="content">
+<pre>rhc tail wildfly8 -o '-n 100'</pre>
+</div>
+</div>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>Además de consultar los logs existe un comando específico para limpiar los ficheros temporales y de logs de un gear tanto de git como de los servcios en ejecución:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="console"><span class="tok-go">rhc app tidy &lt;APP&gt;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_borrado_de_aplicaciones">6.2.6. Borrado de aplicaciones</h4>
+<div class="paragraph">
+<p>Si queremos eliminar una aplicación de OpenShift, basta con acceder a la consola web, seleccionar la aplicación y pulsar en el botón <em>Delete this application&#8230;&#8203;</em>. Alternativamente, por línea de comandos:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="console"><span class="tok-go">rhc app delete &lt;APP&gt;</span></code></pre>
+</div>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Si borramos una aplicación estamos liberando un gear con lo que destruiremos la aplicación desplegada, la configuración del servidor y el repositorio de código fuente con lo que esta opción siempre hay que usarla con precaución.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_gestión_del_dominio">6.2.7. Gestión del dominio</h4>
+<div class="paragraph">
+<p>Al comenzar a trabajar con OpenShift es necesario crear un dominio en el que comenzaremos a crear las aplicaciones. Si desde la consola web pulsamos en el nombre de un domino, podemos acceder a la siguiente pantalla administrativa:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/paas06/domain.png" alt="domain" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>Desde esta pantalla podemos dar permisos sobre nuestro dominio, a otros usuarios de OpenShift y en distintas modalidades. Si por el contrario es a nuestro usuario al que se le otorgan permisos de acceso sobre otro dominio, veremos todos nuestros dominios más los autorizados desde la vista <em>Applications</em> junto con las aplicaciones que contengan.</p>
+</div>
+<div class="paragraph">
+<p>Note: Los accesos en modo Edit o Administrator permiten modificar aspectos de las aplicaciones y acceder a sus repositorios de código fuente.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_marketplace">6.3. Marketplace</h3>
+<div class="paragraph">
+<p>El Marketplace de Openshift es un espacio de reciente creación donde se ofrece la posibilidad de que otras empresas publiquen herramientas o servicios integrables co la plataforma PaaS de Red Hat. El número de productos disponible hasta el momento es escaso, si bien los que hay son bastante interesantes y merece la pena revisarlos al completo. La inmensa mayoría de estos servicios se ofrecen en modalidad gratuita con una serie de limitaciones, de modo que nos sirvan para evaluarlos y si realmente estamos interesados en ellos, los contratemos.</p>
+</div>
+<div class="paragraph">
+<p>Para acceder al Marketplace basta con acceder a la consola web de Openshift y pulsar en el enlace de la parte superior derecha denominado <em>Addons</em> o acceder a la dirección:</p>
+</div>
+<div class="paragraph">
+<p><a href="https://marketplace.openshift.com/openshift" class="bare">https://marketplace.openshift.com/openshift</a></p>
+</div>
+<div class="paragraph">
+<p>Los servicios se muestran clasificados por su tipología. Si nos interesa uno de ellos, en primer lugar hay que "comprarlo" y posteriormente añadirlo a las aplicaciones que queramos. Puede parecer similar a lo que ya conocemos de los cartridges pero la realidad es que cada producto se integra de una forma particular y escasamente documentada.</p>
+</div>
+<div class="paragraph">
+<p>Por ejemplo: si queremos trabajar con una base de datos externa podemos contratar el servicio de ClearDB que nos proporciona una instancia MySQL de 10 Mb alojada en sus servidores. Una vez contratada, pulsaremos en el botón "Add to Apps" y seleccionaremos la aplicación o aplicaciones que queremos que utilicen este servicio.  En el caso concreto de ClearDB se crean unas variables de entorno con los valores adecuados para crear un DataSource que apunte a la BD en la nube, pero es posible que algún servicio incorpore elementos adicionales a los gear. Para más información es conveniente revisar la documentación del Proveedor de servicios.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_monitorización">6.4. Monitorización</h3>
+<div class="paragraph">
+<p>OpenShift hasta el momento no proporciona un cuadro de mando al estilo de otras plataformas como AWS, donde poder comprobar la carga de cada servidor, consumo de recursos o establecer alertas de monitorización. Debemos acudir a cartridges específicos o bien dado que trabajamos con componentes estándar, acudir a sus propias interfaces de monitorización.</p>
+</div>
+<div class="sect3">
+<h4 id="_herramientas_estándar_de_monitorización">6.4.1. Herramientas estándar de monitorización</h4>
+<div class="sect4">
+<h5 id="_snoop_jsp">snoop.jsp</h5>
+<div class="paragraph">
+<p>Más que herramienta, se consideraría una página con información de monitorización que OpenShift incluye en sus plantillas de proyectos. En dicha página se muestra información del consumo de memoria de la JVM que proporciona el contenedor de servlets. Por defecto se trata de una página de acceso público. La forma usual de acceder es:</p>
+</div>
+<div class="paragraph">
+<p><a href="http://&lt;app&gt;-&lt;domain&gt;.rhcloud.com/snoop.jsp" class="bare">http://&lt;app&gt;-&lt;domain&gt;.rhcloud.com/snoop.jsp</a></p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_port_forwarding_y_jmx">port-forwarding y JMX</h5>
+<div class="paragraph">
+<p>Ya sabemos que mediante el comando port-forward podemos acceder a servicios de OpenShift como si fueran servicios que se ejecutan en local. Gracias a esto, podemos acceder al puerto de administración de WildFly o cualquier otro servidor que se ejecute en un gear, desde nuestra máquina local y utilizar cualquier herramienta de monitorización basada en JMX para monitorizar el funcionamiento de la JVM y acceder a los MBeans del servidor.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Un MBean es un objeto de java muy similar a los componentes EJB, pero que cumplen la especificación del API JMX de monitorización. Un MBean puede representar un dispositivo, una aplicación desplegada en el servidor o cualquier recurso gestionado por el servidor de aplicaciones. Para cada uno de ellos, los MBean exponen atributos con su estado de sólo lectura, valores de configuración de lectura/escritura y/o métodos que permiten realizar tareas de administración.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Como ejemplo utilizaremos JVisualVm que es una herramienta perteneciente al JDK.</p>
+</div>
+<div class="paragraph">
+<p>La ejecutaremos con el siguiente comando:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="console"><span class="tok-gp">$</span> jvisualvm --cp:a /usr/local/wildfly/bin/client/jboss-cli-client.jar</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Una vez iniciada la herramienta, añadiremos una nueva conexión JMX especificando la conexión al servidor a través de la IP local y el puerto redirigido al puerto de administración de WildFly, así como el usuario/password de administración de WildFly:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/paas08/visualvm1.png" alt="visualvm1" width="50%">
+</div>
+</div>
+<div class="paragraph">
+<p>Una vez establecida la conexión ya podemos acceder a la información que se recoge en tiempo real del servidor:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/paas08/visualvm2.png" alt="visualvm2">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+En VisualVM es necesario añadir un plugin para poder acceder a la información de MBeans, desde la configuración de la propia herramienta.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Otra posibilidad es utilizra la herramienta cliente de WildFly conectándonos desde nuestra máquina. Dado que el mecanismo de port-forward intenta utilizar los mismos puertos en la máquina local y gear, bastaría con ejecutar CLI y especificar usuario y password de administración para empezar a trabajar.</p>
+</div>
+<div class="paragraph">
+<p>En las referencias hay un enlace donde se explican algunos ejemplos de consultas que podemos hacer desde CLI.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_cartridges_de_terceros">6.4.2. Cartridges de terceros</h4>
+<div class="paragraph">
+<p>Otra opción es buscar un módulo desarrollado por terceros que implemente funcionalidades de monitorización del gear, ya sea gratuito o de pago.</p>
+</div>
+<div class="paragraph">
+<p>Como ejemplo de herramienta gratuita tenemos Monit. Monit presenta un panel muy sencillo en el que se muestra el estado de los servicios en ejecución del gear y el estado de las cuotas de memoria y almacenamiento.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/paas08/monit.png" alt="monit">
+</div>
+</div>
+<div class="paragraph">
+<p>El módulo es OpenSource y su código fuente e instrucciones de instalación lo podéis encontrar en este enlace:</p>
+</div>
+<div class="paragraph">
+<p><a href="https://raw.githubusercontent.com/openshift-cartridges/openshift-origin-cartridge-monit/master/metadata/manifest.yml" class="bare">https://raw.githubusercontent.com/openshift-cartridges/openshift-origin-cartridge-monit/master/metadata/manifest.yml</a></p>
+</div>
+<div class="paragraph">
+<p>Sus funciones por defecto son:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Cuadro resumen del estado del gear, se accede a través de la dirección <a href="https://&lt;app&gt;-&lt;domain&gt;.rhcloud.com/monit-status" class="bare">https://&lt;app&gt;-&lt;domain&gt;.rhcloud.com/monit-status</a> y  autentica mediante usuario/password.</p>
+</li>
+<li>
+<p>Alertas por mail cuando se alcance un 80% de ocupación de memoria o disco y acciones preventivas cuando se llegue al 90% (reiniciar la aplicación en el caso de un elevado consumo de memoria, y lanzar un comando "tidy" en el caso de que nos estemos quedando sin espacio.</p>
+</li>
+<li>
+<p>Alertas cuando haya caídas en algún servicio y si la caida dura más de 90 segundos, se intenta reiniciar la aplicación principal.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Estas reglas se pueden modificar y ampliar modificando el fichero <em>.monitrc</em></p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+La herramienta no está totalmente adaptada a OpenShift y lo podemos ver si intentamos pulsar en los enlaces de la pantalla de monitorización. Todos ellos están referidos al context-root del servidor cuando realmente en el context-root está nuestra aplicación. La herramienta funciona bien pero para acceder a las pantallas relacionadas hay que editar el link y añadir el contexto raíz de Monit, <em>monit-status</em>.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_monitorización_de_base_de_datos">Monitorización de base de datos</h5>
+<div class="paragraph">
+<p>Específicamente para tareas administrativas y de monitorización de bases de datos tenemos los siguientes cartridges:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>phpMyAdmin para MySQL.</p>
+</li>
+<li>
+<p>RockMongo, MongoDB Monitoring Service para MongoDB.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Estos módulos se pueden instalar en los gear que ya dispongan de una instancia del gestor de base de datos desplegada.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/paas08/mysql.png" alt="mysql">
+</div>
+<div class="title">Figure 1. phpMyAdmin</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_referencias">6.5. Referencias</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>OpenShift System Architecture Guide <a href="http://OpenShift.github.io/documentation//oo_system_architecture_guide.html" class="bare">http://OpenShift.github.io/documentation//oo_system_architecture_guide.html</a></p>
+</li>
+<li>
+<p>OpenShift Quickstarts <a href="https://www.OpenShift.com/quickstarts" class="bare">https://www.OpenShift.com/quickstarts</a></p>
+</li>
+<li>
+<p>Community Cartridges for OpenShift <a href="https://github.com/OpenShift-cartridges" class="bare">https://github.com/OpenShift-cartridges</a></p>
+</li>
+<li>
+<p>Portal de desarrolladores de OpenShift	<a href="https://developers.OpenShift.com/" class="bare">https://developers.OpenShift.com/</a></p>
+</li>
+<li>
+<p>Libro Getting started with OpenShift <a href="https://www.OpenShift.com/promotions/ebook" class="bare">https://www.OpenShift.com/promotions/ebook</a></p>
+</li>
+<li>
+<p>Ejemplos:  <a href="https://github.com/codemiller/getting-started-with-OpenShift" class="bare">https://github.com/codemiller/getting-started-with-OpenShift</a></p>
+</li>
+<li>
+<p>API REST de administración <a href="https://access.redhat.com/documentation/en-US/OpenShift_Online/2.0/html/REST_API_Guide/index.html" class="bare">https://access.redhat.com/documentation/en-US/OpenShift_Online/2.0/html/REST_API_Guide/index.html</a></p>
+</li>
+<li>
+<p>Monitorización de JBoss EAP/WildFly mediante CLI <a href="http://blog.akquinet.de/2014/09/15/monitoring-the-jboss-eap-wildfly-application-server-with-the-command-line-interface-cli" class="bare">http://blog.akquinet.de/2014/09/15/monitoring-the-jboss-eap-wildfly-application-server-with-the-command-line-interface-cli</a></p>
+</li>
+<li>
+<p>Twitter de OpenShift Operations <a href="https://twitter.com/openshift_ops" class="bare">https://twitter.com/openshift_ops</a></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_ejercicios_de_plataforma_como_servicio">6.6. Ejercicios de Plataforma como servicio</h3>
+<div class="paragraph">
+<p>Vamos a comenzar a trabajar con OpenShift  como plataforma sobre la que desplegar nuestras primeras aplicaciones. Como en la sesión anterior utilizamos los tres gear que tenemos disponibles para trabajar, debéis eliminar uno de ellos. Utilizad el comando rhc adecuado para borrar la aplicación _ OwnCloud_de la sesión anterior.</p>
+</div>
+<div class="sect3">
+<h4 id="_despliegue_desde_un_repositorio_externo_0_2_puntos">6.6.1. Despliegue desde un repositorio externo (0.2 puntos)</h4>
+<div class="paragraph">
+<p>Vamos a practicar cómo crear una aplicación OpenShift a partir de un código fuente situado en un repositorio externo. Tenéis que crear una nueva aplicación OpenShift de nombre <em>ejemplo</em> indicando de dónde se tienen que obtener los fuentes  de la aplicación. En este caso trabajaréis con un repositorio en GitHub</p>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/Djbyte1977/ejemplo-OpenShift.git" class="bare">https://github.com/Djbyte1977/ejemplo-OpenShift.git</a></p>
+</div>
+<div class="paragraph">
+<p>Se pide:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Crear la aplicación <em>ejemplo</em> desde la consola Web de OpenShift.</p>
+</li>
+<li>
+<p>Utilizar la herramienta RHC y crearla desde el terminal utilizando una sola instrucción.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_desarrollo_mixto_local_cloud_0_8_puntos">6.6.2. Desarrollo mixto local/cloud  (0.8 puntos)</h4>
+<div class="paragraph">
+<p>Vamos a trabajar sobre la aplicación InsultApp. Esta aplicación es una versión de la aplicación con el mismo nombre publicada en el libro Getting Started with OpenShift, que podéis encontrar en las referencias. Se trata de un generador de "insultos" no demasiado ofensivos, que funciona en base a una base de datos de palabras. En las plantillas podéis encontrar el código fuente del proyecto en Java, así un fichero <em>import.sql</em> con la creación de las tablas que la aplicación necesita para funcionar.</p>
+</div>
+<div class="paragraph">
+<p>Se pide:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Compilar y desplegar el proyecto en una instancia local de WildFly. Se ha de crear una base de datos, de nombre <em>InsultApp</em> y acceder a ella mediante un DataSource con el nombre indicado en la unidad de persistencia.</p>
+</li>
+<li>
+<p>Crear un nuevo perfil de Maven en el proyecto para OpenSHift.</p>
+</li>
+<li>
+<p>Crear una nueva aplicación en OpenShift, de nombre <em>InsultApp</em>, integrar el código de InsultApp "local" y hacer los cambios necesarios para desplegar la aplicación en cloud.</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Anotad el usuario y password de administración, lo necesitaréis para el último ejercicio.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_monitorización_de_una_aplicación_0_2_puntos">6.6.3. Monitorización de una aplicación (0.2 puntos)</h4>
+<div class="paragraph">
+<p>Como paso final, queremos añadir las herramientas de monitorización necesarias para asegurarnos de que el servidor de la aplicación InsultApp está funcionando correctamente. Se pide:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Monitorizar la JVM del servidor con JVisualVM</p>
+</li>
+<li>
+<p>Añadir el cartridge Monit a la aplicación.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_entrega">6.6.4. Entrega</h4>
+<div class="paragraph">
+<p>En esta sesión hay que entregar un fichero TXT con el comando solicitado para el primer ejercicio, un breve resumen de los comandos ejecutados para el ejercicio de Monitorización, y una copia de los repositorios de las aplicaciones <em>ejemplo</em> y <em>InsultApp</em></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2015-10-16 22:32:33 CEST
+</div>
+</div>
+</body>
+</html>

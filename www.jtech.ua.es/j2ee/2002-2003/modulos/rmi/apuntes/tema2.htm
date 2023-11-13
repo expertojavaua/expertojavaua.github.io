@@ -1,0 +1,236 @@
+<html>
+<head>
+<title>Tema 2: Uso del Registro RMI</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<h1><span class="section">2. Uso del servicio de nombres RMI</span> </h1>
+<p>El servicio de nombres RMI (<i>RMI registry</i>) es un simplemente un servidor 
+  que permite a una aplicaci&oacute;n buscar objetos que est&aacute;n siendo exportados 
+  para su uso mediante llamadas a m&eacute;todos remotos. </p>
+<p>Una vez que el objeto ha sido localizado, ya se puede utilizar utilizando la 
+  misma sintaxis que una llamada a un m&eacute;todo local. Para encontrar los 
+  objetos, RMI utiliza un servicio que mantiene una tabla de direcciones de objetos 
+  remotos que est&aacute;n siendo exportados por sus aplicaciones (ver Figura 
+  2.1). A todos los objetos se les asigna nombres &uacute;nicos que se utilizan 
+  para identificarlos. Algunos m&eacute;todos pueden llamarse desde la interfaz 
+  <code>rmi.registry.Registry</code>, o desde la clase <code>rmi.Naming</code>, 
+  que permite a&ntilde;adir, eliminar y acceder a objetos remotos en la tabla 
+  de registro de objetos. El servidor del servicio de nombres registra los objetos 
+  mediante llamadas a <code>bind()</code> o <code>rebind()</code> sobre una instancia 
+  de un registro del objeto que est&aacute; siendo exportado. Ya que todos los 
+  objetos tienen nombres &uacute;nicos, una llamada a <code>bind()</code> a un 
+  regisro que contiene un nombre (<code>String</code>) que ya est&aacute; registrado 
+  provocar&aacute; una excepci&oacute;n. De forma alternativa, <code>rebind()</code> 
+  reemplaza un objeto antiguo con un nombre dado, con un nuevo objeto.</p>
+<center>
+  <img border="0" src="Fig2-1.gif"> 
+</center>
+<p class="caption">Figura 2.1. Tabla mantenida por RMI registry.</p>
+<p>Hay dos formas de iniciar el servicio de nombres: una es usando la aplicaci&oacute;n 
+  que proporciona java (<code>rmiregistry</code>), y otra es escribir nuestro 
+  propio servicio de nombres usando las clases e interfaces de <code>java.rmi.* 
+  </code></p>
+<p>Normalmente la aplicaci&oacute;n de servicio de nombres se inicia como una 
+  aplicaci&oacute;n en <i>background</i>. Por defecto, se ejecutar&aacute; sobre 
+  el puerto 1099, pero se puede seleccionar otro puerto cuando se lanza la aplicaci&oacute;n. 
+  Desde linux, se puede utilizar el siguiente comando:</p>
+<pre class="codigo">
+rmiregistry &amp;      //puerto 1099 por defecto, o bien
+
+rmigegistry 2099 &     //usa el puerto 2099</pre>
+<p>Esta utilidad crea un objeto <code>Registry</code> que &quot;escucha&quot; 
+  en el puerto especificado (o en el puerto por defecto, 1099), ejecutando un 
+  bucle a la espera de procesos locales que registren objetos en &eacute;l, o 
+  de clientes que conecten y busquen objetos RMI en dicho registro. </p>
+<h2 class="subsection">2.1. Localizaci&oacute;n de las clases <i>Stub</i> y <i>Skeleton</i></h2>
+<p>Cuando se inicia el servicio de nombres, usa la variable de entorno CLASSPATH 
+  para encontrar las clases que necesita para dar servicio a los objetos remotos. 
+  Dicha variable deber&iacute;a contener una entrada con el directorio que contiene 
+  las clases <i>stub</i> y <i>skeleton</i>. Si no es as&iacute;, es necesario 
+  especificar dicho directorio en una propiedad del sistema cuando se lanza el 
+  servicio de nombres. Para ello se utiliza el flag <code>-D</code> seguido de 
+  la propiedad <code>java.rmi.server.Codebase</code> y de una URL (<i>Uniform 
+  Resource Locator</i>) con el directorio que contiene a las clases <i>stub</i> 
+  y <i>skeleton</i>. Por ejemplo, la siguiente l&iacute;nea de comandos especifica 
+  que dicho directorio se encuentra en la direcci&oacute;n <code>http://foo.com/MyStubs/</code></p>
+  
+<pre class="codigo">
+java -Djava.rmi.server.CodeBase=http://foo.com/MyStubs/MyServer
+</pre>
+<p>En el ejemplo anterior, se indica al servicio de nombres que debe buscar en 
+  el URL especificado para cargar las clases necesarias cuando se solicite alguna 
+  petici&oacute;n a un objeto remoto. Obviamente, el servicio de nombres solamente 
+  puede pasar referencias a objetos que pueda localizar. Se asume que cualquier 
+  objeto remoto exportado por <code>MyServer</code> y registrado en el servicio 
+  de nombres puede ser referenciado por las clases <i>stub</i> y <i>skeleton</i> 
+  accesibles por la URL especificada.</p>
+<p>El valor devuelto por una b&uacute;squeda en el registro no es el servidor 
+  RMI en s&iacute; mismo, sino el <i>stub</i> remoto asociado.</p>
+<p>Los servidores <code>registry</code> (objetos remotos que &quot;mapean&quot; 
+  nombres a objetos remotos) pueden referenciarse mediante una URL. Dicha URL 
+  se utilizar&aacute; para localizar a un servidor <code>registry</code> ejecut&aacute;ndose 
+  en un puerto espec&iacute;fico, en una determinada m&aacute;quina, y con un 
+  nombre para un objeto remoto espec&iacute;fico. La especificaci&oacute;n del 
+  protocolo para este servicio es <code>rmi</code>, y el puerto est&aacute;ndar 
+  es el 1099. </p>
+<p>La clase <code>java.rmi.Naming</code> proporciona la forma m&aacute;s sencilla 
+  de acceder a un registry remoto. Los argumentos <code>name</code> para los m&eacute;todos 
+  de <code>Naming</code> toman la forma URL que acabamos de comentar, cuya sintaxis 
+  es:</p>
+<pre class="codigo">[rmi:][//][host][:puerto][/nombre]</pre>
+<p>En donde:</p>
+<ul>
+  <li><i>rmi</i> es el protocolo, que puede obviarse </li>
+  <li><i>host</i> es el host en el que se está ejecutando el registry (opcional), 
+    si se omite se asume que se utiliza la m&aacute;quina local</li>
+  <li><i>port</i> es el puerto en es que se está "escuchando" (opcional), por 
+    defecto 1099</li>
+  <li><i>name</i> es el nombre del objeto por el que <code>registry</code> conoce 
+    al objeto, y que se quiere registrar, eliminar su registro, o buscar, tambi&eacute;n 
+    puede omitirse</li>
+</ul>
+<h2 class="subsection">2.2. Enlace, borrado y b&uacute;squeda de objetos del registro</h2>
+<p>El servicio de nombres RMI proporciona tres operaciones fundamentales: enlace 
+  (<i><b>bind</b></i>), borrado (<i><b>unbind</b></i>), y b&uacute;squeda <i>(<b>lookup</b></i>). 
+  La operaci&oacute;n <i>bind</i> a&ntilde;ade una entrada (par nombre del servicio-direcci&oacute;n) 
+  al registro. La operaci&oacute;n <i>unbind</i> elimina una entrada a partir 
+  del nombre del registro. Finalmente la operaci&oacute;n <i>lookup</i> permite 
+  el uso del nombre de un servicio para encontrar la direcci&oacute;n de dicho 
+  servicio. Dichas operaciones se encuentran en el paquete <code>java.rmi.Naming</code>.</p>
+<p>Cuando una aplicaci&oacute;n enlaza (<i>bind</i>) un objeto al RMI registry 
+  se necesitan tres cosas: una referencia a una instancia del objeto a enlazar, 
+  la direcci&oacute;n del servidor del registro (<i>registry server</i>) incluyendo 
+  el n&uacute;mero de puerto, y el nombre del objeto bajo el cual ser&aacute; 
+  registrado el objeto a enlazar. Como ya se ha comentado en el apartado 2.1, 
+  existen dos m&eacute;todos para enlazar objetos al registro: <code>bind()</code>, 
+  y <code>rebind()</code>. Se pueden lanzar varias excepciones, tales como <code>MalformedURLException</code>, 
+  <code>RemoteException</code>, <code>UnknownHostException</code>, o <code>AlreadyBoundException</code>. 
+  Esto hace necesario el utilizar una sentencia <code>try/catch</code> con el 
+  m&eacute;todo <code>bind</code>, tal y como se muestra en el código siguiente:</p>
+<pre class="codigo">try {
+  MyRemoteObject ro= new MyRemoteObject();
+  java.rmi.Naming.bind(&quot;rmi://www.foo.com/MyObject&quot;, &quot;ro&quot;);
+} catch (Exception e) {
+   //tratamiento de excepciones
+}</pre>
+<p>Para eliminar un objeto del registro se utiliza el m&eacute;todo <code>unbind()</code>. 
+  Antes de eliminar un objeto, puede ser conveniente ver si est&aacute; ya registrado, 
+  para eso se proporciona el m&eacute;todo <code>list()</code>, que devuelve un 
+  <code>array</code> de <code>Strings</code> que contiene los nombres de los objetos 
+  actualmente registrados. El siguiente c&oacute;digo utiliza los m&eacute;todos 
+  <code>list()</code> y <code>unbind()</code> para eliminar un determinado objeto 
+  del registro RMI, se puede observar que tambi&eacute;n pueden provocarse varias 
+  excepciones que es conveniente capturar:</p>
+  
+<pre class="codigo">String[] RemoteObjects;
+PrintStream out = System.out;
+ 
+try {
+  remoteObjects= Naming.list(&quot;rmi://www.foo.com/&quot;);
+} catch (RemoteException e) {
+   out.println(&quot;No he podido localizar el registro&quot;);
+  }
+  catch (MalformedURLException e) {
+   out.println(&quot;No he podido analizar el string URL&quot;);
+  }
+  catch (UnknownHostException e) {
+   out.println(&quot;No puedo localizar el host&quot;);
+  }
+
+  for (int c; c&lt; remoteObjects.lenght; c++}
+    if (remoteObjects[c].equals(&quot;MyObject&quot;))
+      try {
+        Naming.unbind(u);
+      }
+      catch (Exception e) {
+        //tratamiento de excepciones
+      };
+</pre>
+<p>Para buscar un objeto en el registro se utiliza el m&eacute;todo <code>lookup()</code>. 
+  Dicho m&eacute;todo tiene como par&aacute;metro la URL del registro, y el nombre 
+  del objeto a buscar. El siguiente trozo de c&oacute;digo intenta buscar en el 
+  registro el servidor de <code>MyRemoteObject</code> (que es un objeto registrado 
+  en la m&aacute;quina <code>www.foo.com</code>), cuyo nombre es <code>MyObject</code>. 
+</p>
+<pre class="codigo">MyRemoteObject o;
+ 
+try {
+  o = (MyRemoteObject)Naming.lookup(&quot;rmi://www.foo.com/MyObject&quot;);
+} catch (NotBoundException e) {
+   out.println(&quot;No he podido localizar el objeto en el registro&quot;);
+  }
+  catch (RemoteException e) {
+   out.println(&quot;No he podido localizar el registro&quot;);
+  }
+  catch (MalformedURLException e) {
+   out.println(&quot;No he podido analizar el string URL&quot;);
+  }
+  catch (UnknownHostException e) {
+   out.println(&quot;No puedo localizar el host&quot;);
+  }
+</pre>
+<h2 class="subsection">2.3. Paquete <i>java.rmi.registry</i></h2>
+<p>Se puede controlar el registro a m&aacute;s bajo nivel utilizando el interfaz 
+  <code>java.rmi.registry.Registry</code>. El paquete <code>java.rmi.registry</code> 
+  contiene tambi&eacute;n la clase <code>LocateRegistry</code> que puede usarse 
+  para crear o encontrar un registro. </p>
+<p>El m&eacute;todo <code>LocateRegistry.getRegistry()</code> devuelve una referencia 
+  de una instancia de un registro ejecut&aacute;ndose en un sistema remoto.</p>
+<p>El m&eacute;todo <code>LocateRegistry.createRegistry()</code> permite crear 
+  un registro propio, que puede ejecutarse dentro de nuestra aplicaci&oacute;n 
+  en lugar de utilizar la aplicaci&oacute;n que propociona JDK.</p>
+<p> Un registro puede ser iniciado solamente en la m&aacute;quina local en la 
+  que se ejecuta la aplicaci&oacute;n que lo inicia. El registro solamente puede 
+  utilizar los puertos por encima de 1024 si no se tienen privilegios de superusuario. 
+  Se requiere al menos un registro por host en los que se ejecutan los servidores 
+  RMI. La raz&oacute;n de ello es que el registro solamente permite llamadas a 
+  <i>bind</i>, <i>rebind</i>, y <i>unbind</i> originadas en el mismo <i>host</i> 
+  por razones de seguridad.</p>
+<p>A continuaci&oacute;n mostramos un ejemplo en el que se crea un registro propio, 
+  se enlaza a una instancia de un objeto remoto, y se muestra un listado de nombres 
+  registrados:</p>
+  
+<pre class="codigo">Registry reg;
+String list;
+PrintStream out = System.out;
+
+
+
+try {
+  reg = java.rmi.registry.LocateRegistry.createRegistry(5000);
+} catch (RemoteException e) {
+   out.println(&quot;No he podido localizar el objeto en el registro&quot;);
+  }
+  catch (RemoteException e) {
+   out.println(&quot;No he podido crear el registro, pruebe con otro puerto&quot;);
+  }
+
+try {
+  MyRemoteObjet ro = new MyRemoteObject();
+  reg.rebind(&quot;MyObject&quot;, ro);
+} catch (RemoteException rx) {
+   out.println(&quot;No he podido crear el objeto remoto&quot;);
+  }
+  catch (AccessException ax) {
+   out.println(&quot;No he podido crear el registro, pruebe con otro puerto&quot;);
+  }
+  catch (MalformedURLException e) {
+   out.println(&quot;Operaci&oacute;n rebind() no permitida&quot;);
+  }
+
+try {
+  list = reg.list();
+} catch (RemoteException rx) {
+   out.println(&quot;La operaci&oacute;n list() ha fallado&quot;);
+  }
+  catch (AccessException ax) {
+   out.println(&quot;Acceso denegado&quot;);
+  }
+
+for (int c= 0; c&lt; list.length; c++)
+   out.println(list[c]);</pre>
+</body>
+</html>

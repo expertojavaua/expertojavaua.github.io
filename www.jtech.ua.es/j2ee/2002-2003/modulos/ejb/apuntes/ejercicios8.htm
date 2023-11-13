@@ -1,0 +1,173 @@
+<head>
+<title>Ejercicios 8 Enterprise Java Beans</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../../ejercicios.css" type="text/css">
+</head>
+<body>
+
+<h1>Ejercicios sesi&oacute;n 8</h1>
+<p>En este ejercicio vamos a modificar el EJB savingsaccount para incorporar un 
+  control de acceso. En resumen, vamos a definir dos roles, Administrador y ReadOnly 
+  y vamos a probar la aplicaci&oacute;n cliente </p>
+<h3>Descargar y probar el ejb savingsaccount</h3>
+<p>Lanza el servidor de ejemplos creado en un ejercicio anterior. Comprueba si 
+  se encuentra desplegado el EJB <code>savingsaccount-ejb.jar</code>. En el caso 
+  en que se encontrara, b&oacute;rralo. Descarga el fichero <code>ejemplo8.zip</code> 
+  y descompr&iacute;melo en el directorio de trabajo. Vamos a trabajar con ese 
+  EJB. Debes desplegarlo y probar la aplicaci&oacute;n cliente que se encuentra 
+  en el directorio src. Para ello hay que crear la tabla en la base de datos (el 
+  script se encuentra en el directorio sql), desplegar el bean, compilar la aplicaci&oacute;n 
+  cliente y probarla.</p>
+<p>Recordamos la forma de ejecutar el script <code>savingsaccount.sql</code>:</p>
+<pre class="codigo">
+  % cd sql
+  % $WL_HOME/weblogic700/samples/server/eval/pointbase/tools/startPointBaseCommander.sh
+  Do you wish to create a &quot;New/Overwrite&quot; Database? [default: N]: 
+  Select product to connect with: Embedded (E), or Server (S)? [default: E]: S
+  Please enter the driver to use: 
+    [default: [com.pointbase.jdbc.jdbcUniversalDriver]: 
+  Please enter the database URL to use: 
+    [default: [jdbc:pointbase:server://localhost/sample]: 
+	  jdbc:pointbase:server://localhost/demo
+	Username: [default: PBPUBLIC]: examples
+	Password: [default: PBPUBLIC]: examples
+	PointBase Commander 4.2ECF build 183 SERVER
+	Interactive SQL command language. Mac OS X/10.1.5(C) Copyright 1998 - 2002 PointBase(R), 
+	Inc. All rights reserved
+	SQL&gt; run &quot;savingsaccount.sql&quot;;</pre>
+<h3>Crear de nuevos usuarios en el servidor weblogic</h3>
+<p>1. Abre la consola de administraci&oacute;n. Pincha la opci&oacute;n <i>Realms</i> 
+  y despu&eacute;s pincha en <i>myreal</i>. Aparecer&aacute; una pantalla de entrada 
+  de datos. Selecciona la pesta&ntilde;a superior Contents y, en la nueva pantalla 
+  que aparece, pincha el elnlace <i>Manage Users within this Realm</i>. En la 
+  nueva pantalla, pincha en <i>Configure a new user....</i> All&iacute; tendr&aacute;s 
+  que definir el nombre y contrase&ntilde;a del nuevo usuario. Pon <code>admin 
+  </code>como usuario y <code>weblogic</code> como contrase&ntilde;a. Si escoges 
+  otra contrase&ntilde;a, debe tener 8 o m&aacute;s caracteres. Pulsa <i>Apply</i>.</p>
+<p>2. Pincha en la pesta&ntilde;a <i>Groups</i>, selecciona el grupo <code>Administrators</code> 
+  y pulsa la flecha. De esta forma a&ntilde;adimos el usuario <code>admin</code> 
+  al grupo <code>Administrators</code>.</p>
+<p>3. Crea ahora el usuario <code>operador</code>. As&iacute;gnalo al grupo <code>Operators</code>.</p>
+<h3>Modificaci&oacute;n del bean savingsaccount</h3>
+<p>1. Desempaqueta el EJB JAR</p>
+<pre class="codigo">% jar xvf savingsaccount-ejb.jar</pre>
+<p>2. Modifica el fichero META-INF/ejb-jar.xml para incorporar el control de acceso 
+  al EJB. Para ello borra las siguientes l&iacute;neas</p>
+<pre class="codigo">
+    &lt;method-permission&gt;
+      &lt;unchecked /&gt;
+      &lt;method&gt;
+        &lt;ejb-name&gt;SavingsAccountEJB&lt;/ejb-name&gt;
+        &lt;method-name&gt;*&lt;/method-name&gt;
+      &lt;/method&gt;
+    &lt;/method-permission&gt;
+</pre>
+<p>y sustit&uacute;yelas por estas otras</p>
+<pre class="codigo">
+    &lt;security-role&gt;
+      &lt;role-name&gt;Administrador&lt;/role-name&gt;
+    &lt;/security-role&gt;
+    &lt;security-role&gt;
+      &lt;role-name&gt;ReadOnly&lt;/role-name&gt;
+    &lt;/security-role&gt;
+
+    &lt;method-permission&gt;
+      &lt;role-name&gt;Administrador&lt;/role-name&gt;
+      &lt;method&gt;
+        &lt;ejb-name&gt;SavingsAccountEJB&lt;/ejb-name&gt;
+        &lt;method-name&gt;*&lt;/method-name&gt;
+      &lt;/method&gt;
+    &lt;/method-permission&gt;
+
+    &lt;method-permission&gt;
+      &lt;role-name&gt;ReadOnly&lt;/role-name&gt;
+      &lt;method&gt;
+        &lt;ejb-name&gt;SavingsAccountEJB&lt;/ejb-name&gt;
+        &lt;method-name&gt;getFirstName&lt;/method-name&gt;
+      &lt;/method&gt;
+      &lt;method&gt;
+        &lt;ejb-name&gt;SavingsAccountEJB&lt;/ejb-name&gt;
+        &lt;method-name&gt;getLastName&lt;/method-name&gt;
+      &lt;/method&gt;
+      &lt;method&gt;
+        &lt;ejb-name&gt;SavingsAccountEJB&lt;/ejb-name&gt;
+        &lt;method-name&gt;findByPrimaryKey&lt;/method-name&gt;
+      &lt;/method&gt;
+      &lt;method&gt;
+        &lt;ejb-name&gt;SavingsAccountEJB&lt;/ejb-name&gt;
+        &lt;method-name&gt;getBalance&lt;/method-name&gt;
+      &lt;/method&gt;
+      &lt;method&gt;
+        &lt;ejb-name&gt;SavingsAccountEJB&lt;/ejb-name&gt;
+        &lt;method-name&gt;findByLastName&lt;/method-name&gt;
+      &lt;/method&gt;
+      &lt;method&gt;
+        &lt;ejb-name&gt;SavingsAccountEJB&lt;/ejb-name&gt;
+        &lt;method-name&gt;findInRange&lt;/method-name&gt;
+      &lt;/method&gt;
+    &lt;/method-permission&gt;
+</pre>
+<p> 3. Por &uacute;ltimo, debes hacer corresponder los roles con los usuarios 
+  antes creados. Para ello debes a&ntilde;adir las siguientes l&iacute;neas al 
+  final del fichero <code>META-INF/weblogic-ejb-jar.xml</code>, justo antes del 
+  elemento <code>&lt;/weblogic-ejb-jar&gt;</code></p>
+<pre class="codigo">
+  &lt;security-role-assignment&gt;
+    &lt;role-name&gt;Administrador&lt;/role-name&gt;
+    &lt;principal-name&gt;admin&lt;/principal-name&gt;
+  &lt;/security-role-assignment&gt;
+  &lt;security-role-assignment&gt;
+    &lt;role-name&gt;ReadOnly&lt;/role-name&gt;
+    &lt;principal-name&gt;operador&lt;/principal-name&gt;
+  &lt;/security-role-assignment&gt;
+  </pre>
+ 
+<p> 4. Construye de nuevo el bean</p>
+<pre class="codigo">% jar cvf savingsaccount-ejb.jar *.class META-INF/*</pre>
+<p>y vuelve a desplegarlo usando la consola del servidor de aplicaciones.</p>
+<p>5. Una vez desplegado el bean, prueba la aplicaci&oacute;n cliente. Deber&aacute; 
+  arrojar un error producido porque no se tiene suficientes privilegios para trabajar 
+  con el bean.</p>
+<pre class="codigo">
+Intentando encontrar la cuenta con identificador: i0
+  Caught an exception.
+  java.rmi.AccessException: Security Violation: User: '&lt;anonymous&gt;' has 
+  insufficient permission to access EJB: type=&lt;ejb&gt;, application=savingsaccount-ejb, 
+  module=savingsaccount-ejb, ejb=SavingsAccountEJB, method=findByPrimaryKey, 
+  methodInterface=Home, signature={java.lang.String}.</pre>
+<p>6. Para autentificarte, introduce el siguiente c&oacute;digo en la aplicaci&oacute;n 
+  cliente:</p>
+<pre class="codigo">
+   public static Context getInitialContext()
+        throws javax.naming.NamingException {
+           Properties p = new Properties();
+           p.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");
+<strong>           p.put(Context.SECURITY_PRINCIPAL, "admin");
+           p.put(Context.SECURITY_CREDENTIALS, "weblogic");</strong>
+           p.put(Context.PROVIDER_URL, "t3://localhost:7001");
+           return new javax.naming.InitialContext(p);
+    }
+  }</pre>
+  
+<p>7. Prueba a autientificarte como usuario <code>operador</code>. Ver&aacute;s 
+  que se obtiene el siguiente error en el control de acceso.</p>
+<pre class="codigo">
+Intentando encontrar la cuenta con identificador: i0
+...
+Intentando encontrar la cuenta con identificador: i16
+Intentando encontrar la cuenta con identificador: i17
+Intentando encontrar la cuenta con identificador: i18
+Intentando encontrar la cuenta con identificador: i19
+Caught an exception.
+java.rmi.AccessException: Security Violation: User: 'operador' 
+has insufficient permission to access EJB: type=<ejb>, 
+application=savingsaccount-ejb, module=savingsaccount-ejb, 
+ejb=SavingsAccountEJB, method=getId, methodInterface=Remote, signature={}
+</pre>
+<p> 8. Modifica por &uacute;ltimo el descriptor de despliegue para que el rol 
+  <code>ReadOnly</code> pueda acceder al m&eacute;todo <code>getId</code>. Despliega 
+  otra vez el bean y vuelve a probar la aplicaci&oacute;n cliente. Comprueba qu&eacute; 
+  sucede.</p>
+<p>&nbsp;</p>
+</body>
+</html>

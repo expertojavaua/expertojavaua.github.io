@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 1.5.2">
+<meta name="author" content="José Luis Zamora Sánchez">
+<title>Servidores web y PaaS</title>
+<style>/*! normalize.css v2.1.2 | MIT License | git.io/normalize */
+/* ========================================================================== HTML5 display definitions ========================================================================== */
+/** Correct `block` display not defined in IE 8/9. */
+article, aside, details, figcaption, figure, footer, header, hgroup, main, nav, section, summary { display: block; }
+
+/** Correct `inline-block` display not defined in IE 8/9. */
+audio, canvas, video { display: inline-block; }
+
+/** Prevent modern browsers from displaying `audio` without controls. Remove excess height in iOS 5 devices. */
+audio:not([controls]) { display: none; height: 0; }
+
+/** Address `[hidden]` styling not present in IE 8/9. Hide the `template` element in IE, Safari, and Firefox < 22. */
+[hidden], template { display: none; }
+
+script { display: none !important; }
+
+/* ========================================================================== Base ========================================================================== */
+/** 1. Set default font family to sans-serif. 2. Prevent iOS text size adjust after orientation change, without disabling user zoom. */
+html { font-family: sans-serif; /* 1 */ -ms-text-size-adjust: 100%; /* 2 */ -webkit-text-size-adjust: 100%; /* 2 */ }
+
+/** Remove default margin. */
+body { margin: 0; }
+
+/* ========================================================================== Links ========================================================================== */
+/** Remove the gray background color from active links in IE 10. */
+a { background: transparent; }
+
+/** Address `outline` inconsistency between Chrome and other browsers. */
+a:focus { outline: thin dotted; }
+
+/** Improve readability when focused and also mouse hovered in all browsers. */
+a:active, a:hover { outline: 0; }
+
+/* ========================================================================== Typography ========================================================================== */
+/** Address variable `h1` font-size and margin within `section` and `article` contexts in Firefox 4+, Safari 5, and Chrome. */
+h1 { font-size: 2em; margin: 0.67em 0; }
+
+/** Address styling not present in IE 8/9, Safari 5, and Chrome. */
+abbr[title] { border-bottom: 1px dotted; }
+
+/** Address style set to `bolder` in Firefox 4+, Safari 5, and Chrome. */
+b, strong { font-weight: bold; }
+
+/** Address styling not present in Safari 5 and Chrome. */
+dfn { font-style: italic; }
+
+/** Address differences between Firefox and other browsers. */
+hr { -moz-box-sizing: content-box; box-sizing: content-box; height: 0; }
+
+/** Address styling not present in IE 8/9. */
+mark { background: #ff0; color: #000; }
+
+/** Correct font family set oddly in Safari 5 and Chrome. */
+code, kbd, pre, samp { font-family: monospace, serif; font-size: 1em; }
+
+/** Improve readability of pre-formatted text in all browsers. */
+pre { white-space: pre-wrap; }
+
+/** Set consistent quote types. */
+q { quotes: "\201C" "\201D" "\2018" "\2019"; }
+
+/** Address inconsistent and variable font size in all browsers. */
+small { font-size: 80%; }
+
+/** Prevent `sub` and `sup` affecting `line-height` in all browsers. */
+sub, sup { font-size: 75%; line-height: 0; position: relative; vertical-align: baseline; }
+
+sup { top: -0.5em; }
+
+sub { bottom: -0.25em; }
+
+/* ========================================================================== Embedded content ========================================================================== */
+/** Remove border when inside `a` element in IE 8/9. */
+img { border: 0; }
+
+/** Correct overflow displayed oddly in IE 9. */
+svg:not(:root) { overflow: hidden; }
+
+/* ========================================================================== Figures ========================================================================== */
+/** Address margin not present in IE 8/9 and Safari 5. */
+figure { margin: 0; }
+
+/* ========================================================================== Forms ========================================================================== */
+/** Define consistent border, margin, and padding. */
+fieldset { border: 1px solid #c0c0c0; margin: 0 2px; padding: 0.35em 0.625em 0.75em; }
+
+/** 1. Correct `color` not being inherited in IE 8/9. 2. Remove padding so people aren't caught out if they zero out fieldsets. */
+legend { border: 0; /* 1 */ padding: 0; /* 2 */ }
+
+/** 1. Correct font family not being inherited in all browsers. 2. Correct font size not being inherited in all browsers. 3. Address margins set differently in Firefox 4+, Safari 5, and Chrome. */
+button, input, select, textarea { font-family: inherit; /* 1 */ font-size: 100%; /* 2 */ margin: 0; /* 3 */ }
+
+/** Address Firefox 4+ setting `line-height` on `input` using `!important` in the UA stylesheet. */
+button, input { line-height: normal; }
+
+/** Address inconsistent `text-transform` inheritance for `button` and `select`. All other form control elements do not inherit `text-transform` values. Correct `button` style inheritance in Chrome, Safari 5+, and IE 8+. Correct `select` style inheritance in Firefox 4+ and Opera. */
+button, select { text-transform: none; }
+
+/** 1. Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio` and `video` controls. 2. Correct inability to style clickable `input` types in iOS. 3. Improve usability and consistency of cursor style between image-type `input` and others. */
+button, html input[type="button"], input[type="reset"], input[type="submit"] { -webkit-appearance: button; /* 2 */ cursor: pointer; /* 3 */ }
+
+/** Re-set default cursor for disabled elements. */
+button[disabled], html input[disabled] { cursor: default; }
+
+/** 1. Address box sizing set to `content-box` in IE 8/9. 2. Remove excess padding in IE 8/9. */
+input[type="checkbox"], input[type="radio"] { box-sizing: border-box; /* 1 */ padding: 0; /* 2 */ }
+
+/** 1. Address `appearance` set to `searchfield` in Safari 5 and Chrome. 2. Address `box-sizing` set to `border-box` in Safari 5 and Chrome (include `-moz` to future-proof). */
+input[type="search"] { -webkit-appearance: textfield; /* 1 */ -moz-box-sizing: content-box; -webkit-box-sizing: content-box; /* 2 */ box-sizing: content-box; }
+
+/** Remove inner padding and search cancel button in Safari 5 and Chrome on OS X. */
+input[type="search"]::-webkit-search-cancel-button, input[type="search"]::-webkit-search-decoration { -webkit-appearance: none; }
+
+/** Remove inner padding and border in Firefox 4+. */
+button::-moz-focus-inner, input::-moz-focus-inner { border: 0; padding: 0; }
+
+/** 1. Remove default vertical scrollbar in IE 8/9. 2. Improve readability and alignment in all browsers. */
+textarea { overflow: auto; /* 1 */ vertical-align: top; /* 2 */ }
+
+/* ========================================================================== Tables ========================================================================== */
+/** Remove most spacing between table cells. */
+table { border-collapse: collapse; border-spacing: 0; }
+
+meta.foundation-mq-small { font-family: "only screen and (min-width: 768px)"; width: 768px; }
+
+meta.foundation-mq-medium { font-family: "only screen and (min-width:1280px)"; width: 1280px; }
+
+meta.foundation-mq-large { font-family: "only screen and (min-width:1440px)"; width: 1440px; }
+
+*, *:before, *:after { -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
+
+html, body { font-size: 97%; }
+
+body { background: white; color: #222222; padding: 0; margin: 0; font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif; font-weight: normal; font-style: normal; line-height: 1; position: relative; cursor: auto; }
+
+a:hover { cursor: pointer; }
+
+img, object, embed { max-width: 100%; height: auto; }
+
+object, embed { height: 100%; }
+
+img { -ms-interpolation-mode: bicubic; }
+
+#map_canvas img, #map_canvas embed, #map_canvas object, .map_canvas img, .map_canvas embed, .map_canvas object { max-width: none !important; }
+
+.left { float: left !important; }
+
+.right { float: right !important; }
+
+.text-left { text-align: left !important; }
+
+.text-right { text-align: right !important; }
+
+.text-center { text-align: center !important; }
+
+.text-justify { text-align: justify !important; }
+
+.hide { display: none; }
+
+.antialiased, body { -webkit-font-smoothing: antialiased; }
+
+img { display: inline-block; vertical-align: middle; }
+
+textarea { height: auto; min-height: 50px; }
+
+select { width: 100%; }
+
+p.lead, .paragraph.lead > p, #preamble > .sectionbody > .paragraph:first-of-type p { font-size: 1.21875em; line-height: 1.6; }
+
+.subheader, .admonitionblock td.content > .title, .audioblock > .title, .exampleblock > .title, .imageblock > .title, .listingblock > .title, .literalblock > .title, .stemblock > .title, .openblock > .title, .paragraph > .title, .quoteblock > .title, table.tableblock > .title, .verseblock > .title, .videoblock > .title, .dlist > .title, .olist > .title, .ulist > .title, .qlist > .title, .hdlist > .title { line-height: 1.4; color: #6f6f6f; font-weight: 300; margin-top: 0.2em; margin-bottom: 0.5em; }
+
+/* Typography resets */
+div, dl, dt, dd, ul, ol, li, h1, h2, h3, #toctitle, .sidebarblock > .content > .title, h4, h5, h6, pre, form, p, blockquote, th, td { margin: 0; padding: 0; direction: ltr; }
+
+/* Default Link Styles */
+a { color: #1164be; text-decoration: none; line-height: inherit; }
+a img { border: none; }
+
+/* Default paragraph styles */
+p { font-family: inherit; font-weight: normal; font-size: 1em; line-height: 1.4; margin-bottom: 1em; text-rendering: optimizeLegibility; }
+p aside { font-size: 0.875em; line-height: 1.35; font-style: italic; }
+
+/* Default header styles */
+h1, h2, h3, #toctitle, .sidebarblock > .content > .title, h4, h5, h6 { font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif; font-weight: bold; font-style: normal; color: #1c355e; text-rendering: optimizeLegibility; margin-top: 1em; margin-bottom: 0.5em; line-height: 1.2125em; }
+h1 small, h2 small, h3 small, #toctitle small, .sidebarblock > .content > .title small, h4 small, h5 small, h6 small { font-size: 60%; color: #6f6f6f; line-height: 0; }
+
+h1 { font-size: 2.125em; }
+
+h2 { font-size: 1.6875em; }
+
+h3, #toctitle, .sidebarblock > .content > .title { font-size: 1.375em; }
+
+h4 { font-size: 1.125em; }
+
+h5 { font-size: 1.125em; }
+
+h6 { font-size: 1em; }
+
+hr { border: solid #dddddd; border-width: 1px 0 0; clear: both; margin: 1.25em 0 1.1875em; height: 0; }
+
+/* Helpful Typography Defaults */
+em, i { font-style: italic; line-height: inherit; }
+
+strong, b { font-weight: bold; line-height: inherit; }
+
+small { font-size: 60%; line-height: inherit; }
+
+code { font-family: Consolas, "Liberation Mono", Courier, monospace; font-weight: bold; }
+
+/* Lists */
+ul, ol, dl { font-size: 1em; line-height: 1.4; margin-bottom: 1.25em; list-style-position: outside; font-family: inherit; }
+
+ul, ol { margin-left: 2.5em; }
+ul.no-bullet, ol.no-bullet { margin-left: 1.5em; }
+
+/* Unordered Lists */
+ul li ul, ul li ol { margin-left: 1.25em; margin-bottom: 0; font-size: 1em; /* Override nested font-size change */ }
+ul.square li ul, ul.circle li ul, ul.disc li ul { list-style: inherit; }
+ul.square { list-style-type: square; }
+ul.circle { list-style-type: circle; }
+ul.disc { list-style-type: disc; }
+ul.no-bullet { list-style: none; }
+
+/* Ordered Lists */
+ol li ul, ol li ol { margin-left: 1.25em; margin-bottom: 0; }
+
+/* Definition Lists */
+dl dt { margin-bottom: 0.3125em; font-weight: bold; }
+dl dd { margin-bottom: 1.25em; }
+
+/* Abbreviations */
+abbr, acronym { text-transform: uppercase; font-size: 90%; color: #222222; border-bottom: 1px dotted #dddddd; cursor: help; }
+
+abbr { text-transform: none; }
+
+/* Blockquotes */
+blockquote { margin: 0 0 1.25em; padding: 0.5625em 1.25em 0 1.1875em; border-left: 1px solid #dddddd; }
+blockquote cite { display: block; font-size: 0.8125em; color: #555555; }
+blockquote cite:before { content: "\2014 \0020"; }
+blockquote cite a, blockquote cite a:visited { color: #555555; }
+
+blockquote, blockquote p { line-height: 1.6; color: #6f6f6f; }
+
+/* Microformats */
+.vcard { display: inline-block; margin: 0 0 1.25em 0; border: 1px solid #dddddd; padding: 0.625em 0.75em; }
+.vcard li { margin: 0; display: block; }
+.vcard .fn { font-weight: bold; font-size: 0.9375em; }
+
+.vevent .summary { font-weight: bold; }
+.vevent abbr { cursor: auto; text-decoration: none; font-weight: bold; border: none; padding: 0 0.0625em; }
+
+/*@media only screen and (min-width: 768px) { h1, h2, h3, #toctitle, .sidebarblock > .content > .title, h4, h5, h6 { line-height: 1.4; }
+  h1 { font-size: 2.75em; }
+  h2 { font-size: 2.3125em; }
+  h3, #toctitle, .sidebarblock > .content > .title { font-size: 1.6875em; }
+  h4 { font-size: 1.4375em; } }*/
+/* Tables */
+table { background: white; margin-bottom: 1.25em; border: solid 1px #dddddd; }
+table thead, table tfoot { background: whitesmoke; font-weight: bold; }
+table thead tr th, table thead tr td, table tfoot tr th, table tfoot tr td { padding: 0.5em 0.625em 0.625em; font-size: inherit; color: #222222; text-align: left; }
+table tr th, table tr td { padding: 0.5625em 0.625em; font-size: inherit; color: #222222; }
+table tr.even, table tr.alt, table tr:nth-of-type(even) { background: #f9f9f9; }
+table thead tr th, table tfoot tr th, table tbody tr td, table tr td, table tfoot tr td { display: table-cell; line-height: 1.4; }
+
+h1, h2, h3, #toctitle, .sidebarblock > .content > .title, h4, h5, h6 { line-height: 1.4; border-bottom: 1px solid #dddddd }
+
+.clearfix:before, .clearfix:after, .float-group:before, .float-group:after { content: " "; display: table; }
+.clearfix:after, .float-group:after { clear: both; }
+
+*:not(pre) > code { font-size: inherit; font-style: normal !important; letter-spacing: 0; padding: 3px 2px 1px 2px; background-color: #eeeeee; border: 1px solid #dddddd; -webkit-border-radius: 0; border-radius: 0; line-height: inherit; font-weight: normal; }
+
+pre, pre > code { line-height: 1.4; color: black; font-family: monospace, serif; font-weight: normal; }
+
+.keyseq { color: #555555; }
+
+kbd { display: inline-block; color: #222222; font-size: 0.75em; line-height: 1.4; background-color: #f7f7f7; border: 1px solid #ccc; -webkit-border-radius: 3px; border-radius: 3px; -webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 0 0 0.1em white inset; box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 0 0 0.1em white inset; margin: -0.15em 0.15em 0 0.15em; padding: 0.2em 0.6em 0.2em 0.5em; vertical-align: middle; white-space: nowrap; }
+
+.keyseq kbd:first-child { margin-left: 0; }
+
+.keyseq kbd:last-child { margin-right: 0; }
+
+.menuseq, .menu { color: #090909; }
+
+b.button:before, b.button:after { position: relative; top: -1px; font-weight: normal; }
+
+b.button:before { content: "["; padding: 0 3px 0 2px; }
+
+b.button:after { content: "]"; padding: 0 2px 0 3px; }
+
+#header, #content, #footnotes, #footer { width: 100%; margin-left: auto; margin-right: auto; margin-top: 0; margin-bottom: 0; max-width: 62.5em; *zoom: 1; position: relative; padding-left: 0.9375em; padding-right: 0.9375em; }
+#header:before, #header:after, #content:before, #content:after, #footnotes:before, #footnotes:after, #footer:before, #footer:after { content: " "; display: table; }
+#header:after, #content:after, #footnotes:after, #footer:after { clear: both; }
+
+#content { margin-top: 1.25em; }
+
+#content:before { content: none; }
+
+#header > h1:first-child { color: black; margin-top: 2.25rem; margin-bottom: 0; }
+#header > h1:first-child + #toc { margin-top: 8px; border-top: 1px solid #dddddd; }
+#header > h1:only-child, body.toc2 #header > h1:nth-last-child(2) { border-bottom: 1px solid #dddddd; padding-bottom: 8px; }
+#header .details { border-bottom: 1px solid #dddddd; line-height: 1.45; padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; color: #555555; display: -ms-flexbox; display: -webkit-flex; display: flex; -ms-flex-flow: row wrap; -webkit-flex-flow: row wrap; flex-flow: row wrap; }
+#header .details span:first-child { margin-left: -0.125em; }
+#header .details span.email a { color: #6f6f6f; }
+#header .details br { display: none; }
+#header .details br + span:before { content: "\00a0\2013\00a0"; }
+#header .details br + span.author:before { content: "\00a0\22c5\00a0"; color: #6f6f6f; }
+#header .details br + span#revremark:before { content: "\00a0|\00a0"; }
+#header #revnumber { text-transform: capitalize; }
+#header #revnumber:after { content: "\00a0"; }
+
+#content > h1:first-child:not([class]) { color: black; border-bottom: 1px solid #dddddd; padding-bottom: 8px; margin-top: 0; padding-top: 1rem; margin-bottom: 1.25rem; }
+
+#floating {
+  position: fixed;
+  z-index: 1000;
+  padding: 0.5em;
+  right: 0;
+  top: 0;
+  background: white;
+  box-shadow: 0 0 1em #777777;
+  -webkit-box-shadow: 0 0 1em #777777;
+  -moz-box-shadow: 0 0 1em #777777;
+  -webkit-border-bottom-left-radius: 5px;
+  -moz-border-radius-bottomleft: 5px;
+  max-height: 80%;
+  overflow: auto;
+}
+
+#floating #full { display: none; } /* Hide the full TOC by default */
+
+#floating:hover #full{
+  display: block; /* Show it on hover */
+}
+
+
+#toc { border-bottom: 1px solid #dddddd; padding-bottom: 0.5em; }
+#toc > ul { margin-left: 0.125em; }
+#toc ul.sectlevel0 > li > a { font-style: italic; }
+#toc ul.sectlevel0 ul.sectlevel1 { margin: 0.5em 0; }
+#toc ul { font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif; list-style-type: none; }
+#toc a { text-decoration: none; }
+#toc a:active { text-decoration: underline; }
+
+#toctitle { color: #6f6f6f; font-size: 1.2em; }
+
+@media only screen and (min-width: 768px) { #toctitle { font-size: 1.375em; }
+  body.toc2 { padding-left: 15em; padding-right: 0; }
+  #toc.toc2 { margin-top: 0 !important; background-color: #f2f2f2; position: fixed; width: 15em; left: 0; top: 0; border-right: 1px solid #dddddd; border-top-width: 0 !important; border-bottom-width: 0 !important; z-index: 1000; padding: 1.25em 1em; height: 100%; overflow: auto; }
+  #toc.toc2 #toctitle { margin-top: 0; font-size: 1.2em; }
+  #toc.toc2 > ul { font-size: 0.9em; margin-bottom: 0; }
+  #toc.toc2 ul ul { margin-left: 0; padding-left: 1em; }
+  #toc.toc2 ul.sectlevel0 ul.sectlevel1 { padding-left: 0; margin-top: 0.5em; margin-bottom: 0.5em; }
+  body.toc2.toc-right { padding-left: 0; padding-right: 15em; }
+  body.toc2.toc-right #toc.toc2 { border-right-width: 0; border-left: 1px solid #dddddd; left: auto; right: 0; } }
+@media only screen and (min-width: 1280px) { body.toc2 { padding-left: 20em; padding-right: 0; }
+  #toc.toc2 { width: 20em; }
+  #toc.toc2 #toctitle { font-size: 1.375em; }
+  #toc.toc2 > ul { font-size: 0.95em; }
+  #toc.toc2 ul ul { padding-left: 1.25em; }
+  body.toc2.toc-right { padding-left: 0; padding-right: 20em; } }
+#content #toc { border-style: solid; border-width: 1px; border-color: #d9d9d9; margin-bottom: 1.25em; padding: 1.25em; background: #f2f2f2; -webkit-border-radius: 0; border-radius: 0; }
+#content #toc > :first-child { margin-top: 0; }
+#content #toc > :last-child { margin-bottom: 0; }
+
+#footer { max-width: 100%; background-color: #222222; padding: 1.25em; }
+
+#footer-text { color: #dddddd; line-height: 1.44; }
+
+.sect1 { padding-bottom: 0.625em; }
+
+@media only screen and (min-width: 768px) { .sect1 { padding-bottom: 1.25em; } }
+.sect1 + .sect1 { border-top: 1px solid #dddddd; }
+
+#content h1 > a.anchor, h2 > a.anchor, h3 > a.anchor, #toctitle > a.anchor, .sidebarblock > .content > .title > a.anchor, h4 > a.anchor, h5 > a.anchor, h6 > a.anchor { position: absolute; z-index: 1001; width: 1.5ex; margin-left: -1.5ex; display: block; text-decoration: none !important; visibility: hidden; text-align: center; font-weight: normal; }
+#content h1 > a.anchor:before, h2 > a.anchor:before, h3 > a.anchor:before, #toctitle > a.anchor:before, .sidebarblock > .content > .title > a.anchor:before, h4 > a.anchor:before, h5 > a.anchor:before, h6 > a.anchor:before { content: "\00A7"; font-size: 0.85em; display: block; padding-top: 0.1em; }
+#content h1:hover > a.anchor, #content h1 > a.anchor:hover, h2:hover > a.anchor, h2 > a.anchor:hover, h3:hover > a.anchor, #toctitle:hover > a.anchor, .sidebarblock > .content > .title:hover > a.anchor, h3 > a.anchor:hover, #toctitle > a.anchor:hover, .sidebarblock > .content > .title > a.anchor:hover, h4:hover > a.anchor, h4 > a.anchor:hover, h5:hover > a.anchor, h5 > a.anchor:hover, h6:hover > a.anchor, h6 > a.anchor:hover { visibility: visible; }
+#content h1 > a.link, h2 > a.link, h3 > a.link, #toctitle > a.link, .sidebarblock > .content > .title > a.link, h4 > a.link, h5 > a.link, h6 > a.link { color: #222222; text-decoration: none; }
+#content h1 > a.link:hover, h2 > a.link:hover, h3 > a.link:hover, #toctitle > a.link:hover, .sidebarblock > .content > .title > a.link:hover, h4 > a.link:hover, h5 > a.link:hover, h6 > a.link:hover { color: #151515; }
+
+.audioblock, .imageblock, .literalblock, .listingblock, .stemblock, .videoblock { margin-bottom: 1.25em; }
+
+.admonitionblock td.content > .title, .audioblock > .title, .exampleblock > .title, .imageblock > .title, .listingblock > .title, .literalblock > .title, .stemblock > .title, .openblock > .title, .paragraph > .title, .quoteblock > .title, table.tableblock > .title, .verseblock > .title, .videoblock > .title, .dlist > .title, .olist > .title, .ulist > .title, .qlist > .title, .hdlist > .title { text-rendering: optimizeLegibility; text-align: left; }
+
+table.tableblock > caption.title { white-space: nowrap; overflow: visible; max-width: 0; }
+
+.paragraph.lead > p, #preamble > .sectionbody > .paragraph:first-of-type p { color: black; }
+
+table.tableblock #preamble > .sectionbody > .paragraph:first-of-type p { font-size: inherit; }
+
+.admonitionblock > table { border-collapse: separate; border: 0; background: none; width: 100%; }
+.admonitionblock > table td.icon { text-align: center; width: 80px; }
+.admonitionblock > table td.icon img { max-width: none; }
+.admonitionblock > table td.icon .title { font-weight: bold; font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif; text-transform: uppercase; }
+.admonitionblock > table td.content { padding-left: 1.125em; padding-right: 1.25em; border-left: 1px solid #dddddd; color: #555555; }
+.admonitionblock > table td.content > :last-child > :last-child { margin-bottom: 0; }
+
+.exampleblock > .content { border-style: solid; border-width: 1px; border-color: #e6e6e6; margin-bottom: 1.25em; padding: 1.25em; background: white; -webkit-border-radius: 0; border-radius: 0; }
+.exampleblock > .content > :first-child { margin-top: 0; }
+.exampleblock > .content > :last-child { margin-bottom: 0; }
+
+.sidebarblock { border-style: solid; border-width: 1px; border-color: #d9d9d9; margin-bottom: 1.25em; padding: 1.25em; background: #f2f2f2; -webkit-border-radius: 0; border-radius: 0; }
+.sidebarblock > :first-child { margin-top: 0; }
+.sidebarblock > :last-child { margin-bottom: 0; }
+.sidebarblock > .content > .title { color: #6f6f6f; margin-top: 0; }
+
+.exampleblock > .content > :last-child > :last-child, .exampleblock > .content .olist > ol > li:last-child > :last-child, .exampleblock > .content .ulist > ul > li:last-child > :last-child, .exampleblock > .content .qlist > ol > li:last-child > :last-child, .sidebarblock > .content > :last-child > :last-child, .sidebarblock > .content .olist > ol > li:last-child > :last-child, .sidebarblock > .content .ulist > ul > li:last-child > :last-child, .sidebarblock > .content .qlist > ol > li:last-child > :last-child { margin-bottom: 0; }
+
+.literalblock pre, .listingblock pre:not(.highlight), .listingblock pre[class="highlight"], .listingblock pre[class^="highlight "], .listingblock pre.CodeRay, .listingblock pre.prettyprint { background: #eeeeee; }
+.sidebarblock .literalblock pre, .sidebarblock .listingblock pre:not(.highlight), .sidebarblock .listingblock pre[class="highlight"], .sidebarblock .listingblock pre[class^="highlight "], .sidebarblock .listingblock pre.CodeRay, .sidebarblock .listingblock pre.prettyprint { background: #f2f1f1; }
+
+.literalblock pre, .literalblock pre[class], .listingblock pre, .listingblock pre[class] { border: 1px solid #cccccc; -webkit-border-radius: 0; border-radius: 0; word-wrap: break-word; padding: 0.8em 0.8em 0.65em 0.8em; font-size: 0.8125em; }
+.literalblock pre.nowrap, .literalblock pre[class].nowrap, .listingblock pre.nowrap, .listingblock pre[class].nowrap { overflow-x: auto; white-space: pre; word-wrap: normal; }
+@media only screen and (min-width: 768px) { .literalblock pre, .literalblock pre[class], .listingblock pre, .listingblock pre[class] { font-size: 0.90625em; } }
+@media only screen and (min-width: 1280px) { .literalblock pre, .literalblock pre[class], .listingblock pre, .listingblock pre[class] { font-size: 1em; } }
+
+.literalblock.output pre { color: #eeeeee; background-color: black; }
+
+.listingblock pre.highlightjs { padding: 0; }
+.listingblock pre.highlightjs > code { padding: 0.8em 0.8em 0.65em 0.8em; -webkit-border-radius: 0; border-radius: 0; }
+
+.listingblock > .content { position: relative; }
+
+.listingblock code[data-lang]:before { display: none; content: attr(data-lang); position: absolute; font-size: 0.75em; top: 0.425rem; right: 0.5rem; line-height: 1; text-transform: uppercase; color: #999; }
+
+.listingblock:hover code[data-lang]:before { display: block; }
+
+.listingblock.terminal pre .command:before { content: attr(data-prompt); padding-right: 0.5em; color: #999; }
+
+.listingblock.terminal pre .command:not([data-prompt]):before { content: "$"; }
+
+table.pyhltable { border-collapse: separate; border: 0; margin-bottom: 0; background: none; }
+
+table.pyhltable td { vertical-align: top; padding-top: 0; padding-bottom: 0; }
+
+table.pyhltable td.code { padding-left: .75em; padding-right: 0; }
+
+pre.pygments .lineno, table.pyhltable td:not(.code) { color: #999; padding-left: 0; padding-right: .5em; border-right: 1px solid #dddddd; }
+
+pre.pygments .lineno { display: inline-block; margin-right: .25em; }
+
+table.pyhltable .linenodiv { background: none !important; padding-right: 0 !important; }
+
+.quoteblock { margin: 0 1em 1.25em 1.5em; display: table; }
+.quoteblock > .title { margin-left: -1.5em; margin-bottom: 0.75em; }
+.quoteblock blockquote, .quoteblock blockquote p { color: #6f6f6f; font-size: 1.15rem; line-height: 1.75; word-spacing: 0.1em; letter-spacing: 0; font-style: italic; text-align: justify; }
+.quoteblock blockquote { margin: 0; padding: 0; border: 0; }
+.quoteblock blockquote:before { content: "\201c"; float: left; font-size: 2.75em; font-weight: bold; line-height: 0.6em; margin-left: -0.6em; color: #6f6f6f; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); }
+.quoteblock blockquote > .paragraph:last-child p { margin-bottom: 0; }
+.quoteblock .attribution { margin-top: 0.5em; margin-right: 0.5ex; text-align: right; }
+.quoteblock .quoteblock { margin-left: 0; margin-right: 0; padding: 0.5em 0; border-left: 3px solid #555555; }
+.quoteblock .quoteblock blockquote { padding: 0 0 0 0.75em; }
+.quoteblock .quoteblock blockquote:before { display: none; }
+
+.verseblock { margin: 0 1em 1.25em 1em; }
+.verseblock pre { font-family: "Open Sans", "DejaVu Sans", sans; font-size: 1.15rem; color: #6f6f6f; font-weight: 300; text-rendering: optimizeLegibility; }
+.verseblock pre strong { font-weight: 400; }
+.verseblock .attribution { margin-top: 1.25rem; margin-left: 0.5ex; }
+
+.quoteblock .attribution, .verseblock .attribution { font-size: 0.8125em; line-height: 1.45; font-style: italic; }
+.quoteblock .attribution br, .verseblock .attribution br { display: none; }
+.quoteblock .attribution cite, .verseblock .attribution cite { display: block; letter-spacing: -0.05em; color: #555555; }
+
+.quoteblock.abstract { margin: 0 0 1.25em 0; display: block; }
+.quoteblock.abstract blockquote, .quoteblock.abstract blockquote p { text-align: left; word-spacing: 0; }
+.quoteblock.abstract blockquote:before, .quoteblock.abstract blockquote p:first-of-type:before { display: none; }
+
+table.tableblock { max-width: 100%; border-collapse: separate; }
+table.tableblock td > .paragraph:last-child p > p:last-child, table.tableblock th > p:last-child, table.tableblock td > p:last-child { margin-bottom: 0; }
+
+table.spread { width: 100%; }
+
+table.tableblock, th.tableblock, td.tableblock { border: 0 solid #dddddd; }
+
+table.grid-all th.tableblock, table.grid-all td.tableblock { border-width: 0 1px 1px 0; }
+
+table.grid-all tfoot > tr > th.tableblock, table.grid-all tfoot > tr > td.tableblock { border-width: 1px 1px 0 0; }
+
+table.grid-cols th.tableblock, table.grid-cols td.tableblock { border-width: 0 1px 0 0; }
+
+table.grid-all * > tr > .tableblock:last-child, table.grid-cols * > tr > .tableblock:last-child { border-right-width: 0; }
+
+table.grid-rows th.tableblock, table.grid-rows td.tableblock { border-width: 0 0 1px 0; }
+
+table.grid-all tbody > tr:last-child > th.tableblock, table.grid-all tbody > tr:last-child > td.tableblock, table.grid-all thead:last-child > tr > th.tableblock, table.grid-rows tbody > tr:last-child > th.tableblock, table.grid-rows tbody > tr:last-child > td.tableblock, table.grid-rows thead:last-child > tr > th.tableblock { border-bottom-width: 0; }
+
+table.grid-rows tfoot > tr > th.tableblock, table.grid-rows tfoot > tr > td.tableblock { border-width: 1px 0 0 0; }
+
+table.frame-all { border-width: 1px; }
+
+table.frame-sides { border-width: 0 1px; }
+
+table.frame-topbot { border-width: 1px 0; }
+
+th.halign-left, td.halign-left { text-align: left; }
+
+th.halign-right, td.halign-right { text-align: right; }
+
+th.halign-center, td.halign-center { text-align: center; }
+
+th.valign-top, td.valign-top { vertical-align: top; }
+
+th.valign-bottom, td.valign-bottom { vertical-align: bottom; }
+
+th.valign-middle, td.valign-middle { vertical-align: middle; }
+
+table thead th, table tfoot th { font-weight: bold; }
+
+tbody tr th { display: table-cell; line-height: 1.4; background: whitesmoke; }
+
+tbody tr th, tbody tr th p, tfoot tr th, tfoot tr th p { color: #222222; font-weight: bold; }
+
+p.tableblock > code:only-child { background: none; padding: 0; }
+
+p.tableblock { font-size: 1em; }
+
+td > div.verse { white-space: pre; }
+
+ol { margin-left: 2.5em; }
+
+ul li ol { margin-left: 1.5em; }
+
+dl dd { margin-left: 1.125em; }
+
+dl dd:last-child, dl dd:last-child > :last-child { margin-bottom: 0; }
+
+ol > li p, ul > li p, ul dd, ol dd, .olist .olist, .ulist .ulist, .ulist .olist, .olist .ulist { margin-bottom: 0.625em; }
+
+ul.unstyled, ol.unnumbered, ul.checklist, ul.none { list-style-type: none; }
+
+ul.unstyled, ol.unnumbered, ul.checklist { margin-left: 0.625em; }
+
+ul.checklist li > p:first-child > .fa-check-square-o:first-child, ul.checklist li > p:first-child > input[type="checkbox"]:first-child { margin-right: 0.25em; }
+
+ul.checklist li > p:first-child > input[type="checkbox"]:first-child { position: relative; top: 1px; }
+
+ul.inline { margin: 0 auto 0.625em auto; margin-left: -1.375em; margin-right: 0; padding: 0; list-style: none; overflow: hidden; }
+ul.inline > li { list-style: none; float: left; margin-left: 1.375em; display: block; }
+ul.inline > li > * { display: block; }
+
+.unstyled dl dt { font-weight: normal; font-style: normal; }
+
+ol.arabic { list-style-type: decimal; }
+
+ol.decimal { list-style-type: decimal-leading-zero; }
+
+ol.loweralpha { list-style-type: lower-alpha; }
+
+ol.upperalpha { list-style-type: upper-alpha; }
+
+ol.lowerroman { list-style-type: lower-roman; }
+
+ol.upperroman { list-style-type: upper-roman; }
+
+ol.lowergreek { list-style-type: lower-greek; }
+
+.hdlist > table, .colist > table { border: 0; background: none; }
+.hdlist > table > tbody > tr, .colist > table > tbody > tr { background: none; }
+
+td.hdlist1 { padding-right: .75em; font-weight: bold; }
+
+td.hdlist1, td.hdlist2 { vertical-align: top; }
+
+.literalblock + .colist, .listingblock + .colist { margin-top: -0.5em; }
+
+.colist > table tr > td:first-of-type { padding: 0 0.75em; line-height: 1; }
+.colist > table tr > td:last-of-type { padding: 0.25em 0; }
+
+.thumb, .th { line-height: 0; display: inline-block; border: solid 4px white; -webkit-box-shadow: 0 0 0 1px #dddddd; box-shadow: 0 0 0 1px #dddddd; }
+
+.imageblock.left, .imageblock[style*="float: left"] { margin: 0.25em 0.625em 1.25em 0; }
+.imageblock.right, .imageblock[style*="float: right"] { margin: 0.25em 0 1.25em 0.625em; }
+.imageblock > .title { margin-bottom: 0; }
+.imageblock.thumb, .imageblock.th { border-width: 6px; }
+.imageblock.thumb > .title, .imageblock.th > .title { padding: 0 0.125em; }
+
+.image.left, .image.right { margin-top: 0.25em; margin-bottom: 0.25em; display: inline-block; line-height: 0; }
+.image.left { margin-right: 0.625em; }
+.image.right { margin-left: 0.625em; }
+
+a.image { text-decoration: none; }
+
+span.footnote, span.footnoteref { vertical-align: super; font-size: 0.875em; }
+span.footnote a, span.footnoteref a { text-decoration: none; }
+span.footnote a:active, span.footnoteref a:active { text-decoration: underline; }
+
+#footnotes { padding-top: 0.75em; padding-bottom: 0.75em; margin-bottom: 0.625em; }
+#footnotes hr { width: 20%; min-width: 6.25em; margin: -.25em 0 .75em 0; border-width: 1px 0 0 0; }
+#footnotes .footnote { padding: 0 0.375em; line-height: 1.3; font-size: 0.875em; margin-left: 1.2em; text-indent: -1.2em; margin-bottom: .2em; }
+#footnotes .footnote a:first-of-type { font-weight: bold; text-decoration: none; }
+#footnotes .footnote:last-of-type { margin-bottom: 0; }
+
+#content #footnotes { margin-top: -0.625em; margin-bottom: 0; padding: 0.75em 0; }
+
+.gist .file-data > table { border: 0; background: #fff; width: 100%; margin-bottom: 0; }
+.gist .file-data > table td.line-data { width: 99%; }
+
+div.unbreakable { page-break-inside: avoid; }
+
+.big { font-size: larger; }
+
+.small { font-size: smaller; }
+
+.underline { text-decoration: underline; }
+
+.overline { text-decoration: overline; }
+
+.line-through { text-decoration: line-through; }
+
+.aqua { color: #00bfbf; }
+
+.aqua-background { background-color: #00fafa; }
+
+.black { color: black; }
+
+.black-background { background-color: black; }
+
+.blue { color: #0000bf; }
+
+.blue-background { background-color: #0000fa; }
+
+.fuchsia { color: #bf00bf; }
+
+.fuchsia-background { background-color: #fa00fa; }
+
+.gray { color: #606060; }
+
+.gray-background { background-color: #7d7d7d; }
+
+.green { color: #006000; }
+
+.green-background { background-color: #007d00; }
+
+.lime { color: #00bf00; }
+
+.lime-background { background-color: #00fa00; }
+
+.maroon { color: #600000; }
+
+.maroon-background { background-color: #7d0000; }
+
+.navy { color: #000060; }
+
+.navy-background { background-color: #00007d; }
+
+.olive { color: #606000; }
+
+.olive-background { background-color: #7d7d00; }
+
+.purple { color: #600060; }
+
+.purple-background { background-color: #7d007d; }
+
+.red { color: #bf0000; }
+
+.red-background { background-color: #fa0000; }
+
+.silver { color: #909090; }
+
+.silver-background { background-color: #bcbcbc; }
+
+.teal { color: #006060; }
+
+.teal-background { background-color: #007d7d; }
+
+.white { color: #bfbfbf; }
+
+.white-background { background-color: #fafafa; }
+
+.yellow { color: #bfbf00; }
+
+.yellow-background { background-color: #fafa00; }
+
+span.icon > .fa { cursor: default; }
+
+.admonitionblock td.icon [class^="fa icon-"] { font-size: 2.5em; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); cursor: default; }
+.admonitionblock td.icon .icon-note:before { content: "\f05a"; color: #207c98; }
+.admonitionblock td.icon .icon-tip:before { content: "\f0eb"; text-shadow: 1px 1px 2px rgba(155, 155, 0, 0.8); color: #111; }
+.admonitionblock td.icon .icon-warning:before { content: "\f071"; color: #bf6900; }
+.admonitionblock td.icon .icon-caution:before { content: "\f06d"; color: #bf3400; }
+.admonitionblock td.icon .icon-important:before { content: "\f06a"; color: #bf0000; }
+
+.conum[data-value] { display: inline-block; color: #fff !important; background-color: #222222; -webkit-border-radius: 100px; border-radius: 100px; text-align: center; font-size: 0.75em; width: 1.67em; height: 1.67em; line-height: 1.67em; font-family: "Open Sans", "DejaVu Sans", sans-serif; font-style: normal; font-weight: bold; }
+.conum[data-value] * { color: #fff !important; }
+.conum[data-value] + b { display: none; }
+.conum[data-value]:after { content: attr(data-value); }
+pre .conum[data-value] { position: relative; top: -0.125em; }
+
+b.conum * { color: inherit !important; }
+
+.conum:not([data-value]):empty { display: none; }
+
+.literalblock pre, .listingblock pre { background: #eeeeee; }
+
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css">
+<style>.listingblock .pygments .hll { background-color: #ffffcc }
+.listingblock .pygments  { background: #f8f8f8; }
+.listingblock .pygments .tok-c { color: #408080; font-style: italic } /* Comment */
+.listingblock .pygments .tok-err { border: 1px solid #FF0000 } /* Error */
+.listingblock .pygments .tok-k { color: #008000; font-weight: bold } /* Keyword */
+.listingblock .pygments .tok-o { color: #666666 } /* Operator */
+.listingblock .pygments .tok-cm { color: #408080; font-style: italic } /* Comment.Multiline */
+.listingblock .pygments .tok-cp { color: #BC7A00 } /* Comment.Preproc */
+.listingblock .pygments .tok-c1 { color: #408080; font-style: italic } /* Comment.Single */
+.listingblock .pygments .tok-cs { color: #408080; font-style: italic } /* Comment.Special */
+.listingblock .pygments .tok-gd { color: #A00000 } /* Generic.Deleted */
+.listingblock .pygments .tok-ge { font-style: italic } /* Generic.Emph */
+.listingblock .pygments .tok-gr { color: #FF0000 } /* Generic.Error */
+.listingblock .pygments .tok-gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.listingblock .pygments .tok-gi { color: #00A000 } /* Generic.Inserted */
+.listingblock .pygments .tok-go { color: #888888 } /* Generic.Output */
+.listingblock .pygments .tok-gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.listingblock .pygments .tok-gs { font-weight: bold } /* Generic.Strong */
+.listingblock .pygments .tok-gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.listingblock .pygments .tok-gt { color: #0044DD } /* Generic.Traceback */
+.listingblock .pygments .tok-kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.listingblock .pygments .tok-kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.listingblock .pygments .tok-kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.listingblock .pygments .tok-kp { color: #008000 } /* Keyword.Pseudo */
+.listingblock .pygments .tok-kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.listingblock .pygments .tok-kt { color: #B00040 } /* Keyword.Type */
+.listingblock .pygments .tok-m { color: #666666 } /* Literal.Number */
+.listingblock .pygments .tok-s { color: #BA2121 } /* Literal.String */
+.listingblock .pygments .tok-na { color: #7D9029 } /* Name.Attribute */
+.listingblock .pygments .tok-nb { color: #008000 } /* Name.Builtin */
+.listingblock .pygments .tok-nc { color: #0000FF; font-weight: bold } /* Name.Class */
+.listingblock .pygments .tok-no { color: #880000 } /* Name.Constant */
+.listingblock .pygments .tok-nd { color: #AA22FF } /* Name.Decorator */
+.listingblock .pygments .tok-ni { color: #999999; font-weight: bold } /* Name.Entity */
+.listingblock .pygments .tok-ne { color: #D2413A; font-weight: bold } /* Name.Exception */
+.listingblock .pygments .tok-nf { color: #0000FF } /* Name.Function */
+.listingblock .pygments .tok-nl { color: #A0A000 } /* Name.Label */
+.listingblock .pygments .tok-nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+.listingblock .pygments .tok-nt { color: #008000; font-weight: bold } /* Name.Tag */
+.listingblock .pygments .tok-nv { color: #19177C } /* Name.Variable */
+.listingblock .pygments .tok-ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
+.listingblock .pygments .tok-w { color: #bbbbbb } /* Text.Whitespace */
+.listingblock .pygments .tok-mb { color: #666666 } /* Literal.Number.Bin */
+.listingblock .pygments .tok-mf { color: #666666 } /* Literal.Number.Float */
+.listingblock .pygments .tok-mh { color: #666666 } /* Literal.Number.Hex */
+.listingblock .pygments .tok-mi { color: #666666 } /* Literal.Number.Integer */
+.listingblock .pygments .tok-mo { color: #666666 } /* Literal.Number.Oct */
+.listingblock .pygments .tok-sb { color: #BA2121 } /* Literal.String.Backtick */
+.listingblock .pygments .tok-sc { color: #BA2121 } /* Literal.String.Char */
+.listingblock .pygments .tok-sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.listingblock .pygments .tok-s2 { color: #BA2121 } /* Literal.String.Double */
+.listingblock .pygments .tok-se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
+.listingblock .pygments .tok-sh { color: #BA2121 } /* Literal.String.Heredoc */
+.listingblock .pygments .tok-si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
+.listingblock .pygments .tok-sx { color: #008000 } /* Literal.String.Other */
+.listingblock .pygments .tok-sr { color: #BB6688 } /* Literal.String.Regex */
+.listingblock .pygments .tok-s1 { color: #BA2121 } /* Literal.String.Single */
+.listingblock .pygments .tok-ss { color: #19177C } /* Literal.String.Symbol */
+.listingblock .pygments .tok-bp { color: #008000 } /* Name.Builtin.Pseudo */
+.listingblock .pygments .tok-vc { color: #19177C } /* Name.Variable.Class */
+.listingblock .pygments .tok-vg { color: #19177C } /* Name.Variable.Global */
+.listingblock .pygments .tok-vi { color: #19177C } /* Name.Variable.Instance */
+.listingblock .pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
+</style>
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>Servidores web y PaaS</h1>
+<div class="details">
+<span id="author" class="author">José Luis Zamora Sánchez</span><br>
+<span id="email" class="email">&lt;<a href="mailto:joseluiszamora.jlz@gmail.com">joseluiszamora.jlz@gmail.com</a>&gt;</span><br>
+</div>
+<div id="toc" class="toc2">
+<div id="toctitle">Índice de contenidos</div>
+<ul class="sectlevel1">
+<li><a href="#sesion04">4. Certificados digitales y SSL</a>
+<ul class="sectlevel2">
+<li><a href="#_seguridad_en_la_capa_de_transporte">4.1. Seguridad en la capa de transporte</a>
+<ul class="sectlevel3">
+<li><a href="#_certificados_digitales">4.1.1. Certificados digitales</a></li>
+<li><a href="#_introducci%C3%B3n_a_ssl">4.1.2. Introducción a SSL</a></li>
+<li><a href="#_one_way_y_two_way_ssl">4.1.3. One-Way y Two-Way SSL</a></li>
+<li><a href="#_creaci%C3%B3n_de_una_ca_ficticia">4.1.4. Creación de una CA ficticia</a></li>
+</ul>
+</li>
+<li><a href="#_referencias">4.2. Referencias</a></li>
+<li><a href="#_ejercicios_de_certificados_digitales_y_ssl">4.3. Ejercicios de certificados digitales y SSL</a>
+<ul class="sectlevel3">
+<li><a href="#_encriptaci%C3%B3n_de_las_comunicaciones_one_way_ssl_0_4_puntos">4.3.1. Encriptación de las comunicaciones One-Way SSL (0.4 puntos)</a></li>
+<li><a href="#_encriptaci%C3%B3n_de_las_comunicaciones_con_two_way_ssl_0_4_puntos">4.3.2. Encriptación de las comunicaciones con Two-Way SSL (0.4 puntos)</a></li>
+<li><a href="#_autenticaci%C3%B3n_de_usuario_a_partir_del_certificado_0_4_puntos">4.3.3. Autenticación de usuario a partir del certificado (0.4 puntos)</a></li>
+<li><a href="#_entrega">4.3.4. Entrega</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div style="page-break-after: always;"></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="sesion04">4. Certificados digitales y SSL</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Esta sesión está dedicada a entender en qué consiste la seguridad en la capa de transporte y cómo utilizar certificados digitales.</p>
+</div>
+<div class="sect2">
+<h3 id="_seguridad_en_la_capa_de_transporte">4.1. Seguridad en la capa de transporte</h3>
+<div class="sect3">
+<h4 id="_certificados_digitales">4.1.1. Certificados digitales</h4>
+<div class="paragraph">
+<p>Junto con los passwords, el mecanismo de autentificación más común en aplicaciones enterprise son los certificados. Comúnmente se emplean para autentificar al servidor, pero también se pueden usar para el cliente, como se hace en la mayoría de organismos oficiales que ofrecen servicios a través de la red.</p>
+</div>
+<div class="paragraph">
+<p>El uso de certificados viene derivado de la criptografía asimétrica en las que se trabaja con dos claves una privada y una pública. En el caso de una comunicación emisor/receptor podemos plantear dos supuestos:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>El emisor encripta un mensaje mediante una clave pública y el receptor lo desencripta mediante una clave privada que sólo él conoce. Este tipo de comunicación garantiza la confidencialidad del mensaje pues sólo el receptor puede saber qué contiene realmente.</p>
+</li>
+<li>
+<p>El emisor encripta un mensaje mediante una clave privada que sólo él conoce. El receptor en cambio lo desencripta con una clave pública que cualquier puede utilizar. Mediante este sistema garantizamos la identidad del emisor, y es la base de la <strong>firma digital</strong>.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Un certificado digital no es ni más ni menos que un pequeño documento en el que incluye información sobre la identidad de un individuo o empresa, y una clave pública asociada a este individuo. Por este motivo, también se les conoce como certificados de clave pública o certificados de identidad. Existen varios formatos para certificados digitales no obstante los más comunes se rigen por el estándar <strong>X.509</strong>.</p>
+</div>
+<div class="paragraph">
+<p>Esta asociación debe ir firmada digitalmente por alguien de confianza que le otorgue validez, que son las denominadas <strong>autoridades de certificación</strong> (CA). Hay autoridades de certificación privadas, compañías como Thawte o Verisign, y también públicas. En España tenemos la FNMT y en muchas comunidades autónomas también tienen sus propias CA&#8217;s.</p>
+</div>
+<div class="paragraph">
+<p>Estas entidades a su vez utilizan certificados digitales para acreditar su identidad y poder firmar digitalmente nuestros certificados, por tanto podríamos llegar a plantearnos ¿Quién firma los certificados de las autoridades certificadoras?</p>
+</div>
+<div class="paragraph">
+<p>Para evitar una sucesión de certificados sin fin, existen los denominados certificados <strong>autofirmados</strong>, es decir firmados por el propio titular del certificado. Evidentemente estos certificados son un punto crítico en la seguridad del sistema y sólo deben obtenerse de fuentes y métodos absolutamente fiables. Normalmente vienen ya instalados en los sistemas (servidores de aplicaciones o navegadores) o se obtienen de forma presencial.</p>
+</div>
+<div class="paragraph">
+<p>La secuencia anidada de certificados se denomina <em>cadena de confianza</em> (chain of trust). En dicha cadena, el certificado auto-firmado se denomina <em>certificado raíz</em> (root certificate).</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_introducción_a_ssl">4.1.2. Introducción a SSL</h4>
+<div class="paragraph">
+<p>SSL es un protocolo es un protocolo desarrollado por Netscape, para permitir confidencialidad y autenticación en Internet. Funciona como una capa adicional con lo cual es posible combinarlo con HTTP, FTP o TELNET que son protocolos que operan en la capa aplicación de TCP/IP.</p>
+</div>
+<div class="paragraph">
+<p>Para establecer una comunicación segura,  cliente y servidor entablan un diálogo denominado <strong>handshake</strong>:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/paas04/ssl1.png" alt="ssl1" width="50%">
+</div>
+</div>
+<div class="paragraph">
+<p>Las fases son las siguientes:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Solicitud de SSL: El cliente solicita al servidor un recurso mediante conexión segura SSL. El servidor normalmente acepta este tipo de peticiones por un puerto distinto al habitual.</p>
+</li>
+<li>
+<p>El servidor responde enviando un certificado digital para que el cliente pueda comprobar la identidad del servidor,  el algoritmo de criptografía más potente de los que ambos puedan utilizar y una clave pública para encriptar la información que van a intercambiar.</p>
+</li>
+<li>
+<p>El cliente comprueba si el certificado es de un sitio de confianza y si esto es así genera una clave privada de "sesión" aleatoria que envía encriptada al servidor con su clave pública.</p>
+</li>
+<li>
+<p>Esta clave de sesión junto con el algoritmo de encriptación es lo que se va a utilizar en cada mensaje entre cliente y servidor. Para verificar los valores negociados, ambas partes se envían de nuevo la clave de sesión y verifican que coincidan. Si esto es así, la fase de handshake finaliza y se establece el canal de comunicación seguro.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_one_way_y_two_way_ssl">4.1.3. One-Way y Two-Way SSL</h4>
+<div class="paragraph">
+<p>En el ejemplo de handshake anterior, observamos que es el servidor el que en un momento dado debe acreditar su identidad mediante  un certificado digital, que el cliente debe validar. Este tipo de negociación recibe el nombre de One-Way SSL.</p>
+</div>
+<div class="paragraph">
+<p>Adicionalmente, puede exigir al cliente al cliente que se identifique enviando otro certificado digital, que el servidor deberá validar. Si el uno confía en el otro, se establecerá el canal de comunicación seguro. A esta modalidad de SSL se la denomina Two-Way SSL.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_creación_de_una_ca_ficticia">4.1.4. Creación de una CA ficticia</h4>
+<div class="paragraph">
+<p>El primer paso para trabajar con certificados y SSL es verificar que tenemos instaladas las herramientas OpenSSL. Podéis probar a ejecutar <em>openssl</em> y si no se reconoce el comando instalarlo con:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="console"><span class="tok-go">sudo apt-get install openssl</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Una vez instalado, hay que realizar un cambio en la configuración, que nos va a permitir firmar certificados:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="console"><span class="tok-go">/usr/lib/ssl/openssl.conf Línea 170</span>
+
+<span class="tok-go">basicConstraints=CA:TRUE  # Antes FALSE</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Utilizaremos <em>openssql</em> para generar certificados y firmar, y la herramienta <em>keytool</em> de java para importar estos certificados en almacenes de certificados en formato JKS.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+keytool es una herramienta muy completa pero está pensada para trabajar con certificados autofirmados (que adicionalmente pueden ser enviados a una CA para que los firme). OpenSSL proporciona comandos para firmar certificados a partir de uno especificado como parámetro, a modo de CA y simular completamente lo que haría una autoridad de certificación.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Los almacenes son ficheros protegidos donde podemos almacénar uno o mas certificados digitales. Cada certificado digital estará asociado a un <em>alias</em> que se utilizará para recuperar el certificado del almacén. Es habitual tener un almacén para los certificados de identidad (aquellos que el servidor de aplicaciones utiliza para identificarse) y otro de confianza (certificados de cliente y/o CA&#8217;s considerados como válidos).</p>
+</div>
+<div class="paragraph">
+<p>1.- Para empezar, vamos a definir un certificado de CA ficticia que será quien de "credibilidad" a los certificados que vamos a crear.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="console"><span class="tok-go">openssl req -x509 -newkey rsa:2048 -keyout selfkey.pem -out selfcert.pem -days 365</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Este comando nos pedirá la información que describirá a nuestra CA:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/paas04/CACert.png" alt="CACert">
+</div>
+</div>
+<div class="paragraph">
+<p>2.-  Ahora importaremos este certificado en un almacén denominado trust.jks (certificados de confianza)</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="console"><span class="tok-go">keytool -import -trustcacerts -alias trustself -keystore trust.jks -file selfcert.pem -keyalg RSA -keypass secreto -storepass secreto</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>A continuación veremos como definir configurar WildFly en función del tipo de seguridad que queremos configurar.</p>
+</div>
+<div class="sect4">
+<h5 id="_configuración_del_servidor_para_one_way_ssl">Configuración  del servidor para One-Way SSL</h5>
+<div class="paragraph">
+<p>En esta modalida de SSL, es el servidor el que debe identificarse al cliente y éste confiar en él (o no).</p>
+</div>
+<div class="paragraph">
+<p>Pasos a seguir:</p>
+</div>
+<div class="paragraph">
+<p>1.- Crear un certificado que identifique a nuestro servidor, para ello utilizaremos OpenSSL y los siguientes comandos:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="console"><span class="tok-go">openssl genrsa -out server.key  1024	#crear una clave nueva de certificado</span>
+<span class="tok-go">openssl req -new -key server.key -out server.csr #crear una petición de certificado.</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Al ejecutar el segundo comando, la herramienta nos irá pidiendo datos para incluir en la petición de certificado:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/paas04/ServerCert.png" alt="ServerCert">
+</div>
+</div>
+<div class="paragraph">
+<p>Si quisiéramos obtener un certificado aprobado por una CA real, deberíamos enviar el fichero server.csr a dicha autoridad ( y pagar), y esta nos generará el certificado y nos dará las instrucciones necesarias para descargarlo.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Si alguien está interesado, algunas CA&#8217;s como Verisign ofrecen certificados válidos durante 30 días a modo de prueba.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>2.- Creación del certificado firmado con el certificado con nuestra CA:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="console"><span class="tok-go">openssl x509 -req -days 365 -in server.csr -CA selfcert.pem -CAkey selfkey.pem -set_serial 01 -out server.crt</span></code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+El serial number del certificado sirve para identificar los certificados firmados por una CA, y debe ser distinto para cada certificado. Por simplicidad, vamos a enumerarlos manualmente.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>3.- Importar el certificado en nuestro almacén de identidad:</p>
+</div>
+<div class="paragraph">
+<p>La herramienta keytool no permite importar la clave privada de los certificados en los almacenes a partir de un certificado y su clave, por lo que tenemos que recurrir a un formato intermedio:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="console"><span class="tok-gp">#</span> Convertir a PKCS12
+<span class="tok-go">openssl pkcs12 -export -name servercert -in server.crt -inkey server.key -out keystore.p12</span>
+<span class="tok-gp">#</span>finalmente importarlo en jks
+<span class="tok-go">keytool -importkeystore -destkeystore identity.jks -srckeystore keystore.p12 -srcstoretype pkcs12 -alias servercert -keypass secreto -storepass secreto</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>4.- Comprobar que los certificados están importados correctamente:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="console"><span class="tok-go">keytool -list -v -keystore trust.jks -storepass secreto</span>
+<span class="tok-go">keytool -list -v -keystore identity.jks -storepass secreto</span></code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Hay muchas contraseñas involucradas en este proceso. Para no complicarnos demasiado utilizaremos la palabra "secreto" como contraseña en todos los casos.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>5.- Copiar los almacenes a la carpeta <em>standalone/configuration</em></p>
+</div>
+<div class="paragraph">
+<p>6.- Definir el realm asociado a los certificados:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="xml"><span class="tok-nt">&lt;security-realm</span> <span class="tok-na">name=</span><span class="tok-s">&quot;SecureRealm&quot;</span><span class="tok-nt">&gt;</span>
+	<span class="tok-nt">&lt;server-identities&gt;</span>
+		<span class="tok-nt">&lt;ssl&gt;</span>
+			<span class="tok-nt">&lt;keystore</span> <span class="tok-na">path=</span><span class="tok-s">&quot;identity.jks&quot;</span> <span class="tok-na">relative-to=</span><span class="tok-s">&quot;jboss.server.config.dir&quot;</span> <span class="tok-na">keystore-password=</span><span class="tok-s">&quot;secreto&quot;</span> <span class="tok-na">alias=</span><span class="tok-s">&quot;servercert&quot;</span> <span class="tok-na">key-password=</span><span class="tok-s">&quot;secreto&quot;</span><span class="tok-nt">/&gt;</span>
+		<span class="tok-nt">&lt;/ssl&gt;</span>
+	<span class="tok-nt">&lt;/server-identities&gt;</span>
+<span class="tok-nt">&lt;/security-realm&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>7.- Para activar SSL hay que definir un <em>https-listener</em> dentro del subsistema <em>undertow</em> (el servidor web de WildFly):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="xml"><span class="tok-nt">&lt;subsystem</span> <span class="tok-na">xmlns=</span><span class="tok-s">&quot;urn:jboss:domain:undertow:1.2&quot;</span><span class="tok-nt">&gt;</span>
+<span class="tok-nt">&lt;buffer-cache</span> <span class="tok-na">name=</span><span class="tok-s">&quot;default&quot;</span><span class="tok-nt">/&gt;</span>
+<span class="tok-nt">&lt;server</span> <span class="tok-na">name=</span><span class="tok-s">&quot;default-server&quot;</span><span class="tok-nt">&gt;</span>
+	<span class="tok-nt">&lt;http-listener</span> <span class="tok-na">name=</span><span class="tok-s">&quot;default&quot;</span> <span class="tok-na">socket-binding=</span><span class="tok-s">&quot;http&quot;</span><span class="tok-nt">/&gt;</span>
+
+	<span class="tok-nt">&lt;https-listener</span> <span class="tok-na">name=</span><span class="tok-s">&quot;https&quot;</span> <span class="tok-na">socket-binding=</span><span class="tok-s">&quot;https&quot;</span> <span class="tok-na">security-realm=</span><span class="tok-s">&quot;SecureRealm&quot;</span><span class="tok-nt">/&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Hay dos elementos interesantes en esta línea:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>El parámetro socket_binding está asociado a "https" pero aplica tanto a las peticiones estándar (8443) como a las de <em>management-https</em>, (9993).</p>
+</li>
+<li>
+<p>El parámetro security-realm asocia el canal a un Security Realm que será el que contenga al certificado de identidad del servidor.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Con esta configuración, estamos indicando que para las peticiones que lleguen por https nuestro servidor se identificará con el certificado asociado al alias <em>servercert</em>.</p>
+</div>
+<div class="paragraph">
+<p>8.- Iniciar el servidor. Con esto ya hemos completado los pasos para implementar One Way SSL pero ahora nos queda hacer que el navegador reconozca el certificado servercert como válido.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/paas04/ssl3.png" alt="ssl3" width="66%">
+</div>
+</div>
+<div class="paragraph">
+<p>Para conseguir esto basta con importar el certificado de la CA en la lista de certificados de autoridades certificadoras del navegador. En Firefox iremos a <em>Editar&#8594;Preferencias&#8594;Avanzado&#8594;Cifrado&#8594;Ver certificados</em>:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/paas04/cert4.jpg" alt="cert4" width="66%">
+</div>
+</div>
+<div class="paragraph">
+<p>Pincharemos en importar y seleccionaremos el archivo <strong>selfcert.pem</strong></p>
+</div>
+<div class="paragraph">
+<p>Se nos pedirá definir para que se utilizará el certificado. Marcamos todas las opciones y aceptamos:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/paas04/ssl4.png" alt="ssl4" width="66%">
+</div>
+</div>
+<div class="paragraph">
+<p>A partir de ahora, si accedemos a la consola, o a cualquier aplicación desplegada en el servidor veremos que se acepta el certificado que envía el servidor:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/paas04/ssl5.png" alt="ssl5" width="50%">
+</div>
+</div>
+<div class="sect5">
+<h6 id="_cambios_en_las_aplicaciones_web">Cambios en las aplicaciones web</h6>
+<div class="paragraph">
+<p>Si queremos que una serie de recursos de nuestra aplicación se muestren forzosamente mediante SSL, debemos añadir una restricción al archivo web.xml</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="xml"><span class="tok-nt">&lt;security-constraint&gt;</span>
+<span class="tok-nt">&lt;web-resource-collection&gt;</span>
+<span class="tok-nt">&lt;web-resource-name&gt;</span>Redireccion SSL<span class="tok-nt">&lt;/web-resource-name&gt;</span>
+<span class="tok-nt">&lt;url-pattern&gt;</span>/*<span class="tok-nt">&lt;/url-pattern&gt;</span>
+<span class="tok-nt">&lt;/web-resource-collection&gt;</span>
+<span class="tok-nt">&lt;user-data-constraint&gt;</span>
+<span class="tok-nt">&lt;transport-guarantee&gt;</span>CONFIDENTIAL<span class="tok-nt">&lt;/transport-guarantee&gt;</span>
+<span class="tok-nt">&lt;/user-data-constraint&gt;</span>
+<span class="tok-nt">&lt;/security-constraint&gt;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_securizar_el_acceso_a_la_consola_web_de_administración">Securizar el acceso a la consola web de administración</h6>
+<div class="paragraph">
+<p>Ahora que ya conocemos como utilizar SSL, podemos aplicar estos mismos cambios al realm de administración de modo que podamos forzar el acceso a la consola mediante una conexión segura. Los cambios son los siguientes:</p>
+</div>
+<div class="paragraph">
+<p>1.- Añadir el certificado de servidor al ManagementRealm:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="xml"><span class="tok-nt">&lt;server-identities&gt;</span>
+	<span class="tok-nt">&lt;ssl&gt;</span>
+		<span class="tok-nt">&lt;keystore</span> <span class="tok-na">path=</span><span class="tok-s">&quot;identity.jks&quot;</span> <span class="tok-na">relative-to=</span><span class="tok-s">&quot;jboss.server.config.dir&quot;</span> <span class="tok-na">keystore-password=</span><span class="tok-s">&quot;secreto&quot;</span> <span class="tok-na">alias=</span><span class="tok-s">&quot;servercert&quot;</span> <span class="tok-na">key-password=</span><span class="tok-s">&quot;secreto&quot;</span><span class="tok-nt">/&gt;</span>
+	<span class="tok-nt">&lt;/ssl&gt;</span>
+<span class="tok-nt">&lt;/server-identities&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>2.-  Asociar el puerto seguro a la interfaz de administración:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="xml"><span class="tok-nt">&lt;http-interface</span> <span class="tok-na">security-realm=</span><span class="tok-s">&quot;ManagementRealm&quot;</span> <span class="tok-na">http-upgrade-enabled=</span><span class="tok-s">&quot;true&quot;</span><span class="tok-nt">&gt;</span>
+	<span class="tok-nt">&lt;socket-binding</span> <span class="tok-na">https=</span><span class="tok-s">&quot;management-https&quot;</span><span class="tok-nt">/&gt;</span> <span class="tok-c">&lt;!-- Sustituye a management-http --&gt;</span>
+<span class="tok-nt">&lt;/http-interface&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_configuración_del_servidor_para_two_way_ssl">Configuración  del servidor para Two-Way SSL</h5>
+<div class="paragraph">
+<p>Mediante este sistema cliente y servidor se identifican y validan recíprocamente. El configurar esta modalidad de SSL es sencillo, partiendo de la configuración One-Way.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Crear un certificado de cliente, firmado por nuestra CA ficticia:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="console"><span class="tok-go">openssl genrsa -out client.key  1024</span>
+<span class="tok-go">openssl req -new -key client.key -out client.csr</span>
+<span class="tok-go">openssl x509 -req -days 365 -in client.csr -CA selfcert.pem -set_serial 02 -CAkey selfkey.pem   -out client.crt</span></code></pre>
+</div>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/paas04/ClientCert.png" alt="ClientCert">
+</div>
+</div>
+</li>
+<li>
+<p>Convertir al formato PKCS12 que incluye clave pública y privada y es reconocido por Firefox:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="console"><span class="tok-go">openssl pkcs12 -export -name clientcert -in client.crt -inkey client.key -out clientstore.p12</span></code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Ahora importaremos el certificado en el navegador. Recordad que ya tenemos el de la CA. Se debe importar el archivo .p12 en la pestaña de "sus certificados":</p>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/paas04/ClientCert2.png" alt="ClientCert2">
+</div>
+</div>
+</li>
+<li>
+<p>Pasamos a continuación a WildFly donde activaremos la función de autenticación en el Security Realm <em>SecureRealm</em> especificando el almacén de certificados de confianza.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="xml"> <span class="tok-nt">&lt;security-realm</span> <span class="tok-na">name=</span><span class="tok-s">&quot;SecureRealm&quot;</span><span class="tok-nt">&gt;</span>
+                ....
+                <span class="tok-nt">&lt;authentication&gt;</span>
+                    <span class="tok-nt">&lt;truststore</span> <span class="tok-na">path=</span><span class="tok-s">&quot;trust.jks&quot;</span> <span class="tok-na">relative-to=</span><span class="tok-s">&quot;jboss.server.config.dir&quot;</span> <span class="tok-na">keystore-password=</span><span class="tok-s">&quot;secreto&quot;</span><span class="tok-nt">/&gt;</span>
+                <span class="tok-nt">&lt;/authentication&gt;</span>
+            <span class="tok-nt">&lt;/security-realm&gt;</span></code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Por último, tenemos que indicar que queremos que el servidor "pida" al cliente que se identifique. Esto lo hacemos añadiendo un parámetro adicional al _http-listener-:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="xml"><span class="tok-nt">&lt;https-listener</span> <span class="tok-na">name=</span><span class="tok-s">&quot;https&quot;</span> <span class="tok-na">socket-binding=</span><span class="tok-s">&quot;https&quot;</span> <span class="tok-na">security-realm=</span><span class="tok-s">&quot;SecureRealm&quot;</span> <span class="tok-na">verify-client=</span><span class="tok-s">&quot;REQUESTED&quot;</span><span class="tok-nt">/&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>El parámetro verify-client tiene tres valores posibles:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">NOT_REQUESTED</dt>
+<dd>
+<p>No solicitar certificado a cliente (valor por defecto)</p>
+</dd>
+<dt class="hdlist1">REQUESTED</dt>
+<dd>
+<p>Se pide certificado de cliente, pero si no se presenta se permite continuar la conexión segura.</p>
+</dd>
+<dt class="hdlist1">REQUIRED</dt>
+<dd>
+<p>Se requiere un certificado de cliente válido para poder establecer una conexión segura.</p>
+</dd>
+</dl>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_autorización_del_cliente_mediante_certificados">Autorización del cliente mediante certificados</h5>
+<div class="paragraph">
+<p>A partir de un usuario identificado por su certificado de cliente, también podemos determinar si tiene un rol asociado y en consecuencia permitirle o no el acceso a determinados recursos. En la sesión anterior hemos aprendido a definir login modules específicos para autenticación y autorización de usuarios con respecto a la información de usuarios que teníamos en ficheros, base de datos o en un directorio LDAP. Ahora introduciremos un nuevo login module: <em>CertificateRoles</em>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="xml"><span class="tok-nt">&lt;security-domain</span> <span class="tok-na">name=</span><span class="tok-s">&quot;seguridad-cert&quot;</span> <span class="tok-na">cache-type=</span><span class="tok-s">&quot;default&quot;</span><span class="tok-nt">&gt;</span>
+	<span class="tok-nt">&lt;authentication&gt;</span>
+		<span class="tok-nt">&lt;login-module</span> <span class="tok-na">code=</span><span class="tok-s">&quot;CertificateRoles&quot;</span> <span class="tok-na">flag=</span><span class="tok-s">&quot;required&quot;</span><span class="tok-nt">&gt;</span>
+			<span class="tok-nt">&lt;module-option</span> <span class="tok-na">name=</span><span class="tok-s">&quot;securityDomain&quot;</span> <span class="tok-na">value=</span><span class="tok-s">&quot;seguridad-cert&quot;</span><span class="tok-nt">/&gt;</span>
+			<span class="tok-nt">&lt;module-option</span> <span class="tok-na">name=</span><span class="tok-s">&quot;verifier&quot;</span> <span class="tok-na">value=</span><span class="tok-s">&quot;org.jboss.security.auth.certs.AnyCertVerifier&quot;</span><span class="tok-nt">/&gt;</span>
+			<span class="tok-nt">&lt;module-option</span> <span class="tok-na">name=</span><span class="tok-s">&quot;rolesProperties&quot;</span> <span class="tok-na">value=</span><span class="tok-s">&quot;file:/usr/local/wildfly/standalone/configuration/roles.properties&quot;</span><span class="tok-nt">/&gt;</span>
+		<span class="tok-nt">&lt;/login-module&gt;</span>
+	<span class="tok-nt">&lt;/authentication&gt;</span>
+	<span class="tok-nt">&lt;jsse</span> <span class="tok-na">keystore-password=</span><span class="tok-s">&quot;secreto&quot;</span> <span class="tok-na">keystore-url=</span><span class="tok-s">&quot;file:/usr/local/wildfly/standalone/configuration/trust.jks&quot;</span> <span class="tok-na">truststore-password=</span><span class="tok-s">&quot;secreto&quot;</span> <span class="tok-na">truststore-url=</span><span class="tok-s">&quot;file:/usr/local/wildfly/standalone/configuration/trust.jks&quot;</span><span class="tok-nt">/&gt;</span>
+<span class="tok-nt">&lt;/security-domain&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>En este fragmento de XML definimos un nuevo dominio de seguridad _seguridad-cert, en el que introducimos nuevo login module. Los parámetros que son novedad para nosotros son:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>rolesProperties: Este login module requiere de un fichero externo en el que se indique para cada identidad asociada a un certificado (CN) a que rol o roles pertenece.</p>
+</li>
+<li>
+<p>jsse: Referencia al almacén de seguridad de certificados de confianza.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>El fichero <em>rolesProperties</em> sigue el mismo formato que el fichero <em>application-roles.properties</em> sin embargo el usuario se debe identificar por el DN  (distinguished name) completo del certificado, es decir con todos los datos que se nos pedía a la hora de generarlo. Además, tanto los espacios como los signos "=" se deben escapar con contrabarras. Como ejemplo:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="text">CN\=JoseLuis,\ OU\=jtech,\ O\=UA,\ L\=Alicante,\ ST\=Spain,\ C\=ES=rol_usuario</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>El último signo "=" no se escapa pues es el que separa el usuario de los roles.</p>
+</div>
+<div class="paragraph">
+<p>Por último, también hay que realizar cambios en las aplicaciones, concretamente hay que cambiar el modo de autenticación de la aplicación web de BASIC a CLIENT-CERT en el fichero web.xml:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="xml"><span class="tok-nt">&lt;login-config&gt;</span>
+<span class="tok-nt">&lt;auth-method&gt;</span>CLIENT-CERT<span class="tok-nt">&lt;/auth-method&gt;</span>
+<span class="tok-c">&lt;!--&lt;auth-method&gt;BASIC&lt;/auth-method&gt;--&gt;</span>
+<span class="tok-nt">&lt;realm-name&gt;</span>mydomain<span class="tok-nt">&lt;/realm-name&gt;</span>
+<span class="tok-nt">&lt;/login-config&gt;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_comunicación_ssl_a_través_de_proxies">Comunicación SSL a través de proxies</h5>
+<div class="paragraph">
+<p>Como ya sabemos, las conexiones SSL son conexiones punto a punto entre cliente y servidor y no admite elementos intermedios que puedan poner en riesgo la seguridad de las comunicaciones. Sin embargo, hay elementos como los denominados balanceadores de carga, que son capaces de encaminar una petición a distintos servidores en función de la carga de trabajo u otros parámetros.</p>
+</div>
+<div class="paragraph">
+<p>En el caso de trabajar con este tipo de elementos, la conexión SSL se divide en dos tramos, una conexión segura entre el cliente y el "proxy", y otra entre el proxy y el servidor. Ambas conexiones se establecen de la misma forma que una conexión directa, es decir una parte hace de cliente y la otra de servidora,  sin embargo el certificado del cliente no se utiliza para negociar la conexión con el servidor, si no el del propio proxy. Gráficamente:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/paas04/clientcert1.png" alt="clientcert1">
+</div>
+</div>
+<div class="paragraph">
+<p>Bajo este supuesto, podremos hacer llegar las credenciales del cliente al servidor, si utilizamos un proxy Apache en este elemento intermedio. Una de sus funciones es la de "inyectar" la información del certificado cliente en una cabecera especial, denominada <em>SSL_CLIENT_CERT</em>. Esta información también estará disponible para las aplicaciones, si estas consultan la cabecera en el parámetro request de la petición.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_referencias">4.2. Referencias</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Login modules en WildFly <a href="https://docs.jboss.org/author/display/WFLY8/Authentication+Modules" class="bare">https://docs.jboss.org/author/display/WFLY8/Authentication+Modules</a></p>
+</li>
+<li>
+<p>Securing Realms 	<a href="https://docs.jboss.org/author/display/WFLY8/Security+Realms" class="bare">https://docs.jboss.org/author/display/WFLY8/Security+Realms</a></p>
+</li>
+<li>
+<p>SSL 	<a href="https://docs.jboss.org/author/display/WFLY8/Admin+Guide#AdminGuide-%7B%7B%3Cssl%2F%3E%7D%7D" class="bare">https://docs.jboss.org/author/display/WFLY8/Admin+Guide#AdminGuide-%7B%7B%3Cssl%2F%3E%7D%7D</a></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_ejercicios_de_certificados_digitales_y_ssl">4.3. Ejercicios de certificados digitales y SSL</h3>
+<div class="paragraph">
+<p>Vamos a seguir trabajando con el dominio seguridad y la aplicación <em>apli-intranet</em> de la sesión anterior. Para poder realizar los ejercicios se debe haber completado, al menos, el primer ejercicio de la sesión anterior.</p>
+</div>
+<div class="sect3">
+<h4 id="_encriptación_de_las_comunicaciones_one_way_ssl_0_4_puntos">4.3.1. Encriptación de las comunicaciones One-Way SSL (0.4 puntos)</h4>
+<div class="paragraph">
+<p>Queremos reforzar la seguridad de las comunicaciones con nuestro servidor, creando un canal seguro SSL en el que el servidor se identificará y el navegador del cliente deberá reconocer dicho certificado como válido.</p>
+</div>
+<div class="paragraph">
+<p>Hay que crear los certificados de la CA, de servidor, importar la CA en el navegador y configurar el servidor para que utilice SSL.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_encriptación_de_las_comunicaciones_con_two_way_ssl_0_4_puntos">4.3.2. Encriptación de las comunicaciones con Two-Way SSL (0.4 puntos)</h4>
+<div class="paragraph">
+<p>Ahora lo que se pretende es que tanto servidor como cliente validen sus certificados respectivos. A los certificados ya creados en el ejercicio anterior se les une un certificado asociado a un <em>Usuario1</em> y que sea el certificado con el que el navegador se identifique para establecer la conexión.</p>
+</div>
+<div class="paragraph">
+<p>Siguiendo los pasos descritos en la teoría, configurar el servidor para que se requieran certificados de cliente y se validen.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Debéis usar la misma contraseña para los almacenes que hemos visto en teoría para que el ejercicio pueda ser corregido.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_autenticación_de_usuario_a_partir_del_certificado_0_4_puntos">4.3.3. Autenticación de usuario a partir del certificado (0.4 puntos)</h4>
+<div class="paragraph">
+<p>En el ejercicio anterior generamos un certificado identificativo para el cliente mediante el cual se establece un canal seguro si el servidor lo acepta. Sin embargo este mecanismo convive con la validación BASIC mediante usuario/password, con lo que tenemos que seguir pidiendo credenciales al usuario para saber exactamente quién está trabajando desde el navegador y a qué grupo pertenece.</p>
+</div>
+<div class="paragraph">
+<p>La propuesta de este ejercicio es hacer los cambios pertinentes en el dominio de seguridad y en la aplicación para que valide e identifique directamente al usuario cliente  en base a su certificado sin comprobar nada más. Sería algo parecido a conectarnos a la web de la AEAT o a la Seguridad Social empleando un certificado digital que nos identifique.</p>
+</div>
+<div class="paragraph">
+<p>Para completar el ejercicio teneis que:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Asociar el certificado del <em>usuario1</em>, del ejercicio anterior al rol de usuario.</p>
+</li>
+<li>
+<p>Crear un nuevo certificado asociado a un <em>usuario2</em> y asociarlo al rol de administrador.</p>
+</li>
+<li>
+<p>Configurar el servidor para que se utilice el login module de certificados.</p>
+</li>
+<li>
+<p>Cambiar la seguridad de la aplicación intranet para que se valide en base a certificados.</p>
+</li>
+<li>
+<p>Comprobar que si nos autenticamos con los certificados de usuario, cada uno se asocia al rol correspondiente.</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Si añadis los tags para forzar el acceso SSL a la aplicación, podéis tener problemas a la hora de tratar los certificados de cliente, por la redirección que hace la aplicación apli-intranet, desde el JSP al servlet de consulta. Lo más sencillo, no utilizarlo.&lt;/note&gt;
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Especificar tanto en <em>web.xml</em> como en el descriptor <em>jboss-web.xml</em> el nombre del security domain que vayáis a utilizar y estad atentos al fichero de auditoría de seguridad (audit.log).
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_entrega">4.3.4. Entrega</h4>
+<div class="paragraph">
+<p>Los entregables de esta sesión son el proyecto apli-intranet, los ficheros properties que defináis y el fichero <em>standalone.xml</em> con la configuración del servidor. Comentad en el código o en los descriptores los cambios que vayáis haciendo para poder comprobar que habéis completado los distintos ejercicios propuestos.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2015-10-16 22:32:33 CEST
+</div>
+</div>
+</body>
+</html>

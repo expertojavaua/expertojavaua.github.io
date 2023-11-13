@@ -1,0 +1,146 @@
+package examples.jms.xml;
+
+import java.io.*;
+import java.util.*;
+import javax.transaction.*;
+import javax.naming.*;
+import javax.jms.*;
+import org.xml.sax.*;
+import weblogic.jms.extensions.*;
+import org.w3c.dom.*;
+import weblogic.apache.xml.serialize.*;
+
+/**
+ * This class asks the user to input data to define a stock trade transaction.
+ * The class generates XML data from the user input and sends the data to 
+ * the JMS queue. A Message-driven bean then reads the request from the 
+ * queue and parses it using a SAX compliant parser.  
+ * 
+ * @author Copyright (c) 2002 by BEA Systems, Inc. All Rights Reserved.
+ */
+public class ClientSend {
+
+  public final static String JNDI_FACTORY="weblogic.jndi.WLInitialContextFactory";
+  public final static String JMS_FACTORY="weblogic.examples.jms.QueueConnectionFactory";
+  public final static String QUEUE="weblogic.examples.jms.exampleQueue";
+  public final static StringBuffer buffer = new StringBuffer();
+
+  private QueueConnectionFactory qconFactory;
+  private QueueConnection qcon;
+  private QueueSession qsession;
+  private QueueSender qsender;
+  private Queue queue;
+  private XMLMessage xmsg;
+
+  /**
+   * Creates all the necessary objects for sending messages to a JMS queue.
+   *
+   * @param ctx         the initial context
+   * @param queueName   the name of the JMS queue
+   * @exception NamingException if a naming exception occurred
+   * @exception JMSException    if a JMS exception occurred
+   */
+
+  public void init(Context ctx, String queueName)
+       throws NamingException, JMSException
+  {
+    qconFactory = (QueueConnectionFactory) ctx.lookup(JMS_FACTORY);
+    qcon = qconFactory.createQueueConnection();
+    qsession = qcon.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
+    queue = (Queue) ctx.lookup(queueName);
+    qsender = qsession.createSender(queue);
+    xmsg = ((WLQueueSession)qsession).createXMLMessage();
+    qcon.start();
+  }
+
+  /**
+   * Closes all JMS objects.
+   *
+   * @exception JMSException if a JMS error occurred
+   */
+  public void close()
+    throws JMSException
+  {
+    qsender.close();
+    qsession.close();
+    qcon.close();
+  }
+
+  /**
+   * Runs this client from the command line.
+   * <p>
+   * Use the following command:
+   * <tt>java examples.jms.messageformat.ClientSend t3://localhost:7001</tt>
+   */
+  public static void main(String[] args)
+    throws Exception
+  {
+    if (args.length != 1) {
+      System.out.println("Usage: java examples.jms.messageformat.ClientSend WebLogicURL");
+      return;
+    }
+    InitialContext ic = getInitialContext(args[0]);
+    ClientSend client = new ClientSend();
+    client.init(ic, QUEUE);
+
+    // get message from user
+
+    BufferedReader msgStream = new BufferedReader(new InputStreamReader(System.in));
+    String line=null;
+    boolean quitNow = false;
+    buffer.append("<order>\n");
+        do {
+          buffer.append("<item>\n");
+
+          // get item id from user
+          System.out.println("Id: "); 
+          line = msgStream.readLine();
+          buffer.append("<id>" + line + "</id>\n"); 
+          
+          // get item name from user 
+          System.out.println("Name: "); 
+          line = msgStream.readLine();
+          buffer.append("<name>" + line + "</name>\n"); 
+
+          // get item price from user 
+          System.out.println("Price: "); 
+          line = msgStream.readLine();
+          buffer.append("<price>" + line + "</price>\n"); 
+          buffer.append("</item>\n"); 
+
+          // Want to quit?
+          System.out.println("Quit? type \"quit\": ");
+          line = msgStream.readLine();
+          quitNow = line.equalsIgnoreCase("quit"); 
+          
+        } while (! quitNow);
+        buffer.append("</order>\n"); 
+
+       // Send the XML Message
+       client.send(buffer.toString()); 
+       client.close();
+   }
+
+   // gets the initial context to the server
+   private static InitialContext getInitialContext(String url)
+     throws NamingException
+   {
+    Hashtable env = new Hashtable();
+    env.put(Context.INITIAL_CONTEXT_FACTORY, JNDI_FACTORY);
+    env.put(Context.PROVIDER_URL, url);
+    return new InitialContext(env);
+   }
+
+  /**
+   * Sends a message in the form of XML data to a JMS queue.
+   *
+   * @exception JMSException if a JMS error occurred
+   */
+   public void send(String message)
+     throws JMSException
+   {
+    xmsg.setText(message);
+    qsender.send(xmsg);
+   }
+}
+

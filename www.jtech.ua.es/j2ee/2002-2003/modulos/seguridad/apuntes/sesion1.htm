@@ -1,0 +1,319 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0052)http://www.dccia.ua.es/j2ee/seguridad/apuntes/sesion1.htm -->
+<HTML><HEAD><TITLE>Seguridad en Java</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=iso-8859-1">
+<META content=Sco name=Author><LINK href="../../../apuntes.css" 
+type=text/css rel=stylesheet>
+<META content="MSHTML 5.50.4134.100" name=GENERATOR></HEAD>
+<BODY>
+<H1>Tema 1: Servicios criptogr&aacute;ficos en Java</H1>
+<H2>1.1. JCA: Java Cryptography Architecture</H2>
+<P>Este es uno de los dos API que proporcionan facilidades criptogr&aacute;ficas 
+  en Java (firmas, certificados, etc). Se trata del conjunto de clases que forma 
+  el package <B>java.security</B>. Por ejemplo, una de estas facilidades es un 
+  <I>message digest</I> o <I>hash</I>, esto es una huella para comprobar, más 
+  tarde, que un determinado documento no ha sido alterado. Para crear un <I>digest</I> 
+  primero se crea una instancia de un algoritmo de <I>hashing</I> (MD5 o SHA-1), 
+  especificando opcionalmente el proveedor de la implementación:</P>
+  
+<PRE class=codigo>MessageDigest md = MessageDigest.getInstance("<B>MD5</B>", "<B>Sun</B>");</PRE>
+  
+<P>A continuación proporcionamos los datos sobre los que se debe crear el <I>digest</I>, 
+  suponiendo que estos se encuentran en un array de datos de tipo <B>byte</B>:</P>
+  
+<PRE class=codigo>md.update(datos);</PRE>
+
+<P>Finalmente podemos almacenar el <I>digest</I> propiamente dicho en otro array:</P>
+  
+<PRE class=codigo>byte[] d = md.digest();</PRE>
+
+<H2>1.2. JCE: Java Cryptography Extension</H2>
+<P>Este segundo API añade facilidades de encriptaci&oacute;n y desencriptaci&oacute;n 
+  de datos a JCA y se corresponde con las clases del package <B>javax.crypto</B>. 
+  En general, lo primero que hay que hacer es crear un generador de claves, especificando 
+  el algoritmo de encrpitación (p.e. Blowfish):</P>
+  
+<PRE class=codigo>KeyGenerator kg = KeyGenerator.getInstance("<B>Blowfish</B>");</PRE>
+  
+  <P>A partir de este generador podemos obtener una clave haciendo</P>
+  
+<PRE class=codigo>Key k = KeyGenerator.generateKey();</PRE>
+
+  <P>Una vez tenemos la clave, la encriptación se hace creando un cifrador (<I>cipher</I>) 
+  especificando algoritmo, modo y padding, y después se inicializa dicho cifrador con 
+  la clave que acabamos de crear:</P>
+  
+<PRE class=codigo>Cipher c = Cipher.getInstance("<B>Blowfish/ECB/PKCS5Padding</B>");
+c.init(Cipher.ENCRYPT_MODE, key);</PRE>
+
+  <P>Finalmente realizaremos la encriptación propiamente dicha  de los datos 
+  contenidos en un array de tipo <B>byte</B> y los devolveremos en otro array:</P>
+  
+<PRE class=codigo>byte[] cf = c.doFinal(datos);</PRE>
+
+  <P>Como JCE es una extensión debe instalarse previamente una implementación. Una 
+  de las mas completas (en términos de la cantidad de algoritmos que incorpora) es la 
+  de BouncyCastle, disponible en <A href="http://www.bouncycastle.org">
+  http://www.bouncycastle.org</A> (descargar JCE con proveedor y API). Una vez 
+  descargado lo más recomendable es instalarlo como una extensión, es decir copiar 
+  el fichero JAR correspondiente en el directorio $JAVA_HOME/jre/lib/ext.
+  Una vez colocado el JAR como extensión se ha de modificar el fichero 
+  $JAVA_HOME/jre/lib/security/java.security en donde se definen los distintos 
+  proveedores criptográficos para añadir el nuevo proveedor. En JDK 1.4 haríamos 
+  lo siguiente:</P>  
+
+<PRE class=codigo>security.provider.1=sun.security.provider.Sun
+security.provider.2=com.sun.net.ssl.internal.ssl.Provider
+security.provider.3=com.sun.rsajca.Provider
+security.provider.4=com.sun.crypto.provider.SunJCE
+security.provider.5=sun.security.jgss.SunProvider
+#Nuevo proveedor de BouncyCastle
+security.provider.6=org.bouncycastle.jce.provider.BouncyCastleProvider</PRE>
+  
+ <P>Para testar la instalación podemos utilizar uno de los ejemplos que vienen con
+ Blowfish o bien compilar y ejecutar el fichero
+ <A href="sesion1_archivos/JCETestInstalacion.java.txt">JCETestInstalacion.java</A>
+ cuyo código mostramos a continuación:</P>
+
+<PRE class=codigo>
+import javax.crypto.*;
+
+public class JCETestInstalacion {
+
+  // Definimos cadena a encriptar
+  public static final String cadena = "Esto es un test.";
+
+  public static void main(String[] args) throws Exception {
+
+    System.out.println("El texto original es: " + cadena);
+    
+    // Generar una clave Blowfish
+    System.out.print("Intentando coger una clave Blowfish....");
+    <B>KeyGenerator generador = KeyGenerator.getInstance("Blowfish");
+    generador.init(128);
+    SecretKey clave = generador.generateKey();</B>
+    System.out.println("OK");
+
+    // Intentar encriptar texto
+    System.out.print("Intentando coger un cifrado y encriptar...");
+    <B>Cipher cifrador = Cipher.getInstance("Blowfish/ECB/PCKCS5Padding");
+    cifrador.init(Cipher.ENCRYPT_MODE, clave);
+    byte[] textoCifrado = cifrador.doFinal(cadena.getBytes("UTF8"));</B>
+    System.out.println("Ok");
+    System.out.println("El texto cifrado es: " + textoCifrado);
+
+    System.out.println("Test completado con exito");
+    }
+  }
+
+
+</PRE>
+
+<H1>Tema 2: Encriptación Simétrica</H1>
+<H2>2.1. Estrategias de clave secreta </H2>
+<P>La forma más sencilla de realizar encriptación-desencriptación de datos es utilizar
+la misma clave en ambos procesos. Como acabamos de ver, podemos definir un cifrador para 
+encriptar y luego utilizar el mismo cifrador para desencriptar. La encriptación simétrica 
+es rápida y por ello se recomienda en aquellas aplicaciones en donde se requiere proteger 
+un gran segmento de datos. Sin embargo, al exigir que tanto emisor como receptor se pongan
+de acuerdo es muy sensible a ataques-a-mitad, por lo que la clave que ha de enviarse
+suele encriptarse de forma asimétrica como veremos más adelante. En todo caso cuanto 
+mayor sea la longitud de la clave más segura será la encriptación (lo habitual es
+manejar claves de entre 40 y 128 bits, recomendándose la longitud de 128 bits).
+</P>
+
+<H2>2.2. DESede y Blowfish en JCE </H2>
+<P> Los algoritmos de encriptación simétrica más conocidos son <I>TripleDES</I> y
+<I>Blowfish</I>. El primero, también llamado <I>DESede</I>, es una versión evolucionada
+(y más segura) del algoritmo DES que utilizaba claves de solo 56 bits. En DESede producen 
+tres rondas de DES (encriptación, desencriptación y otra vez encriptación) en las que se 
+utilizan 2 o 3 claves distintas de 56 bits, obteniéndose una clave combinada de 112 o de 
+168 bits. Por otro lado, <I>Blowfish</I> es otro algoritmo que permite claves de longitud 
+mayor (448 bits). El ejemplo de test que vimos al final del capítulo anterior utilizaba 
+Blowfish a la hora de generar la clave y el cifrador. Si queremos modificar dicho ejemplo 
+para utilizar DESede simplemente tendremos que sustituir las líneas que hacen referencia 
+a Blowfish por </P>
+<PRE class=codigo>
+...
+KeyGenerator generador = KeyGenerator.getInstance("DESede");
+...
+Cipher cifrador = Cipher.getInstance("DESede/ECB/PKCS5Padding");
+</PRE>
+
+<P>La expresión "DESede/ECB/PCKCS5Padding" contiene el nombre del algoritmo, el 
+<I>tipo de padding</I> (según estándard PCKS5) y el <I>modo de encriptación</I> 
+(ECB, CBC, etc).</P>
+
+<H2>2.3. Encriptación Basada en Paswords (PBE) </H2>
+<P>Supogamos que queremos utilizar un password como clave en un esquema privado. Dado
+que la longitud de los passwords es de 6-8 caractéres, el <I>espacio de claves</I>
+a consultar es mucho menor a pesar de tener muchas alternativas para cada carácter. 
+Por ello, lo que se suele hacer es aplicarle un <I>digest</I> al password y 
+construir con el resultado una clave binaria. No obstante, un hacker puede construir una 
+lista de passwords, aplicarles hashing y tener una lista precompilada de claves. Esto 
+se puede contrarrestar con dos técnicas: <I>saltos aleatorios</I> (añadir datos aleatorios 
+antes del hashing) y <I>cuentas de iteración</I> (número de veces que hacemos el hashing 
+sobre el password y el salto).</P>
+<P> Para aplicar PBE, crearemos en primer lugar una clave adeacuada. Esto se hace creando 
+un objeto <B>PBEKeySpec</B> seguido de un <B>SecretKeyFactory</B> en donde especificamos 
+el algoritmo PBE.</P>
+<PRE class=codigo>
+char[] password = "mipassword".toCharArray();
+PBEKeySpec especificacion = new PBEKeySpec(password);
+SecretKeyFactory factoria = SecretKeyFactory.getInstance("PBEWithSHAAndTwofish-CBC");
+SecretKey clave = factoria.generateSecret(especificacion);
+</PRE>
+<P>Una vez que tenemos la clave deberemos crear un cifrador pasándole el salto y el número
+de iteraciones a un objeto <B>PBEParameterSpec</B> que los envuelve.</P>
+<PRE class=codigo>
+PBEParameterSpec parametros = new PBEParameterSpec(salto, iteraciones);
+Cipher cifrador = Cipher.getInstance("PBEWithSHAAndTwofish-CBC");
+cifrador.init(Cipher.ENCRYPT_MODE, clave, parametros);
+</PRE>
+<P>Veamos el ejemplo <A href="sesion1_archivos/PBE.java.txt">PBE.java</A>.
+En la parte de encriptación se toma como entrada un password y un texto a cifrar.
+En primer lugar se construye un salto aleatorio de 8 bytes. Seguidamente se  crea, 
+inicializa y aplica un cifrador para PBE. El resultado del cifrado se completa con 
+una codificación en BASE64 para poder los datos tipo byte formados por el
+salto y el texto cifrado. Esta codificación es necesaria porque los byte tienen 8 bits
+pero los caracteres ASCII tienen 7 bits. Así, aplicando esta codificación devolvemos la
+concatenación del salto y el texto cifrado.</P>
+<PRE class=codigo>
+private static String encriptar(char[] password, String textoPlano)
+		throws Exception
+	{
+                // Creamos un salto de 64 bits (8 bytes)
+		byte[] salto = new byte[8];
+		Random random = new Random();
+		random.nextBytes(salto);
+
+                // PBEKeySpec, SecretKeyFactory, SecretKey, PBEParameterSpec, Cipher
+		...
+
+		byte[] textoCifrado = cifrador.doFinal(textoPlano.getBytes());
+
+                // Codificación BASE64
+		<B>BASE64Encoder codificador = new BASE64Encoder();
+
+		String cadenaSalto = codificador.encode(salto);
+		String cadenaCifrado = codificador.encode(textoCifrado);</B>
+
+		return cadenaSalto+cadenaCifrado;
+	}
+</PRE>
+<P>Para desencriptar tomaremos como entrada el password y el texto BASE64 que contiene
+el salto seguido del texto cifrado. Lo primero, entonces, es decodificar salto y texto 
+cifrado. A continuación utilizamos el salto y el password para inicializar el cifrador 
+y se lo aplicamos al texto cifrado para desencriptarlo.</P>
+
+<PRE class=codigo>
+private static String desencriptar(char[] password, String texto)
+		throws Exception
+	{
+                // Partimos el texto en salto y texto. El salto lo dan los
+                // 12 primeros caracteres codificados en BASE64 a partir de 8 bytes.
+		String salto = texto.substring(0,12);
+		String textoCifrado = texto.substring(12,texto.length());
+
+                // Descodificar en BASE64 los bytes a partir del salto y
+                //del texto cifrado.
+		<B>BASE64Decoder decodificador = new BASE64Decoder();
+		byte[] arraySalto = decodificador.decodeBuffer(salto);
+		byte[] arrayCifrado = decodificador.decodeBuffer(textoCifrado);</B>
+
+		// PBEKeySpec, SecretKeyFactory, SecretKey, PBEParameterSpec, Cipher
+		...
+
+		// Desencriptar
+		byte[] arrayTextoPlano = cifrador.doFinal(arrayCifrado);
+
+		return new String(arrayTextoPlano);
+	}
+</PRE>
+
+<H2>2.4. Codificación de Claves Secretas </H2>
+<P>Si en algún momento hemos de almacenar la clave en el sistema de ficheros es conveniente
+codificarla de alguna forma para que sea más difícil descifrarla. Por ello, PBE se complementa 
+con mecanismos adicionales. El primero de ellos es utilizar los métodos de 
+<B>javax.crypto.Cipher</B> <B>wrap()/unwrap()</B> para codificar/decodificar la clave. 
+Para ello inicializaremos un cifrador PBE en modo <B>WRAP_MODE/UNWRAP_MODE</B>:</P>
+<PRE class=codigo>
+...
+cifrador.init(Cipher.WRAP_MODE, password, parametros);
+byte[] bytesClaveCodificada = cifrador.<B>wrap</B>(claveSecreta);
+...
+cifrador.init(Cipher.UNWRAP_MODE, password, parametros);
+Key clave = cifrador.<B>unwrap</B>(bytesClaveCodificada, "Blowfish", Cipher.SECRET_KEY);
+</PRE>
+<P>Si nuestro proveedor no incluye la posibilidad de <I>wrapping</I> entonces trendremos
+que recurrir al método <B>java.security.Key.getEncoded()</B> y a
+<B>javax.crypto.SecretKeySpec</B>. Por un lado <B>getEncoded()</B> realiza la codificación
+y por otro <B>SecretKeySpec</B> recoge la clave desencriptada del cifrador y la decodifica:</P>
+<PRE class=codigo>
+...
+byte[] bytesClave = clave.<B>getEncoded()</B>;
+cifrador.init(Cipher.ENCRYPT_MODE, password, parametros);
+byte[] bytesClaveEnciptada = cifrador.doFinal(bytesClave);
+...
+cifrador.init(Cipher.DECRYPT_MODE, password, parametros);
+byte[] bytesClave = cifrador.doFinal(bytesClaveEncriptada);
+<B>SecretKeySpec</B> clave = new SecretKeySpec(bytesClave, "Blowfish");
+</PRE>
+
+<H2>2.5. Cifradores de <I>Stream</I> </H2>
+<P>Los cifradores que hemos visto hasta ahora son de <I>bloque</I>, es decir que se aplican sobre
+bloque de datos (usualmente 64 bits o incluso 128 bits) cada vez. Estos cifradores son adecuados
+para datos concretos como claves o mensajes concretos. Por el contrario, cuando se trata de
+encriptar flujos constantes de datos es más conveniente utilizar cifradores de <I>stream</I>,
+que encriptan bit a bit o byte a byte.</P>
+<P>Los cifradores de <I>stream</I> suelen funcionar bajo modo CBC. Este modo se diferencia de
+ECB en que a cada byte no se le asocia necesariamente el mismo código sino que éste código
+depende de los anteriores y la inicialización es aleatoria realizándose con un <I>IV</I> o
+<I>Initialization Vector</I>. Dicho vector se obtiene a partir de un byte aleatorio de un
+determinado tamaño usando la clase <B>java.security.SecureRandom</B>:</P>
+<PRE class=codigo>
+byte[] bytesAleatorios = new byte[8];
+<B>SecureRandom</B> aleatorio = new SecureRandom();
+aleatorio.nextBytes(bytesAleatorios);
+</PRE>
+<P>A continuación se crea el IV propiamente dicho, usando la clase <B>IVParameterSpec</B>:</P>
+<PRE class=codigo>
+<B>IVParameterSpec</B> iv = new IVParameterSpec(aleatorios);
+</PRE>
+<P>Con el IV ya podemos crear e inicializar un cifrador CBC:</P>
+<PRE class=codigo>
+Cipher cifrador = Cipher.getInstance("Blowfish/CBC/PKCS5Padding");
+cifrador.init(Cipher.ENCRYPT_MODE, clave, iv);
+</PRE>
+<P>En cuanto al uso de este tipo de cifradores, el hecho de disponer de las clases 
+<B>CipherInputStream</B> y <B>CipherOutputStream</B> en <B>javax.crypto</B> facilita 
+su aplicación a cualquier tipo de flujo de datos como un fichero. Por ejemplo, podemos
+encriptar un fichero con el siguiente fragmento de código:</P>
+<PRE class=codigo>
+FileInputStream entrada = new FileInputStream("fichero.txt");
+FileOutputStream salida = new FileOutputStream("fichero.enc");
+...
+<B>CipherOutputStream</B> salidaCifrador = new CipherOutputStream(salida, cifrador);
+int r = 0;
+while (r = entrada.read() != -1) {
+   salidaCifrador.write(r);
+}
+salidaCifrador.close();
+salida.close();
+entrada.close();
+</PRE>
+<P>Un aspecto importante a tener en cuenta con los IV es que hay que utilizar para 
+desencriptar el mismo IV que se usó para encriptar por lo que será necesario almacenarlo, por
+ejemplo al principio del fichero encriptado. </P>
+<H2>2.6. Ejemplo de Encriptación de Ficheros </H2>
+<P>Como ejemplo de aplicación de todo lo que hemos visto hasta ahora vamos a ver un ejemplo
+en el que se encripta/desencripta un fichero haciendo uso de PBE. El código completo se
+encuentra en <A href="sesion1_archivos/Ficheros.java.txt">Ficheros.java</A>. Aquí podemos 
+encontrar el método <B>crearClave()</B> que genera una clave para el algoritmo AES (Rijndael) 
+la encripta con un password (PBE) y la guarda en un fichero. Por otro lado, el método
+<B>cargarClave()</B>, lee la clave del fichero y la devuelve desencriptada. Esta clave la
+utiliza el método <B>encriptar()</B> que utiliza el password para cargar la clave y luego
+utiliza un cifrador de <I>stream</I> en modo CBC para encriptar un fichero. Simétricamente, 
+el método <B>desencriptar()</B> utiliza el password para cargar la clave y utiliza otro 
+cifrador CBC para desencriptar el fichero generando un nuevo fichero de salida. </P>
+</BODY></HTML>

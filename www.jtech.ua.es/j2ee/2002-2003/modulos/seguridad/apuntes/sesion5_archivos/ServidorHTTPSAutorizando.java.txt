@@ -1,0 +1,87 @@
+import java.io.*;
+import java.net.*;
+import javax.net.ssl.*;
+
+
+
+public class ServidorHTTPSAutorizando {
+
+  public static void main(String[] args) throws IOException {
+
+    // Utilizar una SocketFactory para crear sockets SSL:
+    SSLServerSocketFactory ssf =
+      (SSLServerSocketFactory)SSLServerSocketFactory.getDefault();
+    SSLServerSocket ss = (SSLServerSocket)ssf.createServerSocket(8080);
+
+    // Requerir autentificación del cliente
+    ss.setNeedClientAuth(true);
+
+    // Bucle infinito para aceptar conexiones permanentemente
+    while (true) {
+      try {
+        Socket s = ss.accept();
+        //boolean permitido = false;
+  
+        // Obtener la sesion
+        //SSLSession sesion = ((SSLSocket) s).getSession();
+        //
+        // Comprobar la autentificación del cliente con el AutentificadorCN
+        //AutentificadorCN autentificador = new AutentificadorCN(sesion);
+        //try {
+        //  autentificador.comprobarPermiso();
+        //  permitido = true;
+        //} catch (ExcepcionAutentificacion ea) {
+        //  permitido = false;
+        //  System.out.println("Acceso denegado." + ea);
+        //}
+ 
+        // Los streams de entrada y salida están encriptados
+        // pero esto es transparente
+        OutputStream out = s.getOutputStream();
+        BufferedReader in = new BufferedReader(
+          new InputStreamReader(s.getInputStream()));
+
+        // Leer la entrada del cliente y mostrarla en la pantalla
+        String linea = null;
+        while (((linea = in.readLine())!= null)
+          && (!("".equals(linea)))) {
+          System.out.println(linea);
+        }
+        System.out.println("");
+
+        // Construir una respuesta
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("<HTML>\n");
+        buffer.append(
+          "<HEAD><TITLE>HTTPS Server</TITLE></HEAD>\n");
+        buffer.append("<BODY>\n");
+ 
+        // Decir Hola en función de quien sea
+        //if (permitido) { 
+        //   buffer.append("<H1>Exito!</H1>\nHola Sco</H1>\n");
+        //} else 
+        //   buffer.append("<H1>Fallo!</H2>\nTu no eres Sco</H1>\n");
+        buffer.append("<H1>Exito!</H1>\n");
+        buffer.append("</BODY>\n");
+        buffer.append("</HTML>\n");
+
+        // HTTP requiere un content-length.
+        String string = buffer.toString();
+        byte[] data = string.getBytes();
+        out.write("HTTP/1.0 200 OK\n".getBytes());
+        out.write(new String(
+          "Content-Length: "+data.length+"\n").getBytes());
+        out.write("Content-Type: text/html\n\n".getBytes());
+        out.write(data);
+        out.flush();
+
+        // Cerrar los  streams y el socket.
+        out.close();
+        in.close();
+        s.close();
+      } catch (Exception e) {
+        e.printStackTrace();
+	  }
+    } // del while 
+  } // del main()
+}

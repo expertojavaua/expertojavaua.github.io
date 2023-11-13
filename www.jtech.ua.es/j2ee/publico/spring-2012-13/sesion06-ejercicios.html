@@ -1,0 +1,296 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.7">
+<meta name="Forrest-skin-name" content="pelt">
+<title>Ejercicios de acceso remoto y pruebas</title>
+<link type="text/css" href="skin/highlight/shCore.css" rel="stylesheet">
+<link type="text/css" href="skin/highlight/shThemeEclipse.css" rel="stylesheet">
+<script src="skin/highlight/shCore.js" type="text/javascript"></script><script src="skin/highlight/shAutoloader.js" type="text/javascript"></script>
+<link type="text/css" href="skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="skin/print.css" rel="stylesheet">
+<link type="text/css" href="skin/profile.css" rel="stylesheet">
+<script src="skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<div class="header">
+<div class="grouplogo">
+<a href="http://web.ua.es/especialistajava"><img class="logoImage" alt="jtech" src="images/baner_j2ee_izq.gif" title="Experto Universitario Java Enterprise"></a>
+</div>
+<div class="projectlogoA1">
+<a href="http://www.dccia.ua.es/"><img class="logoImage" alt="Spring" src="images/baner_j2ee_der.gif" title="Spring"></a>
+</div>
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="javascript:location.href='../index.html'">Home</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../aplic-web.html'">Aplicaciones Web</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../aplic-ent.html'">Aplicaciones Enterprise</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../charlas.html'">Charlas</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../proy-int/index.html'">Proyecto</a>
+</li>
+<li>
+<a class="base-not-selected" href="index.html">Spring</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<div id="level2tabs"></div>
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<div id="menu">
+<div onclick="SwitchMenu('menu_1.1', 'skin/')" id="menu_1.1Title" class="menutitle">Spring</div>
+<div id="menu_1.1" class="menuitemgroup">
+<div class="menuitem">
+<a href="index.html" title="Spring">Indice</a>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<div id="credit2"></div>
+</div>
+<div id="content">
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="sesion06-ejercicios.pdf"><img alt="PDF -icon" src="skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1>Ejercicios de acceso remoto y pruebas</h1>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#Acceso+remoto+con+HttpInvoker+%281+punto%29">Acceso remoto con HttpInvoker (1 punto)</a>
+</li>
+<li>
+<a href="#Pruebas+de+la+capa+DAO+%280.5+puntos%29">Pruebas de la capa DAO (0.5 puntos)</a>
+</li>
+<li>
+<a href="#Pruebas+de+la+capa+BO+con+y+sin+objetos+mock+%281+punto%29">Pruebas de la capa BO con y sin objetos mock (1 punto)</a>
+</li>
+<li>
+<a href="#Pruebas+de+la+capa+web+%280.5+puntos%29">Pruebas de la capa web (0.5 puntos)</a>
+</li>
+</ul>
+</div>
+
+<a name="N1000C"></a><a name="Acceso+remoto+con+HttpInvoker+%281+punto%29"></a>
+<h2 class="underlined_10">Acceso remoto con HttpInvoker (1 punto)</h2>
+<div class="section">
+<p>Vamos a proporcionar acceso remoto a la aplicaci&oacute;n de alquiler de coches de la sesi&oacute;n anterior.  Usaremos el HttpInvoker, ya que es razonablemente eficiente y no presentar&aacute; problemas con <em>firewalls</em>.</p>
+<p>Configuraci&oacute;n de la parte del servidor:</p>
+<ol>
+
+<li>F&iacute;jate que en el <span class="codefrag">web.xml</span> definimos un nuevo servlet de la clase <span class="codefrag">DispatcherServlet</span> al que llamamos <span class="codefrag">remoting</span> y lo mapeamos con las URL del tipo <span class="codefrag">/remoting/*</span> (no tienes que hacer nada, ya est&aacute; definido).
+Aunque ya ten&iacute;amos otro <span class="codefrag">DispatcherServlet</span> definido, se encargaba de la parte MVC y no es recomendable que un solo servlet se encargue de las dos cosas.</li>
+
+<li>Modifica el <span class="codefrag">src/main/webapp/WEB-INF/config/remoting-servlet.xml</span> para a&ntilde;adir la configuraci&oacute;n de la parte del servidor. Adapta la de los apuntes, para dar acceso remoto al interface <span class="codefrag">ICocheBO</span>. Cuidado con el atributo "ref": es el nombre del bean CocheBO. Como la anotaci&oacute;n @Service en esta clase no lo especifica, el nombre por defecto ser&aacute; el mismo que el de la clase con la inicial en min&uacute;scula: cocheBO, como vimos en la primera sesi&oacute;n. Una vez creado, puedes comprobar que est&aacute; 
+inicializado intentando acceder a su URL con el navegador. Ser&aacute; "remoting/" seguido del "name" que le hayas puesto al bean.
+En realidad dar&aacute; un error HTTP 500, ya que al HttpInvoker no se le puede llamar as&iacute;, pero al menos deber&iacute;a mostrar una excepci&oacute;n de tipo EOFException,
+y sabremos "que est&aacute; ah&iacute;". Si da otro tipo de excepci&oacute;n o un HTTP 404 es que hay algo mal configurado.</li>
+
+</ol>
+<p>Parte del cliente:</p>
+<ol>
+
+<li>Crea un proyecto de tipo "Maven project". Elige el arquetipo que te saldr&aacute; por defecto: "Maven-archetype-quickstart".  
+Como groupId pon <span class="codefrag">es.ua.jtech</span> y como ArtifactId <span class="codefrag">ClienteRemotoCoches</span>.</li>
+
+<li>Cambiar el pom.xml generado por Eclipse por el siguiente (tras hacer esto tendr&aacute;s que ejecutar la opci&oacute;n Maven &gt; Update project para que Eclipse tenga en cuenta los cambios)
+ <pre class="brush:xml;">
+ 
+&lt;project xmlns="http://maven.apache.org/POM/4.0.0"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+   http://maven.apache.org/maven-v4_0_0.xsd"&gt;
+    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+    &lt;groupId&gt;es.ua.jtech&lt;/groupId&gt;
+    &lt;artifactId&gt;ClienteRemotoCoches&lt;/artifactId&gt;
+    &lt;packaging&gt;jar&lt;/packaging&gt;
+    &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;
+    &lt;name&gt;ClienteRemotoCoches&lt;/name&gt;
+    &lt;url&gt;http://maven.apache.org&lt;/url&gt;
+    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;junit&lt;/groupId&gt;
+            &lt;artifactId&gt;junit&lt;/artifactId&gt;
+            &lt;version&gt;4.7&lt;/version&gt;
+            &lt;scope&gt;test&lt;/scope&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-context&lt;/artifactId&gt;
+            &lt;version&gt;3.2.0.RELEASE&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-web&lt;/artifactId&gt;
+            &lt;version&gt;3.2.0.RELEASE&lt;/version&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+    &lt;build&gt;
+        &lt;plugins&gt;
+            &lt;plugin&gt;
+                &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+                &lt;artifactId&gt;maven-compiler-plugin&lt;/artifactId&gt;
+                &lt;configuration&gt;
+                    &lt;source&gt;1.6&lt;/source&gt;
+                    &lt;target&gt;1.6&lt;/target&gt;
+                &lt;/configuration&gt;
+            &lt;/plugin&gt;
+        &lt;/plugins&gt;
+        &lt;finalName&gt;ClienteRemotoCoches&lt;/finalName&gt;
+    &lt;/build&gt;
+&lt;/project&gt;
+ 
+ </pre>
+ 
+</li>
+
+<li>Vamos a acceder al BO remotamente, y este nos devolver&aacute; objetos <span class="codefrag">Coche</span>. Por lo tanto, 
+en el nuevo proyecto necesitar&aacute;s copiar <span class="codefrag">es.ua.jtech.spring.negocio.ICocheBO</span> y 
+<span class="codefrag">es.ua.jtech.spring.modelo.Coche</span> del proyecto original. Tendr&aacute;s que crear los packages correspondientes. Cuidado, en la clase Coche que copies en el nuevo proyecto debes borrar las anotaciones de validaci&oacute;n para no introducir dependencias del API JSR303 en el cliente.
+ Atento: no necesitas la clase <span class="codefrag">CocheBO</span>, solo el interface. </li>
+
+<li>Crea una nueva "Source Folder" (File &gt; New &gt; source folder) d&aacute;ndole como nombre "src/main/resources".</li>
+
+<li>Crea un fichero de configuraci&oacute;n de beans XML de Spring llamado "cliente.xml" en la carpeta "resources" que acabas de crear (File &gt; New &gt; Spring bean configuration file). Solo necesitar&aacute;s el espacio de nombres "beans". Pon en &eacute;l la configuraci&oacute;n de la parte del cliente, fij&aacute;ndote en la que aparece en los apuntes y adapt&aacute;ndola a lo que necesitas.</li>
+
+<li>En el m&eacute;todo <span class="codefrag">main</span> de la clase <span class="codefrag">App</span> del proyecto, escribe c&oacute;digo que obtenga un ICocheBO (necesitar&aacute;s un ClasspathApplicationContext), llame al m&eacute;todo obtener(String matricula) y muestre los datos de uno de los coches por pantalla con <span class="codefrag">System.out.println</span>.</li>
+
+</ol>
+</div>
+
+<a name="N10072"></a><a name="Pruebas+de+la+capa+DAO+%280.5+puntos%29"></a>
+<h2 class="underlined_10">Pruebas de la capa DAO (0.5 puntos)</h2>
+<div class="section">
+<p>Vamos a implementar algunas pruebas para la capa DAO. Usaremos una base de datos embebida (HSQLDB) para acelerar las pruebas</p>
+<ol>
+    
+<li>Lo primero es <strong>incluir las dependencias</strong> necesarias en el pom.xml: spring-test y hsqldb (JUnit ya est&aacute; incluida en la plantilla)
+    <pre class="brush:xml;">    
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-test&lt;/artifactId&gt;
+        &lt;version&gt;3.2.0.RELEASE&lt;/version&gt;
+        &lt;scope&gt;test&lt;/scope&gt;
+    &lt;/dependency&gt;
+    
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.hsqldb&lt;/groupId&gt;
+        &lt;artifactId&gt;hsqldb&lt;/artifactId&gt;
+        &lt;version&gt;2.0.0&lt;/version&gt;
+        &lt;scope&gt;test&lt;/scope&gt;
+    &lt;/dependency&gt;
+    </pre>
+</li>
+
+<li>Ahora crearemos el <strong>fichero de configuraci&oacute;n de Spring para los test de la capa DAO</strong> (cr&eacute;alo dentro de src/test/resources/config y ll&aacute;malo daos-test.xml). Puedes tomar como modelo el de los apuntes y transparencias. En src/test/resources tienes un script para crear la base de datos e insertar los datos. Modifica el XML de los apuntes ya que &eacute;ste espera que haya dos (uno para crear tablas y otro para insertar datos). <em>Disclaimer</em>: siento el trabajo rutinario, es simplemente para que no te limites a copiar y pegar literalmente el fichero entero en modo "piloto autom&aacute;tico".</li>
+
+<li>
+<strong>Crea una clase de prueba</strong> CocheDAOJDBCTest en el paquete es.ua.jtech.spring.datos de src/test/java (cuidado, no la metas en src/main/java). Implementa en ella una prueba del m&eacute;todo listar del DAO. Por ejemplo puedes comprobar que hay dos coches en los datos de prueba y que la matr&iacute;cula del primero de ellos es 1111JKG.</li>
+
+</ol>
+</div>    
+
+
+<a name="N10097"></a><a name="Pruebas+de+la+capa+BO+con+y+sin+objetos+mock+%281+punto%29"></a>
+<h2 class="underlined_10">Pruebas de la capa BO con y sin objetos mock (1 punto)</h2>
+<div class="section">
+<ol>
+
+<li>
+<strong>Crea una clase de prueba CocheBOTest</strong> en el paquete es.ua.jtech.spring.bo de src/test/java, para probar la integraci&oacute;n entre la capa de negocio y datos (es decir, sin usar mock). Implementa en ella alguna prueba que verifique que el listar del BO funciona correctamente.</li>
+
+<li>Implementa <strong>pruebas del BO con mocks</strong> de la capa DAO. Tendr&aacute;s que:
+<ul>
+
+
+<li>Introducir en el pom.xml la dependencia de Mockito:
+<pre class="brush:xml;">
+&lt;dependency&gt;
+    &lt;groupId&gt;org.mockito&lt;/groupId&gt;
+    &lt;artifactId&gt;mockito-all&lt;/artifactId&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+    &lt;version&gt;1.8.5&lt;/version&gt;
+&lt;/dependency&gt;
+</pre>
+
+</li>
+
+<li>Crear el fichero de configuraci&oacute;n daos-mock-test.xml en src/test/resources/config. En este fichero se debe crear un mock de ICocheDAO. Puedes tomar como modelo el que crea el IUsuarioDAO en los apuntes y transparencias. </li>
+
+<li>Crea una clase de prueba CocheBOMockTest en el paquete es.ua.jtech.spring.bo de src/test/java, para hacer pruebas unitarias del BO usando el mock. Prueba al menos el m&eacute;todo listar(). Tendr&aacute;s que preparar el mock en el @Before para que le devuelva al BO datos de prueba.</li>
+
+</ul>
+
+</li>
+
+</ol>
+</div>    
+
+<a name="N100BD"></a><a name="Pruebas+de+la+capa+web+%280.5+puntos%29"></a>
+<h2 class="underlined_10">Pruebas de la capa web (0.5 puntos)</h2>
+<div class="section">
+<p>Como fichero de configuraci&oacute;n de testing para la capa web, puedes usar directamente el mismo que se est&aacute; usando "en producci&oacute;n", el dispatcher-servlet.xml que est&aacute; en src/main/webapp/WEB-INF/config. C&oacute;pialo en src/test/resources.</p>
+<p>Implementa pruebas de integraci&oacute;n del controller CocheController. Hazla en la clase CocheControllerTest, en el paquete es.ua.jtech.spring.mvc de src/test/java. Prueba al menos el funcionamiento del m&eacute;todo listar() del controller. Verifica que existe un atributo en el modelo llamado "listado" y que la vista a la que se salta se llama "listar".</p>
+</div>    
+
+
+
+
+<p class="pageBreakAfter"></p>
+
+</div>
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+        Copyright &copy;
+         2012-2013 Depto. Ciencia de la computaci&oacute;n e IA</div>
+</div>
+<script type="text/javascript">
+     
+         SyntaxHighlighter.defaults['toolbar'] = false;
+         SyntaxHighlighter.autoloader(
+  		     'java                   skin/highlight/shBrushJava.js',
+  		     'xml xhtml xslt html    skin/highlight/shBrushXml.js',
+  		     'js jscript javascript  skin/highlight/shBrushJScript.js',
+  		     'groovy                 skin/highlight/shBrushGroovy.js',
+  		     'bash shell             skin/highlight/shBrushBash.js',
+  		     'php                    skin/highlight/shBrushPhp.js',
+  		     'css                    skin/highlight/shBrushCss.js',
+  		     'sql                    skin/highlight/shBrushSql.js',
+  		     'objc                   skin/highlight/shBrushObjC.js',
+  		     'cpp c                  skin/highlight/shBrushCpp.js',
+  		     'text plain             skin/highlight/shBrushPlain.js'
+         );
+         SyntaxHighlighter.all();
+     </script><a href="skin/highlight/shBrushJava.js"></a><a href="skin/highlight/shBrushXml.js"></a><a href="skin/highlight/shBrushJScript.js"></a><a href="skin/highlight/shBrushGroovy.js"></a><a href="skin/highlight/shBrushBash.js"></a><a href="skin/highlight/shBrushPhp.js"></a><a href="skin/highlight/shBrushCss.js"></a><a href="skin/highlight/shBrushSql.js"></a><a href="skin/highlight/shBrushObjC.js"></a><a href="skin/highlight/shBrushCpp.js"></a><a href="skin/highlight/shBrushPlain.js"></a>
+</body>
+</html>

@@ -1,0 +1,188 @@
+<!-- saved from url=(0022)http://internet.e-mail -->
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+                                                            
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+                                                            
+  <meta name="Author" content="Nacho">
+                                                            
+  <meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+                                                        
+  <link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+  <title>Ejercicios de Servlets</title>
+</head>
+  <body>
+      <b>      
+<h1>Cookies y sesiones</h1>
+<h2>&nbsp;</h2>
+      </b><p><b>1. (SUBASTA) </b>Como ejercicio de seguimiento de este tema,
+      vamos a añadir el seguimiento de sesiones a nuestra aplicación de
+      subastas. Para eso, sobre lo que tenemos hecho, aplicaremos los siguientes
+      cambios: </p>
+           
+      <p><b>a) En todas las páginas</b>: </p>
+           
+      <p>Aplicar la <b>reescritura de URLs</b>. Tenemos que buscar las URLs que
+      aparezcan en cada servlet (que tendrán la forma &quot;/subasta/...&quot;,
+      normalmente), y aplicarles reescritura de la siguiente forma: </p>
+           
+      <ul>
+        <li>Si es un enlace o una acción de formulario, se codifica la URL con <b>encodeURL(...)</b>,
+          de la siguiente forma:<br>
+          <br>
+          Se sustituye cada acción de formulario:<pre class="codigo">out.println (&quot;&lt;form action=\&quot;/subasta/main?accion=...\&quot;&gt;&quot;);</pre>
+           
+        </li>
+      </ul>
+      <blockquote>
+           
+      <p>Por: </p>
+           
+        <pre class="codigo">out.println (&quot;&lt;form action=\&quot;&quot; + 
+       response.encodeURL(&quot;/subasta/main?accion=...&quot;) + 
+       &quot;\&quot;&gt;&quot;);</pre>
+           
+      <p>Y se sustituye cada enlace: </p>
+           
+        <pre class="codigo">out.println (&quot;&lt;a href=\&quot;/subasta/main?accion=...\&quot;&gt;Volver&lt;/a&gt;&quot;);</pre>
+           
+      <p>Por: </p>
+           
+        <pre class="codigo">out.println (&quot;&lt;a href=\&quot;&quot; + 
+    response.encodeURL(&quot;/subasta/main?accion=validar&quot;) + 
+    &quot;\&quot;&gt;Volver&lt;/a&gt;&quot;);</pre>
+           
+      </blockquote>
+      <ul>
+        <li>Si es una redirección, se codifica la URL con <b>encodeRedirectURL(...)</b>,
+          es decir:<br>
+          <br>
+          Se sustituye:</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo">response.sendRedirect(&quot;/subasta/login?...&quot;);</pre>
+           
+      <p>Por: </p>
+           
+        <pre class="codigo">response.sendRedirect(
+    response.encodeRedirectURL(&quot;/subasta/login?...&quot;));</pre>
+      </blockquote>
+           
+      <p><b>b) En ServletMain</b> </p>
+           
+      <p>Dentro de <i>ServletMain</i> hay que hacer algunos cambios para el
+      seguimiento de sesiones: </p>
+           
+      <ul>
+        <li>Obtenemos la sesión al principio de <i>doGet(...)</i>:</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo">HttpSession sesion = request.getSession();</pre>
+      </blockquote>
+      <ul>
+        <li>Ya no hace falta que tomemos el login y password al principio,
+          porque están incluídos en la sesión. Así que eliminamos las
+          líneas:</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo">String login = request.getParameter(&quot;login);
+String password = request.getParameter(&quot;password&quot;);</pre>
+           
+      </blockquote>
+      <ul>
+        <li>Podemos añadir dos métodos de utilidad a la clase:</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo">private String getAtributo(HttpSession sesion, 
+                           String atributo)
+{
+   if (sesion == null)
+	return null;
+   return (String)(sesion.getAttribute(atributo));
+}
+
+private boolean hayDatos(HttpSession sesion)
+{
+   return (getAtributo(sesion, &quot;login&quot;) != null &amp;&amp; 
+           getAtributo(sesion, &quot;password&quot;) != null);
+}</pre>
+           
+        <p>Con <b>getAtributo(...)</b> podremos obtener en cada momento el login
+        y password de la sesión, sin más que llamar al método con: </p>
+           
+        <pre class="codigo">String login = getAtributo(sesion, &quot;login&quot;);
+String password = getAtributo(sesion, &quot;password&quot;);</pre>
+           
+        <p>Con <b>hayDatos(...)</b> obtendremos <i>true</i> si el usuario ha
+        introducido login y password (estarán almacenados en la sesión), y <i>false</i>
+        si no. </p>
+           
+      </blockquote>
+      <ul>
+        <li>Después, vamos revisando qué hacer en cada acción:<br>
+          <br>
+          <b>accion == null</b>: vamos a <i>ServletLogin</i></li>
+      </ul>
+      <blockquote>
+        <p><b>accion == registrar</b>: tomamos login y password, además del
+        mail (porque ya no los tomamos al principio del método):</p>
+        <pre class="codigo">String login = request.getParameter(&quot;login);
+String password = request.getParameter(&quot;password&quot;);
+String email = request.getParameter(&quot;email&quot;);
+
+if (email != null &amp;&amp; login != null &amp;&amp; password != null)
+{
+	...</pre>
+           
+        <p><b>accion == validar</b>: tomamos login y password (porque ya no los
+        tomamos al principio del método). Luego, si hay login y password
+        validamos el usuario y actualizamos los datos de la sesión (login y
+        password), y si no hay login y password, y no hay datos, volvemos
+        a&nbsp; <i>ServletLogin</i>:</p>
+        <pre class="codigo">String login = request.getParameter(&quot;login);
+String password = request.getParameter(&quot;password&quot;);
+
+if (login != null &amp;&amp; password != null)
+{
+	if (!validaUsuario(login, password))
+	    // ... a ServletLogin
+	else
+	{
+	    sesion.setAttribute(&quot;login&quot;, login);
+	    sesion.setAttribute(&quot;password&quot;, password);
+	}
+} else if (!hayDatos(sesion)) {
+	// ... a ServletLogin
+}</pre>
+           
+        <p><b>accion == comprar/vender/adjudicar/cancelar</b>: primero
+        comprobamos si hay datos de sesión, y si no los hay redirigimos a <i>ServletLogin</i>.
+        Si hay datos de sesión, el resto es igual. Sólo hay que tener en
+        cuenta que el login y password, si son necesarios, no se toman ya de los
+        parámetros de entrada, sino de los datos de sesión:</p>
+        <pre class="codigo">String login = request.getParameter(&quot;login&quot;);
+String password = request.getParameter(&quot;password&quot;);</pre>
+           
+        <p>pasan a ser:</p>
+        <pre class="codigo">String login = getAtributo(sesion, &quot;login&quot;);
+String password = getAtributo(sesion, &quot;password&quot;);</pre>
+           
+      </blockquote>
+      <p><b>c) Eliminar parámetros innecesarios</b></p>
+      <p>Finalmente nos ocupamos de algo que con el seguimiento de sesiones no
+      es necesario. Hasta ahora, sin seguimiento de sesiones, para poder
+      mantener el login y password del usuario a lo largo de la
+      &quot;sesión&quot;, teníamos que irlos pasando entre servlets, como
+      datos del formulario (como campos ocultos del formulario, o en los
+      parámetros de la petición GET, etc).<br>
+      <br>
+      Ahora, con el seguimiento de sesiones, esos parámetros no son necesarios.
+      Si los hemos empleado podemos quitarlos de donde estén. Normalmente los
+      utilizaremos en el <i>ServletMain</i> para llamarse a sí mismo, o para
+      llamar a los servlets <i>ServletVender </i>y <i>ServletComprar</i>, y
+      también en estos dos servlets, para pasarlos luego a <i>ServletMain</i>
+      cuando se valide el formulario.</p>
+           
+        </body>
+        </html>

@@ -1,0 +1,326 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0052)http://www.dccia.ua.es/j2ee/mensajes/apuntes/sesion2.htm -->
+<HTML><HEAD><TITLE>Mensajes en Java</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=iso-8859-1">
+<META content=Sco name=Author><LINK href="sesion1_archivos/apuntes.css"
+type=text/css rel=stylesheet>
+<META content="Microsoft FrontPage 4.0" name=GENERATOR></HEAD>
+<BODY>
+<H1>Tema 2: JMS: Java Message Service</H1>
+<H2>2.1. Arquitectura JMS</H2>
+<P>JMS es una <I>especificación</I> orientada a posibilitar la comunicación entre componentes software (p.e.
+aplicacinones). Esta comunicación es muy necesaria en aplicaciones de empresa en donde los distintos
+módulos (almacén, ventas, facturación, contabilidad, ...) se encuentran distribuidos.</P>
+<P>Los elementos de la arquitectura JMS son los siguientes:</P>
+<P>1. <I>Proveedor JMS</I>. Sistema de mensajes que implementa las interfaces de JMS y proporciona
+administración y control.</P>
+
+<P>2. <I>Clientes JMS</I> programas o componentes Java que producen y/o consumen mensajes.</P>
+
+<P>3. <I>Mensajes</I> Objetos compuestos por cabecera + propiedades + cuerpo que comunican
+clientes JMS.</P>
+
+<P>4. <I>Objetos Administrados</I> Objetos JMS pre-configurados creados por el administrador. Existen
+dos tipos: <I>destinos</I> y <I>factorías de conexión</I>.</P>
+
+<P>5. <I>Clientes Nativos</I>. Programas que usan un API nativo en lugar de JMS.</P>
+
+<P>Los anteriores elementos interaccionan de la siguiente forma: las herramientas de administración
+permiten vincular destinos y factorías de conexión a través de un espacio de nombres JNDI.
+Entonces un cliente JMS puede consultar los objetos administrados en dicho espacio y establecer
+conexiones con ellos a través del proveedor JMS.</P>
+
+<P>La extensión JMS puede descargarse de
+<A href="http://java.sun.com/products/jms">java.sun.com/products/jms</A></P>
+
+<H2>2.2. Dominos de Mensajes: PTP y Pub/sub</H2>
+<P>JMS proporciona comunicación <I>asíncrona</I> (no es necesario estar a la escucha) y <I>segura</I>
+(se garantiza que el mensaje se envía una y solo una vez) JMS proporciona dos modelos de comunicación:</P>
+
+<P>1. <I>Punto-a-Punto</I> (PTP). Mecanismo basado en colas, en donde una aplicación cliente
+envía sus mensajes a la cola de un cliente receptor que los va leyendo secuencialmente. Se trata
+de un mencanismo <I>uno-a-uno</I> es decir, un mensaje solamente tiene un consumidor, que puede
+recoger el mensaje cuando quiera, aunque debe indicar que lo hizo. </P>
+
+<P>2. <I>Publicar/suscribir</I>(Pub/sub). Modelo de difusión <I>uno-a-muchos</I> (un mensaje puede tener
+múltiples consumidores) en donde las aplicaciones cliente publican mensajes en <I>tópicos</I> o 
+apartados a los que otros clientes, interesados en dichos tópicos, se han suscrito. Cada cliente suscrito recibirá
+un mensaje.</P>
+
+
+<H2>2.3. Creando un Cliente PTP (en BEA WebLogic)</H2>
+<P>En esta sección nos apoyaremos en el ejemplo
+<A href="sesion23_archivos/jms/queue/QueueSend.java.txt">QueueSend.java</A> disponible en el
+subdirectorio de ejemplos dedicado a jms. Este ejemplo muestra como crear un cliente que envía
+mensajes a una cola.</P>
+<H3>Establecer contexto JNDI</H3>
+<P>Una factoría de conexiones es un objeto administrado, en este caso gestionado por WebLogic.
+La implementación JMS de WebLogic proporciona una factoría por defecto, pero el administrador puede 
+añadir o actualizar factorías de conexión.</P>
+<P>Por lo tanto, lo primero que tiene que hacer el cliente es localizar una factoría de conexiones, y 
+para ello ha de establecer un contexto JNDI a través del método <B>NamingManager.InitialContext()</B> 
+de <B>javax.naming</B> que es llamado, en este caso, desde el método <B>getInitialContext()</B> del 
+cliente (recibe como parámetro la URL del servidor):</P>
+<PRE class=codigo>
+private static InitialContext getInitialContext(String url)
+       throws NamingException
+  {
+    Hashtable env = new Hashtable();
+    env.put(Context.INITIAL_CONTEXT_FACTORY, JNDI_FACTORY);
+    env.put(Context.PROVIDER_URL, url);
+    return new <B>InitialContext</B>(env);
+  }
+</PRE>
+
+
+<H3>Configuración de la Comunicación</H3>
+<P>A continuación, el cliente llama, en este caso, a su método <I>init()</I>, pasándole el contexto JNDI
+que acabamos de crear y el nombre de la cola. En este método tienen lugar los siguientes pasos: </P>
+
+<P><I>Paso 1. Localizar una ConnectionFactory.</I> Una factoría de conexiones es un objeto que encapsula 
+la información relativa a la configuración de la conexión. Para localizarla llamaremos al método
+<B>Context.lookup()</B> para que devuelva, en este caso, una
+<B>QueueConnectionFactory</B>:</P>
+<PRE class=codigo>
+<B>QueueConnectionFactory</B> qconFactory = (<B>QueueConnectionFactory</B>) ctx.<B>lookup</B>(JMS_FACTORY);
+</PRE>
+
+<P><I>Paso 2. Crear una Connection.</I> A partir de la factoría de conexión ya podemos establecer una
+conexión:</P>
+<PRE class=codigo>
+<B>QueueConnection</B> qcon = qconFactory.<B>createQueueConnection</B>();
+</PRE>
+<P>Este objeto representa un canal abierto de comunicación  entre la aplicación y el sistema de
+mensajes y se usa para crear sesiones en las que se producen y se consumen mensajes. Se crean
+objetos, tanto en la parte del cliente como en la del servidor, que gestionan el trasiego de mensajes
+entre el cliente y el sistema de mensajes.</P>
+
+<P><I>Paso 3. Crear una Session.</I> Establecida la conexión, creamos una sesión:</P>
+<PRE class=codigo>
+<B>QueueSession</B> qsession = qcon.<B>createQueueSession</B>(false, Session.AUTO_ACKNOWLEDGE);
+</PRE>
+<P>Una sesión, define un orden en el que los mensajes se producen y consumen, y a su vez puede crear
+múltiples productores y consumidores. Existen dos tipos de sesiones: las transaccionales y las
+no-transaccionales. Las transaccionales se caracterizan porque todos los mensajes enviados y recibidos
+se tratan como una unidad atómica que está sujeta al protocolo commit/rollback (confirmar o deshacer).
+En estas sesiones no es necesario realizar acuses de recibo o <I>acknowledgements</I>.</P>
+
+<P>En las no-transaccionales (como es el caso anterior ya que primer argumento es <B>false</B>)
+hay que seleccionar un tipo de acuse de recibo. En este caso, el tipo <B>Session.AUTO_ACKNOWLEDGE</B>
+indica que la sesión acusa el recibo de un mensaje una vez que la aplicación receptora lo ha procesado.</P>
+
+<P><I>Paso 4. Localizar/Crear un Destination.</I> Los objetos <B>Queue</B> son sub-clases de <B>Destination</B>,
+objetos administrados por WebLogic, y se obtienen a partir del contexto JNDI y del
+<B>destination name</B> (nombre de la cola en WebLogic) definido durante la configuración de WebLogic:</P>
+<PRE class=codigo>
+ <B>Queue</B> queue = (Queue) ctx.lookup(queueName);
+</PRE>
+<P>Una manera alternativa de obtener la cola es usar el método <B>createQueue()</B> de la clase
+<B>QueueSession</B>:</P>
+<PRE class=codigo>
+ <B>Queue</B> queue = (Queue) qsession.<B>createQueue</B>(queueName);
+</PRE>
+
+<P><I>Paso 5. Crear Productores o Consumidores.</I> Estos objetos son instancias de subclases de
+<B>MessageProducers</B> y/o <B>MessageConsumers</B> hay que
+pasarle el destino (en este caso una cola) a un método de sesión, por ejemplo
+<B>createSender()/createReceiver()</B> según queramos enviar o recibir mensajes:</P>
+<PRE class=codigo>
+<B>QueueSender</B> qsender = qsession.<B>createSender</B>(queue);
+</PRE>
+
+<P><I>Paso 6. Crear el Objeto Message.</I>  Los mensajes también se crean a partir de objetos de
+sesión:</P>
+<PRE class=codigo>
+<B>TextMessage</B> msg = qsession.<B>createTextMessage</B>();
+</PRE>
+<P>Los mensajes encapsulan información a intercambiar entre aplicaciones. Un mensaje contiene tres 
+componentes: los campos de la <I>cabecera</I>, las <I>propiedades</I> especificas de la aplicación 
+y el <I>cuerpo</I> del mensaje.</P>
+<P>Algunos de los campos de la <I>cabecera</I> están disponibles para los consumidores y otros pueden
+instanciarse por productores. Por ejemplo, uno de estos campos es el <B>JMSDeliveryMode</B> que
+puede ser <B>PERSISTENT</B> o <B>NOT_PERSISTENT</B>, de tal forma que cuando se envía un mensaje
+persistente, WebLogic lo almacena en un fichero o una BD y la operación de envío no se considera
+exitosa hasta que el reparto del mensaje se haya confirmado. Otro campo es <B>JMSDestination</B>
+que indica el destino del mensaje.</P>
+<P>Las <I>propiedades</I> son pares estándar (nombre, valor). Finalmente, el <B>cuerpo</B> del 
+mensaje es el contenido propiamente dicho, y puede ser de diversos tipos como: 
+<B>BytesMessage</B>, <B>MapMessage</B> (compuesto de pares de nombres/valor), 
+<B>ObjectMessage</B> (contiene objetos serializables), <B>XMLMessage</B>, etc. 
+Obviamente para cada tipo de mensajes hay al menos un constuctor.</P>
+
+<P><I>Paso 7. Iniciar la Conexión.</I>Se llama al método <B>start()</B> de <B>QueueConnection</B>:</P>
+<PRE class=codigo>
+qcon.<B>start</B>();
+</PRE>
+
+<H3>Enviar Mensajes</H3>
+<P>Una vez tenenos configurada e iniciada la conexión, podemos proceder a enviar mensajes. En 
+nuestro ejemplo, el método del cliente <B>readAndSend()</B> se encarga de leer de teclado el 
+mensaje de texto a enviar, y llamar al método <B>send()</B> del cliente:</P>
+<PRE class=codigo>
+public void send(String message) throws JMSException {
+    msg.<B>setText</B>(message);
+    qsender.<B>send</B>(msg);
+}
+</PRE>
+<P>que, en primer lugar establece el contenido (texto en este caso) y en segundo lugar llama al
+método <B>send()</B> de la clase <B>QueueSender</B>. Uno de los métodos <B>send()</B> de esta 
+clase permite, entre otras cosas, indicar la persistencia, la prioridad (0-9) y el tiempo de 
+vida, en ms, del mensaje:</P>
+<PRE class=codigo>
+qsender.<B>send</B>(msg, DeliveryMode.PERSISTENT, 4, 3600000);
+</PRE>
+
+<H3>Cerrar la Comunicación</H3>
+<P>Una vez decidimos dejar de enviar mensajes, el cliente llama a su método <B>close()</B> que a su vez 
+llama a los método <B>close()</B> de <B>QueueSender</B> (cierra el productor), <B>QueueSession</B> 
+(cierra la sesión) y <B>QueueConnection</B> (cierra la conexión):</P>
+<PRE class=codigo>
+public void close()throws JMSException {
+    qsender.<B>close();</B>
+    qsession.<B>close();</B>
+    qcon.<B>close();</B>
+}
+</PRE>
+
+<H3>Lectura de Mensajes en PTP</H3>
+<P>Siguiendo con el modo PTP, nos fijaremos ahora en el ejemplo 
+<A href="sesion23_archivos/jms/queue/QueueReceive.java.txt">QueueReceive.java</A>.</P>
+<P>En primer lugar, el método de cliente <B>getInitialContext()</B> para obtener el contexto 
+JNDI es idéntico al del ejemplo anterior, y el método <B>init()</B> en el que se configura 
+la comunicación también lo es, salvando las diferencias de que ahora se trata de recibir mensajes 
+y no de enviarlos:</P>
+<PRE class=codigo>
+ public void init(Context ctx, String queueName)
+       throws NamingException, JMSException
+  {
+    qconFactory = (QueueConnectionFactory) ctx.lookup(JMS_FACTORY);
+    qcon = qconFactory.createQueueConnection();
+    qsession = qcon.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
+    queue = (Queue) ctx.lookup(queueName);
+    qreceiver = qsession.<B>createReceiver</B>(queue);
+    qreceiver.<B>setMessageListener</B>(this);
+    qcon.start();
+  }
+</PRE>
+<P>La recepción de los mensajes corre a cargo, en este caso PTP, de los objetos 
+<B>QueueReceiver</B>. </P>
+
+
+<P>Un aspecto importante en el método anterior, es el registro como <B>MessageListener</B>
+(recuérdese, por ejemplo, el modelo de eventos de AWT). Dicho registro implementa un mecanismo 
+de recepción <I>asíncrono</I> y consiste en los siguientes pasos:</P>
+<P><I>Paso 1.</I> Implementar la interfaz <B>javax.jms.MessageListener</B> que incluye el método
+<B>onMessage()</B>. Cuando se distribuye un mensaje a la <B>QueueSession</B> esta lo redirige a
+este método, cuyo código, en este caso, es el siguiente:</P>
+<PRE class=codigo>
+public void onMessage(<B>Message msg</B>)
+  {
+    try {
+      String msgText;
+      if (msg instanceof TextMessage) {
+        msgText = ((TextMessage)msg).getText();
+      } else {
+        msgText = msg.toString();
+      }
+
+      System.out.println(&quot;Message Received: &quot;+ msgText );
+
+      if (msgText.equalsIgnoreCase(&quot;quit&quot;)) {
+        synchronized(this) {
+          quit = true;
+          this.notifyAll(); // Notify main thread to quit
+        }
+      }
+    } catch (JMSException jmse) {
+      jmse.printStackTrace();
+    }
+  }
+</PRE>
+<P><I>Paso 2.</I> Declarar como oyente o <I>listener</I> llamando al método <B>setMessageListener()</B>.</P>
+<P><I>Paso 3.</I> Implementar (opcional) un oyente de excepciones de la sesión.</P>
+<P>Teniendo en cuenta los pasos anteriores, el método <B>init()</B> del ejemplo termina iniciando la conexión
+con el método <B>start()</B>.</P>
+
+<P>Por otro lado, en caso de querer utilizar recepción <I>síncrona</I>, en lugar de definir un 
+oyente, utilizaremos el método <B>receive()</B>:</P>
+<PRE class=codigo>
+qreceiver.<B>receive();</B>
+</PRE>
+<P>Una llamada como ésta, sin argumentos, bloquea indefinidamente hasta que se produce un mensaje o 
+se cierra la aplicación. Si queremos esperar solo por un tiempo limitado podemos pasarle un argumento 
+<B>long</B> que indica un <I>timeout</I>. Si no queremos esperar nada, llamaremos al método 
+<B>receiveNoWait()</B> (sin argumentos) que recibe el siguiente mensaje, si hay alguno disponible, y 
+devuelve <B>null</B> en otro caso, pero que no causa bloqueo.</P>
+
+<P>Finalmente, decir que en este ejemplo se detecta cuando se recibe un mensaje con texto "quit" y en
+ese momento se cierra la sesión.</P>
+
+<H2>2.4. Creando un Cliente Pub/sub</H2>
+<H3>Publicar mensajes</H3>
+<P>En el ejemplo <A href="sesion23_archivos/jms/topic/TopicSend.java.txt">TopicSend.java</A> se
+ilustran los pasos a seguir para crear un cliente que envíe mensajes en este modo. Es muy similar al
+caso PTP. Revisaremos brevemente los cambios significativos:</P>
+<P>1. En el <B>main()</B>, después de establecer el contexto se crea un objeto <B>TopicSend</B>:</P>
+<PRE class=codigo>
+ <B>TopicSend</B> ts = new TopicSend();
+</PRE>
+<P>2. Después se llama al método <B>init()</B> en el que acaba creándose un objeto <B>TopicPublisher</B>, 
+un mensaje y se inicia la conexión:</P>
+<PRE class=codigo>
+ public void init(Context ctx, String topicName)
+       throws NamingException, JMSException
+  {
+    tconFactory = (<B>TopicConnectionFactory</B>) ctx.lookup(JMS_FACTORY);
+    tcon = tconFactory.create<B>TopicConnection</B>();
+    tsession = tcon.create<B>TopicSession</B>(false, Session.AUTO_ACKNOWLEDGE);
+    topic = (<B>Topic</B>) ctx.lookup(topicName);
+    tpublisher = tsession.create<B>Publisher</B>(topic);
+    msg = tsession.createTextMessage();
+    tcon.start();
+  }
+</PRE>
+<P>3. Después se llama al método <B>readAndSend()</B> dentro del cual se llama al método <B>send()</B> que
+publica el mensaje con <B>publish()</B>:</P>
+<PRE class=codigo>
+public void send(String message)
+       throws JMSException
+  {
+
+    msg.setText(message);
+    tpublisher.<B>publish(msg);</B>
+  }
+</PRE>
+<P>Al igual que sucede con el método correspondiente en el caso PTP, podemos especificar como argumentos 
+el modo de reparto, prioridad y el tiempo de vida (p.e. una hora) del mensaje:</P>
+<PRE class=codigo>
+tpublisher.<B>publish</B>(msg, DeliveryMode.PERSISTENT, 4, 3600000);
+</PRE>
+
+<H3>Recibir mensajes</H3>
+<P>En el ejemplo <A href="sesion23_archivos/jms/topic/TopicReceive.java.txt">TopicReceive.java</A>
+se ilustra el funcionamiento de la recepción en Pub/sub:</P>
+<P>Después de crear el contexto, se crea un objeto <B>TopicReceive</B> y después llama al método
+<B>init()</B> en el que se acaba creando un objeto <B>TopicSubscriber</B>:</P>
+<PRE class=codigo>
+  public void init(Context ctx, String topicName)
+       throws NamingException, JMSException
+  {
+    tconFactory = (<B>TopicConnectionFactory</B>) ctx.lookup(JMS_FACTORY);
+    tcon = tconFactory.create<B>TopicConnection</B>();
+    tsession = tcon.create<B>TopicSession</B>(false, Session.AUTO_ACKNOWLEDGE);
+    topic = (<B>Topic</B>) ctx.lookup(topicName);
+    tsubscriber = tsession.create<B>Subscriber</B>(topic);
+    tsubscriber.<B>setMessageListener</B>(this);
+    tcon.start();
+  }
+</PRE>
+<P>En modo asíncrono se llama al método <B>setMessageListener()</B> para registrar el oyente. En 
+cuanto al método <B>onMessage()</B> es el mismo que para el caso PTP.</P>
+
+
+
+
+
+</BODY></HTML>

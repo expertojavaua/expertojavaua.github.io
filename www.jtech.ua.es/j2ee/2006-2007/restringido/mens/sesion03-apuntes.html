@@ -1,0 +1,271 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.7">
+<meta name="Forrest-skin-name" content="pelt">
+<title> JMS en aplicaciones reales (1)</title>
+<link type="text/css" href="skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="skin/print.css" rel="stylesheet">
+<link type="text/css" href="skin/profile.css" rel="stylesheet">
+<script src="skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<div class="header">
+<div class="grouplogo">
+<a href="http://www.jtech.ua.es/j2ee"><img class="logoImage" alt="J2EE" src="images/baner_j2ee_izq.gif" title="Curso Especialista Universitario J2EE"></a>
+</div>
+<div class="projectlogoA1">
+<a href="http://www.dccia.ua.es/"><img class="logoImage" alt="Servidores Web" src="images/baner_j2ee_der.gif" title="Servidores Web"></a>
+</div>
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="../index.html">M&oacute;dulos</a>
+</li>
+<li class="current">
+<a class="base-selected" href="index.html">Servidores Web</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<div id="level2tabs"></div>
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<div id="menu">
+<div onclick="SwitchMenu('menu_selected_1.1', 'skin/')" id="menu_selected_1.1Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">JMS: Java Message Service</div>
+<div id="menu_selected_1.1" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="index.html" title="JMS: Java Message Service">&Iacute;ndice</a>
+</div>
+<div onclick="SwitchMenu('menu_selected_1.1.2', 'skin/')" id="menu_selected_1.1.2Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Teor&iacute;a</div>
+<div id="menu_selected_1.1.2" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="sesion01-apuntes.html">Sesion 1</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-apuntes.html">Sesion 2</a>
+</div>
+<div class="menupage">
+<div class="menupagetitle">Sesion 3</div>
+</div>
+<div class="menuitem">
+<a href="sesion04-apuntes.html">Sesion 4</a>
+</div>
+<div class="menuitem">
+<a href="roadmap-apuntes.html">Roadmap</a>
+</div>
+</div>
+<div onclick="SwitchMenu('menu_1.1.3', 'skin/')" id="menu_1.1.3Title" class="menutitle">Ejercicios</div>
+<div id="menu_1.1.3" class="menuitemgroup">
+<div class="menuitem">
+<a href="sesion01-ejercicios.html">Sesion 1</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-ejercicios.html">Sesion 2</a>
+</div>
+<div class="menuitem">
+<a href="sesion03-ejercicios.html">Sesion 3</a>
+</div>
+<div class="menuitem">
+<a href="sesion04-ejercicios.html">Sesion 4</a>
+</div>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<div id="credit2"></div>
+</div>
+<div id="content">
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="sesion03-apuntes.pdf"><img alt="PDF -icon" src="skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1> JMS en aplicaciones reales (1)</h1>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#Message-Driven+Beans">Message-Driven Beans</a>
+</li>
+<li>
+<a href="#Interacci%C3%B3n+con+SSBs">Interacci&oacute;n con SSBs</a>
+</li>
+</ul>
+</div>
+
+<a name="N1000C"></a><a name="Message-Driven+Beans"></a>
+<h2 class="underlined_10">Message-Driven Beans</h2>
+<div class="section">
+<p>Un <em>Message-Driven Bean</em> o MDB (EJB dirigido por mensajes) es un oyente de mensajes que
+que puede consumir mensajes de una cola o de una <em>durable subscription</em>. Dichos mensajes 
+pueden ser enviados por cualquier componente JEE (cliente, otro EJB o una componente Web. Incluso 
+desde una aplicaci&oacute;n o sistema que no use tecnolog&iacute;a JEE.</p>
+<p>Al igual que en el caso de los JMS clientes <em>standalone</em> (independientes) que se basan 
+en el m&eacute;todo <strong>onMessage()</strong>, un MDB tambi&eacute;n contiene este m&eacute;todo que se invoca 
+autom&aacute;ticamente a la llegada de un mensaje. Sin embargo difieren de estos clientes en los 
+siguientes aspectos:</p>
+<p>1. El contenedor EJB realiza autom&aacute;ticamente varias tareas de inicializaci&oacute;n que deben implementarse 
+por el cliente: crear un consumidor o (<strong>QueueReceiver</strong>, <strong>TopicSubscriber</strong>) 
+para recibir el mensaje. El usuario asocia un MDB con una destination y usa una connection factory en 
+en tiempo de despliegue. Si se quiere especificar una durable subscription o un selector de mensajes se 
+puede hacer tambi&eacute;n en tiempo de despliegue. El MDB no tiene que registrar el message listener. 
+No es necesario especificar el acknowledgment mode.</p>
+<p>2. El MDB debe implementar las interfaces <span class="codefrag">javax.ejb.MessageDrivenBean</span> y 
+<span class="codefrag">javax.jms.MessageListener</span>.</p>
+<p>3. El MDB debe implementar el m&eacute;todo <strong>ejbCreate()</strong>. Este m&eacute;todo se utiliza si el 
+MBD produce mensajes o bien los recibe de forma s&iacute;ncrona de otra destination. Se usa este m&eacute;todo para 
+buscar las factor&iacute;as de conexi&oacute;n  destinations y para crear una conexi&oacute;n.</p>
+<p>4. El MDB debe implementar el m&eacute;todo <strong>ejbCreate()</strong> para cerrar la conexi&oacute;n (si la abre).</p>
+<p>5. El MDB debe implementar el m&eacute;todo <strong>setMessageDrivenContext</strong>. Un contexto de este tipo es 
+muy &uacute;til para la posterior gesti&oacute;n transaccional.</p>
+<p>Con respecto a otros EJBs, la diferencia fundamental con cualquier otro EJB es que el MDB 
+no tiene interface local o remota. Solo la clase bean. Es parecido a un <em>stateless session bean</em> (SSB)
+porque sus instancias son short-lived y no retienen estado para un cliente espec&iacute;fico. Pero sus variables pueden 
+contener info de estado mediante clientes JMS (una conexi&oacute;n, p.e.).</p>
+<p>Como un SSB, un MDB puede tener varias instancias intercambiables ejecut&aacute;ndose al mismo tiempo. 
+El contenedor puede hacer un pooling de instancias para permitir que los mensajes se procesen concurrentemente, 
+lo cual puede afectar al orden en que se reciben los mensajes.</p>
+<p>Para crear un MDB hay que:</p>
+<p>1.Llamar al m&eacute;todo <strong>setMessageDrivenContext</strong> para pasar el contexto del objeto a la instancia.</p>
+<p>2.Llamar al m&eacute;todo <strong>ejbCreate()</strong> de la instancia.</p>
+<p>El ciclo de vida de un MDB puede verse en la figura adjunta:</p>
+<p>
+
+<img alt="Ciclo de vida de un MDB" content-width="8cm" src="imagenes/sesion3/ciclo.gif" width="400">
+</p>
+<p>Como ejemplo, supongamos que el cliente <a href="ejemplos/sesion3/Client.java.txt">Client.java</a> publica mensajes 
+en un t&oacute;pico en el que est&aacute; escuchando el MDB <a href="ejemplos/sesion3/MessageTraderBean.java.txt">TraderReceive.java</a>. 
+El c&oacute;digo del primero no tiene mayor inter&eacute;s dado lo que sabemos de las sesiones anteriores. En cambio en el segundo hay algunos aspectos interesantes a
+resaltar. En primer lugar su anotaci&oacute;n:</p>
+<pre class="code">
+MessageDriven(maxBeansInFreePool = "200",
+               destinationType = "javax.jms.Topic",
+               initialBeansInFreePool = "20",
+               transTimeoutSeconds = "0",
+               defaultTransaction = MessageDriven.DefaultTransaction.REQUIRED,
+               durable = Constants.Bool.FALSE,
+               ejbName = "messageDriven",
+               destinationJndiName = "quotes")
+</pre>
+<p>En segundo lugar, su m&eacute;todo de creaci&oacute;n de contexto y su m&eacute;todo <strong>OnMessage</strong>:</p>
+<pre class="code">
+public void setMessageDrivenContext(MessageDrivenContext ctx) {
+    m_context = ctx;
+  }
+public void onMessage(Message msg) {
+    TextMessage tm = (TextMessage) msg;
+    try {
+      String text = tm.getText();
+      log("Received new quote : "+text);
+    }
+    catch(JMSException ex) {
+      System.err.println("An exception occurred: "+ex.getMessage());
+    }
+}
+</pre>
+<p>Finalmente los m&eacute;todos de creaci&oacute;n y destrucci&oacute;n quedan vac&iacute;os pero hay que implementarlos:</p>
+<pre class="code">
+  public void ejbCreate() { }
+  public void ejbRemove() { }
+</pre>
+<p>Este es un ejemplo b&aacute;sico de MDB.</p>
+</div>
+
+<a name="N1008F"></a><a name="Interacci%C3%B3n+con+SSBs"></a>
+<h2 class="underlined_10">Interacci&oacute;n con SSBs</h2>
+<div class="section">
+<p>Vamos a ver un ejemplo de un servlet que interacciona, a trav&eacute;s
+de un mensaje MAP (pares de atributo valor) con un cliente que a su
+vez invoca a un EJB SSB para realizar una tarea concreta. El c&oacute;digo del
+cliente se encuentra en el fichero <a href="ejemplos/sesion3/TraderReceive.java.txt">TraderReceive.java</a>.
+Tambi&eacute;n en este ejemplo utilizamos transacciones, pero a trav&eacute;s del
+package <strong>javax.transaction</strong>. Se usa un esquema Pub/sub</p>
+<p>En el m&eacute;todo <strong>init()</strong> se acaba creando un objeto
+<strong>Trader</strong> a partir de una sesi&oacute;n EJB, y una transacci&oacute;n:</p>
+<pre class="code">
+public void init(Context ctx, String topicName)
+       throws NamingException, JMSException, RemoteException, CreateException
+  {
+    connectionFactory = (TopicConnectionFactory) ctx.lookup(JMS_FACTORY);
+
+    connection = connectionFactory.createTopicConnection();
+    connection.setClientID("traderReceive");
+    session = connection.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
+    topic = (Topic) ctx.lookup(topicName);
+    subscriber = session.createDurableSubscriber(topic, "traderReceive");
+    TraderHome brokerage = (TraderHome) ctx.lookup(EJB_HOME);
+    ejbTrader = brokerage.create();
+    tx = (javax.transaction.UserTransaction) ctx.lookup(TX);
+    connection.start();
+  }
+</pre>
+<p>La recepci&oacute;n y tratamiento de los mensajes se realiza en el
+m&eacute;todo <strong>processMessages()</strong> en donde:</p>
+<p>1. Nos quedamos en modo recepci&oacute;n:</p>
+<pre class="code">
+Message msg = subscriber.<strong>receive();</strong>
+
+</pre>
+<p>2. Iniciamos la transacci&oacute;n:</p>
+<pre class="code">
+tx.begin();
+</pre>
+<p>3. Leemos el contenido del objeto <strong>MapMessage</strong>:</p>
+<pre class="code">
+MapMessage m = (MapMessage) msg;
+String customerName = m.getString("CustomerName");
+String tradeType = m.getString("TradeType");
+String symbol = m.getString("Symbol");
+int numberOfShares = m.getInt("Shares");
+</pre>
+<p>4. Detectamos el tipo de comando y lanzamos las &oacute;rden
+correspondiente. Si &eacute;sta tiene &eacute;xito entonces se confirma la
+transacci&oacute;n y en caso contrario se deshace:</p>
+<pre class="code">
+...
+if ("sell".equalsIgnoreCase(tradeType)) {
+  tr = ejbTrader.sell(symbol, numberOfShares);
+  System.out.println("Sold " + tr.getNumberTraded());
+  tx.commit();
+} else {
+  System.out.println("Rolling Back Transaction");
+  tx.rollback();
+  System.out.println("Unknown TradeType: "+tradeType);
+}
+...
+</pre>
+<p>NOTA: Algunos de los ejemplos presentados en esta sesi&oacute;n existen
+solo en la versi&oacute;n 7.0 del BEA WebLogic. Estos ejemplos se encuentran en <a href="ejemplos/sesion2/ejemplosWL700.tar.gz">ejemplosWL700.tar.gz</a>
+</p>
+</div>
+
+<p class="pageBreakAfter"></p>
+
+</div>
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+        Copyright &copy;
+         2006 Depto. CCIA</div>
+</div>
+</body>
+</html>

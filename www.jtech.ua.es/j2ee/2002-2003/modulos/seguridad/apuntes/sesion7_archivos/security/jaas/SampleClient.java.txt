@@ -1,0 +1,117 @@
+package examples.security.jaas;
+
+import java.util.*;
+import javax.security.auth.Subject;
+import javax.security.auth.callback.TextInputCallback;
+import javax.security.auth.callback.PasswordCallback;
+import javax.security.auth.login.LoginContext;
+import javax.security.auth.login.LoginException;
+import javax.security.auth.login.FailedLoginException;
+import javax.security.auth.login.AccountExpiredException;
+import javax.security.auth.login.CredentialExpiredException;
+import weblogic.security.acl.internal.AuthenticatedSubject;
+import weblogic.security.Security;
+import examples.utils.common.ExampleUtils;
+
+/**
+ * SampleClient.java
+ * Sample client for JAAS user authentication.
+ * Usage:   java examples.security.jaas.SampleClient [url] [username(optional)] [password(optional)]
+ * Example: java examples.security.jaas.SampleClient t3://localhost:7001 weblogic weblogic
+ *
+ * @author Copyright (c) 2000-2002 by BEA Systems, Inc. All Rights Reserved.
+ */
+public class SampleClient
+{
+  /**
+  * Attempt to authenticate the user.
+  */
+  public static void main(String[] args)
+  {
+    String username = null;
+    String password = null;
+    String url = null;
+
+    // Url is required
+    if(args.length < 1) {
+      System.out.println("Usage:   java examples.security.jaas.SampleClient [url] [username(optional)] [password(optional)]");
+      System.out.println("Example: java examples.security.jaas.SampleClient t3://localhost:7001");
+      System.exit(0);
+    }
+    
+    // Parse the argument list
+    switch(args.length) {
+      case 3:
+        password = args[2];
+      // fall through
+      case 2:
+        username = args[1];
+      // fall through
+      case 1:
+        url      = args[0];
+      break;
+    }
+
+    LoginContext loginContext = null;
+
+    /**
+     * Set JAAS server url system property and create a LoginContext
+     */
+    try
+    {
+      // Create LoginContext; specify username/password login module
+      loginContext = new LoginContext("Sample", new SampleCallbackHandler(username, password, url));
+    }
+    catch(SecurityException se)
+    {
+      se.printStackTrace();
+      System.exit(-1);
+    }
+    catch(LoginException le)
+    {
+      le.printStackTrace();
+      System.exit(-1);
+    }
+
+    /**
+     * Attempt authentication
+     */
+    try
+    {
+      // If we return without an exception, authentication succeeded
+      loginContext.login();
+    }
+    catch(FailedLoginException fle)
+    {
+      System.out.println("Authentication Failed, " + fle.getMessage());
+      System.exit(-1);
+    }
+    catch(AccountExpiredException aee)
+    {
+      System.out.println("Authentication Failed: Account Expired");
+      System.exit(-1);
+    }
+    catch(CredentialExpiredException cee)
+    {
+      System.out.println("Authentication Failed: Credentials Expired");
+      System.exit(-1);
+    }
+    catch(Exception e)
+    {
+      System.out.println("Authentication Failed: Unexpected Exception, " + e.getMessage());
+      e.printStackTrace();
+      System.exit(-1);
+    }
+
+    /**
+     * Retrieve authenticated subject, perform SampleAction as Subject
+     */
+    Subject subject = loginContext.getSubject();
+    SampleAction sampleAction = new SampleAction(url);
+    Security.runAs(subject, sampleAction);
+
+    System.exit(0);
+  }
+}
+
+

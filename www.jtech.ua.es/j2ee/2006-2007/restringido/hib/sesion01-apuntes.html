@@ -1,0 +1,940 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.7">
+<meta name="Forrest-skin-name" content="pelt">
+<title>Introducci&oacute;n a Hibernate: Configuraci&oacute;n e Inicio</title>
+<link type="text/css" href="skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="skin/print.css" rel="stylesheet">
+<link type="text/css" href="skin/profile.css" rel="stylesheet">
+<script src="skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<div class="header">
+<div class="grouplogo">
+<a href="http://www.jtech.ua.es/j2ee"><img class="logoImage" alt="J2EE" src="images/baner_j2ee_izq.gif" title="Curso Especialista Universitario J2EE"></a>
+</div>
+<div class="projectlogoA1">
+<a href="http://www.dccia.ua.es/"><img class="logoImage" alt="Hibernate" src="images/baner_j2ee_der.gif" title="Hibernate"></a>
+</div>
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="../index.html">M&oacute;dulos</a>
+</li>
+<li class="current">
+<a class="base-selected" href="index.html">Hibernate</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<div id="level2tabs"></div>
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<div id="menu">
+<div onclick="SwitchMenu('menu_selected_1.1', 'skin/')" id="menu_selected_1.1Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Hibernate</div>
+<div id="menu_selected_1.1" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="index.html" title="Hibernate">&Iacute;ndice</a>
+</div>
+<div onclick="SwitchMenu('menu_selected_1.1.2', 'skin/')" id="menu_selected_1.1.2Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Teor&iacute;a</div>
+<div id="menu_selected_1.1.2" class="selectedmenuitemgroup" style="display: block;">
+<div class="menupage">
+<div class="menupagetitle">Sesi&oacute;n 1</div>
+</div>
+<div class="menuitem">
+<a href="sesion02-apuntes.html" title="Sesi&oacute;n 2: Mapeado de clases persistentes">Sesi&oacute;n 2</a>
+</div>
+<div class="menuitem">
+<a href="sesion03-apuntes.html" title="Sesi&oacute;n 3: Relaciones entre objetos">Sesi&oacute;n 3</a>
+</div>
+<div class="menuitem">
+<a href="sesion04-apuntes.html" title="Sesi&oacute;n 4: Consultas HQL">Sesi&oacute;n 4</a>
+</div>
+<div class="menuitem">
+<a href="roadmap-apuntes.html" title="Roadmap">Roadmap</a>
+</div>
+</div>
+<div onclick="SwitchMenu('menu_1.1.3', 'skin/')" id="menu_1.1.3Title" class="menutitle">Ejercicios</div>
+<div id="menu_1.1.3" class="menuitemgroup">
+<div class="menuitem">
+<a href="sesion01-ejercicios.html" title="Sesi&oacute;n 1: Introducci&oacute;n a Hibernate:Configuraci&oacute;n e Inicio">Sesi&oacute;n 1</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-ejercicios.html" title="Sesi&oacute;n 2: Mapeado de clases persistentes">Sesi&oacute;n 2</a>
+</div>
+<div class="menuitem">
+<a href="sesion03-ejercicios.html" title="Sesi&oacute;n 3: Relaciones entre objetos">Sesi&oacute;n 3</a>
+</div>
+<div class="menuitem">
+<a href="sesion04-ejercicios.html" title="Sesi&oacute;n 4: Consultas HQL">Sesi&oacute;n 4</a>
+</div>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<div id="credit2"></div>
+</div>
+<div id="content">
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="sesion01-apuntes.pdf"><img alt="PDF -icon" src="skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1>Introducci&oacute;n a Hibernate: Configuraci&oacute;n e Inicio</h1>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#%C2%BFPor+qu%C3%A9+necesitamos+Hibernate%3F">&iquest;Por qu&eacute; necesitamos Hibernate?</a>
+</li>
+<li>
+<a href="#Persistencia+y+ORM">Persistencia y ORM</a>
+</li>
+<li>
+<a href="#Arquitectura+Hibernate">Arquitectura Hibernate</a>
+</li>
+<li>
+<a href="#Configuraci%C3%B3n+b%C3%A1sica">Configuraci&oacute;n b&aacute;sica</a>
+</li>
+<li>
+<a href="#Especificaci%C3%B3n+de+opciones+de+configuraci%C3%B3n+%28">Especificaci&oacute;n de opciones de configuraci&oacute;n (Configuration)</a>
+</li>
+<li>
+<a href="#Creaci%C3%B3n+de+una">Creaci&oacute;n de una SessionFactory</a>
+</li>
+<li>
+<a href="#Configuraci%C3%B3n+de+la+conexi%C3%B3n+de+base+de+datos">Configuraci&oacute;n de la conexi&oacute;n de base de datos</a>
+</li>
+<li>
+<a href="#Uso+de+configuraciones+basadas+en+XML">Uso de configuraciones basadas en XML</a>
+</li>
+<li>
+<a href="#Enlazado+de+una">Enlazado de una SessionFactory a JNDI</a>
+</li>
+<li>
+<a href="#Configuraci%C3%B3n+de">Configuraci&oacute;n de logging</a>
+</li>
+<li>
+<a href="#Resumen+de+los+pasos+de+configuraci%C3%B3n+e+inicio+de+Hibernate">Resumen de los pasos de configuraci&oacute;n e inicio de Hibernate</a>
+</li>
+<li>
+<a href="#Hibernate+Tools">Hibernate Tools</a>
+</li>
+</ul>
+</div>
+
+
+<p>Explicaremos la necesidad de Hibernate. Introduciremos los APIs principales 
+  de Hibernate. Mostraremos c&oacute;mo configurar Hibernate en aplicaciones <em>stand-alone</em>.</p>
+
+
+<a name="N10012"></a><a name="%C2%BFPor+qu%C3%A9+necesitamos+Hibernate%3F"></a>
+<h2 class="underlined_10">&iquest;Por qu&eacute; necesitamos Hibernate?</h2>
+<div class="section">
+<p>Es usual trabajar con programaci&oacute;n orientada a objetos y utilizar bases 
+  de datos (BD) relacionales. Resulta obvio que se trata de dos paradigmas diferentes. 
+  El modelo relacional trata con relaciones, tuplas y conjuntos, y es muy matem&aacute;tico 
+  por naturaleza. El paradigma orientado a objetos, sin embargo, trata con objetos, 
+  sus atributos y relaciones entre objetos. Cuando se quiere hacer que los objetos 
+  sean persistentes utilizando para ello una BD relacional, uno se da cuenta de 
+  que hay una desavenencia entre estos dos paradigmas: es lo que se denomina un 
+  <em>"object-relational gap"</em>, o tambi&eacute;n <em>paradigm mismatch</em>.</p>
+<p>&iquest;C&oacute;mo se manifiesta esta "brecha" entre ambos paradigmas? Si estamos 
+  utilizando objetos en nuestra aplicaci&oacute;n y en alg&uacute;n momento queremos 
+  que sean persistentes, normalmente abriremos una conexi&oacute;n JDBC, crearemos 
+  una sentencia SQL y copiaremos todos los valores de las propiedades sobre una 
+  <em>PreparedStatement</em> o en la cadena SQL que estemos construyendo. Esto 
+  puede resultar sencillo para un objeto de tipo valor (<em>value object</em>: 
+  VO) de peque&ntilde;o tama&ntilde;o, pero consideremos esto para un objeto con 
+  muchas propiedades. Y &eacute;ste no es el &uacute;nico problema. &iquest;Qu&eacute; 
+  ocurre con las asociaciones? &iquest;Y si el objeto contiene a su vez a otros 
+  objetos? &iquest;Los almacenaremos tambi&eacute;n en la BD? &iquest;Autom&aacute;ticamente? 
+  &iquest;Manualmente? &iquest;Qu&eacute; haremos con las claves ajenas? Preguntas 
+  similares surgen a la hora de "cargar" un dato de la BD en un VO (se 
+  denomina <em>value object</em> o VO a un objeto que contiene informaci&oacute;n 
+  de negocio estructurada en grupos de items de datos, tambi&eacute;n recibe el 
+  nombre de <em>transfer object</em>. Si Java tuviesese una construcci&oacute;n 
+  semejante a las estructuras de C/C++ u otros lenguajes, un VO ser&iacute;a una 
+  estructura).</p>
+<p>Como se puede comprobar por lo que acabamos de decir, la brecha existente entre 
+  los paradigmas de objetos y relacional se vuelve mucho mayor si disponemos de 
+  modelos con objetos "grandes". De hecho, hay estudios que muestran 
+  que un 35% del c&oacute;digo de una aplicaci&oacute;n se produce como consecuencia 
+  del mapeado (correspondencia) entre los datos de la aplicaci&oacute;n y el amac&eacute;n 
+  de datos.</p>
+<p>Dicho todo esto, lo que necesitamos es una herramienta <strong>ORM</strong> (<em>Object 
+  Relational Mapping</em>). B&aacute;sicamente, una ORM intenta hacer todas estas 
+  tareas pesadas por nosotros. Con una buena ORM, tendremos que definir la forma 
+  en la que estableceremos la correspondencia entre las clases y las tablas una 
+  s&oacute;la vez (indicando qu&eacute; propiedad se corresponde con qu&eacute; 
+  columna, qu&eacute; clase con qu&eacute; tabla, etc.). Despu&eacute;s de lo 
+  cual podremos hacer cosas como utilizar POJO's (<strong>P</strong>lain <strong>O</strong>ld<strong> 
+  J</strong>ava <strong>O</strong>bjects) de nuestra aplicaci&oacute;n y decirle 
+  a nuestra ORM que los haga persistentes, con una instrucci&oacute;n similar 
+  a esta: <span class="codefrag">orm.save(myObject)</span>. Es decir, una herramienta ORM puede 
+  leer o escribir en la base de datos utilizando VOs directamente.</p>
+<p>M&aacute;s formalmente: un modelo del dominio representa las entidades del negocio 
+  utilizadas en una aplicaci&oacute;n Java. En una arquitectura de sistemas por 
+  capas, el modelo del dominio se utiliza para ejecutar la l&oacute;gica del negocio 
+  en la capa del negocio (en Java, no en la base de datos). Esta capa del negocio 
+  se comunica con la capa de persistencia subyacente para recuperar y almacenar 
+  los objetos persistentes del modelo del dominio. ORM es el <em>middleware</em> 
+  en la capa de persistencia que gestiona la persistencia.</p>
+<p>Hibernate es una ORM de libre distribuci&oacute;n, que adem&aacute;s, es de 
+  las m&aacute;s maduras y completas. Actualmente su uso est&aacute; muy extendido 
+  y adem&aacute;s est&aacute; siendo desarrollada de forma muy activa. Una caracter&iacute;stica 
+  muy importante que distingue Hibernate de otras soluciones al problema de la 
+  persistencia, como los EJBs de entidad, es que la clase Hibernate persistente 
+  puede utilizarse en cualquier contexto de ejecuci&oacute;n, es decir, no se 
+  necesita un contenedor especial para ello.</p>
+</div>
+  
+  
+<a name="N10055"></a><a name="Persistencia+y+ORM"></a>
+<h2 class="underlined_10">Persistencia y ORM</h2>
+<div class="section">
+<p>Casi todas las aplicaciones requieren datos persistentes. La persistencia es uno de los conceptos fundamentales en el desarrollo de aplicaciones. Si un sistema de informaci&oacute;n no preserva los datos introducidos por los usuarios cuando se apaga el ordenador, el sistema no tendr&aacute; ninguno o muy poco uso pr&aacute;ctico. Cuando hablamos de persistencia en Java, normalmente hablamos de almacenar los datos en una base de datos relacional utilizando SQL via el API JDBC (<em>Java Database Connectivity</em>). El modelo relacional y especialmente SQL es una elecci&oacute;n correcta para la persistencia en aplicaciones orientadas a objetos y es casi siempre un "requerimiento" en cualquier proyecto Java. Sin embargo, entre los paradigmas objetual y relacional existen discrepancias importantes que hacen que en los &uacute;ltimos a&ntilde;os se est&eacute;n invirtiendo esfuerzos relacionados con la cuesti&oacute;n de la persistencia en los proyectos de empresa.</p>
+<p>En una aplicaci&oacute;n orientada a objetos, la persistencia permite que un objeto sobreviva al proceso que lo ha creado. El estado del objeto puede almacenarse en un disco y m&aacute;s tarde se puede volver a crear un objeto con el mismo estado si es necesario. Pero no todos los objetos requieren ser persistentes. En una aplicaci&oacute;n Java hay una mezcla de objetos persistentes y no persistentes, por lo que necesitemamos un subsistema que gestione nuestros datos persistentes: este subsistema es una base de datos relacional.</p>
+<p>Entre el modelo del dominio (que utiliza una representaci&oacute;n de objetos), y el modelo relacional (que utiliza una representaci&oacute;n de tablas, tambi&eacute;n denominado modelo entidad-relaci&oacute;n) existen numerosas discrepancias que una buena ORM intenta solucionar. Una ORM realiza de forma autom&aacute;tica la correspondencia entre los objetos persistentes de una aplicaci&oacute;n java en tablas de una base de datos relacional, utilizando metadatos que describen dicha correspondiencia entre los objetos y la base de datos. Una ORM, en definitiva transforma los datos de una representaci&oacute;n a otra (en los dos sentidos). El uso de una ORM implica ciertas desventajas en cuanto al rendimiento de la aplicaci&oacute;n, ya que estamos introduciendo una capa m&aacute;s de software. Sin embargo, si ORM se implementa como un <em>middleware</em>, se tienen muchas oportunidades de optimizaci&oacute;n que no existir&iacute;an si utiliz&aacute;ramos una capa de persistencia escrita "a mano". Otra desventaja (en tiempo de desarrollo) es que tenemos que introducir los metadatos para la transformaci&oacute;n, pero aqu&iacute; tambi&eacute;n el coste es menor que el coste equivalente de mantener una soluci&oacute;n "a mano".</p>
+<p>Una soluci&oacute;n ORM consiste b&aacute;sicamente en cuatro partes:</p>
+<ul>
+	
+<li>Un API para realizar operaciones CRUD (<em>Create, Retrieve, Update, Delete</em>) b&aacute;sicas sobre objetos de clases persistentes.</li>
+	
+<li>Un lenguaje o API para especificar consultas referidas con las clases y sus propiedades (atributos).</li>
+	
+<li>Facilidades para la especificaci&oacute;n de los metadatos.</li>
+	
+<li>T&eacute;cnicas de implementaci&oacute;n para interactuar con los objetos transaccionales para la realizaci&oacute;n de diversas funciones de optimizaci&oacute;n, (como <em>dirty checking</em>, entre otros).</li>
+    
+</ul>
+<p>La implementaci&oacute;n de una ORM es una tarea compleja (menos complejo que un servidor de aplicaciones, pero m&aacute;s complejo que
+	 un <em>framework</em> de aplicaciones Web tales como Struts o Tapestry). Entonces, &iquest;por qu&eacute; introducir otro nuevo elemento de infraestructura complejo en nuestro sistema? La respuesta est&aacute; en los beneficios de su uso, algunos de ellos son:</p>
+<ul>
+	
+<li>
+<strong>Productividad:</strong> El c&oacute;digo relacionado con la persistencia es quiz&aacute;, el c&oacute;digo m&aacute;s tedioso de una aplicaci&oacute;n Java. Una ORM elimina mucho esfuerzo relacionado con la escritura de dicho c&oacute;digo y nos permite concentrarnos en el problema del negocio, reduciendo por lo tanto el tiempo de desarrollo de forma significativa.</li>
+	
+<li>
+<strong>Mantenibilidad:</strong> La transformaci&oacute;n autom&aacute;tica de la persistencia objeto/relacional reduce sustancialmente las l&iacute;neas de c&oacute;digo (LOC: <em>Lines Of Code</em>). Menos LOC hacen que el sistema sea m&aacute;s comprensible, ya que enfasizan la l&oacute;gica del negocio en vez de otros aspectos tangenciales. M&aacute;s importante todav&iacute;a, un sistema con menos c&oacute;digo es m&aacute;s f&aacute;cil de refactorizar. 
+	Por otro lado, en sistemas con persistencia codificada manualmente, existe una inevitable dependencia entre ambas representaciones: los cambios en una siempre implican cambios en la otra. Adem&aacute;s, a menudo el dise&ntilde;o de una representaci&oacute;n se compromete para acomodar la existencia de la otra (en la pr&aacute;ctica casi siempre se ve comprometido el modelo de objetos del dominio). Una ORM proporciona un "buffer" entre los dos modelos, favoreciendo cambios menores entre ellos.</li>
+	
+<li>
+<strong>Rendimiento:</strong> Las tareas relacionadas con la persistencia pueden optimizarse. Cuando tenemos que cumplir restricciones temporales con respecto a la fecha de entrega del producto, el uso de una ORM permite realizar muchas m&aacute;s optimizaciones que con una programaci&oacute;n manual. Adem&aacute;s, la gente que implementa una ORM probablemente 
+	hayan tenido mucho m&aacute;s tiempo que nosotros en investigar posibles optimizaciones, por lo que el rendimiento de una aplicaci&oacute;n se ver&aacute; 
+	favorecido por el uso de dicha ORM.</li>
+	
+<li>
+<strong>Independencia del vendedor: </strong> Una ORM abstrae la aplicaci&oacute;n de la base de datos SQL y su dialecto SQL subyacente. 
+	Adem&aacute;s, si la herramienta soporta varias bases de datos diferentes (la mayor&iacute;a lo hacen), esto confiere cierto nivel de portabilidad 
+	en nuestra aplicaci&oacute;n.</li>
+    
+</ul>
+<p>Todo ello hace que, hoy por hoy, la utilizaci&oacute;n de una ORM sea la mejor soluci&oacute;n, permitiendo un ahorro significativo de tiempo 
+	para los desarrolladores que se enfrentan con las discrepancias existentes entre los paradigmas orientado a objetos y relacional.</p>
+</div>
+  
+  
+<a name="N100A6"></a><a name="Arquitectura+Hibernate"></a>
+<h2 class="underlined_10">Arquitectura Hibernate</h2>
+<div class="section">
+<p>Las interfaces de programaci&oacute;n son la primera cosa que tenemos que aprender sobre Hibernate para poder utilizarlo en la capa de persistencia de nuestra aplicaci&oacute;n. La siguiente Figura muestra los roles de las interfaces Hibernate m&aacute;s 
+  importantes en las capas de persistencia y de negocio de una aplicaci&oacute;n 
+  J2EE. La capa de negocio est&aacute; situada sobre la capa de persistencia, 
+  ya que la capa de negocio act&uacute;a como un cliente de la capa de persistencia.</p>
+<p>
+	
+<img alt="Figura 1.1 Vista de alto nivel del API de Hibernate en una arquitectura por capas." content-width="9cm" src="imagenes/Fig1-1.gif" width="522"> 
+</p>
+<p>Las interfaces mostradas pueden clasificarse como sigue:</p>
+<ul>
+  
+<li>Interfaces llamadas por la aplicaci&oacute;n para realizar operaciones b&aacute;sicas 
+    (inserciones, borrados, consultas,...): <em>Session</em>, <em>Transaction</em>, 
+    y <em>Query</em>. </li>
+  
+<li>Interfaces llamadas por el c&oacute;digo de la infraestructura de la aplicaci&oacute;n 
+    para configurar Hibernate. La m&aacute;s importante es la clase <em>Configuration</em>.</li>
+  
+<li>Interfaces <em>callback</em> que permiten a la aplicaci&oacute;n reaccionar ante 
+    determinados eventos que ocurren dentro de la aplicaci&oacute;n, tales como 
+    <em>Interceptor</em>, <em>Lifecycle</em>, y <em>Validatable</em>.</li>
+  
+<li>Interfaces que permiten extender las funcionalidades de mapeado de Hibernate, 
+    como por ejemplo <em>UserType</em>, <em>CompositeUserType</em>, e <em>IdentifierGenerator</em>.</li>
+
+</ul>
+<p>Adem&aacute;s, Hibernate hace uso de APIs de Java, tales como JDBC, JTA (<strong>J</strong>ava 
+  <strong>T</strong>ransaction <strong>A</strong>pi) y JNDI (<strong>J</strong>ava 
+  <strong>N</strong>aming <strong>D</strong>irectory <strong>I</strong>nterface).</p>
+<p>Daremos un repaso breve a algunas de las interfaces mencionadas.</p>
+<ul>
+  
+<li>La interfaz <em><strong>Session</strong></em> es una de las interfaces primarias 
+    en cualquier aplicaci&oacute;n Hibernate. Una instancia de <em>Session</em> 
+    es "poco pesada" y su creaci&oacute;n y destrucci&oacute;n es muy "barata". Esto es importante, ya que nuestra aplicaci&oacute;n 
+    necesitar&aacute; crear y destruir sesiones todo el tiempo, quiz&aacute; en 
+    cada petici&oacute;n. Puede ser &uacute;til pensar en una sesi&oacute;n como 
+    en una cach&eacute; o colecci&oacute;n de objetos cargados (a o desde una 
+    base de datos) relacionados con una &uacute;nica unidad de trabajo. Hibernate 
+    puede detectar cambios en los objetos pertenecientes a una unidad de trabajo.</li>
+  
+<li>La interfaz <strong><em>SessionFactory</em></strong> permite obtener instancias 
+    <em>Session</em>. Esta interfaz no es "ligera", y deber&iacute;a 
+    compartirse entre muchos hilos de ejecuci&oacute;n. T&iacute;picamente hay 
+    una &uacute;nica <em>SessionFactory</em> para toda la aplicaci&oacute;n, creada 
+    durante la inicializaci&oacute;n de la misma. Sin embargo, si la aplicaci&oacute;n 
+    accede a varias bases de datos se necesitar&aacute; una <em>SessionFactory</em> por 
+    cada base de datos.</li>
+  
+<li>La interfaz <strong><em>Configuration</em></strong> se utiliza para configurar 
+    y "arrancar" Hibernate. La aplicaci&oacute;n utiliza una instancia 
+    de <em>Configuration</em> para especificar la ubicaci&oacute;n de los documentos 
+    que indican el mapeado de los objetos y propiedades espec&iacute;ficas de 
+    Hibernate, y a continuaci&oacute;n crea la <em>SessionFactory</em>. </li>
+  
+<li>La interfaz <strong><em>Query</em></strong> permite realizar peticiones 
+    a la base de datos y controla c&oacute;mo se ejecuta dicha petici&oacute;n 
+    (<em>query</em>). Las peticiones se escriben en <strong>HQL</strong> o en 
+    el dialecto SQL nativo de la base de datos que estemos utilizando. Una instancia 
+    <em>Query</em> se utiliza para enlazar los par&aacute;metros de la petici&oacute;n, 
+    limitar el n&uacute;mero de resultados devueltos por la petici&oacute;n, y 
+    para ejecutar dicha petici&oacute;n. </li>
+  
+<li>Un elemento fundamental y muy importante en la arquitectura Hibernate es 
+    la noci&oacute;n de <strong><em>Type</em></strong>. Un objeto <em>Type</em> 
+    Hibernate hace corresponder un tipo Java con un tipo de una columna de la 
+    base de datos. Todas las propiedades persistentes de las clases persistentes, 
+    incluyendo las asociaciones, tienen un tipo Hibernate correspondiente. Este 
+    dise&ntilde;o hace que Hibernate sea altamente flexible y extendible. Incluso 
+    se permiten tipos definidos por el usuario (interfaz <em>UserType</em> y <em>CompositeUserType</em>).</li>
+
+</ul>
+</div>
+
+
+<a name="N10151"></a><a name="Configuraci%C3%B3n+b%C3%A1sica"></a>
+<h2 class="underlined_10">Configuraci&oacute;n b&aacute;sica</h2>
+<div class="section">
+<p>Para utilizar Hibernate en una aplicaci&oacute;n, es necesario conocer c&oacute;mo 
+  configurarlo. Hibernate puede configurarse y ejecutarse en la mayor&iacute;a 
+  de aplicaciones Java y entornos de desarrollo. Generalmente, Hibernate se utiliza 
+  en aplicaciones cliente/servidor de dos y tres capas, despleg&aacute;ndose Hibernate 
+  &uacute;nicamente en el servidor. Las aplicaciones cliente normalmente utilizan 
+  un navegador web, pero las aplicaciones <em>swing</em> y AWT tambi&eacute;n 
+  son usuales. Aunque solamente vamos a ver c&oacute;mo configurar Hibernate en 
+  un entorno no gestionado, es importante comprender la diferencia entre la configuraci&oacute;n 
+  de Hibernate para entornos gestionados y no gestionados:</p>
+<ul>
+	
+<li>
+<strong>Entorno gestionado</strong>: los <em>pools</em> de recursos tales como conexiones 
+    a la base de datos permiten establecer los l&iacute;mites de las transacciones 
+    y la seguridad se debe especificar de forma declarativa, es decir, en sus 
+    metadatos. Un servidor de aplicaciones J2EE, tal como JBoss, Bea WebLogic 
+    o IBM WebSphere implementan un entorno gestionado para Java.</li>
+  
+<li>
+<strong>Entorno no gestionado</strong>: proporciona una gesti&oacute;n b&aacute;sica 
+    de la concurrencia a trav&eacute;s de un <em>pooling</em> de <em>threads</em> (hilos de ejecuci&oacute;n). 
+    Un contenedor de servlets, como Tomcat proporciona un entorno de servidor 
+    no gestionado para aplicaciones web Java. Una aplicaci&oacute;n <em>stand-alone</em> 
+    tambi&eacute;n se considera como no gestionada. Los entornos no gestionados 
+    no proporcionan infraestructura para transacciones autom&aacute;ticas, gesti&oacute;n de recursos, o seguridad. La propia aplicaci&oacute;n es la que gestiona las conexiones con la base de datos y establece los l&iacute;mites de las transacciones.</li>
+
+</ul>
+<p>Tanto en un entorno gestionado como en uno no gestionado, lo primero que debemos 
+  hacer es iniciar Hibernate. Para hacer esto debemos crear una <em>SessionFactory</em> 
+  desde una <em>Configuration</em>. A continuaci&oacute;n explicamos c&oacute;mo 
+  establecer las opciones de configuraci&oacute;n de Hibernate.</p>
+</div>
+  
+
+<a name="N10180"></a><a name="Especificaci%C3%B3n+de+opciones+de+configuraci%C3%B3n+%28"></a>
+<h2 class="underlined_10">Especificaci&oacute;n de opciones de configuraci&oacute;n (Configuration)</h2>
+<div class="section">
+<p>Una instancia de <span class="codefrag">org.hibernate.cfg.Configuration </span>representa un 
+  conjunto completo de correspondencias (mapeados) entre los tipos Java de una aplicaci&oacute;n 
+  y los tipos de una base de datos SQL, adem&aacute;s de contener un conjunto 
+  de propiedades de configuraci&oacute;n. Una lista de las posibles propiedades 
+  de configuraci&oacute;n y su explicaci&oacute;n la podemos consultar en el manual 
+  de referencia de Hibernate incluido en la distribuci&oacute;n (directorio <span class="codefrag">doc\reference\en\pdf</span>). 
+  Para especificar las opciones de configuraci&oacute;n, se pueden utilizar cualquiera 
+  de las siguientes formas:</p>
+<ul>
+  
+<li>Pasar una instancia de <span class="codefrag">java.util.Properties</span> a <span class="codefrag">Configuration.setProperties()</span> 
+  
+</li>
+  
+<li>Establecer las propiedades del sistema mediante <span class="codefrag">java -Dproperty=value</span>
+</li>
+  
+<li>Situar un fichero denominado <span class="codefrag">hibernate.properties</span> en el <em>classpath</em>
+</li>
+  
+<li>Incluir elementos <span class="codefrag">&lt;property&gt;</span> en el fichero <span class="codefrag">hibernate.cfg.xml</span> 
+    en el <em>classpath</em>
+</li>
+
+</ul>
+<p>Las dos primeras opciones no se suelen utilizar, excepto para pruebas r&aacute;pidas 
+  y prototipos. La mayor&iacute;a de las aplicaciones requieren un fichero de 
+  configuraci&oacute;n fijo. Las dos &uacute;ltimas opciones sirven para lo mismo: 
+  configurar Hibernate. Elegir entre una u otra depende simplemente de nuestras 
+  preferencias sint&aacute;cticas.</p>
+<p>En esta sesi&oacute;n veremos c&oacute;mo configurar Hibernate en un entorno no gestionado. 
+  Debido a que Hibernate est&aacute; dise&ntilde;ado para utilizarlo en muchos 
+  entornos diferentes, hay muchos par&aacute;metros de configuraci&oacute;n que 
+  podemos utilizar. Afortunadamente, la mayor&iacute;a tienen valores por defecto 
+  e Hibernate se distribuye con un ejemplo de fichero de propiedades (<span class="codefrag">hibernate.properties</span>) 
+  en el directorio <span class="codefrag">etc/</span> que muestra varias opciones. Puede resultar 
+  &uacute;til copiar dicho fichero en nuestro <em>classpath</em> y simplemente modificarlo 
+  a nuestra conveniencia.</p>
+</div>
+
+
+<a name="N101C6"></a><a name="Creaci%C3%B3n+de+una"></a>
+<h2 class="underlined_10">Creaci&oacute;n de una SessionFactory</h2>
+<div class="section">
+<p>Para crear una <em>SessionFactory</em>, primero debemos crear una &uacute;nica 
+  instancia de <em>Configuration</em> durante la inicializaci&oacute;n de la aplicaci&oacute;n 
+  y utilizarla para determinar la ubicaci&oacute;n de los ficheros de mapeado. 
+  Una vez configurada, la instancia de <em>Configuration</em> se utiliza para 
+  crear la <em>SessionFactory</em>. Una vez creada la <em>SessionFactory</em>, 
+  podemos olvidarnos de la clase <em>Configuration</em>.</p>
+<p>El siguiente c&oacute;digo inicia Hibernate:</p>
+<pre class="code"> 
+Configuration cfg = new Configuration();
+cfg.addResource("hello/Message.hbm.xml");
+cfg.setProperties (System.getProperties());
+SesionFactory sessions = cfg.buildSessionFactory();
+</pre>
+<p>La ubicaci&oacute;n del fichero de mapeado, <span class="codefrag">Message.hbm.xml</span>, es 
+  relativa a la ra&iacute;z del <em>classpath</em> de la aplicaci&oacute;n. Por 
+  ejemplo, si el <em>classpath</em> es el directorio actual, el fichero <span class="codefrag">Message.hbm.xml</span> 
+  deber&iacute;a estar en el sub-directorio <span class="codefrag">hello</span>. En este ejemplo, utilizamos 
+  tambi&eacute;n las propiedades del sistema de la m&aacute;quina virtual para 
+  determinar otras opciones de configuraci&oacute;n (que tambi&eacute;n hubieran 
+  podido definirse antes en el c&oacute;digo de la aplicaci&oacute;n o como opciones 
+  de inicio).</p>
+<p>El c&oacute;digo anterior puede escribirse utilizando el estilo de programaci&oacute;n 
+  denominado <em>method chaining</em>, que est&aacute; soportado en la mayor&iacute;a 
+  de interfaces de Hibernate. De esta forma, no necesitamos declarar una variable 
+  local para <span class="codefrag">Configuration</span>. El ejemplo anterior quedar&iacute;a como 
+  sigue:</p>
+<pre class="code"> 
+SessionFactory sessions = new Configuration()
+             		 .addResource ("hello/Message.hbm.xml")
+			 .setProperties (System.getProperties() )
+			 .buildSessionFactory();
+</pre>
+<p>Por convenci&oacute;n los ficheros de mapeado <span class="codefrag">xml</span> llevan la extensi&oacute;n 
+  <span class="codefrag">hbm.xml</span>. Otra convenci&oacute;n es tener un fichero de mapeado 
+  por clase, en vez de tener todos los mapeados en un &uacute;nico fichero (lo 
+  cual es posible, pero se considera un mal estilo). Nuestro ejemplo tiene solamente 
+  una clase persistente situada en el <strong>mismo directorio que dicha clase</strong>, 
+  pero si tuvi&eacute;semos m&aacute;s clases persistentes, con un fichero <span class="codefrag">xml</span> para cada una de ellas, &iquest;d&oacute;nde deber&iacute;amos situar dichos ficheros de configuraci&oacute;n?</p>
+<p>En la documentaci&oacute;n de Hibernate se recomienda que el fichero de mapeado 
+  para cada clase persistente se situe en el mismo directorio de dicha clase. 
+  Se pueden cargar m&uacute;ltiples ficheros de mapeado con sucesivas llamadas 
+  a <span class="codefrag">addResource()</span>. De forma alternativa, tambi&eacute;n se puede 
+  utilizar el m&eacute;todo <span class="codefrag">addClass()</span>, pasando como par&aacute;metro 
+  una clase persistente: as&iacute; dejaremos que Hibernate busque el documento 
+  de mapeado por nosotros:</p>
+<pre class="code">
+SessionFactory sessions = new Configuration()
+		.addClass(org.hibernate.auction.model.Item.class)
+		.addClass(org.hibernate.auction.model.Category.class)
+		.addClass(org.hibernate.auction.model.Bid.class)
+		.setProperties(System.getProperties() ) 
+		.buildSesionFactory();
+</pre>
+<p>El m&eacute;todo <span class="codefrag">addClass()</span> asume que el nombre del fichero de 
+  mapeado termina con la extensi&oacute;n <span class="codefrag">.hbm.xml</span> y que est&aacute; 
+  desplegado junto con el fichero <span class="codefrag">.class</span> al que hace referencia.</p>
+<p>En una instancia de <span class="codefrag">Configuration</span> tambi&eacute;n podemos especificar 
+  las propiedades de configuraci&oacute;n (mediante <span class="codefrag">setProperties</span>). 
+  En el ejemplo anterior, pasamos como par&aacute;metro las propiedades del sistema, 
+  pero podemos especificar propiedades concretas en forma de parejas <span class="codefrag">(nombre_propiedad, 
+  valor_propiedad)</span>como en el siguiente caso:</p>
+<pre class="code"> 
+SessionFactory sessions = new Configuration()
+         .addClass (org.hibernate.auction.Item.class")
+         .addClass (org.hibernate.auction.Bid.class")
+	     .setProperty("hibernate.dialect","org.hibernate.dialect.MySQLInnoDBDialect")
+	     .setProperty ("hibernate.connection.datasource", "java:comp/env/jcbc/test")
+	     .setProperty ("hibernate.order_updates", "true")
+	     .buildSessionFactory();
+</pre>
+<p>Acabamos de ver c&oacute;mo crear una <span class="codefrag">SessionFactory</span>. La mayor&iacute;a 
+  de las aplicaciones necesitan crear una <span class="codefrag">SessionFactory</span>. Si fuese 
+  necesario crear otra <span class="codefrag">SessionFactory</span> (si por ejemplo, hubiese varias 
+  bases de datos), habr&iacute;a que repetir el proceso. En este caso cada <span class="codefrag">SessionFactory</span> 
+  estar&iacute;a disponible para una base de datos y lista para producir <span class="codefrag">Sessions</span> 
+  para trabajar con esa base de datos en particular y con un conjunto de ficheros 
+  de correspondencia de clases.</p>
+<p>Por su puesto, configurar Hibernate requiere algo m&aacute;s que indicar cu&aacute;les 
+  son los documentos de mapeado. Tambi&eacute;n es necesario especificar c&oacute;mo 
+  se obtienen las conexiones a las bases de datos, entre otras cosas. De todas 
+  las opciones de configuraci&oacute;n, las opciones de la base de datos son las 
+  m&aacute;s importantes. Estas opciones son distintas seg&uacute;n estemos en 
+  un entorno gestionado o no gestionado. En nuestro caso, solamente vamos a comentar 
+  el segundo caso.</p>
+</div>
+
+
+<a name="N10257"></a><a name="Configuraci%C3%B3n+de+la+conexi%C3%B3n+de+base+de+datos"></a>
+<h2 class="underlined_10">Configuraci&oacute;n de la conexi&oacute;n de base de datos</h2>
+<div class="section">
+<p>En un entorno no gestionado, como por ejemplo un contenedor de <em>servlets</em>, 
+  la aplicaci&oacute;n es la responsable de obtener las conexiones JDBC. Hibernate 
+  es parte de la aplicaci&oacute;n, por lo que es responsable de obtener dichas 
+  conexiones. Generalmente, no es conveniente crear una conexi&oacute;n cada vez 
+  que se quiere interactuar con la base de datos. En vez de eso, las aplicaciones 
+  Java deber&iacute;an usar un <em>pool</em> de conexiones. Hay tres razones por 
+  las que usar un <em>pool</em>:</p>
+<ul>
+  
+<li>Conseguir una nueva conexi&oacute;n es caro.</li>
+  
+<li>Mantener muchas conexiones ociosas es caro.</li>
+  
+<li>Crear la preparaci&oacute;n de sentencias es tambi&eacute;n caro para algunos 
+    <em>drivers</em>.</li>
+
+</ul>
+<p>La siguiente Figura muestra el papel de un <em>pool</em> de conexiones JDBC 
+  en un entorno de ejecuci&oacute;n de una aplicaci&oacute;n web (sin utilizar 
+  Hibernate). Ya que este entorno es no gestionado, no implementa el <em>pooling</em> 
+  de conexiones, por lo que la aplicaci&oacute;n debe implementar su propio algoritmo 
+  de <em>pooling</em> o utilizar alguna librer&iacute;a como por ejemplo el <em>pool</em> de conexiones de libre distribuci&oacute;n C3P0. Sin Hibernate, el c&oacute;digo 
+  de la aplicaci&oacute;n normalmente llama al <em>pool</em> de conexiones prara 
+  obtener las conexiones JDBC y ejecutar sentencias SQL.</p>
+<p>
+	
+<img alt="Figura 1.2 Pooling de conexiones JDBC en un entorno no gestionado." content-width="12cm" src="imagenes/Fig1-2.gif"> 
+</p>
+<p>Con Hibernate, este escenario cambia: Hibernate act&uacute;a como un cliente del 
+  <em>pool</em> de conexiones JDBC, tal y como se muestra en la siguiente Figura. 
+  El c&oacute;digo de la aplicaci&oacute;n utiliza los APIs <span class="codefrag">Session </span>y 
+  <span class="codefrag">Query</span> para las operaciones de persistencia y solamente tiene que 
+  gestionar las transacciones a la base de datos, idealmente, utilizando el API 
+  Hibernate <span class="codefrag">Transaction</span>.</p>
+<p>
+	
+<img alt="Figura 1.3 Hibernate con un pool de conexiones en un entorno no gestionado." content-width="12cm" src="imagenes/Fig1-3.gif" width="522">
+</p>
+<p>Hibernate define una arquitectura de <em>plugins</em> que permite la integraci&oacute;n con cualquier <em>pool</em> de conexiones. 
+Puesto que Hibernate ya incluye soporte para C3P0, vamos a ver c&oacute;mo usarlo. Hibernate actualizar&aacute; la configuraci&oacute;n 
+del <em>pool</em> por nosotros con las propiedades que determinemos. Un ejemplo de un fichero <span class="codefrag">hibernate.properties</span> 
+utilizando C3P0 se muestra en el siguiente listado:</p>
+<pre class="code">hibernate.connection.driver_class=org.postgresql.Driver
+hibernate.connection.url = jdbc:postgresql://localhost/auctiondb
+hibernate.connection.username = auctionuser
+hibernate.conection.password = secret
+hibernate.dialect = net.sf.hibernate.dialect.PosgreSQLDialect
+hibernate.c3p0.min_size=5
+hibernate.c3p0.max_size=20
+hibernate.c3p0.timeout=300
+hibernate.c3p0.max_elements=50
+hibernate.c3p0.idle_test_period=3000</pre>
+<p>Estas l&iacute;neas de c&oacute;digo especifican la siguiente informaci&oacute;n:</p>
+<ul>
+  
+<li>El nombre de la clase Java que implementa el <span class="codefrag">Driver</span> JDBC (el 
+    fichero JAR del <em>driver</em> debe estar en el <em>classpath</em> de la 
+    aplicaci&oacute;n.</li>
+  
+<li>La URL JDBC que especifica el <em>host</em> y nombre de la base de datos 
+    para las conexiones JDBC.</li>
+  
+<li>El nombre del usuario de la base de datos</li>
+  
+<li>El <em> password</em> de la base de datos para el usuario especificado</li>
+  
+<li>Un <span class="codefrag">Dialect</span> para la base de datos. A pesar de esfuerzo de estandarizaci&oacute;n 
+    de ANSI, SQL se implementa de forma diferente por diferentes vendedores, por 
+    lo que necesitamos especificar un <span class="codefrag">Dialect</span>. Hibernate soporta 
+    el SQL de las bases de datos m&aacute;s populares.</li>
+  
+<li>El n&uacute;mero m&iacute;nimo de conexiones JDBC que C3P0 mantiene preparadas.</li>
+  
+<li>El n&uacute;mero m&aacute;ximo de conexiones en el <em>pool</em>. Se lanzar&aacute; 
+    una excepci&oacute;n si este n&uacute;mero se sobrepasa en tiempo de ejecuci&oacute;n.</li>
+  
+<li>El periodo de tiempo (en este caso, 5 minutos o 300 segundos) despu&eacute;s 
+    del cual una conexi&oacute;n no usada se eliminar&aacute; del <em>pool</em>.</li>
+  
+<li>El n&uacute;mero m&aacute;ximo de sentencias preparadas que ser&aacute;n 
+    almacenadas en una memoria intermedia (<em>cach&eacute;</em>). Esto es esencial     para un mejor rendimiento de Hibernate.</li>
+  
+<li>El tiempo en segundos que una conexi&oacute;n debe estar sin utilizar para 
+    que se valide de forma autom&aacute;tica dicha conexi&oacute;n.</li>
+
+</ul>
+<p>El especificar las propiedades de la forma <span class="codefrag">hibernate.c3p0.* </span> selecciona 
+  C3P0 como el <em>pool</em> de conexiones para Hibernate (sin necesidad de ninguna 
+  otra acci&oacute;n). Otros <em>pools</em> de conexiones soportados son Apache 
+  DBCP y Proxool.</p>
+<p>Si queremos que Hibernate obtenga conexiones de un <strong><span class="codefrag">Datasource</span> registrado en JNDI</strong>,
+   necesitaremos indicar <strong>al menos una</strong> de las siguientes propiedades:</p>
+<ul>
+  
+<li>
+<span class="codefrag">hibernate.connection.datasource</span>: nombre del <em>datasource</em> JNDI.</li>
+  
+<li>
+<span class="codefrag">hibernate.jndi.url</span>: <em>URL</em> del proveedor de JNDI (opcional).</li>
+  
+<li>
+<span class="codefrag">hibernate.jndi.class</span>: clase de la JNDI <em>InitialContextFactory</em> (opcional).</li> 
+  
+<li>
+<span class="codefrag">hibernate.connection.username</span>: usuario de la base de datos (opcional).</li>
+  
+<li>
+<span class="codefrag">hibernate.connection.password</span>: <em>password</em> del usuario de la base de datos (opcional).</li>   
+
+</ul>
+</div>
+
+
+<a name="N1033F"></a><a name="Uso+de+configuraciones+basadas+en+XML"></a>
+<h2 class="underlined_10">Uso de configuraciones basadas en XML</h2>
+<div class="section">
+<p>Como ya se ha comentado en el apartado 3.3, podemos utilizar un fichero de 
+  configuraci&oacute;n XML para configurar completamente una <span class="codefrag">SessionFactory</span>. 
+  A diferencia del fichero <span class="codefrag">hibernate.properties</span>, que contiene solamente 
+  par&aacute;metros de configuraci&oacute;n, el fichero <span class="codefrag">hibernate.cfg.xml</span> 
+  puede especificar tambi&eacute;n la ubicaci&oacute;n de los documentos de mapeado. 
+  Muchos usuarios prefieren centralizar la configuraci&oacute;n de Hibernate de 
+  esta forma, en vez de a&ntilde;adir par&aacute;metros a <span class="codefrag">Configuration</span> 
+  en el c&oacute;digo de la aplicaci&oacute;n. Un ejemplo de fichero de configuraci&oacute;n 
+  basado en XML es el siguiente:</p>
+<pre class="code"> 
+&lt;?xml version='1.0' encoding='utf-8'?&gt;
+&lt;!DOCTYPE hibernate-configuration
+  PUBLIC "-//Hibernate/Hibernate Configuration DTD//EN"
+  "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd"&gt;
+ &lt;hibernate-configuration&gt;
+   &lt;session-factory name="java:/hibernate/HibernateFactory"&gt;
+     &lt;!--propiedades--&gt;
+	 &lt;property name="show_sql"&gt;true&lt;/property&gt;
+	 &lt;property name="connection.datasource"&gt;
+	    java:/comp/env/jdbc/AuctionDB
+	 &lt;/property&gt;
+	 &lt;property name="dialect"&gt;
+	    net.sf.hibernate.dialect.PostgreSQLDialect
+	 &lt;/property&gt;
+	 &lt;property name="transaction.manager_lookup_class"&gt;
+	    net.sf.hibernate.transaction.JBossTransactionManagerLookup
+	 &lt;/property&gt;
+     &lt;!--ficheros de mapeado--&gt; 
+	 &lt;mapping resource="auction/Item.hbm.xml"/&gt;
+	 &lt;mapping resource="auction/Category.hbm.xml"/&gt;
+	 &lt;mapping resource="auction/Bid.hbm.xml"/&gt;
+   &lt;/session-factory&gt;
+&lt;/hibernate-configuration&gt;
+</pre>
+<p>La declaraci&oacute;n <span class="codefrag">&lt;document type&gt;</span> se usa por el analizador de XML para 
+  validar este documento frente a la DTD de configuraci&oacute;n de Hibernate.</p>
+<p>El atributo <strong><span class="codefrag">name</span></strong> opcional es equivalente a la propiedad <span class="codefrag">hibernate.session_factory_name</span> 
+  y se usa para el enlazado JNDI de la <span class="codefrag">SessionFactory</span>.</p>
+<p>Las <strong>propiedades de Hibernate</strong> (<span class="codefrag">&lt;property&gt;</span>) pueden 
+  especificarse sin el prefijo <span class="codefrag">hibernate</span>. 
+  Los nombres de las propiedades y valores son, por otro lado, id&eacute;nticas 
+  a las propiedades de configuraci&oacute;n especificadas mediante programaci&oacute;n.</p>
+<p>Los <strong>documentos de mapeado</strong> (<span class="codefrag">&lt;mapping resource&gt;</span>) pueden 
+   especificarse como recursos de la aplicaci&oacute;n.</p>
+<p>Ahora podemos inicializar Hibernate utilizando</p>
+<pre class="code">SessionFactory sessions = new Configuration().configure().buildSessionFactory();</pre>
+<p>Cuando se llama a <span class="codefrag">configure()</span>, Hibernate busca un fichero denominado 
+  <span class="codefrag">hibernate.cfg.xml</span> en el <em>classpath</em>. Si se quiere utilizar 
+  un nombre de fichero diferente o hacer que Hibernate busque en un subdirectorio, 
+  debemos pasar una ruta al m&eacute;todo <span class="codefrag">configure()</span>:</p>
+<pre class="code">SessionFactory sessions = new Configuration()
+    .configure("/hibernate-config/auction.cfg.xml")
+	.buildSessionFactory();</pre>
+<p>Utilizar un fichero de configuraci&oacute;n XML ciertamente es m&aacute;s c&oacute;modo 
+  que usar un fichero de propiedades o mediante programaci&oacute;n. El hecho 
+  de que se puedan tener ficheros de mapeado externos al c&oacute;digo fuente 
+  de la aplicaci&oacute;n es el principal beneficio de esta aproximaci&oacute;n. 
+  As&iacute;, por ejemplo, podemos usar diferentes conjuntos de ficheros de mapeado 
+  (y diferentes opciones de configuraci&oacute;n), dependiendo de la base de datos 
+  que utilicemos y el entorno (de desarrollo o de producci&oacute;n), y cambiar 
+  entre ellos mediante programaci&oacute;n. </p>
+<p>Si tenemos ambos ficheros, <span class="codefrag">hibernate.properties</span>, e<span class="codefrag"> hibernate.cfg.xml</span>, 
+  en el <em>classpath</em>, las asignaciones del fichero de configuraci&oacute;n 
+  XML prevalecen sobre las del fichero de propiedades. &Eacute;sto puede resultar 
+  &uacute;til si queremos guardar algunas propiedades base y sobreescribirlas 
+  para cada despliegue con un fichero de configuraci&oacute;n XML.</p>
+</div> 
+
+
+<a name="N103AA"></a><a name="Enlazado+de+una"></a>
+<h2 class="underlined_10">Enlazado de una SessionFactory a JNDI</h2>
+<div class="section">
+<p>Una <em>SessionFactory</em> enlazada a JNDI puede simplificar la b&uacute;squeda de la factor&iacute;a y la
+   creaci&oacute;n de nuevas <em>Session</em>es.</p>
+<p>Si queremos tener la <em>SessionFactory</em> enlazada a un espacio de nombres JNDI, debemos especificar
+   un nombre (por ejemplo <span class="codefrag">java:hibernate/SessionFactory</span> usando la propiedad <span class="codefrag">hibernate.session_factory_name</span>.
+   Si esta propiedad se omite, la <em>SessionFactory</em> no ser&aacute; enlazada con JNDI. Esto resulta especialmente &uacute;til
+   en entornos con una implementaci&oacute;n por defecto de JNDI de s&oacute;lo lectura, como por ejemplo Tomcat.
+   </p>
+<p>Cuando se enlaza la <em>SessionFactory</em> con JNDI, Hibernate usar&aacute; los valores de <span class="codefrag">hibernate.jndi.url</span> e
+   <span class="codefrag">hibernate.jndi.class</span> para instanciar el contexto inicial. Si no se especifican, se utilizar&aacute; el <em>InitialContext</em>
+   por defecto.</p>
+<p>Hibernate autom&aacute;ticamente ubica la <em>SessionFactory</em> en JNDI despu&eacute;s de que llamemos a <span class="codefrag">cfg.buildSessionFactory()</span>.
+   Esta llamada la pondremos en alg&uacute;n c&oacute;digo que se ejecute al comienzo de la aplicaci&oacute;n.</p>
+<p>Si se usa una <em>SessionFactory</em> JNDI, cualquier clase podr&aacute; obtener la <em>SessionFactory</em> utilizando una b&uacute;squeda JNDI.</p>
+<p>Se recomienda enlazar la <em>SessionFactory</em> a JNDI en un entorno gestionado, y utilizar un <em>singleton</em> est&aacute;tico en otro
+   caso. Para hacer transparentes estos detalles en nuestra aplicaci&oacute;n, recomendamos "ocultar" el c&oacute;digo de b&uacute;squeda de la 
+   <em>SessionFactory</em> en una clase auxiliar, (como por ejemplo en <span class="codefrag">HibernateUtil.getSessionFactory()</span>) utilizada 
+   en los ejercicios de esta sesi&oacute;n).</p>
+</div> 
+  
+
+<a name="N103FC"></a><a name="Configuraci%C3%B3n+de"></a>
+<h2 class="underlined_10">Configuraci&oacute;n de logging</h2>
+<div class="section">
+<p>Hibernate (y muchas otras implementaciones de ORMs) ejecuta las sentencias 
+  SQL de forma as&iacute;ncrona. Una sentencia <span class="codefrag">INSERT</span> normalmente 
+  no se ejecuta cuando la aplicaci&oacute;n llama a <span class="codefrag">Session.save(); </span> 
+  una sentencia <span class="codefrag">UPDATE</span> no se ejecuta cuando la aplicaci&oacute;n 
+  llama a <span class="codefrag">Item.addBid()</span>. En vez de eso, las sentencias SQL se ejecutan 
+  al final de una transacci&oacute;n.</p>
+<p>Esta caracter&iacute;stica evidencia el hecho de que seguir una traza y depurar 
+  el c&oacute;digo ORM es a veces no trivial. Una forma de ver qu&eacute; es lo 
+  que est&aacute; pasando internamente en Hibernate es utilizar el mecanismo de 
+  <em>logging</em>. Para ello tendremos que asignar a la propiedad <span class="codefrag">hibernate.show_sql</span> 
+  el valor <span class="codefrag">true</span>, lo que permite hacer <em>logs</em> en la consola 
+  del c&oacute;digo SQL generado. </p>
+<p>Hay veces en las que mostrar el c&oacute;digo SQL no es suficiente. Hibernate 
+  "muestra" todos los eventos interesantes utilizando el denominado 
+  <span class="codefrag">commons-logging</span> de Apache, una capa de abstracci&oacute;n que redirige 
+  la salida al <em>log4j</em> de Apache (si colocamos <span class="codefrag">log4j.jar</span> en 
+  el <em>classpath</em>) o al <em>logging</em> de JDK1.4 (si estamos ejecutando 
+  bajo JDK1.4 o superior y log4j no est&aacute; presente). Es recomendable utilizar 
+  log4j, ya que est&aacute; m&aacute;s maduro, es m&aacute;s popular, y est&aacute; 
+  bajo un desarrollo m&aacute;s activo.</p>
+<p>Para ver las salidas desde <em>log4j</em> necesitamos un fichero denominado <span class="codefrag">log4j.properties</span> 
+  en nuestro <em>classpath</em>. El siguiente ejemplo redirige todos los mensajes 
+  <em>log</em> a la consola:</p>
+<pre class="code">### direct log messages to stdout ###
+log4j.appender.stdout=org.apache.log4j.ConsoleAppender
+log4j.appender.stdout.Target=System.out
+log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
+### root logger option ###
+log4j.rootLogger=warn, stdout
+### Hibernate logging options ###
+log4j.logger.net.sf.hibernate=info
+### log JDBC bind parameters ###
+log4j.logger.net.sf.hibernate.type=info
+### log PreparedStatement cache activity ###
+log4j.logger.net.sf.hibernate.ps.PreparedStatementCache=info
+</pre>
+<p>Con esta configuraci&oacute;n, no aparecer&aacute;n muchos mensajes de log en tiempo de ejecuci&oacute;n. Si reeemplazamos <span class="codefrag">info</span> por <span class="codefrag">debug</span> en la categor&iacute;a <span class="codefrag">log4.logger.net.sf.hibernate</span> 
+  se mostrar&aacute; el trabajo interno de Hibernate. </p>
+</div>
+
+<a name="N10454"></a><a name="Resumen+de+los+pasos+de+configuraci%C3%B3n+e+inicio+de+Hibernate"></a>
+<h2 class="underlined_10">Resumen de los pasos de configuraci&oacute;n e inicio de Hibernate</h2>
+<div class="section">
+<p>Para finalizar, vamos a resumir los pasos para configurar e iniciar Hibernate:</p>
+<ol>
+  
+<li>Descargar y descomprimir el <em>driver</em> JDBC para nuestra base de datos. 
+    Situar el fichero <span class="codefrag">jar</span> en el <em>classpath</em> de la aplicaci&oacute;n; 
+    hacer lo mismo con <span class="codefrag">hibernate3.jar</span>.</li>
+  
+<li>A&ntilde;adir las dependencias de Hibernate en el <em>classpath</em>; &eacute;stas 
+    se distribuyen con Hibernate en el directorio <span class="codefrag">/lib</span>. En el fichero 
+    de texto <span class="codefrag">lib/README.txt</span> viene indicada una lista de librer&iacute;as 
+    requeridas y opcionales.</li>
+  
+<li>Elegir un<em> pool </em>de conexiones JDBC soportado por Hibernate y configurarlo 
+    con un fichero de propiedades. No debemos ovidarnos de especificar el dialecto 
+    SQL.</li>
+  
+<li>Determinar las propiedades de <span class="codefrag">Configuration</span> en un fichero <span class="codefrag">hibernate.properties</span> 
+    en el <em>classpath</em>.</li>
+  
+<li>Crear una instancia de <span class="codefrag">Configuration</span> en nuestra aplicaci&oacute;n 
+    y cargar los ficheros de mapeado XML utilizando <span class="codefrag">addResource()</span> 
+    o <span class="codefrag">addClass()</span>. Obtener una <span class="codefrag">SessionFactory</span> a partir 
+    de <span class="codefrag">Configuration</span> llamando a <span class="codefrag">BuildSessionFactory()</span>.</li>
+
+</ol>
+</div>
+
+
+<a name="N104A3"></a><a name="Hibernate+Tools"></a>
+<h2 class="underlined_10">Hibernate Tools</h2>
+<div class="section">
+<p>
+<em>Hibernate Tools</em> es un conjunto de herramientas para facilitar el uso de Hibernate, que pueden utilizarse de forma "separada" 
+   (<em>standalone</em>) mediante
+   <em>Ant 1.6.x</em>, o integradas en Eclipse. Comentaremos esta segunda opci&oacute;n que es la que utilizaremos en esta
+   sesi&oacute;n y las siguientes.
+   </p>
+<p>Las <em>Hibernate Tools</em> comprenden las siguientes herramientas:</p>
+<ul>
+  
+<li>
+<strong><em>Mapping editor</em></strong>: Un editor para los ficheros <em>xml</em> de mapeado de Hibernate</li>
+  
+<li>
+<strong><em>Hibernate console</em></strong>: Es una nueva <em>perspective</em> en Eclipse. Permite describir qu&eacute;
+      ficheros de configuraci&oacute;n deber&iacute;amos utilizar para configurar Hibernate, incluyendo el <em>classpath</em> para cargar
+	  los POJOs y <em>drivers</em> JDBC entre otros. Normalmente utilizaremos una &uacute;nica consola por proyecto, aunque podemos
+	  definir tantas como queramos.</li>
+  
+<li>
+<strong><em>Configuration Wizards y Code generation</em></strong>: Se proporcionan varios "asistentes" (<em>wizards</em>)
+      para la generaci&oacute;n de:
+	    <ul>
+		  
+<li>ficheros de configuraci&oacute;n Hibernate, mediante <em>New-&gt;Hibernate configuration file (cfg.xml)</em> y
+		      <em>New-&gt;Hibernate XML mapping file (hbm.xml)</em>
+</li>
+		  
+<li>la consola de Hibernate, mediante <em>New-&gt;Hibernate Console configuration</em>),</li>
+		  
+<li>diversos artefactos basados en una base de datos existente (ingenier&iacute;a inversa), o en una configuraci&oacute;n ya existente 
+		      de Hibernate (mediante <em>Run-&gt;Hibernate Code Generation)</em>
+</li>
+        
+</ul>
+   
+</li>
+
+</ul>
+<p>
+<strong>INSTALACI&Oacute;N DE HibernateTools EN ECLIPSE</strong>
+</p>
+<p>Vamos a utilizar Hibernate desde Eclipse necesitamos instalar el <em>plug-in</em> corespondiente
+   (<a href="recursos/HibernateTools-3.2.0.beta8.zip">HibernateTools-3.2.0.beta8.zip</a>), (que tambi&eacute;n os pod&eacute;is 
+   descargar desde la secci&oacute;n <a href="roadmap-apuntes.html#Enlaces"><em>Roadmap</em></a> de este m&oacute;dulo). Los pasos
+   para su instalaci&oacute;n son:</p>
+<ol>
+  
+<li>Descomprimir el fichero <span class="codefrag">HibernateTools-3.2.0.beta8.zip</span> en el directorio raiz de eclipse.</li>
+  
+<li>Para asegurarnos de que eclipse detecte el nuevo <em>plug-in</em> tenemos que ejecutar eclipse con la opci&oacute;n
+      <em>-clean</em>: <span class="codefrag">eclipse -clean</span>. Por ejemplo, podemos hacerlo desde una ventana de comandos de
+	  Windows (<em>Inicio-&gt;Ejecutar-&gt;cmd</em>).</li>
+
+</ol>
+<p>
+<strong>Conjunto m&iacute;nimo de librer&iacute;as  NECESARIAS para trabajar con HIBERNATE</strong>
+</p>
+<p>Para poder trabajar con Hibernate, necesitamos tener accesibles un conjunto m&iacute;nimo de librer&iacute;as 
+   (a&ntilde;adiendo los <span class="codefrag">*.jar</span> externos necesarios en <em>Properties-&gt;Java build path-&gt;Libraries</em>) que encontraremos
+   en el directorio <span class="codefrag">lib</span> de la distribuci&oacute;n de Hibernate con la que trabajemos. En nuestro caso, vamos
+   a utilizar <em>Hibernate 3.1.3</em>, y dicho conjunto m&iacute;nimo de librer&iacute;as (que se indica en el fichero <span class="codefrag">_README.txt</span>
+   del directorio <span class="codefrag">lib</span>) es:</p>
+<ul>
+  
+<li>
+<em>antlr-2.7.6rc1.jar</em>.</li>
+  
+<li>
+<em>asm.jar</em>.</li>
+  
+<li>
+<em>asm-attrs.jar</em>.</li>
+  
+<li>
+<em>cglib-2.1.3.jar</em>.</li>
+  
+<li>
+<em>commons-collections-2.1.1.jar</em>.</li>
+  
+<li>
+<em>commons-logging-1.0.4.jar</em>.</li>
+  
+<li>
+<em>dom4j-1.6.1.jar</em>.</li>
+  
+<li>
+<em>ehcache-1.1.jar</em>: se recuiere s&oacute;lo si no se proporciona otro proveedor para la <em>cache</em>.</li>
+  
+<li>
+<em>jdbc2_0-stdext.jar</em>: requerido en modo <em>standalone</em> (fuera de un serividor de aplicaciones.</li>
+  
+<li>
+<em>jta.jar</em>: requerido en modo <em>standalone</em> (fuera de un serividor de aplicaciones.</li>
+  
+<li>
+<em>log4j-1.2.11.jar</em>: es opcional, pero la mayor&iacute;a de los usuarios la utilizan.</li>
+  
+<li>
+<em>hibernate3.jar</em>: esta librer&iacute;a est&aacute; en el directorio ra&iacute;z de la distribuci&oacute;n de Hibernate.</li>
+
+</ul>
+<p>
+<strong>Fichero de configuraci&oacute;n de Hibernate (cfg.xml)</strong>
+</p>
+<p>Para crear el fichero de configuraci&oacute;n de Hibernate utilizaremos el <em>Wizard</em> correspondiente mediante:
+   <em>New-&gt;Hibernate configuration file (cfg.xml)</em>.</p>
+<p>La informaci&oacute;n que tendremos que concretar es:</p>
+<ul>
+        
+<li>Nombre de la Session Factory: podemos poner cualquier nombre</li>
+	    
+<li>Dialecto de la base de datos: podemos elegir un dialecto de una lista desplegable</li>
+	    
+<li>Clase para el driver: podemos elegir un dialecto de una lista desplegable</li>
+	    
+<li>Url de la conexi&oacute;n</li>
+	    
+<li>Nombre de usuario para la conexi&oacute;n</li>
+		
+<li>Password de usuario para la conexi&oacute;n</li>
+      
+</ul>
+<p>Adem&aacute;s, podemos marcar la casilla <em>Create Console Configuration</em>, si queremos crear tambi&eacute;n la consola de
+   configuraci&oacute;n.</p>
+<p>
+<strong>Consola de configuraci&oacute;n de Hibernate</strong>
+</p>
+<p>La <strong>consola de configuraci&oacute;n</strong> describe qu&eacute; ficheros deben usarse para configurar Hibernate, incluyendo
+   el <em>classpath</em> para cargar los POJOs, <em>drivers</em> JDBC y cualquier otro fichero que necesitemos. Normalmente
+   tendremos una consola de configuraci&oacute;n por proyecto, aunque se pueden tener varias si queremos.
+   </p>
+<p>Podemos crear una consola de configuraci&oacute;n a partir de un fichero de configuraci&oacute;n <span class="codefrag">cfg.xml</span>, o tambi&eacute;n utilizando
+   directamente el <em>wizard</em> correspondiente mediante: <em>New-&gt;Other-&gt;Hibernate-&gt;Hibernate Console Configuration</em>.</p>
+</div>
+
+
+<p class="pageBreakAfter"></p>
+
+</div>
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+        Copyright &copy;
+         2006-2007 Depto. CCIA</div>
+</div>
+</body>
+</html>

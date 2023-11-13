@@ -1,0 +1,256 @@
+
+package examples.jms.sender;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import javax.naming.*;
+import javax.jms.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
+import examples.common.utils.ExampleUtils;
+
+
+public class SenderServlet extends HttpServlet
+{
+  // Defines the JMS connection factory.
+  public final static String JMS_FACTORY="weblogic.examples.jms.TopicConnectionFactory";
+
+  // Defines the topic.
+  public final static String TOPIC="weblogic.examples.jms.exampleTopic";
+
+  // Defines the queue.
+  public final static String QUEUE="weblogic.examples.jms.exampleQueue";
+
+  /**
+   * Processes HTTP requests.
+   * @param req	HTTP servlet request
+   * @param res	HTTP servlet response
+   * @exception	IOException if problem with I/O operation
+   * @exception ServletException if problem with servlet
+   */
+  public void service(HttpServletRequest req, HttpServletResponse res)
+       throws IOException, ServletException
+  {
+    res.setContentType("text/html");
+    res.setHeader("Pragma", "no-cache");
+    PrintWriter pw = res.getWriter();
+    boolean persistent;
+    String topicMsg="";
+    int priority;
+    long ttl;
+    String correlate;
+    String replyto;
+    String msgText="";
+    try {
+      if (req.getMethod().equals("GET")) {
+        printForm(pw);
+      } else {
+        topicMsg =
+          req.getParameterValues("dest")[0];
+        persistent =
+          req.getParameterValues("persistent")[0].equals("persistent");
+        priority =
+          Integer.parseInt(req.getParameterValues("priority")[0]);
+        ttl =
+          Long.parseLong(req.getParameterValues("timetolive")[0]);
+        correlate =
+          req.getParameterValues("correlate")[0];
+        replyto =
+          req.getParameterValues("replyto")[0];
+        msgText =
+          req.getParameterValues("msgtext")[0];
+
+       if (topicMsg.equals("topic"))  
+          sendTopicMessage(persistent, priority, ttl, correlate, replyto, msgText);
+          else
+          sendQueueMessage(persistent, priority, ttl, correlate, replyto, msgText);
+
+
+        pw.println(ExampleUtils.returnHtmlHeader("JMS Message Status"));
+        pw.println("<h4><FONT COLOR=#DB1260 FACE=\"Helvetica\">");
+        pw.println("Message Status</FONT></h4>");
+        pw.println("Message Submitted: "+ExampleUtils.encodeXSS(msgText));
+      }
+    }
+    catch (Exception ex) {
+      ex.printStackTrace(new PrintWriter(pw));
+      ex.printStackTrace();
+    }
+    finally {
+      pw.println(ExampleUtils.returnHtmlFooter());
+    }
+
+  }
+  /**
+   * Displays the web page for message input.
+   * @param pw	print writer
+   * @exception Exception	if problem with printing form
+   */
+
+  public void printForm(PrintWriter pw)
+       throws Exception
+  {
+    pw.println(ExampleUtils.returnHtmlHeader("JMS Message Submitter"));
+    pw.println("<h4><font color=#DB1260 face=\"HELVETICA\">");
+    pw.println("Submit a JMS Message</font></h4>");
+    pw.println("<FORM METHOD=\"POST\" ACTION=\"./SenderServlet\">");
+    pw.println("<TABLE bgcolor=#EEEEEE cellpadding=2 border=0 align=center>");
+    pw.println("<TR><TD>Destination:</TD>");
+    pw.println("<TD><select name=dest>");
+    pw.println("<option value=topic selected>JMS Topic");
+    pw.println("<option value=queue>JMS Queue");
+    pw.println("</select></TR>");
+    pw.println("<TR><TD>Message Type:</TD>");
+    pw.println("<TD><select name=persistent>");
+    pw.println("<option value=persistent selected>Persistent");
+    pw.println("<option value=nonpersistent>Non Persistent");
+    pw.println("</select></TR>");
+    pw.println("<TR><TD>Priority:</td>");
+    pw.println("<TD><select name=priority>");
+    pw.println("<option value=0>0");
+    pw.println("<option value=1>1");
+    pw.println("<option value=2>2");
+    pw.println("<option value=3>3");
+    pw.println("<option value=4 selected>4");
+    pw.println("<option value=5>5");
+    pw.println("<option value=6>6");
+    pw.println("<option value=7>7");
+    pw.println("<option value=8>8");
+    pw.println("<option value=9>9");
+    pw.println("</select>");
+    pw.println("</TR><TR><TD>Time to live:</td>");
+    pw.println("<TD><select name=timetolive>");
+    pw.println("<option value=0 selected>Never expires");
+    pw.println("<option value=60000>one minute");
+    pw.println("<option value=600000>ten minutes");
+    pw.println("<option value=3600000>one hour");
+    pw.println("<option value=86400000>one day");
+    pw.println("</select>");
+    pw.println("</TR>");
+    pw.println("<TR><TD>Correlation ID:</TD><TD>");
+    pw.println("<INPUT NAME=\"correlate\" SIZE=20></TD></TR>");
+    pw.println("<TR><TD>Reply to:</TD><TD>");
+    pw.println("<select name=replyto>");
+    pw.println("<option value=none selected>none");
+    pw.println("<option value=queue>ExampleQueue");
+    pw.println("<option value=topic>ExampleTopic");
+    pw.println("</select></TR>");
+    pw.println("<TR><TD>Message Text:</TD><TD><INPUT NAME=\"msgtext\" SIZE=60></TD></TR>");
+    pw.println("<TR><TD colspan=2 align=center>");
+    pw.println("<INPUT TYPE=\"submit\" VALUE=\"Send Message\"></TD></TR>");
+    pw.println("</TABLE></FORM></FONT>");
+  }
+
+  /**
+   * Sends message to the topic.
+   * @param persistent	persistency setting
+   * @param priority	priority setting
+   * @param ttl		time-to-live setting
+   * @param correlate	correlation ID setting
+   * @param replyto     reply-to setting
+   * @param topicMessage	message
+   * @exception NamingException if problem with JNDI context interface
+   * @exception JMSException  if JMS fails send message due to internal error
+   */
+  public void sendTopicMessage(boolean persistent, int priority,
+                               long ttl, String correlate,
+                               String replyto, String topicMessage)
+       throws NamingException, JMSException
+  {
+    Context ctx = new InitialContext();
+    TopicConnectionFactory tconFactory;
+    TopicConnection connection;
+    TopicSession session;
+    TopicPublisher publisher;
+    Topic topic;
+    Queue queue;
+    TextMessage msg;
+
+    tconFactory = (TopicConnectionFactory) ctx.lookup(JMS_FACTORY);
+    connection = tconFactory.createTopicConnection();
+    session = connection.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
+    topic = (Topic) ctx.lookup(TOPIC);
+    publisher = session.createPublisher(topic);
+    msg = session.createTextMessage();
+    if (correlate.length() > 0)
+      msg.setJMSCorrelationID(correlate);
+    if (replyto.equals("topic")) {
+      msg.setJMSReplyTo(topic);
+    }
+    else if (replyto.equals("queue")) {
+      try {
+        queue = (Queue) ctx.lookup(QUEUE);
+        msg.setJMSReplyTo(queue);
+      } catch (NamingException ne) {
+      }
+    }
+    msg.setText(topicMessage);
+    connection.start();
+
+    publisher.publish(msg,
+                      persistent ? DeliveryMode.PERSISTENT
+                                 : DeliveryMode.NON_PERSISTENT,
+                      priority,
+                      ttl);
+
+    publisher.close();
+    session.close();
+    connection.close();
+  }
+
+  /**
+   * Sends a message to the queue.
+   * @param persistent	persistency setting
+   * @param priority	priority setting
+   * @param ttl		time-to-live setting
+   * @param correlate	correlation ID setting
+   * @param replyto     reply-to setting
+   * @param topicMessage	message
+   * @exception NamingException if problem with JNDI context interface
+   * @exception JMSException  if JMS fails send message due to internal error
+   */
+  public void sendQueueMessage(boolean persistent, int priority,
+                               long ttl, String correlate,
+                               String replyto, String topicMessage)
+       throws NamingException, JMSException
+  {
+    Context ctx = new InitialContext();
+    QueueConnectionFactory qconFactory;
+    QueueConnection qcon;
+    QueueSession qsession;
+    QueueSender qsender;
+    Queue queue;
+    Topic topic;
+    TextMessage msg;
+
+    qconFactory = (QueueConnectionFactory) ctx.lookup(JMS_FACTORY);
+    qcon = qconFactory.createQueueConnection();
+    qsession = qcon.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
+    queue = (Queue) ctx.lookup(QUEUE);
+    qsender = qsession.createSender(queue);
+    msg = qsession.createTextMessage();
+    if (correlate.length() > 0)
+      msg.setJMSCorrelationID(correlate);
+    if (replyto.equals("queue")) {
+      msg.setJMSReplyTo(queue);
+    }
+    else if (replyto.equals("topic")) {
+      topic = (Topic) ctx.lookup(TOPIC);
+      msg.setJMSReplyTo(topic);
+    }
+    msg.setText(topicMessage);
+
+    qcon.start();
+    qsender.send(msg,
+                 persistent ? DeliveryMode.PERSISTENT
+                            : DeliveryMode.NON_PERSISTENT,
+                 priority,
+                 ttl);
+
+    qsender.close();
+    qsession.close();
+    qcon.close();
+  }
+
+}
+

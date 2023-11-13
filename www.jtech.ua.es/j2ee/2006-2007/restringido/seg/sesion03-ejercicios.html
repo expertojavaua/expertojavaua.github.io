@@ -1,0 +1,420 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.7">
+<meta name="Forrest-skin-name" content="pelt">
+<title>SSO con SAML en Weblogic 9.2</title>
+<link type="text/css" href="skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="skin/print.css" rel="stylesheet">
+<link type="text/css" href="skin/profile.css" rel="stylesheet">
+<script src="skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<div class="header">
+<div class="grouplogo">
+<a href="http://www.jtech.ua.es/j2ee"><img class="logoImage" alt="J2EE" src="images/baner_j2ee_izq.gif" title="Curso Especialista Universitario J2EE"></a>
+</div>
+<div class="projectlogoA1">
+<a href="http://www.dccia.ua.es/"><img class="logoImage" alt="Servidores Web" src="images/baner_j2ee_der.gif" title="Servidores Web"></a>
+</div>
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="../index.html">M&oacute;dulos</a>
+</li>
+<li class="current">
+<a class="base-selected" href="index.html">Servidores Web</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<div id="level2tabs"></div>
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<div id="menu">
+<div onclick="SwitchMenu('menu_selected_1.1', 'skin/')" id="menu_selected_1.1Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Seguridad en JEEE</div>
+<div id="menu_selected_1.1" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="index.html" title="Seguridad en JEE">&Iacute;ndice</a>
+</div>
+<div onclick="SwitchMenu('menu_1.1.2', 'skin/')" id="menu_1.1.2Title" class="menutitle">Teor&iacute;a</div>
+<div id="menu_1.1.2" class="menuitemgroup">
+<div class="menuitem">
+<a href="sesion01-apuntes.html">Sesion 1</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-apuntes.html">Sesion 2</a>
+</div>
+<div class="menuitem">
+<a href="sesion03-apuntes.html">Sesion 3</a>
+</div>
+<div class="menuitem">
+<a href="sesion04-apuntes.html">Sesion 4</a>
+</div>
+<div class="menuitem">
+<a href="roadmap-apuntes.html">Roadmap</a>
+</div>
+</div>
+<div onclick="SwitchMenu('menu_selected_1.1.3', 'skin/')" id="menu_selected_1.1.3Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Ejercicios</div>
+<div id="menu_selected_1.1.3" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="sesion01-ejercicios.html">Sesion 1</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-ejercicios.html">Sesion 2</a>
+</div>
+<div class="menupage">
+<div class="menupagetitle">Sesion 3</div>
+</div>
+<div class="menuitem">
+<a href="sesion04-ejercicios.html">Sesion 4</a>
+</div>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<div id="credit2"></div>
+</div>
+<div id="content">
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="sesion03-ejercicios.pdf"><img alt="PDF -icon" src="skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1>SSO con SAML en Weblogic 9.2</h1>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#Introducci%C3%B3n+y+esquema+general">Introducci&oacute;n y esquema general</a>
+</li>
+<li>
+<a href="#Paso+1.+Crear+los+dominios+para+los+sitios+SAML">Paso 1. Crear los dominios para los sitios SAML</a>
+</li>
+<li>
+<a href="#Paso+2.+Crear+usuarios">Paso 2. Crear usuarios</a>
+</li>
+<li>
+<a href="#Paso+3.+Desplegar+aplicaciones">Paso 3. Desplegar aplicaciones</a>
+</li>
+<li>
+<a href="#Paso+4.+Generar+y+registrar+los+certificados+SSL">Paso 4. Generar y registrar los certificados SSL</a>
+</li>
+<li>
+<a href="#Paso+5.+Configurar">Paso 5. Configurar domainA como sitio fuente SAML</a>
+</li>
+<li>
+<a href="#Punto+6%3A+Configurar+las+propiedades+de+la">Punto 6: Configurar las propiedades de la relying party</a>
+</li>
+<li>
+<a href="#Configurar+SAML+en+el">Configurar SAML en el source site</a>
+</li>
+<li>
+<a href="#Paso+8%3A+Configurar">Paso 8: Configurar domainB como SAML destination site</a>
+</li>
+<li>
+<a href="#Configurar+las+propiedades+de+la">Configurar las propiedades de la asserting party</a>
+</li>
+<li>
+<a href="#Configurar+el">Configurar el destination site SAML (1.1)</a>
+</li>
+<li>
+<a href="#Testear+SSO">Testear SSO</a>
+</li>
+</ul>
+</div>
+
+<a name="N1000C"></a><a name="Introducci%C3%B3n+y+esquema+general"></a>
+<h2 class="underlined_10">Introducci&oacute;n y esquema general</h2>
+<div class="section">
+<p>La ventaja de utilizar un servidor de aplicaci&oacute;nes como BEA Weblogic es que implementar un mecanismo 
+SSO es m&aacute;s un tema de configuraci&oacute;n que de programaci&oacute;n y dise&ntilde;o de asertos. Actualmente es posible establecer 
+SSO entre diferentes dominios. En este ejercicio mostraremos los pasos a seguir para configurarlos adecuadamente 
+desde la consola de administrador.</p>
+<p>Concretamente, en este ejercicio mostramos como dos aplicaciones <em>appA</em> desplegada en un sitio local 
+y otra <em>appB</em> desplegada en un sitio remoto (de otro dominio) implementar&aacute;n un esquema SSO.</p>
+<p>El <em>sitio fuente</em> (donde <em>appA</em> se autentifica) proporciona el servicio de autentificaci&oacute;n y 
+pasa los detalles de autentificaci&oacute;n, a trav&eacute;s del <em>Inter-site Transfer Service</em> (ITS), cuando se lo pide el 
+<em>destination site</em>. El sitio fuente incluye un servlet ITS que proporciona funcionalidad SAML como la generaci&oacute;n  
+de artefactos y la redirecci&oacute;n del usuario al sitio de destino.</p>
+<p>El proceso general es el siguiente:</p>
+<p>1. El browser del usuario accede a la aplicaci&oacute;n <em>appA</em> desplegada en el dominio <em>domainA</em>.</p>
+<p>2. La aplicaci&oacute;n <em>appA</em> pide y pasa las credenciales al proveedor de autentificaci&oacute;n (ASP).</p>
+<p>3. Si la autentificaci&oacute;n tiene &eacute;xito entonces se establece una sesi&oacute;n de autentificaci&oacute;n y se muestra la p&aacute;gina 
+de bienvenida de <em>appA</em>.</p>
+<p>4. Desde la p&aacute;gina de bienvenida, el usuario clickea en un link para acceder una p&aacute;gina segura, la de <em>appB</em> 
+desplegada en <em>domainB</em>. Esto dispara el servlet ITS.</p>
+<p>5. El ITS llama al <em>SAML Credential Mapper</em> para pedir un aserto de llamada. &Eacute;ste le devuelve el aserto. 
+Tambi&eacute;n le devuelve la URL de la p&aacute;gina de destino y un path para un formulario POST adecuado (si el sitio fuente est&aacute; 
+configurado para usar el profile POST).</p>
+<p>6. El ITS genera una respuesta SAML conteniendo el aserto generado, lo firma, lo codifica en BASE64, lo embebe en 
+el formulario HTML y devuelve el formulario al browser.</p>
+<p>7. El browser hace un POST del formulario en el ACS (<em>Assertion Consumer Service</em>) del sitio de destino.</p>
+<p>8. El aserto es validado.</p>
+<p>9. Si la validaci&oacute;n tiene &eacute;xito, el usuario es redirigido al objetivo, esto es a la p&aacute;gina web de <em>appB</em>.</p>
+<p>10. El usuario es logeado en el sitio de destino sin necesidad de re-autentificarse frente a la nueva aplicaci&oacute;n.</p>
+<p>
+
+<img alt="Proceso general SSO en Weblogic" content-width="8cm" src="ejercicios/sesion3/sso.gif" width="400">
+</p>
+<p>Todo este proceso se puede realizar sin necesidad de codificaci&oacute;n alguna. Casi todo puede hacerse desde la consola de 
+administraci&oacute;n.</p>
+</div>
+
+<a name="N10076"></a><a name="Paso+1.+Crear+los+dominios+para+los+sitios+SAML"></a>
+<h2 class="underlined_10">Paso 1. Crear los dominios para los sitios SAML</h2>
+<div class="section">
+<p>La configuraci&oacute;n de cada dominio es la siguiente:</p>
+<p>
+<em>domainA</em>. Host:localhost, Server: AdminServer, Aplicaci&oacute;n: <em>appA</em>, Puerto: 7001, Puerto SSL: 7002.</p>
+<p>
+<em>domainB</em>. Host: localhost, Server: AdminServer, Aplicaci&oacute;n: <em>appB</em>, Puerto: 7003, Puerto SSL: 7004.</p>
+</div>
+
+<a name="N1008F"></a><a name="Paso+2.+Crear+usuarios"></a>
+<h2 class="underlined_10">Paso 2. Crear usuarios</h2>
+<div class="section">
+<p>Los usuarios quedan como sigue:</p>
+<p>
+<em>domainA</em>. Realm: myrealm, Usuario: ssouser, Password: demosaml.</p>
+<p>
+<em>domainB</em>. Realm: myrealm, Usuario: ssouser, Password: demosaml.</p>
+</div>
+
+<a name="N100A2"></a><a name="Paso+3.+Desplegar+aplicaciones"></a>
+<h2 class="underlined_10">Paso 3. Desplegar aplicaciones</h2>
+<div class="section">
+<p>La <em>appA</em> est&aacute; configurada como una FORM-based authentication. Es una p&aacute;gina JSP llamada <span class="codefrag">auth.jsp</span> en 
+la carpeta <em>admin</em> necesita que el usuario autentificado tenga el rol <em>admin</em>. Este rol es mapeado al principal 
+<em>ssouser</em> en <span class="codefrag">weblogic.xml</span>. La configuraci&oacute;n declarativa se muestra en <span class="codefrag">web.xml</span>.</p>
+<p>Cuando el browser intente acceder a <span class="codefrag">/admin/auth.jsp</span> entonces se mostrar&aacute; la p&aacute;gina <span class="codefrag">login.jsp</span> pidiendo 
+las credenciales. Entonces se autentificar&aacute; a <em>ssouser</em>. Si la autentificaci&oacute;n tiene &eacute;xito entonces se mostrar&aacute; la 
+p&aacute;gina <span class="codefrag">auth.jsp.</span>
+</p>
+<p>La <em>appB</em> est&aacute; configurada como CLIENT-CERT por lo que usar&aacute; asertos de identidad para autentificaci&oacute;n. Esta aplicaci&oacute;n +
+se desplegar&aacute; en el <em>domainB</em>. Un JSP llamado <span class="codefrag">services.jsp</span> y situado en la carpeta <span class="codefrag">/admin</span>, requiere 
+que el usario autentificado tenga el rol <em>admin</em>. Cuando el SSO est&eacute; implementado se podr&aacute; acceder a este JSP sin que se 
+le vuelvan a pedir las credenciales.</p>
+</div>
+
+<a name="N100E0"></a><a name="Paso+4.+Generar+y+registrar+los+certificados+SSL"></a>
+<h2 class="underlined_10">Paso 4. Generar y registrar los certificados SSL</h2>
+<div class="section">
+<p>Para conseguir comunicaci&oacute;n segura entre los sitios SAML fuente y destino, la comunicaci&oacute;n debe estar encriptada. Adicionalmente 
+los certificados deben usarse para verificar la identidad de cada parte en la interacci&oacute;n SAML.</p>
+<p>Usaremos en cada dominio los keystores <em>DemoIdentity.jks</em> que aparecen al configurar cada dominio.</p>
+<p>1. Usar keytool:</p>
+<p>
+<em>keytool -genkey -keypass testkeypass -keystore DemoIdentity.jks -storepass DemoIdentityKeyStorePassPhrase -keyalg rsa 
+-alias testalias</em>.</p>
+<p>2. Exportar el certificado <span class="codefrag">testalias.der</span>:</p>
+<p>
+<em>keytool -export -keypass testkeypass -keystore DemoIdentity.jks -storepass DemoIdentityKeyStorePassPhrase -alias 
+testalias -file testalias.der</em>
+</p>
+</div>
+
+<a name="N10101"></a><a name="Paso+5.+Configurar"></a>
+<h2 class="underlined_10">Paso 5. Configurar domainA como sitio fuente SAML</h2>
+<div class="section">
+<p>Configuraremos el sitio fuente como una instancia de un <em>SAML Credential Mapper V2</em>, que act&uacute;a como productor 
+de asertos SAML, permitiendo a <em>domainA</em> para actuar como sitio fuente para SSO.</p>
+<p>1. Log-in en la consola de administraci&oacute;n de <em>domainA</em>.</p>
+<p>2. Seleccionar <em>Security Realms</em>.</p>
+<p>3. Seleccionar un security realm. El realm por defecto es <em>myrealm</em>.</p>
+<p>4. Seleccionar el tab de <em>Providers</em> y seleccionar el tab <em>Credential Mappings</em>.</p>
+<p>5. Si el <em>SAML CredentialMapper</em> no existe entonces crear uno tal como se indica en la figura:</p>
+<p>
+
+<img alt="Crear SAMLCredentialMapper" content-width="8cm" src="ejercicios/sesion3/new_saml_cm.gif" width="400">
+</p>
+<p>6. Seleccionar <em>SAMLCredentialMapper</em> y entonces seleccionar proveedor espec&iacute;fico.</p>
+<p>7. Seleccionar <em>Lock and Edit</em> para editar los settings.</p>
+<p>8. Editar la URI del emisor <span class="codefrag">http://www.bea.com/demoSAML</span>. Esta URI dice a (<em>domainB/appB</em>) el 
+origen del mensaje. La URL se usa para garantizar unicidad.</p>
+<p>9. Entrar la <em>Signing Key Alias</em> (testalias) y la <em>Signing Key Alias Phrase</em> (testkeypass) que 
+se usaron en keytool.</p>
+<p>10. Seleccionar el resto de par&aacute;metros con los que se muestran en la imagen:</p>
+<p>
+
+<img alt="Crear SAMLCredentialMapper" content-width="8cm" src="ejercicios/sesion3/saml_cm_provider.gif" width="400">
+</p>
+<p>11. Click salvar.</p>
+<p>12. Activar Cambios.</p>
+<p>En este punto, el proveedor SAML credential mapper est&aacute; configurado para permitir a <em>domainA</em> ser un 
+sitio fuente para asertos SAML. Tambi&eacute;n est&aacute; configurado para usar el keystore generado en el Paso 4.</p>
+</div>
+
+<a name="N10173"></a><a name="Punto+6%3A+Configurar+las+propiedades+de+la"></a>
+<h2 class="underlined_10">Punto 6: Configurar las propiedades de la relying party</h2>
+<div class="section">
+<p>Cuando configuramos el servidor como fuente de asertos SAML se deben registrar las partes que pueden pedir assertions asertos SAML
+que ser&aacute;n aceptados. Para una <em>relying party</em> SAML, puedes especificar: el profile SAML usado,  detalles sobre la 
+<em>relying party</em> y los atributos esperados en los asertos para la <em>relying party</em>.</p>
+<p>La <em>relying party</em> determina si conf&iacute;a en los asertos que le proporciona la <em>asserting party</em>. SAML define 
+un n&uacute;mero de mecanismos que permiten a la <em>relying party</em> a confiar en los asertos que se le proporcionan.</p>
+<p>1. En el tab de <em>Management</em> click <em>Relying Parties</em>.</p>
+<p>2. En la tabla de <em>Relying Parties</em>, click <em>New</em>.</p>
+<p>3. En el men&uacute; de <em>Profile</em> seleccionar <em>Browser/POST</em>. En el camo <em>Destination</em> poner el nombre 
+<em>demoSAML</em> para identificar la <em>relying party</em> como se muestra en la figura:</p>
+<p>
+
+<img alt="Settings para el SAMLCredentialMapper" content-width="8cm" src="ejercicios/sesion3/rp_config.gif" width="400">
+</p>
+<p>Los par&aacute;metros son:</p>
+<p>Enabled: true</p>
+<p>Target URL: http://localhost:7003/appB/admin/services/services.jsp</p>
+<p>Assertion Consumer URL: https://localhost:7004/samlacs/acs</p>
+<p>Assertion Consumer Parameters: APID=app_00001</p>
+<p>Signature Required: true</p>
+<p>Include Keyinfo: true</p>
+</div>
+
+<a name="N101D5"></a><a name="Configurar+SAML+en+el"></a>
+<h2 class="underlined_10">Configurar SAML en el source site</h2>
+<div class="section">
+<p>Procede ahora configurar varios servicios de federaci&oacute;n para el servidor que ejecuta <em>appA</em>. Estos settings 
+permiten que ese servidor sea un <em>source site</em> SAML, definen las URIs del sitio y las URIs de servicio, 
+a&ntilde;adimos certificado para firmar asertos y configurar&aacute;n SSL para recoger asertos.</p>
+<p>1. En la consola de administraci&oacute;n, en <em>Domain Structure</em> seleccionar <em>Environment</em> y <em>Servers</em>.</p>
+<p>2. Seleccionar <em>AdminServer</em> y entonces en los settings para para ese servidor clickear <em>Federation Serivces</em> 
+como se indica en la figura:</p>
+<p>
+
+<img alt="Settings para AdminServer" content-width="8cm" src="ejercicios/sesion3/source_fs_settings.gif" width="400">
+</p>
+</div>
+
+<a name="N10204"></a><a name="Paso+8%3A+Configurar"></a>
+<h2 class="underlined_10">Paso 8: Configurar domainB como SAML destination site</h2>
+<div class="section">
+<p>Hay que crear una instancia  <em>SAML Identity Assertion Provider V2</em>. Este proveedor valida los asertos SAML checkeando 
+la firma y validando el certificado para confiar en el registro de certificados mantenido por el proveedor. Por eso lo primero 
+que hay que hacer es importar el certificado generado en el Paso 4 en el registro de certificados del proveedor.</p>
+<p>Importar el certificado:</p>
+<p>1. Copiar el fichero <span class="codefrag">testalias.der</span> en <span class="codefrag">C:\bea\weblogic92\server\lib</span>.</p>
+<p>2. Logearse en la consola de administraci&oacute;n del <em>domainB</em>.</p>
+<p>3. Seleccionar <em>myrealm</em>.</p>
+<p>4. Seleccionar el tab de <em>Providers</em> y luego el de <em>Authentication</em>.</p>
+<p>5. Si el <em>SAMLIdentityAsserter</em> no existe, entonces crear uno nuevo como se indica en la figura:</p>
+<p>
+
+<img alt="Crear un nuevo identity asserter" content-width="8cm" src="ejercicios/sesion3/new_saml_ia.gif" width="400">
+</p>
+<p>6. Seleccionar <em>SAMLIdentityAsserter</em>, clickear el tab de <em>Management</em> y clickear <em>Certificates</em>.</p>
+<p>7. En el di&aacute;logo de <em>Certificates</em> clickear <em>New</em> como se muestra en la figura:</p>
+<p>
+
+<img alt="Crear un nuevo certificado de asserci&oacute;n" content-width="8cm" src="ejercicios/sesion3/saml_ia_cert.gif" width="400">
+</p>
+<p>8. En el campo <em>Alias</em> poner el alias del certificado.</p>
+<p>9. Entrar el nombre del certificado.</p>
+<p>10. Clickear <em>Finish</em>.Si no hay problemas se muestra el mensaje "The certificate has beeen successfully registered".</p>
+</div>
+
+<a name="N10272"></a><a name="Configurar+las+propiedades+de+la"></a>
+<h2 class="underlined_10">Configurar las propiedades de la asserting party</h2>
+<div class="section">
+<p>Cuando se configura un servidor como consumidor de asertos se necesita configurar las partes cuyos asertos ser&aacute;n aceptados. 
+Para una <em>Asserting Party</em> puedes especificar el profile SAML usado, detalles sobre la <em>asserting party</em> y los 
+atributos esperados en asertos recibidos de la <em>asserting party</em>.</p>
+<p>La <em>asserting party</em> aserta que un usuario ha sido autentificado y se le han dado ciertos atributos. Por ejemplo, 
+est&aacute; el usuario <span class="codefrag">ssouser</span> que es autentificado en su dominio usando un mecanismo de password. 
+Las <em>asserting parties</em> se llaman <em>SAML authorities</em>:</p>
+<p>1. En el tab <em>Management</em> clickear <em>Asserting Parties</em>.</p>
+<p>2. En la tabla <em>Asserting Parties</em>, clickear <em>New</em>.</p>
+<p>3. En el men&uacute; de <em>Profile</em> seleccionar <em>Browser/POST</em>. En el campo <em>Description</em> entrarel nombre 
+<em>demoSAML</em> para identificar la <em>asserting party</em> como se indica en la figura:</p>
+<p>
+
+<img alt="Crear un nueva asserting party" content-width="8cm" src="ejercicios/sesion3/ap_config.gif" width="400">
+</p>
+<p>Los par&aacute;metros son:</p>
+<p>Enabled: true</p>
+<p>Target URL: http://localhost:7001/appA</p>
+<p>POST Signing Certificate alias: testalias</p>
+<p>Source Site Redirect URIs: /appB/admin/services.jsp</p>
+<p>Source Site ITS URL: https://localhost:7002/samlits_ba/its</p>
+<p>Source Site ITS Parameters: RPID=rp_00001</p>
+<p>Issuer URI: http://www.bea.com/demoSAML</p>
+<p>Signature Required: true</p>
+<p>Asserting Signing Certificate Alias: testalias</p>
+</div>
+
+<a name="N102E0"></a><a name="Configurar+el"></a>
+<h2 class="underlined_10">Configurar el destination site SAML (1.1)</h2>
+<div class="section">
+<p>Configuraremos par&aacute;metros del server ejecutando <em>appB</em>. Estos settings permiten al servidor servir como 
+un <em>destination site</em> SAML, define URIs de servicio, a&ntilde;adir un certificado para firmar respuestas de profile tipo 
+POST y configurar SSL para<em>Assertion Consumer Service</em> (ACS)</p>
+<p>1. Em la consola de administraci&oacute;n seleccionar <em>Environment</em>, despu&eacute;s <em>Servers</em> en la ventana de 
+<em>Domains Structure</em>.</p>
+<p>2. Seleccionar <em>AdminServer</em>, y luego en los <em>Settings</em> para ese servidor clickear 
+<em>Federation Services</em> y entonces en el tab <em>SAML 1.1 Destination Site</em> como se ve en la figura:</p>
+<p>
+
+<img alt="Crear un nueva asserting party" content-width="8cm" src="ejercicios/sesion3/dest_fs_settings.gif" width="400">
+</p>
+<p>Los par&aacute;metros son:</p>
+<p>Destination Site Enabled: true</p>
+<p>Assertion Consumer URIs: /samlacs/acs</p>
+<p>ACS Requires SSL: true</p>
+<p>SSL Client Identity Alias: testalias</p>
+<p>SSL Client Identity Pass Phrase: testkeypass</p>
+<p>POST Recipient Check Enabled: true</p>
+<p>POST one USe Check Enabled: true</p>
+<p>Used Assertion Cache Properties: APID:=ap_00001</p>
+</div>
+
+<a name="N10334"></a><a name="Testear+SSO"></a>
+<h2 class="underlined_10">Testear SSO</h2>
+<div class="section">
+<p>Abrir un browser en la URL: <span class="codefrag">http://localhost:7001/appA/</span>. La autentificaci&oacute;n tipo FORM configurada para 
+<em>appA</em> mostrar&aacute; <span class="codefrag">login.jsp</span>. Entrar usuario y password:</p>
+<p>
+
+<img alt="Browser en el appA login" content-width="8cm" src="ejercicios/sesion3/appa_login.gif" width="400">
+</p>
+<p>La p&aacute;gina <span class="codefrag">auth.jsp</span> se muestra. Esta p&aacute;gina muestra un link a <em>appB</em> 
+(<span class="codefrag">http://localhost:7003/appB/admin/services.jsp</span>).</p>
+<p>
+
+<img alt="Browser en el appA login" content-width="8cm" src="ejercicios/sesion3/appa_login_success.gif" width="400">
+</p>
+<p>Haciendo click en este link llamaremos al ITS servlet y 
+causaremos la generaci&oacute;n del aserto. Entonces el control ser&aacute;s transferido al sitio de destino:</p>
+<p>
+
+<img alt="Browser en el appA login" content-width="8cm" src="ejercicios/sesion3/appb_login_success.gif" width="400">
+</p>
+</div>
+
+<p class="pageBreakAfter"></p>
+
+</div>
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+        Copyright &copy;
+         2006 Depto. CCIA</div>
+</div>
+</body>
+</html>

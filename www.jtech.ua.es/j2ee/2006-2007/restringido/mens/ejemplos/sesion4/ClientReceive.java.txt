@@ -1,0 +1,142 @@
+package examples.jms.messageformat;
+
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.Hashtable;
+import javax.jms.*;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import weblogic.jms.extensions.WLQueueSession;
+import weblogic.jms.extensions.XMLMessage;
+
+/**
+ * This class shows how to establish a connection to and receive messages from
+ * a JMS queue.
+ * <p>Run this class after you have run the ClientSend class to send XML
+ * data to a JMS queue.  After ClientSend has sent its message, the Message-
+ * driven EJB <code>MessageTraderBean</code> retrieves the XML data from the
+ * queue, parses it, then sends the output to another JMS queue.  This class,
+ * ClientReceive, gets the final message from this JMS queue.
+ *
+ * @author Copyright (c) 2005 by BEA Systems, Inc. All Rights Reserved.
+ */
+
+public class ClientReceive {
+
+  public final static String JNDI_FACTORY="weblogic.jndi.WLInitialContextFactory";
+  public final static String JMS_FACTORY="weblogic.examples.jms.messageformat.QueueConnectionFactory";
+  public final static String QUEUE="weblogic.examples.jms.messageformat.exampleQueueReceive";
+  private static String xmlMessage = null;
+
+  public String getXmlMessage() { return xmlMessage; }
+
+  /**
+   * Establishes a connection to the JMS queue and receives the
+   * trade result in the form of XML data.
+   *
+   * @exception NamingException if a JNDI naming exception occurred
+   * @exception JMSException if a JMS exception occurred
+   * @exception IOException if an IO naming exception occurred
+   * @exception ParserConfigurationException if a parser configuration exception occurred
+   * @exception SAXException if a SAX exception occurred
+   */
+  public void receive(String url)
+    throws NamingException, JMSException, IOException,
+      ParserConfigurationException, SAXException, Exception
+  {
+    // Look up the Queue and the QueueConnection Factory
+    // in a JNDI naming and directory service, or create
+    // them directly.
+
+    Hashtable<String,String> env = new Hashtable<String,String>();
+    env.put(Context.INITIAL_CONTEXT_FACTORY, JNDI_FACTORY);
+    env.put(Context.PROVIDER_URL, url);
+    Context context = new InitialContext(env);
+
+    Queue queue = null;
+    queue = (Queue)context.lookup(QUEUE);
+
+    QueueConnectionFactory queueconnectionfactory = null;
+    queueconnectionfactory = (QueueConnectionFactory)context.lookup(JMS_FACTORY);
+
+    QueueConnection queueconnection = null;
+    queueconnection = queueconnectionfactory.createQueueConnection();
+    queueconnection.start();
+
+    QueueSession queuesession = null;
+    queuesession = (WLQueueSession)queueconnection.createQueueSession(false,
+      Session.AUTO_ACKNOWLEDGE);
+
+    // Create the QueueReceiver.
+    QueueReceiver queuereceiver = null;
+    queuereceiver = queuesession.createReceiver(queue);
+
+    // Retrieve a XML message.  Validate
+    // the XML before returning it.
+    XMLMessage xmlmessage;
+
+    while(true) {
+       try {
+         xmlmessage = (XMLMessage)queuereceiver.receive(1000);
+       } catch(Exception e) {
+         System.out.println("Failed to receive XML message: " + e.getMessage());
+         throw e;
+     }
+
+     if(xmlmessage != null) {
+       try {
+         xmlMessage = xmlmessage.getText();
+
+        // NOTE: This example demonstrates how to use JAXP
+        // to obtain a parser in a CLIENT without explicitly referring
+        // a particular parser implementation. Server-side objects
+        // should use WebLogic's XML registry to specify and
+        // obtain a parser. The following code sets the java system property used by
+        // JAXP to determine which parser factory to return.
+
+         System.setProperty("javax.xml.parsers.SAXParserFactory",
+                            "weblogic.apache.xerces.jaxp.SAXParserFactoryImpl");
+
+         SAXParserFactory fact = SAXParserFactory.newInstance();
+         SAXParser sp = fact.newSAXParser();
+
+         RequestHandler rh = new RequestHandler();
+         InputSource inSource = new InputSource();
+
+         inSource.setCharacterStream(new StringReader(xmlMessage));
+         sp.parse(inSource, rh);
+       } catch(JMSException jmse) {
+         System.err.println("An exception occurred: "+jmse.getMessage());
+         throw jmse;
+       } catch (Exception ex) {
+         System.err.println("An exception occurred: "+ex.getMessage());
+         throw ex;
+       }
+     } else {
+       System.out.println("There is no message in the queue: " + QUEUE);
+       break;
+     }
+    }
+  }
+
+  /**
+   * Runs this example from the command line.
+   * <p>
+   * Use this command:
+   * <tt>java examples.jms.messageformat.ClientReceive t3://localhost:7001</tt>
+   */
+  public static void main(String[] args) throws Exception {
+    if (args.length != 1) {
+      System.out.println("Usage: java examples.jms.messageformat.ClientReceive WebLogicURL");
+      return;
+    }
+    ClientReceive receiver = new ClientReceive();
+    receiver.receive(args[0]);
+  }
+}

@@ -1,0 +1,587 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.7">
+<meta name="Forrest-skin-name" content="pelt">
+<title>Aplicaciones AJAX y REST con Spring MVC</title>
+<link type="text/css" href="skin/highlight/shCore.css" rel="stylesheet">
+<link type="text/css" href="skin/highlight/shThemeEclipse.css" rel="stylesheet">
+<script src="skin/highlight/shCore.js" type="text/javascript"></script><script src="skin/highlight/shAutoloader.js" type="text/javascript"></script>
+<link type="text/css" href="skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="skin/print.css" rel="stylesheet">
+<link type="text/css" href="skin/profile.css" rel="stylesheet">
+<script src="skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<div class="header">
+<div class="grouplogo">
+<a href="http://web.ua.es/especialistajava"><img class="logoImage" alt="jtech" src="images/baner_j2ee_izq.gif" title="Experto Universitario Java Enterprise"></a>
+</div>
+<div class="projectlogoA1">
+<a href="http://www.dccia.ua.es/"><img class="logoImage" alt="Spring" src="images/baner_j2ee_der.gif" title="Spring"></a>
+</div>
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="javascript:location.href='../index.html'">Home</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../aplic-web.html'">Aplicaciones Web</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../aplic-ent.html'">Aplicaciones Enterprise</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../charlas.html'">Charlas</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../proy-int/index.html'">Proyecto</a>
+</li>
+<li>
+<a class="base-not-selected" href="index.html">Spring</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<div id="level2tabs"></div>
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<div id="menu">
+<div onclick="SwitchMenu('menu_1.1', 'skin/')" id="menu_1.1Title" class="menutitle">Spring</div>
+<div id="menu_1.1" class="menuitemgroup">
+<div class="menuitem">
+<a href="index.html" title="Spring">Indice</a>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<div id="credit2"></div>
+</div>
+<div id="content">
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="sesion04-apuntes.pdf"><img alt="PDF -icon" src="skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1>Aplicaciones AJAX y REST con Spring MVC</h1>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#AJAX+con+Spring">AJAX con Spring</a>
+<ul class="minitoc">
+<li>
+<a href="#Caso+de+uso+1%3A+respuesta+del+servidor+como+texto%2Ffragmento+de+HTML">Caso de uso 1: respuesta del servidor como texto/fragmento de HTML</a>
+</li>
+<li>
+<a href="#Caso+de+uso+2%3A+respuesta+del+servidor+como+objeto+serializado">Caso de uso 2: respuesta del servidor como objeto serializado</a>
+</li>
+<li>
+<a href="#Caso+de+uso+3%3A+enviar+objetos+desde+el+cliente">Caso de uso 3: enviar objetos desde el cliente</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Servicios+web+REST">Servicios web REST</a>
+<ul class="minitoc">
+<li>
+<a href="#URIs">URIs</a>
+</li>
+<li>
+<a href="#Obtener+recursos+%28GET%29">Obtener recursos (GET)</a>
+</li>
+<li>
+<a href="#Crear+o+modificar+recursos+%28POST%2FPUT%29">Crear o modificar recursos (POST/PUT)</a>
+</li>
+<li>
+<a href="#Eliminar+recursos+%28DELETE%29">Eliminar recursos (DELETE)</a>
+</li>
+<li>
+<a href="#Parte+del+cliente">Parte del cliente</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Tratamiento+de+errores+en+aplicaciones+AJAX+y+REST">Tratamiento de errores en aplicaciones AJAX y REST</a>
+</li>
+</ul>
+</div>
+
+<p>En la sesi&oacute;n anterior vimos c&oacute;mo implementar aplicaciones web "cl&aacute;sicas", es decir, aquellas en las que cada "pantalla" de nuestra aplicaci&oacute;n se implementa en un HTML distinto y cada comunicaci&oacute;n con el servidor implica un cambio de p&aacute;gina (y de "pantalla"). No es necesario decir que la gran mayor&iacute;a de aplicaciones web actuales no son as&iacute;. Casi todas usan AJAX y Javascript en el cliente de manera intensiva, lo que nos permite comunicarnos con el servidor sin cambiar de p&aacute;gina y tambi&eacute;n cambiar din&aacute;micamente la interfaz sin movernos a otro HTML.</p>
+
+<p>Un paso m&aacute;s all&aacute; son las aplicaciones REST, en las que (entre otras cosas) el cliente no recibe el HTML sino directamente los datos en un formato est&aacute;ndar (JSON/XML) y los "pinta" &eacute;l mismo (o los formatea en HTML para que los "pinte" el navegador) . Esta filosof&iacute;a permite dise&ntilde;ar capas web multi-dispositivo (escritorio/web/m&oacute;viles). </p>
+
+<p>Veremos en esta sesi&oacute;n una introducci&oacute;n a las facilidades que nos da Spring para implementar estos dos tipos de aplicaciones.</p>
+
+<a name="N10015"></a><a name="AJAX+con+Spring"></a>
+<h2 class="underlined_10">AJAX con Spring</h2>
+<div class="section">
+<p>En una aplicaci&oacute;n AJAX lo que necesitamos por parte del servidor es que nos permita intercambiar informaci&oacute;n hacia/desde el cliente f&aacute;cilmente. En su variante m&aacute;s sencilla esa informaci&oacute;n ser&iacute;a simplemente texto o peque&ntilde;os fragmentos de HTML. En casos m&aacute;s complejos ser&iacute;an objetos Java serializados a trav&eacute;s de HTTP en formato JSON o XML. Vamos a ver qu&eacute; funcionalidades nos ofrece Spring para implementar esto, planteando varios casos de uso t&iacute;picos en AJAX.</p>
+<a name="N1001E"></a><a name="Caso+de+uso+1%3A+respuesta+del+servidor+como+texto%2Ffragmento+de+HTML"></a>
+<h3 class="underlined_5">Caso de uso 1: respuesta del servidor como texto/fragmento de HTML</h3>
+<p>En este caso, el cliente hace una petici&oacute;n AJAX y el servidor responde con un fragmento de texto plano o de HTML que el cliente mostrar&aacute; en la posici&oacute;n adecuada de la p&aacute;gina actual. Por ejemplo, el t&iacute;pico caso del formulario de registro en que cuando llenamos el campo de login queremos ver si est&aacute; disponible, antes de rellenar los siguientes campos. Cuando el foco de teclado sale del campo de login, se hace una petici&oacute;n AJAX al servidor, que nos devolver&aacute; simplemente un mensaje indicando si est&aacute; disponible o no.</p>
+<p>La p&aacute;gina HTML del cliente con el javascript que hace la petici&oacute;n AJAX y recibe la respuesta podr&iacute;a ser algo como:</p>
+<div class="frame note">
+<div class="label">AJAX y Javascript</div>
+<div class="content">Mostraremos aqu&iacute; el c&oacute;digo javascript del cliente para tener el ejemplo completo, aunque no podemos ver con detalle c&oacute;mo funciona al no ser materia directa del curso. Usamos la librer&iacute;a jQuery en los ejemplos para simplificar al m&aacute;ximo el c&oacute;digo.</div>
+</div>
+<pre class="brush:html;">
+&lt;form id="registro" action="#"&gt;
+	Login: &lt;input type="text" name="login" id="campo_login"&gt; 
+	       &lt;span id="mensaje"&gt;&lt;/span&gt;&lt;br&gt;
+	Password: &lt;input type="password" name="password"&gt; &lt;br&gt;
+	Nombre y apellidos: &lt;input type="text" name="nombre"&gt; &lt;br&gt;
+	&lt;input type="submit" value="registrar"&gt;
+&lt;/form&gt;
+&lt;script type="text/javascript"&gt;
+	$('#campo_login').blur(
+		function() {
+			$('#mensaje').load('loginDisponible.do', 
+			                   "login="+$('#campo_login').val())
+		}	
+	)
+&lt;/script&gt;
+</pre>
+<p>Del c&oacute;digo jQuery anterior baste decir que cuando el foco de teclado se va (evento 'blur') del campo con id "campo_login" es cuando queremos disparar la petici&oacute;n AJAX. El m&eacute;todo load() de jQuery lanza una petici&oacute;n AJAX a una determinada url con determinados par&aacute;metros y coloca la respuesta en la etiqueta HTML especificada (en este caso la de id "mensaje", un span que tenemos vac&iacute;o y preparado para mostrar el mensaje).</p>
+<p>El c&oacute;digo Spring en el servidor, que responder&iacute;a a la petici&oacute;n AJAX, ser&iacute;a el siguiente:</p>
+<pre class="brush:java;highlight:[7]">
+@Controller
+public class UsuarioController {
+	@Autowired
+	private IUsuarioBO ubo;
+	
+	@RequestMapping("/loginDisponible.do")
+	public @ResponseBody String loginDisponible(@RequestParam("login") String login) {
+		if (ubo.getUsuario(login)==null)
+			return "login disponible";
+		else
+			return "login &lt;strong&gt;no&lt;/strong&gt; disponible";
+	}
+
+}
+</pre>
+<p>La &uacute;nica diferencia con lo visto en la sesi&oacute;n anterior es que el valor de retorno del m&eacute;todo no debe ser interpretado por Spring como el nombre l&oacute;gico de una vista. Debe ser el contenido de la respuesta que se env&iacute;a al cliente. Esto lo conseguimos anotando el valor de retorno del m&eacute;todo con <span class="codefrag">@ResponseBody</span>. Cuando el valor de retorno es un String, como en este caso, simplemente se env&iacute;a el texto correspondiente en la respuesta HTTP. Como veremos, si es un objeto Java cualquiera se serializar&aacute; autom&aacute;ticamente.</p>
+<p>Evidentemente no es una muy buena pr&aacute;ctica tener "empotrados" en el c&oacute;digo Java directamente los mensajes que queremos mostrar al usuario, pero este trata de ser un ejemplo sencillo. En un caso m&aacute;s realista usar&iacute;amos el soporte de internacionalizaci&oacute;n de Spring para externalizar e internacionalizar los mensajes. O quiz&aacute; ser&iacute;a el propio javascript el que mostrar&iacute;a el mensaje adecuado.</p>
+<a name="N10049"></a><a name="Caso+de+uso+2%3A+respuesta+del+servidor+como+objeto+serializado"></a>
+<h3 class="underlined_5">Caso de uso 2: respuesta del servidor como objeto serializado</h3>
+<p>Continuando con el ejemplo anterior, supongamos que si el login no est&aacute; disponible, queremos, adem&aacute;s de saberlo, obtener como sugerencia algunos logins parecidos que s&iacute; est&eacute;n disponibles, como se hace en muchos sitios web.</p>
+<p>En lugar de enviarle al cliente simplemente un mensaje, le enviaremos un objeto con un campo booleano que indique si el login est&aacute; disponible o no, y una lista de Strings con las sugerencias. En caso de que est&eacute; disponible, no habr&iacute;a sugerencias. La clase Java que encapsular&iacute;a esta informaci&oacute;n desde el lado del servidor ser&iacute;a algo como lo siguiente (no se muestran constructores, getters o setters, solo las propiedades)</p>
+<pre class="brush:java;">
+public class InfoLogin {
+	private boolean disponible;
+	private List&lt;String&gt; sugerencias;
+	
+	...
+}
+</pre>
+<p>Y el m&eacute;todo de Spring que responder&iacute;a a la petici&oacute;n HTTP ahora devolver&iacute;a un objeto <span class="codefrag">InfoLogin</span>.</p>
+<pre class="brush:java;">
+@Controller
+public class UsuarioController {
+	@Autowired
+	private IUsuarioBO ubo;
+	
+	@RequestMapping("/loginDisponible.do")
+	public @ResponseBody InfoLogin loginDisponible(
+	                                    @RequestParam("login") String login) {
+		if (ubo.getUsuario(login)==null) 
+			//Si est&aacute; disponible, no hacen falta sugerencias
+			return new InfoLogin(true, null);
+		else
+			//si no lo est&aacute;, generamos las sugerencias con la ayuda del IUsuarioBO
+			return new InfoLogin(false, ubo.generarSugerencias(login));
+	}
+
+}
+</pre>
+<p> Por lo dem&aacute;s, como se ve, a nivel de API de Spring no habr&iacute;a cambios. Autom&aacute;ticamente se serializar&aacute; el objeto al formato adecuado. Por defecto, lo m&aacute;s sencillo en Spring es generar JSON. Si usamos Maven, basta con incluir en el proyecto la dependencia de la librer&iacute;a Jackson, una librer&iacute;a Java para convertir a/desde JSON que no es propia de Spring, pero con la que el framework est&aacute; preparado para integrarse: </p>
+<pre class="brush:xml;">
+&lt;dependency&gt;
+    &lt;groupId&gt;org.codehaus.jackson&lt;/groupId&gt;
+    &lt;artifactId&gt;jackson-mapper-asl&lt;/artifactId&gt;
+    &lt;version&gt;1.9.11&lt;/version&gt;
+&lt;/dependency&gt;
+</pre>
+<p>En el lado del cliente, el Javascript deber&iacute;a obtener el objeto enviado desde Spring (sencillo si lo que se env&iacute;a es JSON) y mostrar las sugerencias en el HTML. Simplificando, podr&iacute;a ser algo como lo siguiente:</p>
+<pre class="brush:xml;">
+&lt;form id="registro" action="#"&gt;
+    Login: &lt;input type="text" name="login" id="campo_login"&gt; 
+           &lt;span id="mensaje"&gt;&lt;/span&gt;&lt;br&gt;
+    Password: &lt;input type="password" name="password"&gt; &lt;br&gt;
+    Nombre y apellidos: &lt;input type="text" name="nombre"&gt; &lt;br&gt;
+    &lt;input type="submit" value="registrar"&gt;
+&lt;/form&gt;
+&lt;script type="text/javascript"&gt;
+$('#campo_login').blur(
+	function() {
+		$.getJSON('loginDisponible.do', 
+				  "login="+$('#campo_login').val(),
+				  function(obj) {
+					 var mens;
+					 if (obj.disponible)
+						mens = "El login est&aacute; disponible";
+					 else {
+						mens = "El login no est&aacute; disponible. Sugerencias: ";
+						for (var i=0; i&lt;obj.sugerencias.length; i++) {
+							mens += obj.sugerencias[i] + " ";
+						}
+					 }
+					 $('#mensaje').html(mens);
+				  }
+		)
+	}	
+)
+&lt;/script&gt;
+</pre>
+<p>Si quisi&eacute;ramos serializar el objeto en formato XML, bastar&iacute;a con anotarlo con anotaciones JAXB, como se vio en las sesiones de servicios REST del m&oacute;dulo de Componentes Web (solo se muestran los getters relevantes por estar anotados)</p>
+<pre class="brush:java;">
+@XmlRootElement
+public class InfoLogin {
+	private boolean disponible;
+	private List&lt;String&gt; sugerencias;
+	
+	@XmlElement
+	public boolean isDisponible() {
+		return disponible;
+    }
+
+	@XmlElementWrapper(name="sugerencias")
+	@XmlElement(name="sugerencia")
+	public List&lt;String&gt; getSugerencias() {
+		return sugerencias;
+	}
+
+	...
+}	
+</pre>
+<a name="N1007E"></a><a name="Caso+de+uso+3%3A+enviar+objetos+desde+el+cliente"></a>
+<h3 class="underlined_5">Caso de uso 3: enviar objetos desde el cliente</h3>
+<p>En AJAX lo m&aacute;s habitual es que el cliente env&iacute;e los datos a trav&eacute;s de un formulario HTML. Ya vimos en la primera sesi&oacute;n de Spring MVC c&oacute;mo tratar ese caso de uso, recordemos que los datos se pod&iacute;an "empaquetar" autom&aacute;ticamente en un objeto Java y, como ya veremos, validar declarativamente con JSR303. Pero tambi&eacute;n podr&iacute;amos hacer que el cliente env&iacute;e al servidor un objeto serializado en JSON o XML. Este objeto se env&iacute;a entonces en el cuerpo de la petici&oacute;n HTTP del cliente y el trabajo de Spring es deserializarlo y "transformarlo" a objeto Java. En el m&eacute;todo del controller que responda a la petici&oacute;n simplemente anotamos el par&aacute;metro que queremos "vincular" al objeto con <span class="codefrag">@RequestBody</span>.</p>
+<p>Continuando con el ejemplo del registro de usuarios, supongamos que queremos enviar desde el cliente el nuevo usuario en formato JSON (por ejemplo, porque usamos un cliente de escritorio). Desde el lado del servidor bastar&iacute;a con usar <span class="codefrag">@RequestBody</span>:</p>
+<pre class="brush:java;">
+@RequestMapping("/altaUsuario.do")
+public void altaUsuario(@RequestBody Usuario usuario) {
+	...
+}
+</pre>
+<p>Para completar el ejemplo, mostraremos el c&oacute;digo correspondiente del lado del cliente. Este c&oacute;digo env&iacute;a los datos del formulario pero en formato JSON. Como en los ejemplos anteriores, usamos el API de jQuery para la implementaci&oacute;n, consultar su documentaci&oacute;n para m&aacute;s informaci&oacute;n de c&oacute;mo funciona el c&oacute;digo.</p>
+<pre class="brush:xml;">
+
+	&lt;form id="registro" action="#"&gt;
+		Login: &lt;input type="text" name="login" id="login"&gt; &lt;span id="mensaje"&gt;&lt;/span&gt;&lt;br&gt;
+		Password: &lt;input type="password" name="password" id="password"&gt; &lt;br&gt;
+		Nombre y apellidos: &lt;input type="text" name="nombre" id="nombre"&gt; &lt;br&gt;
+		&lt;input type="submit" value="registrar"&gt;
+	&lt;/form&gt;
+	&lt;script type="text/javascript"&gt;		
+		$('#registro').submit(function(evento) {
+			$.ajax({
+				url: 'altaUsuario.do',
+				type: 'POST',
+				data: JSON.stringify({login: $('#login').val(), 
+					password: $('#password').val(), nombre: $('#nombre').val()}),
+				processData: false,
+				contentType: "application/json"
+			})
+			evento.preventDefault();
+		});
+	&lt;/script&gt;
+
+</pre>
+</div> 
+
+<a name="N1009F"></a><a name="Servicios+web+REST"></a>
+<h2 class="underlined_10">Servicios web REST</h2>
+<div class="section">
+<p>Desde Spring 3.0, el m&oacute;dulo MVC ofrece soporte para aplicaciones web RESTful, siendo 
+precisamente esta una de las principales novedades de esta versi&oacute;n. 
+Actualmente Spring ofrece funcionalidades muy similares a las del est&aacute;ndar JAX-RS, pero perfectamente integradas con el resto del <em>framework</em>. Nos limitaremos a explicar aqu&iacute; el API de Spring para REST obviando los conceptos b&aacute;sicos de esta filosof&iacute;a, que ya se vieron en el m&oacute;dulo de componentes web.</p>
+<a name="N100AB"></a><a name="URIs"></a>
+<h3 class="underlined_5">URIs</h3>
+<p>Como ya se vio en el m&oacute;dulo de servicios web, en aplicaciones REST cada recurso tiene una URI que lo identifica, organizada normalmente de modo jer&aacute;rquico. En un sistema en el que tenemos ofertas de alojamiento de distintos hoteles, distintas ofertas podr&iacute;an venir identificadas por URLs como:</p>
+<pre class="brush:java;">
+/hoteles/excelsiorMad/ofertas/15
+/hoteles/ambassador03/ofertas/15 (el id de la oferta es &uacute;nico solo dentro del hotel)
+/hoteles/ambassador03/ofertas/   (todas las del hotel)
+</pre>
+<p>Las ofertas aparecen determinadas primero por el nombre del hotel y luego por su identificador. Como puede verse, parte de la URL es la misma para cualquier oferta, mientras que la parte que identifica al hotel y a la propia oferta es variable. En Spring podemos expresar una URL de este tipo poniendo las partes variables entre llaves: <span class="codefrag">/hoteles/{idHotel}/ofertas/{idOferta}</span>. Podemos asociar autom&aacute;ticamente estas partes variables a par&aacute;metros del m&eacute;todo java que procesar&aacute; la petici&oacute;n HTTP. Por ejemplo:</p>
+<pre class="brush:java;highlight:[6,7,8,9]">
+@Controller
+public class OfertaRESTController {
+    @Autowired
+    IOfertasBO obo;
+
+    @RequestMapping(value="hoteles/{idHotel}/ofertas/{idOferta}",
+    			    method=RequestMethod.GET)
+    @ResponseBody
+    public Oferta mostrar(@PathVariable String idHotel, @PathVariable int idOferta) {
+        Oferta oferta =  obo.getOferta(idHotel, idOferta);
+        return oferta;
+    }
+}
+</pre>
+<p>Las partes variables de la URL se asocian con los par&aacute;metros Java del mismo nombre. Para que esta asociaci&oacute;n funcione autom&aacute;ticamente, hay que compilar el c&oacute;digo con la informaci&oacute;n de debug habilitada. En caso contrario podemos asociarlo expl&iacute;citamente: <span class="codefrag">@PathVariable("idHotel") String idHotel</span>. Spring puede convertir las <span class="codefrag">@PathVariable</span> a los tipos m&aacute;s t&iacute;picos: String, num&eacute;ricos o Date. </p>
+<p>N&oacute;tese que Spring no asociar&aacute; este <em>controller</em> a una URI como <span class="codefrag">hoteles/cr124/ofertas/</span>, ya que se espera una <span class="codefrag">PathVariable</span> para la oferta que aqu&iacute; no existe. Lo que tiene su l&oacute;gica, ya que esta URL significa que queremos hacer alguna operaci&oacute;n con <em>todas</em> las ofertas del hotel, y esto es mejor que sea tarea de otro m&eacute;todo Java distinto a <span class="codefrag">mostrar</span>.</p>
+<p>N&oacute;tese adem&aacute;s que el m&eacute;todo java <span class="codefrag">mostrar</span> viene asociado solo a las peticiones de tipo GET. En una aplicaci&oacute;n REST, t&iacute;picamente el m&eacute;todo Java encargado de editar una oferta se asociar&iacute;a a la misma URL pero con PUT, y lo mismo pasar&iacute;a con insertar/POST, y borrar/DELETE</p>
+<p>Por otro lado,  como ya hemos visto en la secci&oacute;n de AJAX, la anotaci&oacute;n <span class="codefrag">@ResponseBody</span> hace que lo que devuelve el m&eacute;todo Java se serialice en el cuerpo de la respuesta HTTP que se env&iacute;a al cliente. La serializaci&oacute;n en JSON o XML se hace exactamente de la misma forma que vimos en AJAX.</p>
+<p>N&oacute;tese que el ejemplo anterior se podr&iacute;a modificar de modo sencillo para una aplicaci&oacute;n web convencional con JSP, como ven&iacute;amos haciendo en las sesiones de MVC. &Uacute;nicamente habr&iacute;a que poner un par&aacute;metro de tipo <span class="codefrag">Model</span>, a&ntilde;adirle el objeto <span class="codefrag">oferta</span> encontrado y devolver un <span class="codefrag">String</span> con el nombre l&oacute;gico de la vista, donde se mostrar&iacute;an los datos.</p>
+<a name="N100F9"></a><a name="Obtener+recursos+%28GET%29"></a>
+<h3 class="underlined_5">Obtener recursos (GET)</h3>
+<p>La implementaci&oacute;n del apartado anterior era demasiado b&aacute;sica, ya que no estamos controlando expl&iacute;citamente elementos importantes de la respuesta HTTP como el c&oacute;digo de estado o las cabeceras. Para controlarlos, en Spring podemos hacer uso de la clase <span class="codefrag">ResponseEntity</span>, que modela la respuesta HTTP y con la que podemos devolver los objetos serializados, fijar el c&oacute;digo de estado y a&ntilde;adir cabeceras. Vamos a ver c&oacute;mo se implementar&iacute;a una versi&oacute;n algo m&aacute;s sofisticada y con una sintaxis m&aacute;s "propia de REST"</p>
+<pre class="brush:java;">
+@Controller
+@RequestMapping("/hoteles/{idHotel}/ofertas")
+public class OfertasController {
+	@Autowired
+	IOfertasBO obo;
+	
+	
+	@RequestMapping(method=RequestMethod.GET, 
+	                value="{idOferta}", 
+	                produces=MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity&lt;Oferta&gt; obtenerOferta(@PathVariable String idHotel, 
+	                                            @PathVariable int idOferta) 
+	                                              throws OfertaInexistenteException {
+		Oferta oferta = obo.getOferta(idHotel, idOferta);
+		return new ResponseEntity&lt;Oferta&gt;(oferta, HttpStatus.OK);
+	}
+}
+</pre>
+<p>Del c&oacute;digo anterior destacar que:</p>
+<ul>
+
+<li>Para simplificar las URIs de cada m&eacute;todo se hace que el controller en general responda a la parte "fija" y com&uacute;n a todas las URIs de las que se encargar&aacute;, y en cada m&eacute;todo se pone solo la parte que va a continuaci&oacute;n. N&oacute;tese que los par&aacute;metros del m&eacute;todo pueden referenciar cualquier <span class="codefrag">@PathVariable</span> de la URI, aunque aparezca en la anotaci&oacute;n de la clase (como el id. del hotel).</li>
+
+<li>Usamos el atributo <span class="codefrag">produces</span> de <span class="codefrag">@RequestMapping</span> para fijar el valor de la cabecera HTTP "content-type", al igual que hac&iacute;amos en AJAX.</li>
+
+<li>Como ya hemos dicho, la clase <span class="codefrag">ResponseEntity</span> representa la respuesta HTTP. Cuando en el cuerpo de la respuesta queremos serializar un objeto usamos su clase para parametrizar  <span class="codefrag">ResponseEntity</span>. Hay varios constructores de esta clase. El m&aacute;s simple admite &uacute;nicamente un c&oacute;digo de estado HTTP (aqu&iacute; 200 OK). El que usamos en el ejemplo tiene adem&aacute;s otro par&aacute;metro en el que pasamos el objeto a serializar.</li>
+
+<li>N&oacute;tese que en caso de solicitar una oferta inexistente se generar&iacute;a una excepci&oacute;n, lo que en la mayor&iacute;a de contenedores web nos lleva a una p&aacute;gina HTML de error con la excepci&oacute;n, algo no muy apropiado para un cliente REST, normalmente no preparado para recibir HTML. Veremos luego c&oacute;mo arreglar esto, convirtiendo autom&aacute;ticamente las excepciones en c&oacute;digos de estado HTTP.</li>
+
+<li>Ya no hace falta la anotaci&oacute;n <span class="codefrag">@ResponseBody</span> ya que al devolver un <span class="codefrag">ResponseEntity&lt;Oferta&gt;</span>, ya estamos indicando que queremos serializar un objeto en la respuesta HTTP.</li>
+
+</ul>
+<a name="N10135"></a><a name="Crear+o+modificar+recursos+%28POST%2FPUT%29"></a>
+<h3 class="underlined_5">Crear o modificar recursos (POST/PUT)</h3>
+<p>En este caso, el cliente env&iacute;a los datos necesarios para crear el recurso y el servidor le deber&iacute;a responder, seg&uacute;n la ortodoxia REST, con un c&oacute;digo de estado 201 (Created) y en la cabecera "Location" la URI del recurso creado. Veamos c&oacute;mo se implementar&iacute;a esto en Spring:</p>
+<pre class="brush:java;">
+@RequestMapping("/hoteles/{idHotel}/ofertas")
+public class OfertasController {
+	@Autowired
+	IOfertasBO obo;
+	
+	//Ya no se muestra el c&oacute;digo de obtenerOferta
+	//...
+	
+	@RequestMapping(method=RequestMethod.POST, value="")
+	public ResponseEntity&lt;Void&gt; insertarOferta(@PathVariable idHotel,
+	                                           @RequestBody Oferta oferta,
+	                                           HttpServletRequest peticion) {
+		int idOFerta = obo.crearOferta(idHotel, oferta);
+		HttpHeaders cabeceras = new HttpHeaders();
+		try {
+			cabeceras.setLocation(new URI(peticion.getRequestURL()+
+			                              Integer.toString(idOFerta)));
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+		return new ResponseEntity&lt;Void&gt;(cabeceras, HttpStatus.CREATED);
+	}
+}
+</pre>
+<p>A destacar del c&oacute;digo anterior:</p>
+<ul>
+
+<li>Como no tenemos que serializar ning&uacute;n objeto en el cuerpo de la respuesta, usamos un <span class="codefrag">ResponseEntity&lt;Void&gt;</span>. Le pasamos la cabecera "Location" generada y el c&oacute;digo de estado 201, indicando que el recurso ha sido creado.</li>
+
+<li>Para generar la cabecera "Location" usamos el API de Spring (la clase <span class="codefrag">HttpHeaders</span>). La URI del nuevo recurso ser&aacute; la actual seguida del id de la nueva oferta.</li>	
+
+<li>La anotaci&oacute;n <span class="codefrag">@RequestBody</span> indica que en el cuerpo de la petici&oacute;n debemos enviar un objeto Oferta serializado. Esto guarda un paralelismo con el caso de uso de AJAX en que el cliente env&iacute;a un objeto JSON al servidor. N&oacute;tese que el API es exactamente el mismo.</li>
+
+</ul>
+<p>El caso de modificar recursos con PUT es similar en el sentido de que se env&iacute;an datos serializados en la petici&oacute;n, pero es m&aacute;s sencillo en cuanto al valor de retorno, ya que nos podemos limitar a devolver un c&oacute;digo de estado 200 OK si todo ha ido bien, sin necesidad de m&aacute;s cabeceras HTTP:</p>
+<pre class="brush:java;">
+@RequestMapping(method=RequestMethod.PUT, value="{idOferta}")
+public ResponseEntity&lt;Void&gt; insertarOferta(@PathVariable idHotel,
+                                           @RequestBody Oferta oferta) {
+	int idOFerta = obo.modificarOferta(idHotel, oferta);
+	return new ResponseEntity&lt;Void&gt;(HttpStatus.CREATED);
+}
+</pre>
+<a name="N10164"></a><a name="Eliminar+recursos+%28DELETE%29"></a>
+<h3 class="underlined_5">Eliminar recursos (DELETE)</h3>
+<p>Este caso de uso suele ser sencillo, al menos en lo que respecta a la interfaz. Simplemente debemos llamar a la URI del recurso a eliminar, y devolver 200 OK si todo ha ido bien:</p>
+<pre class="brush:java;">
+@RequestMapping(method=RequestMethod.DELETE, value="{idOferta}")
+public ResponseEntity&lt;Void&gt; borrarOferta(@PathVariable idHotel,@PathVariable idOferta) {
+	obo.eliminarOferta(idHotel, idOferta);
+	return new ResponseEntity&lt;Void&gt;(HttpStatus.OK);
+}
+</pre>
+<a name="N10173"></a><a name="Parte+del+cliente"></a>
+<h3 class="underlined_5">Parte del cliente</h3>
+<p>El c&oacute;digo del cliente REST podr&iacute;a escribirse usando directamente el API de JavaSE, o librer&iacute;as auxiliares como Jakarta Commons HttpClient, que permite abrir conexiones HTTP de manera sencilla. No obstante, que sea sencillo no implica que no sea tedioso y necesite de bastantes l&iacute;neas de c&oacute;digo. Para facilitarnos la tarea, Spring 3 ofrece la clase <span class="codefrag">RestTemplate</span>, que permite realizar las peticiones REST en una sola l&iacute;nea de c&oacute;digo Java. 
+</p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<caption>M&eacute;todos de RestTemplate y su correspondencia con los de HTTP</caption>
+
+<tr>
+  
+<td colspan="1" rowspan="1"><strong>M&eacute;todo HTTP</strong></td><td colspan="1" rowspan="1"><strong>M&eacute;todo de RestTemplate</strong></td>
+
+</tr>
+
+<tr>
+    
+<td colspan="1" rowspan="1">DELETE</td>
+    <td colspan="1" rowspan="1">delete(String url, String? urlVariables)</td>
+
+</tr>
+
+<tr>
+  
+<td colspan="1" rowspan="1">GET</td>
+  <td colspan="1" rowspan="1">getForObject(String
+              url, Class&lt;T&gt; responseType, String?
+              urlVariables)
+   </td>
+
+</tr>
+
+<tr>
+   
+<td colspan="1" rowspan="1">HEAD</td>
+   <td colspan="1" rowspan="1">headForHeaders(String
+              url, String? urlVariables)
+    </td>
+
+</tr>
+
+<tr>
+  
+<td colspan="1" rowspan="1">OPTIONS</td>
+  <td colspan="1" rowspan="1">optionsForAllow(String
+              url, String? urlVariables)
+   </td>
+
+</tr>
+
+<tr>
+   
+<td colspan="1" rowspan="1">POST</td><td colspan="1" rowspan="1">postForLocation(String
+              url, Object request, String? urlVariables)
+    </td>
+
+</tr>
+
+<tr>
+   
+<td colspan="1" rowspan="1">&nbsp;</td>
+   <td colspan="1" rowspan="1">postForObject(String
+				  url, Object request, Class&lt;T&gt; responseType, String?
+				  uriVariables)
+   </td>
+
+</tr>
+
+<tr>
+    
+<td colspan="1" rowspan="1">PUT</td>
+    <td colspan="1" rowspan="1">put(String url, Object request, String?urlVariables)
+    </td>
+
+</tr>
+
+</table>
+<p>Por ejemplo, una petici&oacute;n GET a la URL <span class="codefrag">hoteles/ambassador/ofertas/1</span> se har&iacute;a:</p>
+<pre class="brush:java;">
+RestTemplate template = new RestTemplate();
+String uri = "http://localhost:8080/ServidorREST/hoteles/{idHotel}/ofertas/{idOferta}";
+Oferta oferta = template.getForObject(uri, Oferta.class, "ambassador", 1);
+System.out.println(oferta.getPrecio() + "," + oferta.getFin());
+</pre>
+<p>Como se ve, en el cliente se usa la misma notaci&oacute;n que en el servidor para las URLs con partes variables. En los par&aacute;metros del m&eacute;todo Java <span class="codefrag">getForObject</span>
+se coloca el tipo esperado (la clase <span class="codefrag">Oferta</span>) y, por orden, las partes variables de la URL. Igual que en el servidor, si tenemos las librer&iacute;as de Jackson en el <em>classpath</em> se procesar&aacute; autom&aacute;ticamente el JSON. As&iacute;, Jackson se encarga de transformar el JSON de nuevo en un objeto Java que podemos manipular de modo convencional.</p>
+<p>Si hubi&eacute;ramos implementado en el servidor un m&eacute;todo en el controller para dar de alta ofertas, podr&iacute;amos llamarlo desde el cliente as&iacute;:</p>
+<pre class="brush:java;">
+RestTemplate template = new RestTemplate();
+String uri = "http://localhost:8080/TestRESTSpring3/hoteles/{idHotel}/ofertas";
+//aqu&iacute; le dar&iacute;amos el valor deseado a los campos del objeto
+Oferta oferta = new Oferta( ..., ..., ...);
+URI result = template.postForLocation(uri, oferta, "ambassador");
+</pre>
+<p>El m&eacute;todo de <span class="codefrag">RestTemplate</span> llamado <span class="codefrag">postForLocation</span> crea un nuevo recurso, y obtiene su URI, que necesitaremos para seguir interactuando con el objeto. La clase URI es del API est&aacute;ndar de JavaSE. En una aplicaci&oacute;n REST el servidor deber&iacute;a devolver dicha URI como valor de la cabecera HTTP <span class="codefrag">Location</span>.</p>
+</div>
+
+ 
+<a name="N1021A"></a><a name="Tratamiento+de+errores+en+aplicaciones+AJAX+y+REST"></a>
+<h2 class="underlined_10">Tratamiento de errores en aplicaciones AJAX y REST</h2>
+<div class="section">
+<p>Como ya se ha visto en el m&oacute;dulo de componentes web, podemos especificar qu&eacute; p&aacute;gina HTML deseamos que se muestre cuando se genera una excepci&oacute;n en la capa web que acaba capturando el contenedor. Tanto la p&aacute;gina de error que muestra el contenedor como la informaci&oacute;n que aparece en ella son totalmente configurables, dando una soluci&oacute;n aceptable para aplicaciones web "cl&aacute;sicas". No obstante este mecanismo de gesti&oacute;n de errores no es apropiado para aplicaciones AJAX o REST, ya que el HTML con la informaci&oacute;n de error no es un formato apropiado ni para el javascript en el primer caso ni para el cliente REST en el segundo. Lo m&aacute;s adecuado en estos casos es devolver un c&oacute;digo de estado HTTP que indique de la manera m&aacute;s precisa posible qu&eacute; ha pasado y en el cuerpo de la respuesta un mensaje en texto plano con m&aacute;s datos sobre el error. La forma m&aacute;s sencilla de implementar esto en Spring es mediante el uso de <em>exception handlers</em>.</p>
+<p>Un <em>exception handler</em> no es m&aacute;s que un m&eacute;todo cualquiera del <em>controller</em> anotado con <span class="codefrag">@ExceptionHandler</span>. Este m&eacute;todo capturar&aacute; el o los tipos de excepciones que deseemos, y lo que haremos en el m&eacute;todo ser&aacute; devolver la excepci&oacute;n en una forma amigable a los clientes AJAX/REST. Por ejemplo, para gestionar el caso de las ofertas inexistentes podr&iacute;amos hacer algo como:</p>
+<pre class="brush:java;">
+@ExceptionHandler(OfertaInexistenteException.class)
+public ResponseEntity&lt;String&gt; gestionarNoExistentes(OfertaInexistenteException oie) {
+	return new ResponseEntity&lt;String&gt;(oie.getMessage(), HttpStatus.NOT_FOUND);
+}
+</pre>
+<p>En el ejemplo simplemente enviamos un c&oacute;digo 404 y en el cuerpo de la respuesta colocamos el mensaje de la excepci&oacute;n, aunque podr&iacute;amos hacer cualquier otra cosa que dese&aacute;ramos (colocar cabeceras, serializar un objeto en la respuesta, o incluso devolver un String que se interpretar&iacute;a, como es habitual, como el nombre de una vista que mostrar).</p>
+<p>La anotaci&oacute;n <span class="codefrag">@ExceptionHandler</span> admite varias excepciones, de modo que podemos usar un &uacute;nico m&eacute;todo gestor para varias distintas, por ejemplo:</p>
+<pre class="brush:java;">
+@ExceptionHandler({OfertaInexistenteException.class, HotelInexistenteException.class})
+public ResponseEntity&lt;String&gt; gestionarNoExistentes(Exception e) {
+	return new ResponseEntity&lt;String&gt;(e.getMessage(), HttpStatus.NOT_FOUND);
+}
+</pre>
+<p>Spring MVC genera unas cuantas excepciones propias, caso por ejemplo de que se produzca un error de validaci&oacute;n en un objeto que hemos querido chequear con JSR303, ya veremos c&oacute;mo (<span class="codefrag">BindException</span>),o que el cliente no acepte ninguno de los formatos que podemos enviarle (<span class="codefrag">HttpMediaTypeNotAcceptableException</span>),  o que intentemos llamar con POST a un m&eacute;todo que solo acepta GET (<span class="codefrag">HttpRequestMethodNotSupportedException</span>), entre otros. En esos casos act&uacute;a un <em>exception handler</em> definido por defecto que lo &uacute;nico que hace es capturar las excepciones y generar c&oacute;digos de estado HTTP (400 en el primer caso, 406 en el segundo y 405 en el tercero). Si queremos que se haga algo m&aacute;s, como enviar un mensaje con m&aacute;s informaci&oacute;n en el cuerpo de la respuesta, tendremos que definir nuestros propios <em>handlers</em> para esas excepciones.</p>
+</div>    
+
+<p class="pageBreakAfter"> 
+</p>
+
+</div>
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+        Copyright &copy;
+         2012-2013 Depto. Ciencia de la computaci&oacute;n e IA</div>
+</div>
+<script type="text/javascript">
+     
+         SyntaxHighlighter.defaults['toolbar'] = false;
+         SyntaxHighlighter.autoloader(
+  		     'java                   skin/highlight/shBrushJava.js',
+  		     'xml xhtml xslt html    skin/highlight/shBrushXml.js',
+  		     'js jscript javascript  skin/highlight/shBrushJScript.js',
+  		     'groovy                 skin/highlight/shBrushGroovy.js',
+  		     'bash shell             skin/highlight/shBrushBash.js',
+  		     'php                    skin/highlight/shBrushPhp.js',
+  		     'css                    skin/highlight/shBrushCss.js',
+  		     'sql                    skin/highlight/shBrushSql.js',
+  		     'objc                   skin/highlight/shBrushObjC.js',
+  		     'cpp c                  skin/highlight/shBrushCpp.js',
+  		     'text plain             skin/highlight/shBrushPlain.js'
+         );
+         SyntaxHighlighter.all();
+     </script><a href="skin/highlight/shBrushJava.js"></a><a href="skin/highlight/shBrushXml.js"></a><a href="skin/highlight/shBrushJScript.js"></a><a href="skin/highlight/shBrushGroovy.js"></a><a href="skin/highlight/shBrushBash.js"></a><a href="skin/highlight/shBrushPhp.js"></a><a href="skin/highlight/shBrushCss.js"></a><a href="skin/highlight/shBrushSql.js"></a><a href="skin/highlight/shBrushObjC.js"></a><a href="skin/highlight/shBrushCpp.js"></a><a href="skin/highlight/shBrushPlain.js"></a>
+</body>
+</html>

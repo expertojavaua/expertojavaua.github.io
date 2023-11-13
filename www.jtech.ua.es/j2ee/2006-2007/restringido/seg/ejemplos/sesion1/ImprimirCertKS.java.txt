@@ -1,0 +1,39 @@
+import java.io.*;
+import java.security.cert.CertificateFactory;
+import java.security.cert.Certificate;
+import java.security.KeyStore;
+
+// Extrae un certificado del keystore (especificando alias y password)
+public class ImprimirCertKS {
+
+	public static void main (String[] args) throws Exception {
+
+		if (args.length != 2) {
+			System.err.println("Uso: java ImprimirCertKS alias password");
+			System.exit(1);
+		}
+
+		// The default keystore is in the user's home directory.
+                // El keystore por defecto está en el directorio /home
+		String home = System.getProperty("user.home");
+		String fich_keystore = home + File.separator + ".keystore";
+
+		char[] password = args[1].toCharArray();
+
+		String alias = args[0];
+
+                // Abrir el keystore
+		FileInputStream fIn = new FileInputStream(fich_keystore);
+		KeyStore keystore = KeyStore.getInstance("JKS");
+
+                // Cargar el keystore 
+		keystore.load(fIn, password);
+
+                // Obtener el certificado
+		Certificate cert = keystore.getCertificate(alias);
+
+                // Mostrar el certificado
+		System.out.println(cert);
+	}
+}
+

@@ -1,0 +1,601 @@
+<head>
+<title>Sesion 3 Enterprise Java Beans</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../../ejercicios.css" type="text/css">
+</head>
+<body>
+<h1>Tema 3: Un ejemplo completo de bean de sesi&oacute;n con estado</h1>
+  
+<p>Vamos a construir en esta sesi&oacute;n un ejemplo completo de bean de sesi&oacute;n. 
+  En concreto, vamos a implementar un bean de sesi&oacute;n con estado que define 
+  un carrito de la compra de una librer&iacute;a.</p>
+<p>El bean de sesi&oacute;n <code>CartEJB</code> representa un carrito de la compra 
+  de una librer&iacute;a on line. El cliente del bean podr&aacute; a&ntilde;adir 
+  un libro al carrito, eliminar un libro o consultar el contenido del carrito. 
+  Tal y como adelantamos en el tema 2, para construir el enterprise bean <code>CartEJB</code>, 
+  se necesitan los siguientes ficheros:<BR>
+</p>
+<UL>
+  <LI>Clase de implementaci&oacute;n bean (<code>CartBean</code>)<BR>
+  <LI>Interface home (<code>CartHome</code>)<BR>
+  <LI>Interface remota (<code>Cart</code>)<BR>
+</UL>
+<p>El estado del bean va a estar definido por sus variables de instancias. Estas 
+  variables de instancia deben declararse en la clase <code>CartBean</code> que 
+  implementa la l&oacute;gica de negocio, y ser&aacute;n actualizadas por los 
+  m&eacute;todos del bean, como consencuencia de la invocaci&oacute;n remota del 
+  cliente. </p>
+<p>Adem&aacute;s de estas clases, vamos a necesitar dos clases de apoyo, la clase 
+  <code>BookException</code> y <code>IdVerifier</code>.</p>
+<p>La siguiente tabla muestra c&oacute;mo est&aacute;n relacionados los m&eacute;todos 
+  en la interface home, la interfaz remota y la implementaci&oacute;n.
+</p>
+<TABLE BORDER=1 width=576 height=176>
+  <TR>
+
+    <TD align=left VALIGN=TOP width="68">&nbsp; </TD>
+    <TD align=left VALIGN=TOP width="137"> M&eacute;todo de la interfaz home </TD>
+    <TD align=left VALIGN=TOP width="149"> M&eacute;todo de la interfaz remota 
+    </TD>
+    <TD align=left VALIGN=TOP width="194"> M&eacute;todo de la clase de implementaci&oacute;n 
+    </TD>
+ </TR>
+ <TR>
+
+    <TD align=left VALIGN=TOP width="68"> Creaci&oacute;n </TD>
+    <TD align=left VALIGN=TOP width="137"> <code>Cart create(args) throws CreateException, 
+      RemoteException; </code></TD>
+    <TD align=left VALIGN=TOP width="149"> No disponible </TD>
+    <TD align=left VALIGN=TOP width="194"> <code>public void ejbCreate(args) </code></TD>
+ </TR>
+ <TR>
+
+    <TD align=left VALIGN=TOP width="68"> Uso </TD>
+    <TD align=left VALIGN=TOP width="137"> No disponible </TD>
+    <TD align=left VALIGN=TOP width="149"> M&eacute;todos de negocio (deben arojar 
+      la excepci&oacute;n RemoteException) </TD>
+    <TD align=left VALIGN=TOP width="194"> M&eacute;todos de negocio con la misma 
+      signatura (arrojar RemoteException es opcional) </TD>
+ </TR>
+ <TR>
+
+    <TD align=left VALIGN=TOP width="68"> Borrado </TD>
+    <TD align=left VALIGN=TOP width="137"> <code>public void remove(); </code></TD>  
+    <TD align=left VALIGN=TOP width="149"> <code>public void remove() </code></TD>  
+    <TD align=left VALIGN=TOP width="194"> <code>public void ejbRemove(); </code></TD>
+</TABLE>
+<p>El c&oacute;digo fuente de este ejemplo est&aacute; en el fichero <code>ejercicio3.zip</code> 
+  en la p&aacute;gina web del m&oacute;dulo de EJB.</p>
+<h2><B>3.1 La clase bean de sesi&oacute;n (<code>SessionBean</code>)</B></h2>
+<p>Siguiendo las indicaciones de nomenclatura que comentamos en la sesi&oacute;n 
+  pasada, la clase bean se llama <code>CartBean</code>. Esta clase implementa 
+  la l&oacute;gica de negocio del bean, y debe cumplir los siguientes requisitos:</p>
+<UL>
+  <LI>Implementa la interfaz <code>SessionBean</code>.<BR>
+  <LI>La clase se define como <code>public</code>.<BR>
+  <LI>La clase no puede definirse como <code>abstract</code> ni <code>final</code>.<BR>
+  <LI>Implementa uno o m&aacute;s m&eacute;todos <code>ejbCreate</code>.<BR>
+<LI>Implementa los m&eacute;todos remotos definidos en la interfaz remota del bean.<BR>
+  <LI>Contiene un constructor <code>public</code> sin par&aacute;metros.<BR>
+  <LI>No debe definir el m&eacute;todo <code>finalize</code>.<BR>
+</UL>
+<p>El c&oacute;digo fuente sigue a continuaci&oacute;n:</p>
+
+<pre class="codigo">
+
+import java.util.*;
+import javax.ejb.*;
+
+public class CartBean implements SessionBean {
+
+   String customerName;
+   String customerId;
+   Vector contents;
+
+
+   public void ejbCreate(String person) 
+      throws CreateException {
+
+      if (person == null) {
+         throw new CreateException("Null person not allowed.");
+      }
+      else {
+         customerName = person;
+      }
+
+      customerId = "0";
+      contents = new Vector();
+   }
+
+   public void ejbCreate(String person, String id) 
+      throws CreateException {
+
+      if (person == null) {
+         throw new CreateException("Null person not allowed.");
+      }
+      else {
+         customerName = person;
+      }
+
+      IdVerifier idChecker = new IdVerifier();
+      if (idChecker.validate(id)) {
+         customerId = id;
+      }
+      else {
+         throw new CreateException("Invalid id: "+ id);
+      }
+
+      contents = new Vector();
+   }
+
+   public void addBook(String title) {
+      contents.addElement(title);
+   }
+
+   public void removeBook(String title) throws BookException {
+
+      boolean result = contents.removeElement(title);
+      if (result == false) {
+         throw new BookException(title + "not in cart.");
+      }
+   }
+
+   public Vector getContents() {
+      return contents;
+   }
+
+   public CartBean() {}
+   public void ejbRemove() {}
+   public void ejbActivate() {}
+   public void ejbPassivate() {}
+   public void setSessionContext(SessionContext sc) {}
+
+} 
+</pre>
+<h3>3.1.1 Las variables de instancia</h3>
+<p>Las variables de instancia definen el estado de una instancia de enterprise 
+  bean. En este caso se trata de <code>customerName</code>, <code>customerId</code> 
+  y <code>contents</code>. Las variables de instancia se inicializan al crearse 
+  una instancia del bean, copi&aacute;ndose en ellas los argumentos del m&eacute;todo 
+  <code>ejbCreate</code>. Despu&eacute;s son modificadas por las llamadas de los 
+  clientes a los m&eacute;todos de negocio <code>addBook()</code> y <code>removeBook()</code>.</p>
+<h3>3.1.2 La interfaz <code>SessionBean</code></h3>
+<p>La interfaz <code>SessionBean</code> extiende la interfaz <code>EnterpriseBean</code>, 
+  que a su vez extiende el interfaz <code>Serializable</code>. La interfaz <code>SessionBean</code> 
+  declare los m&eacute;todos <code>ejbRemove</code>, <code>ejbActivate</code>, 
+  <code>ejbPassivate</code>, y <code>setSessionContext</code>. Estos m&eacute;todos 
+  se llaman desde el contenedor EJB cuando el bean va pasando de un estado a otro 
+  en su ciclo de vida. La clase <code>CartBean</code> no usa estos m&eacute;todos, 
+  pero debe implementarlos porque est&aacute;n declarados en la interfaz <code>SessionBean</code>. 
+  <BR>
+</p>
+<h3> 3.1.3 Los m&eacute;todos <code>ejbCreate</code></h3>
+<p>Un cliente no puede instanciar directamente un bean, ya que &eacute;ste reside 
+  en el contenedor EJB. S&oacute;lo el contenedor EJB puede realizar la instanciaci&oacute;n. 
+  En el ejemplo del carrito de la compra esto sucede de la siguiente forma:<BR>
+</p>
+<p>1. El cliente invoca un m&eacute;todo <code>create</code> en el objeto <code>home</code>:<BR>
+</p>
+<pre class="codigo">Cart shoppingCart = home.create(&quot;Duke DeEarl&quot;,&quot;123&quot;);</pre>
+<p>2. El contenedor EJB instancia el enterprise bean.<BR>
+  3. El contenedor EJB invoca el m&eacute;todo <code>ejbCreate</code> apropiado 
+  en <code>CartBean</code>:</p>
+  <pre class="codigo">
+    public void ejbCreate(String person, String id) 
+      throws CreateException {
+
+      if (person == null) {
+         throw new CreateException("Null person not allowed.");
+      }
+      else {
+         customerName = person;
+      }
+
+      IdVerifier idChecker = new IdVerifier();
+      if (idChecker.validate(id)) {
+         customerId = id;
+      }
+      else {
+         throw new CreateException("Invalid id: "+ id);
+      }
+
+      contents = new Vector();
+   }
+</pre>
+<p>Al tratarse de un bean de sesi&oacute;n con estado, el m&eacute;todo <code>ejbCreate</code> 
+  inicializa este estado. El m&eacute;todo <code>ejbCreate</code> anterior, por 
+  ejemplo, inicializa las variables <code>customerName</code> y <code>customerId</code> 
+  con los argumentos pasados por el m&eacute;todo <code>create</code>.</p>
+<p>Un enterprise bean debe tener uno o m&aacute;s m&eacute;todos <code>ejbCreate</code>. 
+  Las signaturas de estos m&eacute;todos deben cumplir los siguientes requisitos:</p>
+<p></p>
+<UL>
+  <LI>El modificador de control de acceso debe ser <code>public</code>.<BR>
+  <LI>El tipo de retorno debe ser <code>void</code>.<BR>
+<LI>Si el bean permite un acceso remoto, los argumentos deben ser tipos legales de RMI.<BR>
+  <LI>El modificador no puede ser <code>static</code> ni final.
+</UL>
+<p>La cl&aacute;sula throws puede incluir la excepci&oacute;n<code> javax.ejb.CreateException</code> 
+  y cualquier otra excepci&oacute;n espec&iacute;fica de la aplicaci&oacute;n. 
+  El m&eacute;todo <code>ejbCreate</code> arroja normalmente una excepci&oacute;n 
+  <code>CreateException</code> si un par&aacute;metro de entrada no es v&aacute;lido.</p>
+<h3>3.1.4 M&eacute;todos de negocio</h3>
+
+<p>El prop&oacute;sito fundamental de un bean de sesi&oacute;n es ejecutar tareas 
+  de negocio a petici&oacute;n de aplicaciones cliente. El cliente invoca m&eacute;todos 
+  de negocio en la referencia remota del objeto que es devuelta por el m&eacute;todo 
+  <code>create</code>. Desde la perspectiva del cliente, los m&eacute;todos de 
+  negocio parecen ejecutarse de forma local, pero realmente lo que se ejecuta 
+  es un m&eacute;todo del stub que env&iacute;a al skeleton (recordatorio de RMI!!) 
+  la petici&oacute;n de invocaci&oacute;n remota, junto con todo el <i>marshaling</i> 
+  de par&aacute;metros. </p>
+<p>Un ejemplo del punto de vista del cliente:</p>
+<pre class="codigo">
+Cart shoppingCart = home.create("Duke DeEarl", "123");
+...
+shoppingCart.addBook("The Martian Chronicles"); 
+shoppingCart.removeBook("Alice In Wonderland");
+bookList = shoppingCart.getContents();
+</pre>
+<p>La clase <code>CartBean</code> implementa los m&eacute;todos de negocio en 
+  el siguiente c&oacute;digo:</p>
+<pre class="codigo">
+public void addBook(String title) {
+   contents.addElement(new String(title));
+}
+
+public void removeBook(String title) throws BookException {
+   boolean result = contents.removeElement(title);
+   if (result == false) {
+      throw new BookException(title + "not in cart.");
+   }
+}
+
+public Vector getContents() {
+   return contents;
+}
+</pre>
+<p>La signatura de un m&eacute;todo de negocio debe cumplir los siguientes requisitos:</p>
+<UL>
+  <LI>El nombre del m&eacute;todo no debe entrar en conflicto con ning&uacute;n 
+    otro definido por la arquitectura EJB. Por ejemplo, un m&eacute;todo de negocio 
+    no se puede llamar <code>ejbCreate</code> o <code>ejbActivate</code>.<BR>
+  <LI>El modificador de control de acceso debe ser <code>public</code>.<BR>
+<LI>Si el bean permite acceso remoto, los argumentos y los tipos devueltos deben ser tipos legales de RMI.<BR>
+  <LI>El modificador no puede ser <code>static</code> ni <code>final</code>.<BR>
+</UL>
+<p>La cl&aacute;usula <code>throws</code> puede incluir excepciones que se definen 
+  en la aplicaci&oacute;n. Por ejemplo, el m&eacute;todo <code>removeBook</code> 
+  arroja la excepci&oacute;n <code>BookException</code> si el libro no est&aacute; 
+  en el carrito.</p>
+<p>Para indicar un problema de nivel de sistema, como la imposibilidad de conectar 
+  con una base de datos, un m&eacute;todo de negocio deber&iacute;a arrojar una 
+  excepci&oacute;n <code>javax.ejb.EJBException</code>. Cuando un m&eacute;todo 
+  de negocio arroja una excepci&oacute;n <code>EJBException</code>, el contenedor 
+  EJB la envuelve en una <code>RemoteException</code>, que es capturada por el 
+  cliente. El contenedor no envuelve excepciones de aplicaci&oacute;n como <code>BookException</code>. 
+  Debido a que <code>EJBException</code> es una subclase de <code>RuntimeException</code>, 
+  no es necesario incluirla en la cl&aacute;usula <code>throws</code> del m&eacute;todo 
+  de negocio.</p>
+<h2><B>3.2 La interfaz home<BR>
+  </B></h2>
+<p>La interfaz home extiende la interfaz<code> javax.ejb.EJBHome</code>. Para 
+  un bean de sesion, el prop&oacute;sito de la interfaz home es definir los m&eacute;todos<code> 
+  create()</code> (puede haber m&aacute;s de uno, dependiendo de los argumentos) 
+  que el cliente remoto puede invocar para crear instancias del bean. El cliente 
+  <code>CartCliente</code>, por ejemplo, invoca este m&eacute;todo <code>create</code></p>
+<pre class="codigo">
+(Cart shoppingCart = home.create("Duke DeEarl", "123");
+</pre>
+<p> Por cada m&eacute;todo create en la interfaz home debe existir un m&eacute;todo 
+  <code>ejbCreate</code> correspondiente en la clase de implementaci&oacute;n 
+  del bean (clase <code>CartBean</code>). En nuestro ejemplo, defin&iacute;amos 
+  dos signaturas de m&eacute;todos <code>ejbCreate</code>:</p>
+<pre class="codigo">
+public void ejbCreate(String person) throws CreateException   
+... 
+public void ejbCreate(String person, String id) 
+   throws CreateException </pre>
+<p>Y el c&oacute;digo correspondiente en el fichero <code>CartHome.java</code> 
+  es el siguiente:</p>
+<pre class="codigo">
+import java.io.Serializable;
+import java.rmi.RemoteException;
+import javax.ejb.CreateException;
+import javax.ejb.EJBHome;
+
+public interface CartHome extends EJBHome {
+   Cart create(String person) throws 
+                  RemoteException, CreateException;
+   Cart create(String person, String id) throws 
+                  RemoteException, CreateException; 
+}
+</pre>
+<p>Las signaturas de ambos conjuntos de m&eacute;todos son similares, pero difieren 
+  en aspectos importantes. Un resumen de las reglas que debemos aplicar al crear 
+  ambas signaturas es el siguiente:</p>
+<UL>
+  <LI>El n&uacute;mero y tipos de argumentos en el m&eacute;todo create debe corresponderse 
+    con los definidos en el m&eacute;todo <code>ejbCreate</code> asociado.<BR>
+<LI>Los tipos de los argumentos y valores devueltos deben ser tipos v&aacute;lidos RMI.<BR>
+  <LI>Cuando usemos llamadas remotas, los m&eacute;todos create de la interfaz 
+    home siempre debe devolver el tipo de la interfaz remota del bean. Cuando 
+    un cliente invoque este m&eacute;todo se le devolver&aacute; una referencia 
+    remota del bean reci&eacute;n creado. El m&eacute;todo <code>ejbCreate</code>, 
+    sin embargo, debe devolver <code>void</code>. Es el contenedor EJB el que 
+    se encarga de crear el bean, llamar al m&eacute;todo <code>ejbCreate</code> 
+    y devolver la referencia remota.<BR>
+  <LI>La cl&aacute;usula <code>throws</code> del m&eacute;todo <code>create</code> 
+    debe incluir las excepciones <code>java.rmi.RemoteException</code> y <code>java.ejb.CreateException</code>.
+</UL>
+<h2>3.3 Interfaz Remote</h2>
+<p>La interfaz remota siempre debe extender la interfaz<code> javax.ejb.EJBObject</code>. 
+  Esta interfaz define los m&eacute;todos de negocio que el cliente remoto puede 
+  invocar. A continuaci&oacute;n se muestra el c&oacute;digo fuente del fichero 
+  <code>Cart.java</code>:</p>
+<pre class="codigo">
+import java.util.*;
+import javax.ejb.EJBObject;
+import java.rmi.RemoteException;
+
+public interface Cart extends EJBObject {
+ 
+   public void addBook(String title) throws RemoteException;
+   public void removeBook(String title) throws 
+                     BookException, RemoteException;
+   public Vector getContents() throws RemoteException;
+}
+</pre>
+<p>La definici&oacute;n de los m&eacute;todos en la interfaz remota debe seguir 
+  estas reglas:</p>
+<UL>
+<LI>Cada m&eacute;todo en la interfaz remota debe corresponderse con un m&eacute;todo equivalente en la clase del enterprise bean. Las signaturas de ambos deben ser iguales.<BR>
+<LI>Los tipos de los argumentos y valores devueltos deben ser tipos v&aacute;lidos RMI.<BR>
+  <LI>La cl&aacute;usula <code>throws</code> debe incluir la excepci&oacute;n 
+    <code>java.rmi.RemoteException</code>.<BR>
+</UL>
+<h2>3.4 El fichero descriptor del despliegue</h2>
+<p>El fichero <code>ejb-jar.xml</code> se muestra a continuaci&oacute;n</p>
+<pre class="codigo">&lt;ejb-jar&gt;<br>  &lt;display-name&gt;CartJAR&lt;/display-name&gt;<br>  &lt;enterprise-beans&gt;<br>    &lt;session&gt;<br>      &lt;display-name&gt;CartEJB&lt;/display-name&gt;<br>      &lt;ejb-name&gt;CartEJB&lt;/ejb-name&gt;<br>      &lt;home&gt;CartHome&lt;/home&gt;<br>      &lt;remote&gt;Cart&lt;/remote&gt;<br>      &lt;ejb-class&gt;CartBean&lt;/ejb-class&gt;<br>      &lt;session-type&gt;Stateful&lt;/session-type&gt;<br>      &lt;transaction-type&gt;Container&lt;/transaction-type&gt;<br>      &lt;security-identity&gt;<br>        &lt;use-caller-identity/&gt;<br>      &lt;/security-identity&gt;
+    &lt;/session&gt;<br>  &lt;/enterprise-beans&gt;
+    ...
+&lt;/ejb-jar&gt;
+</pre>
+<p>Y el fichero <code>weblogic-ejb-jar.xml</code> es el siguiente. Los &uacute;nicos 
+  datos que se definen son el nombre del EJB y el nombre JNDI del bean.</p>
+<pre class="codigo">
+  &lt;weblogic-ejb-jar&gt;
+     &lt;weblogic-enterprise-bean&gt;
+        &lt;ejb-name&gt;<b>CartEJB</b>&lt;/ejb-name&gt;
+        &lt;stateful-session-descriptor&gt;&lt;stateful-session-cache&gt;
+        &lt;/stateful-session-cache&gt;&lt;stateful-session-clustering&gt;
+        &lt;/stateful-session-clustering&gt;&lt;/stateful-session-descriptor&gt;
+        &lt;transaction-descriptor&gt;&lt;/transaction-descriptor&gt;
+        &lt;jndi-name&gt;<b>CartEJB</b>&lt;/jndi-name&gt;
+     &lt;/weblogic-enterprise-bean&gt;
+  &lt;/weblogic-ejb-jar&gt;
+</pre>
+<h2>3.5 Clases de apoyo</h2>
+<p>El bean de sesi&oacute;n CartEJB tiene dos clases de apoyo: <code>BookException</code> 
+  y <code>IdVerifier</code>. La excepci&oacute;n <code>BookException</code> es 
+  arrojada por el m&eacute;todo <code>removeBook</code> y el <code>IdVerifier</code> 
+  valida el clienteId en uno de los m&eacute;todos <code>ejbCreate</code>. Ambas 
+  clases deben residir en el mismo fichero JAR en el que se empaqueta todo el 
+  enterprise bean.</p>
+<p>A continuaci&oacute;n se muestran los c&oacute;digos de ambas clases:</p>
+<pre class="codigo">
+public class BookException extends Exception {
+
+    public BookException() {
+    }
+
+    public BookException(String msg) {
+        super(msg);
+    }
+}
+
+
+public class IdVerifier {
+
+    public IdVerifier() {
+    }
+
+    public boolean validate(String id) {
+
+       boolean result = true;
+       for (int i = 0; i < id.length(); i++) {
+         if (Character.isDigit(id.charAt(i)) == false)
+            result = false;
+       }
+       return result;
+    }
+}</pre>
+<h2> 3.6 El fichero EJB JAR</h2>
+<p>El fichero EJB JAR tiene la siguiente estructura, sencilla al no usar paquetes 
+  en la definici&oacute;n de las clases</p>
+<pre class="codigo">
+extracted: META-INF/MANIFEST.MF
+extracted: BookException.class
+extracted: Cart.class
+extracted: CartBean.class
+extracted: CartHome.class
+extracted: IdVerifier.class
+  created: META-INF/
+extracted: META-INF/ejb-jar.xml
+extracted: META-INF/weblogic-ejb-jar.xml
+</pre>
+<h2>3.7 La aplicaci&oacute;n cliente</h2>
+<p>La aplicaci&oacute;n cliente compra algunos libros y despu&eacute;s elimina 
+  alg&uacute;n libro no existente en el carrito, lo que genera un error.</p>
+<pre class="codigo">
+import java.util.*;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.rmi.PortableRemoteObject;
+
+public class CartClient {
+
+   public static void main(String[] args) {
+       try {
+           Context jndiContext = getInitialContext();
+           Object objref = jndiContext.lookup("CartEJB");
+
+           CartHome home = 
+               (CartHome)PortableRemoteObject.narrow(objref, 
+                                            CartHome.class);
+
+           Cart shoppingCart = home.create("Duke DeEarl","123");
+
+           shoppingCart.addBook("The Martian Chronicles");
+           shoppingCart.addBook("2001 A Space Odyssey");
+           shoppingCart.addBook("The Left Hand of Darkness");
+           
+           Vector bookList = new Vector();
+           bookList = shoppingCart.getContents();
+
+           Enumeration enumer = bookList.elements();
+           while (enumer.hasMoreElements()) {
+              String title = (String) enumer.nextElement();
+              System.out.println(title);
+           }
+
+           shoppingCart.removeBook("Alice in Wonderland");
+           shoppingCart.remove();
+
+           System.exit(0);
+
+       } catch (BookException ex) {
+           System.err.println("Caught a BookException: " + ex.getMessage());
+           System.exit(0);
+       } catch (Exception ex) {
+           System.err.println("Caught an unexpected exception!");
+           ex.printStackTrace();
+           System.exit(1);
+       }
+   } 
+
+    public static Context getInitialContext() 
+        throws javax.naming.NamingException {
+           Properties p = new Properties();
+	   p.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");  
+	   p.put(Context.PROVIDER_URL, "t3://localhost:7001");
+           return new javax.naming.InitialContext(p);
+    }
+} 
+</pre>
+<h2>3.8 Otras caracter&iacute;sticas de los enterprise beans</h2>
+<p>Los aspectos que siguen se aplican tanto a beans de sesi&oacute;n como a beans 
+  de entidad. Veremos en primer lugar c&oacute;mo leer desde los beans entradas 
+  del entorno que se especifican de forma declarativa en la descripci&oacute;n 
+  de despliegue del bean. A continuaci&oacute;n revisaremos c&oacute;mo comparar 
+  enterprise beans. Terminaremos comentando c&oacute;mo pasar al cliente referencias 
+  remotas de beans.<BR>
+</p>
+<h3>3.8.1 C&oacute;mo acceder a entradas del entorno</h3>
+<p>Una <I>entrada del entorno</I> (<I>environment entry</I>) es una pareja nombre-valor 
+  que se almacena en el fichero de descripci&oacute;n del despliegue y que permite 
+  modificar la l&oacute;gica de negocio del bean sin cambiar su c&oacute;digo 
+  fuente ni recompilarlo. El formato con el que se almacena en el fichero <code>ejb-jar.xml</code> 
+  es el siguiente</p>
+<pre class="codigo">&lt;env-entry&gt;<br>    &lt;description&gt;Discount Level&lt;/description&gt;<br>    &lt;env-entry-name&gt;DiscountLevel&lt;/env-entry-name&gt;<br>    &lt;env-entry-type&gt;java.lang.Double&lt;/env-entry-type&gt;<br>    &lt;env-entry-value&gt;300.0&lt;/env-entry-value&gt;<br>&lt;/env-entry&gt;
+&lt;env-entry&gt;<br>    &lt;description&gt;Discount Percent&lt;/description&gt;<br>    &lt;env-entry-name&gt;Discount Percent&lt;/env-entry-name&gt;<br>    &lt;env-entry-type&gt;java.lang.Double&lt;/env-entry-type&gt;<br>    &lt;env-entry-value&gt;0.15&lt;/env-entry-value&gt;<br>&lt;/env-entry&gt;</pre>
+<p></p>
+<p>En el ejemplo se han definido las entradas del entorno <code>DiscountLevel</code> 
+  y <code>DiscountPercent</code>. </p>
+<p>Una vez desplegado el enterprise bean en el contenedor EJB, estas entradas 
+  se almancenan como objetos JNDI en el contexto <code>java:comp/env</code>. Para 
+  usar estas entradas en los m&eacute;todos de negocio del enterprise bean hay 
+  que usar JNDI y obtener el contexto de nombres del entorno invocando a <code>lookup</code> 
+  del contexto inicial con el par&aacute;metro<code> java:comp/env</code>. Luego 
+  ya se puede invocar a loockup del contexto de nombres pas&aacute;ndole como 
+  par&aacute;metro el string que define el nombre de la entrada del entorno.</p>
+<p>El siguiente c&oacute;digo proporciona un ejemplo pr&aacute;ctico, el m&eacute;todo 
+  de negocio applyDiscount:</p>
+<pre class="codigo">
+public double applyDiscount(double amount) {
+
+   try {
+
+      double discount;
+
+      Context initial = new InitialContext();
+         Context environment = 
+            (Context)initial.lookup("java:comp/env");
+
+      Double discountLevel = 
+         (Double)environment.lookup("DiscountLevel");
+            Double discountPercent = 
+               (Double)environment.lookup("DiscountPercent");
+
+      if (amount >= discountLevel.doubleValue()) {
+         discount = discountPercent.doubleValue();
+      }
+      else {
+         discount = 0.00;
+      }
+
+      return amount * (1.00 - discount);
+
+   } catch (NamingException ex) {
+      throw new EJBException("NamingException: "+
+         ex.getMessage());
+   }
+}
+</pre>
+<h3>3.8.2 C&oacute;mo comparar enterprise beans</h3>
+<p>Un cliente puede determinar si un bean de sesi&oacute;n con estado ya ha sido 
+  definido y est&aacute; residiendo en el contenedor de aplicaciones usando el 
+  m&eacute;todo <code>isIdentical</code>:</p>
+<pre class="codigo">
+bookCart = home.create("Bill Shakespeare"); 
+videoCart = home.create("Lefty Lee");
+...
+if (bookCart.isIdentical(bookCart)) { 
+   // true ... }
+if (bookCart.isIdentical(videoCart)) { 
+   // false ... }
+</pre>
+<p> Debido a que los beans de sesi&oacute;n sin estado siempre tienen la misma 
+  identidad como objetos, el m&eacute;todo <code>isIdentical</code> siempore devolver&aacute; 
+  true cuando se comparan. </p>
+<p>Para determinar si dos beans de entidiad son identicos, el cliente puede usar 
+  el m&eacute;todo isIdentical o puede obtener y comparar las claves primarias 
+  de los beans:</p>
+<pre class="codigo">
+String key1 = (String)accta.getPrimaryKey();
+String key2 = (String)acctb.getPrimaryKey();
+
+if (key1.compareTo(key2) == 0)
+   System.out.println("equal");
+</pre>
+<h3>3.8.3 C&oacute;mo devolver una referencia a un enterprise bean</h3>
+<p>Supongamos que queremos pasar la referencia de un mismo bean a otro bean, o 
+  al cliente que invoca un m&eacute;todo de negocio del bean. No podemos usar 
+  <code>this</code>, por que apunta a la instancia del bean, que est&aacute; corriendo 
+  en el contenedor EJB.</p>
+<p>Se obtiene llamando al m&eacute;todo <code>getEJBObject</code> de la interfaz 
+  <code>SessionContext</code>. Un bean de entidad llamar&iacute;a al m&eacute;todo 
+  <code>getEJBObject</code> de la interfaz <code>EntityContext</code>. Estas interfaces 
+  proporcionan a los beans la posibilidad de acceder a contextos de instancias 
+  mantenidos por el contenedor EJB. Normalmente, el bean graba los contextos en 
+  el m&eacute;todo <code>setSessionContext</code>. El siguiente c&oacute;digo 
+  muestra un ejemplo de c&oacute;mo usar estos m&eacute;todos:</p>
+<pre class="codigo">
+public class WagonBean implements SessionBean {
+   
+   SessionContext context;
+   ...
+   public void setSessionContext(SessionContext sc) { 
+      this.context = sc; 
+   }
+   ...
+   public void passItOn(Basket basket) {
+   ...
+      basket.copyItems(context.getEJBObject()); 
+   } 
+   ...
+</pre>
+<p>&nbsp;</p>
+</BODY>
+</HTML>
+

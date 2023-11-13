@@ -1,0 +1,216 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.7">
+<meta name="Forrest-skin-name" content="pelt">
+<title>Ejercicios de seguridad en Tomcat</title>
+<link type="text/css" href="skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="skin/print.css" rel="stylesheet">
+<link type="text/css" href="skin/profile.css" rel="stylesheet">
+<script src="skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<div class="header">
+<div class="grouplogo">
+<a href="http://web.ua.es/especialistajava"><img class="logoImage" alt="jtech" src="images/baner_j2ee_izq.gif" title="Especialista Universitario Java Enterprise"></a>
+</div>
+<div class="projectlogoA1">
+<a href="http://www.dccia.ua.es/"><img class="logoImage" alt="Servidores Web" src="images/baner_j2ee_der.gif" title="Servidores Web"></a>
+</div>
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="javascript:location.href='../index.html'">Home</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../aplic-web.html'">Aplicaciones Web</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../aplic-ent.html'">Aplicaciones Enterprise</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../charlas.html'">Charlas</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../proy-int/index.html'">Proyecto</a>
+</li>
+<li class="current">
+<a class="base-selected" href="index.html">Servidores Web</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<div id="level2tabs"></div>
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<div id="menu">
+<div onclick="SwitchMenu('menu_selected_1.1', 'skin/')" id="menu_selected_1.1Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Servidores Web</div>
+<div id="menu_selected_1.1" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="index.html" title="Servidores Web">&Iacute;ndice</a>
+</div>
+<div onclick="SwitchMenu('menu_1.1.2', 'skin/')" id="menu_1.1.2Title" class="menutitle">Teor&iacute;a</div>
+<div id="menu_1.1.2" class="menuitemgroup">
+<div class="menuitem">
+<a href="sesion01-apuntes.html">Sesion 1</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-apuntes.html">Sesion 2</a>
+</div>
+<div class="menuitem">
+<a href="sesion03-apuntes.html">Sesion 3</a>
+</div>
+<div class="menuitem">
+<a href="sesion04-apuntes.html">Sesion 4</a>
+</div>
+<div class="menuitem">
+<a href="roadmap-apuntes.html">Roadmap</a>
+</div>
+</div>
+<div onclick="SwitchMenu('menu_selected_1.1.3', 'skin/')" id="menu_selected_1.1.3Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Ejercicios</div>
+<div id="menu_selected_1.1.3" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="sesion01-ejercicios.html">Sesion 1</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-ejercicios.html">Sesion 2</a>
+</div>
+<div class="menuitem">
+<a href="sesion03-ejercicios.html">Sesion 3</a>
+</div>
+<div class="menupage">
+<div class="menupagetitle">Sesion 4</div>
+</div>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<div id="credit2"></div>
+</div>
+<div id="content">
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="sesion04-ejercicios.pdf"><img alt="PDF -icon" src="skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1>Ejercicios de seguridad en Tomcat</h1>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#Creaci%C3%B3n+de+un+Realm+de+base+de+datos+%281+pto%29">Creaci&oacute;n de un Realm de base de datos (1 pto)</a>
+</li>
+<li>
+<a href="#Seguridad+basada+en+formularios+%281+pto%29">Seguridad basada en formularios (1 pto)</a>
+</li>
+<li>
+<a href="#Seguridad+del+servidor+%281+punto%29">Seguridad del servidor (1 punto)</a>
+</li>
+</ul>
+</div>
+
+<div class="frame warning">
+<div class="label">&iexcl;Cuidado!</div>
+<div class="content">Antes de realizar los ejercicios debes estar seguro de que el JAR con el driver de MySQL 
+est&aacute; en el directorio <span class="codefrag">lib</span> de Tomcat. En caso contrario Tomcat
+no podr&aacute; usar la base de datos para autentificar a los usuarios.</div>
+</div>
+
+<a name="N10013"></a><a name="Creaci%C3%B3n+de+un+Realm+de+base+de+datos+%281+pto%29"></a>
+<h2 class="underlined_10">Creaci&oacute;n de un Realm de base de datos (1 pto)</h2>
+<div class="section">
+<p>Vamos a crear la configuraci&oacute;n y la estructura necesarias para un realm de Tomcat con BD, que usaremos 
+en el segundo ejercicio para asegurar la aplicaci&oacute;n de comentarios.</p>
+<ol>
+
+<li>En las plantillas de la sesi&oacute;n hay un script SQL que crea las tablas necesarias para almacenar logins, passwords
+y roles. Ejec&uacute;talo y comprueba que se han creado correctamente y que contienen usuarios creados.</li>
+
+<li>Las plantillas tambi&eacute;n incluyen un proyecto de Eclipse llamado <span class="codefrag">testJDBCRealm</span> que ya est&aacute; configurado
+para usar la BD para autentificaci&oacute;n. <strong>Tendr&aacute;s que crear el META-INF/context.xml con la informaci&oacute;n del JDBCRealm</strong>. Mira el ejemplo
+de las transparencias. Una vez creado el realm, prueba a identificarte como "espe", "espe" (debes tener permiso de acceso) y luego
+como "pepe","pepe" (no lo tendr&aacute;s). Ten en cuenta que como la aplicaci&oacute;n usa autentificaci&oacute;n BASIC debes cerrar el navegador
+si quieres entrar con otro usuario (en Eclipse esto no es posible, as&iacute; que tendr&aacute;s que hacerlo desde un navegador externo).</li>
+
+</ol>
+</div>
+
+<a name="N1002C"></a><a name="Seguridad+basada+en+formularios+%281+pto%29"></a>
+<h2 class="underlined_10">Seguridad basada en formularios (1 pto)</h2>
+<div class="section">
+<p>Vamos a asegurar la aplicaci&oacute;n de comentarios con seguridad basada en formularios, de modo que solamente los usuarios
+con rol "registrado" puedan insertar comentarios. Para ello, tendr&aacute;s que:</p>
+<ol>
+
+<li>Crear la configuraci&oacute;n del realm en el <span class="codefrag">context.xml</span> de la aplicaci&oacute;n. Puedes tomar como ejemplo la de la
+aplicaci&oacute;n <span class="codefrag">testJDBCRealm</span> del ejercicio anterior</li>
+
+<li>Crear una p&aacute;gina <span class="codefrag">login.html</span> con un formulario de autentificaci&oacute;n como se indica en los apuntes.</li>
+
+<li>Configurar la seguridad protegiendo la URL "/addComentario" para que solo puedan acceder a ella los usuarios con
+rol "registrado". Usa las etiquetas vistas en los apuntes para configurar seguridad basada en formularios.</li>
+
+<li>Comprobar que al intentar a&ntilde;adir un comentario se salta a la p&aacute;gina de login y tras introducir usuario y password v&aacute;lido se permite el acceso</li>
+
+</ol>
+</div>
+
+<a name="N1004E"></a><a name="Seguridad+del+servidor+%281+punto%29"></a>
+<h2 class="underlined_10">Seguridad del servidor (1 punto)</h2>
+<div class="section">
+<p>En las plantillas de la sesi&oacute;n tienes una aplicaci&oacute;n llamada visitas.war muy similar a la de comentarios, pero que guarda
+los comentarios enviados por los usuarios en un fichero. En este ejercicio no es necesario que uses Eclipse</p>
+<ol>
+
+<li>Despliega el war copi&aacute;ndolo manualmente al directorio webapps.</li>
+
+<li>Arranca manualmente Tomcat entrando en su directorio bin y ejecutando "./startup.sh -security" para activar
+las pol&iacute;ticas de seguridad. Comprueba que la aplicaci&oacute;n a un error al intentar guardar el comentario, ya que por defecto las aplicaciones web
+no pueden crear ficheros con las restricciones de seguridad activas.</li>
+
+<li>Modifica el fichero de Tomcat "conf/catalina.policy" a&ntilde;adiendo al final un permiso para guardar archivos.
+<ul>
+
+<li>Toma como modelo el ejemplo de las transparencias para darle el permiso en este caso a la aplicaci&oacute;n "visitas"</li>
+
+<li>El "permission" para guardar ficheros es java.io.FilePermission "directorio_donde_hay_permiso", "read,write"</li>
+
+</ul>
+
+</li>
+
+<li>Para Tomcat ("./shutdown.sh") y vuelve a arrancarlo de nuevo con la seguridad activada ("./startup.sh -security") y comprueba
+que ahora s&iacute; se guarda el archivo "prueba.txt" </li> 
+
+</ol>
+</div>
+
+<p class="pageBreakAfter"></p>
+
+</div>
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+        Copyright &copy;
+         2010-11 Dpto. Ciencia de la Computaci&oacute;n e IA</div>
+</div>
+</body>
+</html>

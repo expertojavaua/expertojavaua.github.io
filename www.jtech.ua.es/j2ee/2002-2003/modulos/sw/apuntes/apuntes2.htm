@@ -1,0 +1,358 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+  <title>Tema 2: Mensajer&iacute;a XML</title>
+                                    
+  <meta content="text/html; charset=iso-8859-1"
+ http-equiv="Content-Type">
+                   
+  <link href="http://www.jtech.ua.es/j2ee/2002-2003/sw/apuntes/apuntes.css" rel="stylesheet" type="text/css">
+                     
+  <meta content="Microsoft FrontPage 4.0" name="GENERATOR">
+<link href="../../../apuntes.css" rel="stylesheet" type="text/css">
+</head>
+  <body bgcolor="#ffffff" text="#000000">
+ 
+<h1>2. Mensajer&iacute;a XML</h1>
+ 
+<p>Podemos intercambiar mensajes a trav&eacute;s de Internet utilizando la especificaci&oacute;n 
+  est&aacute;ndar SOAP. El contar con dicho est&aacute;ndar nos permitir&aacute; 
+  la interoperabilidad de aplicaciones heterog&eacute;neas, ya que sabemos que 
+  cuando enviemos un mensaje SOAP que cumpla con la especificaci&oacute;n, nos 
+  podremos comunicar con cualquier otra aplicaci&oacute;n que entienda este tipo 
+  de mensajes, independientemente de su implementaci&oacute;n interna.</p>
+<p>En el caso ideal esto debe ser as&iacute;, pero muchas veces una implementaci&oacute;n 
+  concreta de SOAP no cumple estrictamente con el est&aacute;ndar, por lo que 
+  no podremos contar con una interoperabilidad total, sino parcial. Existen herramientas 
+  que nos permiten comprobar como se ajusta a la especificaci&oacute;n una determinada 
+  implementaci&oacute;n de SOAP, como por ejemplo la herramienta <em>SOAP Message 
+  Validator</em>.</p>
+<p>Para utilizar SOAP desde Java contamos con la librer&iacute;a JAXM (Java API 
+  for XML Messaging). Podemos distinguir dentro de ella dos APIs distintas, cada 
+  una de las cuales corresponde a un paquete de la implementaci&oacute;n:</p>
+<table width="100%" border="0">
+  <tr> 
+    <td width="14%"><strong>API</strong></td>
+    <td width="32%"><strong>Paquete</strong></td>
+    <td width="54%"><strong>Descripci&oacute;n</strong></td>
+  </tr>
+  <tr> 
+    <td>SAAJ</td>
+    <td><em>javax.xml.soap</em></td>
+    <td>Creaci&oacute;n y manipulaci&oacute;n de mensajes SOAP. Permite el envio 
+      de mensajes SOAP de forma s&iacute;ncrona (petici&oacute;n-respuesta).</td>
+  </tr>
+  <tr> 
+    <td>JAXM</td>
+    <td><em>javax.xml.messaging</em></td>
+    <td>Contiene un proveedor de mensajeria, que permite hacer envios as&iacute;ncronos 
+      de mensajes.</td>
+  </tr>
+</table>
+<p>Como podemos ver, separa la parte que se encarga de manipular los mensajes, 
+  y la encargada de gestionar el transporte de &eacute;stos. De esta forma, tenemos 
+  que SAAJ es una API independiente, mientras que JAXM depender&aacute; de SAAJ 
+  ya que es la que contiene la descripci&oacute;n de los mensajes que JAXM debe 
+  transportar.</p>
+<p>Esta librer&iacute;a nos permitir&aacute; enviar mensajes SOAP orientados al 
+  documento, es decir, podremos incluir el contenido que queramos dentro del mensaje 
+  SOAP. Podremos trabajar tanto con mensajes SOAP, como con mensajes SOAP con 
+  anexos.</p>
+<p>Podemos ver los mensajes orientados a RPC como un tipo m&aacute;s concreto 
+  que los mensajes orientados al documento, en los que el contenido del mensaje 
+  es el m&eacute;todo y los par&aacute;metros que queremos invocar en la petici&oacute;n, 
+  y el valor que devuelve el m&eacute;todo en la respuesta. La librer&iacute;a 
+  JAX-RPC se encargar&aacute; de gestionar estos mensajes SOAP orientados a RPC, 
+  apoy&aacute;ndose en SAAJ para construir y analizar estos mensajes. Aqu&iacute; 
+  podemos ver las ventajas de la separaci&oacute;n de SAAJ y JAXM, ya que de esta 
+  forma JAX-RPC s&oacute;lo depender&aacute; de SAAJ que ofrece todo lo necesario 
+  para trabajar con mensajes orientados a RPC, y no tendr&aacute; que depender 
+  de JAXM, que no es necesaria en este caso.</p>
+<p>Podemos encontrar informaci&oacute;n sobre la interoperabilidad de JAX-RPC 
+  con otras plataformas en <em>http://java.sun.com/wsinterop/sb/index.html</em>.</p>
+<h2>2.1 Manejo de mensajes SOAP</h2>
+<p>Un mensajes SOAP consta de una parte SOAP, que contiene un sobre SOAP donde 
+  tenemos una cabecera SOAP de forma opcional, y un cuerpo del mensaje SOAP, tal 
+  como podemos ver en la siguiente figura:</p>
+<center><img src="imagenes/soap-jaxm.gif" width="203" height="283"></center>
+<p>Vemos que cada parte del mensaje est&aacute; asociada con una clase Java que 
+  la representa. Todas estas clases las proporciona la API SAAJ.</p>
+<p>Para crear un mensaje deberemos obtener un objeto capaz de generar mensajes 
+  SOAP (<strong>MessageFactory</strong>), y a partir de &eacute;l construir nuestro 
+  nuevo mensaje:</p>
+<pre class="codigo"><strong>MessageFactory</strong> mf = <strong>MessageFactory</strong>.newInstance();
+<strong>SOAPMessage</strong> mensajeSOAP = mf.<strong>createMessage</strong>();</pre>
+<p>Una vez hemos obtenido el mensaje podemos acceder a cada una de las partes 
+  de nuestro mensaje mediante las clases proporcionadas por SAAJ:</p>
+<pre class="codigo"><strong>SOAPPart</strong> parteSOAP = mensajeSOAP.<strong>getSOAPPart</strong>();
+<strong>SOAPEnvelope</strong> sobreSOAP = parteSOAP.<strong>getEnvelope</strong>();
+<strong>SOAPHeader</strong> cabeceraSOAP= sobreSOAP.<strong>getHeader</strong>();
+<strong>SOAPBody</strong> cuerpoSOAP= sobreSOAP.<strong>getBody</strong>();</pre>
+<p>Todos estos elementos son creados por defecto cuando construimos un mensaje 
+  SOAP utilizando <strong>MessageFactory</strong>. Adem&aacute;s, podremos a&ntilde;adir 
+  o eliminar nodos del documento SOAP, igual que con cualquier documento XML.</p>
+<h3>2.1.1 Errores SOAP</h3>
+<p>Dentro del cuerpo podemos adjuntar un error SOAP, para indicar los errores 
+  que se puedan producir. Este error SOAP se puede crear de la siguiente forma:</p>
+<pre class="codigo"><strong>SOAPFault</strong> errorSOAP = cuerpoSOAP.<strong>addFault</strong>();</pre>
+<p>Dentro de la parte de error SOAP podemos establecer los siguientes atributos:</p>
+<table width="101%" border="0">
+  <tr> 
+    <td width="14%"><strong>Atributo</strong></td>
+    <td width="31%"><strong>M&eacute;todos para </strong><strong>consultar / establecer</strong> 
+    </td>
+    <td width="55%"><strong>Descripci&oacute;n</strong></td>
+  </tr>
+  <tr> 
+    <td>C&oacute;digo</td>
+    <td><p align="left"><em>String getFaultCode()<br>
+        setFaultCode(String fc)</em></p></td>
+    <td>C&oacute;digo de error definido en la especificaci&oacute;n de SOAP.</td>
+  </tr>
+  <tr> 
+    <td>Actor</td>
+    <td><div align="left"><em>String getFaultCode()<br>
+        setFaultCode(String fc)</em></div></td>
+    <td>Identifica el recipiente que caus&oacute; el error, entre todos por los 
+      que ha pasado el mensaje. S&oacute;lo es necesario especificarlo si en la 
+      cabecera se han especificado varios actores.</td>
+  </tr>
+  <tr> 
+    <td>Mensaje</td>
+    <td><div align="left"><em>String getFaultCode()<br>
+        setFaultCode(String fc)</em></div></td>
+    <td>Mensaje de texto que describe el error en lenguaje natural.</td>
+  </tr>
+  <tr> 
+    <td>Detalles</td>
+    <td><p align="left"><em>Detail getDetail()<br>
+        Detail addDetail()</em></p></td>
+    <td>Permite a&ntilde;adir detalles sobre el error. Por defecto el error no 
+      incluye detalles, por lo que debemos crearlos con este m&eacute;todo. Como 
+      mucho podemos tener un objeto <strong>Detail</strong> en el error, pero 
+      dentro de este objeto podemos a&ntilde;adir tantas entradas <strong>DetailEntry</strong> 
+      como queramos.</td>
+  </tr>
+</table>
+<p>Los c&oacute;digos de error definidos en la especificaci&oacute;n se pueden 
+  identificar en JAXM con las siguientes cadenas:</p>
+<table width="101%" border="0">
+  <tr> 
+    <td width="22%"><strong>C&oacute;digo</strong></td>
+    <td width="78%"><strong>Descripci&oacute;n</strong></td>
+  </tr>
+  <tr> 
+    <td><em>VersionMismatch</em></td>
+    <td>El espacio de nombres del sobre SOAP es inv&aacute;lido</td>
+  </tr>
+  <tr> 
+    <td><em>MustUnderstand</em></td>
+    <td>El destinatario no ha conseguido entender alguno de los campos especificados 
+      como obligatorios.</td>
+  </tr>
+  <tr> 
+    <td><em>Client</em></td>
+    <td>El mensaje enviado no era correcto (el cliente cometi&oacute; un error 
+      al codificarlo)</td>
+  </tr>
+  <tr> 
+    <td><em>Server</em></td>
+    <td>El mensaje era correcto pero no pudo procesarse correctamente (el servidor 
+      no pudo procesarlo)</td>
+  </tr>
+</table>
+<p>Cuando obtenemos una respuesta, podemos comprobar si este mensaje SOAP adjunta 
+  un error, y en tal caso consultar el error que se ha producido. Para comprobar 
+  si hay un eror deberemos hacer lo siguiente:</p>
+<pre class="codigo">if ( cuerpoSOAP.<strong>hasFault</strong>() ) {
+   <strong>SOAPFault</strong> errorSOAP = cuerpoSOAP.<strong>getFault</strong>();
+   String codigo = errorSOAP.<strong>getFaultCode</strong>();
+   String mensaje = errorSOAP.<strong>getFaultString</strong>();
+   String actor = errorSOAP.<strong>getFaultActor</strong>();
+}</pre>
+<h3>2.1.2 Modificar el contenido</h3>
+<p>Podremos a&ntilde;adir contenido a los distintos nodos del documento SOAP. 
+  Contamos con las clases <strong>SOAPBodyElement</strong>, <strong>SOAPHeaderElement</strong> 
+  y <strong>SOAPFaultElement</strong>, que se utilizar&aacute;n para encapsular 
+  los elementos que se a&ntilde;adir&aacute;n al cuerpo, a la cabecera y al error 
+  SOAP respectivamente.</p>
+<p>Estos tres tipos de elementos, junto a los anteriores <strong>SOAPEnvelope</strong>, 
+  <strong>SOAPBody</strong>, <strong>SOAPHeader</strong>,<strong> Detail</strong>,<strong> 
+  DetailEntry </strong>y <strong>SOAPFault </strong>heredan de la clase <strong>SOAPElement</strong>.</p>
+<p>La clase <strong>SOAPElement</strong> contiene los m&eacute;todos gen&eacute;ricos 
+  para manipular cualquier elemento del mensaje SOAP, y hereda de una clase m&aacute;s 
+  general que es <strong>Node</strong>, representando cualquier nodo del documento 
+  XML. Estas clases nos proporcionar&aacute;n m&eacute;todos para a&ntilde;adir 
+  nodos hijos a un nodo dado, eliminar nodos (<em>detach</em>), o bien consultar 
+  el contenido de estos nodos.</p>
+<p>Podremos crear un nuevo elemento a partir de nuestro objeto <em>sobre</em> 
+  (<strong>SOAPEnvelope</strong>):</p>
+<pre class="codigo"><strong>Name</strong> nombre = sobreSOAP.<strong>createName</strong>(nombre);
+<strong>Name</strong> nombre = sobreSOAP.<strong>createName</strong>(nombre, prefijo, uri);</pre>
+<p>Donde <em>nombre</em> se refiere al nombre local de la etiqueta XML, <em>prefijo</em> 
+  al prefijo del espacio de nombres al que pertenece, y <em>uri</em> a la URI 
+  de este espacio de nombres. Con esto obtenemos un objeto <strong>Name</strong> 
+  que hace referencia al nombre (a la etiqueta XML) que vamos a a&ntilde;adir. 
+  Podremos a&ntilde;adir esta etiqueta como contenido de alguna de las partes 
+  que tenemos en nuestro mensaje:</p>
+<p>Por ejemplo, podemos a&ntilde;adir un nuevo elemento al cuerpo del mensaje 
+  de la siguiente forma:</p>
+<pre class="codigo"><strong>Name</strong> nombre = sobreSOAP.<strong>createName</strong>(&quot;ConsultaTemperatura&quot;, &quot;dccia&quot;, 
+                                   &quot;http://www.dccia.ua.es&quot;);
+<strong>SOAPBodyElement</strong> elementoSOAP = cuerpoSOAP.<strong>addBodyElement</strong>(nombre);
+</pre>
+<p>Dentro del elemento reci&eacute;n creado podremos seguir insertando elementos:</p>
+<pre class="codigo"><strong>Name</strong> nombre = envelope.<strong>createName</strong>(&quot;area&quot;);
+<strong>SOAPElement</strong> area = elementoSOAP.<strong>addChildElement</strong>(nombre);
+area.<strong>addTextNode</strong>(&quot;Alicante&quot;);</pre>
+<p>Con esto habremos generado el siguiente mensaje SOAP:</p>
+<pre class="codigo">&lt;SOAP-ENV:Envelope
+  xmlns:SOAP-ENV=&quot;http://schemas.xmlsoap.org/soap/envelope/&quot;
+  &lt;SOAP-ENV:Body&gt;
+    &lt;dccia:ConsultaTemperatura xmlns:dccia=&quot;http://www.dccia.ua.es&quot;&gt;
+      &lt;area&gt;Alicante&lt;/area&gt;
+    &lt;/dccia:ConsultaTemperatura&gt;
+  &lt;/SOAP-ENV:Body&gt;
+&lt;/SOAP-ENV:Envelope&gt;</pre>
+<p>Igual que podemos a&ntilde;adir hijos a cada elemento, cuando recibamos la 
+  respuesta y queramos analizar el mensaje podremos consultar los hijos que tiene 
+  cada elemento y sus atributos.</p>
+<h3>2.1.3 Mensajes SOAP con anexos</h3>
+<p>Muchas veces podemos necesitar enviar en un mensaje SOAP datos que no son XML. 
+  Puesto que dentro del mensaje s&oacute;lo podemos usar XML, para enviar estos 
+  datos tendremos que usar los anexos al mensaje.</p>
+<center><img src="imagenes/swa-jaxm.gif" width="204" height="331"></center>
+<p>Esta parte anexa puede contener datos de cualquier tipo, incluido XML, y se 
+  encapsula en la clase <strong>AttachmentPart</strong>. Podemos crear una parte 
+  anexa a partir de nuestro mensaje SOAP de la siguiente forma:</p>
+<pre class="codigo"><strong>AttachmentPart</strong> anexoSOAP = mensajeSOAP.<strong>createAttachment</strong>();</pre>
+<p>Una vez creado este anexo, podremos a&ntilde;adir su contenido, especificando 
+  un objeto (<strong>Object</strong>) con el contenido, y una cadena con el tipo 
+  de contenido (<em>Content-type</em>). Por ejemplo, para a&ntilde;adir texto 
+  sin formato podemos hacer lo siguiente:</p>
+<pre class="codigo">anexoSOAP.<strong>setContent</strong>(&quot;Este es el contenido del anexo SOAP&quot;, &quot;text/plain&quot;);</pre>
+<p>Podremos establecer como contenido cualquier tipo de datos existente: &quot;<em>image/jpeg</em>&quot;, 
+  &quot;<em>text/html</em>&quot;, etc.</p>
+<h2>2.2 Envio de mensajes s&iacute;ncrono</h2>
+<p>Para intercambiar mensajes SOAP lo primero que deberemos hacer es obtener una 
+  conexi&oacute;n. Tenemos dos opciones para hacer esto:</p>
+<ul>
+  <li>Utilizar una conexi&oacute;n <strong>punto-a-punto</strong>, en la que establecemos 
+    la conexi&oacute;n directamente con el destinatario utilizando para ello un 
+    objeto <strong>SOAPConnection</strong> (perteneciente a la API SAAJ). Con 
+    esto s&oacute;lo podremos comunicarnos siguiendo el esquema petici&oacute;n-respuesta, 
+    de forma s&iacute;ncrona. </li>
+  <li>Utilizar un <strong>proveedor de mensajes</strong>, con la que podremos 
+    adem&aacute;s enviar mensajes de forma as&iacute;ncrona, sin tener que esperar 
+    una respuesta del servidor. Esta parte se implementa en la API JAXM.</li>
+</ul>
+<p>Vamos a ver la utilizaci&oacute;n de una conexi&oacute;n punto-a-punto para 
+  intercambiar mensajes de forma s&iacute;ncrona. Para ello tendremos que obtener 
+  un objeto <strong>SOAPConnection</strong>, para lo que necesitaremos un objeto 
+  <strong>SOAPConnectionFactory</strong>:</p>
+<pre class="codigo"><strong>SOAPConnectionFactory</strong> scf = <strong>SOAPConnectionFactory</strong>.newInstance();
+<strong>SOAPConnection</strong> con = scf.<strong>createConnection</strong>();</pre>
+<p>Una vez tenemos nuestra conexi&oacute;n abierta podemos hacer una petici&oacute;n 
+  a una determinada direcci&oacute;n. Se enviar&aacute; como petici&oacute;n el 
+  mensaje SOAP que especifiquemos, y la llamada nos devolver&aacute; otro mensaje 
+  SOAP como respuesta.</p>
+<pre class="codigo">URL endpoint = new URL(&quot;http://rvg.ua.es/endpoint&quot;);
+<strong>SOAPMessage</strong> respuestaSOAP = con.<strong>call</strong>(mensajeSOAP, endpoint);</pre>
+<p>Debemos especificar la URL de la direcci&oacute;n a la que ir&aacute; dirigido 
+  nuestro mensaje. Esta direcci&oacute;n a la que enviamos la petici&oacute;n 
+  de servicio es lo que se conoce como <em>endpoint</em>.</p>
+<p>Podremos analizar el mensaje SOAP que nos ha devuelto como respuesta tal como 
+  vimos en el apartado anterior, accediendo a cada una de sus partes y dentro 
+  de ellas a sus nodos hijos.</p>
+<p>Una vez hayamos terminado de hacer peticiones, deberemos cerrar la conexi&oacute;n 
+  SOAP con:</p>
+<pre class="codigo">con.<strong>close</strong>();</pre>
+<p>Este tipo de clientes SOAP se denominan clientes <em>standalone</em>, ya que 
+  no necesitan ning&uacute;n componente externo (proveedor de mensajes) para funcionar.</p>
+<h2>2.3 Envio de mensajes as&iacute;ncrono</h2>
+<p>Vamos a ver c&oacute;mo utilizar un proveedor de mensajes para enviar nuestros 
+  mensajes. A diferencia del m&eacute;todo de conexi&oacute;n anterior, con el 
+  proveedor de mensajes podremos enviar mensajes de forma as&iacute;ncrona, sin 
+  tener que esperar una respuesta por parte del servidor para continuar. Esta 
+  parte se incluye en la API JAXM.</p>
+<p>Lo primero que debemos hacer es obtener un proveedor de mensajes, encapsulado 
+  en la clase <strong>ProviderConnection</strong>, para lo cual tenemos dos alternativas:</p>
+<ul>
+  <li>Obtener el proveedor de mensajes por defecto de la implementaci&oacute;n:</li>
+</ul>
+<pre class="codigo"><strong>ProviderConnectionFactory</strong> pcf = <strong>ProviderConnectionFactory</strong>.newInstance();
+<strong>ProviderConnection</strong> con = pcf.<strong>createConnection</strong>();</pre>
+<ul>
+  <li> Obtener un proveedor de mensajes a trav&eacute;s de un servicio de nombres 
+    (JNDI), dando su nombre l&oacute;gico:</li>
+</ul>
+<pre class="codigo">Context ctx = new InitialContext(); 
+<strong>ProviderConnectionFactory</strong> pcf =
+   (<strong>ProviderConnectionFactory</strong>)ctx.lookup(&quot;MiProveedor&quot;);
+<span class="codigo"><strong>ProviderConnection</strong> pc = pcf.<strong>createConnection</strong>();</span></pre>
+<p>En este caso deberemos crear los mensajes a partir del proveedor de conexiones 
+  que vayamos a utilizar, en lugar de utilizar el <strong>MessageFactory</strong> 
+  por defecto como hicimos anteriormente.</p>
+<p>Para crear este objeto <strong>MessageFactory</strong> debemos proporcionar 
+  el perfil que queramos utilizar para los mensajes. Un ejemplo de perfil puede 
+  ser <em>&quot;ebxml&quot;</em>:</p>
+<pre class="codigo"><strong>MessageFactory</strong> mf = pc.<strong>createMessageFactory</strong>(&quot;ebxml&quot;);</pre>
+<p>Antes de especificar un perfil, deberemos asegurarnos de que nuestro proveedor 
+  soporta dicho perfil. Podemos consultar todos los perfiles disponibles en nuestro 
+  proveedor de la siguiente forma:</p>
+<pre class="codigo"><strong>ProviderMetaData</strong> metaData = pc.<strong>getMetaData</strong>();
+String [] perfilesSoportados = metaData.<strong>getSupportedProfiles</strong>();</pre>
+<p>Una vez obtenido el <strong>MessageFactory</strong>, podremos construir nuestro 
+  mensaje y a&ntilde;adir a &eacute;ste la informaci&oacute;n necesaria, tal como 
+  hemos visto anteriormente.</p>
+<p>Una vez tengamos el mensaje listo para enviar, podremos hacerlo llamando al 
+  siguiente m&eacute;todo:</p>
+<pre class="codigo">pc.<strong>send</strong>(mensajeSOAP);</pre>
+<p>Podemos ver que no es necesario indicar el destinatario del mensaje, ya que 
+  ser&aacute; el proveedor de mensajes quien determine quien es dicho destinatario. 
+  Hemos de recalcar que en este caso s&oacute;lo podremos enviar mensajes creados 
+  a partir del objeto proveedor de mensajes que estemos usando, ya que no funcionar&aacute;n 
+  si se crean de otra forma.</p>
+<p>Pero adem&aacute;s de enviar mensajes, es posible que queramos recibir respuestas. 
+  Para hacer esto de forma as&iacute;ncrona necesitaremos un <em>listener</em>. 
+  Dicho <em>listener</em> se encuentra en la interfaz <strong>OnewayListener</strong> 
+  que nos obliga a definir el siguiente m&eacute;todo:</p>
+<pre class="codigo">public void <strong>onMessage</strong>(SOAPMessage mensaje);</pre>
+<p>Que se invocar&aacute; cuando recibamos un mensaje, proporcionando como par&aacute;metro 
+  el mensaje recibido. Para que el <em>listener</em> sea efectivo deberemos configurarlo 
+  en el despliegue de nuestra aplicaci&oacute;n.</p>
+<h2>2.4 Crear un servidor SOAP</h2>
+<p>Hemos visto como crear clientes que envian mensajes SOAP, pero para que esta 
+  comunicaci&oacute;n sea posible deber&aacute; haber un destinatario que reciba 
+  estos mensajes, un servidor que acepte los mensajes SOAP.</p>
+<p>Podemos implementar este servidor mediante un servlet. Podemos encontrar una 
+  serie de clases &uacute;tiles dentro de la API JAXM. El tipo de servlet que 
+  podremos utilizar como servidor SOAP se encuentra en la clase <strong>JAXMServlet</strong>, 
+  que nos proporciona facilidades para desarrollar nuestro servidor SOAP de forma 
+  sencilla. Este servlet deber&aacute; implementar una de las siguientes interfaces:</p>
+<ul>
+  <li><strong>OnewayListener</strong>: Para el modelo as&iacute;ncrono. Nos obliga 
+    a definir el siguiente m&eacute;todo:</li>
+</ul>
+<pre class="codigo">public void <strong>onMessage</strong>(SOAPMessage mensaje);</pre>
+<blockquote>
+  <p>Que se invoca cuando nos llega un mensaje, proporcion&aacute;ndonos como 
+    par&aacute;metro dicho mensaje.</p>
+</blockquote>
+<ul>
+  <li><strong>ReqRespListener</strong>: Se utilizar&aacute; para el modelo petici&oacute;n-respuesta 
+    s&iacute;ncrono. En este caso el m&eacute;todo que tenemos que definir es 
+    el siguiente:</li>
+</ul>
+<pre class="codigo">public SOAPMessage <strong>onMessage</strong>(SOAPMessage mensaje);</pre>
+<blockquote>
+  <p>En este caso vemos que en el mismo m&eacute;todo adem&aacute;s debemos devolver 
+    otro mensaje como respuesta, ya que el cliente estar&aacute; esperando una 
+    respuesta del servidor.</p>
+</blockquote>
+<p>La clase <strong>JAXMServlet</strong> se encarga de gestionar la recepci&oacute;n 
+  del mensaje SOAP de entrada y el env&iacute;o de nuestra respuesta internamente, 
+  por lo que nuestro &uacute;nico trabajo ser&aacute; implementar uno de estos 
+  dos m&eacute;todos <strong>onMessage</strong>, seg&uacute;n el modelo seguido.</p>
+</body>
+</html>

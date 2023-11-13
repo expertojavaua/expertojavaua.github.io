@@ -1,0 +1,286 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+  <title>Ejercicios de Comunicaci&oacute;n</title>
+                                           
+  <meta content="text/html; charset=iso-8859-1"
+ http-equiv="Content-Type">
+                       
+  <link href="../../../apuntes.css" rel="stylesheet" type="text/css">
+                         
+  <meta content="Microsoft FrontPage 4.0" name="GENERATOR">
+</head>
+  <body bgcolor="#ffffff" text="#000000">
+ 
+<h1>Ejercicios de Comunicaci&oacute;n</h1>
+ 
+<p><strong>1.</strong> Compilaci&oacute;n y despliegue de una aplicaci&oacute;n
+   web con <strong>ant</strong>.</p>
+ 
+<blockquote>    </blockquote>
+<p>Vamos a trabajar con la herramienta <strong>ant</strong>, que nos facilitar&aacute;
+     la compilaci&oacute;n y el despligue de nuestra aplicaci&oacute;n web.
+Es      una herramienta basada en Java, similar a la herramienta <strong>make</strong>,
+     pero sin muchas de sus limitaciones. <strong>Make</strong> tiene el
+inconveniente      de ser dependiente del <em>shell</em> que utilicemos,
+ya que ejecuta comandos      de &eacute;ste, lo cual complicar&iacute;a la
+portabilidad de nuestras aplicaciones      a distintas plataformas. </p>
+   
+<p><strong>Ant</strong> utiliza ficheros de configuraci&oacute;n basados
+en      XML, donde definiremos las tareas a realizar. Para realizar estas
+tareas se      utilizar&aacute;n clases Java, en lugar de comandos del <em>shell</em>,
+lo      cual lo har&aacute; independiente de la plataforma. Podremos realizar
+un gran      n&uacute;mero de diferentes tareas con esta herramienta, pero
+nos centraremos      en la compilaci&oacute;n y despliegue de nuestras aplicaciones
+web.</p>
+   
+<p>El fichero de configuraci&oacute;n, llamado <em>build.xml</em>, es bastante
+     m&aacute;s complejo que un <em>Makefile</em>, pero podremos reutilizar
+una      plantilla gen&eacute;rica para todas nuestras aplicaciones. Para
+comenzar      veremos como debemos estructurar nuestra aplicaci&oacute;n
+web. Es recomendable      no desarrollar la aplicaci&oacute;n directamente
+en el directorio <em>webapps</em>      de Tomcat, sino tener un directorio
+de desarrollo a parte. En este directorio      de desarrollo tendremos los
+siguientes elementos:</p>
+  
+<div align="center">   
+<table width="91%" border="0">
+     <tbody>
+    <tr>
+        <td width="25%">
+      <pre>build.xml</pre>
+      </td>
+       <td width="75%">Fichero de configuraci&oacute;n de Ant</td>
+     </tr>
+     <tr>
+        <td>
+      <pre>build.properties</pre>
+      </td>
+       <td>Nos permite a&ntilde;adir propiedades a la configuraci&oacute;n
+de Ant</td>
+     </tr>
+     <tr>
+        <td>
+      <pre>src</pre>
+      </td>
+       <td>Directorio con los fuentes de nuestras clases Java (servlets,
+filtros          y clases auxiliares)</td>
+     </tr>
+     <tr>
+        <td>
+      <pre>web</pre>
+      </td>
+       <td>Directorio con el resto de contenido de la web: recursos est&aacute;ticos,
+         JSPs, directorio WEB-INF (web.xml y lib).</td>
+     </tr>
+   
+  </tbody>
+</table>
+ </div>
+     
+<p>Para la compilaci&oacute;n y despliegue de aplicaciones web con Tomcat
+4.0.X      podemos utilizar este fichero build.xml. En &eacute;l s&oacute;lo
+deberemos      cambiar dos par&aacute;metros de configuraci&oacute;n: nombre
+de nuestra aplicaci&oacute;n      web (propiedad <strong>app.name</strong>)
+y directorio donde tenemos instalado      Tomcat (propiedad <strong>catalina.home</strong>).</p>
+   
+<p>Podemos modificar el valor de estas propiedades en el fichero <em>build.xml</em>,
+     o bien crear un fichero <em>build.properties</em> por separado donde
+daremos      valor a estas propiedades que pueden variar. Este fichero <em>build.properties</em>
+     tendr&aacute; la siguiente forma:</p>
+   
+<pre class="codigo"><strong>catalina.home</strong>=/home/malo/jakarta-tomcat-4.0.5</pre>
+   
+<p>Para otras versiones de Tomcat ser&aacute; necesario cambiar en <em>build.xml</em>
+     los directorios donde se encuentran las librerias. Normalmente en la
+documentaci&oacute;n      de cada versi&oacute;n de Tomcat se puede encontrar
+una plantilla del fichero      apropiado para compilar y desplegar en esa
+versi&oacute;n.</p>
+   
+<p>Para m&aacute;s informaci&oacute;n acerca de las posibilidades de la herramienta
+     ant, puedes consultar la documentaci&oacute;n de <strong>ant</strong>
+disponible      online en la p&aacute;gina del proyecto (http://jakarta.apache.org/ant)
+o      en el mismo paquete de la distribuci&oacute;n de <strong>ant</strong>.</p>
+   
+<p>Vamos a probar la aplicaci&oacute;n <strong>contexto</strong> incluida
+en      los ejercicios de la sesi&oacute;n. Descomprimir el fichero de ejercicios
+     en nuestro directorio HOME, y entrar dentro del directorio de la aplicaci&oacute;n
+     <strong>contexto</strong>. </p>
+<blockquote>   
+  <p>a) Comprueba en el fichero <em>build.properties</em> que la ruta donde
+tenemos      instalado Tomcat coincida con la especificada en este fichero.
+Puedes echar      un vistazo a la estructura de directorios que se ha utilizado
+en la aplicaci&oacute;n,      como ejemplo de como organizar un directorio
+de desarrollo de una aplicaci&oacute;n      web para utilizar <strong>ant</strong>.&nbsp;&nbsp;
+  </p>
+   
+  <p>b) Vamos a compilar la aplicaci&oacute;n web. Para ello deberemos introducir
+     desde el directorio donde se encuentra el fichero <em>build.xml</em>
+(directorio      <em>contexto </em>en este caso) el siguiente comando:</p>
+   
+  <pre class="codigo">ant
+</pre>
+  <p>
+    Una vez hecho esto veremos que se ha generado un directorio <em>build</em>, 
+    cuyo contenido es la aplicaci&oacute;n web contruida, con la estructura que 
+    debe tener una aplicaci&oacute;n en el directorio <em>webapps</em> de Tomcat.</p>
+   
+  <p>c) Ahora solo nos queda desplegar la aplicaci&oacute;n. Para ello lo
+&uacute;nico      que tenemos que hacer es introducir el siguiente comando:</p>
+   
+  <pre class="codigo">ant deploy</pre>
+   
+  <p>Lo que har&aacute; ser&aacute; copiar la aplicaci&oacute;n web contruida
+     (directorio <em>build</em>) al directorio <em>webapps</em> del Tomcat.
+A continuaci&oacute;n      iniciaremos el servidor Tomcat, y si en un navegador
+accedemos a la direcci&oacute;n:</p>
+   
+  <pre class="codigo">http://localhost:8080/contexto</pre>
+   
+  <p>Veremos la aplicaci&oacute;n web ya en marcha.</p>
+   
+  <p>d) La aplicaci&oacute;n web nos permite visualizar los atributos de
+contexto      definidos y sus valores, y a&ntilde;adir nuevos atributos.
+A parte de los      atributos que nosotros a&ntilde;adimos manualmente, &iquest;hay
+m&aacute;s      atributos de contexto definidos?</p>
+   
+  <p>e) Podemos a&ntilde;adir nuevos atributos de contexto. Daremos un nombre
+     del atributo, y un texto que contendr&aacute; como valor. Adem&aacute;s
+como      valor tambi&eacute;n se introducir&aacute; el identificador de
+sesi&oacute;n      del navegador que haya creado dicho atributo. Abrir varios
+navegadores (por      ejemplo konqueror y mozilla) y a&ntilde;adir atributos
+de contexto desde cada      uno. Comprobar que en cada navegador vemos tanto
+los atributos creados en      su sesi&oacute;n, como lo atributos creados
+creados en las sesiones de otros      navegadores (el identificador de sesi&oacute;n
+ser&aacute; distinto).</p>
+   
+  <p>f) Si nos fijamos en el descriptor de despligue, web.xml, veremos que
+se      ha a&ntilde;adido un listener sobre los atributos del contexto. Este
+listener      imprime mensajes en el log indicando cuando se a&ntilde;ade,
+elimina o reemplaza      un atributo de contexto. Comprobar en el fichero
+de logs correspondiente:</p>
+   
+  <pre class="codigo"> $CATALINA_HOME/logs/<strong>localhost_log</strong>&lt;fecha&gt;.txt</pre>
+   
+  <p> que se han registrado los cambios en los atributos que hayamos hecho.</p>
+ </blockquote>
+ 
+<p><strong>2.</strong> Vamos a realizar una aplicaci&oacute;n de chat utilizando
+   servlets. En el directorio <strong>chat</strong> de los fuentes de la
+sesi&oacute;n    podr&aacute;s encontrar la base sobre la que construiremos
+el chat. Cada mensaje    de chat estar&aacute; encapsulado en la clase <strong>Mensaje</strong>,
+y la    lista de mensajes actual del chat se encontrar&aacute; en la clase
+<strong>ColaMensajes</strong>.    Todas las clases de nuestra aplicaci&oacute;n
+se encuentran en el paquete <strong>chat</strong>.  </p>
+ 
+<p>Adem&aacute;s se proporcionan los ficheros HTML est&aacute;ticos necesarios
+   para la aplicaci&oacute;n. El fichero <strong>index.html</strong> contiene
+el    formulario de login para que un usuario introduzca el <em>nick</em>
+con el que    entrar&aacute; en el chat (no se solicita ning&uacute;n password
+para validar).    El login se har&aacute; efectivo por el servlet <strong>LoginUsuario</strong>
+   tambi&eacute;n proporcionado, que introducir&aacute; el <em>nick</em>
+del usuario    en la informaci&oacute;n de sesi&oacute;n y nos redirigir&aacute;
+al chat. En    el subdirectorio chat tendremos los ficheros est&aacute;ticos
+de la aplicaci&oacute;n    de chat:</p>
+ 
+<table width="100%" border="0">
+   <tbody>
+    <tr>
+     <td width="17%">
+      <pre>frames.html</pre>
+      </td>
+     <td width="83%">P&aacute;gina principal de los frames de la aplicaci&oacute;n
+chat. Mostrar&aacute;        un frame con el formulario para enviar mensajes,
+y otro con la lista de        mensajes enviados.</td>
+   </tr>
+   <tr>
+     <td>
+      <pre>envia.html</pre>
+      </td>
+     <td>Formulario para enviar mensajes al chat.</td>
+   </tr>
+   <tr>
+     <td>
+      <pre>pie.html</pre>
+      </td>
+     <td>Cabecera de la tabla de mensajes, a incluir al comienzo de la p&aacute;gina
+       de lista de mensajes.</td>
+   </tr>
+   <tr>
+     <td>
+      <pre>cabecera.html</pre>
+      </td>
+     <td>Pie de la tabla de mensajes, a incluir al final de la p&aacute;gina
+de        lista de mensajes.</td>
+   </tr>
+ 
+  </tbody>
+</table>
+ 
+<p>Ahora deberemos implementar los servlets para el envio de mensajes, y
+para    la consulta de la lista de mensajes enviados. Se pide:</p>
+ 
+<blockquote>   
+  <p>a) La cola de mensajes ser&aacute; el objeto com&uacute;n al que acceden
+     los servlets para el envio y la consulta de estos mensajes. Por lo tanto
+el      objeto deber&aacute; a&ntilde;adirse como atributo del contexto.
+Esto lo tendremos      que hacer antes de que cualquier servlet se haya ejecutado.
+Para ello debemos      crear un objeto <strong>ServletContextListener</strong>
+que en la creaci&oacute;n      del contexto inicialice la cola de mensajes
+(<strong>ColaMensajes</strong>)      y la introduzca como atributo en el
+contexto global.</p>
+   
+  <p>b) Una vez tenemos creada la cola de mensajes, deberemos implementar
+el servlet      EnviaMensaje, que tome un mensaje como par&aacute;metro (el
+nombre del par&aacute;metro      es <em>texto</em>), y lo a&ntilde;ada a
+la lista de mensajes con el nick del      usuario actual (obtenido del atributo
+  <em>nick</em> de la sesi&oacute;n).      Una vez enviado el mensaje, mostraremos
+en la salida el contenido de <strong>envia.html</strong>,      mediante un
+objeto <strong>RequestDispatcher</strong>.</p>
+   
+  <p>c) Por &uacute;ltimo, deberemos implementar el servlet ServletChat que
+mostrar&aacute;      todos los mensajes del chat, anteponiendoles el link
+de quien lo envi&oacute;.      Este servlet debe:</p>
+   
+  <ul>
+     <li>Para que la lista de mensajes se actualice periodicamente en el
+cliente,        haremos que se <strong>recargue</strong> cada 5 segundos.
+A&ntilde;adir        la cabecera HTTP correspondiente a la respuesta para
+que esto ocurra.</li>
+     <li>Incluir el contenido del fichero est&aacute;tico <strong>cabecera.html</strong>
+       al comienzo del documento generado, y <strong>pie.html </strong>al
+final,        para enmarcar la zona donde aparecen los mensajes del chat.</li>
+     <li>Obtener el <em>nick</em> del usuario actual de la sesi&oacute;n.
+Los mensajes        enviados con este <em>nick</em> se mostrar&aacute;n en
+negrita, el resto        se mostrar&aacute;n de forma normal.</li>
+   
+  </ul>
+   
+  <p>d) Comprobar que el chat funciona correctamente. Conectar desde varios
+clientes      a un mismo servidor.</p>
+ </blockquote>
+ 
+<p><strong>3.</strong> Vamos a utilizar una aplicaci&oacute;n independiente
+en    el cliente como front-end para la aplicaci&oacute;n de chat. Esta aplicaci&oacute;n
+   cliente ya est&aacute; desarrollada en la clase <strong>AplicChat</strong>
+dentro    del directorio <em>applet</em>. Se pide:</p>
+ 
+<blockquote>   
+  <p>a) La aplicaci&oacute;n invoca cada 5 segundos al servlet <strong>ListaMensajes</strong>.
+     Espera recibir como respuesta un objeto <strong>ColaMensajes</strong>,
+del      cual mostrar&aacute; todos los mensajes en el &aacute;rea de texto
+de la aplicaci&oacute;n.      Implementar el servlet <strong>ListaMensajes</strong>
+que devuelva el objeto      <strong>ColaMensajes</strong> al cliente.</p>
+   
+  <p>b) &iquest;Por qu&eacute; en este caso no podemos utilizar informaci&oacute;n
+     de sesi&oacute;n? &iquest;Es realmente necesaria en este caso? La aplicaci&oacute;n
+     front-end en cada solicitud a <strong>EnviaMensaje</strong>, adem&aacute;s
+     del mensaje envia como par&aacute;metro el nick que hemos introducido
+en la      aplicaci&oacute;n (en el par&aacute;metro de nombre <em>nick</em>).
+Modificar      <strong>EnviaMensaje</strong> para que en caso de recibir
+como par&aacute;metro      el nick, utilice dicho nick para insertar el mensaje.<br>
+   </p>
+ </blockquote>
+ <br>
+</body>
+</html>

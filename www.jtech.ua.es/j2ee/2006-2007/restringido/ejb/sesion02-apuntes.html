@@ -1,0 +1,592 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.7">
+<meta name="Forrest-skin-name" content="pelt">
+<title>La implementaci&oacute;n EJB en detalle</title>
+<link type="text/css" href="skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="skin/print.css" rel="stylesheet">
+<link type="text/css" href="skin/profile.css" rel="stylesheet">
+<script src="skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<div class="header">
+<div class="grouplogo">
+<a href="http://www.jtech.ua.es/j2ee"><img class="logoImage" alt="J2EE" src="images/baner_j2ee_izq.gif" title="Curso Especialista Universitario J2EE"></a>
+</div>
+<div class="projectlogoA1">
+<a href="http://www.dccia.ua.es/"><img class="logoImage" alt="Componentes EJB" src="images/baner_j2ee_der.gif" title="Componentes EJB"></a>
+</div>
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="../index.html">M&oacute;dulos</a>
+</li>
+<li class="current">
+<a class="base-selected" href="index.html">Componentes EJB</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<div id="level2tabs"></div>
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<div id="menu">
+<div onclick="SwitchMenu('menu_selected_1.1', 'skin/')" id="menu_selected_1.1Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Materiales</div>
+<div id="menu_selected_1.1" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="index.html" title="Componentes EJB">&Iacute;ndice</a>
+</div>
+<div onclick="SwitchMenu('menu_selected_1.1.2', 'skin/')" id="menu_selected_1.1.2Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Teor&iacute;a</div>
+<div id="menu_selected_1.1.2" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="sesion01-apuntes.html" title="Introducci&oacute;n a los Enterprise Beans">Sesi&oacute;n 1</a>
+</div>
+<div class="menupage">
+<div class="menupagetitle">Sesi&oacute;n 2</div>
+</div>
+<div class="menuitem">
+<a href="sesion03-apuntes.html" title="Beans de sesi&oacute;n">Sesi&oacute;n 3</a>
+</div>
+<div class="menuitem">
+<a href="sesion04-apuntes.html" title="Beans de sesi&oacute;n">Sesi&oacute;n 4</a>
+</div>
+<div class="menuitem">
+<a href="sesion05-apuntes.html" title="Seguridad">Sesi&oacute;n 5</a>
+</div>
+<div class="menuitem">
+<a href="sesion06-apuntes.html" title="Transacciones">Sesi&oacute;n 6</a>
+</div>
+<div class="menuitem">
+<a href="sesion07-apuntes.html" title="EJB 3.0">Sesi&oacute;n 7</a>
+</div>
+<div class="menuitem">
+<a href="sesion08-apuntes.html" title="JPA">Sesi&oacute;n 8</a>
+</div>
+<div class="menuitem">
+<a href="roadmap.html" title="Roadmap EJB">Roadmap</a>
+</div>
+</div>
+<div onclick="SwitchMenu('menu_1.1.3', 'skin/')" id="menu_1.1.3Title" class="menutitle">Ejercicios</div>
+<div id="menu_1.1.3" class="menuitemgroup">
+<div class="menuitem">
+<a href="sesion01-ejercicios.html" title="Introducci&oacute;n a los Enterprise Beans">Sesi&oacute;n 1</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-ejercicios.html" title="Beans de sesi&oacute;n">Sesi&oacute;n 2</a>
+</div>
+<div class="menuitem">
+<a href="sesion03-ejercicios.html" title="Beans de sesi&oacute;n">Sesi&oacute;n 3</a>
+</div>
+<div class="menuitem">
+<a href="sesion04-ejercicios.html" title="Beans de sesi&oacute;n con estado">Sesi&oacute;n 4</a>
+</div>
+<div class="menuitem">
+<a href="sesion05-ejercicios.html" title="Seguridad">Sesi&oacute;n 5</a>
+</div>
+<div class="menuitem">
+<a href="sesion06-ejercicios.html" title="Transacciones">Sesi&oacute;n 6</a>
+</div>
+<div class="menuitem">
+<a href="sesion07-ejercicios.html" title="EJB 3.0">Sesi&oacute;n 7</a>
+</div>
+<div class="menuitem">
+<a href="sesion08-ejercicios.html" title="JPA">Sesi&oacute;n 8</a>
+</div>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<div id="credit2"></div>
+</div>
+<div id="content">
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="sesion02-apuntes.pdf"><img alt="PDF -icon" src="skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1>La implementaci&oacute;n EJB en detalle</h1>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#Implementaci%C3%B3n+de+un+componente+EJB%3A+beans+de+sesi%C3%B3n+sin+estado">Implementaci&oacute;n de un componente EJB: beans de sesi&oacute;n sin estado</a>
+<ul class="minitoc">
+<li>
+<a href="#Interfaces+componente+y+home">Interfaces componente y home</a>
+</li>
+<li>
+<a href="#Clase+bean">Clase bean</a>
+</li>
+<li>
+<a href="#Interfaces+locales">Interfaces locales</a>
+</li>
+<li>
+<a href="#Descriptores+del+despliegue">Descriptores del despliegue</a>
+</li>
+<li>
+<a href="#Fichero+ejb-jar">Fichero ejb-jar</a>
+</li>
+<li>
+<a href="#Despliegue+del+bean">Despliegue del bean</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Repaso+de+RMI">Repaso de RMI</a>
+<ul class="minitoc">
+<li>
+<a href="#Stubs%2C+skeletons+y+paso+de+argumentos">Stubs, skeletons y paso de argumentos</a>
+</li>
+<li>
+<a href="#Paso+de+argumentos">Paso de argumentos</a>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+
+
+<a name="N1000C"></a><a name="Implementaci%C3%B3n+de+un+componente+EJB%3A+beans+de+sesi%C3%B3n+sin+estado"></a>
+<h2 class="underlined_10">Implementaci&oacute;n de un componente EJB: beans de sesi&oacute;n sin estado</h2>
+<div class="section">
+<p>Antes de profundizar m&aacute;s sobre la arquitectura de un componente EJB, vamos a estudiar las clases Java que se usan para implementarlo. En concreto, vamos a ver en detalle la implementaci&oacute;n del EJB desplegado en la sesi&oacute;n anterior de ejercicios. Recordemos que se trataba de un sencillo EJB cuya interfaz daba acceso a dos m&eacute;todos de negocio:</p>
+<pre class="code">
+String    saluda();
+SaludoTO  getSaludo(int numDatos);
+</pre>
+<p>El primer m&eacute;todo devuelve una cadena con un saludo que cambia aleatoriamente y el segundo devuelve un <span class="codefrag">SaludoTO</span> (<em>transfer object</em>) que contiene la cadena de saludo y un array de enteros con un tama&ntilde;o definido por el n&uacute;mero de datos que pasamos como par&aacute;metro. El bean se despliega en el servidor de aplicaciones con el nombre <span class="codefrag">SaludoBean</span>.</p>
+<p>&iquest;Qu&eacute; clases Java se usan para implementar el bean? Desde el punto de vista del cliente que usa el componente, un componente EJB se define siempre a partir de dos interfaces: la interfaz <em>home</em> y la interfaz <em>componente</em>. La interfaz <em>componente</em> define los m&eacute;todos de negocio del bean (el m&eacute;todo <span class="codefrag">saluda()</span> en el ejemplo). La interfaz <em>home</em> proporciona los m&eacute;todos necesarios para acceder a los beans (crearlos, buscarlos, etc.). Podemos ver la interfaz <em>home</em> como una <em>factor&iacute;a</em> que proporciona m&eacute;todos que nos permiten acceder a las instancias del bean.</p>
+<p>En este caso, los nombres y los m&eacute;todos de las interfaces son los siguientes:</p>
+<ul>
+
+<li>
+<strong>Interfaz <span class="codefrag">SaludoHome.java</span></strong>: define el m&eacute;todo <span class="codefrag">create()</span> que devuelve un objeto de tipo <span class="codefrag">Saludo</span>.</li>
+
+<li>
+<strong>Interfaz <span class="codefrag">Saludo.java</span></strong>: define los m&eacute;todos <span class="codefrag">saluda()</span> y <span class="codefrag">getSaludo(int numDatos)</span>.</li>
+
+</ul>
+<p>Esto es todo desde el punto de vista del cliente. Sin embargo, desde el punto de vista del desarrollador, es necesario una clase m&aacute;s, en la que se define la implementaci&oacute;n del bean. Se trata de la <strong>clase <span class="codefrag">SaludoBean.java</span></strong>. </p>
+<p>Ademas de las clases e interfaces Java, es necesario otro elemento adicional. Se trata de los descriptores de despliegue. Son ficheros XML que describen un conjunto de caracter&iacute;sticas declarativas del bean relacionadas con su despliegue en el servidor de aplicaciones. Existen dos grupos de descriptores de despliegue, los est&aacute;ndar (en los que se definen caracter&iacute;sticas de los beans definidas por la especificaci&oacute;n EJB) y los propios del servidor de aplicaciones (en los que se definen caracter&iacute;sticas de propias del servidor de aplicaciones en el que estamos desplegando el bean). En el caso del ejemplo que estamos presentando en esta sesi&oacute;n, son los ficheros <span class="codefrag">ejb-jar.xml</span> y <span class="codefrag">weblogic-ejb-jar.xml</span>.</p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+   
+<th colspan="1" rowspan="1">Elemento del bean
+   <span class="codefrag">SaludoBean</span></th><th colspan="1" rowspan="1">Descripci&oacute;n</th> 
+
+</tr>
+
+<tr>
+   
+<td colspan="1" rowspan="1">Interfaz <span class="codefrag">SaludoHome.java</span></td><td colspan="1" rowspan="1">Define el m&eacute;todo
+   <span class="codefrag">create()</span> que devuelve un objeto que implementa la interfaz <span class="codefrag">Saludo</span>.</td>
+
+</tr>
+
+<tr>
+   
+<td colspan="1" rowspan="1">Interfaz <span class="codefrag">Saludo.java</span></td><td colspan="1" rowspan="1">Define los m&eacute;todos
+   de negocio <span class="codefrag">saluda()</span> y <span class="codefrag">getSaludo(int numDatos)</span>.</td> 
+
+</tr>
+
+<tr>
+   
+<td colspan="1" rowspan="1">Clase <span class="codefrag">SaludoBean.java</span></td><td colspan="1" rowspan="1">Define la implementaci&oacute;n de los m&eacute;todos <span class="codefrag">saluda()</span> y <span class="codefrag">getSaludo(int numDatos)</span>.</td>
+
+</tr>
+
+<tr>
+   
+<td colspan="1" rowspan="1">Ficheros <span class="codefrag">ejb-jar.xml</span> y <br>
+   
+<span class="codefrag">weblogic-ejb-jar.xml</span></td><td colspan="1" rowspan="1">Descriptores de
+   despliegue del bean.</td>
+
+</tr> 
+
+</table>
+<p>Todas estas clases Java y ficheros XML deben desplegarse en el servidor de aplicaciones. El proceso de despliegue de los beans no est&aacute; estandarizado y cada servidor de aplicaciones define unos m&eacute;todos distintos. En general, hay tres formas de hacerlo:</p>
+<ul>
+
+<li>Construir un fichero <span class="codefrag">EAR</span> (una especie de JAR) con todos los elementos y desplegar este fichero.</li>
+
+<li>Indicarle al servidor de aplicaciones el directorio donde se encuentra compilado el bean (en el caso en que el desarrollo y el despliegue se haga en la misma m&aacute;quina).</li>
+
+<li>Ejecutar una tarea <span class="codefrag">ant</span> que automatiza el despliegue.</li>
+
+</ul>
+<p>Vamos a centrarnos en el desarrollo de los beans de sesi&oacute;n. El desarrollo y programaci&oacute;n de los beans suele ser un proceso bastante similar sea cual sea el tipo de bean. Consta de los siguientes 5 pasos:</p>
+<ol>
+
+<li>Escribe y compila las dos interfaces del bean: <em>home</em> y <em>componente</em>.</li>
+
+<li>Escribe y compila la clase <em>bean</em> que contiene a todos los m&eacute;todos de negocio.</li>
+
+<li>Crea un descriptor XML del despliegue en el que se describa qu&eacute; es el bean y c&oacute;mo debe manejarse. Este fichero debe llamarse <span class="codefrag">ejb-jar.xml</span>.</li>
+
+<li>Pon la clase bean, los interfaces y el descriptor XML del despliegue en un fichero EJB JAR . Podr&iacute;a haber m&aacute;s de un bean el mismo fichero EJB JAR, pero nunca habr&aacute; m&aacute;s de un descriptor de despliegue.</li>
+
+<li>Despliega el bean en el servidor usando las herramientas proporcionadas por el servidor de aplicaciones.</li>
+
+</ol>
+<p>Vamos a ver con algo m&aacute;s de detalle estos cinco pasos, usando el sencillo ejemplo <span class="codefrag">SaludaBean</span>. </p>
+<a name="N1010C"></a><a name="Interfaces+componente+y+home"></a>
+<h3 class="underlined_5">Interfaces componente y home</h3>
+<p>En primer lugar vamos a implementar las interfaces que especifican las funciones que ofrece el bean. Como hemos visto en el apartado anterior, debemos definir el m&eacute;todo <span class="codefrag">create</span> en la interfaz <em>home</em> y los m&eacute;todos de negocio en la interfaz <em>componente</em>. Vamos a llamar a estas interfaces <span class="codefrag">SaludoHome</span> y <span class="codefrag">Saludo</span>. Estas interfaces son las que deber&aacute; usar el cliente para comunicarse con el bean.</p>
+<div class="frame note">
+<div class="label">Nota</div>
+<div class="content">
+  El nombre que le damos a las interfaces home y componente es arbitrario. Sin embargo, se suele seguir el criterio de llamar a la interfaz componente con el nombre del tipo del bean que estamos definiendo (el bean <em>Saludo</em>, en este caso) y ponerle a ese nombre el sufijo <em>Home</em> para definir el nombre de la interfaz home (<em>SaludoHome</em>). Ya veremos que estos nombres se declarar&aacute;n en el descriptor de despliegue para informar al servidor de aplicaciones.
+</div>
+</div>
+<p>La interfaz <span class="codefrag">Saludo</span> hereda de la interfaz <span class="codefrag">EJBObject</span> y en ella se definen los m&eacute;todos de negocio del bean, los que va a poder llamar el cliente para pedir al bean que realice sus funciones. A su vez, la interfaz <span class="codefrag">EJBObject</span> extiende la interfaz RMI <span class="codefrag">Remote</span>, por lo que estamos definiendo una interfaz remota.</p>
+<p>
+<strong><span class="codefrag">Saludo.java</span></strong>:</p>
+<pre class="code">package es.ua.jtech.ejb.beans;
+
+import javax.ejb.EJBObject;
+import java.rmi.RemoteException;
+
+public interface Saludo extends EJBObject {
+   public String saluda() throws RemoteException;
+   public SaludoTO getSaludo(int numDatos) throws RemoteException;
+}</pre>
+<p>Todos los m&eacute;todos definidos en esta interfaz se corresponden con los m&eacute;todos de negocio del bean y todos van a ser m&eacute;todos remotos, ya que van a implementarse en una m&aacute;quina virtual Java distinta de la m&aacute;quina. Por ello, todos estos m&eacute;todos deben declarar la excepci&oacute;n <span class="codefrag">RemoteException</span>.</p>
+<p>La interfaz <em>home</em> hereda de la interfaz <span class="codefrag">EJBHome</span>. El cliente usa los m&eacute;todos de esta interfaz para obtener una referencia a la interfaz componente. Puedes pensar en el home como en una especie de f&aacute;brica que construye referencias a los beans y las distribuye entre los clientes.</p>
+<p>
+<strong><span class="codefrag">SaludoHome.java</span></strong>:</p>
+<pre class="code">package es.ua.jtech.ejb.beans;
+
+import javax.ejb.EJBHome;
+import java.rmi.RemoteException;
+import javax.ejb.CreateException;
+
+public interface SaludoHome extends EJBHome {
+   public Saludo create() throws RemoteException, CreateException;
+}</pre>
+<p>El m&eacute;todo <span class="codefrag">create()</span> se corresponde con el m&eacute;todo <span class="codefrag">ejbCreate()</span> definido en la clase <span class="codefrag">SaludoBean</span>, y debe devolver el tipo <span class="codefrag">Saludo</span> de la interfaz <em>componente</em>. La interfaz tambi&eacute;n va a ser una interfaz remota y, por tanto, debe declarar la excepci&oacute;n <span class="codefrag">RemoteException</span>. Adem&aacute;s, el m&eacute;todo <span class="codefrag">create</span> debe declarar la excepci&oacute;n <span class="codefrag">CreateException</span>.</p>
+<p>Cuando se despliega un bean en el contenedor EJB, &eacute;ste crea dos objetos que llamaremos EJBObject y EJBHome que implementar&aacute;n estas interfaces. Estos objetos separan el bean del cliente, de forma que el cliente nunca accede directamente al bean. As&iacute; el contenedor puede incorporar sus servicios a los m&eacute;todos de negocio.</p>
+<div class="frame note">
+<div class="label">Nota</div>
+<div class="content">
+Preguntas:<br>
+&iquest;D&oacute;nde se deber&aacute;n instalar los ficheros <span class="codefrag">.class</span> resultantes de las compilaciones de estas interfaces: en el servidor, en el cliente o en ambos?<br> 
+&iquest;Qu&eacute; sucede si definimos alg&uacute;n m&eacute;todo en la clase bean que despu&eacute;s no lo definimos en la interfaz <em>componente</em>?
+</div>
+</div>
+<a name="N1018E"></a><a name="Clase+bean"></a>
+<h3 class="underlined_5">Clase bean</h3>
+<p>En la clase bean se encuentran los denominados m&eacute;todos de negocio. Son los m&eacute;todos finales a los que el cliente quiere acceder y los que debes programar. Son tambi&eacute;n los m&eacute;todos definidos en la interfaz componente.</p>
+<p>Lo primero que debes hacer es decidir qu&eacute; tipo de bean necesitas implementar: un bean de sesi&oacute;n, de entidad o uno dirigido por mensajes. Estos tres tipos se definen con tres interfaces distintas: <span class="codefrag">SessionBean</span>, <span class="codefrag">EntityBean</span> y <span class="codefrag">MessageBean</span>. La clase bean que vas a escribir debe implementar una de ellas. En nuestro caso, vamos a definir un bean de sesi&oacute;n sin estado, por lo que la clase <span class="codefrag">SaludoBean</span> implementar&aacute; la interfaz <span class="codefrag">SessionBean</span>.</p>
+<p>
+<strong><span class="codefrag">SaludoBean.java</span></strong>:</p>
+<pre class="code">
+package es.ua.jtech.ejb.beans;
+
+import java.util.ArrayList;
+import java.util.Date;
+
+import javax.ejb.EJBException;
+import javax.ejb.SessionBean;
+import javax.ejb.SessionContext;
+
+public class SaludoBean implements SessionBean {
+
+   private static final long serialVersionUID = 1L;
+   private String[] saludos = { "Hola, que tal?", "Cuanto tiempo sin verte", 
+                                "Que te cuentas?", "Me alegro de volver a verte" };
+	
+   // M&eacute;todos de negocio
+
+   public String saluda() {
+      int random = (int) (Math.random() * saludos.length);
+      return saludos[random];
+   }
+
+   public SaludoTO getSaludo(int numDatos) {
+      int random = (int) (Math.random() * saludos.length);
+      String saludo = saludos[random];
+      Date fecha = new Date();
+      ArrayList&lt;Integer&gt; datos = new ArrayList&lt;Integer&gt;();
+      for (int i=0;i&lt;numDatos;i++){
+         datos.add(i);
+      }
+      SaludoTO miSaludo = new SaludoTO(saludo,fecha,datos);
+      return miSaludo;
+   }
+	
+   // M&eacute;todos de callback de la interfaz SessionBean
+
+   public void setSessionContext(SessionContext arg0) throws EJBException {
+      System.out.println("Estoy en setSessionContext()");
+   }
+
+   public void ejbCreate()  throws EJBException {
+    	   System.out.println("Estoy en ejbCreate()");
+   }
+
+   public void ejbRemove() throws EJBException {
+      System.out.println("Estoy en ejbRemove()");
+   }
+
+   public void ejbActivate() throws EJBException {
+      System.out.println("Estoy en ejbActivate()");
+   }
+
+   public void ejbPassivate() throws EJBException {
+      System.out.println("Estoy en ejbPassivate()");
+   }
+ }</pre>
+<a name="N101B4"></a><a name="Interfaces+locales"></a>
+<h3 class="underlined_5">Interfaces locales</h3>
+<p>Hasta ahora hemos considerado siempre que el cliente y el bean se encuentran en distintas m&aacute;quinas virtuales. Por eso es necesario RMI para conectar el cliente y el bean. Pero &iquest;por qu&eacute; introducir RMI cuando el cliente y el bean se encuentran en la misma JVM? La introducci&oacute;n de RMI en la arquitectura la dota de flexibilidad, pero tambi&eacute;n le a&ntilde;ade penalizaci&oacute;n en el rendimiento, debido sobre todo a la necesidad de serializar todos los argumentos y llamadas. Esta penalizaci&oacute;n no est&aacute; justificada cuando el objeto cliente del bean es, por ejemplo, un servlet o una p&aacute;gina JSP que reside en la misma JVM que el bean. Tampoco est&aacute; justificado el uso de RMI cuando se est&aacute;n comunicando dos beans que residen en la misma JVM.</p>
+<p>La especificaci&oacute;n 2.0 de EJB propone el uso de las interfaces locales <span class="codefrag">EJBLocalHome</span> y <span class="codefrag">EJBLocalObject</span> como una soluci&oacute;n a estas situaciones. A la hora de programar el bean lo &uacute;nico que cambia es que las interfaces home y componente deben heredar de <span class="codefrag">EJBLocalHome</span> y <span class="codefrag">EJBLocalObject</span>. Estas interfaces ya no son remotas, por lo que los m&eacute;todos no van a tener que declarar la excepci&oacute;n <span class="codefrag">RemoteException</span>. En el nombre de las interfaces suelen a&ntilde;adirse la palabra local, para indicar que se tratan de objetos que van a llamarse sin usar RMI. En el caso del bean <span class="codefrag">Saludo</span>, llamar&iacute;amos <span class="codefrag">SaludoLocal</span> a la interfaz componente y <span class="codefrag">SaludoLocalHome</span> a la interfaz home.</p>
+<p>
+<strong><span class="codefrag">SaludoLocal.java</span></strong>:</p>
+<pre class="code">package es.ua.jtech.ejb.beans;
+
+import javax.ejb.EJBLocalObject;
+
+public interface SaludoLocal extends EJBLocalObject {
+   public String saluda();
+   public SaludoTO getSaludo(int numDatos);
+}</pre>
+<p>
+<strong><span class="codefrag">SaludoLocalHome.java</span></strong>:</p>
+<pre class="code">package es.ua.jtech.ejb.beans;
+
+import javax.ejb.CreateException;
+import javax.ejb.EJBLocalHome;
+
+public interface SaludoLocalHome extends EJBLocalHome {
+   public SaludoLocal create() throws CreateException;
+}</pre>
+<a name="N101ED"></a><a name="Descriptores+del+despliegue"></a>
+<h3 class="underlined_5">Descriptores del despliegue</h3>
+<p>Los tres ficheros Java anteriores son todo lo que tienes que escribir en Java. Recuerda: una clase (<span class="codefrag">SaludoBean</span>) y dos interfaces (<span class="codefrag">SaludoHome</span> y <span class="codefrag">Saludo</span>). Ya queda poco para terminar. El cuarto y &uacute;ltimo elemento es tan importante como los anteriores. Se trata de los descriptores de despliegue ( <em>deployment descriptors</em>, DD) del bean. Los descriptores de despliegue son ficheros XML en los que se detalla todo lo que el servidor de aplicaciones necesita saber para gestionar el bean. </p>
+<p> En el fichero <span class="codefrag">ejb-jar.xml</span> se describen las propiedades est&aacute;ndar del bean. Este fichero es el mismo para todos los servidores de aplicaciones. El fichero otro fichero, <span class="codefrag">weblogic-ejb-jar.xml</span>, define las caracter&iacute;sticas del bean propias del servidor de aplicaciones que estamos usando.</p>
+<p>A continuaci&oacute;n mostramos ambos ficheros, explicando las caracter&iacute;sticas definidas en cada uno de ellos. Es posible definir muchas caracter&iacute;sticas m&aacute;s, relacionadas con la seguridad, la transaccionalidad y otros aspectos. Las iremos viendo poco a poco. Los elementos definidos representan lo m&iacute;nimo para que el bean funcione.</p>
+<p>Fichero <span class="codefrag">ejb-jar.xml</span>:</p>
+<ul>
+   
+<li>
+<strong>Tipo del bean</strong>: <span class="codefrag">session</span>. Bean de sesi&oacute;n.</li>
+   
+<li>
+<strong>Nombre l&oacute;gico del bean</strong>: <span class="codefrag">SaludoBean</span>. Es el nombre usado para referirse al bean en los    descriptores de despliegue. No es lo mismo que el nombre JNDI, que es el que se utiliza en los clientes para localizar el    bean y que se define en el fichero <span class="codefrag">weblogic-ejb-jar.xml</span>. Normalmente se usa el mismo nombre l&oacute;gico que nombre    JNDI.</li>
+   
+<li>
+<strong>Interfaz home</strong>: <span class="codefrag">sesion1.beans.SaludoHome</span>
+</li>
+   
+<li>
+<strong>Interfaz componente</strong>: <span class="codefrag">sesion1.beans.Saludo</span>
+</li>
+   
+<li>
+<strong>Clase implementaci&oacute;n</strong>: <span class="codefrag">sesion1.beans.SaludoBean</span>
+</li>
+   
+<li>
+<strong>Tipo de sesi&oacute;n</strong>: <span class="codefrag">Stateless</span> (sin estado)</li>
+   
+<li>
+<strong>Tipo de gesti&oacute;n de las transacciones</strong>: <span class="codefrag">Container</span> (gestionadas por el contenedor EJB)</li>
+
+</ul>
+<p>Listado:</p>
+<pre class="code">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;ejb-jar id="ejb-jar_ID" version="2.1"
+xmlns="http://java.sun.com/xml/ns/j2ee"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee
+http://java.sun.com/xml/ns/j2ee/ejb-jar_2_1.xsd"&gt;
+    &lt;enterprise-beans&gt;
+        &lt;session&gt;
+            &lt;ejb-name&gt;SaludoBean&lt;/ejb-name&gt;
+            &lt;home&gt;es.ua.jtech.ejb.beans.SaludoHome&lt;/home&gt;
+            &lt;remote&gt;es.ua.jtech.ejb.beans.Saludo&lt;/remote&gt;
+            &lt;local-home&gt;es.ua.jtech.ejb.beans.SaludoLocalHome&lt;/local-home&gt;
+            &lt;local&gt;es.ua.jtech.ejb.beans.SaludoLocal&lt;/local&gt;
+            &lt;ejb-class&gt;es.ua.jtech.ejb.beans.SaludoBean&lt;/ejb-class&gt;
+            &lt;session-type&gt;Stateless&lt;/session-type&gt;
+            &lt;transaction-type&gt;Container&lt;/transaction-type&gt;
+        &lt;/session&gt;
+    &lt;/enterprise-beans&gt;
+&lt;/ejb-jar&gt;</pre>
+<p>Fichero <span class="codefrag">weblogic-ejb-jar.xml</span>:</p>
+<ul>
+   
+<li>
+<strong>Nombre JNDI del bean <span class="codefrag">SaludoBean</span></strong>: <span class="codefrag">SaludoBean</span>
+</li>
+
+</ul>
+<p>Listado:</p>
+<pre class="code">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;weblogic-ejb-jar xmlns="http://www.bea.com/ns/weblogic/90"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.bea.com/ns/weblogic/90 
+http://www.bea.com/ns/weblogic/90/weblogic-ejb-jar.xsd"&gt;
+    &lt;weblogic-enterprise-bean&gt;
+        &lt;ejb-name&gt;SaludoBean&lt;/ejb-name&gt;
+        &lt;jndi-name&gt;SaludoBean&lt;/jndi-name&gt;
+        &lt;local-jndi-name&gt;SaludoBeanLocal&lt;/local-jndi-name&gt;
+    &lt;/weblogic-enterprise-bean&gt;
+&lt;/weblogic-ejb-jar&gt;</pre>
+<a name="N10270"></a><a name="Fichero+ejb-jar"></a>
+<h3 class="underlined_5">Fichero ejb-jar</h3>
+<p>Una vez escritas las clases e interfaces y el descriptor del despliegue, debemos compactar todos los ficheros resultantes (los ficheros .class y el fichero XML) en un &uacute;nico fichero JAR.</p>
+<p>La estructura de este fichero JAR es:</p>
+<pre class="code">
+/sesion1/beans/SaludoBean.class
+/sesion1/beans/Saludo.class
+/sesion1/beans/SaludoHome.class
+/META-INF/ejb-jar.xml
+/META-INF/weblogic-ejb-jar.xml
+</pre>
+<p>En el directorio META-INF se incluyen los descriptores de despliegue. El resto del fichero JAR corresponde a los tres ficheros <span class="codefrag">.class</span>que definen el bean. En el caso de utilizar clases auxiliares o definir otros beans, ir&iacute;an tambi&eacute;n en este fichero.</p>
+<p>Este fichero es el que se desplegar&aacute; en el servidor de aplicaciones. Puedes nombrar a este fichero con el nombre que quieras. Una costumbre bastante usada es llamarlo <em>NOMBRE</em>-ejb.jar, siendo <em>NOMBRE</em> el nombre del bean o de la aplicaci&oacute;n. En nuestro caso, podr&iacute;amos llamarlo <span class="codefrag">saludo-ejb.jar</span>.</p>
+<a name="N10293"></a><a name="Despliegue+del+bean"></a>
+<h3 class="underlined_5">Despliegue del bean</h3>
+<p>Una vez construido el fichero EJB JAR es necesario desplegarlo en el servidor de aplicaciones. </p>
+<p>Existen dos escenarios diferenciados para la realizaci&oacute;n del despliegue, dependiendo de si has desarrollado el bean en el mismo host que se encuentra el servidor de aplicaciones o en un host distinto. El primer caso suele suceder cuando est&aacute;s trabajando en modo de prueba y est&aacute;s depurando el desarrollo. El segundo caso suele suceder cuando ya has depurado el bean y quieres desplegarlo en modo de producci&oacute;n: &iexcl;es recomendable no desarrollar y depurar en el mismo host en el que se encuentra el servidor de aplicaciones en producci&oacute;n!.</p>
+<p>El proceso de despliegue no est&aacute; definido en la especificaci&oacute;n J2EE y cada servidor de aplicaciones tiene unas caracter&iacute;sticas propias. En general, la mayor&iacute;a de servidores de aplicaciones proporcionan un interfaz gr&aacute;fico de administraci&oacute;n para gestionar el despliegue. Tambi&eacute;n la mayor&iacute;a de servidores proporcionan una tarea de ant para poder realizar el despliegue usando esta herramienta desde la l&iacute;nea de comando. En el la sesi&oacute;n pr&aacute;ctica veremos un ejemplo con el servidor de aplicaciones weblogic de BEA.</p>
+</div>
+
+
+<a name="N102A4"></a><a name="Repaso+de+RMI"></a>
+<h2 class="underlined_10">Repaso de RMI</h2>
+<div class="section">
+<a name="N102AA"></a><a name="Stubs%2C+skeletons+y+paso+de+argumentos"></a>
+<h3 class="underlined_5">Stubs, skeletons y paso de argumentos</h3>
+<p>En este apartado vamos a repasar algunos conceptos fundamentales para entender el funcionamiento de la arquitectura EJB: los stubs y skeletons, los objetos remotos y el paso de par&aacute;metros y devoluci&oacute;n de resultados en las llamads remotas.</p>
+<p>RMI (Remote Method Invocation) define la forma de comunicaci&oacute;n remota entre objetos Java situados en m&aacute;quinas virtuales distintas.  Supongamos que un objeto cliente quiere hacer una petici&oacute;n a un objeto remoto situado en otra JVM (M&aacute;quina Virtual Java, <em>Java Virtual Machine</em>). RMI pretende hacer trasparente la presencia de la red, de forma que cuando escribas el c&oacute;digo de los objetos clientes y remotos no tengas que tratar con la complicaci&oacute;n de gestionar la comunicaci&oacute;n f&iacute;sica por la red.</p>
+<p>Para ello, RMI proporciona al cliente un objeto proxy (llamado <em>stub</em>) que recibe la petici&oacute;n del objeto cliente y la transforma en algo que se puede enviar por la red hasta el objeto remoto. Este <em>stub</em> se hace cargo de todos los aspectos de bajo nivel (<em>streams</em> y <em>sockets</em>). En el lado del servidor, un objeto similar (llamado <em>skeleton</em>) recibe la comunicaci&oacute;n, la desempaqueta y lanza el m&eacute;todo correspondiente del objeto remoto al que sirve. Al igual que la petici&oacute;n, se deben empaquetar los argumentos de la llamada.  El programador s&oacute;lo debe definir el c&oacute;digo del m&eacute;todo en el objeto remoto. Los objetos stub y skeleton los construye el compilador de RMI de forma autom&aacute;tica.</p>
+<p>La siguiente figura muestra un ejemplo con el objeto remoto <span class="codefrag">SaludoImpl</span>:</p>
+<p>
+
+<img alt="Objeto remoto SaludoImpl" content-width="10cm" src="imagenes/apuntes/llamada-rmi-skel.jpg" width="500">
+</p>
+<p>El objeto remoto <span class="codefrag">SaludoImpl</span> est&aacute; sombreado para indicar que en &eacute;l se encuentra la implementaci&oacute;n de los m&eacute;todos remotos.</p>
+<p>Una vez realizada la llamada, el <em>stub</em> queda en espera (y el objeto cliente que ha llamado al m&eacute;todo correspondiente del <em>stub</em>) hasta recibir la respuesta del <em>skeleton</em> (respuesta que debe proprocionar el m&eacute;todo invocado en el objeto remoto). Si la respuesta no se recibe, el <em>stub</em> lanza una excepci&oacute;n que debe capturar el objeto cliente.</p>
+<p>Es posible que en el servidor no exista un objeto skeleton por cada objeto remoto sino que, para hacer la arquitectura m&aacute;s eficiente, se pueda definir un objeto gen&eacute;rico que distribuya las peticiones a los objetos remotos con alg&uacute;n mecanismo de identificaci&oacute;n de la petici&oacute;n y de cach&eacute; de objetos remotos. Por eso en las siguientes im&aacute;genes que mostremos no aparecer&aacute; este objeto.</p>
+<p>
+
+<img alt="" content-width="10cm" src="imagenes/apuntes/llamada-rmi.jpg" width="500">
+</p>
+<p>Concretando m&aacute;s, para implementar y usar una clase remota con RMI debemos cumplir las siguientes condiciones</p>
+<ul>
+
+
+<li>Se deben definir la clase remota como una interfaz que hereda de la interfaz <span class="codefrag">java.rmi.Remote</span>.</li>
+
+
+<li>Todos los m&eacute;todos de esa interfaz deben declarar la excepci&oacute;n <span class="codefrag">RemoteException</span>.</li>
+
+
+<li>Se debe definir una clase que implemente la interfaz.</li>
+
+
+<li>Se debe llamar al compilador <span class="codefrag">rmic</span> para que cree las clases <em>stub</em> y <em>skeleton</em>
+</li>
+
+
+<li>Un servidor debe crear uno o m&aacute;s objetos remotos y asignarles un nombre a cada uno.</li>
+
+
+<li>Alg&uacute;n cliente debe localizar un objeto remoto, referenciando su nombre, obtener el stub (que implementa la clase remota) y realizar las llamadas al stub.</li>
+
+</ul>
+<p>La siguiente imagen muestra la estructura de clases e interfaces que se usan para definir una sencilla clase remota llamada <span class="codefrag">Saludo</span>. En azul aparecen las clases que implementa el programador y en amarillo las que construye RMI. Se define la interfaz <span class="codefrag">Saludo</span> que extiende la interfaz <span class="codefrag">Remote</span>. La clase <span class="codefrag">SaludoImpl</span> la escribe el programador e implementa la interfaz <span class="codefrag">Saludo</span>. La clase <span class="codefrag">SaludoStub</span> tambi&eacute;n implementa la interfaz <span class="codefrag">Saludo</span>y la construye el compilador de RMI. Por &uacute;ltimo, el cliente se comunica con un objeto instancia de la clase <span class="codefrag">SaludoStub</span> que implementa la interfaz <span class="codefrag">Saludo</span>. Esta interfaz es la &uacute;nica que ve el cliente.</p>
+<p>
+
+<img alt="" content-width="6cm" src="imagenes/apuntes/UML-2.jpg" width="300">
+</p>
+<p>Al implementar la interfaz <span class="codefrag">Saludo</span>, los objetos de la clase <span class="codefrag">SaludoImp</span> son tambi&eacute;n objetos <span class="codefrag">Remote</span>, ya que la interfaz <span class="codefrag">Saludo</span> hereda de la interfaz <span class="codefrag">Remote</span>.</p>
+<p>Muy importante: la clase <em>stub</em> se debe instalar en la JVM del cliente para que &eacute;ste pueda usarla.</p>
+<div class="frame note">
+<div class="label">Nota</div>
+<div class="content">
+Reflexiona: Supongamos que tenemos tres objetos instanciados de una misma clase remota, y que queremos acceder a ellos desde un objeto cliente. &iquest;Cu&aacute;ntos stubs necesitar&iacute;amos? &iquest;Cu&aacute;ntos skeletons? Lo veremos en el siguiente apartado.
+</div>
+</div>
+<a name="N10364"></a><a name="Paso+de+argumentos"></a>
+<h3 class="underlined_5">Paso de argumentos</h3>
+<p>En cuanto a los argumentos y los valores devueltos por las llamadas remotas, deben ser de uno de los siguientes tipos:</p>
+<ul>
+
+<li>Objetos primitivos</li>
+
+<li>Objetos serializables</li>
+
+<li>Un array o un colecci&oacute;n de objetos primitivos o
+serializables</li>
+
+<li>Un objeto 
+<span class="codefrag">java.rmi.Remote</span>
+</li>
+
+</ul>
+<p>Un caso muy interesante, por la frecuencia con la que sucede en la arquitectura EJB, es el de un objeto remoto que es devuelto en una llamada a otro objeto tambi&eacute;n remoto. El siguiente ejemplo proporciona una representaci&oacute;n de lo que ocurre en este caso.</p>
+<p>Supongamos que tenemos un conjunto de objetos remotos de la clase <span class="codefrag">Estudiante</span>, cada uno con un identificador determinado. Supongamos tambi&eacute;n un objeto remoto de la clase <span class="codefrag">EstudianteFactory</span> que puede localizar al objeto <span class="codefrag">Estudiante</span> con un identificador determinado.</p>
+<ol>
+
+
+<li>El cliente invoca el m&eacute;todo <span class="codefrag">getEstudiante("Id2334")</span> del stub de <span class="codefrag">estudianteFactory</span>. El stub trasmite la llamada al skeleton.</li>
+
+
+<li>El skeleton desempaqueta la llamada e invoca el m&eacute;todo <span class="codefrag">getEstudiante("Id2334")</span> en el objeto remoto <span class="codefrag">EstudianteFactory</span>. El objeto remoto localiza el objeto <span class="codefrag">Estudiante</span> que se solicita y devuelve su referencia al skeleton. Al ser estudiante un objeto remoto, estar&aacute; disponible su stub en la JVM.</li>
+
+
+<li>El objeto skeleton <span class="codefrag">EstudianteFactory</span> serializa el stub de estudiante y se lo pasa a su propio stub. El stub lo desempaqueta y crea una copia local en la JVM del cliente. Por &uacute;ltimo, el stub devuelve al objeto cliente una referencia local al stub del estudiante con identificador <span class="codefrag">Id2334</span>.</li>
+
+
+</ol>
+<p>
+
+<img alt="" content-width="10cm" src="imagenes/apuntes/devolviendo-objeto-remoto.jpg" width="500">
+</p>
+<div class="frame note">
+<div class="label">Nota</div>
+<div class="content">
+Pregunta: &iquest;Cu&aacute;les son las ventajas de pasar un objeto remoto en lugar de un objeto real Estudiante? &iquest;Cu&aacute;les son los incovenientes?
+</div>
+</div>
+<p>Es muy importante recordar que cuando pasas un objeto serializado de una JVM a otra, la JVM que lo recibe debe tener disponible el fichero class correspondiente al tipo del objeto que pasas. Esto sucede as&iacute; incluso cuando pasas un stub. Si la JVM a la que pasas el stub no tiene su definici&oacute;n, obtendr&aacute;s un error.</p>
+</div>
+
+
+<p class="pageBreakAfter"></p>
+
+</div>
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+        Copyright &copy;
+         2006-2007 Depto. CCIA</div>
+</div>
+</body>
+</html>

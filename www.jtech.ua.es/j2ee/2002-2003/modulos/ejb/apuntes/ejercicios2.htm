@@ -1,0 +1,221 @@
+<head>
+<title>Sesion 1 Enterprise Java Beans</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../../ejercicios.css" type="text/css">
+</head>
+<body>
+
+<h1>Ejercicios sesi&oacute;n 2</h1>
+
+<h2>Ejercicio 1: Compilaci&oacute;n, despliegue y prueba de una aplicaci&oacute;n 
+  web que usa un bean de sesi&oacute;n sin estado</h2>
+
+<h3> Pasos previos </h3>
+
+<p> Antes de realizar el ejercicio, vamos a asegurarnos de que todo est&aacute;
+configurado correctamente: <p>
+
+<ul>
+<li> El dominio <code>moduloejb</code> debe estar creado. Compru&eacute;balo mirando si existe
+un directorio con ese nombre en el directorio <code>bea/user_projects</code>.</li>
+<li> Actualiza la variable <code>CLASSPATH</code>:
+
+<pre class="codigo">
+% export PATH=$PATH:/home/j2ee/bea/weblogic700/server/bin
+% . setWLSEnv.sh
+% export CLASSPATH=$CLASSPATH:.
+</pre>
+
+  <li> Descarga el fichero ZIP con el c&oacute;digo fuente del ejercicio (<code>ejercicio2.zip</code>) 
+    en el directorio de trabajo <code>/home/j2ee/ejb</code> </li>
+</ul>
+
+<h3> Compilaci&oacute;n y creaci&oacute;n del fichero JAR con el bean </h3>
+
+<p> Al descomprimir el fichero ZIP debes tener la siguiente estructura de
+ficheros:</p>
+
+<pre class="codigo">
+HelloWorldWeb/jsp/CommonFunctions.jsp
+HelloWorldWeb/jsp/HelloWorld.jsp
+
+HelloWorldWeb/src/HelloWorldServlet.java
+HelloWorldWeb/src/HelloWorldSLBean/HelloWorld.java 
+HelloWorldWeb/src/HelloWorldSLBean/HelloWorldBean.java 
+HelloWorldWeb/src/HelloWorldSLBean/HelloWorldHome.java 
+
+HelloWorldWeb/xml/application.xml
+HelloWorldWeb/xml/ejb-jar.xml 
+HelloWorldWeb/xml/web.xml
+HelloWorldWeb/xml/weblogic-application.xml
+HelloWorldWeb/xml/weblogic-ejb-jar.xml 
+HelloWorldWeb/xml/weblogic.xml 
+</pre>
+
+<p>1. Compila los ficheros del bean: </p>
+<pre class="codigo">
+% cd HelloWorldWeb/src
+% javac HelloWorldSLBean/*.java
+</pre>
+
+<p> 2. Crea el fichero EJB JAR </p>
+<pre class="codigo">
+% cd ..
+% mkdir jar-ejb
+% cd jar-ejb
+% mkdir META-INF
+% cp ../xml/ejb-jar.xml META-INF
+% cp ../xml/weblogic-ejb-jar.xml META-INF
+% mkdir HelloWorldSLBean
+% cp ../src/HelloWorldSLBean/*.class HelloWorldSLBean 
+% jar cvf helloworld-ejb.jar *
+manifest agregado
+agregando: META-INF/ejb-jar.xml
+agregando: META-INF/weblogic-ejb-jar.xml
+agregando: HelloWorldSLBean/HelloWorld.class
+agregando: HelloWorldSLBean/HelloWorldBean.class
+agregando: HelloWorldSLBean/HelloWorldHome.class
+</pre>
+
+<p> 3. Compila el servlet </p>
+<pre class="codigo">
+% cd ../src
+% javac HelloWorldServlet.java
+</pre>
+
+<p> 4. Crea el fichero WAR JAR con la aplicaci&oacute;n web </p>
+<pre class="codigo">
+% cd ..
+% mkdir jar-war
+% cd jar-war
+% mkdir WEB-INF
+% cp ../xml/web.xml WEB-INF
+% cp ../xml/weblogic.xml WEB-INF
+% cp ../jsp/* .
+% mkdir WEB-INF/classes
+% mkdir WEB-INF/classes/HelloWorldSLBean
+% cp ../src/HelloWorldSLBean/HelloWorld.class WEB-INF/classes/HelloWorldSLBean/
+% cp ../src/HelloWorldSLBean/HelloWorldHome.class WEB-INF/classes/HelloWorldSLBean/
+% cp ../src/HelloWorldServlet.class WEB-INF/classes
+% jar cvf helloworld.war *
+manifest agregado
+agregando: CommonFunctions.jsp
+agregando: HelloWorld.jsp
+agregando: WEB-INF/
+agregando: WEB-INF/classes/
+agregando: WEB-INF/classes/HelloWorldServlet.class
+agregando: WEB-INF/classes/HelloWorldSLBean/
+agregando: WEB-INF/classes/HelloWorldSLBean/HelloWorld.class
+agregando: WEB-INF/classes/HelloWorldSLBean/HelloWorldHome.class
+agregando: WEB-INF/web.xml
+agregando: WEB-INF/weblogic.xml
+</pre>
+
+<p> 5. Por &uacute;ltimo, vamos a crear el fichero JAR con la aplicaci&oacute;n (fichero EAR): </p>
+<pre class="codigo">
+% cd ..
+% mkdir jar-ear
+% cd jar-ear
+% mkdir META-INF
+% cp ../xml/application.xml META-INF
+% cp ../xml/weblogic-application.xml META-INF
+% cp ../jar-ejb/helloworld-ejb.jar .
+% cp ../jar-war/helloworld.war .
+% jar cvf helloworld.ear *
+manifest agregado
+agregando: META-INF/
+agregando: META-INF/application.xml
+agregando: META-INF/weblogic-application.xml
+agregando: helloworld-ejb.jar
+agregando: helloworld.war
+</pre>
+
+<h3> Desplegar la aplicaci&oacute;n </h3>
+
+<p> 1. Arranca el servidor de aplicaciones instalado en el ejercicio 1 de la sesi&oacute;n 
+  anterior</p>
+
+<p> 2. Usando la consola de administraci&oacute;n, elimina el EJB HelloWorld existente 
+  (si es que hubiera alguno).</p>
+
+<p> 3. Despliega la aplicaci&oacute;n. <b>Importante</b>: hazlo sin subir el fichero 
+  al servidor de aplicaciones, porque ya lo tienes all&iacute;:
+<p>
+<ul>
+  <li> Selecciona la opci&oacute;n <i>Applications > Configure new a new Application</i>. 
+  </li>
+  <li> Mu&eacute;vete por el &aacute;rbol de directorios y selecciona el fichero 
+    <cod>helloworld.ear</li>
+</ul>
+<p><img src="imagenes/ejercicio12.png" width="509" height="192"></p>
+<p></p>
+
+<h4> Probar la aplicaci&oacute;n </h4>
+
+<p> 1. Prueba el servlet y la p&aacute;gina JSP</p>
+
+<pre>
+http://localhost:7001/HelloWorld/HolaMundo
+http://localhost:7001/HelloWorld/HolaMundo.jsp
+</pre>
+
+<p> 2. Compila el cliente y pru&eacute;balo. </p>
+
+<pre class="codigo">
+% cd src
+% javac HelloWorldClient.java
+% java HelloWorldClient
+</pre>
+
+<h2> Ejercicio 2: cambiar algunos descriptores del despliegue </h2>
+
+<h3> URLs de la aplicaci&oacute;n</h3>
+<p>1. Las URL p&uacute;blicas de la aplicaci&oacute;n se encuentran definidas 
+  en los elementos <code>url-pattern</code> del fichero de despliegue de la aplicaci&oacute;n 
+  web (<code>web.xml</code>). El directorio ra&iacute;z de la aplicaci&oacute;n 
+  se encuentra definido en el elemento <code>context-root</code> del fichero de 
+  descripci&oacute;n del despliegue <code>application.xml</code>.</p>
+<p>2. Cambia el nombre de estos elementos para que el acceso al servlet y a la 
+  p&aacute;gina JSP se a las siguientes direcciones</p>
+<pre>http://localhost:7001/hw/hw
+http://localhost:7001/hw/hw.jsp</pre>
+<p>3. Reconstruye los ficheros <code>helloworld.war</code> y <code>helloworld.ear</code> 
+  y redespliega la aplicaci&oacute;n. Pru&eacute;bala para asegurarte que funciona 
+  correctamente.</p>
+<h3>Referencias a beans en la aplicaci&oacute;n web</h3>
+<p>1. En la aplicaci&oacute;n web se accede al bean HelloWorld de forma indirecta, 
+  usando la direcci&oacute;n <code>java:comp/env/ejb/HelloWorldEJB</code> del 
+  espacio local de nombres JNDI ENC. Esto permite definir de forma declarativa 
+  el enlace entre la aplicaci&oacute;n y el bean hasta el momento del despliegue 
+  y cambiar el mismo sin tener que recompilar el EJB. 
+<ul>
+  <li>La definici&oacute;n de qu&eacute; EJB concreto se liga a la direcci&oacute;n 
+    <code>ejb/HelloWorldEJB</code> se realiza en el fichero <code>weblogic.xml</code>, 
+    asociando un nombre JNDI concreto a esa direcci&oacute;n.</li>
+  <li>La definici&oacute;n del nombre JNDI del bean HelloWorld se realiza en el 
+    fichero<code> weblogic-ejb-jar.xml</code>.</li>
+</ul>
+<p>2. Cambia el nombre JNDI del bean y ll&aacute;malo <code>HW</code>, ahora usando 
+  la consola de administraci&oacute;n (seleccionando el bean <i>HelloWorld</i> 
+  y pulsando en la opci&oacute;n <i>Edit EJB Descriptor</i>). En el &aacute;rbol 
+  con los elementos XML de la ventana del navegador que se acaba de abrir despliega 
+  la opci&oacute;n <i>WebLogic EJB JAR</i> y luego <i>Weblogic Enterprise Beans</i>. 
+  Pincha en el bean y cambia su nombre JNDI. Pincha en el padre de todo el &aacute;rbol 
+  de elementos XML (con el nombre <i>helloworld-ejb.jar</i>) y pulsa la opci&oacute;n 
+  <i>Persist</i>. De esta forma se habr&aacute; guardado en el fichero de descripci&oacute;n 
+  del despliegue el nuevo nombre JNDI del bean. Puedes cerrar la ventana del navegador. 
+<p>3. Redespliega la aplicaci&oacute;n. En la ventana principal de la consola 
+  de administraci&oacute;n pulsa la opci&oacute;n Applications y selecciona la 
+  aplicaci&oacute;n <i>HelloWorld</i>. Pulsa la opci&oacute;n <i>Deploy Application</i> 
+  para volver a desplegar la aplicaci&oacute;n. 
+<p><img src="imagenes/ejercicio11.png" width="550" height="252"></p>
+<p>4. Prueba ahora cualquiera de las URLs y ver&aacute;s que aparece un error.</p>
+<p>5. Modifica el c&oacute;digo fuente de la aplicaci&oacute;n cliente para que 
+  se conecte al bean con el nuevo nombre JNDI. Recompila y comprueba que ahora 
+  s&iacute; funciona.</p>
+<p>6. Modifica el nombre JNDI de la referencia <code>ejb/HelloWorldEJB</code> 
+  usando tambi&eacute;n la consola de administraci&oacute;n. Graba el cambio con 
+  la opci&oacute;n <i>Persist</i> y redespliega la aplicaci&oacute;n. Prueba ahora 
+  las URLs.</p>
+</body>
+</html>

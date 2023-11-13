@@ -1,0 +1,506 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.7">
+<meta name="Forrest-skin-name" content="pelt">
+<title> JMS (Java Message Service) (2) </title>
+<link type="text/css" href="skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="skin/print.css" rel="stylesheet">
+<link type="text/css" href="skin/profile.css" rel="stylesheet">
+<script src="skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<div class="header">
+<div class="grouplogo">
+<a href="http://www.jtech.ua.es/j2ee"><img class="logoImage" alt="J2EE" src="images/baner_j2ee_izq.gif" title="Curso Especialista Universitario J2EE"></a>
+</div>
+<div class="projectlogoA1">
+<a href="http://www.dccia.ua.es/"><img class="logoImage" alt="Servidores Web" src="images/baner_j2ee_der.gif" title="Servidores Web"></a>
+</div>
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="../index.html">M&oacute;dulos</a>
+</li>
+<li class="current">
+<a class="base-selected" href="index.html">Servidores Web</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<div id="level2tabs"></div>
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<div id="menu">
+<div onclick="SwitchMenu('menu_selected_1.1', 'skin/')" id="menu_selected_1.1Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">JMS: Java Message Service</div>
+<div id="menu_selected_1.1" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="index.html" title="JMS: Java Message Service">&Iacute;ndice</a>
+</div>
+<div onclick="SwitchMenu('menu_selected_1.1.2', 'skin/')" id="menu_selected_1.1.2Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Teor&iacute;a</div>
+<div id="menu_selected_1.1.2" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="sesion01-apuntes.html">Sesion 1</a>
+</div>
+<div class="menupage">
+<div class="menupagetitle">Sesion 2</div>
+</div>
+<div class="menuitem">
+<a href="sesion03-apuntes.html">Sesion 3</a>
+</div>
+<div class="menuitem">
+<a href="sesion04-apuntes.html">Sesion 4</a>
+</div>
+<div class="menuitem">
+<a href="roadmap-apuntes.html">Roadmap</a>
+</div>
+</div>
+<div onclick="SwitchMenu('menu_1.1.3', 'skin/')" id="menu_1.1.3Title" class="menutitle">Ejercicios</div>
+<div id="menu_1.1.3" class="menuitemgroup">
+<div class="menuitem">
+<a href="sesion01-ejercicios.html">Sesion 1</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-ejercicios.html">Sesion 2</a>
+</div>
+<div class="menuitem">
+<a href="sesion03-ejercicios.html">Sesion 3</a>
+</div>
+<div class="menuitem">
+<a href="sesion04-ejercicios.html">Sesion 4</a>
+</div>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<div id="credit2"></div>
+</div>
+<div id="content">
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="sesion02-apuntes.pdf"><img alt="PDF -icon" src="skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1> JMS (Java Message Service) (2) </h1>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#Durable+Subscribers">Durable Subscribers</a>
+</li>
+<li>
+<a href="#Browser+de+Mensajes">Browser de Mensajes</a>
+</li>
+<li>
+<a href="#Interacci%C3%B3n+de+servlets+con+JMS">Interacci&oacute;n de servlets con JMS</a>
+</li>
+<li>
+<a href="#Transacciones+en+JMS+%28con+JTA%29">Transacciones en JMS (con JTA)</a>
+</li>
+</ul>
+</div>
+
+<a name="N1000C"></a><a name="Durable+Subscribers"></a>
+<h2 class="underlined_10">Durable Subscribers</h2>
+<div class="section">
+<p>Para estar seguro de que una aplicaci&oacute;n Pub/sub recibe todos los mensajes publicados, debe usarse 
+ el modo de reparto PERSISTENT en la construcci&oacute;n del mensaje. Pero adicionalmente, se en este caso
+ puede usarse un <em>durable subscriber</em> para los subscriptores. La idea b&aacute;sica de esto es que una 
+ subscripci&oacute;n de este tipo permanezca activa a pesar de que el subscriptor cierre su conexi&oacute;n:</p>
+<p>
+
+<img alt="Non-durable y Durable Subscribers" content-width="12cm" src="imagenes/sesion2/durable.gif" width="600">
+</p>
+<p>Para trabajar con este tipo de subscripciones hay que realizar los siguientes pasos:</p>
+<p>1. Si no existe ya un <em>Persistent Store</em> entonces hay que definirlo. Para ello antes hay que haber creado 
+un  servidor JMS al que se van a vincular los recursos (ya lo veremos m&aacute;s adelante). En el servidor de ejemplos 
+ya existe <em>examplesJMSServer</em> y est&aacute; configurado de tal forma que su almac&eacute;n persistente se llama 
+<em>exampleJDBCStore</em>:</p>
+<p>
+
+<img alt="Topicos relacionados con JMS y persistencia" content-width="12cm" src="imagenes/sesion2/persistente1.gif" width="600">
+</p>
+<p>
+
+<img alt="Servidores JMS" content-width="12cm" src="imagenes/sesion2/persistente2.gif" width="600">
+</p>
+<p>
+
+<img alt="Almac&eacute;n persistente" content-width="12cm" src="imagenes/sesion2/persistente3.gif" width="600">
+</p>
+<p>2. Inmediatamente despu&eacute;s de tener la conexi&oacute;n creada, establecer el identificador de cliente con una 
+llamada a <strong>setClientID</strong> (tambi&eacute;n existe el get correspondiente):</p>
+<pre class="code">
+topicConnection =
+topicConnectionFactory.createTopicConnection();
+topicConnection.setClientID("sco");
+</pre>
+<p>3. Despu&eacute;s se llama al m&eacute;todo <strong>createDurableSubscriber</strong>:</p>
+<pre class="code">
+String nombre = "mySub"; 
+TopicSubscriber topicSubscriber = 
+    createDurableSubscriber(mytopic, nombre);
+</pre>
+<p>4. M&aacute;s tarde podr&iacute;amos cerrar el <strong>TopicSubscriber</strong>:</p>
+<pre class="code">
+topicSubscriber.close(); 
+</pre>
+<p>5. El proveedor JMS almacena los mensajes publicados en el t&oacute;pico (al igual que 
+har&iacute;a con una cola) en el almac&eacute;n persistente, de forma que si el programa u otra aplicaci&oacute;n 
+llama a <strong>createDurableSubscriber</strong> con la misma factor&iacute;a de conexi&oacute;n y el 
+mismo identificador de cliente (que no tiene por que ser un nombre de usuario) y al 
+mismo t&oacute;pico, entonces la subscripci&oacute;n se reactiva y el proveedor JMS reparte los mensajes que ten&iacute;a guardado 
+en el almac&eacute;n.</p>
+</div>
+
+<a name="N10070"></a><a name="Browser+de+Mensajes"></a>
+<h2 class="underlined_10">Browser de Mensajes</h2>
+<div class="section">
+<p>En el tema anterior vimos como recibir mensajes de una cola,
+pero supongamos que solo queremos consultar la cola. Esto se puede
+hacer reemplazando los objetos <strong>QueueReceiver</strong> con objetos
+<strong>QueueBrowswer</strong>. En el m&eacute;todo <strong>init()</strong> del ejemplo
+<a href="ejemplos/sesion2/QueueBrowse.java.txt">QueueBrowse.java</a>
+se crea uno de estos objetos:</p>
+<pre class="code">
+qbrowser = qsession.createBrowser(queue);
+</pre>
+<p>En el m&eacute;todo <strong>displayQueue()</strong> se muestra como consultar la
+cola. En primer lugar se obtiene un <strong>Enumeration</strong> con los
+mensajes:</p>
+<pre class="code">
+Enumeration e = qbrowser.getEnumeration();
+</pre>
+<p>A partir de aqu&iacute; se itera obteniendo las propiedades del
+mensaje, tales como la prioridad, el identificador, etc...</p>
+<pre class="code">
+...
+if (! e.hasMoreElements()) {
+      System.out.println("There are no messages on this queue.");
+    } else {
+      System.out.println("Queued JMS Messages: ");
+      while (e.hasMoreElements()) {
+        m = (Message) e.nextElement();
+        System.out.println("Message ID " + m.getJMSMessageID() +
+                           " delivered " + new Date(m.getJMSTimestamp()) +
+                           " to " + m.getJMSDestination());
+        System.out.print("\tExpires        ");
+        if (m.getJMSExpiration() &gt; 0) {
+          System.out.println( new Date( m.getJMSExpiration()));
+            }
+        else
+          System.out.println("never");
+        System.out.println("\tPriority       " + m.getJMSPriority());
+        System.out.println("\tMode           " + (
+                      m.getJMSDeliveryMode() == DeliveryMode.PERSISTENT ?
+                                       "PERSISTENT" : "NON_PERSISTENT"));
+        System.out.println("\tCorrelation ID " + m.getJMSCorrelationID());
+        System.out.println("\tReply to       " + m.getJMSReplyTo());
+        System.out.println("\tMessage type   " + m.getJMSType());
+        if (m instanceof TextMessage) {
+          System.out.println("\tTextMessage    \"" + ((TextMessage)m).getText() + "\"");
+        }
+      }
+    }
+
+</pre>
+<p>Estos m&eacute;todos <strong>getXXXX</strong> tienen sus contrapartidas
+<strong>setXXXX</strong>. De todas maneras estas propiedades se establecen en
+el momento en que enviamos un mensaje.</p>
+</div>
+
+<a name="N100A8"></a><a name="Interacci%C3%B3n+de+servlets+con+JMS"></a>
+<h2 class="underlined_10">Interacci&oacute;n de servlets con JMS</h2>
+<div class="section">
+<p>La interaci&oacute;n de un servlet con el sistema JMS sigue los siguientes pasos como puede 
+verse en el m&eacute;todo <strong>service</strong> del ejemplo 
+<a href="ejemplos/sesion2/SenderServlet.java.txt">SenderServlet.java</a>:</p>
+<p>1. Definir variables para construir los mensajes.</p>
+<p>2. Construir la web para recoger los parametros.</p>
+<p>3. Llamar a los m&eacute;todos de env&iacute;o de un mensaje a un t&oacute;pico o una cola. </p>
+<pre class="code">
+public void service(HttpServletRequest req, HttpServletResponse res)
+       throws IOException, ServletException
+  {
+    res.setContentType("text/html");
+    res.setHeader("Pragma", "no-cache");
+    PrintWriter pw = res.getWriter();
+    boolean persistent;
+    String topicMsg="";
+    int priority;
+    long ttl;
+    String correlate;
+    String replyto;
+    String msgText="";
+    try {
+      if (req.getMethod().equals("GET")) {
+        printForm(pw);
+      } else {
+        topicMsg =
+          req.getParameterValues("dest")[0];
+        persistent =
+          req.getParameterValues("persistent")[0].equals("persistent");
+        priority =
+          Integer.parseInt(req.getParameterValues("priority")[0]);
+        ttl =
+          Long.parseLong(req.getParameterValues("timetolive")[0]);
+        correlate =
+          req.getParameterValues("correlate")[0];
+        replyto =
+          req.getParameterValues("replyto")[0];
+        msgText =
+          req.getParameterValues("msgtext")[0];
+
+       if (topicMsg.equals("topic"))  
+          sendTopicMessage(persistent, priority, ttl, correlate, replyto, msgText);
+          else
+          sendQueueMessage(persistent, priority, ttl, correlate, replyto, msgText);
+
+
+        pw.println(ExampleUtils.returnHtmlHeader("JMS Message Status"));
+        pw.println("&lt;h4&gt;&lt;FONT COLOR=#DB1260 FACE=\"Helvetica\"&gt;");
+        pw.println("Message Status&lt;/FONT&gt;&lt;/h4&gt;");
+        pw.println("Message Submitted: "+ExampleUtils.encodeXSS(msgText));
+      }
+    }
+    catch (Exception ex) {
+      ex.printStackTrace(new PrintWriter(pw));
+      ex.printStackTrace();
+    }
+    finally {
+      pw.println(ExampleUtils.returnHtmlFooter());
+    }
+</pre>
+</div>
+
+<a name="N100C6"></a><a name="Transacciones+en+JMS+%28con+JTA%29"></a>
+<h2 class="underlined_10">Transacciones en JMS (con JTA)</h2>
+<div class="section">
+<p>El objetivo de las transacciones en este contexto es tratar un
+grupo de mensajes que se producen o consumen <em>como una unidad
+at&oacute;mica</em>. Esto implica que en el momento en que una aplicacion
+realiza el <em>commit</em> de una transacci&oacute;n, todos los mensajes que
+recibi&oacute; durante esta transacci&oacute;n se borran del sistema de mensajes
+y todos los que envi&oacute; son distribuidos.</p>
+<p>Por el contrario, si se realiza un <em>rollback</em> los mensajes
+recibidos son devueltos al sistema de mensajes y los que envi&oacute; son
+descartados. Si un suscriptor de t&oacute;picos hace un <em>rollback</em> de
+un mensaje &eacute;ste se re-env&iacute;a al t&oacute;pico. Cuando un receptor de
+mensajes PTP hace el <em>rollback</em> el mensaje se re-env&iacute;a a la
+cola para que otro consumidor lo pueda recibir.</p>
+<p>Como ejemplo b&aacute;sico de uso de transacciones, veamos como conectarse a un 
+cliente PTP transaccional. El ejemplo Weblogic se denomina 
+<a href="ejemplos/sesion2/QueueReceiveInTx.java.txt">QueueReceiveInTx.java</a> y su m&eacute;todo central es <strong>receiveMessages()</strong>:</p>
+<pre class="code">
+public void receiveMessages() throws Exception {
+    Message msg = null;
+    String msgText = "";
+
+    try {
+      // Set transaction timeout to 30 minutes.
+      utx.setTransactionTimeout(1800);
+      utx.begin();
+      System.out.println("TRANSACTION BEGUN");
+      do {
+        msg = qreceiver.receive();
+        if (msg != null) {
+          if (msg instanceof TextMessage) {
+            msgText = ((TextMessage)msg).getText();
+          } else {
+            msgText = msg.toString();
+          }
+          System.out.println("Message Received: "+ msgText );
+          if (msgText.equalsIgnoreCase("quit")) {
+            utx.commit();
+            System.out.println("TRANSACTION COMMITTED");
+          }
+        }
+      } while(msg != null &amp;&amp; ! msgText.equalsIgnoreCase("quit"));
+    } catch (JMSException jmse) {
+      System.out.println("Error receiving JMS message: "+jmse);
+      System.err.println("An exception occurred: "+jmse.getMessage());
+      throw jmse;
+    } catch (javax.transaction.NotSupportedException nse) {
+      System.out.println("TRANSACTION COULD NOT BEGIN DUE TO: "+ nse);
+      throw nse;
+    } catch (javax.transaction.RollbackException rbe) {
+      System.out.println("TRANSACTION ROLLED BACK DUE TO: "+rbe);
+      throw rbe;
+    } catch (javax.transaction.HeuristicRollbackException hre) {
+      System.out.println("TRANSACTION ROLLED BACK DUE TO: "+hre);
+      throw hre;
+    } catch (javax.transaction.HeuristicMixedException hme) {
+      System.out.println("TRANSACTION ROLLED BACK DUE TO: "+hme);
+      throw hme;
+    } catch (javax.transaction.SystemException se) {
+      System.out.println("TRANSACTION EXCEPTION: "+se);
+      throw se;
+    }
+  }
+</pre>
+<p>1.- Se ha declarado un objeto <strong>javax.transaction.UserTransaction</strong> llamado <strong>utx</strong>.</p>
+<p>2.- Se establece el timeout de la transaccion (30 minutos).</p>
+<p>3.- Se inicia la transacci&oacute;n con <strong>utx.begin()</strong>.</p>
+<p>4.- Bucle hasta recibir el mensaje <strong>quit</strong>.</p>
+<p>5.- La transacci&oacute;n se completa (<strong>utx.commit</strong>) o bien 
+es abortada por diversos motivos.</p>
+<p>Otra forma, quiz&aacute;s m&aacute;s directa, de usar transacciones en JMS es crear una
+<em>sesi&oacute;n transaccional</em>, lo cual implica poner un flag a
+verdadero en el momento en que creamos la sesi&oacute;n. Tomando como
+referencia el ejemplo <a href="ejemplos/sesion2/JMSDrawDemo.java.txt">JMSDrawDemo.java</a>,
+que iremos detallando durante esta secci&oacute;n, en el m&eacute;todo
+<strong>initJMS()</strong> que es donde se inicia el contexto, se crea la
+sesi&oacute;n no-transaccional y otra transaccional, en un esquema
+Pub/sub:</p>
+<pre class="code">
+...
+session = connection.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
+sessionTX = connection.createTopicSession(true, Session.AUTO_ACKNOWLEDGE);
+...
+</pre>
+<p>donde <strong>session</strong> y <strong>sessionTX</strong> son objetos
+<strong>TopicSession</strong>. A partir de este punto los
+<strong>TopicPublisher</strong> que se creeen ser&aacute;n no-transaccionales o
+transaccionales en funci&oacute;n de si se crean a partir de una sesi&oacute;n
+no-transaccional o transaccional:</p>
+<pre class="code">
+topic = (Topic) ctx.lookup(TOPIC);
+publisher = session.createPublisher(topic);
+publisherTX = sessionTX.createPublisher(topic);
+</pre>
+<p>En lo que respecta al objeto <strong>TopicSubscriber</strong> llamado
+<strong>subscriber</strong> no haremos tal distinci&oacute;n y solamente nos
+interesa especificar si es de tipo <em>durable</em> o no. En el
+primer caso JMS almacena el mensaje en un medio persistente (como
+una BD) hasta asegurarse de que ha sido entregado o ha expirado,
+incluso si el suscriptor no estaba activo en el momento en que se
+envi&oacute; el mensaje. A continuaci&oacute;n se registra el oyente, se crea un
+mensaje y se inicia la conexi&oacute;n:</p>
+<pre class="code">
+if (durableSubscriberID == null) {
+      subscriber = session.createSubscriber(topic, "TRUE", noLocal);
+    } else {
+      subscriber = session.createDurableSubscriber(topic, durableSubscriberID);
+    }
+subscriber.setMessageListener(this);
+msg = session.createMessage();
+connection.start();
+</pre>
+<p>Esta aplicaci&oacute;n ejemplo se lanza desde dos clientes (ver
+instrucciones HTML en el directorio de ejemplos de JMS). Cada
+cliente crea un panel en donde se puede seleccionar si la sesi&oacute;n va
+a ser transaccional o no y despu&eacute;s puede pinchar para a&ntilde;adir
+iconos. Cada icono se traduce en un mensaje que se publica. Esto se
+hace en el m&eacute;todo <strong>publishPoint</strong> que recibe como argumento las
+coordenadas donde hemos pinchado con el rat&oacute;n. A partir de estas
+coordenadas construye un mensaje y almacena todos los puntos
+enviados en el vector <strong>pointsSent</strong>:</p>
+<pre class="code">
+private void publishPoint(int x, int y)
+  {
+    try {
+      msg.setIntProperty("x", x);
+      msg.setIntProperty("y", y);
+      pointsSent.addElement(new Point(x, y));
+      if (isTransacted) {
+        publisherTX.publish(msg, deliveryMode(), 5, 0);
+      } else {
+        publisher.publish(msg, deliveryMode(), 5, 0);
+      }
+    } catch (JMSException jmse) {
+      jmse.printStackTrace();
+    }
+  }
+</pre>
+<p>El mensaje es publicado de forma transaccional o no seg&uacute;n el
+caso. El m&eacute;todo <strong>setIntProperty()</strong> establece un campo de
+propiedad (<em>property field</em>).</p>
+<p>Una vez publicado, el suscriptor lo recibe a trav&eacute;s del m&eacute;todo
+<strong>onMessage()</strong> que obtiene con <strong>getIntProperty()</strong> los
+enteros y pinta una imagen de una furgoneta (caso no-transaccional)
+o un asterisco (caso transaccional):</p>
+<pre class="code">
+public void onMessage(Message msg)
+  {
+    try {
+      String command = msg.getStringProperty("command");
+      if (command != null &amp;&amp; command.equals("clearScreen")) {
+        clearScreen();
+      } else {
+        int x = msg.getIntProperty("x");
+        int y = msg.getIntProperty("y");
+        Point p = new Point(x,y);
+        updateImage(p);
+      }
+    } catch (JMSException e) {
+      e.printStackTrace();
+    }
+  }
+</pre>
+<p>En el panel de cada cliente hay un bot&oacute;n para hacer
+<em>commit</em> y otro para hacer <em>rollback</em>. Con ellos se llama
+respectivamente a los m&eacute;todos <strong>doCommit()</strong> y
+<strong>doRollback()</strong> desde los que se invocan a los m&eacute;todos
+<strong>commit()</strong> y <strong>rollback()</strong> de la sesi&oacute;n:</p>
+<pre class="code">
+  private void doCommit()
+  {
+    try {
+      sessionTX.commit();
+      commitButton.setEnabled(false);
+      rollbackButton.setEnabled(false);
+      repaint();
+    } catch (JMSException jmse) {
+      jmse.printStackTrace();
+    }
+  }
+
+private void doRollback()
+  {
+    try {
+      sessionTX.rollback();
+      pointsSent.removeAllElements();
+      commitButton.setEnabled(false);
+      rollbackButton.setEnabled(false);
+      offScreenImage = null;
+      repaint();
+    } catch (JMSException jmse) {
+      jmse.printStackTrace();
+    }
+  }
+</pre>
+<p>En una sesi&oacute;n transaccional, los asteriscos no se pintan hasta
+que se hace <em>commit</em> y se borran del panel si se decide hacer
+<em>rollback</em>.</p>
+<p>NOTA: Algunos de los ejemplos presentados en esta sesi&oacute;n existen
+solo en la versi&oacute;n 7.0 del BEA WebLogic. Estos ejemplos se encuentran en <a href="ejemplos/sesion2/ejemplosWL700.tar.gz">ejemplosWL700.tar.gz</a>
+</p>
+</div>
+
+</div>
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+        Copyright &copy;
+         2006 Depto. CCIA</div>
+</div>
+</body>
+</html>

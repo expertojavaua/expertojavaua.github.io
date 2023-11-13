@@ -1,0 +1,310 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.7">
+<meta name="Forrest-skin-name" content="pelt">
+<title>Ejercicios de MVC en Spring</title>
+<link type="text/css" href="skin/highlight/shCore.css" rel="stylesheet">
+<link type="text/css" href="skin/highlight/shThemeEclipse.css" rel="stylesheet">
+<script src="skin/highlight/shCore.js" type="text/javascript"></script><script src="skin/highlight/shAutoloader.js" type="text/javascript"></script>
+<link type="text/css" href="skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="skin/print.css" rel="stylesheet">
+<link type="text/css" href="skin/profile.css" rel="stylesheet">
+<script src="skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<div class="header">
+<div class="grouplogo">
+<a href="http://web.ua.es/especialistajava"><img class="logoImage" alt="jtech" src="images/baner_j2ee_izq.gif" title="Experto Universitario Java Enterprise"></a>
+</div>
+<div class="projectlogoA1">
+<a href="http://www.dccia.ua.es/"><img class="logoImage" alt="Spring" src="images/baner_j2ee_der.gif" title="Spring"></a>
+</div>
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="javascript:location.href='../index.html'">Home</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../aplic-web.html'">Aplicaciones Web</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../aplic-ent.html'">Aplicaciones Enterprise</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../charlas.html'">Charlas</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../proy-int/index.html'">Proyecto</a>
+</li>
+<li>
+<a class="base-not-selected" href="index.html">Spring</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<div id="level2tabs"></div>
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<div id="menu">
+<div onclick="SwitchMenu('menu_1.1', 'skin/')" id="menu_1.1Title" class="menutitle">Spring</div>
+<div id="menu_1.1" class="menuitemgroup">
+<div class="menuitem">
+<a href="index.html" title="Spring">Indice</a>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<div id="credit2"></div>
+</div>
+<div id="content">
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="sesion03-ejercicios.pdf"><img alt="PDF -icon" src="skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1>Ejercicios de MVC en Spring</h1>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#Configurar+el+proyecto+para+Spring+MVC+%280.5+puntos%29">Configurar el proyecto para Spring MVC (0.5 puntos)</a>
+</li>
+<li>
+<a href="#MVC+sin+procesamiento+de+datos+de+entrada+%281+punto%29">MVC sin procesamiento de datos de entrada (1 punto)</a>
+</li>
+<li>
+<a href="#MVC+con+procesamiento+de+datos+de+entrada+%281+punto%29">MVC con procesamiento de datos de entrada (1 punto)</a>
+</li>
+<li>
+<a href="#Taglibs+de+Spring+y+validaci%C3%B3n+b%C3%A1sica+de+datos+%281+punto%29">Taglibs de Spring y validaci&oacute;n b&aacute;sica de datos (1 punto)</a>
+</li>
+</ul>
+</div>
+
+<p>La aplicaci&oacute;n "AmigosSpring" es una especie de red social muy simple en la que los usuarios 
+ pueden hacer login en el sistema y ver el perfil propio y el de otros. 
+ El n&uacute;cleo de la aplicaci&oacute;n ya est&aacute; desarrollado, y el objetivo de la sesi&oacute;n es ponerle un interfaz web usando Spring MVC.</p>
+
+<a name="N1000F"></a><a name="Configurar+el+proyecto+para+Spring+MVC+%280.5+puntos%29"></a>
+<h2 class="underlined_10">Configurar el proyecto para Spring MVC (0.5 puntos)</h2>
+<div class="section">
+<p>El proyecto est&aacute; en las plantillas de la sesi&oacute;n. Es un proyecto Maven, as&iacute; que lo puedes importar como "Existing Maven Projects".</p>
+<p>Antes de probar la aplicaci&oacute;n, <strong>crea la base de datos del script "amigosSpring.sql" </strong> incluido en 
+la carpeta "database" del proyecto.</p>
+<p>
+Tras desplegar el proyecto, comprueba que todo funciona con la p&aacute;gina "testDAO.jsp". 
+Tendr&aacute;s que pasarle como par&aacute;metro "login" el login de un usuario de la base de datos. Por ejemplo, accede a 
+<span class="codefrag">http://localhost:8080/AmigosSpring/testDAO.jsp?login=jsf</span> y comprueba que aparecen los datos de la usuaria "jsf".</p>
+<p> N&oacute;tese que para simplificar, la aplicaci&oacute;n no tiene capa de negocio. La capa de presentaci&oacute;n va a acceder directamente a los DAOs, lo que no es en general una buena pr&aacute;ctica.
+</p>
+<p>Las dependencias de Spring 3 ya se han incluido en el pom.xml del proyecto, 
+pero tendr&aacute;s que hacer las siguientes tareas para configurarlo para Spring MVC:</p>
+<ul>
+
+<li>&Eacute;chale un vistazo al XML de configuraci&oacute;n de beans para la capa de datos, <span class="codefrag">src/main/webapp/WEB-INF/daos.xml</span>. Fijate en que 
+est&aacute; referenciado en el web.xml, como siempre hacemos para arrancar Spring. (Vale, en este punto no es que hayas tenido que hacer mucho, pero al menos recuerda que estos ficheros son necesarios, para cuando hagas tus propios proyectos).</li>
+
+<li>Modifica el web.xml para crear el servlet "dispatcher". As&oacute;cialo con las peticiones de tipo *.do, como hemos hecho en los apuntes.</li>
+
+<li>Crea el fichero XML de configuraci&oacute;n de beans para la capa web, WEB-INF/dispatcher-servlet.xml (New &gt; Spring Bean configuration file). 
+En el segundo paso  del asistente necesitamos
+el "context" y tambi&eacute;n el "mvc". Puedes tomar como modelo el "dispatcher-servlet.xml" de los apuntes. Pero cuidado, tendr&aacute;s que cambiar el atributo "package"
+ de la etiqueta component-scan por lo que consideres necesario (fijate en el package en que est&aacute; el LoginController, que es 
+ donde vamos a colocar el resto de Controllers de Spring).</li>
+
+<li>Crea dentro del dispatcher-servlet.xml el bean "viewResolver", que asociar&aacute; nombres l&oacute;gicos de vistas con JSPs. 
+Toma como modelo el de los apuntes, pero ten en cuenta que aqu&iacute; los JSP no est&aacute;n dentro de ning&uacute;n directorio 
+especial (directamente est&aacute;n en webapp) por lo que la propiedad "prefix" sobra.</li>
+
+</ul>
+<p>Comprueba que la configuraci&oacute;n es correcta entrando en la aplicaci&oacute;n (por ejemplo como "jsf" con password "jsf").
+. Una vez hecho login, deber&iacute;a aparecer la p&aacute;gina del usuario actual, ya que el controlador que maneja el caso de uso "login" ya est&aacute; implementado
+en la clase <span class="codefrag">es.ua.jtech.amigosspring.presentacion.LoginController</span>
+</p>
+</div>
+
+<a name="N10041"></a><a name="MVC+sin+procesamiento+de+datos+de+entrada+%281+punto%29"></a>
+<h2 class="underlined_10">MVC sin procesamiento de datos de entrada (1 punto)</h2>
+<div class="section">
+<p>Implementar la capa web para el caso de uso "ver amigo". Escribiendo un identificador de usuario y pulsando
+el bot&oacute;n "ver amigo" de la parte izquierda de la pantalla, veremos sus datos 
+en un JSP ya incluido en la plantilla, "usuario.jsp".</p>
+<p>Pasos a seguir para crear el controller:</p>
+<ol>
+    
+<li>Crear en el paquete <span class="codefrag">es.ua.jtech.amigosspring.presentacion</span> la clase <span class="codefrag">VerAmigoController</span>. A&ntilde;&aacute;dele la anotaci&oacute;n <span class="codefrag">@Controller</span> para convertirlo en controlador de Spring.</li>
+    
+<li>La clase necesitar&aacute; de un objeto de tipo <span class="codefrag">IUsuariosDAO</span> para hacer su trabajo, que debes inyectar con <span class="codefrag">@Autowired</span> 
+</li>
+    
+<li>Crea un m&eacute;todo java para procesar la petici&oacute;n:
+    <ul>
+        
+<li> Anota el m&eacute;todo con <span class="codefrag">@RequestMapping</span> para asociarlo a la URL "verAmigo", que es a la que llama el formulario.</li>
+        
+<li>La petici&oacute;n disparada por el formulario tiene un &uacute;nico par&aacute;metro HTTP, de nombre "amigo", que es el del campo de texto donde se escribe el login
+            del usuario a ver. Usa la anotaci&oacute;n <span class="codefrag">@RequestParam </span>para asociar este par&aacute;metro HTTP con un par&aacute;metro del m&eacute;todo java </li>
+        
+<li> El m&eacute;todo tendr&aacute; un par&aacute;metro de tipo <span class="codefrag">Model</span> es para poder colocar el objeto Usuario. La vista, que es la p&aacute;gina usuario.jsp, espera un Usuario  bajo el nombre "amigo". (f&iacute;jate en que se usan expresiones del tipo ${amigo.edad})</li>
+        
+<li>Finalmente recuerda que el m&eacute;todo java debe devolver un String que es el nombre l&oacute;gico de la vista (en nuestro caso, el nombre real menos el .jsp)</li>
+        
+<li>Si el usuario no existe (si el DAO devuelve null), debes saltar a otra vista distinta. Crea una p&aacute;gina noexiste.jsp que simplemente diga "el usuario no existe" y devuelve esta vista si el usuario buscado no existe.</li>
+    
+</ul>
+</li>
+
+</ol>
+<p>Puedes probar a ver por ejemplo los usuarios <span class="codefrag">javaee</span> o <span class="codefrag">pepe</span>.</p>
+</div>
+
+<a name="N1008C"></a><a name="MVC+con+procesamiento+de+datos+de+entrada+%281+punto%29"></a>
+<h2 class="underlined_10">MVC con procesamiento de datos de entrada (1 punto)</h2>
+<div class="section">
+<p>Implementar la capa web para el caso de uso "buscar usuarios". Podemos buscar usuarios a partir de diversos criterios como edad, localidad, o sexo. El formulario de b&uacute;squeda est&aacute; en la
+ p&aacute;gina "busqueda.jsp", ya inclu&iacute;da en las plantillas.</p>
+<ol>
+
+<li>Definir una clase <span class="codefrag">es.ua.jtech.amigosspring.presentacion.CriteriosBusqueda</span> que pueda capturar los datos que se introducen en el formulario
+de b&uacute;squeda (con propiedades <span class="codefrag">int edadMin, int edadMax, String localidad, String sexo</span>)</li>
+
+<li>Crear el <em>controller</em> de Spring 
+<ol>
+    
+<li>Crear la clase <span class="codefrag">es.ua.jtech.amigosspring.presentacion.BuscarAmigosController</span>. Usando
+anotaciones, convertirla en controlador y mapearla con la URL "/busqueda"</li>
+   
+<li>La clase necesitar&aacute; de un <span class="codefrag">IUsuariosDAO</span> para hacer la b&uacute;squeda, igual que los otros Controllers.</li>
+
+    
+<li>El controlador tendr&aacute; dos m&eacute;todos: uno de ellos mapeado con GET y otro con POST:
+    <ul>
+        
+<li>
+<span class="codefrag">public String preparaForm()</span>: por el momento simplemente devolver&aacute; el nombre l&oacute;gico de la vista
+con el formulario ("busqueda").</li>
+
+<li>
+<span class="codefrag">public String procesaForm(CriteriosBusqueda criterios, Model modelo)</span>:
+<ul>
+
+<li>Tomando los datos del objeto "criterios", llama al m&eacute;todo "buscar" del DAO para hacer la b&uacute;squeda. </li>
+
+<li>Coloca el resultado en el modelo bajo el nombre "encontrados", ya que la vista JSP espera una List&lt;Usuario&gt; bajo ese nombre</li>
+
+<li>Finalmente devuelve
+el nombre l&oacute;gico de la vista que mostrar&aacute; los datos ("encontrados"). Se corresponde con la p&aacute;gina "encontrados.jsp" que ya est&aacute; implementada.</li>
+
+</ul>
+
+</li>
+        
+    
+</ul>
+    
+</li>     
+
+</ol>
+
+</li>
+
+<li>Prueba a hacer b&uacute;squedas. <strong>No dejes en blanco los campos de edad m&iacute;nima y m&aacute;xima</strong>, porque si no dar&aacute; error. Lo arreglaremos en el siguiente ejercicio.</li>
+
+</ol>
+</div>
+
+<a name="N100D9"></a><a name="Taglibs+de+Spring+y+validaci%C3%B3n+b%C3%A1sica+de+datos+%281+punto%29"></a>
+<h2 class="underlined_10">Taglibs de Spring y validaci&oacute;n b&aacute;sica de datos (1 punto)</h2>
+<div class="section">
+<p>Un problema de las b&uacute;squedas es que hay que escribir manualmente los valores para edad m&iacute;nima y m&aacute;xima. Vamos a poner unos valores por defecto sin tocar el HTML. Para ello:</p>
+<ol>
+
+<li>Modifica el <span class="codefrag">preparaForm</span> del controller a&ntilde;adi&eacute;ndole un par&aacute;metro de tipo <span class="codefrag">Model</span>. En este Model debes a&ntilde;adir como atributo un objeto de la clase <span class="codefrag">CriteriosBusqueda</span> con una edad m&iacute;nima de 18 y m&aacute;xima de 99.</li>
+
+<li>Para que estos valores se muestren en el formulario hay que usar las taglibs de Spring. Cambia las etiquetas del formulario por las de Spring. Recuerda que el "modelAttribute" de la etiqueta 
+"form:form" es el que vincula el formulario con el <span class="codefrag">CriteriosBusqueda</span> que has a&ntilde;adido al <span class="codefrag">Model</span> en <span class="codefrag">preparaForm</span>.</li>
+
+<li>Comprueba que al acceder a la p&aacute;gina de b&uacute;squeda aparecen los valores por defecto en el formulario.</li>
+
+</ol>
+<p>Todav&iacute;a nos queda por resolver la validaci&oacute;n de datos. Si pruebas a introducir una edad m&iacute;nima o m&aacute;xima no num&eacute;rica ver&aacute;s que se genera un error,
+al no ser posible vincular el campo del formulario con el dato de tipo entero. Vamos a filtrar los errores y mostrar un mensaje apropiado:</p>
+<ol>
+
+<li>En el m&eacute;todo <span class="codefrag">procesaForm</span> del controller define un par&aacute;metro de tipo <span class="codefrag">BindingResult</span> para "capturar" los errores. Tiene que estar <strong>inmediatamente detr&aacute;s</strong>
+del par&aacute;metro de tipo <span class="codefrag">CriteriosBusqueda</span> ya que son los errores asociados a &eacute;l. Recuerda tambi&eacute;n que al usar esto debes obligatoriamente anotar el par&aacute;metro CriteriosBusqueda con @ModelAttribute</li>
+
+<li>En el c&oacute;digo del m&eacute;todo, antes de llamar al DAO comprueba si el <span class="codefrag">BindingResult</span> contiene errores (si "hasErrors()" devuelve <em>true</em>). En ese caso, hay que ir de nuevo a la p&aacute;gina de b&uacute;squeda.</li>
+
+<li>Comprueba que al meter un dato no num&eacute;rico en la edad se vuelve a mostrar la misma p&aacute;gina de b&uacute;squeda</li>
+
+<li>Nos falta todav&iacute;a mostrar un mensaje de error al usuario indicando qu&eacute; ha pasado. Hay que:
+<ul>
+
+<li>Crear el fichero .properties con los mensajes. Cr&eacute;alo en "src/main/resources".</li>
+
+<li>Crear el bean  "messageSource" en el dispatcher-servlet.xml, referenciando el .properties creado. Si lo has hecho en "resources" no es necesario poner el package, solo el nombre del .properties, sin
+la extensi&oacute;n.</li>
+
+<li>Usar etiquetas <span class="codefrag">&lt;form:errors/&gt;</span> en el formulario para mostrar los errores asociados a la edad m&iacute;nima y m&aacute;xima. Lleva cuidado de meter las etiquetas dentro del formulario, si las pones fuera
+no se encontrar&aacute; la referencia a los campos "edadMin" y "edadMax".</li>
+
+</ul>
+
+</li>
+
+<li>Comprueba que al dejar vac&iacute;a la edad o introducir un valor no num&eacute;rico se muestra el error en el JSP. Por el momento no vamos a validar otros errores, como por ejemplo edades negativas, eso lo haremos en sesiones posteriores.</li>
+
+</ol>
+</div>
+
+
+
+<p class="pageBreakAfter"></p>
+
+</div>
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+        Copyright &copy;
+         2012-2013 Depto. Ciencia de la computaci&oacute;n e IA</div>
+</div>
+<script type="text/javascript">
+     
+         SyntaxHighlighter.defaults['toolbar'] = false;
+         SyntaxHighlighter.autoloader(
+  		     'java                   skin/highlight/shBrushJava.js',
+  		     'xml xhtml xslt html    skin/highlight/shBrushXml.js',
+  		     'js jscript javascript  skin/highlight/shBrushJScript.js',
+  		     'groovy                 skin/highlight/shBrushGroovy.js',
+  		     'bash shell             skin/highlight/shBrushBash.js',
+  		     'php                    skin/highlight/shBrushPhp.js',
+  		     'css                    skin/highlight/shBrushCss.js',
+  		     'sql                    skin/highlight/shBrushSql.js',
+  		     'objc                   skin/highlight/shBrushObjC.js',
+  		     'cpp c                  skin/highlight/shBrushCpp.js',
+  		     'text plain             skin/highlight/shBrushPlain.js'
+         );
+         SyntaxHighlighter.all();
+     </script><a href="skin/highlight/shBrushJava.js"></a><a href="skin/highlight/shBrushXml.js"></a><a href="skin/highlight/shBrushJScript.js"></a><a href="skin/highlight/shBrushGroovy.js"></a><a href="skin/highlight/shBrushBash.js"></a><a href="skin/highlight/shBrushPhp.js"></a><a href="skin/highlight/shBrushCss.js"></a><a href="skin/highlight/shBrushSql.js"></a><a href="skin/highlight/shBrushObjC.js"></a><a href="skin/highlight/shBrushCpp.js"></a><a href="skin/highlight/shBrushPlain.js"></a>
+</body>
+</html>

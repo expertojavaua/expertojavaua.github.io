@@ -1,0 +1,343 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0052)http://www.dccia.ua.es/j2ee/seguridad/apuntes/sesion6.htm -->
+<HTML><HEAD><TITLE>Seguridad en Java</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=iso-8859-1">
+<META content=Sco name=Author><LINK href="../../../apuntes.css"
+type=text/css rel=stylesheet>
+<META content="MSHTML 5.50.4134.100" name=GENERATOR></HEAD>
+<BODY>
+<H1>Tema 7: Seguridad en Bases de Datos</H1>
+<H2>7.1. Encriptación de Tarjetas de Crédito</H2>
+<P> La seguridad de una base de datos atañe tanto a la seguridad en la conexión como a la seguridad
+(encriptación) de los datos propiamente dichos. En este tema nos centraremos en el estudio de ésta
+última y lo haremos a través de un ejemplo. Supongamos que tenemos un servidor que acepta datos de
+tarjetas de créditos y los almacena en una BD encriptados con su clave pública. La clave privada
+solamente es conocida por el departamento de finanzas de la empresa.</P>
+<P>Para llevar a cabo esta tarea definiremos e implementaremos 4 clases:</P>
+<table border="1">
+  <tr>
+    <td><B>CreditCard</B></td>
+    <td>Objeto para incluir datos de la tarjeta: <B>mAccountID</B> y <B>mCreditCardNumber</B>. Soporta
+    los métodos <B>CreditCard()</B>, <B>getAccountID</B> y <B>getCreditCardNumber()</B>.</td>
+  </tr>
+  <tr>
+    <td><B>CreditCardDBO</B></td>
+    <td>Objeto que contiene <B>mAccountID</B> y los datos encriptados de la tarjeta
+    <B>mEncryptedCCNumber</B> y <B>mEncryptedSessionKey</B> (número de tarjeta y clave sesión). Soporta los
+    métodos: <B>CreditCardDBO()</B>, <B>getAccountID()</B>,
+    <B>getEncryptedCCNumber()</B> y <B>getEncryptedSessionKey()</B>.</td>
+  </tr>
+  <tr>
+    <td><B>DatabaseOperations</B></td>
+    <td>Maneja el acceso a través de JDBC. Están definidas las operaciones:
+    <B>getAllCreditCardAccountIDs()</B>, <B>loadCreditCardDBO()</B> y <B>store()</B>.
+    Maneja objetos <B>CreditCardDBO</B> sin realizar tareas de encriptación/desencriptación.</td>
+  </tr>
+  <tr>
+    <td><B>CreditCardFactory</B></td>
+    <td>Maneja la encriptación y desencriptación de las tarjetas. Utiliza una misma <B>mPublicKey</B>
+    para encriptar. Permite <B>createCreditCard()</B>, <B>findAllCreditCards()</B> y <B>findCreditCard()</B>
+    siempre y cuando la clave privada apropiada se suministre como argumento.</td>
+  </tr>
+</table>
+
+<P>En este tema nos centraremos en la descripción de la clase <B>CreditCardFactory</B> cuyo código se encuentra
+en el fichero <A href="sesion6_archivos/CreditCardFactory.java.txt">CreditCardFactory.java</A>. El código
+de las clases restantes se encuentra, respectivamente, en los siguientes ficheros: <A href="sesion6_archivos/CreditCard.java.txt">CreditCard.java</A>,
+<A href="sesion6_archivos/CreditCardDBO.java.txt">CreditCardDBO.java</A> y
+<A href="sesion6_archivos/DatabaseOperations.java.txt">DatabaseOperations.java</A>.</P>
+
+<H2>7.2. Configuración de la Base de Datos</H2>
+
+<P> En primer lugar lanzaremos el servidor de mysql ejecutando desde root: <I>safe_mysqld &</I>.
+Seguidamente accederemos a mysql como root (<I>$ mysql -u root -p</I>) y crearemos una BD de
+datos:</P>
+<PRE class=codigo>
+CREATE DATABASE projava;
+USE projava;
+CREATE TABLE account (
+	account_id INT8 PRIMARY KEY,
+	customer_name VARCHAR(40),
+	balance FLOAT,
+	cert_serial_number VARCHAR(255)
+);
+CREATE TABLE credit_card (
+	account_id INT8 PRIMARY KEY,
+	session_key VARCHAR(255),
+	cc_number VARCHAR(100)
+);
+</PRE>
+<P>Para finalizar con la configuración de myslq añadiremos un usuario de nombre <I>usuario</I> y de
+password <I>clave</I>:</P>
+<PRE class=codigo>
+USE projava;
+GRANT ALL PRIVILEGES ON * TO usuario@localhost IDENTIFIED BY "clave";
+GRANT ALL PRIVILEGES ON * TO usuario@localhost.localdomain IDENTIFIED BY "clave";
+</PRE>
+
+<P>En segundo lugar, asumimos que la clave pública se obtiene del certificado <I>publica.cer</I>. Este certificado se
+crea y se guarda en el almacén <I>tarjetas.ks</I> y se exporta en formato DER:</P>
+<P><I>keytool -genkey -keyalg RSA -keystore tarjetas.ks</I></P>
+<P><I>keytool -export -file publica.cer -keystore tarjetas.ks</I></P>
+
+<P>En tercer lugar creamos un fichero de configuración llamado <B>config.properties</B> correspondiente a
+la clase <B>Java.util.Properties</B> en donde especificamos: (1) path al certificado que contendrá la clave pública,
+(2) usuario de la BD, (3) password de dicho usuario, (4) URL de la BD y (5) driver de la BD. </P>
+<PRE class=codigo>
+PublicKeyFilename:publica.cer
+DBUsername:usuario
+DBPassword:clave
+DBUrl:jdbc:mysql://localhost/projava
+DBDriver:org.gjt.mm.mysql.Driver
+</PRE>
+
+
+<H2>7.3. Clase CreditCardFactory</H2>
+<P>Como ya vimos, la clase <B>CreditCardFactory</B> soporta la creación, encriptación, grabación, acceso y desencriptación de
+tarjetas de crédito (objetos <B>CreditCard</B>). El código completo está en el fichero
+<A href="sesion6_archivos/CreditCardFactory.java.txt">CreditCardFactory.java</A>
+del paquete <I>com.projavasecurity.ecommerce.creditcard</I></P>
+
+<P>Supongamos que alguien llama al método <B>CreditCardFactory.CreateCreditCard()</B> con el propósito de crear, encriptar y
+almacenar una nueva tarjeta (le pasaremos el número de cuenta <B>accountID</B> y el número de tarjeta de crédito
+<B>creditCardNumber</B>). Se realizan los siguientes pasos:</P>
+
+<P>1. Crear una clave de sesión (simétrica) con Blowfish, inicializar un cifrador y aplicarlo sobre
+<B>creditCardNumber</B> con lo que tenemos el número de tarjeta encriptado.</P>
+<P>2. Usar la clave pública (<B>mPublicKey</B>) del <B>CreditCardFactory</B> para inicializar un cifrador
+asimétrico y encriptar así la clave sesión.</P>
+<P>3. Crear un nuevo objeto <B>CreditCardDBO</B> con el número de cuenta, la clave sesión encriptada y
+el número de tarjeta encriptado.</P>
+<P>4. Crear un objeto <B>DatabaseOperations</B> y llamar al método <B>load</B> pasándole como argumento
+el objeto <B>CreditCardDBO</B> que acabamos de crear. Con ello almacenamos los datos encriptados.</P>
+<P>5. Devolver el objeto <B>CreditCard</B> con los datos sin encriptar.</P>
+
+<P>El código se muestra a continuación. Como puede observarse está incluido en un par <B>try/catch</B> con
+múltiples <B>catch</B> para capturar diversos tipos de excepción:</P>
+
+<PRE class=codigo>
+public CreditCard createCreditCard
+   (long accountID, String creditCardNumber)
+   throws InvalidKeyException, IOException {
+
+   CreditCardDBO creditCardDBO = null;
+   byte[] encryptedSessionKey, encryptedCCNumber;
+
+   try {
+	<B>// 1a. Crear clave sesión (simétrica).</B>
+	KeyGenerator kg = KeyGenerator.getInstance("Blowfish");
+	kg.init(128);
+	Key sessionKey = kg.generateKey();
+
+	<B>// 1b. Inicializar cifrador y encriptar número de tarjeta.</B>
+	Cipher symmetricCipher = Cipher.getInstance
+	("Blowfish/ECB/PKCS5Padding");
+	symmetricCipher.init(Cipher.ENCRYPT_MODE, sessionKey);
+	encryptedCCNumber = symmetricCipher.doFinal
+	(creditCardNumber.getBytes("UTF8"));
+
+	<B>// 2. Usar clave pública para encriptar clave sesión.</B>
+	Cipher asymmetricCipher = Cipher.getInstance
+	("RSA/ECB/PKCS1Padding");
+	asymmetricCipher.init(Cipher.ENCRYPT_MODE, mPublicKey);
+	encryptedSessionKey = asymmetricCipher.doFinal
+	(sessionKey.getEncoded());
+
+	// Need to catch a large number of possible exceptions:
+    } catch (NoSuchAlgorithmException nsae) {
+	// We're in trouble. Missing RSA or Blowfish.
+	nsae.printStackTrace();
+	throw new RuntimeException("Missing Crypto algorithm");
+    } catch (NoSuchPaddingException nspe) {
+	// again, we're in trouble. Missing padding.
+	nspe.printStackTrace();
+	throw new RuntimeException("Missing Crypto algorithm");
+    } catch (BadPaddingException bpe) {
+	// Probably a bad key.
+	bpe.printStackTrace();
+	throw new InvalidKeyException("Missing Crypto algorithm");
+    } catch (IllegalBlockSizeException ibse) {
+	// Probably a bad key.
+	ibse.printStackTrace();
+	throw new InvalidKeyException("Could not encrypt");
+    }
+
+    <B>// 3. Crear objeto con la información encriptada.</B>
+    creditCardDBO = new
+       CreditCardDBO(accountID, encryptedSessionKey, encryptedCCNumber);
+
+    <B>// 4. Almancenar objeto con la información encriptada.</B>
+    mDBOperations.store(creditCardDBO);
+    CreditCard creditCard = new CreditCard(accountID, creditCardNumber);
+    <B>// 5. Devolver objeto con la información original.</B>
+    return creditCard;
+}
+</PRE>
+
+<P>Si ahora, por el contrario pretendemos acceder a los datos encriptados de una tarjeta y luego devolverlos
+desencriptados accederemos al método <B>findCreditCard()</B> pasándole como argumento el número de cuenta
+y la clave privada (<B>accountID</B> y <B>privateKey</B>). Se seguirán los siguientes pasos:</P>
+
+<P>1. Crear un objeto <B>DatabaseOperations</B> y llamar al método <B>loadCreditCardDBO</B> pasándole
+como argumento el <B>accountID</B>. Esta llamada devuelve un objeto <B>CreditCardDBO</B> que contiene:
+número de cuenta, clave sesión encriptada y número de tarjeta encriptado.</P>
+<P>2. Utilizar la clave privada para desencriptar la clave sesión.</P>
+<P>3. Utilizar la clave sesión para desencriptar el número de tarjeta. </P>
+<P>4. Devolver un objeto <B>CreditCard</B> con la información desencriptada.
+
+<P> A continuación mostramos el código fuente (de nuevo múltiples <B>catch</B>):</P>
+<PRE class=codigo>
+public CreditCard findCreditCard
+   (long accountID, PrivateKey privateKey)
+   throws InvalidKeyException, IOException{
+
+   String creditCardNumber = null;
+
+   <B>// 1. Cargar la información encriptada de la tarjeta desde la BD.</B>
+   CreditCardDBO creditCardDBO =
+        mDBOperations.loadCreditCardDBO(accountID);
+        try {
+           <B>// 2. Desencriptar la clave sesión.</B>
+           Cipher asymmetricCipher = Cipher.getInstance
+                ("RSA/ECB/PKCS1Padding");
+           asymmetricCipher.init(Cipher.DECRYPT_MODE, privateKey);
+           byte[] sessionKeyBytes = asymmetricCipher.doFinal
+           (creditCardDBO.getEncryptedSessionKey());
+
+           <B>// 3. Desencriptar el número de tarjeta con la clave sesión.</B>
+           SecretKey symmetricKey = new SecretKeySpec
+                (sessionKeyBytes, "Blowfish");
+           Cipher symmetricCipher = Cipher.getInstance
+                ("Blowfish/ECB/PKCS5Padding");
+           symmetricCipher.init(Cipher.DECRYPT_MODE, symmetricKey);
+           byte[] ccNumberBytes = symmetricCipher.doFinal
+                  (creditCardDBO.getEncryptedCCNumber());
+
+           creditCardNumber = new String(ccNumberBytes, "UTF8");
+
+       // Need to catch a large number of possible exceptions:
+       } catch (NoSuchAlgorithmException nsae) {
+         // Missing an algorithm.
+	       nsae.printStackTrace();
+               throw new RuntimeException("Missing crypto algorithm");
+       } catch (NoSuchPaddingException nspe) {
+         // again, we're in trouble. Missing padding.
+	       nspe.printStackTrace();
+               throw new RuntimeException("Missing Crypto algorithm");
+       } catch (BadPaddingException bpe) {
+         // This means the data is probably bad.
+               bpe.printStackTrace();
+               throw new InvalidKeyException("Could not decrypt");
+       } catch (IllegalBlockSizeException ibse) {
+         // Probably a bad key.
+               ibse.printStackTrace();
+               throw new InvalidKeyException("Could not decrypt");
+       }
+
+   <B>// 4. Crear y devolver objeto CreditCard.</B>
+   CreditCard creditCard = new CreditCard(accountID, creditCardNumber);
+   return creditCard;
+}
+</PRE>
+<P>En tercer lugar, el método <B>CreditCardFactory</B>, es decir el constructor de la clase, se invoca cuando desde
+cualquier programa java queremos modificar o consultar nuestra base de datos de tarjetas de crédito. Dicho
+método recibe como argumento un objeto de la clase <B>Properties</B> que contiene las propiedades almacenadas
+en nuestro fichero <B>config.properties</B>. Entonces accede al fichero que contiene el
+certificado digital (en nuestro caso el fichero que figura en el campo <B>PublicKeyFilename</B>) y obtiene la
+clave pública. Finalmente construye un objeto <B>DatabaseOperations</B> para implementar las operación de
+modificación o de consulta:</P>
+<PRE class=codigo>
+public CreditCardFactory (Properties properties) throws IOException {
+   String certFilename = properties.getProperty("PublicKeyFilename");
+   try {
+       <B>// Acceder a la clave pública</B>
+        FileInputStream fis = new FileInputStream(certFilename);
+        java.security.cert.CertificateFactory cf =
+            java.security.cert.CertificateFactory.getInstance("X.509");
+        java.security.cert.Certificate cert =
+             cf.generateCertificate(fis);
+        fis.close();
+        <B>mPublicKey = cert.getPublicKey();</B>
+   } catch (Exception e) {
+        e.printStackTrace();
+        throw new IOException(e.getMessage());
+   }
+   <B>// Crear objeto de operacion de base de datos</B>
+   <B>mDBOperations = new DatabaseOperations(properties);</B>
+}
+</PRE>
+
+<H2>7.4 Modificando y Consultando la BD</H2>
+<P>Finalmente vamos a ver dos programas de aplicación que permiten añadir y consultar tarjetas de crédito. El primero de
+ellos es <A href="sesion6_archivos/CreateTest.java.txt">CreateTest.java</A>
+y simplemente lee el fichero de propiedades, crea un <B>CreditCardFactory</B> y almancena el número de cuenta y la tarjeta
+que se le pasan por teclado:</P>
+<PRE class=codigo>
+...
+<B>// Cargar propiedades.</B>
+Properties properties = new Properties();
+FileInputStream fis = new FileInputStream(PROPERTIES_FILE);
+properties.load(fis);
+fis.close();
+
+<B>// Crear la tarjeta.</B>
+CreditCardFactory factory = new CreditCardFactory(properties);
+CreditCard creditCard = factory.createCreditCard(id,ccNumber);
+...
+</PRE>
+<P>Para probar esta aplicación nos situaremos en el directorio en donde tenemos los ficheros
+<I>config.properties</I>, <I>publica.cer</I> y <I>tarjetas.ks</I>. Allí tenemos todos los ficheros
+*.java y hacemos lo siguiente para construir el package:</P>
+<P><I>javac *.java -d .</I></P>
+
+<P>Asumiendo que tenenos el fichero
+<I>jar</I> del JDBC en el <I>CLASSPATH</I> o bien accesible en <I>$JAVA_HOME/jre/lib/ext</I>, teclearemos
+el comando </P>
+<P><I>java com.projavasecurity.ecommerce.CreateTest 1 "1234 5678 9012 3456"</I></P>
+<P>Posteriormente haremos desde <I>mysql</I> haremos </P>
+<PRE class=codigo>
+USE projava;
+SELECT * FROM credit_card;
+</PRE>
+<P>para ver los campos <B>session_key</B> y <B>cc_number</B>, que deberán aparecer encriptados.</P>
+<P>Para listar la información desencriptada de todas las tarjetas de la BD, recurriremos a la aplicación
+<A href="sesion6_archivos/ViewTest.java.txt">ViewTest.java</A>. Dicha aplicación
+consulta, en primer lugar, el <I>keystore</I> <I>tarjetas.ks</I>. Para ello hay que suministrar el password correcto
+para el almacén. Entonces extrae la clave privada para poder desencriptar
+la clave sesión que a su vez ha permitido encriptar los datos de las tarjetas. Después crea un <B>CreditCardFactory</B> con
+las <B>Properties</B> y después llama al método <B>findAllCreditCards()</B> pasándole la clave privada. Este método funciona
+haciendo sucesivas llamadas al método <B>findCreditCard()</B> y recogiendo el resultado en un iterador. Este iterador es el que
+se usa aquí para ir mostrando todas las tarjetas:
+<PRE class=codigo>
+<B>// Cargar el keystore y obtener la clave privada.</B>
+String ksType = KeyStore.getDefaultType();
+KeyStore ks = KeyStore.getInstance(ksType);
+FileInputStream fis = new FileInputStream(KEYSTORE);
+ks.load(fis,PASSWORD);
+fis.close();
+PrivateKey privateKey = (PrivateKey)ks.getKey("mykey",PASSWORD);
+
+<B>// Cargar las properties</B>
+Properties properties = new Properties();
+fis = new FileInputStream(PROPERTIES_FILE);
+properties.load(fis);
+fis.close();
+
+<B>// Crear un CreditCardFactory.</B>
+CreditCardFactory factory = new CreditCardFactory(properties);
+
+<B>// Coger todas las tarjetas</B>
+Iterator iterator = factory.findAllCreditCards(privateKey);
+
+<B>// Mostrar las tarjetas</B>
+while(iterator.hasNext()) {
+   CreditCard creditCard = (CreditCard)iterator.next();
+   System.out.println("\nAccount ID: "+creditCard.getAccountID());
+   System.out.println("CC Number: "+creditCard.getCreditCardNumber());
+}
+...
+</PRE>
+<P>Para probar esta aplicación teclearemos</P>
+<P><I>java com.projavasecurity.ecommerce.ViewTest</I></P>
+
+</BODY></HTML>

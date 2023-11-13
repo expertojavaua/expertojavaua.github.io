@@ -1,0 +1,194 @@
+<html>
+<head>
+<title>Tema 3: Paso de par&aacute;metros por la red</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<h1><span class="section">3. </span>Paso de par&aacute;metros por la red</h1>
+<p>RMI depende enteramente de la capacidad para enviar objetos a y desde m&eacute;todos 
+  en m&aacute;quinas remotas. RMI asume una arquitectura orientada a objetos. 
+  Cualquier objeto que se env&iacute;a como par&aacute;metro a un objeto remoto 
+  lo hace por valor. Esto significa que se pasa una copia del objeto, no el original 
+  o una referencia al original. La excepci&oacute;n a esta regla es un objeto 
+  que haya sido exportado como un objeto remoto (objeto que implementa m&eacute;todos 
+  remotos). En este caso, al cliente se le env&iacute;a un <i>proxy</i> o <i>stub</i> 
+  que representa un objeto que reside en el host, o m&aacute;quina servidor. Cualquier 
+  interacci&oacute;n con el stub es enviada al original, que es qui&eacute;n realiza 
+  realmente cualquier operaci&oacute;n que sea requerida por el <i>stub</i>. </p>
+<p>Cuando se env&iacute;an estructuras de datos desde una m&aacute;quina a otra, 
+  dichos datos se deben codificar de cierta manera para que puedan ser enviados 
+  a trav&eacute;s de la red. Esto normalmente implica implementar un protocolo 
+  de transmisi&oacute;n, incluyendo alg&uacute;n tipo de marcas para delimitar 
+  los campos y registros enviados. Las conexiones de red son, en su mayor parte, 
+  en serie, y los datos deben transformarse antes de que sean transmitidos a trav&eacute;s 
+  de las conexiones serie.</p>
+<p>El modelo RMI asume una plataforma homog&eacute;nea, la plataforma Java. Pero 
+  incluso asumiendo un entorno homog&eacute;neo, se debe desarrollar un protocolo 
+  para manejar el desensamblado, transmisi&oacute;n y reconstrucci&oacute;n de 
+  los datos. La <b>serializaci&oacute;n</b> de objetos hace referencia a los m&eacute;todos 
+  usados para duplicar un objeto escribiendo los valores de sus campos en un flujo 
+  de datos y recreando una copia de dicho objeto a partir de dichos valores de 
+  campos.</p>
+<p>Es importante destacar que la reconstrucci&oacute;n del objeto obtiene una 
+  copia, no el objeto original. Los objetos serializados son siempre copias del 
+  original. Cuando se necesite enviar una referencia a un objeto, en vez de una 
+  copia, se debe usar un objeto remoto, es decir, un objeto exportado de forma 
+  impl&iacute;cita extendiendo la clase <code>java.rmi.server.UnicastRemoteObject</code>, 
+  o expl&iacute;citamente utilizando <code>UnicastRemoteObject.exportObject(Remote)</code>, 
+  y en cualquier caso, debe implementar una interfaz remota.</p>
+
+<h2 class="subsection">3.1. Serializaci&oacute;n de los datos</h2>
+<p>Para poder ejecutar un m&eacute;todo remoto, RMI tiene que transmitir los argumentos 
+  del m&eacute;todo desde el cliente al servidor, y transmitir los resultados 
+  en la direcci&oacute;n contraria. El proceso de codificar los argumentos y resultados 
+  para su transmisi&oacute;n se denomina <i><b>marshalling</b></i>; el proceso 
+  de decodificarlos cuando se reciben se denomina <i><b>unmarshalling</b></i>. 
+  RMI realiza los procesos de <i>marshalling</i> y <i>unmarshalling</i> via serializaci&oacute;n 
+  Java.</p>
+<p>Al proceso de convertir los componentes que conforman los datos en un flujo 
+  (<i>stream</i>) de bytes se denomina <b>serializaci&oacute;n</b>. Se denomina 
+  de-serializazi&oacute;n a la acci&oacute;n de decodificar dicho flujo de bytes 
+  para reconstruir una copia del objeto original. El t&eacute;rmino serializaci&oacute;n 
+  se usa tambi&eacute;n de forma informal para incluir ambos procesos.</p>
+<p>Para que un objeto pueda ser <i>marshalled</i> y <i>unmarshalled</i> por RMI 
+  debe ser serializable. Para ello debe cumplir las siguientes reglas:</p>
+<ul>
+  <li>Debe implementar la interfaz <code>Serializable</code>, o su extensión <code>Externalizable</code> 
+  </li>
+  <li>Debe tener una clase base que sea serializable o tenga un constructor por 
+    defecto (sin argumentos) accesible por la clase serializable
+  <li>Cualquier atributo del objeto debe referirse a un objeto que sea serializable, 
+    nulo, o declarado como <code>static</code> o <code>transient</code>
+  <li>No es necesario proporcionar ning&uacute;n m&eacute;todo
+  <li>Por razones de rendimiento, se deber&iacute;a declarar un m&eacute;todo 
+    <code>serialVersionUID</code> para permitir caracter&iacute;sticas relacionadas 
+    con el versioneado autom&aacute;tico de clases
+</ul>
+<p> Si en una llamada RMI se encuentra una clase no serializable, se lanza la 
+  excepci&oacute;n <code>NotSerializableException</code>, la cual se manifiesta 
+  en el cliente como <code>MarshalException</code> o <code>UnmarshalException</code>.</p>
+<p>Un objeto es serializado de forma impl&iacute;cita por RMI cuando &eacute;ste 
+  es <i>marshalled</i>, o de forma expl&iacute;cita llamando a <code>ObjectOutputStream.writeObject</code>. 
+  Este m&eacute;todo lanza una <code>IOException</code> ante cualquier error de 
+  entrada/salida, incluyendo <code>NotSerializableException</code> si se encuentra 
+  con un objeto no serializable.</p>
+<p>Cuando un objeto est&aacute; siendo serializado, se construye un grafo representando 
+  a dicho objeto (como raiz) y las referencias que contenga a otros objetos (ver 
+  Figura 3.1). Un grafo de objetos contiene un objeto raiz y todos los objetos 
+  alcanzables desde la raiz. Cuando un objeto es serializado, se escribe en el 
+  flujo de datos: su objeto base, si es serializable, y sus atributos (los atributos 
+  declarados como <code>static</code> o <code>transient</code> son ignorados). 
+  El proceso de serializaci&oacute;n es recursivo: el mismo proceso se aplica 
+  al objeto base (si es serializable), y a cualquier atributo que sea un objeto 
+  (no tipos primitivos), a trav&eacute;s del grafo de objetos del que el objeto 
+  original es la raiz. Cualquier objeto en el grafo de objetos se serializa solamente 
+  una vez, posteriores referencias a &eacute;l se codifican usando un mecanismo 
+  de referencias compartidas, que es decodificada durante el proceso de de-serializaci&oacute;n.</p>
+<center>
+  <img border="0" src="Fig3-1.gif"> 
+</center>
+<p class="caption">Figura 3.1. Ejemplos de grafos de objetos.</p>  
+<p>Un objeto es de-serializado de forma impl&iacute;cita por RMI cuando &eacute;ste 
+  es <i>unmarshalled</i>, o de forma expl&iacute;cita llamando a <code>ObjectIntputStream.readObject</code>. 
+  Este m&eacute;todo lanza una <code>IOException</code> ante cualquier error de 
+  entrada/salida, o <code>ClassNotFoundException</code> si la clase correspondiente 
+  a alg&uacute;n objeto en el grafo de objetos que est&aacute; siendo de-serializado 
+  no puede cargarse. Cuando un objeto es de-serializado, el grafo de objetos se 
+  reconstruye con un aspecto id&eacute;ntico al grafo utilizado para su serializaci&oacute;n.</p>
+<p>La serializaci&oacute;n por defecto funciona bastante bien, pero quiz&aacute; 
+  es demasiado lenta. Una clase serializable puede implementar su propia serializaci&oacute;n. 
+  Para ello se deben declarar los m&eacute;todos privados <code>readObject</code> 
+  y <code>writeObject</code>, que implementan cualquier tratamiento especial que 
+  requiera dicha clase. Estos m&eacute;todos son opcionales.</p>
+<p>Como ejemplo de serializazi&oacute;n por defecto, supongamos que queremos enviar 
+  un objeto sencillo que representa un punto en dos dimenesiones:</p>
+<pre class="codigo">class MyObject implements java.io.Serializable {
+  int x;
+  int y;
+  MyObject (int x, int y) {
+    this.x = x;
+    this.y = y;
+  }
+}</pre>
+<p>Debido a que implementa la interfaz <code>Serializable</code>, dicho objeto 
+  podr&iacute;a enviarse a un flujo de datos con el siguiente c&oacute;digo:</p>
+<pre class="codigo">MyObject point = new MyObject(10,20);
+ObjectOutputStream oos = new ObjectOutputStream(SomeOutputStream);
+oos.writeObject(point);
+</pre>
+<p>Dicho c&oacute;digo crea un nuevo <code>MyObject</code>, crea un <code>ObjectOutputStream</code> 
+  (asumiendo que <code>SomeOutputStream</code> es un objeto <code>OutputStream</code> 
+  v&aacute;lido), y escribe los datos de <code>MyObject</code> en el flujo de 
+  datos.</p>
+<p>El receptor puede reconstruir el objeto, asumiendo que tiene acceso local al 
+  <i>bytecode</i> de <code>MyObject</code>, con el siguiente c&oacute;digo:</p>
+<pre class="codigo">MyObject point = new MyObject(10,20);
+ObjectInputStream ois = new ObjectInputStream(SomeInputStream);
+point = (MyObject)ois.readObject();
+</pre>
+<p>A continuaci&oacute;n mostramos el c&oacute;digo para crear nuestros propios 
+  m&eacute;todos para serializar los datos y reconstruir el objeto. </p>
+<pre class="codigo">class MyObject implements java.io.Serializable {
+  int x;
+  int y;
+  public MyObject() {  //constructor sin argumentos
+  }
+  public MyObject (int x, int y) {
+    this.x = x;
+    this.y = y;
+  }
+  void writeObject(ObjectOutputStream s)
+     throws java.io.IOException {
+    s.writeInt(x);
+    s.writeInt(y);
+  }
+
+  void readObject(ObjectInputStream s)
+     throws java.io.IOException {
+    x= s.readInt();
+    y= s.readInt();
+  }
+}</pre>
+<p>En este ejemplo trivial, el objeto reconstruido no es diferente del que se 
+  obtiene con la serializaci&oacute;n por defecto, pero pod&iacute;an haberse 
+  incluido otras sentencias en los m&eacute;todos <code>readObject</code> y <code>writeObject</code> 
+  para calcular nuevos valores de campos o manejar de forma especial los datos.</p>
+<p>Cuando el objeto es serializado, el sistema chequea si el objeto define los 
+  m&eacute;todos <code>readObject()</code> y <code>writeObject()</code>. Si es 
+  as&iacute;, entonces chequea para ver si tiene un constructor sin argumentos. 
+  En ese caso, el sistema llama al m&eacute;todo <code>writeObject()</code> con 
+  un <code>ObjectStream</code> como argumento para que el objeto pueda serializarse 
+  &eacute;l mismo. Entonces, en la parte del receptor, el objeto es instanciado 
+  usando su constructor sin argumentos. A continuaci&oacute;n se llama al m&eacute;todo 
+  <code>readObject()</code> con un objeto <code>ObjectInputStream</code> como 
+  par&aacute;metro que es usado para reconstruir el objeto de datos.</p>
+<h2 class="subsection">3.2. La clase Externalizable</h2>
+<p>En lugar de implementar la clase<code> java.io.Serializable</code>, una clase 
+  puede implementar la interfaz <code>java.io.Externalizable</code>, para tener 
+  un control completo sobre el protocolo usado para codificar las instancias de 
+  esa clase. Por ejemplo, los m&eacute;todos readObject y writeObject solamente 
+  tienen en cuenta la lectura y escritura de atributos declarados en su clase, 
+  pudiendo obviar campos de sus superclases. Adem&aacute;s, la serializaci&oacute;n 
+  via <code>Externalizable</code> probablemente funcionar&aacute; m&aacute;s r&aacute;pido 
+  que la serializaci&oacute;n por defecto via <code>Serializable</code>.</p>
+<p>La principal diferencia entre los objetos <code>Externalizable</code> y <code>Serializable</code> 
+  es que un objeto Externalizable debe definir m&eacute;todos de lectura y escritura 
+  (<code>readExternal()</code> y <code>writeExternal()</code>). No hay serializaci&oacute;n 
+  por defecto para un objeto <code>Externalizable</code>.</p>
+<pre class="codigo">public void writeExternal(ObjectOutput stream) throws IOException;
+
+
+public void readExternal(objectInput stream) throws IOException;
+</pre>
+
+<p>T&iacute;picamente, los m&eacute;todos <code>readExternal</code> y <code>writeExternal</code> 
+  de una clase <code>Externalizable</code> cuya clase base sea tambi&eacute;n 
+  <code>Externalizable</code> comenzar&aacute;n llamando a <code>super.readExternal</code> 
+  y <code>super.writeExternal</code> respectivamente.</p>
+
+<h2 class="subsection">&nbsp;</h2>
+<h2 class="subsection">&nbsp;</h2>
+</body>
+</html>

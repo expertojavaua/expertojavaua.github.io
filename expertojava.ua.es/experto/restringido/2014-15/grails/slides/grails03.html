@@ -1,0 +1,701 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Introducción a Grails. Scaffolding.</title>
+
+		<meta name="description" content="Experto en desarrollo de aplicaciones web con JavaEE y Javascript">
+		<meta name="author" content="Francisco José García Rico">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/experto.css" id="theme">
+		
+    	<!-- coloreado de sintaxis con highlight.js -->
+    	<link rel="stylesheet" type="text/css" href="lib/css/github.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+
+	</head>
+
+<body>
+	<div class="reveal">
+	<div class="slides">
+		<!-- todo lo que se ponga aqui (que no sea un <section>) aparecerá
+		en todas las diapositivas -->
+		<div class="header">
+			<div class="logo">
+			 <img src="css/images/logo_small.png">
+			</div>
+			<div class="bar">Experto en desarrollo de aplicaciones web con JavaEE y Javascript</div>
+		</div>
+		<div class="footer">
+			<div class="left">
+				Framework Grails
+			</div>
+			<div class="center">
+				&copy; 2014-15 Dpto. Ciencia de la Computación e I.A.
+			</div>
+			<div class="right">
+				Sesión 3
+			</div>	
+		</div>	
+		<!-- Cada <section> es una slide -->	
+		
+		<section>
+			<!-- al poner el <h1> automáticamente aparece el logo del curso-->
+			<h1>Framework Grails</h1>
+			<h2>Sesión 3: Introducción a Grails. Scaffolding.</h2>
+		</section>
+		
+		<section>
+			<h2>Índice</h2>
+			<ul>
+				<li>¿Qué es Grails?</li>
+				<li>Características de Grails</li>
+				<li>Arquitectura</li>
+				<li>Instalación de Grails</li>
+				<li>Scaffolding</li>
+			</ul>
+		</section>
+
+		<section>			
+			<h2>¿Qué es Grails?</h2>
+			<ul>
+				<li class="fragment">Framework para el desarrollo de aplicaciones web</li>
+				<li class="fragment">Basado en la plataforma Java</li>
+				<li class="fragment">Convención sobre configuración</li>
+				<li class="fragment">DRY (don´t repeat yourself)</li>
+				<li class="fragment">Patrón MVC</li>
+			</ul>		 
+		</section>
+
+		<section>			
+			<h2>Patrón MVC</h2>
+			<ul>
+				<li class="fragment">Modelos: Clases de dominio</li>
+				<li class="fragment">Controlador: Gestiona peticiones a la aplicación y organiza los servicios proporcionados</li>
+				<li class="fragment">Vistas: GSP</li>	
+			</ul>		 
+		</section>
+
+		
+		<section>			
+			<h2>Eficiencia</h2>
+			<ul>
+				<li class="fragment">Nos olvidamos de la parte de configuración</li>
+				<li class="fragment">Acortamos tiempo de desarrollo</li>
+				<li class="fragment">Nos centramos en funcionalidad y tests</li>
+			</ul>		 
+		</section>
+		
+		<section>			
+			<h2>Framework completo</h2>
+			<ul>
+				<li class="fragment">Grails no sólo es el entorno MVC</li>
+				<li class="fragment">Incluye gestor de base de datos</li>
+				<li class="fragment">Incluye contenedor web</li>
+				<li class="fragment">Incluye sistema de empaquetado de la aplicación</li>
+				<li class="fragment">Incluye sistema para la realización de tests</li>
+			</ul>		 
+		</section>
+
+		<section>			
+			<h2>Empresas</h2>
+			<ul>
+				<li>Netflix: http://www.netflix.com</li>
+				<li>Sky: http://www.sky.com</li>
+				<li>Secret Escapes: http://www.secretescapes.com</li>
+				<li>Engage Sciences: http://www.engagesciences.com</li>
+				<li>Odobo: http://www.odobo.com</li>
+			</ul>		 
+		</section>
+
+		<section>			
+			<h2>Características</h2>
+			<ul>
+				<li class="fragment">Convención sobre configuración</li>
+				<li class="fragment">Tests: unitarios, integración y funcionales.</li>
+				<li class="fragment">Scaffolding</li>
+				<li class="fragment">Mapeo objeto-relacional: GORM</li>
+				<li class="fragment">Plugins</li>
+				<li class="fragment">Software de código abierto</li>
+			</ul>		 
+		</section>
+
+		<section>			
+			<h2>Software de código abierto</h2>
+			<ul>
+				<li class="fragment">Groovy</li>
+				<li class="fragment">Framework Spring</li>
+				<li class="fragment">Hibernate</li>
+				<li class="fragment">SiteMesh</li>
+				<li class="fragment">Tomcat y Jetty</li>
+				<li class="fragment">H2</li>
+				<li class="fragment">Spock</li>
+				<li class="fragment">Gant</li>
+			</ul>		 
+		</section>
+
+		<section>						
+			<h2>Arquitectura</h2>
+			<pre>
+				<p align=center><img style="border: 0;" src="../images/grails03/arquitectura.jpg"></p>
+			</pre>
+		</section>		
+
+		<section>						
+			<h2>Runtime</h2>
+			<pre>
+				<p align=center><img style="border: 0;" src="../images/grails03/grails_runtime.jpg"></p>
+			</pre>
+		</section>
+
+		<section>						
+			<h2>Instalación de Grails</h2>
+			<ul>
+				<li>Juego de niños</li>
+				<li>Línea de comandos</li>
+				<li>IntelliJ IDEA</li>
+			</ul>
+		</section>
+
+		<section>			
+			<h2>Instalación en línea de comandos</h2>
+			<pre>
+				<code class="bash" data-trim style="font-size: 18px;">
+curl -s get.gvmtool.net | bash
+
+gvm list grails
+
+gvm install grails 2.4.4
+				</code>
+			</pre>
+			<pre class="fragment">
+				<code class="bash" data-trim style="font-size: 18px;">
+gvm use grails 2.1.0
+				</code>
+			</pre>			
+		</section>
+
+		<section>						
+			<h2>Instalación en IntelliJ IDEA</h2>
+			<pre>
+				<p align=center><img style="border: 0;" src="../images/grails03/creategrailsproject.png"></p>
+			</pre>
+		</section>
+		
+		<section>						
+			<h2>Seleccionar instalación gvm</h2>
+			<pre>
+				<p align=center><img style="border: 0;" src="../images/grails03/selectgrailsversion.png"></p>
+			</pre>
+		</section>
+			
+		<section>						
+			<h2>Scaffolding</h2>
+			<ul>
+				<li>Construcción automática de aplicaciones a partir del esquema de base de datos</li>
+				<li>Generación de código</li>
+				<li>CRUD (creación, lectura, actualización y borrado)</li>
+				<li>Scaffolding dinámico</li>
+				<li>Scaffolding estático</li>
+			</ul>			
+		</section>
+		
+		<section>						
+			<h2>Aplicación ejemplo</h2>
+			<ul>
+				<li>Creación y mantenimiento de tareas</li>
+				<li>Tendremos categorías y etiquetas</li>
+				<li>Relación uno a muchos entre categorías y tareas</li>
+				<li>Relación muchos a muchos entre tareas y etiquetas</li>
+				<li>No hay gestión de usuarios (por ahora)</li>
+			</ul>			
+		</section>
+
+		<section>						
+			<h2>Creación del proyecto Grails</h2>
+			<pre>
+				<code class="bash" data-trim style="font-size: 18px;">
+grails help
+grails create-app todo
+				</code>
+			</pre>			
+		</section>
+
+		<section>						
+			<h2>Estructura del directorio</h2>
+			<ul>
+				<li>grails-app/conf</li>
+				<li>grails-app/controllers</li>
+				<li>grails-app/domain</li>
+				<li>grails-app/i18n</li>
+				<li>grails-app/services</li>
+				<li>grails-app/taglib</li>
+				<li>grails-app/views</li>
+				<li>grails-app/assets</li>
+				<li>lib</li>
+				<li>scripts</li>
+				<li>src</li>
+				<li>test</li>
+				<li>web-app</li>
+			</ul>			
+		</section>
+
+		<section>						
+			<h2>Proyecto en IntelliJ IDEA</h2>
+			<pre>
+				<p align=center><img style="border: 0;" src="../images/grails03/intellijgrailsapp.png"></p>
+			</pre>
+		</section>
+
+		<section>						
+			<h2>Ejecutar proyecto</h2>
+			<pre>
+				<code class="bash" data-trim style="font-size: 18px;">
+grails run-app
+				</code>
+			</pre>			
+		</section>		
+
+		<section>						
+			<h2>Creación de clases de dominio</h2>
+			<pre>
+				<code class="bash" data-trim style="font-size: 18px;">
+grails create-domain-class es.ua.expertojava.todo.todo
+				</code>
+			</pre>
+			<pre class="fragment">
+				<code class="groovy" data-trim style="font-size: 18px;">
+package es.ua.expertojava.todo
+
+class Todo {
+
+    static constraints = {
+    }
+}
+				</code>
+			</pre>						
+		</section>
+
+		<section>						
+			<h2>Test unitario de la clase de dominio</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+package es.ua.expertojava.todo
+
+import grails.test.mixin.TestFor
+import spock.lang.Specification
+
+/**
+ * See the API for {@link grails.test.mixin.domain.DomainClassUnitTestMixin} for usage instructions
+ */
+@TestFor(Todo)
+class TodoSpec extends Specification {
+
+    def setup() {
+    }
+
+    def cleanup() {
+    }
+
+    void "test something"() {
+    }
+}
+				</code>
+			</pre>						
+		</section>
+
+		<section>						
+			<h2>Clase de dominio Todo</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+package es.ua.expertojava.todo
+
+class Todo {
+    String title
+    String description
+    Date date
+    Date reminderDate
+    String url
+    
+    static constraints = {
+        title(blank:false)
+        description(blank:true, nullable:true, maxSize:1000)
+        date(nullable:false)
+        reminderDate(nullable:true)
+        url(nullable:true, url:true)
+    }
+
+    String toString(){
+        title
+    }
+}
+				</code>
+			</pre>						
+		</section>
+
+		<section>
+			<h2>A tener en cuenta</h2>
+			<ul>
+				<li>No se ha definido una clave primaria</li>
+				<li>Se añaden las propiedades <em>id</em> y <em>version</em> como clave primaria</li>
+				<li>La propiedad <em>version</em> se utiliza para evitar inconsistencias de datos</li>
+				<li>Constraints (restricciones)</li>
+			</ul>
+		</section>
+
+		<section>						
+			<h2>Creación de controladores</h2>
+			<pre>
+				<code class="bash" data-trim style="font-size: 18px;">
+grails create-controller es.ua.expertojava.todo.todo
+				</code>
+			</pre>
+			<pre class="fragment">
+				<code class="groovy" data-trim style="font-size: 18px;">
+package es.ua.expertojava.todo
+
+class TodoController {
+
+    def index() { }
+}
+				</code>
+			</pre>						
+		</section>		
+
+		<section>						
+			<h2>Scaffolding dinámico</h2>
+			<p>Sustituimos</p>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def index = {}
+				</code>
+			</pre>
+			<p class="fragment">por...</p>
+			<pre class="fragment">
+				<code class="groovy" data-trim style="font-size: 18px;">
+def scaffold = Todo
+				</code>
+			</pre>
+			<p class="fragment">o...</p>
+			<pre class="fragment">
+				<code class="groovy" data-trim style="font-size: 18px;">
+def scaffold = true
+				</code>
+			</pre>						
+		</section>
+
+		<section>						
+			<h2>Aplicación</h2>
+			<pre>
+				<p align=center><img style="border: 0;" src="../images/grails03/addtodo.png"></p>
+			</pre>
+		</section>			
+
+		<section>
+			<h2>Vistas de scaffolding</h2>
+			<ul>
+				<li>El formulario sigue el orden de las restricciones</li>
+				<li><em>Description</em> crea un <em>textarea</em></li>
+				<li>Si no se cumplen las restricciones, se muestra un error</li>
+			</ul>
+		</section>
+
+		<section>						
+			<h2>Clase de dominio Category</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+package es.ua.expertojava.todo
+
+class Category {
+
+    String name
+    String description
+
+    static hasMany = [todos:Todo]
+
+    static constraints = {
+        name(blank:false)
+        description(blank:true, nullable:true, maxSize:1000)
+    }
+
+    String toString(){
+        name
+    }
+}
+				</code>
+			</pre>						
+		</section>
+
+		<section>						
+			<h2>Clase de dominio Todo</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+package es.ua.expertojava.todo
+
+class Todo {
+    String title
+    String description
+    Date date
+    Date reminderDate
+    String url
+    Category category
+
+    static constraints = {
+        title(blank:false)
+        description(blank:true, nullable:true, maxSize:1000)
+        date(nullable:false)
+        reminderDate(nullable:true)
+        url(nullable:true, url:true)
+        category(nullable:true)
+    }
+
+    String toString(){
+        "title"
+    }
+}
+				</code>
+			</pre>						
+		</section>
+
+		<section>						
+			<h2>Creación del controlador de Category</h2>
+			<pre>
+				<code class="bash" data-trim style="font-size: 18px;">
+grails create-controller es.ua.expertojava.todo.category
+				</code>
+			</pre>
+			<pre class="fragment">
+				<code class="groovy" data-trim style="font-size: 18px;">
+package es.ua.expertojava.todo
+
+class CategoryController {
+
+    def scaffold = Category
+}
+				</code>
+			</pre>						
+		</section>	
+
+		<section>						
+			<h2>Clase de dominio Tag</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+package es.ua.expertojava.todo
+
+class Tag {
+
+    String name
+
+    static hasMany = [todos:Todo]
+
+    static constraints = {
+        name(blank:false, nullable:true, unique:true)
+    }
+
+    String toString(){
+    	name
+    }
+}
+				</code>
+			</pre>						
+		</section>
+
+		<section>						
+			<h2>Clase de dominio Todo</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+package es.ua.expertojava.todo
+
+class Todo {
+    String title
+    String description
+    Date date
+    Date reminderDate
+    String url
+    Category category
+    
+    static hasMany = [tags:Tag]
+    static belongsTo = [Tag]
+
+    static constraints = {
+        title(blank:false)
+        description(blank:true, nullable:true, maxSize:1000)
+        date(nullable:false)
+        reminderDate(nullable:true)
+        url(nullable:true, url:true)
+        category(nullable:true)
+    }
+
+    String toString(){
+        "title"
+    }
+}
+				</code>
+			</pre>						
+		</section>
+
+		<section>						
+			<h2>Creación del controlador de Tag</h2>
+			<pre>
+				<code class="bash" data-trim style="font-size: 18px;">
+grails create-controller es.ua.expertojava.todo.tag
+				</code>
+			</pre>
+			<pre class="fragment">
+				<code class="groovy" data-trim style="font-size: 18px;">
+package es.ua.expertojava.todo
+
+class TagController {
+
+    def scaffold = Tag
+}
+				</code>
+			</pre>						
+		</section>
+
+		<section>						
+			<h2>Inserción de datos</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+import es.ua.expertojava.todo.*
+ 
+class BootStrap {
+ 
+    def init = { servletContext ->
+        def categoryHome = new Category(name:"Hogar").save()
+        def categoryJob = new Category(name:"Trabajo").save()
+
+        def tagEasy = new Tag(name:"Fácil").save()
+        def tagDifficult = new Tag(name:"Difícil").save()
+        def tagArt = new Tag(name:"Arte").save()
+        def tagRoutine = new Tag(name:"Routine").save()
+        def tagKitchen = new Tag(name:"Cocina").save()
+
+        def todoPaintKitchen = new Todo(title:"Pintar cocina", date:new Date()+1)
+        def todoCollectPost = new Todo(title:"Recoger correo postal", date:new Date()+2)
+        def todoBakeCake = new Todo(title:"Cocinar pastel", date:new Date()+4)
+        def todoWriteUnitTests = new Todo(title:"Escribir tests unitarios", date:new Date())
+
+        todoPaintKitchen.addToTags(tagDifficult)
+        todoPaintKitchen.addToTags(tagArt)
+        todoPaintKitchen.addToTags(tagKitchen)
+        todoPaintKitchen.category = categoryHome
+        todoPaintKitchen.save()
+
+        todoCollectPost.addToTags(tagRoutine)
+        todoCollectPost.category = categoryJob
+        todoCollectPost.save()
+
+        todoBakeCake.addToTags(tagEasy)
+        todoBakeCake.addToTags(tagKitchen)
+        todoBakeCake.category = categoryHome
+        todoBakeCake.save()
+
+        todoWriteUnitTests.addToTags(tagEasy)
+        todoWriteUnitTests.category = categoryJob
+        todoWriteUnitTests.save()
+    }
+    def destroy = { }
+}
+				</code>
+			</pre>						
+		</section>
+
+		<section>
+			<h2>Scaffolding estático</h2>
+			<ul>
+				<li>generate-controller</li>
+				<li>generate-views</li>
+				<li>generate-all</li>
+			</ul>
+		</section>
+
+		<section>						
+			<h2>Scaffolding estático de Todo</h2>
+			<pre>
+				<code class="bash" data-trim style="font-size: 18px;">
+grails generate-all es.ua.expertojava.todo.Todo
+				</code>
+			</pre>					
+		</section>
+
+		<section>						
+			<h2>Controlador Todo</h2>
+			<pre>
+				<p align=center><img style="border: 0;" src="../images/grails03/projectaftergenerateall.png"></p>
+			</pre>
+		</section>	
+
+		<section>						
+			<h2>Scaffolding estático de Todo</h2>
+			<pre>
+				<code class="bash" data-trim style="font-size: 18px;">
+grails generate-controller es.ua.expertojava.todo.Tag
+grails generate-views es.ua.expertojava.todo.Tag
+				</code>
+			</pre>					
+		</section>
+
+		<section>
+			<h1>¿Preguntas...?</h1>
+		</section>
+
+		<section>
+			<h1>Ejercicios</h1>
+		</section>
+	</div>
+</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+				slideNumber: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Parallax scrolling
+				// parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+				// parallaxBackgroundSize: '2100px 900px',
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+
+				]
+			});
+
+		</script>
+
+	</body>
+</html>

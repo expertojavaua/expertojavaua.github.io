@@ -1,0 +1,199 @@
+package examples.jms.messageformat;
+
+import examples.jms.messageformat.Trader;
+import examples.jms.messageformat.TraderHome;
+import java.io.StringReader;
+import javax.ejb.MessageDrivenContext;
+import javax.jms.*;
+import javax.jms.Session;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import org.xml.sax.InputSource;
+import weblogic.ejbgen.*;
+import weblogic.jms.extensions.WLQueueSession;
+import weblogic.jms.extensions.XMLMessage;
+import weblogic.ejb.GenericMessageDrivenBean;
+
+/**
+ * This class reads the XML data from a JMS queue, parses it and and
+ * calls the <code>statefulSession.TraderBean</code> EJB to actually
+ * perform the stock trade transaction.  The class then puts the output
+ * of the trade on another JMS queue.
+ *
+ * @author Copyright (c) 2005 by BEA Systems, Inc. All Rights Reserved.
+ */
+@JndiName(remote = "jms.Messageformat")
+@MessageDriven(maxBeansInFreePool = "1000",
+               destinationType = "javax.jms.Queue",
+               initialBeansInFreePool = "0",
+               transTimeoutSeconds = "600",
+               defaultTransaction = MessageDriven.DefaultTransaction.REQUIRED,
+               durable = Constants.Bool.FALSE,
+               ejbName = "jmsMessageformat",
+               destinationJndiName = "weblogic.examples.jms.messageformat.exampleQueueSend")
+@ResourceEnvRefs({
+    @ResourceEnvRef(name = "jms/exampleQueueReceive",
+                    type = "javax.jms.Queue",
+                    jndiName = "weblogic.examples.jms.messageformat.exampleQueueReceive")
+})
+@ResourceRefs({
+    @ResourceRef(auth = ResourceRef.Auth.CONTAINER,
+                 jndiName = "weblogic.examples.jms.messageformat.QueueConnectionFactory",
+                 name = "jms/QCF",
+                 type = "weblogic.examples.jms.messageformat.QueueConnectionFactory",
+                 sharingScope = ResourceRef.SharingScope.SHAREABLE)
+})
+public class MessageTraderBean
+    extends GenericMessageDrivenBean implements MessageListener {
+
+  private final static StringBuffer buffer = new StringBuffer();
+  private final static String TRADER_EJB_JNDI = "jms-statefulSession-TraderHome";
+
+  /**
+   * Defines the JMS connection factory for the queue.
+   */
+  private final static String JMS_FACTORY="java:comp/env/jms/QCF";
+
+  /**
+  * Defines the queue.
+  */
+  private final static String QUEUE="java:comp/env/jms/exampleQueueReceive";
+
+  private QueueConnectionFactory qconFactory;
+  private QueueConnection qcon;
+  private QueueSession qsession;
+  private QueueSender qsender;
+  private Queue queuereceive;
+  private XMLMessage xmlmessage;
+
+  private static final boolean VERBOSE = false;
+  private MessageDrivenContext m_context;
+
+  // You might also consider using WebLogic's log service
+  private void log(String s) {
+    if (VERBOSE) System.out.println(s);
+  }
+
+  //
+  // Implementation of MessageListener
+  //
+  /**
+   * Retrieves the XML data from the first JMS queue then parses
+   * the data using a SAX parser.  The method then calls the
+   * <code>Trader</code> stateful Session EJB to perform the actual
+   * trade on the data.  Finally, this method creates a new XML
+   * message which will be sent to a second JMS queue.
+   *
+   * @param msg the JMS message
+   */
+  public void onMessage(Message msg) {
+    log("MessageTraderBean.onMessage(msg)");
+    xmlmessage = (XMLMessage) msg;
+    RequestHandler rh = new RequestHandler();
+    try {
+      String txt = xmlmessage.getText();
+
+      SAXParserFactory fact = SAXParserFactory.newInstance();
+      SAXParser sp = fact.newSAXParser();
+
+      InputSource inSource = new InputSource();
+      inSource.setCharacterStream(new StringReader(txt));
+      sp.parse(inSource, rh);
+    } catch(JMSException ex) {
+      System.err.println("An exception occurred: "+ex.getMessage());
+    } catch (Exception e) {
+      System.err.println("An exception occurred: "+e.getMessage());
+      return;
+    }
+
+    java.util.Hashtable<String,String> trade = rh.getData();
+    System.out.println("trade "+trade.toString());
+    if (! trade.isEmpty()) {
+    try {
+      // Create a trader object.
+      Context ctxt          =  new InitialContext();
+      TraderHome brokerage = (TraderHome) ctxt.lookup(TRADER_EJB_JNDI);
+
+      // Give this trader a name.
+      Trader trader = brokerage.create();
+
+      // Do trade.
+      if (((String) trade.get("action")).equals("buy")) {
+        TradeResult tr = trader.buy("Erin", (String) trade.get("symbol"),
+                         Integer.parseInt((String) trade.get("numShares")));
+        // send result via xml
+        buffer.append("<traderesult action='bought' "+
+            "symbol='"+(String) trade.get("symbol")+
+            "' numShares='"+ tr.getNumberTraded() +
+            "' price ='"+ tr.getPrice() +"' "+
+            "changeInAccount ='"+trader.getBalance() +"'/>");
+
+      } else if (((String) trade.get("action")).equals("sell")) {
+        TradeResult tr = trader.sell("Erin", (String) trade.get("symbol"),
+            Integer.parseInt((String) trade.get("numShares")));
+
+       // send result via xml
+       buffer.append("<traderesult action='sold' symbol='"+
+           (String) trade.get("symbol")+"' numShares='"+tr.getNumberTraded()+
+           "' price ='"+ tr.getPrice() +"' changeInAccount ='"+
+           trader.getBalance() +"'/>");
+      }
+        Context ctx = getInitialContext();
+        init(ctx, QUEUE);
+        send(buffer.toString());
+        buffer.delete(0,buffer.length());
+        close();
+        trader.remove();
+      } catch (NamingException ne) {
+        System.err.println("An exception occurred: "+ne.getMessage());
+      } catch (JMSException jmse) {
+        System.err.println("An exception occurred: "+jmse.getMessage());
+      } catch (Exception e) {
+        System.err.println("An exception occurred: "+e.getMessage());
+      }
+    }
+ }
+
+  /**
+   * Sends a message in the form of XML data to a JMS queue.
+   *
+   * @param message the String message to be sent to the JMS queue
+   */
+  public void send(String message) throws JMSException {
+    xmlmessage.setText(message);
+    qsender.send(xmlmessage);
+  }
+
+  /**
+   * Creates all the necessary objects for sending messages to a JMS queue.
+   *
+   * @param       ctx	              JNDI initial context
+   * @param	      queueName	        name of queue
+   * @exception   NamingException   if operation cannot be performed
+   * @exception   JMSException      if JMS fails to initialize due to internal error
+   */
+  public void init(Context ctx, String queueName) throws NamingException,
+    JMSException {
+    qconFactory = (QueueConnectionFactory)ctx.lookup(JMS_FACTORY);
+    qcon = qconFactory.createQueueConnection();
+    qsession = qcon.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
+    queuereceive = (Queue)ctx.lookup(queueName);
+    qsender = qsession.createSender(queuereceive);
+    xmlmessage = ((WLQueueSession)qsession).createXMLMessage();
+    qcon.start();
+  }
+
+  /**
+   * Closes all JMS objects.
+   *
+   * @exception JMSException if JMS fails to close objects due to internal error
+   */
+  public void close() throws JMSException {
+    qsession.close();
+    qsender.close();
+    qcon.close();
+  }
+}

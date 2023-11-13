@@ -1,0 +1,402 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.7">
+<meta name="Forrest-skin-name" content="pelt">
+<title>Consultas a una BD con JDBC</title>
+<link type="text/css" href="skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="skin/print.css" rel="stylesheet">
+<link type="text/css" href="skin/profile.css" rel="stylesheet">
+<script src="skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<div class="header">
+<div class="grouplogo">
+<a href="http://www.jtech.ua.es/j2ee"><img class="logoImage" alt="J2EE" src="images/baner_j2ee_izq.gif" title="Curso Especialista Universitario J2EE"></a>
+</div>
+<div class="projectlogoA1">
+<a href="http://www.dccia.ua.es/"><img class="logoImage" alt="Bases de datos con JDBC" src="images/baner_j2ee_der.gif" title="Bases de datos con JDBC"></a>
+</div>
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="../index.html">M&oacute;dulos</a>
+</li>
+<li class="current">
+<a class="base-selected" href="index.html">Bases de datos con JDBC</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<div id="level2tabs"></div>
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<div id="menu">
+<div onclick="SwitchMenu('menu_selected_1.1', 'skin/')" id="menu_selected_1.1Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Materiales</div>
+<div id="menu_selected_1.1" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="index.html" title="Bases de datos con JDBC">&Iacute;ndice</a>
+</div>
+<div onclick="SwitchMenu('menu_selected_1.1.2', 'skin/')" id="menu_selected_1.1.2Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Teor&iacute;a</div>
+<div id="menu_selected_1.1.2" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="sesion01-apuntes.html">Sesion 1</a>
+</div>
+<div class="menupage">
+<div class="menupagetitle">Sesion 2</div>
+</div>
+<div class="menuitem">
+<a href="sesion03-apuntes.html">Sesion 3</a>
+</div>
+<div class="menuitem">
+<a href="sesion04-apuntes.html">Sesion 4</a>
+</div>
+<div class="menuitem">
+<a href="roadmap-apuntes.html">Roadmap</a>
+</div>
+</div>
+<div onclick="SwitchMenu('menu_1.1.3', 'skin/')" id="menu_1.1.3Title" class="menutitle">Ejercicios</div>
+<div id="menu_1.1.3" class="menuitemgroup">
+<div class="menuitem">
+<a href="sesion01-ejercicios.html">Sesion 1</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-ejercicios.html">Sesion 2</a>
+</div>
+<div class="menuitem">
+<a href="sesion03-ejercicios.html">Sesion 3</a>
+</div>
+<div class="menuitem">
+<a href="sesion04-ejercicios.html">Sesion 4</a>
+</div>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<div id="credit2"></div>
+</div>
+<div id="content">
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="sesion02-apuntes.pdf"><img alt="PDF -icon" src="skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1>Consultas a una BD con JDBC</h1>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#Restricciones%2C+movimientos+y+actualizaciones+en+el">Restricciones, movimientos y actualizaciones en el ResultSet</a>
+</li>
+<li>
+<a href="#Sentencias+de+actualizaci%C3%B3n">Sentencias de actualizaci&oacute;n</a>
+</li>
+<li>
+<a href="#Otras+llamadas+a+la+BD">Otras llamadas a la BD</a>
+</li>
+</ul>
+</div>
+
+<a name="N1000C"></a><a name="Restricciones%2C+movimientos+y+actualizaciones+en+el"></a>
+<h2 class="underlined_10">Restricciones, movimientos y actualizaciones en el ResultSet</h2>
+<div class="section">
+<p>Cuando realizamos llamadas a BD de gran tama&ntilde;o el resultado
+de la consulta puede ser demasiado grande y no deseable en
+t&eacute;rminos de eficiencia y memoria. JDBC permite restringir el
+n&uacute;mero de filas que se devolver&aacute;n en el <strong>ResultSet</strong>.
+La clase <strong>Statement</strong> incorpora dos m&eacute;todos, <strong>getMaxRows</strong>
+y <strong>setMaxRows</strong>, que permiten obtener e imponer dicha
+restricci&oacute;n. Por defecto, el l&iacute;mite es cero, indicando
+que no se impone la restricci&oacute;n. Si, por ejemplo, antes de
+ejecutar la consulta imponemos un l&iacute;mite de 30 usando el
+m&eacute;todo <strong>setMaxRows(30)</strong>, el resultado devuelto s&oacute;lo
+contendr&aacute; las 30 primeras filas que cumplan con los criterios de
+la consulta.</p>
+<p>Hasta ahora, el manejo de los datos devueltos en una consulta se
+realizaba con el m&eacute;todo <strong>next</strong> de <strong>ResultSet</strong>.
+Podemos manejar otros m&eacute;todos para realizar un movimiento no
+lineal por el <strong>ResultSet</strong>. Es lo que se conoce como <strong>ResultSet</strong>
+arrastable. Para que esto sea posible debemos utilizar el siguiente
+m&eacute;todo en la creaci&oacute;n del <strong>Statement</strong>:</p>
+<pre class="code">
+Statement createStatement (int <strong>resultSetType</strong>, int <strong>resultSetConcurrency</strong>)
+</pre>
+<p>Los posibles valores que puede tener <strong>resultSetType</strong> son: <strong>ResultSet.TYPE_FORWARD_ONLY</strong>,
+<strong>ResultSet.TYPE_SCROLL_INSENSITIVE</strong>, <strong>ResultSet.TYPE_SCROLL_SENSITIVE</strong>.
+El primer valor es el funcionamiento por defecto: el <strong>ResultSet</strong>
+s&oacute;lo se mueve hacia adelante. Los dos siguientes permiten que el
+resultado sea arrastable. Una caracter&iacute;stica importante en los
+resultados arrastables es que los cambios que se produzcan en la BD se
+reflejan en el resultado, aunque dichos cambios se hayan producido
+despu&eacute;s de la consulta. <em>Esto depender&aacute; de si el
+driver y/o la BD soporta este tipo de comportamiento</em>. En el caso de
+<strong>INSENSITIVE</strong>, el resultado no es sensible a dichos cambios y en
+el caso de <strong>SENSITIVE</strong>, s&iacute;. Los
+m&eacute;todos que podemos
+utilizar para movernos por el <strong>ResultSet</strong> son:</p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+    
+<tr>
+      
+<td colspan="1" rowspan="1"><strong>next</strong></td>
+      <td colspan="1" rowspan="1">Pasa a la siguiente fila</td>
+    
+</tr>
+    
+<tr>
+      
+<td colspan="1" rowspan="1"><strong>previous</strong></td>
+      <td colspan="1" rowspan="1">&Iacute;dem fila anterior</td>
+    
+</tr>
+    
+<tr>
+      
+<td colspan="1" rowspan="1"><strong>last</strong></td>
+      <td colspan="1" rowspan="1">&Iacute;dem &uacute;ltima fila</td>
+    
+</tr>
+    
+<tr>
+      
+<td colspan="1" rowspan="1"><strong>first</strong></td>
+      <td colspan="1" rowspan="1">&Iacute;dem primera fila</td>
+    
+</tr>
+    
+<tr>
+      
+<td colspan="1" rowspan="1"><strong>absolute(int fila)</strong></td>
+      <td colspan="1" rowspan="1">Pasa a la fila n&uacute;mero fila</td>
+    
+</tr>
+    
+<tr>
+      
+<td colspan="1" rowspan="1"><strong>relative(int fila)</strong></td>
+      <td colspan="1" rowspan="1">Pasa a la fila n&uacute;mero fila desde la actual</td>
+    
+</tr>
+    
+<tr>
+      
+<td colspan="1" rowspan="1"><strong>getRow</strong></td>
+      <td colspan="1" rowspan="1">Devuelve la n&uacute;mero de fila actual</td>
+    
+</tr>
+    
+<tr>
+      
+<td colspan="1" rowspan="1"><strong>isLast</strong></td>
+      <td colspan="1" rowspan="1">Devuelve si la fila actual es la &uacute;ltima</td>
+    
+</tr>
+    
+<tr>
+      
+<td colspan="1" rowspan="1"><strong>isFirst</strong></td>
+      <td colspan="1" rowspan="1">&Iacute;dem la primera</td>
+    
+</tr>
+
+</table>
+<p>El otro par&aacute;metro, <strong>resultSetConcurrency</strong>, puede ser
+uno de estos dos valores: <strong>ResultSet.CONCUR_READ_ONLY</strong> y <strong>ResultSet.CONCUR_UPDATABLE</strong>.
+El primero es el utilizado por defecto y no permite actualizar el
+resultado. El segundo permite que los cambios realizados en el <strong>ResultSet</strong>
+se actualicen en la base de datos. Si queremos modificar los datos
+obtenidos en una consulta y queremos reflejar esos cambios en la BD
+debemos crear una sentencia con <strong>TYPE_FORWARD_SENSITIVE</strong>
+y <strong>CONCUR_UPDATABLE</strong>.</p>
+<p>Para actualizar un campo disponemos de m&eacute;todos <strong>updateXXXX</strong>,
+de la misma forma que ten&iacute;amos m&eacute;todos <strong>getXXXX</strong>.
+Estos m&eacute;todos reciben dos par&aacute;metros: el primero indica
+el nombre del campo (o n&uacute;mero de orden dentro del <strong>ResultSet</strong>);
+el segundo indica el nuevo valor que tomar&aacute; el campo del
+registro actual. Para que los cambios tengan efecto en la BD debemos
+llamar al m&eacute;todo <strong>updateRow</strong>. El siguiente c&oacute;digo
+es un ejemplo de modificaci&oacute;n de datos:</p>
+<pre class="code">
+rs.<strong>updateString</strong>("nombre","manolito");
+rs.<strong>updateRow</strong>();
+</pre>
+<p>Si queremos desechar los cambios producidos en la fila actual (antes
+de llamar a <strong>updateRow</strong>) podemos llamar a <strong>cancelRowUpdates</strong>.
+Para borrar la fila actual tenemos el m&eacute;todo <strong>deleteRow</strong>.
+La llamada a este m&eacute;todo deja una fila vac&iacute;a en el <strong>ResultSet</strong>.
+Si intentamos acceder a los datos de esa fila nos dar&aacute; una
+excepci&oacute;n. Podemos llamar al m&eacute;todo <strong>rowDeleted</strong> el
+cual devuelve cierto si la fila actual ha sido eliminada (m&eacute;todo
+no implementado en MySQL).</p>
+<p>Debemos tener en cuenta varias restricciones a la hora de actualizar
+un <strong>ResultSet</strong>: la sentencia SELECT que ha generado el <strong>ResultSet</strong>
+debe:</p>
+<ul>
+  
+<li>Referenciar s&oacute;lo una tabla.</li>
+  
+<li>No contener una cla&uacute;sula <em>join</em> o <em>group by</em>.</li>
+  
+<li>Seleccionar la clave primaria de la tabla.</li>
+
+</ul>
+<p>Existe un registro especial al que no se puede acceder como hemos
+visto anteriormente, que es el registro de inserci&oacute;n. Este
+registro se utiliza para insertar nuevos registros en la tabla. Para
+situarnos en &eacute;l deberemos llamar al m&eacute;todo <strong>moveToInsertRow</strong>.
+Una vez situados en &eacute;l deberemos asignar los datos con los
+m&eacute;todos <strong>updateXXXX</strong> anteriormente descritos y una vez
+hecho esto llamar a <strong>insertRow </strong>para que el registro se inserte
+en la BD. Podemos volver al registro donde nos encontr&aacute;bamos
+antes de movernos al registro de inserci&oacute;n llamando a <strong>moveToCurrentRow</strong>.</p>
+</div>
+
+<a name="N1014C"></a><a name="Sentencias+de+actualizaci%C3%B3n"></a>
+<h2 class="underlined_10">Sentencias de actualizaci&oacute;n</h2>
+<div class="section">
+<p>La clase <strong>statement</strong> dispone de un m&eacute;todo llamado <strong>executeUpdate</strong>
+el cual recibe como par&aacute;metro la cadena de caracteres que
+contiene la sentencia SQL a ejecutar. Este m&eacute;todo
+&uacute;nicamente permite realizar sentencias de actualizaci&oacute;n
+de la BD: creaci&oacute;n de tablas (CREATE), inserci&oacute;n
+(INSERT), actualizaci&oacute;n (UPDATE) y borrado de datos (DELETE). El
+m&eacute;todo a utilizar es el
+siguiente:</p>
+<pre class="code">
+stmt.<strong>executeUpdate</strong>(sentencia);
+</pre>
+<p>Vamos a ver a continuaci&oacute;n un ejemplo de estas operaciones.
+Crearemos una tabla ALUMNOS en nuestra base de datos y
+a&ntilde;adiremos datos a la misma. La sentencia para la
+creaci&oacute;n de la tabla ser&aacute; la siguiente:</p>
+<pre class="code">
+String st_crea = "<strong>CREATE TABLE</strong> ALUMNOS (
+    exp <strong>INTEGER</strong>,
+    nombre <strong>VARCHAR</strong>(32),
+    sexo <strong>CHAR</strong>(1),
+    <strong>PRIMARY</strong> <strong>KEY</strong> (exp)
+)";
+stmt.<strong>executeUpdate</strong>(st_crea);
+</pre>
+<p>Una vez creada la tabla podremos insertar datos en ella como se
+muestra a continuaci&oacute;n:</p>
+<pre class="code">
+String st_inserta = "<strong>INSERT</strong> <strong>INTO</strong> ALUMNOS(exp, nombre) 
+    <strong>VALUES</strong>(1285, 'Manu', 'M')";
+stmt.<strong>executeUpdate</strong>(st_inserta);
+</pre>
+<p>Cuando tengamos datos dentro de la tabla, podremos modificarlos
+utilizando para ello una sentencia UPDATE:</p>
+<pre class="code">
+String st_actualiza = "<strong>UPDATE FROM</strong> ALUMNOS 
+    <strong>SET</strong> sexo = 'H' <strong>WHERE</strong> exp = 1285";
+stmt.<strong>executeUpdate</strong>(st_actualiza);
+</pre>
+<p>Si queremos eliminar un registro de la tabla utilizaremos una
+sentencia DELETE como se muestra a continuaci&oacute;n:</p>
+<pre class="code">
+String st_borra = "<strong>DELETE FROM</strong> ALUMNOS
+    <strong>WHERE</strong> exp = 1285";
+stmt.<strong>executeUpdate</strong>(st_borra);
+</pre>
+<p>El m&eacute;todo <strong>executeUpdate </strong>nos devuelve un entero que
+nos dice el n&uacute;mero de registros a los que ha afectado la
+operaci&oacute;n, en caso de sentencias INSERT, UPDATE y DELETE. La
+creaci&oacute;n de tablas nos devuelve siempre 0.</p>
+</div>
+
+
+<a name="N101BB"></a><a name="Otras+llamadas+a+la+BD"></a>
+<h2 class="underlined_10">Otras llamadas a la BD</h2>
+<div class="section">
+<p>En la interfaz <strong>Statement</strong> podemos observar un tercer
+m&eacute;todo que podemos utilizar para la ejecuci&oacute;n de
+sentencias SQL. Hasta ahora hemos visto como para la ejecuci&oacute;n
+de sentencias que devuelven datos (consultas) debemos usar <strong>executeQuery</strong>,
+mientras que para las sentencias INSERT, DELETE, UPDATE e instrucciones
+DDL utilizamos <strong>executeUpdate</strong>. Sin embargo, puede haber
+ocasiones en las que no conozcamos de antemano el tipo de la sentencia
+que vamos a utilizar (por ejemplo si la sentencia la introduce el
+usuario). En este caso podemos usar el m&eacute;todo <strong>execute</strong>.</p>
+<pre class="code">
+boolean hay_result = stmt.<strong>execute</strong>(sentencia);
+</pre>
+<p>Podemos ver que el m&eacute;todo devuelve un valor <em>booleano</em>.
+Este valor ser&aacute; <em>true</em> si la sentencia ha devuelto
+resultados (uno o varios objetos <strong>ResultSet</strong>), y <em>false</em> en
+el caso de que s&oacute;lo haya devuelto el n&uacute;mero de registros
+afectados. Tras haber ejecutado la sentencia con el m&eacute;todo
+anterior, para obtener estos datos devueltos proporciona una serie de
+m&eacute;todos:</p>
+<pre class="code">
+int n = stmt.<strong>getUpdateCount</strong>();
+</pre>
+<p>El m&eacute;todo <strong>getUpdateCount</strong> nos devuelve el
+n&uacute;mero de registros a los que afecta la actualizaci&oacute;n,
+inserci&oacute;n o borrado, al igual que el resultado que
+devolv&iacute;a <strong>executeUpdate</strong>.</p>
+<pre class="code">
+ResultSet rs = stmt.<strong>getResultSet</strong>();
+</pre>
+<p>El m&eacute;todo <strong>getResultSet</strong> nos devolver&aacute; el objeto
+<strong>ResultSet</strong> que haya devuelto en el caso de ser una consulta, al
+igual que hac&iacute;a <strong>executeQuery</strong>. Sin embargo, de esta forma
+nos permitir&aacute; adem&aacute;s tener m&uacute;ltiples objetos <strong>ResultSet</strong>
+como resultado de una llamada. Eso puede ser necesario, por ejemplo, en
+el caso de una llamada a un procedimiento, que nos puede devolver
+varios resultados como veremos m&aacute;s adelante. Para movernos al
+siguiente <strong>ResultSet</strong> utilizaremos el siguiente m&eacute;todo:</p>
+<pre class="code">
+boolean hay_mas_results = stmt.<strong>getMoreResults</strong>();
+</pre>
+<p>La llamada a este m&eacute;todo nos mover&aacute; al siguiente <strong>ResultSet</strong>
+devuelto, devolvi&eacute;ndonos <em>true</em> en el caso de que exista,
+y <em>false</em> en el caso de que no haya m&aacute;s resultados. Si
+existe, una vez nos hayamos movido podremos consultar el nuevo <strong>ResultSet</strong>
+llamando nuevamente al m&eacute;todo <strong>getResultSet</strong>.</p>
+<p>Otra llamada disponible es el m&eacute;todo <strong>executeBatch</strong>.
+Este m&eacute;todo nos permite enviar varias sentencias SQL a la vez.
+No puede contener sentencias SELECT. Devuelve un array de enteros que
+indicar&aacute; el n&uacute;mero de registros afectados por las
+sentencias SQL. Para a&ntilde;adir sentencias haremos uso del
+m&eacute;todo <strong>addBatch</strong>. Un ejemplo de ejecuci&oacute;n es el
+siguiente: </p>
+<pre class="code">
+stmt.<strong>addBatch</strong>("INSERT INTO ALUMNOS(exp, nombre) 
+    <strong>VALUES</strong>(1285, 'Manu', 'M')");
+stmt.<strong>addBatch(</strong>"INSERT INTO ALUMNOS(exp, nombre) 
+    <strong>VALUES</strong>(1299, 'Miguel', 'M')");
+
+int[] res = stmt.<strong>executeBatch</strong>();
+</pre>
+</div>
+
+<p class="pageBreakAfter"></p>
+
+</div>
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+        Copyright &copy;
+         2006-2007 Depto. CCIA</div>
+</div>
+</body>
+</html>

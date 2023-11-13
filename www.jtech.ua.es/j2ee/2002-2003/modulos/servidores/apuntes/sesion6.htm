@@ -1,0 +1,207 @@
+<html>
+<head>
+<title>Servidores de aplicaciones</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="Author" content="Miguel">
+<link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+</head>
+
+<body>
+<h1>Tema 6: Acceso a bases de datos con el servidor de aplicaciones</h1>
+<p>Hasta ahora la conexi&oacute;n a una base de datos se realizaba mediante un 
+  c&oacute;digo JDBC que utilizaba un driver y obten&iacute;a una conexi&oacute;n. 
+  Una aplicaci&oacute;n que utilice este c&oacute;digo puede seguir haci&eacute;ndolo 
+  dentro de WebLogic, es decir, si desplegamos esa aplicaci&oacute;n en WebLogic 
+  la aplicaci&oacute;n funcionar&aacute; correctamente. En este tema vamos a configurar 
+  el servidor de aplicaciones para que nos permita trabajar con JDBC, aprovechando 
+  las caracter&iacute;sticas de pool de conexiones y fuentes de datos. Tambi&eacute;n 
+  veremos c&oacute;mo podemos conseguir una conexi&oacute;n controlada por el 
+  servidor. Un esquema general de c&oacute;mo maneja WebLogic las bases de datos 
+  es el siguiente:</p>
+<center>
+  <img src="octava.jpg"> 
+</center>
+<p>Tanto los clientes externos como los internos obtienen un objeto DataSource 
+  o TxDataSource mediante el &aacute;rbol JNDI gestionado por el servidor. Una 
+  vez obtenido este objeto, se solicita una conexi&oacute;n a trav&eacute;s de 
+  &eacute;l, que a su vez la obtiene de un Connection Pool gestionado por el servidor. 
+</p>
+<h2>6.1. Configuraci&oacute;n de las fuentes de datos y el pool de conexiones</h2>
+<h3>6.1.1 Pool de conexiones</h3>
+<p>El primer paso a seguir es la configuraci&oacute;n de un pool de conexiones. 
+  Para ello seleccionar la opci&oacute;n JDBC del men&uacute; <i>Services. </i>Nos 
+  aparecer&aacute; una pantalla como la mostrada a continuaci&oacute;n. Pinchando 
+  en el enlace podemos configurar un nuevo pool de conexiones.</p>
+<center>
+  <img src="JDBC/jdbc1.png"> 
+</center>
+<p>En la siguiente pantalla definimos el pool de conexiones. Indicamos los siguientes 
+  datos:</p>
+<ul>
+  <li>El nombre del nuevo pool. Este nombre lo utilizaremos despu&eacute;s para 
+    hacer referencia al pool de conexiones.</li>
+  <li>La URL de la base de datos. Podemos incluir par&aacute;metros adicionales 
+    en la URL.</li>
+  <li>El nombre de la clase que gestiona la conexi&oacute;n. Tened en cuenta que 
+    la clase debe estar disponible en el CLASSPATH.</li>
+  <li>En el apartado de <i>Properties</i> incluimos las propiedades que queramos 
+    enviar en la conexi&oacute;n. En este caso hemos puesto el nombre del usuario 
+    para la conexi&oacute;n.</li>
+  <li>Por &uacute;ltimo indicamos la contrase&ntilde;a y pulsamos <i>Create. </i></li>
+</ul>
+<center>
+  <img src="JDBC/jdbc2.png"> 
+</center>
+<p>Pasamos a la solapa de <i>Connections</i>. Repasamos el significado de cada 
+  valor:</p>
+<ul>
+  <li>La capacidad inicial indica el n&uacute;mero de conexiones que se crear&aacute;n 
+    en el instante inicial.</li>
+  <li>La capacidad m&aacute;xima es el n&uacute;mero m&aacute;ximo de conexiones 
+    que se abrir&aacute;n en este pool, independientemente de las solicitadas.</li>
+  <li>El incremento de capacidad maneja el n&uacute;mero de conexiones que se 
+    abrir&aacute;n cuando llega una nueva solicitud de conexi&oacute;n y todas 
+    est&aacute;n ocupadas. Es recomendable crear varias conexiones a la vez, pues 
+    es un recurso cr&iacute;tico. </li>
+  <li>El tiempo de retraso en el login indica el tiempo de espera entre la apertura 
+    de conexiones.</li>
+</ul>
+<center>
+  <img src="JDBC/jdbc3.png"> 
+</center>
+<p>La &uacute;ltima opci&oacute;n a modificar (por el momento) est&aacute; en 
+  la solapa de <i>Targets</i>. Con esta opci&oacute;n especificamos en cu&aacute;l 
+  o cu&aacute;les de los servidores est&aacute; activo este pool de conexiones. 
+  Podemos asociarlo a uno o varios servidores o bien a todo un cluster. Para ello 
+  pinchamos en la solapa correspondiente (<i>Servers</i> o <i>Cluster</i>) y pasamos 
+  la elecci&oacute;n a <i>Chosen</i>. En nuestro caso s&oacute;lo tenemos un servidor, 
+  por lo que lo seleccionamos, lo pasamos al cuadro de <i>Chosen</i> y pulsamos 
+  en <i>Apply.</i> Si se ha producido un error (no se encuentra la clase del driver, 
+  la base de datos no est&aacute; disponible, etc.) se mostrar&aacute; un error 
+  en la l&iacute;nea de comandos por la que hemos arrancado el servidor. Una cuesti&oacute;n 
+  muy importante a tener en cuenta es que si un pool lo asociamos a un cluster, 
+  el n&uacute;mero de conexiones se multiplica por el n&uacute;mero de servidores 
+  que forman el cluster.</p>
+<center>
+  <img src="JDBC/jdbc4.png"> 
+</center>
+<p>Si pulsamos de nuevo en <i>Services</i> -> <i>JDBC</i> aparecer&aacute; la 
+  siguiente informaci&oacute;n, indicando que el pool de conexiones est&aacute; 
+  activo. Desde esta ventana podemos crear una copia del pool o eliminar el pool, 
+  pulsando los iconos de la derecha. </p>
+<center>
+  <img src="JDBC/jdbc5.png"> 
+</center>
+<p>Dentro de WebLogic tambi&eacute;n podemos definir un Multipool. Un Multipool 
+  permite agrupar varios pool de conexiones para proporcionar alta disponibilidad 
+  (debido a posibles errores o fallos de las bases de datos) y balanceo de carga 
+  (para sistemas con una carga excesiva). Pinchamos en el icono <i>Multipools</i> 
+  y nos aparecer&aacute; la siguiente figura que nos permite configurar un nuevo 
+  Multipool.</p>
+  <center>
+  <img src="JDBC/jdbc1.jpg"> 
+</center>
+<p>En la siguiente pantalla damos el nombre al multipool y seleccionamos el tipo 
+  de algoritmo a aplicar: <i>High-Availability</i> (alta disponibilidad) o <i>Load-Balancing</i> 
+  (balanceo de carga).</p>
+<center>
+  <img src="JDBC/jdbc2.jpg"> 
+</center>
+<p>Por &uacute;ltimo tenemos que elegir los pools (ya creados, en este caso no 
+  tenemos ninguno) que formar&aacute;n parte de este multipool. No tenemos que 
+  olvidarnos de seleccionar el servidor o cluster al cual asignaremos el multipool.</p>
+<center>
+  <img src="JDBC/jdbc3.jpg"> 
+</center>
+<h3>6.1.2 Fuentes de datos</h3>
+<p>Pasamos ahora a definir una fuente de datos. Pinchamos en <i>Services</i> -&gt; 
+  <i>DataSources</i>. Pinchamos en configurar una nueva fuente de datos.</p>
+<center>
+  <img src="JDBC/jdbc6.png"> 
+</center>
+<p>Damos nombre a esta nueva fuente de datos. Los siguientes datos son los siguientes:</p>
+<ul>
+  <li>El nombre JNDI es el identificador que nos servir&aacute; para obtener el 
+    objeto DataSource usando JNDI. </li>
+  <li>El nombre del pool es el nombre del pool asociado a este DataSource. Usamos 
+    el pool creado anteriormente.</li>
+</ul>
+<p>Pinchamos el bot&oacute;n <i>Apply</i> para crear la fuente de datos.</p>
+<center>
+  <img src="JDBC/jdbc7.png"> 
+</center>
+<p>En el caso de las fuentes de datos transaccionales (Tx Data Source), la &uacute;nica 
+  diferencia con las fuentes de datos normales es un par&aacute;metro: <i>Emulate 
+  Two-Phase Commit ...</i> Si marcamos esta opci&oacute;n permitir&aacute; emular 
+  el m&eacute;todo <i>Two-Phase commit</i> con drivers que no permitan transacciones 
+  distribuidas. Se recomienda que se utilice este tipo de fuentes de datos cuando 
+  se cumpla algunos de los siguientes criterios:</p>
+<ul>
+  <li>Hagamos uso de transacciones distribuidas.</li>
+  <li>Utilicemos el contenedor EJB para realizar transacciones.</li>
+  <li>Se incluya m&aacute;s de una base de datos en una transacci&oacute;n.</li>
+  <li>Se acceda a m&aacute;s de un recurso (una base de datos y un elemento JMS) 
+    dentro de la misma transacci&oacute;n.</li>
+</ul>
+<center>
+  <img src="JDBC/jdbc4.jpg"> 
+</center>
+<p>Al igual que con el pool de conexiones, debemos indicar el servidor al que 
+  está asociado esta fuente de datos. Pinchamos en <i>Apply </i>para confirmar 
+  los datos. Si se produjo alg&uacute;n error aparecer&aacute; en la l&iacute;nea 
+  de comandos del servidor. Lo mismo que con el pool de conexiones, si asociamos 
+  una fuente de datos a un cluster, el n&uacute;mero de conexiones se multiplica 
+  por el n&uacute;mero de servidores que forman el cluster.</p>
+<center>
+  <img src="JDBC/jdbc8.png"> 
+</center>
+<p>Podemos consultar, copiar o eliminar la fuente de datos creada pinchando de 
+  nuevo en <i>Services</i> -&gt; <i>DataSources</i>. </p>
+<center>
+  <img src="JDBC/jdbc9.png"> 
+</center>
+<p>Una vez realizados todos estos pasos debemos parar el servidor y ponerlo en 
+  funcionamiento de nuevo para que surtan efecto los cambios. </p>
+<h2>6.2. Uso de una fuente de datos en una aplicaci&oacute;n</h2>
+<p>Para hacer uso de una fuente de datos definida por el servidor de aplicaciones 
+  debemos obtener una conexi&oacute;n haciendo uso de un objeto <b>DataSource. 
+  </b>Este objeto se obtendr&aacute; haciendo uso de JNDI. Dentro de un programa 
+  JDBC los pasos a seguir para obtener una conexi&oacute;n son los siguientes:</p>
+<ul>
+  <li>Debemos importar las clases para el manejo de las fuentes de datos y JNDI. 
+    <p></p>
+    <pre class="codigo">import <b>javax.sql.DataSource</b>;
+import <b>javax.naming.*</b>;
+import <b>java.util.Hashtable</b>;</pre>
+  </li>
+  <li>Definimos un contexto inicial (JNDI). La tabla <i>Hash</i> sirve para definir 
+    algunas variables de JNDI. En este caso le decimos que el contexto inicial 
+    se debe obtener de WebLogic y que la URL se obtiene del servidor de aplicaciones. 
+    En esta URL debemos especificar la direcci&oacute;n del servidor que tenga 
+    asignado el recurso. 
+    <p></p>
+    <pre class="codigo"><b>Context</b> miContexto = null;<b>
+Hashtable</b> ht = new <b>Hashtable </b>();
+ht.put(Context.<b>INITIAL_CONTEXT_FACTORY</b>,
+		&quot;<b>weblogic.jndi.WLInitialContextFactory</b>&quot;);
+ht.put(Context.<b>PROVIDER_URL</b>,
+		&quot;<b>t3://localhost:7001</b>&quot;);
+miContexto = new <b>InitialContext</b> (ht);</pre>
+  </li>
+  <li>Obtenemos la fuente de datos buscando por el nombre l&oacute;gico asociado 
+    al pool de conexiones antes creado. Recordad que es el nombre l&oacute;gico 
+    para JNDI, no el nombre de la fuente de datos. 
+    <pre class="codigo"><b>DataSource</b> ds = (<b>DataSource</b>) miContexto.lookup (&quot;<b>MySQLDataSource</b>&quot;);</pre>
+  </li>
+  <li>El &uacute;ltimo paso es obtener una conexi&oacute;n a la base de datos 
+    a partir de la fuente de datos. 
+    <pre class="codigo">Connection con = ds.<b>getConnection</b> ();</pre>
+  </li>
+</ul>
+<p>Para poder ejecutar debemos tener en el CLASSPATH el siguiente fichero:</p>
+<p>$HOME_BEA/weblogic700/server/lib/weblogic.jar</p>
+<p>donde $HOME_BEA es el directorio donde est&aacute; instalado Bea. Tambi&eacute;n, 
+  por supuesto, debe estar funcionando el servidor de aplicaciones y el de la 
+  base de datos.</p>
+</body>
+</html>

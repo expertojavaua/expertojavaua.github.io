@@ -1,0 +1,38 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0052)http://www.dccia.ua.es/j2ee/mensajes/apuntes/ejercicios2.htm -->
+<HTML><HEAD><TITLE>Mensajes en Java</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=iso-8859-1">
+<META content=Sco name=Author><LINK href="sesion1_archivos/apuntes.css"
+type=text/css rel=stylesheet>
+<META content="MSHTML 5.50.4134.100" name=GENERATOR></HEAD>
+<BODY>
+<H1>JMS (1)</H1>
+
+<P><B>3. Comunicación síncrona . </B> Modificar el fichero 
+<A href="sesion23_archivos/jms/topic/TopicReceive.java.txt">TopicReceive.java</A> para que en lugar 
+de realizar recepción asíncrona, la recepción de mensajes sea síncrona. Probar tanto el método 
+<B>receive()</B> como el método <B>receiveNoWait()</B>. El fichero resultado se llamará 
+<I>TopicReceiveSync.java</I> y se incluirá en el package <B>examples.jms.topic</B> de WebLogic. 
+Entregar este package en el zip <I>Ejercicio3.zip</I>.</P>
+
+<P><B>4.Filtros de mensajes. </B> JMS permite la posibilidad de filtrar mensajes. Para ello hay que
+definir <I>selectores de mensajes</I>. Por un lado, las aplicaciones que envían un mensaje, deben
+especificar el valor de sus campos de propiedad (p.e. establecer una determinada prioridad). Por otro,
+las aplicaciones que reciben mensajes deben especificar un <B>String</B> con el filtro, haciendo
+referencia a la propiedad en base a la cual se filtra (p.e. la prioridad es mayor que 5).</P>
+<P>Un selector se especifica en el momento en que se crea el receptor:</P>
+<PRE class=codigo>
+String selector = "JMSPriority >= 6";
+qsession.createReceiver(queue, selector);
+...
+qsession.createSubscriber(topic, selector);
+</PRE>
+<P>En este ejercicio se propone modificar el ejemplo
+<A href="sesion23_archivos/jms/queue/QueueSend.java.txt">QueueSend.java</A> para que envíe mensajes de una cierta
+prioridad que se le pasa como parámetro, y el ejemplo
+<A href="sesion23_archivos/jms/queue/QueueReceive.java.txt">QueueReceive.java</A> para que solamente se reciban
+mensajes con una cierta prioridad que se pasa como parámetro. Los ficheros resultantes se llamarán
+<I>QueueSendFilter.java</I> y <I>QueueReceiveFilter.java</I> y se incorporarán en el package
+<B>examples.jms.queue</B> de WebLogic. Entregar este package en el zip <I>Ejercicio4.zip</I>
+</P>
+</BODY></HTML>

@@ -1,0 +1,126 @@
+package examples.security.jaas;
+
+import java.io.*;
+import javax.security.auth.callback.Callback;
+import javax.security.auth.callback.CallbackHandler;
+import javax.security.auth.callback.UnsupportedCallbackException;
+import javax.security.auth.callback.TextOutputCallback;
+import javax.security.auth.callback.PasswordCallback;
+import javax.security.auth.callback.TextInputCallback;
+import javax.security.auth.callback.NameCallback;
+import weblogic.security.auth.callback.URLCallback;
+import examples.utils.common.ExampleUtils;
+
+/**
+ * SampleCallbackHandler.java
+ * Implementation of the CallbackHandler Interface
+ *
+ * @author Copyright (c) 2000-2002 by BEA Systems, Inc. All Rights Reserved.
+ */
+class SampleCallbackHandler implements CallbackHandler
+{
+  private String username = null;
+  private String password = null;
+  private String url = null;
+
+  public SampleCallbackHandler() { }
+
+  public SampleCallbackHandler(String pUsername, String pPassword, String pUrl) 
+  { 
+    username = pUsername;
+    password = pPassword;
+    url = pUrl;
+  }
+
+  public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException
+  {
+    for(int i = 0; i < callbacks.length; i++)
+    {
+      if(callbacks[i] instanceof TextOutputCallback)
+      {
+        // Display the message according to the specified type
+        TextOutputCallback toc = (TextOutputCallback)callbacks[i];
+        switch(toc.getMessageType())
+        {
+        case TextOutputCallback.INFORMATION:
+          ExampleUtils.log(toc.getMessage());
+          break;
+        case TextOutputCallback.ERROR:
+          ExampleUtils.log("ERROR: " + toc.getMessage());
+          break;
+        case TextOutputCallback.WARNING:
+          ExampleUtils.log("WARNING: " + toc.getMessage());
+          break;
+        default:
+          throw new IOException("Unsupported message type: " + toc.getMessageType());
+        }
+      }
+      else if(callbacks[i] instanceof NameCallback)
+      {
+        // If username not supplied on cmd line, prompt the user for the username.
+        NameCallback nc = (NameCallback)callbacks[i];
+        if (ExampleUtils.isEmpty(username)) {
+          System.err.print(nc.getPrompt());
+          System.err.flush();
+          nc.setName((new BufferedReader(new InputStreamReader(System.in))).readLine());
+        }
+        else {
+          ExampleUtils.log("username: "+username);
+          nc.setName(username);
+        }
+      }
+      else if(callbacks[i] instanceof URLCallback)
+      {
+        // If url not supplied on cmd line, prompt the user for the url.
+        // This example requires the url.
+        URLCallback uc = (URLCallback)callbacks[i];
+        if (ExampleUtils.isEmpty(url)) {
+          System.err.print(uc.getPrompt());
+          System.err.flush();
+          uc.setURL((new BufferedReader(new InputStreamReader(System.in))).readLine());
+        }
+        else {
+          ExampleUtils.log("URL: "+url);
+          uc.setURL(url);
+        }
+      }
+      else if(callbacks[i] instanceof PasswordCallback)
+      { 
+        PasswordCallback pc = (PasswordCallback)callbacks[i];
+        
+        // If password not supplied on cmd line, prompt the user for the password.
+        if (ExampleUtils.isEmpty(password)) {
+          System.err.print(pc.getPrompt());
+          System.err.flush();
+  
+          // Note: JAAS specifies that the password is a char[] rather than a String
+          String tmpPassword = (new BufferedReader(new InputStreamReader(System.in))).readLine();
+          int passLen = tmpPassword.length();
+          char[] passwordArray = new char[passLen];
+          for(int passIdx = 0; passIdx < passLen; passIdx++)
+            passwordArray[passIdx] = tmpPassword.charAt(passIdx);
+          pc.setPassword(passwordArray);
+        }
+        else {
+          String tPass = new String();
+          for(int p = 0; p < password.length(); p++)
+            tPass += "*";
+          ExampleUtils.log("password: "+tPass);
+          pc.setPassword(password.toCharArray());
+        }        
+      }
+      else if(callbacks[i] instanceof TextInputCallback)
+      {
+        // Prompt the user for the username
+        TextInputCallback callback = (TextInputCallback)callbacks[i];
+        System.err.print(callback.getPrompt());
+        System.err.flush();
+        callback.setText((new BufferedReader(new InputStreamReader(System.in))).readLine());
+      }
+      else
+      {
+        throw new UnsupportedCallbackException(callbacks[i], "Unrecognized Callback");
+      }
+    }
+  }
+}

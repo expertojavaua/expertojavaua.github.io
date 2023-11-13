@@ -1,0 +1,1556 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Introducción a Groovy</title>
+
+		<meta name="description" content="Experto en desarrollo de aplicaciones web con JavaEE y Javascript">
+		<meta name="author" content="Francisco José García Rico">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/experto.css" id="theme">
+		
+    	<!-- coloreado de sintaxis con highlight.js -->
+    	<link rel="stylesheet" type="text/css" href="lib/css/github.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+
+	</head>
+
+<body>
+	<div class="reveal">
+	<div class="slides">
+		<!-- todo lo que se ponga aqui (que no sea un <section>) aparecerá
+		en todas las diapositivas -->
+		<div class="header">
+			<div class="logo">
+			 <img src="css/images/logo_small.png">
+			</div>
+			<div class="bar">Experto en desarrollo de aplicaciones web con JavaEE y Javascript</div>
+		</div>
+		<div class="footer">
+			<div class="left">
+				Framework Grails
+			</div>
+			<div class="center">
+				&copy; 2015-16 Dpto. Ciencia de la Computación e I.A.
+			</div>
+			<div class="right">
+				Sesión 1
+			</div>	
+		</div>	
+		<!-- Cada <section> es una slide -->	
+		
+		<section>
+			<!-- al poner el <h1> automáticamente aparece el logo del curso-->
+			<h1>Framework Grails</h1>
+			<h2>Sesión 1: Introducción a Groovy</h2>
+		</section>
+		
+		<section>
+			<h2>Índice</h2>
+			<ul>
+				<li>¿Qué es Groovy?</li>
+				<li>Instalación</li>
+				<li>Hola Mundo</li>
+				<li>Características</li>
+				<li>Tipos de datos en Groovy</li>
+				<li>Colecciones</li>
+			</ul>
+		</section>
+		
+		<section>			
+			<h2>¿Qué es Groovy?</h2>
+			<blockquote class="fragment" align=left >Groovy es un lenguaje de programación ágil y dinámico diseñado para la Plataforma Java con determinadas características inspiradas en lenguajes como Python, Ruby o Smalltalk, poniéndolas a disposición de los programadores Java mediante una sintaxis típica de Java. </blockquote>			 
+		</section>
+		
+		<section>			
+			<h2>¿Qué es Groovy?</h2>
+			<ul>
+				<li>Integración sin problemas con Java</li>
+				<li>No es sólo un lenguaje script, aunque es muy bueno como tal</li>
+				<li>Puede ser precompilado a bytecode</li>
+				<li>Se integra perfectamente en aplicaciones Java</li>
+				<li>Java a tu disposición</li>
+				<li>No es Java sin punto y comas</li>
+			</ul>
+		</section>
+		
+		
+		<section>						
+			<h2>Integración con Java</h2>
+			<ul>
+				<li>Integración imperceptible</li>
+				<li>Groovy añade una nueva forma de crear clases en Java</li>
+				<li>Groovy es Java con un archivo jar como dependencia</li>
+				<li>Cualquier programador Java entenderá Groovy</li>
+			</ul>			
+		</section>
+		
+		<section>						
+			<h2>¿A quién va dirigido?</h2>
+			<ul>
+				<li>Programadores Java</li>
+				<li>Programadores de scripts</li>
+				<li>Programadores ágiles y extremos</li>
+			</ul>
+		</section>
+
+
+		<section>			
+			<h2>Dirigido a programadores Java</h2>
+			<pre>
+				<code class="java" data-trim style="font-size: 18px;">
+public class ListFiles {
+  public static void main(String[] args){
+    new java.io.File(".").eachFileRecurse(
+      new FileListener() {
+        public void onFile (File file) {
+          System.out.println(file.toString());
+        }
+      }
+    );
+  }
+}
+				</code>
+			</pre>
+		</section>
+		
+		<section>			
+			<h2>Dirigido a programadores Java</h2>
+			<pre>
+				<code class="bash" data-trim style="font-size: 18px;">
+					groovy -e "new File('.').eachFileRecurse { println it}"
+				</code>
+			</pre>
+		</section>
+
+		<section>			
+			<h2>Dirigido a programadores de scripts</h2>
+			<ul>
+				<li>Programadores Perl, Ruby, Python y PHP</li>
+				<li>Necesitan la robustez de la Plataforma Java</li>
+				<li>Pero sin tanta verborrea</li>
+				<li>Métodos ultracomprimidos</li>
+				<li>Groovy al rescate</li>
+			</ul>
+		</section>
+
+		<section>			
+			<h2>Dirigido a programadores ágiles y extremos</h2>
+			<ul>
+				<li>Perfecto para implementar teorías ágiles</li>
+				<li>Sprints cortos</li>
+				<li>Sin tiempo apenas para nuevas tecnologías o lenguajes</li>
+				<li>Integración continua</li>
+				<li>TDD (Test Driven Development)</li>
+			</ul>
+		</section>
+
+		<section>			
+			<h2>Instalación</h2>
+			<ul>
+				<li>Descargando el zip desde la web de Groovy</li>
+				<li>Utilizando un gestor de paquetes como <em>sdkman</em>(antes gvmtool)</li>
+			</ul>						
+		</section>
+
+	
+		<section>			
+			<h2>Instalación con <em>sdkman</em></h2>			
+			<pre>
+				<code class="bash" data-trim style="font-size: 18px;">
+curl -s get.sdkman.io | bash
+
+source "$HOME/.sdkman/bin/sdkman-init.sh"
+
+sdk list groovy
+
+sdk install groovy 2.4.5
+				</code>
+			</pre>					
+		</section>
+
+		<section>			
+			<h2>Instalación con <em>sdkman</em></h2>
+			<p>
+				Podríamos cambiar la instalación con:
+			</p>			
+			<pre>
+				<code class="bash" data-trim style="font-size: 18px;">
+sdk use groovy 1.8.0
+				</code>
+			</pre>					
+		</section>
+
+		<section>			
+			<h2>Hola Mundo</h2>
+			<p align="left">Tenemos 3 formas de ejecutar código Groovy</p>			
+			<ul>
+				<li>groovysh</li>
+				<li>groovyConsole</li>
+				<li>groovy</li>
+			</ul>
+		</section>
+
+		<section>			
+			<h2>groovysh</h2>
+			<p align="left">
+				Permite ejecutar en línea de comandos código Groovy de forma interactiva. Más información en <a href="http://groovy.codehaus.org/Groovy+Shell">http://groovy.codehaus.org/Groovy+Shell</a>.
+			</p>
+		</section>
+
+		<section>			
+			<h2>groovysh</h2>		
+			<pre>
+				<code class="bash" data-trim style="font-size: 18px;">
+groovy:000> "Hola Mundo!"
+				</code>
+				<code class="bash fragment" data-trim style="font-size: 18px;">
+groovy:000> saludo = "Hola"
+===> Hola
+groovy:000> "${saludo} Mundo!"
+
+===> Hola Mundo!
+				</code>
+			</pre>					
+		</section>
+
+		<section>			
+			<h2>groovysh</h2>		
+			<pre>
+				<code class="bash" data-trim style="font-size: 18px;">
+groovy:000> def hola(nombre){
+groovy:001> println "Hola $nombre"
+groovy:002> }
+===> true
+groovy:000> hola("Fran") 
+Hola Fran
+==== > null
+				</code>
+			</pre>					
+		</section>
+
+		<section>						
+			<h2>groovyConsole</h2>
+			<p align="left">
+				Interfaz Swing que actua como intérprete de comandos Groovy. Permite guardar y cargar archivos. Más información en <a href="http://groovy.codehaus.org/Groovy+Console">http://groovy.codehaus.org/Groovy+Console</a>.
+			</p>
+		</section>
+
+		<section>
+			<h2>groovyConsole</h2>
+			<p align=center><img style="border: 0;" src="../images/grails01/groovyConsole.jpg"></p>			 
+		</section>
+		
+		<section>						
+			<h2>groovy</h2>
+			<ul>
+				<li>Permite ejecutar scripts directamente en línea de comandos</li>
+				<li>Sin precompilar</li>
+				<li>Modo directo</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>groovy</h2>
+			<p align=center><img style="border: 0;" src="../images/grails01/groovy.jpg"></p>			 
+		</section>
+
+		<section>						
+			<h2>groovyc</h2>
+			<ul>
+				<li>Permite compilar nuestros scripts</li>
+				<li>Modo precompilado</li>
+				<li>Ejecutar con java</li>
+			</ul>
+			<pre>
+				<code class="bash" data-trim style="font-size: 18px;">
+java -cp $GROOVY_HOME/embeddable/groovy-all-2.4.0.jar:classes fibonacci
+				</code>
+			</pre>
+		</section>		
+
+		<section>						
+			<h2>Características</h2>
+			<ul>				
+				<li>Comentarios</li>
+				<li>Comparando la sintaxis de Java y Groovy</li>
+				<li>Brevedad del lenguaje</li>
+				<li>Aserciones</li>
+			</ul>			
+		</section>
+
+		<section>						
+			<h2>Comentarios</h2>
+			<ul>				
+				<li><em>//</em>: comentarios de una línea</li>
+				<li><em>/*...*/</em>: comentarios multilínea</li>
+				<li><em>/**...*/</em>: comentarios del estilo Groovydoc</li>
+				<li><em>#!</em>: comentarios de primera línea estilo <em>shebang</em></li>
+			</ul>			
+		</section>		
+		
+		<section>						
+			<h2>Comparando la sintaxis de Java y Groovy</h2>
+			<p align="left">Aspectos comunes:</p>
+			<ul>				
+				<li class="fragment">Mecanismo de paquetes</li>
+				<li class="fragment">Sentencias</li>
+				<li class="fragment">Definición de clases y métodos</li>
+				<li class="fragment">Estructuras de control</li>
+				<li class="fragment">Operadores, asignaciones y expresiones</li>
+				<li class="fragment">Manejo de excepciones</li>
+				<li class="fragment">Declaración de literales</li>
+				<li class="fragment">Instanciación de objetos y llamadas a métodos</li>
+			</ul>			
+		</section>
+
+		<section>						
+			<h2>Comparando la sintaxis de Java y Groovy</h2>
+			<p align="left">Groovy añade valor a:</p>
+			<ul>				
+				<li class="fragment">Fácil acceso a los objetos Java a través de nuevas expresiones y operadores</li>
+				<li class="fragment">Nuevas formas de declarar objetos</li>
+				<li class="fragment">Nuevas estructuras de control</li>
+				<li class="fragment">Nuevos tipos de datos con sus correspondientes operadores y expresiones</li>
+				<li class="fragment">Todo se gestiona como un objeto</li>
+			</ul>			
+		</section>
+
+		<section>
+			<h2>Brevedad del lenguaje</h2>
+			<ul>
+				<li>; no obligatorios</li>
+				<li>Paréntesis no obligatorios</li>
+				<li>Importa automáticamente varios paquetes</li>
+				<ul>
+					<li>groovy.lang.*</li>
+					<li>groovy.util.*</li>
+					<li>java.lang.*</li>
+					<li>java.util.*</li>
+					<li>java.net.*</li>
+					<li>java.io.*</li>
+					<li>java.Math.BigInteger</li>
+					<li>java.Math.BigDecimal</li>
+				</ul>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Aserciones</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+assert(true)
+assert 1 == 1
+def x = 1
+assert x == 1
+def y = 1; assert y == 1
+				</code>
+			</pre>
+			<pre class="fragment">
+				<code class="groovy" data-trim style="font-size: 18px;">
+assert 1==2 : "Desde cuando 1 es igual a 2"
+//Obteniendo el siguiente mensaje 
+//Exception thrown: Desde cuando 1 es igual a 2. Expression: (1 == 2)
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Aserciones</h2>
+			<pre>
+				<code>
+assert new File('foo.bar') == new File('example.txt')					
+				</code>
+			</pre>
+			<pre class="fragment">
+				<code class="groovy" data-trim style="font-size: 18px;">
+Exception thrown
+Assertion failed: 
+assert new File('foo.bar') == new File('example.txt')
+       |                   |  |
+       foo.bar             |  example.txt
+                           false
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Un primer vistazo al código en Groovy</h2>
+			<ul>
+				<li class="fragment">Declaración de clases</li>
+				<li class="fragment">Scripts en Groovy</li>
+				<li class="fragment">GroovyBeans</li>
+				<li class="fragment">Todo son objetos</li>
+				<li class="fragment">Operador ==</li>
+				<li class="fragment">La verdad en Groovy</li>
+				<li class="fragment">Estructuras de control en Groovy</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Declaración de clases</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+class Libro {
+	private String titulo
+		
+	Libro (String elTitulo){
+		titulo = elTitulo
+	}
+	String getTitulo(){
+		return titulo
+	}
+}
+				</code>
+			</pre>
+		</section>
+		
+		<section>
+			<h2>Declaración de clases</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+Libro cgg = new Libro('Curso GroovyGrails')
+
+assert cgg.getTitulo() == 'Curso GroovyGrails'
+assert getTituloAlReves(cgg) == 'sliarGyvoorG osruC'
+
+String getTituloAlReves(libro) {
+	titulo = libro.getTitulo()
+	return titulo.reverse()
+}
+				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>GroovyBeans</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+class Libro{
+	String titulo;
+	
+	String getTitulo(){
+	  return this.titulo
+	}
+	
+	void setTitulo(String str){
+	  this.titulo = new String(str)
+	}
+}
+				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>GroovyBeans</h2>
+			<ul>
+				<li class="fragment">Getters y setters implícitamente definidos</li>
+				<li class="fragment">Propiedad sin modificador: privada y getter y setter públicos</li>
+				<li class="fragment">Propiedad final: privada y getter público</li>
+				<li class="fragment">Propiedad privada: debemos declarar su getter y setter de forma privada</li>
+			</ul>
+		</section>		
+
+		<section>
+			<h2>Todo son objetos</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def x = 1
+def y = 2
+assert x + y == 3
+assert x.plus(y) == 3
+assert x instanceof Integer
+				</code>
+			</pre>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+double d = 10.23
+assert d instanceof Double
+char a = 'a'
+assert a instanceof Character
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Operador ==</h2>
+			<ul>
+				<li>En Java</li>
+					<ul>
+						<li>En primitivas, igualdad</li>
+						<li>En objetos, identicas</li>
+					</ul>
+				<li>En Groovy, método equals</li>
+				<li>Método <em>is</em> para comprobar objetos idénticos</li>
+			</ul>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+if (foo.is(bar))
+	println "foo y bar son el mismo objeto"
+				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>La verdad en Groovy</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def a = true
+def b = true
+def c = false
+assert a
+assert a && b
+assert a || c
+assert !c
+				</code>
+			</pre>
+		</section>		
+
+		<section>
+			<h2>La verdad en Groovy</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def numeros = [1,2,3]
+assert numeros //cierto, ya que numeros no está vacía
+numeros = [] //vacíamos la lista
+assert !numeros //cierto, ya que ahora la lista está vacía
+
+assert ['one':1] //este mapa contiene un elemento con lo que se evalúa a cierto
+assert ![:] //este mapa está vacío
+				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>La verdad en Groovy</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+assert 'Esto es cierto'
+assert !''
+//GStrings
+def s = ''
+assert !("$s")
+s = 'x'
+assert ("$s")
+				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>La verdad en Groovy</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+assert !0
+assert 1
+				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>La verdad en Groovy</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+assert new Object()
+assert !null
+				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>Estructuras de control</h2>
+			<ul>
+				<li>if-else</li>
+				<li>while</li>
+				<li>switch</li>
+				<li>try-catch-finally</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>if anidados</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+if ( ... ) {
+...
+} else if (...) {
+...
+} else {
+...
+}
+				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>Operador ternario</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def y = 5
+def x = (y > 1) ? "funciona" : "falla"
+assert x == "funciona"
+				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>Operador Elvis</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def usuario = [nombre:"Fran"]
+def nombre = usuario.nombre ?: "Anónimo"
+assert nombre == "Fran"
+usuario = [:]
+nombre = usuario.nombre ?: "Anónimo"
+assert nombre == "Anónimo"
+				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>Estructura <em>switch</em></h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def x = 1.23
+def result = ""
+
+switch ( x ) {
+    case "foo":
+        result = "found foo"
+        // lets fall through
+
+    case "bar":
+        result += "bar"
+
+    case [4, 5, 6, 'inList']:
+        result = "list"
+        break
+
+    case 12..30:
+        result = "range"
+        break
+
+    case Integer:
+        result = "integer"
+        break
+
+    case Number:
+        result = "number"
+        break
+
+    default:
+        result = "default"
+}
+
+assert result == "number"
+				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>Estructura <em>switch</em></h2>
+			<ul>
+				<li>Comparar la clase de una variable</li>
+				<li>Expresiones regulares</li>
+				<li>Comprobar si la variable está contenida en una colección</li>
+				<li>Igualdad de variable y el caso particular</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Estructura <em>for</em></h2>
+			<p align="left">
+				Utiliza la anotación <em>for (i in x) { cuerpo }</em> donde <em>x</em> puede ser cualquier cosa que se puede iterar.
+			</p>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+for(i in 1..10)
+	println i
+	
+for(i in [1,2,3,4,5,6,7,8,9,10])
+	println i
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Closures como bucles</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def alumnos = ['Pedro','Miguel','Alejandro','Elena']
+alumnos.each{nombre -> println nombre}
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Tipos de datos en Groovy</h2>
+			<ul>
+				<li>Tipos de datos primitivos (int, double, float, char, etc)</li>
+				<li>Tipos de datos referencia (Object, String, etc)</li>
+			</ul>
+			<pre>
+				<code>
+ArrayList resultados = new ArrayList();
+for (int i=0; i < listaUno.size(); i++){
+    Integer primero = (Integer)listaUno.get(i);
+    Integer segundo = (Integer)listaDos.get(i);
+
+    int suma = primero.intValue() + segundo.intValue();
+    resultados.add(new Integer(suma));
+}
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Tipos de datos en Groovy</h2>
+			<ul>
+				<li>Tipos de datos primitivos (int, double, float, char, etc)</li>
+				<li>Tipos de datos referencia (Object, String, etc)</li>
+			</ul>
+			<pre>
+				<code>
+ArrayList resultados = new ArrayList()
+for (int i=0; i < listaUno.size(); i++){
+	Integer primero = listaUno.get(i)
+	Integer segundo = listaDos.get(i)
+	    
+	resultados.add(primero + segundo)
+}
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Tipos de datos referencia vs primitivos </h2>
+			<table>
+				<tr>
+					<th>Tipo primitivo</th>
+					<th>Tipo referencia</th>
+				</tr>
+				<tr>
+					<td>byte</td>
+					<td>java.lang.Byte</td>
+				</tr>
+				<tr>
+					<td>short</td>
+					<td>java.lang.Short</td>
+				</tr>
+				<tr>
+					<td>int</td>
+					<td>java.lang.Integer</td>
+				</tr>
+				<tr>
+					<td>long</td>
+					<td>java.lang.Long</td>
+				</tr>
+				<tr>
+					<td>float</td>
+					<td>java.lang.Float</td>
+				</tr>
+				<tr>
+					<td>double</td>
+					<td>java.lang.Double</td>
+				</tr>
+				<tr>
+					<td>char</td>
+					<td>java.lang.Character</td>
+				</tr>
+				<tr>
+					<td>boolean</td>
+					<td>java.lang.Boolean</td>
+				</tr>					
+			</table>
+		</section>
+
+		<section>
+			<h2>Boxing, unboxing y autoboxing</h2>
+			<ul>
+				<li>Boxing: conversión de tipo primitivo a tipo referencia</li>
+				<li>Unboxing: conversión de tipo referencia a tipo primitivo</li>
+				<li>Autoboxing: conversión automática de Groovy</li>
+			</ul>
+		</section>		
+
+		<section>
+			<h2>Autoboxing</h2>
+			<p>
+				Sólo se hace autoboxing cuando sea estrictamente necesario
+			</p>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+assert 'Hola Mundo'.indexOf(111) == 1
+				</code>
+			</pre>
+			<pre class="fragment">
+				<code class="groovy" data-trim style="font-size: 18px;">
+assert 1 + 2 == 3 //1.plus(2)
+				</code>
+			</pre>	
+		</section>
+
+		<section>
+			<h2>Tipado dinámico</h2>
+			<table>
+				<tr>
+					<th>Sentencia</th>
+					<th>Tipo de variable</th>
+				</tr>
+				<tr>
+					<td>def a = 2</td>
+					<td>java.lang.Integer</td>
+				</tr>
+				<tr>
+					<td>def b = 0.4f</td>
+					<td>java.lang.Float</td>
+				</tr>
+				<tr>
+					<td>def c = 'a'</td>
+					<td>java.lang.String</td>
+				</tr>
+				<tr>
+					<td>int d = 3</td>
+					<td>java.lang.Integer</td>
+				</tr>
+				<tr>
+					<td>float e = 4</td>
+					<td>java.lang.Float</td>
+				</tr>
+				<tr>
+					<td>char f = '1'</td>
+					<td>java.lang.Character</td>
+				</tr>
+				<tr>
+					<td>Integer g = 6</td>
+					<td>java.lang.Integer</td>
+				</tr>
+				<tr>
+					<td>String h = '1'</td>
+					<td>java.lang.String</td>
+				</tr>
+				<tr>
+					<td>Character i = 'a'</td>
+					<td>java.lang.Character</td>
+				</tr>				
+			</table>
+		</section>
+
+		<section>
+			<h2>Tipado dinámico</h2>
+			<pre class="fragment">
+				<code class="groovy" data-trim style="font-size: 18px;">
+def a = 2
+def b = 0.4f
+def c = 'a'
+int d = 3
+float e = 4
+char f = '1'
+Integer g = 6
+String h = '1'
+Character i = 'a'
+
+assert a instanceof java.lang.Integer
+assert b instanceof java.lang.Float
+assert c instanceof java.lang.String
+assert d instanceof java.lang.Integer
+assert e instanceof java.lang.Float
+assert f instanceof java.lang.Character
+assert g instanceof java.lang.Integer
+assert h instanceof java.lang.String
+assert i instanceof java.lang.Character
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Tipado dinámico</h2>
+			<ul>
+				<li>Palabra reservada <em>def</em></li>
+				<li>Tipado dinámico seguro</li>
+				<li>Podemos elegir entre dinámico o estático</li>
+				<li>Piensa en si es realmente útil definir una variable de forma dinámica</li>
+				<li>Duck typing</li>
+			</ul>		
+		</section>
+
+		<section>
+			<h2>Trabajo con cadenas</h2>
+			<ul>
+				<li>Librería <em>GString</em></li>
+				<li>Variable en las cadenas</li>
+			</ul>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def nombre = "Fran"
+assert "hola $nombre" == "hola Fran"
+				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>Trabajo con cadenas</h2>
+			<p>
+				Varias formas de crear cadenas de texto
+			</p>
+			<ul>
+				<li>Comillas simples</li>
+				<li>Comillas dobles</li>
+				<li>3 comillas simples</li>
+				<li>3 comillas dobles</li>
+				<li>Símbolo /</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Trabajo con cadenas</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def c1 = 'hola Juan'
+def c2 = "hola $nombre"
+def c3 = '''-------------
+Total:0.02
+-------------'''
+def c4 = """-------------
+Total:$total
+-------------"""
+def c5 = /x(\d*)y/
+				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>La librería GString</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+nombre = 'Fran'
+apellidos = 'García'
+salida = "Apellidos, nombre: $apellidos, $nombre"
+
+fecha = new Date(0)
+salida = "Año $fecha.year, Mes $fecha.month, Día $fecha.date"
+
+salida = "La fecha es ${fecha.toGMTString()}"
+
+sentenciasql = """
+SELECT nombre, apellidos
+FROM usuarios
+WHERE anyo_nacimiento=$fecha.year
+"""
+				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>La librería GString</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+saludo = 'Hola Juan'
+
+assert saludo.startsWith('Hola')
+
+assert saludo.getAt(3) == 'a'
+assert saludo[3] == 'a'
+
+assert saludo.indexOf('Juan') == 5
+assert saludo.contains('Juan')
+
+assert saludo[5..8] == 'Juan'
+
+assert 'Buenos días' + saludo - 'Hola' == 'Buenos días Juan'
+
+assert saludo.count('a') == 2
+
+assert 'b'.padLeft(3) == '  b'
+assert 'b'.padRight(3,'_') == 'b__'
+assert 'b'.center(3) == ' b '
+assert 'b' * 3 == 'bbb'
+				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>Expresiones regulares</h2>
+			<ul>
+				<li>Operador =~: <em>find</em></li>
+				<li>Operador ==~: <em>match</em></li>
+				<li>Operador ~String: <em>pattern</em></li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Patrones de texto</h2>
+			<ul>
+				<li><em>algo de texto</em>, simplemente encontrará la frase "algo de texto"</li>
+				<li><em>algo de\s+texto</em>, encontrará frases que empiecen con "algo de", vayan seguidos por uno o más caracteres y terminen con la palabra texto</li>
+				<li><em>\d\d/\d\d/\d\d\d\d</em>, detectará fechas como por ejemplo 28/06/2008</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Patrones de expresiones regulares</h2>
+			<pre>
+			<table>
+				<tr>
+					<th>Símbolo</th>
+					<th>Significado</th>
+				</tr>
+				<tr>
+					<td>.</td>
+					<td>Cualquier carácter</td>
+				</tr>
+				<tr>
+					<td>^</td>
+					<td>El inicio de una línea</td>
+				</tr>
+				<tr>
+					<td>$</td>
+					<td>El final de una línea</td>
+				</tr>
+				<tr>
+					<td>\d</td>
+					<td>Un dígito</td>
+				</tr>
+				<tr>
+					<td>\D</td>
+					<td>Cualquier cosa excepto un dígito</td>
+				</tr>
+				<tr>
+					<td>\s</td>
+					<td>Un espacio en blanco</td>
+				</tr>
+				<tr>
+					<td>\S</td>
+					<td>Cualquier cosa excepto un espacio en blanco</td>
+				</tr>
+				<tr>
+					<td>\w</td>
+					<td>Un carácter de texto</td>
+				</tr>
+				<tr>
+					<td>\W</td>
+					<td>Cualquier carácter excepto los de texto</td>
+				</tr>
+				<tr>
+					<td>\b</td>
+					<td>Límite de palabras</td>
+				</tr>
+				<tr>
+					<td>()</td>
+					<td>Agrupación</td>
+				</tr>
+				<tr>
+					<td>(x\|y)</td>
+					<td>O x o y</td>
+				</tr>
+				<tr>
+					<td>x*</td>
+					<td>Cero o más ocurrencias de x</td>
+				</tr>
+				<tr>
+					<td>x+</td>
+					<td>Una o más ocurrencias de x</td>
+				</tr>
+				<tr>
+					<td>x?</td>
+					<td>Cero o una ocurrencia de x</td>
+				</tr>
+				<tr>
+					<td>x{m,n}</td>
+					<td>Entre m y n ocurrencias de x</td>
+				</tr>
+				<tr>
+					<td>x{m}</td>
+					<td>Exactamente m ocurrencias de x</td>
+				</tr>
+				<tr>
+					<td>[a-d]</td>
+					<td>Incluye los caracteres a, b, c y d</td>
+				</tr>
+				<tr>
+					<td>[^a]</td>
+					<td>Cualquier carácter excepto la letra a</td>
+				</tr>
+			</table>
+		</pre>
+		</section>
+
+		<section>
+			<h2>Uso de expresiones regulares</h2>
+			<ul>
+				<li>Indicarnos si un determinado patrón encaja completamente con un texto</li>
+				<li>Si existe alguna ocurrencia de un patrón en una cadena</li><li>Contar el número de ocurrencias</li>
+				<li>Hacer algo con una determinada ocurrencia</li>
+				<li>Reemplazar todas las ocurrencias con un determinado texto</li>
+				<li>Separar una cadena en múltiples cadenas a partir de las ocurrencias que aparezcan en la misma</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Ejemplo de expresiones regulares</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+refran = "tres tristes tigres tigraban en un tigral"
+
+//Compruebo que hay al menos un fragmento de código que empieza por t, 
+//le siga cualquier caracter y posteriormente haya una g
+assert refran =~ /t.g/
+
+//Compruebo que el refrán esté compuesto sólo 
+//por palabras seguidas de un espacio
+assert refran ==~ /(\w+ \w+)*/
+
+//Compruebo que el valor de una operación de tipo match es un booleano
+assert (refran ==~ /(\w+ \w+)*/) instanceof java.lang.Boolean
+
+//A diferencia que una operación de tipo find, 
+//las operaciones match se evalúan por completo contra una cadena
+assert (refran ==~ /t.g/) == false
+
+//Sustituyo las palabras por el caracter x
+assert (refran.replaceAll(/\w+/,'x')) == 'x x x x x x x'
+
+//Devuelve un array con todas las palabras del refrán
+palabras = refran.split(/ /)
+assert palabras.size() == 7
+assert palabras[2] == 'tigres'
+assert palabras.getAt(3) == 'tigraban'
+				</code>
+			</pre>
+		</section>	
+
+		<section>
+			<h2>Ejemplo de expresiones regulares</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+refran = "tres tristes tigres tigraban en un tigral"
+
+//Busco todas las palabras que acaben en 'es'
+rima = ~/\b\w*es\b/
+resultado = ''
+refran.eachMatch(rima) { match -> 
+    resultado += match + ' '
+}
+
+assert resultado == 'tres tristes tigres '
+
+//Hago lo mismo con el método each
+resultado = ''
+(refran =~ rima).each { match ->
+    resultado += match + ' '
+}
+
+assert resultado == 'tres tristes tigres '
+
+//Sustituyo todas las rimas por guiones bajos
+assert (refran.replaceAll(rima){ it-'es'+'__'} == 'tr__ trist__ tigr__ tigraban en un tigral')
+				</code>
+			</pre>
+		</section>				
+
+		<section>
+			<h2>Números</h2>
+			<ul>
+				<li><em>times()</em></li>
+				<li><em>upto()</em></li>
+				<li><em>downto()</em></li>
+				<li><em>step()</em></li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Ejemplo de closures con números</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def cadena = ''
+10.times {
+    cadena += 'g'
+}
+assert cadena == 'gggggggggg'
+
+cadena = ''
+1.upto(5) { numero ->
+    cadena += numero
+}
+
+assert cadena == '12345'
+
+cadena = ''
+2.downto(-2) { numero ->
+    cadena += numero + ' '
+}
+
+assert cadena == '2 1 0 -1 -2 '
+
+cadena = ''
+0.step(0.5, 0.1) { numero -> 
+    cadena += numero + ' '
+}
+
+assert cadena == '0 0.1 0.2 0.3 0.4 '
+				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>Colecciones</h2>
+			<ul>
+				<li>Rangos</li>
+				<li>Listas</li>
+				<li>Mapas</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Rangos</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+//Rangos inclusivos
+assert (0..10).contains(5)
+assert (0..10).contains(10)
+
+//Rangos medio-exclusivos
+assert (0..<10).contains(9)
+assert (0..<10).contains(10) == false
+
+//Comprobación de tipos
+def a = 0..10
+assert a instanceof Range
+
+//Definición explícita
+a = new IntRange(0,10)
+assert a.contains(4)
+
+//Rangos para fechas
+def hoy = new Date()
+def ayer = hoy - 1
+assert (ayer..hoy).size() == 2
+
+//Rangos para caracteres
+assert ('a'..'f').contains('e')
+
+//El bucle for con rangos
+def salida = ''
+for (elemento in 1..5){
+    salida += elemento
+}
+assert salida == '12345'
+
+//El bucle for con rangos inversos
+salida = ''
+for (elemento in 5..1){
+    salida += elemento
+}
+assert salida == '54321'
+
+//Simulación del bucle for con rangos inversos 
+//y el método each con un closure
+salida = ''
+(5..<1).each { elemento ->
+    salida += elemento
+}
+assert salida == '5432'
+				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>Rangos como clasificador de grupos</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+//Rangos como clasificador de grupos
+edad = 31
+switch (edad){
+    case 16..20: interesAplicado = 0.25; break
+    case 21..50: interesAplicado = 0.30; break
+    case 51..65: interesAplicado = 0.35; break
+}
+assert interesAplicado == 0.30
+
+//Rangos para el filtrado de datos
+edades = [16,29,34,42,55]
+joven = 16..30
+assert edades.grep(joven) == [16,29]
+				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>Listas</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+miLista = [1,2,3]
+
+assert miLista.size() == 3
+assert miLista[2] == 3
+assert miLista instanceof ArrayList
+
+listaVacia = []
+assert listaVacia.size() == 0
+
+listaLarga = (0..1000).toList()
+assert listaLarga[324] == 324
+
+listaExplicita = new ArrayList()
+listaExplicita.addAll(miLista)
+assert listaExplicita.size() == 3
+listaExplicita[2] = 4
+assert listaExplicita[2] == 4
+
+listaExplicita = new LinkedList(miLista)
+assert listaExplicita.size() == 3
+listaExplicita[2] = 4
+assert listaExplicita[2] == 4
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Más ejemplos de Listas</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+miLista = ['a','b','c','d','e','f']
+
+assert miLista[0..2] == ['a','b','c']//Acceso con Rangos 
+assert miLista[0,2,4] == ['a','c','e']//Acceso con colección de índices
+
+//Modificar elementos
+miLista[0..2] = ['x','y','z']
+assert miLista == ['x','y','z','d','e','f']
+
+//Eliminar elementos de la lista
+miLista[3..5] = []
+assert miLista == ['x','y','z']
+
+//Añadir elementos a la lista
+miLista[1..1] = ['y','1','2']
+assert miLista == ['x','y','1','2','z']
+
+miLista = []
+
+//Añado objetos a la lista con el operador +
+miLista += 'a'
+assert miLista == ['a']
+
+//Añado colecciones a la lista con el operador +
+miLista += ['b','c']
+assert miLista == ['a','b','c']
+
+miLista = []
+miLista << 'a' << 'b'
+assert miLista == ['a','b']
+
+assert miLista - ['b'] == ['a']
+
+assert miLista * 2 == ['a','b','a','b']
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Más ejemplos de Listas</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+miLista = ['a','b','c']
+
+//Listas como clasificador de grupos
+letra = 'a'
+switch (letra){
+    case miLista: assert true; break;
+    default: assert false
+}
+
+//Listas como filtrado de datos
+assert ['x','y','a'].grep(miLista) == ['a']
+
+//Bucle for con lista
+salida = ''
+for (i in miLista){
+    salida += i
+}
+assert salida == 'abc'
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Mapas</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def miMapa = [a:1, b:2, c:3]
+
+assert miMapa instanceof HashMap
+assert miMapa.size() == 3
+assert miMapa['a'] == 1
+
+//Definimos un mapa vacio
+def mapaVacio = [:]
+assert mapaVacio.size() == 0
+
+//Definimos un mapa de la clase TreeMap
+def mapaExplicito = new TreeMap()
+mapaExplicito.putAll(miMapa)
+assert mapaExplicito['c'] == 3
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Más ejemplos de Mapas</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">		
+def miMapa = [a:1, b:2, c:3]
+
+//Varias formas de obtener los valores de un mapa
+assert miMapa['a'] == 1
+assert miMapa.a == 1
+assert miMapa.get('a') == 1
+//Si no existe la clave, devuelve un valor por defecto, en este caso 0
+assert miMapa.get('a',0) == 1 
+
+//Asignación de valores
+miMapa['d'] = 4
+assert miMapa.d == 4
+miMapa.e = 5
+assert miMapa.e == 5
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Más ejemplos de Mapas</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">		
+def miMapa = [a:1, b:2, c:3]
+
+def resultado = ''
+miMapa.each { item ->
+    resultado += item.key + ':'
+    resultado += item.value + ', '
+}
+assert resultado == 'a:1, b:2, c:3, ' 
+
+resultado = ''
+miMapa.each { key, value -> 
+    resultado += key + ':'
+    resultado += value + ', '
+}
+assert resultado == 'a:1, b:2, c:3, '
+
+resultado = ''
+for (key in miMapa.keySet()){
+    resultado += key + ':'
+    resultado += miMapa[key] + ', '
+}
+assert resultado == 'a:1, b:2, c:3, '
+
+resultado = ''
+for (value in miMapa.values()){
+    resultado += value + ' '
+}
+assert resultado == '1 2 3 '
+
+def valor1 = [1, 2, 3].every { it < 5 }
+assert valor1
+
+def valor2 = [1, 2, 3].any { it > 2 }
+assert valor2
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Métodos sobre Mapas</h2>
+			<ul>
+				<li>Crear un submapa de un mapa dado a partir de algunas claves: <em>subMap()</em></li>
+				<li>Encontrar todos los elementos de un mapa que cumplen una determinada condición:<em>findAll()</em></li>
+				<li>Encontrar un elemento de un mapa que cumpla una determinada condición:<em>find()</em></li>
+				<li>Realizar operaciones sobre los elementos de un mapa: <em>collect()</em></li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Más ejemplos de Mapas</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">		
+def miMapa = [a:1, b:2, c:3]
+def miSubmapa = miMapa.subMap(['a','b'])
+assert miSubmapa.size() == 2
+
+def miOtromapa = miMapa.findAll { entry -> entry.value > 1 }
+assert miOtromapa.size() == 2
+assert miOtromapa.c == 3
+
+def encontrado = miMapa.find { entry -> entry.value < 3}
+assert encontrado.key == 'a'
+assert encontrado.value == 1
+
+def miMapaDoble = miMapa.collect { entry -> entry.value *= 2}
+//Todos los elementos son pares
+assert miMapaDoble.every { item -> item % 2 == 0 }
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h1>¿Preguntas...?</h1>
+		</section>
+
+		<section>
+			<h1>Ejercicios</h1>
+		</section>
+	</div>
+</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+				slideNumber: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Parallax scrolling
+				// parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+				// parallaxBackgroundSize: '2100px 900px',
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+
+				]
+			});
+
+		</script>
+
+	</body>
+</html>

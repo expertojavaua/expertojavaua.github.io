@@ -1,0 +1,135 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="Nacho">
+   <meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+   <title>Ejercicios de la sesi&oacute;n 12</title>
+<link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+</head>
+<body>
+
+<h1>Java 3D y JAI</h1>
+
+<p>
+<b>1. </b>Modificar la clase <i>Ej1.java</i> para construir una forma
+compleja, como por ejemplo un árbol, utilizando una caja o cilindro como tronco,
+y un cono para la copa (moviendo el cilindro y el cono para que encajen bien).
+Podéis fijaros en el <a href="ejemplos/j3d/EjemploUnivSimple.java.txt">ejemplo</a>
+del universo simple para ver cómo colocar los componentes, y en el <a href="ejemplos/j3d/EjemploTrans.java.txt">ejemplo</a>
+de transformaciones para ver cómo posicionarlas. Si os sirve de guía, podéis
+seguir estos pasos (todos los cambios se hacen sobre el constructor):</p>
+<ul>
+  <li>Crear un cilindro y colocarlo sin más (como la figura del ejemplo)</li>
+</ul>
+<blockquote>
+  <pre class="codigo">Cylinder cilindro = new Cylinder(0.1f, 1.0f);
+cilindro.setAppearance(apariencia);</pre>
+</blockquote>
+<ul>
+  <li>Crear un cono</li>
+</ul>
+<blockquote>
+  <pre class="codigo">Cone cono = new Cone(0.3f, 0.5f);
+cono.setAppearance(apariencia);</pre>
+</blockquote>
+<ul>
+  <li>Crear un nodo de transformación (<i>TransformGroup</i>), y aplicarle un <i>Transform3D</i>
+    que lo desplace hacia arriba (en Y) una determinada cantidad.</li>
+</ul>
+<blockquote>
+  <pre class="codigo">Transform3D t3D = new Transform3D();
+t3D.setTranslation (new Vector3f(0.0f, 0.5f, 0.0f));
+
+TransformGroup tg = new TransformGroup(t3D);</pre>
+</blockquote>
+<ul>
+  <li>Añadir el cono al objeto <i>TransfromGroup</i></li>
+</ul>
+<blockquote>
+  <pre class="codigo">tg.addChild(cono);</pre>
+</blockquote>
+<ul>
+  <li>Añadir el cilindro y el <i>TransformGroup</i> a la rama principal (<i>BranchGroup</i>)</li>
+</ul>
+<blockquote>
+  <pre class="codigo">bg.addChild(cilindro);
+bg.addChild(tg);
+...
+bg.compile();</pre>
+</blockquote>
+<p><b>2. </b>Seguimos con el ejemplo del &aacute;rbol (la misma clase <i>Ej1.java</i>). Intentad a&ntilde;adirle
+ramas. Para ello pod&eacute;is a&ntilde;adirle cilindros, o cilindros y
+conos rotados y colocados en el lugar que quer&aacute;is desde la rama
+principal.<p><b>3. </b>En el fichero <i>Ej3.java</i>, leed <a href="imagenes/jai/lena.jpg">esta imagen</a>
+y <a href="imagenes/jai/lena2.jpg">esta otra</a> y sumadlas en JAI
+(operador <i>add</i>), devolviendo el resultado. Como par&aacute;metros en el <i>ParameterBlock</i>
+sólo se necesitan las dos imágenes a sumar (a&ntilde;adidas
+con <i>addSource(...)</i>)
+<p><b>4. </b>En el fichero <i>Ej4.java</i>, aplicad un filtro de mediana (operador <i>MedianFilter</i>)
+a <a href="imagenes/jai/puentru.jpg">esta imagen</a> . Como par&aacute;metro
+obligatorio en el <i> ParameterBlock</i> se necesita la imagen (a&ntilde;adida
+con <i>addSource(...)</i>). El resto de par&aacute;metros son optativos
+y no los vamos a especificar.&nbsp;
+<p>NOTA: para los ejercicios de JAI pod&eacute;is ayudaros de los siguientes
+pasos:
+<ul>
+  <li>Leer la imagen del fichero (con <i>FileSeekableStream</i>, por ejemplo)</li>
+</ul>
+<blockquote>
+  <pre class="codigo">FileSeekableStream stream = null;
+try
+{
+	stream = new FileSeekableStream(&quot;fichero.jpg&quot;);
+} catch (IOException e) {
+	e.printStackTrace();
+	System.exit(0);
+}</pre>
+</blockquote>
+<ul>
+  <li>Guardar la imagen en un <i> RenderedOp</i></li>
+</ul>
+<blockquote>
+  <pre class="codigo">RenderedOp img1 = JAI.create(&quot;stream&quot;, stream);</pre>
+</blockquote>
+<ul>
+  <li>Definir los parámetros de la operación a aplicar (pasarle la(s)
+    imagen(es) fuente(s))</li>
+</ul>
+<blockquote>
+  <pre class="codigo">ParameterBlock params = new ParameterBlock();
+params.addSource(img1);</pre>
+</blockquote>
+<ul>
+  <li>Crear la operación que se pide, pasándole los parámetros que necesite,
+    y obtener el resultado</li>
+</ul>
+<blockquote>
+  <pre class="codigo">RenderedOp imgres = JAI.create(&quot;nombre_operacion&quot;, params);</pre>
+</blockquote>
+<ul>
+  <li>Mostrar el resultado&nbsp;</li>
+</ul>
+<blockquote>
+  <pre class="codigo">ScrollingImagePanel panel = new ScrollingImagePanel(imgres, imgres.getWidth(), imgres.getHeight());
+Frame window = new Frame(&quot;JAI Sample Program&quot;);
+window.addWindowListener(new WindowAdapter() 
+{
+	public void windowClosing(WindowEvent e)
+	{
+		System.exit(0);
+	}
+});
+window.add(panel);
+window.pack();
+window.show();</pre>
+</blockquote>
+<p>&nbsp;</p>
+<p><b>Para entregar:</b> Debéis entregar un ZIP <i>e6_2.zip</i> con:
+<ul>
+  <li>El fichero <i>Ej1.java</i> con el árbol que hayáis construido</li>
+  <li>El fichero <i>Ej3.java</i> con la suma de las dos imágenes</li>
+  <li>El fichero <i>Ej4.java</i> con el filtro de mediana aplicado a la imagen</li>
+</ul>
+</body>
+</html>

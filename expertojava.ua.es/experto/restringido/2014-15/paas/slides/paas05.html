@@ -1,0 +1,555 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Introducción a Cloud Computing y a OpenShift</title>
+
+		<meta name="description" content="Experto en desarrollo de aplicaciones web con JavaEE y Javascript">
+		<meta name="author" content="José Luis Zamora Sánchez">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/experto.css" id="theme">
+		
+    	<!-- coloreado de sintaxis con highlight.js -->
+    	<link rel="stylesheet" type="text/css" href="lib/css/github.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+		
+		<style type="text/css">.slides .header{
+			position:absolute;
+			top: -50%;
+			left: -50%;
+			width: 100%;
+			display: table;
+		}
+
+		.slides .logo {
+			display: table-cell;
+			vertical-align: middle;
+		}
+
+		.slides .bar {
+			background-color: rgb(18,64,128);
+			font-size: 20px;
+			padding-top: 5px;
+			padding-bottom: 5px;
+			color: white;
+			border-top-left-radius:10px;
+			border-bottom-left-radius:10px;
+			display: table-cell;
+			vertical-align: middle;
+			text-align: center;
+		}
+
+		.slides .footer{
+			position:absolute;
+			bottom: 50%;
+			left: -50%;
+			width: 100%;
+			font-size: 15px;
+			color: gray;
+			display: table;
+		}  
+		.slides .left {
+			display: table-cell;
+			text-align: left;
+		}
+		.slides .right {
+			display: table-cell;
+			text-align: right;
+		}
+		.slides .center {
+			display: table-cell;
+			text-align: center;
+		}
+
+</style>
+
+	</head>
+
+<body>
+	<div class="reveal">
+	<div class="slides">
+		<!-- todo lo que se ponga aqui (que no sea un <section>) aparecerá
+		en todas las diapositivas -->
+		<div class="header">
+			<div class="logo">
+			 <img src="css/images/logo_small.png">
+			</div>
+			<div class="bar">Experto en desarrollo de aplicaciones web con JavaEE y Javascript</div>
+		</div>
+		<div class="footer">
+			<div class="left">
+				Servidores Web y PaaS
+			</div>
+			<div class="center">
+				&copy; 2014-15 Dpto. Ciencia de la Computación e I.A.
+			</div>
+			<div class="right">
+				Sesión 5
+			</div>	
+		</div>	
+		<!-- Cada <section> es una slide -->	
+		
+		<section>
+			<!-- al poner el <h1> automáticamente aparece el logo del curso-->
+			<h1>Servidores Web y PaaS</h1>
+			<h2>Sesión 5: Introducción a Cloud Computing y a OpenShift</h2>
+		</section>
+		
+		<section>
+			<h2>Índice</h2>
+			<ul>
+				<li>¿Qué es Cloud Computing?</li>
+				<li>¿Qué aporta?</li>
+				<li>ONTSI</li>
+				<li>Tipos de Cloud</li>
+				<li>Seguridad</li>
+				<li>OpenShift</li>				
+			</ul>
+		</section>
+
+		<section>
+			<h2>» ¿Qué es Cloud Computing?</h2>		
+		</section>
+		
+		<section>
+			<blockquote>Cloud Computing es una <strong>denominación comercial</strong> a un modelo de computación que permite utilizar recursos tecnológicos bajo demanda, ofrecidos por un proveedor.</blockquote>
+			<br>
+			<ul class="fragment">
+				<li>Contrapuesto al modelo tradicional de adquisición y administración de recursos.</li>
+				<li>Las tecnologías no son nuevas, lo novedoso es el modelo de negocio.</li>
+			</ul>
+		</section>
+		
+		<section>
+			<h2>Computación pre-cloud</h2>			
+			<ul>
+				<li>Fuerte inversión previa en HW, SW, comunicaciones... </li>
+				<li>Se requiere sobredimensionar el hardware:
+					<ul>
+						<li>Amortización de la inversión durante un mínimo de tiempo.</li>
+						<li>Respuesta a picos de carga.</li>
+					</ul>
+				</li>
+				<li>En resumen: Costes iniciales elevados y bajo aprovechamiento de los recursos.</li>
+			</ul>
+		</section>
+		
+		<section>
+			<h2>» ¿Qué aporta Cloud Computing?</h2>		
+		</section>
+		
+		<section>			
+			<ul>
+				<li><strong>Flexibilidad</strong></li>
+				<li><strong>Estandarización y reusabilidad</strong></li>
+				<li><strong>Eficiencia</strong> (sobre los recursos contratados)</li>
+				<li><strong>Acceso ubicuo</strong></li>
+				<li><strong>Seguridad</strong></li>								
+				<li><strong>Ahorro de costes iniciales</strong></li>
+			</ul>
+		</section>
+		
+		<section>			
+			<h2>Nuevos conceptos de Cloud Computing</h2>
+			<br>
+			<p align=left>Terminología mitad técnico y comercial:</p>
+			<ul>
+				<li><strong>Multitenancy </strong>(tenencia múltiple)</li>
+				<li><strong>Resiliency</strong></li>				
+			</ul>
+		</section>
+		
+		<section>			
+			<h2>Riesgos de Cloud Computing</h2>
+			<br>			
+			<ul>
+				<li>¿Cómo aplico cloud computing en mi proyecto?</li>
+				<li>Dependencias de terceros: proveedor de servicios.
+						<ul>
+							<li>Falta de transparencia</li>
+							<li>Falta de control</li>
+						</ul>
+				</li>				
+				<li>Gestión de datos de carácter personal.</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>» Informe ONTSI Mayo 2014</h2>		
+			<p> (Observatorio Nacional de Telecomunicaciones y Sistemas de Información) </p>			
+		</section>
+		
+		<section>
+			<br>
+			<p  align=center><img style="border: 0;" height="600" src="imagenes/paas05/CloudEnLaEmpresa.png"></p>						
+		</section>
+		
+		<section>
+			<br>
+			<p  align=center><img style="border: 0;" height="550" src="imagenes/paas05/MotivosParaNoUSarCloud.png"></p>
+		</section>
+		
+		<section>
+			<br>
+			<h2>» Tipos de Cloud Computing - Servicio</h2>			
+			<p  align=center><img style="border: 0;" height="550" src="imagenes/paas05/TiposCloud.png"></p>			
+		</section>
+		
+		<section>
+			<br>
+			<h2>SaaS (Software as a Service)</h2>
+			<ul>
+				<li>Dirigido a usuarios finales.</li>
+				<li>Solo se necesita conectividad.</li>
+				<li>El usuario no tiene ningún control sobre aspectos técnicos del producto.</li>
+			</ul>			
+			<p  align=center><img style="border: 0;" height="350" src="imagenes/paas05/SaaS.png"></p>			
+		</section>
+		
+		<section>
+			<br>
+			<h2>PaaS (Platform as a Service)</h2>
+			<ul>
+				<li>Proporciona una serie de módulos estándar (BBDD, servidores) sobre los que desplegar aplicaciones.</li>
+				<li>Dirigido a desarrolladores.</li>
+				<li>El usuario tiene acceso a la configuración de los módulos contratados.</li>
+				<li>El usuario se abstrae del mantenimiento de la infraestructura: sistemas operativos, comunicaciones...</li>				
+			</ul>						
+		</section>
+		
+		<section>
+			<br>
+			<h2>PaaS (Platform as a Service)</h2>
+			<p  align=center><img style="border: 0;" height="500" src="imagenes/paas05/PaaS.png"></p>			
+		</section>
+						
+		<section>
+			<br>
+			<h2>IaaS (Infrastructure as a Service)</h2>
+			<ul>
+				<li>Proporciona una serie de recursos hardware virtualizados: máquinas, almacenamiento, comunicaciones...</li>
+				<li>Se considera la capa inferior de los servicios cloud.</li>
+				<li>Dirigido a desarrolladores/administradores de sistemas.</li>
+				<li>Mayor control pero mayor complejidad de gestión.</li>
+				<li>El proveedor se sigue encargando de algunas tareas: seguridad, monitorización, herramientas... </li>				
+			</ul>						
+		</section>
+		
+		<section>
+			<br>
+			<h2>IaaS (Infrastructure as a Service)</h2>
+			<p  align=center><img style="border: 0;" height="500" src="imagenes/paas05/IaaS.png"></p>			
+		</section>
+						
+		<section>
+			<br>
+			<h2>Terminología relacionada</h2>
+			<ul>
+				<li>Iaas+: Proporciona recursos de PaaS e IaaS simultáneamente. Ejemplo: AWS, Azure.</li>
+			</ul>
+			<p  align=center><img style="border: 0;" height="450" src="imagenes/paas05/IaasPlus.png"></p>				
+		</section>
+		
+		<section>
+			<br>
+			<h2>Terminología relacionada</h2>
+			<ul>
+				<li>dSaaS: <em>Data Storage as a Service</em>. Proporciona almacenamiento remoto y backup. Se sitúa a nivel de máquina física.</li>
+				<li>dDCaaS: <em>Data Center as a Service</em>. Proporciona recursos de procesamiento de datos e infraestructura físicos. Orientado a grandes empresas que no puedan expandir sus actuales CPD’s.</li>
+				<li>ItaaS*:  <em>IT as a Service</em>. Disasociar el departamento de TI de las empresas. Será un proveedor más y competirá con proveedores externos (outsourcing, cloud).</li>				
+			</ul>
+			
+			<p align=left><br> (*) Modelo operacional, no tecnológico.
+		</section>
+		
+		<section>
+			<br>
+			<h2>Desplegando en PaaS</h2>
+			<p  align=center><img style="border: 0;" height="500" src="imagenes/paas05/PaaS2.png"></p>			
+		</section>
+		
+		<section>
+			<br>
+			<h2>» Tipos de Cloud Computing - Acceso</h2>			
+		</section>
+		
+		<section>
+			<ul>
+				<li><strong>Cloud pública</strong>
+						<ul>
+							<li>Los datos de todos los clientes se tratan conjuntamente.</li>
+							<li>Costes más económicos.</li>
+							<li>Menor seguridad.</li>
+						</ul>
+				</li>
+			</ul>
+		</section>
+		
+		<section>
+			<ul>
+				<li><strong>Cloud privada</strong>
+						<ul>
+							<li>Los datos de cada cliente se almacena de forma independiente.</li>
+							<li>El cliente decide quien puede tener acceso a su información. </li>
+							<li>También es cloud privada cuando los servicios se ejecutan sobre infraestructura propiedad del cliente.</li>							
+						</ul>
+				</li>
+			</ul>
+		</section>
+		
+		<section>
+			<ul>
+				<li><strong>Cloud híbrida</strong>
+						<ul>
+							<li>Combinación de una zona pública con una zona privada.</li>
+							<li>La comunicación entre las dos áreas se realiza mediante conexiones VPN.</li>							
+						</ul>
+				</li>
+				<br>
+				<li><strong>Cloud comunitaria</strong>
+						<ul>
+							<li>Infraestructuras compartidas por organizaciones con necesidades similares.</li>							
+						</ul>
+				</li>
+			</ul>
+		</section>
+		
+		<section>
+			<br>
+			<h2>» Seguridad</h2>			
+		</section>
+		
+		<section>			
+				<p><strong>Dato personal</strong></p>
+				<br>
+				<blockquote>Cualquier información numérica, alfabética, gráfica, fotográfica, acústica o de cualquier otro tipo concerniente a personas físicas identificadas o identificables</blockquote>					
+		</section>
+		
+		<section>
+			<br>
+			<h2>Ley Orgánica 15/1999 de Protección de datos de Carácter Personal (LOPD)</h2>
+			<ul>
+				<li>Regula el tratamiento de datos personales y la libre circulación de los datos.</li>
+				<li>La AEPD es el órgano de control que se encarga de garantizar el cumplimiento de la norma.</li>
+				<li>Obligaciones si se va a trabajar con datos personales en cloud:
+					<ul>
+						<li>Inscripción de ficheros</li>
+						<li>Información de la recogida, el consentimiento y la calidad de los datos.</li>
+						<li>Garantía de los derechos ARCO (Acceso, Rectificación, Cancelación y Oposición).</li>
+						<li>Medidas de seguridad adecuadas al tipo de información.</li>
+					</ul>				
+				</li>				
+			</ul>
+		</section>
+		
+		<section>
+			<br>
+			<h2>Transferencia internacional de datos personales</h2>
+			<ul>
+				<li>Toda transmisión de datos personales fuera del territorio del Espacio Económico Europeo.
+					<ul>
+						<li>Cesión o comunicación de datos.</li>
+						<li>Tratamiento de datos por cuenta del responsable del fichero.</li>
+					</ul>
+				</li>					
+			</ul>
+		</section>
+		
+		<section>
+			<br>
+			<h2>Requisitos para trabajar con datos personales fuera del EEE</h2>
+			<ul>
+					<li>Notificación a la AEPD vía formulario online si se trata de un país con nivel de protección adecuado:					
+					<ul>
+						<li>Suiza, Argentina.</li>
+						<li>Islas dependientes de Reino Unido: Guernsey, Isla de Man, Jersey.</li>
+						<li>Canadá (empresas sujetas a la ley canadiense de protección de datos).</li>
+						<li>EE.UU. (empresas adheridas a los principios de Safe Harbour).</li>
+					</ul>
+					</li>
+					<li>Autorización del Director de la Agencia de Protección de Datos para el resto de destinos.</li>
+			</ul>			
+		</section>
+		
+		<section>
+			<p align=left>En Junio de 2014 Microsoft consigue certificaciones de la UE y la AEPD que aseguran que sus servicios ofrecen una buena protección y su uso está autorizado de antemano.</p>
+		</section>
+		
+		<section>
+			<br>
+			<h2>Cómo elegir un proveedor cloud</h2>
+			<ol>
+				<li>Determinar el tipo de servicio que realmente necesitamos
+					<ul>
+						<li>¿Existe una solución SaaS que nos sirva?</li>
+						<li>IaaS vs PaaS</li>
+					</ul>
+				</li>
+				<li>Comparar proveedores.</li>				
+			</ol>			
+		</section>
+		
+		<section>
+			<h2>Estudio proveedores (I)</h2>
+			<ul>
+				<li>Servicios ofertados (necesidades actuales y previsión de futuro.</li>
+				<li>Ubicación del centro de datos (LOPD, latencias).</li>
+				<li>Tipo de centro de datos:
+						<ul>
+							<li>De operador (privados). Bonifican costes/Limitan los cambios.</li>
+							<li>Neutrales (independientes). Pool de proveedores y servicios.</li>
+						</ul>
+				</li>
+			<ul>
+		</section>
+		
+		<section>
+			<h2>Estudio proveedores (II)</h2>
+			<ul>
+				<li>Medidas de seguridad: iguales o superiores a las necesarias para el proyecto.</li>
+				<li>Políticas de importación/exportación de datos (carga de información o cambio proveedor)</li>
+				<li>Calidad de las instalaciones:
+						<ul>
+							<li>Tier 1 (sala refrigerada con recursos de extinción)</li>
+							<li>Hasta tier 4 (Disponibilidad de al menos 99.995% del tiempo, personal 24x7, redundancia en almacenamiento, comunicaciones, refrigeración…​)</li>
+						</ul>
+				</li>
+			<ul>
+		</section>
+		
+		<section>
+			<h2>Estudio proveedores (III)</h2>
+			<ul>
+				<li>Calidad del servicio::
+						<ul>
+							<li>SLA: acuerdos de nivel de servicio (obligaciones, penalizaciones).</li>
+							<li>SLO: objetivos de nivel de servicio, medida orientativa de calidad de servicio.</li>
+						</ul>
+				</li>
+				<li>Costes. Previsión de uso lo más completa posible.</li>
+			<ul>
+		</section>
+		
+		<section>
+				<h2>Proveedores de Cloud en España</h2>
+				<br>
+				<p align=center>Casi en su totalidad orientados a IaaS y SaaS.</p>
+		</section>
+		
+		<section>
+			<h2>» Introducción a OpenShift</h2>		
+		</section>
+		
+		<section>
+			<h2>Características OpenShift</h2>
+			<ul>
+				<li><strong>Plataforma PaaS</strong>.</li>
+				<li>Soporte muy amplio de lenguajes/frameworks.</li>
+				<li>Ampliable con componentes a medida.</li>
+				<li>Modalidad gratuita con muchas posibilidades.</li>
+				<li>Desplegable en cloud o en infraestructura propia </li>
+				<li>Utiliza servicios estándar idénticos a los que instalaríamos de forma tradicional.</li>			
+			<ul>
+		</section>
+						
+		<section>
+			<br>
+			<h2>Lenguajes y runtimes soportados</h2>			
+			<p  align=center><img style="border: 0;" height="520" src="imagenes/paas05/openshift2.png"></p>				
+		</section>				
+		
+		<section>
+			<br>
+			<h2>Versiones de OpenShift</h2>			
+			<p  align=center><img style="border: 0;" height="450" src="imagenes/paas05/openshift.png"></p>
+		</section>				
+		
+		<section>
+			<br>
+			<h2>Modalidades de Pago de OpenShift Online</h2>			
+			<p  align=center><img style="border: 0;" height="350" src="imagenes/paas05/planes.png"></p>
+		</section>				
+		
+		<section>
+			<h2>Limitaciones versión gratuita</h2>
+			<ul>
+				<li>Sólo se dispone de tres servidores de prestaciones básicas.</li>
+				<li>Sólo se puede crear un dominio.</li>
+				<li>Tras 24 horas de inactividad los servidores se desactivan.</li>
+				<li>No se pueden utilizar certificados digitales propios.</li>			
+			</ul>
+		</section>
+		
+		<section>
+			<br>
+			<h2>Alternativas en PaaS</h2>
+			<ul>
+				<li>AWS Elastic Beanstalk (Amazon): Java, .NET, PHP, Node.js, Python, Ruby y Docker.</li>
+				<li>Heroku  (SalesForce), con soporte a Ruby, Node.js, Python, Java y PHP.</li>
+				<li>Cloud Foundry (Pivotal), muy similar a OpenShift. Versión OpenSource y comercial. </li>
+				<li>BlueMix (IBM) que es una implementación comercial de Cloud Foundry.</li>
+				<li>Azure (Microsoft), que incluye tanto IaaS como PaaS y soporte para Linux.</li>
+				<li>Google App Engine (Desde 2008): Python, Java , PHP y Go.</li>
+			</ul>
+		</section>
+						
+		<section>
+			<h1>¿Preguntas...?</h1>
+		</section>
+
+		
+	</div>
+</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+				slideNumber: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
+
+		
+		</section>

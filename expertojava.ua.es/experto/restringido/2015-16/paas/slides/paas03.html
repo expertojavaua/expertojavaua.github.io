@@ -1,0 +1,807 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Seguridad declarativa en WildFly  (JAAS)</title>
+
+		<meta name="description" content="Experto en desarrollo de aplicaciones web con JavaEE y Javascript">
+		<meta name="author" content="José Luis Zamora Sánchez">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/experto.css" id="theme">
+		
+    	<!-- coloreado de sintaxis con highlight.js -->
+    	<link rel="stylesheet" type="text/css" href="lib/css/github.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			if( window.location.search.match( /print-pdf/gi ) ) {
+				var link = document.createElement( 'link' );
+				link.rel = 'stylesheet';
+				link.type = 'text/css';
+				link.href = 'css/print/pdf.css';
+				document.getElementsByTagName( 'head' )[0].appendChild( link );
+			}
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+		
+		<style type="text/css">.slides .header{
+			position:absolute;
+			top: -50%;
+			left: -50%;
+			width: 100%;
+			display: table;
+		}
+
+		.slides .logo {
+			display: table-cell;
+			vertical-align: middle;
+		}
+
+		.slides .bar {
+			background-color: rgb(18,64,128);
+			font-size: 20px;
+			padding-top: 5px;
+			padding-bottom: 5px;
+			color: white;
+			border-top-left-radius:10px;
+			border-bottom-left-radius:10px;
+			display: table-cell;
+			vertical-align: middle;
+			text-align: center;
+		}
+
+		.slides .footer{
+			position:absolute;
+			bottom: 50%;
+			left: -50%;
+			width: 100%;
+			font-size: 15px;
+			color: gray;
+			display: table;
+		}  
+		.slides .left {
+			display: table-cell;
+			text-align: left;
+		}
+		.slides .right {
+			display: table-cell;
+			text-align: right;
+		}
+		.slides .center {
+			display: table-cell;
+			text-align: center;
+		}
+
+</style>
+
+	</head>
+
+<body>
+	<div class="reveal">
+	<div class="slides">
+		<!-- todo lo que se ponga aqui (que no sea un <section>) aparecerá
+		en todas las diapositivas -->
+		<div class="header">
+			<div class="logo">
+			 <img src="css/images/logo_small.png">
+			</div>
+			<div class="bar">Experto en desarrollo de aplicaciones web con JavaEE y Javascript</div>
+		</div>
+		<div class="footer">
+			<div class="left">
+				Servidores Web y PaaS
+			</div>
+			<div class="center">
+				&copy; 2015-16 Dpto. Ciencia de la Computación e I.A.
+			</div>
+			<div class="right">
+				Sesión 3
+			</div>	
+		</div>	
+		<!-- Cada <section> es una slide -->	
+		
+		<section>
+			<!-- al poner el <h1> automáticamente aparece el logo del curso-->
+			<h1>Servidores Web y PaaS</h1>
+			<h2>Sesión 3: Seguridad declarativa en WildFly  (JAAS)</h2>
+		</section>
+		
+		<section>
+			<h2>Índice</h2>
+			<ul>
+				<li>Implementación de la seguridad declarativa en WildFly</li>
+				<li>Administración de usuarios y grupos con RealmDirect</li>
+				<li>Configuración de un login module basado en BD</li>
+				<li>Integración con un servidor LDAP Externo</li>			
+			</ul>
+		</section>
+
+		<section>
+			<h2>» Implementación de la seguridad declarativa en WildFly</h2>
+		</section>
+		
+		<section>
+			<h2>Conceptos básicos (I)</h2>
+			<ul>
+				<li>Usuarios, grupos y roles: identifican y clasifican usuarios. WildFly combina los conceptos de grupo y rol.</li>
+				<li>Políticas de seguridad: La definición concreta de quien tiene acceso a un recurso u operaciones.</li>
+				<li>Dominios de seguridad: Configuración de autenticación/autorización del servidor. Implementan JAAS.</li>
+			</ul>
+		</section>
+		
+		<section>
+			<h2>Conceptos básicos (II)</h2>
+			<p align=left>Mecanismos de autenticación en la capa de transporte:</p>
+			<ul>							
+				<li><em>None</em>:	Acceso anónimo</li>
+				<li><em>N/A</em>:	Acceso Local a JBoss/WildFly</li>
+				<li><em>Digest</em>:	Hash calculado a partir de la password</li>
+				<li>Basic</em>:	Passwords en plano</li>
+				<li>Client Cert</em>:	Certificados de cliente</li>
+			</ul>
+		</section>
+		
+		<section>
+			<h2>Security Realms</h2>
+			<ul>
+				<li>Son almacenes de usuarios/passwords.</li>
+				<li>Asociados a interfaces de entrada del servidor.</li>
+				<br>
+				<li>De inicio, WildFly contiene dos realms:</li>
+				<ul>
+					<li>ManagementRealm: securiza el acceso a las herramientas de administración.</li>
+					<li>ApplicationRealm: autenticación y autorización en las aplicaciones desplegadas.</li>
+				</ul>
+			</ul>
+		</section>
+		
+		<section>
+			<h2>ManagementRealm</h2>
+			<pre><code   class="xml" data-trim  style="font-size: 18px;">
+ <security-realm name="ManagementRealm">
+	<authentication>
+		&ltlocal default-user="$local" skip-group-loading="true"/&gt
+	&ltproperties path="mgmt-users.properties" relative-to="jboss.server.config.dir"/&gt
+	</authentication>
+	<authorization map-groups-to-roles="false">
+		&ltproperties path="mgmt-groups.properties" relative-to="jboss.server.config.dir"/&gt
+	</authorization>
+ </security-realm>			
+</code></pre>			
+			<ul>
+				<li>Se distingue entre accesos locales o remotos. (sin seguridad para los locales)</li>
+				<li>Se pueden crear grupos de usuarios y asociarlos posteriormente con roles RBAC.</li>				
+			</ul>
+		</section>
+		
+		<section>
+			<br>
+			<h2>ApplicationRealm</h2>
+			<pre><code   class="xml" data-trim  style="font-size: 18px;">
+ <security-realm name="ApplicationRealm">
+	<authentication>
+		&ltlocal default-user="$local" allowed-users="*" skip-group-loading="true"/&gt
+		&ltproperties path="application-users.properties" relative-to="jboss.server.config.dir"/&gt
+	</authentication>
+	<authorization>
+		&ltproperties path="application-roles.properties" relative-to="jboss.server.config.dir"/&gt
+	</authorization>
+</security-realm>
+</code></pre>			
+			<ul>
+				<li>Almacena usuarios y roles.</li>
+				<li>Se utiliza tanto en accesos internos como en externos (Remoting) </li>				
+			</ul>
+<pre><code   class="xml" data-trim  style="font-size: 18px;">			
+<subsystem xmlns="urn:jboss:domain:remoting:2.0">
+ <endpoint worker="default"/>
+ <http-connector name="http-remoting-connector" connector-ref="default" security-realm="ApplicationRealm"/>
+</subsystem>
+</code></pre>			
+		</section>
+		
+		<section>
+		<br>
+		<h2>Security Domains / Login Modules </h2>
+		<ul>
+			<li>Definen las políticas de autenticación y autorización del servidor de aplicaciones.</li>
+			<li>Configuran al menos un <em>Login Module</em> que implementa estas políticas.</li>
+			<li><em>Other</em> es el Security Domain por defecto de WildFly y está preparado para trabajar con el <em>Application Realm</em>.</li>
+		</ul>
+		<p  align=center><img style="border: 0;" src="imagenes/paas03/jboss-security.png"></p>					
+		</section>
+		
+		<section>
+		<br>
+		<h2>Security Domains / Login Modules </h2>
+<pre><code   class="xml" data-trim  style="font-size: 18px;">					
+ <subsystem xmlns="urn:jboss:domain:security:1.2">
+            <security-domains>
+                <security-domain name="other" cache-type="default">
+                    <authentication>
+						<!-- Acceso remoto a componentes de la aplicación (Ejbs) -->
+                        <login-module code="Remoting" flag="optional">
+                            &ltmodule-option name="password-stacking" value="useFirstPass"/&gt
+                        </login-module>
+						<!-- Resto de accesos. Por defecto utiliza ApplicationRealm -->
+                        <login-module code="RealmDirect" flag="required">
+                            &ltmodule-option name="password-stacking" value="useFirstPass"/&gt
+                        </login-module>
+                    </authentication>
+                </security-domain>
+                <security-domain name="jboss-web-policy" cache-type="default">
+                    <authorization>
+                        &ltpolicy-module code="Delegating" flag="required"/&gt
+                    </authorization>
+                </security-domain>
+                <security-domain name="jboss-ejb-policy" cache-type="default">
+                    <authorization>
+                        &ltpolicy-module code="Delegating" flag="required"/&gt
+                    </authorization>
+                </security-domain>
+            </security-domains>
+        </subsystem>
+</code></pre>				
+		</section>
+		
+		<section>
+			<h2> Propiedades de los Login Module</h2>
+			<ul>
+				<li>Se ejecutan en el orden indicado en el Security Domain</li>
+				<br>
+				<li>flag: define cómo se tiene que combinar el resultado parcial de un login module con el resto de módulos.
+				<ul>
+					<br>
+					<li><strong>Required</strong>: El usuario debe validarse con éxito necesariamente. Independientemente del resultado serguirá ejecutando el resto de login modules</li>
+					<li><strong>Requisite</strong>: Similar a Required, pero si falla la autenticación ya no se continua con el resto de login modules.</li>					
+				<ul>
+				</li>
+		</section>
+		
+		<section>
+			<h2> Propiedades de los Login Module</h2>
+			<ul>				
+				<ul>					
+					<li><strong>Sufficient</strong>: El usuario intentará validarse, si falla lo intentará con el resto de login modules, pero si es autenticado, el proceso termina en ese punto.</li>
+					<li><strong>Optional</strong>: El usuario intentará validarse, aunque no necesariamente tiene porqué tener éxito. Si todos los login modules están configurados como optional, necesariamente tendrá que validarse con al menos uno de ellos.</li>
+				<ul>
+				</li>
+		</section>		
+		
+		<section>
+			<h2> Propiedades de los Login Module</h2>
+			<ul>
+				<li>password-stacking: define como se tiene que combinar la información de usuario/password de diferentes login/modules.
+				<ul>
+					<li>useFirstPass: las credenciales que prevalecen son las del primer login module que autentique al usuario. El resto de login modules sólo contribuyen aportando información adicional de roles.</li>
+				</ul>
+				</li>
+				<li>En el caso de múltiples login modules se recomienda el flag <em>Required</em> si queremos que todos ellos aporten información de roles.</li>				
+			<ul>
+		</section>
+		
+		<section>
+			<br>
+			<h2> Activación del log de auditoría</h2>			
+			<ul>
+				<li>¡Muy útil para resolver errores!</li>
+<pre><code   class="xml" data-trim  style="font-size: 18px;">				
+<subsystem xmlns="urn:jboss:domain:logging:2.0">
+			...
+            <periodic-rotating-file-handler name="AUDIT" autoflush="true">
+                <level name="TRACE"/>
+                <formatter>
+                    &ltpattern-formatter pattern="%d{HH:mm:ss,SSS} %-5p [%c] (%t) %s%E%n"/&gt
+                </formatter>
+				<!-- Generaremos un fichero audit.log en la carpeta de logs del servidor -->
+                &ltfile relative-to="jboss.server.log.dir" path="audit.log"/&gt
+                &ltsuffix value=".yyyy-MM-dd"/&gt
+                &ltappend value="true"/&gt
+            </periodic-rotating-file-handler>
+            <logger category="org.jboss.security">
+                &ltlevel name="TRACE"/&gt
+                <handlers>
+                    &lthandler name="AUDIT"/&gt
+                </handlers>
+            </logger>				
+</code></pre>			
+			</ul>
+		</section>
+		
+		<section>
+			<h2>» Administración de usuarios y roles con RealmDirect</h2>
+		</section>
+		
+		<section>
+			<ul>
+				<li>Mediante el script <em>add-user.sh</em> podemos dar de alta usuarios en el  ApplicationRealm y grupos (roles) asociados.</li>
+				<li>Codificación de los usuarios:
+			<pre><code   class="bash" data-trim  style="font-size: 18px;">
+username=HEX(MD5(username ':' realm ':' password))
+	
+experto=579f4faae456fd4b742f89e35fa935e2
+admin=c22052286cd5d72239a90fe193737253	
+			</code></pre>							
+				</li>
+				<li>Los roles se almacenan en texto plano:</li>
+<pre><code   class="bash" data-trim  style="font-size: 18px;">
+experto=Users
+admin=Administrators
+</code></pre>								
+			</ul>
+		</section>
+		
+		<section>
+			<h2>Realm Personalizado</h2>
+			<ul>
+				<li>Si tenemos varias aplicaciones en un servidor, podemos separar los ficheros de usuarios definiendo un nuevo realm.</li>
+				<li>El parámetro <em>realm</em> del login module RealmDirect permite seleccionar un Realm distinto al por defecto.</li>
+				<li>El script <em>add-user.sh </em> sólo trabaja con los Realm predefinidos. Codificación manual de usuarios.
+			</ul>
+		</section>
+		
+		<section>
+			<h2>» Configuración de un login module basado en BD</h2>
+		</section>
+		
+		<section>
+			<h2>Autenticación contra BD </h2>
+						
+			<p align=left>Login module <em>Database</em></p>
+<pre><code   class="sql" data-trim  style="font-size: 18px;">				
+CREATE TABLE USERS (
+    principal_id VARCHAR(64) primary key,
+	password VARCHAR(64));
+;
+
+CREATE TABLE ROLES (
+    principal_id VARCHAR(64) primary key,
+	user_role VARCHAR(64),
+;
+
+ALTER TABLE ROLES
+   ADD CONSTRAINT FK1_PRINCIPLES
+   FOREIGN KEY ( principal_id)
+   REFERENCES USERS (principal_id)
+   ON DELETE CASCADE
+;
+</code></pre>												
+		</section>
+		
+		<section>
+			<br>
+			<h2>Autenticación contra BD </h2>
+			<ol>
+				<li>Crear el modelo de datos de usuarios/roles.</li>
+				<li>Crear un datasource específico en WildFly.</li>
+				<li>Nuevo Security Domain, con login module Database.</li>
+			</ol>
+<pre><code   class="bash" data-trim  style="font-size: 18px;">			
+# Crear un nuevo security domain con seguridad basada en base de datos
+batch
+
+connect
+
+# Configure the security domain
+/subsystem=security/security-domain=seguridad-db/:add(cache-type=default)
+/subsystem=security/security-domain=seguridad-db/authentication=classic:add(login-modules=[{"code"=>"Database", "flag"=>"required", "module-options"=>[("dsJndiName"=>"java:jboss/datasources/seguridad"),("principalsQuery"=>"SELECT PASSWORD FROM USERS WHERE principal_id = ?"), ("rolesQuery"=>"SELECT user_role, 'Roles' FROM ROLES where principal_id = ?")]}])
+
+# Run the batch commands
+run-batch
+
+# Reload the server configuration
+:reload
+</code></pre>			
+		</section>
+		
+		<section>
+			<h2>Encriptación de las password</h2>
+			<ul>
+				<li>Por defecto WildFly trabaja con passwords almacenadas sin encriptar.</li>
+				<li>WildFly tampoco ayuda a la hora de codificar las password en base de datos.</li>
+				<li>Especificar un algoritmo de encriptación:</li>
+<pre><code   class="xml" data-trim  style="font-size: 18px;">				
+&ltmodule-option name="password-stacking" value="useFirstPass"/&gt
+&ltmodule-option name="hashAlgorithm" value="MD5"/&gt
+&ltmodule-option name="hashEncoding" value="hex"/&gt
+</code></pre>											
+		</section>
+		
+		<section>
+			<h2>Aplicación web de ejemplo (I)</h2>
+			<p align=left>Servlet habilitado para roles específicos:</p>
+<pre><code   class="java" data-trim  style="font-size: 18px;">				
+@WebServlet("/listado")
+@ServletSecurity(@HttpConstraint(rolesAllowed = { "rol_usuario","rol_administrador" }))
+public class ConsultaServlet extends HttpServlet {
+
+
+@Resource(mappedName = "jdbc/seguridad")
+    DataSource segDS;
+
+        protected void processRequest(HttpServletRequest request,
+        HttpServletResponse response)
+            throws ServletException, IOException {
+</code></pre>			
+		</section>
+		
+		<section>
+			<br>
+			<h2>Aplicación web de ejemplo (II)</h2>
+			<p align=left>web.xml</p>
+<pre><code   class="xml" data-trim  style="font-size: 18px;">				
+ <session-config>
+  <session-timeout>30</session-timeout>
+  </session-config>
+ <welcome-file-list>
+  <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+ <login-config>
+  <auth-method>BASIC</auth-method>
+  <realm-name>Mi dominio de seguridad</realm-name>
+  </login-config>
+ <security-role>
+  &ltdescription /&gt
+  <role-name>rol_usuario</role-name>
+  </security-role>
+ <security-role>
+  &ltdescription /&gt
+  <role-name>rol_administrador</role-name>
+  </security-role>
+  </web-app>
+</code></pre>			
+		</section>
+
+		<section>
+			<br>
+			<h2>Aplicación web de ejemplo (III)</h2>
+			<p align=left>Descriptor específico de WildFly jboss-web.xml, en la carpeta WEB-INF.</p>
+<pre><code   class="xml" data-trim  style="font-size: 18px;">				
+ <jboss-web xmlns="http://www.jboss.com/xml/ns/javaee"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.jboss.com/xml/ns/javaee http://www.jboss.org/schema/jbossas/jboss-web_8_0.xsd"
+           version="8.0">
+
+    <context-root>/intranet</context-root>
+    <security-domain>
+        mi-dominio
+    </security-domain>
+</jboss-web>
+</code></pre>	
+		<p align=left>Especificamos el <em>Security Domain</em> a utilizar. </p>
+		</section>
+
+
+		<section>
+			<h2>» Integración con un servidor LDAP Externo</h2>			
+		</section>
+		
+		<section>
+			<br>
+			<h2>LDAP (Lightweight Directory Acces Protocol)</h2>
+			<ul>
+				<li>Protocolo de tipo cliente-servidor para acceder a un servicio de directorio.</li>				
+			</ul>
+			<p  align=center><img style="border: 0;" height="400" src="imagenes/paas03/ldap1.png"></p>	
+		</section>
+		
+		<section>
+			<br>
+			<h2>LDAP (Lightweight Directory Acces Protocol)</h2>
+			<ul>
+				<li>Protocolo de tipo cliente-servidor para acceder a un servicio de directorio.</li>
+				<li>Mnemotécnicos más importantes:
+					<ul>
+						<li>dn (distinguished name) Es el nombre asociado a un objeto concreto para su localización. </li>
+						<li>cn (Common Name) Nombre descriptivo de un objeto</li>
+						<li>dc (Domain component) Es un «directorio» del árbol de LDAP.</li>
+						<li>ou (Organizational Unit) Departamentos o grupos de trabajo.</li>
+					</ul>
+				</li>				
+			</ul>			
+		</section>
+		
+		<section>
+			<ol>
+				<li>Instalar el servidor SLDAPd ejecutando los comandos:
+<pre><code   class="bash" data-trim  style="font-size: 18px;">				
+sudo apt-get update
+sudo apt-get -y install slapd ldap-utils
+</code></pre>				
+				</li>
+				
+				<li>Configuración básica de directorio
+<pre><code   class="bash" data-trim  style="font-size: 18px;">				
+sudo dpkg-reconfigure slapd
+</code></pre>					
+				</li>
+			</ol>
+		</section>
+		
+		<section>
+			<table>
+				<thead>
+					<tr>
+						<th>Preguntas</th>
+						<th>Respuestas</th>						
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>Omit OpenLDAP server configuration</td>
+						<td>ua.es</td>						
+					<tr>
+					<tr>
+						<td>Organization name</td>
+						<td>jtech</td>					
+					<tr>
+					<tr>
+						<td>Administrator password</td>
+						<td>expertojavajs</td>						
+					<tr>
+					<tr>
+						<td>Database backend to use</td>
+						<td>HDB</td>					
+					<tr>
+					<tr>
+						<td>Do you want the database to be purged?</td>
+						<td>yes</td>						
+					<tr>
+					<tr>
+						<td>Move old database</td>
+						<td>yes</td>					
+					<tr>
+					<tr>
+						<td>Allow LDAPv2 protocol</td>
+						<td>no</td>						
+					<tr>
+				</tbody>
+			</table>
+		</section>
+		
+		<section>
+			<br>
+			<p align=left> Script LDIF </p>
+				<pre><code   class="bash" data-trim  style="font-size: 18px;">							
+#grupo de usuarios
+dn: ou=users,dc=ua,dc=es
+objectClass: organizationalUnit
+ou: users
+
+#grupo de roles
+dn: ou=roles,dc=ua,dc=es
+objectClass: organizationalUnit
+ou: roles
+
+#alumno1
+dn: uid=alu1,ou=users,dc=ua,dc=es
+objectclass: top
+objectclass: uidObject
+objectClass: inetOrgPerson
+objectclass: person
+uid: alu1
+cn: Cuenta de alu1
+sn: alu1
+userPassword: alu1
+mail: alu1@ua.es
+
+#alumno2
+dn: uid=alu2,ou=users,dc=ua,dc=es
+objectclass: top
+objectclass: uidObject
+objectClass: inetOrgPerson
+objectclass: person
+uid: alu2
+cn: Cuenta de alu2
+sn: alu2
+userPassword: alu2
+mail: alu2@ua.es
+
+#profesor1
+dn: uid=prof1,ou=users,dc=ua,dc=es
+objectclass: top
+objectclass: uidObject
+objectClass: inetOrgPerson
+objectclass: person
+uid: prof1
+cn: Cuenta de prof1
+sn: prof1
+userPassword: prof1
+mail: prof1@ua.es
+
+#definir rol_usuario y miembros
+dn: cn=rol_usuario,ou=roles,dc=ua,dc=es
+objectclass: top
+objectclass: groupOfNames
+cn: rol_usuario
+description: grupo de alumnos
+member: uid=alu1,ou=users,dc=ua,dc=es
+member: uid=alu2,ou=users,dc=ua,dc=es
+
+#definir rol_administrador y miembros
+dn: cn=rol_administrador,ou=roles,dc=ua,dc=es
+objectclass: top
+objectclass: groupOfNames
+cn: rol_administrador
+description: grupo de profesores
+member: uid=prof1,ou=users,dc=ua,dc=es
+			</code></pre>
+			<pre><code   class="bash" data-trim  style="font-size: 18px;">
+			sudo ldapadd -x -D cn=admin,dc=ua,dc=es -W -f directorio.ldif
+			</code></pre>
+		</section>
+		
+		
+		<section>
+			<br>
+			<h2> JXplorer </h2>			
+			<p  align=center><img style="border: 0;" height="500" src="imagenes/paas03/ldap3.png"></p>	
+		</section>
+		
+		<section>
+			<h2>Configuración del Login Module LdapExtended</h2>
+			<pre><code   class="xml" data-trim  style="font-size: 18px;">			
+<login-module code="LdapExtended" flag="required" >
+	&ltmodule-option name="java.naming.factory.initial" value="com.sun.jndi.ldap.LdapCtxFactory"/&gt
+	&ltmodule-option name="java.naming.provider.url" value="ldap://localhost:389"/&gt
+	&ltmodule-option name="java.naming.security.authentication" value="simple"/&gt
+	&ltmodule-option name="bindDN" value="cn=admin,dc=ua,dc=es"/&gt
+	&ltmodule-option name="bindCredential" value="expertojavajs"/&gt
+	&ltmodule-option name="baseCtxDN" value="ou=users,dc=ua,dc=es"/&gt
+	&ltmodule-option name="baseFilter" value="(uid={0})" /&gt
+
+	&ltmodule-option name="rolesCtxDN" value="ou=roles,dc=ua,dc=es" /&gt
+	&ltmodule-option name="roleFilter" value="(member={1})" /&gt
+	&ltmodule-option name="roleAttributeID" value="cn" /&gt
+
+	&ltmodule-option name="searchScope" value="ONELEVEL_SCOPE" /&gt
+    &ltmodule-option name="allowEmptyPasswords" value="true" /&gt
+</login-module>
+		</code></pre>	
+		</section>
+		
+		<section>
+			<h2>Role Based Access Control</h2>
+			<ul>
+				<li>En versiones anteriores sólo existía el rol administrador.</li>
+				<li>En WildFly es posible asociar a usuarios, distintos roles con distintos permisos:</li>
+			</ul>
+		</section>
+		
+		<section>
+		<table>
+				<thead>
+					<tr>
+						<th>Perfil</th>
+						<th>Permisos</th>						
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>Monitor</td>
+						<td>Consulta de la información en tiempo de ejecución.</td>						
+					<tr>
+					<tr>
+						<td>Operator</td>
+						<td>Monitor + además parar/arrancar instancias, activar/desactivar colas JMS y liberar conexiones de BBDD</td>
+					<tr>
+					<tr>
+						<td>Maintainer</td>
+						<td>Operator + modificar la configuración: desplegar nuevas aplicaciones y recursos.</td>						
+					<tr>
+					<tr>
+						<td>Deployer</td>
+						<td>Como Maintainer pero restringidosal despliegue de aplicaciones.</td>					
+					<tr>			
+				</tbody>
+			</table>
+		</section>
+		
+		<section>
+		<table>
+				<thead>
+					<tr>
+						<th>Perfil</th>
+						<th>Descripción</th>						
+					</tr>
+				</thead>
+				<tbody>				
+					<tr>
+						<td>Administrator</td>
+						<td>Maintainer +  ver y modificar datos sensibles (como la seguridad). Sin acceso al sistema de auditoria de administración (audit logging system).</td>						
+					<tr>
+					<tr>
+						<td>Auditor</td>
+						<td>Administrator + consultar/modificar el audit loggin system).</td>					
+					<tr>
+					<tr>
+						<td>Super User</td>
+						<td>Tiene todos los permisos, equivalente al usuario Administrator de versiones anteriores.</td>						
+					<tr>
+				</tbody>
+			</table>
+		</section>
+		
+		<section>
+			<br>
+			<h2>Activación RBAC</h2>
+<pre><code   class="xml" data-trim  style="font-size: 18px;">			
+<management>
+        <access-control provider="simple"> <!-- cambiar por rbac-->
+            <role-mapping>
+                <role name="SuperUser">
+                    <include>
+                        &ltuser name="$local"/&gt
+						&ltuser alias="experto" name="experto" /&gt <!-- Añadir al menos un usuario como Superusuario después del cambio -->
+                    </include>
+                </role>
+            </role-mapping>
+        </access-control>
+    </management>		
+</code></pre>			
+<pre><code   class="xml" data-trim  style="font-size: 18px;">			
+<role name="Deployer">
+	<include>
+		<!-- Asociar grupo de  mgmt-groups.properties a rol -->
+		<group alias="group-lead-devs" name="lead-developers"/>
+	</include>
+</role>
+</code></pre>
+		</section>
+		
+		<section>
+			<h1>¿Preguntas...?</h1>
+		</section>
+	</div>
+</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+				slideNumber: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Parallax scrolling
+				// parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+				// parallaxBackgroundSize: '2100px 900px',
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
+
+		

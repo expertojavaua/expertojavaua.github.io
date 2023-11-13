@@ -1,0 +1,1049 @@
+<!-- saved from url=(0022)http://internet.e-mail -->
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+                                                            
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+                                                            
+  <meta name="Author" content="Nacho">
+                                                            
+  <meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+                                                        
+  <link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+  <title>Conceptos Previos</title>
+</head>
+  <body>
+      <b>      
+<h1>A. Protocolo HTTP y Aplicaciones Web</h1>
+<h2>&nbsp;</h2>
+<h2>A.1. Protocolos y servicios de Internet</h2>
+      </b>
+           
+      <h4>A.1.1. Protocolo TCP/IP</h4>
+           
+      <p>Internet se construye sobre el protocolo de transmisión <b>TCP </b>(<i>Transmision
+      Control Protocol</i>), y sobre un sistema de identificación de
+      computadores que la forman basado en el protocolo <b>IP</b>: </p>
+           
+      <ul>
+        <li><b>TCP</b> realiza el empaquetamiento de los datos a transmitir y el
+          chequeo de errores de la transmisión y reenvío de paquetes
+          erróneos. UDP (<i>User Datagram Protocol</i>) es un protocolo más
+          simple que no realiza control de errores</li>
+        <li><b>IP</b> define una dirección IP para cada ordenador de la red.
+          Esta es un número de 32 bits, que se suele representar en decimal,
+          separando los 4 bytes por puntos (por ejemplo,
+          &quot;192.168.12.1&quot;. Normalmente se utilizan nombres simbólicos
+          para referirse a estas direcciones numéricas (como por ejemplo
+          &quot;www.ua.es&quot;)</li>
+      </ul>
+      <p>La comunicación con TCP/IP se realiza mediante <i>sockets</i>,
+      conexiones entre un computador y otro a través de la que se envían
+      datos. Puede haber más de un socket entre dos mismos ordenadores, con lo
+      que para distinguirlos se emplea un identificador, llamado <i>puerto</i>.&nbsp; </p>
+           
+      <h4>A.1.2. Otros protocolos y servicios</h4>
+           
+      <p>Se han desarrollado una serie de servicios y protocolos basados en TCP/IP
+      y en la arquitectura cliente/servidor, donde una máquina (cliente)
+      solicita peticiones de servicio a otra en la que suelen estar los datos y
+      programas de aplicación (servidor). Algunos de los servicios y protocolos
+      desarrollados son: </p>
+           
+      <ul>
+        <li><b>FTP</b>: para transmisión de ficheros</li>
+        <li><b>TELNET</b>: para conexión remota</li>
+        <li><b>HTTP</b>: para servicios web</li>
+        <li><b>POP3</b>: consulta y descarga de mensajes de correo</li>
+        <li><b>SMTP</b>: envío de mensajes de correo</li>
+      </ul>
+      <p>Para identificar los recursos de Internet se introdujeron&nbsp; las URL
+      (<i>Uniform Resource Locator</i>), un esquema de nomenclatura de recursos
+      basado en especificar el protocolo utilizado, el servidor y el recurso al
+      que se accede: </p>
+           
+      <pre class="codigo">Protocolo Servidor [:Puerto] Fichero</pre>
+           
+      <p>El protocolo depende del servicio al que se quiera acceder, y el
+      fichero es la ruta del recurso, en el espacio de direcciones del servidor.
+      Los protocolos de esta nomenclatura corresponden con algunos de los
+      servicios mencionados: </p>
+           
+      <ul>
+        <li><b>http</b>: protocolo HTTP para solicitar documentos</li>
+        <li><b>https</b>: petición segura (encriptada) de documentos mediante
+          HTTP</li>
+        <li><b>ftp</b>: petición de ficheros utilizando FTP</li>
+        <li><b>file</b>: acceso a ficheros locales</li>
+        <li><b>news</b>: acceso a artículos de grupos de noticias</li>
+        <li><b>mailto</b>: acceso al envío de correo electrónico</li>
+        <li><b>telnet</b>: conexión con una máquina remota</li>
+      </ul>
+      <p>Ejemplos de URL serían: </p>
+           
+      <pre class="codigo">http://www.ua.es/index.htm
+ftp://ftp.dccia.ua.es/pub/winzip.exe
+mailto:pepe@yahoo.com</pre>
+           
+      <p>Los <b>navegadores</b> son clientes que permiten utilizar la mayoría
+      de los protocolos anteriores. Traducen las URL en peticiones al servicio
+      correspondiente. </p>
+           
+      <p>&nbsp; </p>
+           
+      <b>      
+<h2>A.2. El protocolo HTTP</h2>
+      </b>
+           
+      <p>El protocolo HTTP especifica el modo de comunicación entre una
+      máquina cliente y una máquina servidor, de modo que el cliente solicita
+      un documento del espacio de direcciones del servidor, y éste se lo sirve. </p>
+           
+      <p>HTTP es un protocolo que no tiene estado: un cliente realiza una
+      petición al servidor, que contesta y la transacción acaba, con lo que en
+      la siguiente petición que pueda realizar el mismo cliente se deben
+      proporcionar de nuevo todos los datos necesarios para que el servidor
+      sirva correctamente la nueva petición, no habiendo ninguna relación
+      entre las peticiones. </p>
+           
+      <h4>A.2.1. Peticiones del cliente</h4>
+           
+      <p>En el protocolo HTTP el cliente realiza una <b>petición</b> que se
+      descompone en:</p>
+      <ul>
+        <li>Un comando HTTP, seguido de una dirección de documento o URI (<i>Uniform
+          Resource Identifier</i>), y un número de versión HTTP, de forma que
+          se tiene una línea con el formato:</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo">Comando    URI    Protocolo</pre>
+           
+        <p>Por ejemplo:</p>
+           
+        <pre class="codigo">GET   /index.html  HTTP/1.1</pre>
+           
+      </blockquote>
+      <ul>
+        <li>Tras la petición, el cliente puede enviar información adicional de
+          <b>cabeceras </b>(<i>headers</i>) con las que se da al servidor más
+          información sobre la petición (tipo de software que ejecuta el
+          cliente, tipo de contenido (<i>content-type</i>) que entiende el
+          cliente, etc). Esta información puede utilizarla el servidor para
+          generar la respuesta apropiada. Las cabeceras se envían una por
+          línea, donde cada una tiene el formato:</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo">Clave: Valor</pre>
+           
+        <p>Por ejemplo:</p>
+           
+        <pre class="codigo">Accept-Encoding: gzip, deflate
+User-Agent: Mozilla/4.0 (compatible;MSIE5.0;Windows 98)</pre>
+           
+        <p>Tras las cabeceras, el cliente envía una línea en blanco (<i>\r\n\r\n</i>)
+        para indicar el final de la sección de cabeceras.</p>
+           
+      </blockquote>
+      <ul>
+        <li>Finalmente, de forma opcional, se pueden enviar <b> datos adicionales</b> si
+          el comando HTTP solicitado lo requiere (por ejemplo, el método POST
+          que veremos a continuación).</li>
+      </ul>
+           
+      <p><b>METODO GET</b></p>
+           
+      <p>El comando GET permitía al principio solicitar al servidor un documento estático,
+      existente en su espacio de direcciones. Luego se vio que esto no era
+      suficiente, y se introdujo la posibilidad de solicitar búsquedas al
+      servidor, de forma que el documento no tuviera que ser necesariamente
+      estático, sino que la búsqueda estuviera condicionada por unos
+      determinados parámetros. Así, el comando GET tiene la forma:</p>
+           
+      <pre class="codigo">GET   direccion ? parametros   version HTTP</pre>
+           
+      <p>Por ejemplo:</p>
+           
+      <pre class="codigo">GET   /cgi-bin/pagina.cgi?IDIOMA=C&amp;MODELO=a+b  HTTP/1.1</pre>
+           
+      <p>Los parámetros se indican con pares <i>nombre=valor</i>, separados por
+      '&amp;', y reciben el nombre de <b>datos de formulario</b>. El URI no puede contener espacios ni algunos caracteres, por lo
+      que se utilizan códigos especiales, como el '+' para indicar espacio en
+      blanco, u otros códigos %XX para representar otros caracteres. Uno de los
+      trabajos más duros de los programas CGI es procesar esta cadena de
+      parámetros para extraer la información necesaria.</p>
+           
+      <p><b>OTROS METODOS</b></p>
+           
+      <p>En la versión 1.1 de HTTP se definen otros métodos además de GET:</p>
+           
+      <ul>
+        <li>OPTIONS: para consultar al servidor acerca de las funcionalidades
+          que proporciona</li>
+        <li>HEAD: el servidor responde de forma idéntica a un comando GET, pero
+          no devuelve el cuerpo del documento respuesta, sólo las cabeceras.
+          Suele emplearse para comprobar características del documento.</li>
+        <li>POST: se emplea para enviar al servidor un bloque de datos en el
+          cuerpo de la petición</li>
+        <li>PUT: solicita que el cuerpo de la petición que envía se almacene
+          en el espacio de direcciones del servidor, con el identificador URI
+          solicitado (guarda un documento en el servidor)</li>
+        <li>DELETE: solicita borrar un documento específico del servidor</li>
+        <li>TRACE: se utiliza para seguir el camino de la petición por
+          múltiples servidores y proxies (útil para depurar problemas de red).</li>
+      </ul>
+           
+      <p><b>GET Y POST</b></p>
+           
+      <p>Los dos métodos más comúnmente usados son GET y POST. Veremos las
+      diferencias entre uno y otro con un ejemplo:</p>
+           
+      <ul>
+        <li>Un ejemplo de petición GET es:</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo">GET  /dir/cargaPagina.php?id=21&amp;nombre=Pepe  HTTP/1.1
+&lt;cabeceras&gt;
+</pre>
+           
+      </blockquote>
+      <ul>
+        <li>Este ejemplo, convertido a petición POST es:</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo">POST  /dir/cargaPagina.php  HTTP/1.1
+&lt;cabeceras&gt;
+
+id=21&amp;nombre=Pepe</pre>
+           
+           
+        Vemos que los parámetros se pasan en el cuerpo de la petición, fuera
+        de la línea del comando.
+           
+           
+      </blockquote>
+           
+      <p>Comúnmente existen 3 formas de enviar una petición GET:</p>
+           
+      <ul>
+        <li>Teclear la petición directamente en la barra del navegador:</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo">http://www.xx.com/pag.html?id=123&amp;nombre=pepe</pre>
+           
+      </blockquote>
+      <ul>
+        <li>Colocar la petición en un enlace y pinchar el enlace para
+          realizarla:</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo">&lt;a href=&quot;http://www.xx.com/pag.html?id=123&amp;nombre=pepe&quot;&gt;
+Pulsa Aqui
+&lt;/a&gt;</pre>
+           
+      </blockquote>
+      <ul>
+        <li>Enviar la petición tras rellenar un formulario con METHOD=GET (o
+          sin METHOD) con los dos parámetros a enviar:</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo">&lt;html&gt;
+&lt;body&gt;
+&lt;form action=&quot;http://www.xx.com/pag.html&quot;&gt; 
+<b>	</b>&lt;input type=&quot;text&quot; name=&quot;id&quot; value=&quot;123&quot;&gt; 
+<b>	</b>&lt;input type=&quot;text&quot; name=&quot;nombre&quot; value=&quot;pepe&quot;&gt; 
+<b>	</b>&lt;input type=&quot;submit&quot; value=&quot;Enviar&quot;&gt; 
+&lt;/form&gt; 
+&lt;/body&gt; 
+&lt;/html&gt; </pre>
+           
+      </blockquote>
+      <p>Para enviar una petición POST, normalmente se utiliza un formulario
+      con METHOD=POST:</p>
+      <pre class="codigo">&lt;html&gt;
+&lt;body&gt;
+&lt;form action=&quot;http://www.xx.com/pag.html&quot; METHOD=POST&gt; 
+<b>	</b>&lt;input type=&quot;text&quot; name=&quot;id&quot; value=&quot;123&quot;&gt; 
+<b>	</b>&lt;input type=&quot;text&quot; name=&quot;nombre&quot; value=&quot;pepe&quot;&gt; 
+<b>	</b>&lt;input type=&quot;submit&quot; value=&quot;Enviar&quot;&gt; 
+&lt;/form&gt; 
+&lt;/body&gt; 
+&lt;/html&gt; </pre>
+           
+      <h4>A.2.2. Respuestas del servidor</h4>
+           
+      <p>Las respuestas del servidor también tienen tres partes: </p>
+           
+      <ul>
+        <li>Una <b>línea de estado</b> con la versión del protocolo HTTP
+          utilizado en el servidor, un código de estado y una breve
+          descripción del mismo:</li>
+      </ul>
+      <blockquote>
+           
+      <pre class="codigo">HTTP/1.0  200  OK</pre>
+           
+      </blockquote>
+      <ul>
+        <li>Información de <b>cabeceras</b>, donde se envía al cliente
+          información sobre el servidor y sobre el documento solicitado. El
+          formato de estas cabeceras es el mismo que el visto para las
+          peticiones del cliente, terminando en una línea en blanco.</li>
+        <li>Finalmente, se envía el <b>documento solicitado</b>. Para marcar el
+          final del mismo se envía también otra línea en blanco.</li>
+      </ul>
+           
+      <h4>A.2.3. Cabeceras</h4>
+           
+      <p>Vamos a poder implementar programas que lean las cabeceras que envía
+      un cliente (un navegador, por ejemplo) y que modifiquen el documento
+      servido en función de dichas cabeceras (por ejemplo, enviar una página
+      en función del idioma que se especifique). Por otra parte, podremos
+      utilizar las cabeceras que envíe el servidor como respuesta para obligar
+      al navegador a hacer determinadas acciones, como saltar a otra URL. </p>
+           
+      <p>Veremos a continuación las cabeceras más comunes tanto en las
+      peticiones de los clientes como en las respuestas de los servidores. La <a href="#rfc">
+      RFC</a> donde se especifican estas cabeceras es la 2616. </p>
+           
+      <p><b>CABECERAS DE PETICION (HTTP/1.1)</b> </p>
+           
+      <table border="1" width="84%">
+        <tr>
+          <td width="27%" align="center"><b>NOMBRE</b></td>
+          <td width="73%" align="center"><b>DESCRIPCIÓN</b></td>
+        </tr>
+        <tr>
+          <td width="27%" align="center"><font face="Courier New">Accept</font></td>
+          <td width="73%">Tipos <a href="#mime"> MIME</a> que puede manejar el cliente</td>
+        </tr>
+        <tr>
+          <td width="27%" align="center"><font face="Courier New">Accept-Charset</font></td>
+          <td width="73%">Conjunto de caracteres que el cliente puede manejar</td>
+        </tr>
+        <tr>
+          <td width="27%" align="center"><font face="Courier New">Accept-Encoding</font></td>
+          <td width="73%">Define si el navegador puede aceptar datos codificados</td>
+        </tr>
+        <tr>
+          <td width="27%" align="center"><font face="Courier New">Accept-Language</font></td>
+          <td width="73%">Idiomas aceptados</td>
+        </tr>
+        <tr>
+          <td width="27%" align="center"><font face="Courier New">Authorization</font></td>
+          <td width="73%">Para identificarse cuando se accede a páginas
+            protegidas</td>
+        </tr>
+        <tr>
+          <td width="27%" align="center"><font face="Courier New">Cache-Control</font></td>
+          <td width="73%">Opciones relacionadas con el servidor proxy. Esta
+            cabecera se llamaba <i>Pragma</i> en HTTP 1.0</td>
+        </tr>
+        <tr>
+          <td width="27%" align="center"><font face="Courier New">Connection</font></td>
+          <td width="73%">Define si el cliente es capaz de realizar conexiones
+            persistentes (<i>keep-alive</i>, valor por defecto), o no (<i>close</i>).
+            Nueva en HTTP 1.1</td>
+        </tr>
+        <tr>
+          <td width="27%" align="center"><font face="Courier New">Content-Length</font></td>
+          <td width="73%">Longitud de los datos enviados. Aplicable a peticiones
+            POST</td>
+        </tr>
+        <tr>
+          <td width="27%" align="center"><font face="Courier New">Content-Type</font></td>
+          <td width="73%">Tipo <a href="#mime"> MIME</a> de los datos enviados. Aplicable a
+            peticiones POST</td>
+        </tr>
+        <tr>
+          <td width="27%" align="center"><font face="Courier New">Cookie</font></td>
+          <td width="73%">Para las cookies que se manejen</td>
+        </tr>
+        <tr>
+          <td width="27%" align="center"><font face="Courier New">From</font></td>
+          <td width="73%">Dirección de correo electrónico responsable de la
+            petición</td>
+        </tr>
+        <tr>
+          <td width="27%" align="center"><font face="Courier New">Host</font></td>
+          <td width="73%">Unica cabecera requerida por HTTP 1.1. Indica el host
+            y el puerto tal y como se especifica en la URL original.</td>
+        </tr>
+        <tr>
+          <td width="27%" align="center"><font face="Courier New">If-Modified-Since</font></td>
+          <td width="73%">El cliente sólo desea el documento si ha sido
+            modificado después de la fecha indicada en esta cabecera.</td>
+        </tr>
+        <tr>
+          <td width="27%" align="center"><font face="Courier New">Referer</font></td>
+          <td width="73%">URL origen de la petición. Si estamos en la página 1
+            y pinchamos en un enlace a la página 2, la URL de la página 1 se
+            incluye en esta cabecera cuando se realiza la petición de la
+            página 2.</td>
+        </tr>
+        <tr>
+          <td width="27%" align="center"><font face="Courier New">User-Agent</font></td>
+          <td width="73%">Cliente que está realizando la petición (normalmente
+            muestra datos del navegador, como nombre, etc).</td>
+        </tr>
+      </table>
+           
+      <p><b>CABECERAS DE RESPUESTA</b> </p>
+           
+      <table border="1" width="84%">
+        <tr>
+          <td width="27%" align="center"><b>NOMBRE</b></td>
+          <td width="73%" align="center"><b>DESCRIPCIÓN</b></td>
+        </tr>
+        <tr>
+          <td width="27%" align="center"><font face="Courier New">Allow</font></td>
+          <td width="73%">Métodos disponibles (GET, POST, etc) a los que puede
+            responder el recurso que se está solicitando</td>
+        </tr>
+        <tr>
+          <td width="27%" align="center"><font face="Courier New">Cache-Control</font></td>
+          <td width="73%">Dice al cliente en qué circunstancias puede hacer una
+            caché del documento que está sirviendo:
+            <ul>
+              <li><i>public</i>: el documento puede almacenarse en una caché</li>
+              <li><i>private</i>: el documento es para un solo usuario y sólo
+                puede almacenarse en una caché privada (no compartida)</li>
+              <li><i>no-cache</i>: el documento nunca debe ser almacenado en
+                caché</li>
+              <li><i>no-store</i>: el documento no debe almacenarse en caché ni
+                almacenarse localmente de forma temporal en el disco duro</li>
+              <li><i>must-revalidate</i>: el cliente debe revalidar la copia del
+                documento con el servidor original, no con servidores proxy
+                intermedios, cada vez que se use</li>
+              <li><i>max-age=xxx</i>: el documento debe considerarse caducado
+                después de <i>xxx</i> segundos.</li>
+            </ul>
+            <p>Esta cabecera se llamaba <i>Pragma</i> en HTTP 1.0</td>
+        </tr>
+        <tr>
+          <td width="27%" align="center"><font face="Courier New">Content-Encoding</font></td>
+          <td width="73%">Tipo de compresión (gzip, etc) en que se devuelve el
+            documento solicitado</td>
+        </tr>
+        <tr>
+          <td width="27%" align="center"><font face="Courier New">Content-Language</font></td>
+          <td width="73%">Idioma en que está escrito el documento. En la <a href="#rfc"> RFC</a>
+            1766 están los idiomas disponibles</td>
+        </tr>
+        <tr>
+          <td width="27%" align="center"><font face="Courier New">Content-Length</font></td>
+          <td width="73%">Número de bytes de la respuesta</td>
+        </tr>
+        <tr>
+          <td width="27%" align="center"><font face="Courier New">Content-MD5</font></td>
+          <td width="73%">Una forma de fijar el <i>checksum</i> (verificación
+            de integridad) del documento enviado</td>
+        </tr>
+        <tr>
+          <td width="27%" align="center"><font face="Courier New">Content-Type</font></td>
+          <td width="73%">Tipo <a href="#mime"> MIME</a> de la respuesta</td>
+        </tr>
+        <tr>
+          <td width="27%" align="center"><font face="Courier New">Date</font></td>
+          <td width="73%">Hora y fecha, en formato <a href="#gmt">GMT</a>, en que la respuesta ha
+            sido generada</td>
+        </tr>
+        <tr>
+          <td width="27%" align="center"><font face="Courier New">Expires</font></td>
+          <td width="73%">Hora y fecha, en formato <a href="#gmt">GMT</a>, en que la respuesta debe
+            considerarse caducada</td>
+        </tr>
+        <tr>
+          <td width="27%" align="center"><font face="Courier New">Last-Modified</font></td>
+          <td width="73%">Fecha en que el documento servido se modificó por
+            última vez. Con esto, el documento se sirve sólo si su <i>Last-Modified</i>
+            es mayor que la fecha indicada en el <i>If-Modified-Since</i> de la
+            cabecera del cliente.</td>
+        </tr>
+        <tr>
+          <td width="27%" align="center"><font face="Courier New">Location</font></td>
+          <td width="73%">Indica la nueva URL donde encontrar el documento. Debe
+            usarse con un código de estado de tipo 300. El navegador se
+            redirigirá automáticamente a la dirección indicada en esta
+            cabecera.</td>
+        </tr>
+        <tr>
+          <td width="27%" align="center"><font face="Courier New">Refresh</font></td>
+          <td width="73%">Indica al cliente que debe recargar la página
+            después de los segundos especificados. También puede indicarse la
+            dirección de la página a cargar después de los segundos
+            indicados:<pre class="codigo">Refresh: 5; URL=http://www.unapagina.com</pre>
+           
+          </td>
+        </tr>
+        <tr>
+          <td width="27%" align="center"><font face="Courier New">Set-Cookie</font></td>
+          <td width="73%">Especifica una cookie asociada a la página</td>
+        </tr>
+        <tr>
+          <td width="27%" align="center"><font face="Courier New">WWW-Authenticate</font></td>
+          <td width="73%"> tipo de autorización y dominio que
+          debería indicar el cliente en su cabecera <i>Authorization</i>.</td>
+        </tr>
+      </table>
+           
+      <p>Para colocar estas cabeceras en un documento se tienen varios
+      métodos, dependiendo de cómo estemos tratando las páginas (mediante
+      servlets, HTML, etc). Por ejemplo, con HTML podemos enviar cabeceras
+      mediante etiquetas META en la cabecera (&lt;HEAD&gt;) de la página HTML: </p>
+           
+      <pre class="codigo">&lt;META HTTP-EQUIV=&quot;Cabecera&quot; CONTENT=&quot;Valor&quot;&gt;</pre>
+           
+      <p>Por ejemplo: </p>
+           
+      <pre class="codigo">&lt;META HTTP-EQUIV=&quot;Location&quot; CONTENT=&quot;http://www.unapagina.com&quot;&gt;</pre>
+           
+      <h4>A.2.4. Códigos de estado HTTP</h4>
+           
+      <p>El código de estado que un servidor devuelve a un cliente en una
+      petición indica el resultado de dicha petición. Se tiene una
+      descripción completa de los mismos en el <a href="#rfc"> RFC</a> 2616. Están agrupados en 5
+      categorías:</p>
+      <ul>
+        <li><b>100 - 199</b>: códigos de información, indicando que el cliente
+          debe responder con alguna otra acción.</li>
+        <li><b>200 - 299</b>: códigos de aceptación de petición. Por ejemplo:</li>
+      </ul>
+
+	  <blockquote>           
+      <table border="1" width="80%" height="63">
+        <tr>
+          <td width="16%" align="center" height="1">200</td>
+          <td width="33%" align="left" height="1">OK</td>
+          <td width="50%" height="1">Todo está bien</td>
+        </tr>
+        <tr>
+          <td width="16%" align="center" height="19">204</td>
+          <td width="33%" align="left" height="19">No Content</td>
+          <td width="50%" height="19">No hay documento nuevo</td>
+        </tr>
+      </table>
+      </blockquote>
+      <ul>
+        <li><b>300 - 399</b>: códigos de redirección. Indican que el documento
+          solicitado ha sido movido a otra URL. Por ejemplo:</li>
+      </ul>
+      <blockquote>     
+      <table border="1" width="80%" height="193">
+        <tr>
+          <td width="16%" align="center" height="1">301</td>
+          <td width="33%" align="left" height="1">Moved Permanently</td>
+          <td width="50%" height="1">El documento está en otro lugar, indicado
+            en la cabecera <i>Location</i></td>
+        </tr>
+        <tr>
+          <td width="16%" align="center" height="36">302</td>
+          <td width="33%" align="left" height="36">Found</td>
+          <td width="50%" height="36">Como el anterior, pero la nueva URL es
+            temporal, no permanente.</td>
+        </tr>
+        <tr>
+          <td width="16%" align="center" height="19">304</td>
+          <td width="33%" align="left" height="19">Not Modified</td>
+          <td width="50%" height="19">El documento pedido no ha sufrido cambios
+            con respecto al actual (para cabeceras <i>If-Modified-Since</i>)</td>
+        </tr>
+      </table>
+      </blockquote>
+      <ul>
+        <li><b>400 - 499</b>: códigos de error del cliente. Por ejemplo:</li>
+      </ul>
+
+      <blockquote>     
+      <table border="1" width="80%" height="191">
+        <tr>
+          <td width="16%" align="center" height="1">400</td>
+          <td width="33%" align="left" height="1">Bad Request</td>
+          <td width="50%" height="1">Mala sintaxis en la petición</td>
+        </tr>
+        <tr>
+          <td width="16%" align="center" height="1">401</td>
+          <td width="33%" align="left" height="1">Unauthorized</td>
+          <td width="50%" height="1">El cliente no tiene permiso para acceder a
+            la página. Se debería devolver una cabecera <i>WWW-Authenticate</i>
+            para que el usuario introduzca login y password</td>
+        </tr>
+        <tr>
+          <td width="16%" align="center" height="18">403</td>
+          <td width="33%" align="left" height="18">Forbidden</td>
+          <td width="50%" height="18">El recurso no está disponible</td>
+        </tr>
+        <tr>
+          <td width="16%" align="center" height="18">404</td>
+          <td width="33%" align="left" height="18">Not Found</td>
+          <td width="50%" height="18">No se pudo encontrar el recurso</td>
+        </tr>
+        <tr>
+          <td width="16%" align="center" height="18">408</td>
+          <td width="33%" align="left" height="18">Request Timeout</td>
+          <td width="50%" height="18">El cliente tarda demasiado en enviar la
+            petición</td>
+        </tr>
+      </table>
+      </blockquote>
+      <ul>
+        <li><b>500 - 599</b>: códigos de error del servidor. Por ejemplo:</li>
+      </ul>
+
+      <blockquote>     
+      <table border="1" width="81%" height="136">
+        <tr>
+          <td width="16%" align="center" height="1">500</td>
+          <td width="33%" align="left" height="1">Internal Server Error</td>
+          <td width="50%" height="1">Error en el servidor</td>
+        </tr>
+        <tr>
+          <td width="16%" align="center" height="18">501</td>
+          <td width="33%" align="left" height="18">Not Implemented</td>
+          <td width="50%" height="18">El servidor no soporta la petición
+            realizada</td>
+        </tr>
+        <tr>
+          <td width="16%" align="center" height="1">504</td>
+          <td width="33%" align="left" height="1">Gateway Timeout</td>
+          <td width="50%" height="1">Usado por servidores que actúan como
+            proxies o gateways, indica que el servidor no obtuvo una respuesta a
+            tiempo de un servidor remoto</td>
+        </tr>
+      </table>
+      </blockquote>
+           
+      <h4>A.2.5. Cookies</h4>
+           
+      <p>Las <b>cookies</b>  son un mecanismo general mediante el que los
+      programas de un servidor web pueden almacenar
+      información en la parte del cliente de la conexión. Es una forma de
+      añadir estado a las conexiones HTTP, aunque el manejo de cookies no es
+      parte del protocolo HTTP, pero es soportado por la mayoría de los
+      clientes.</p>
+      <p>Las cookies son objetos de tipo:</p>
+<p align="center"><i>nombre = valor</i></p>
+<p>donde se asigna un <i>valor</i> determinado (una cadena de texto) a una
+variable del <i>nombre</i>  indicado. Dicho objeto es almacenado y recordado por
+el servidor web y el navegador durante un período de tiempo (indicado como un
+parámetro interno de la propia <i>cookie</i>). Así, se puede tener una lista
+de <i>cookies</i> con distintas variables y distintos valores, para almacenar
+información relevante para cada usuario (se tienen listas de cookies
+independientes para cada usuario).</p>
+      <p>El funcionamiento es: el servidor, con la cabecera <i>Set-Cookie</i>,
+      envía al cliente información de estado que éste almacenará. Entre la
+      información se encuentra la descripción de los rangos de URLs para los
+      que este estado es válido, de forma que para cualquier petición HTTP a
+      alguna de esas URLs el cliente incluirá esa información de estado,
+      utilizando la cabecera <i>Cookie</i>.</p>
+      <p>La sintaxis de la cabecera <i>Set-Cookie</i> es:</p>
+           
+      <pre class="codigo">Set-Cookie: CLAVE1=VALOR1;...;CLAVEN=VALORN [OPCIONES]</pre>
+           
+      <p>donde OPCIONES es una lista opcional con cualquiera de estos atributos:</p>
+      <pre class="codigo">expires=FECHA;path=PATH;domain=DOMINIO;secure</pre>
+           
+      <ul>
+        <li>Las parejas de <i>CLAVE</i> y <i>VALOR</i> representan la
+          información almacenada en la cookie</li>
+        <li>Los atributos <i>domain</i> y <i>path</i> definen las URL en las que
+          el navegador mostrará la cookie. <i>domain</i> es por defecto el <i>hostname
+          </i>del servidor. El navegador mostrará la cookie cuando acceda a una
+          URL que se empareje correctamente con ambos atributos. Por ejemplo, un
+          atributo <i>domain</i>= <i>&quot;eps.ua.es&quot;</i> hará que el
+          navegador muestra la cookie cuando acceda a cualquier URL terminada en
+          <i>&quot;eps.ua.es&quot;</i>. <i>path</i> funciona de forma similar,
+          pero con la parte del path de la URL. Por ejemplo, el path <i>&quot;/foo&quot;</i>
+          hará que el navegador muestre la cookie en todas las URLs que
+          comiencen por <i>&quot;/foo&quot;</i>.</li>
+        <li><i>expires</i>  define la fecha a partir de la cual la cookie caduca.
+          La fecha se indica en formato <a href="#gmt">GMT</a>, separando los elementos de la fecha
+          por guiones. Por ejemplo:</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo">expires=Wed, 09-Nov-1999 23:12:40 GMT</pre>
+           
+      </blockquote>
+      <ul>
+        <li><i>secure</i> hará que la cookie sólo se transmita si el canal de
+          comunicación es seguro (tipo de conexión HTTPS).</li>
+      </ul>
+      <p>Por otra parte, cuando el cliente solicita una URL que empareja con el
+      dominio y path de alguna cookie, envía la cabecera:</p>
+      <pre class="codigo">Cookie: CLAVE1=VALOR1;CLAVE2=VALOR2;...;CLAVEN=VALORN</pre>
+           
+      <p>El número máximo de cookies que está garantizado que acepte
+      cualquier navegador es de 300, con un máximo de 20 por cada servidor o
+      dominio. El tamaño máximo de una cookie es de 4096 bytes.</p>
+           
+      <h4>A.2.6. Algunas definiciones</h4>
+           
+      <p><b><a name="rfc"></a>RFC</b>: los documentos RFC (<i>Request For Comment</i>) forman un
+      conjunto de notas acerca de Internet. Tratan sobre diferentes aspectos de
+      la comunicación entre computadores. Podemos encontrar información sobre
+      todos los RFC en <i><a href="http://www.rfc-editor.org">http://www.rfc-editor.org</a></i>.
+      Si conocemos el número de RFC, normalmente podemos encontrar el documento
+      en <i>http://www.rfc-editor.org/rfc/rfcXXXX.txt </i>(sindo <i>XXXX</i> el
+      número de RFC).</p>
+           
+      <p><b><a name="mime"></a>MIME</b>: MIME (<i>Multipurpose Internet Mail Extensions</i>) es un
+      estándar oficial de Internet que indica cómo se deben formatear los
+      mensajes para que puedan intercambiarse entre diferentes sistemas de
+      correo electrónico. Permite incluir cualquier tipo de dato (texto, audio,
+      video, imágenes, etc). Las RFC que definen los tipos MIME son la 2045,
+      2046, 2047, 2048 y 2049. Algunos tipos comunes son:</p>
+           
+      <ul>
+        <li><i>application/msword</i>: documento de Microsoft Word</li>
+        <li><i>application/pdf</i>: documento PDF</li>
+        <li><i>application/postscript</i>: fichero postscript</li>
+        <li><i>application/x-gzip</i>: fichero comprimido gzip</li>
+        <li><i>application/x-java-archive</i>: fichero JAR</li>
+        <li><i>audio/midi</i>: fichero de sonido MIDI</li>
+        <li><i>text/html</i>: documento HTML</li>
+        <li><i>text/plain</i>: fichero de texto plano</li>
+        <li><i>image/gif</i>: imagen GIF</li>
+        <li>
+          <p align="left"><i>image/jpeg</i>: imagen JPEG</li>
+        <li>
+          <p align="left"><i>image/png</i>: imagen PNG</li>
+        <li>
+          <p align="left"><i>video/mpeg</i>: película MPEG</li>
+      </ul>
+           
+      <p><b><a name="gmt"></a>GMT</b>: el formato de fecha y hora GMT tiene la siguiente
+      estructura:</p>
+           
+      <pre class="codigo">Wdy, DD Mon YYYY HH:MM:SS GMT</pre>
+           
+      <p>donde:</p>
+           
+      <ul>
+        <li><i>Wdy</i> es el identificador de 3 caracteres del día de la semana
+          (<i>Sun, Sat, </i>etc)</li>
+        <li><i>DD</i> son los dos dígitos del día del mes (01, 23, 12, etc)</li>
+        <li><i>Mon</i> es el identificador de 3 caracteres del mes (<i>Feb, Mar,
+          </i>etc)</li>
+        <li><i>YYYY</i>: son los 4 dígitos del año</li>
+        <li>
+          <p align="left"><i>HH:MM:SS</i> indica la hora, minuto y segundo, en
+          formato de 24 horas (<i>01:02:33</i>, <i>21:15:58</i>, etc)</li>
+      </ul>
+      <p align="left">Esta representación está basada en las RFC 822, 1036 y
+      1123</p>
+           
+      <p align="left">&nbsp;</p>
+      <b>      
+<h2>A.3. Autentificaciones</h2>
+      </b>
+           
+      <p>Veremos ahora algunos mecanismos que pueden emplearse con HTTP para
+      autentificar (validar) al usuario que intenta acceder a un determinado
+      recurso. </p>
+           
+        <h4>A.3.1. Autentificaciones elementales</h4>
+           
+      <p>El protocolo HTTP incorpora un mecanismo
+      de autentificación básico (<b>basic</b>)<b> </b>basado en cabeceras de autentificación para
+      solicitar datos del usuario (el servidor) y para enviar los datos del
+      usuario (el cliente), de forma que comprobando la exactitud de los datos
+      se permitirá o no al usuario acceder a los recursos. Esta autentificación no proporciona
+      confidencialidad ni integridad, sólo se emplea una codificación Base64. </p>
+           
+      <p>Una variante de esto es la autentificación <b>digest</b>, donde, en
+      lugar de transmitir el password por la red, se emplea un password
+      codificado. Dicha codificación se realiza tomando el login, password, URI,
+      método HTTP y un valor generado aleatoriamente, y todo ello se combina
+      utilizando el método de encriptado MD5, muy seguro. De este modo, ambas
+      partes de la comunicación conocen el password, y a partir de él pueden
+      comprobar si los datos enviados son correctos. Sin embargo, algunos
+      servidores no soportan este tipo de autentificación. </p>
+           
+        <h4>A.3.2. Certificados digitales y SSL</h4>
+           
+      <p>Las aplicaciones reales pueden requerir un nivel de seguridad mayor que
+      el proporcionado por las autentificaciones <i>basic</i> o <i>digest</i>.
+      También pueden requerir confidencialidad e integridad aseguradas. Todo
+      esto se consigue mediante los <b>certificados digitales</b>. </p>
+           
+      <blockquote>
+        <h4>A.3.2.1. Criptografía de clave pública</h4>
+           
+        <p>La clave de los certificados digitales reside en la <b>criptografía de clave pública</b>, mediante
+      la cual cada participante en el proceso tiene dos claves, que le permiten
+      encriptar y desencriptar la información. Una es la clave pública, que se
+      distribuye libremente. La otra es la clave privada, que se mantiene
+      secreta. Este par de claves es asimétrico, es decir, una clave sirve para
+        desencriptar algo codificado con la otra. Por ejemplo, supongamos que A quiere enviar datos encriptados a
+      B. Para ello, hay dos posibilidades: </p>
+           
+        <ul>
+          <li>A toma la clave pública de B, codifica con ella los datos y
+      se los envía. Luego B utiliza su clave privada (que sólo él conoce)
+            para desencriptar los datos.</li>
+          <li>A toma su clave privada, codifica los datos y se los envía a B,
+            que toma la clave pública de A para descodificarlos. Con esto, B
+            sabe que A es el remitente de los datos.</li>
+        </ul>
+        <p>El encriptado con clave pública se basa normalmente en el algoritmo
+        RSA, que emplea números primos grandes para obtener un par de claves
+      asimétricas. Las claves pueden darse con varias longitudes; así, son comunes claves de
+      1024 o 2048 bits.&nbsp; </p>
+           
+        <h4>A.3.2.2. Certificados digitales</h4>
+           
+        <p> Lógicamente, no es práctico teclear las claves del sistema de
+        clave pública, pues son muy largas. Lo que se hace en su lugar es almacenar estas claves en
+      disco en forma de <b>certificados digitales</b>. Estos certificados pueden cargarse por muchas
+      aplicaciones (servidores web, navegadores, gestores de correo, etc). </p>
+           
+        <p>Notar que con este sistema se garantiza la <b>confidencialidad</b>
+      (porque los datos van encriptados), y la <b>integridad</b> (porque si los
+      datos se desencriptan bien, indica que son correctos). Sin embargo, no
+      proporciona <b>autentificación</b> (B no sabe que los datos se los ha
+      enviado A), a menos que A utilice su clave privada para encriptar los datos,
+      y luego B utilice la clave pública de A para desencriptarlos. Así, B
+      descodifica primero el mensaje con su clave privada, y luego con la
+      pública de A. Si el proceso tiene éxito, los datos se sabe que han sido
+      enviados por A, porque sólo A conoce su clave privada. </p>
+           
+        <h4>A.3.2.3. SSL</h4>
+           
+      <p><b>SSL</b> (<i>Secure Socket Layer</i>) es una capa situada entre el
+      protocolo a nivel de aplicación (HTTP, en este caso) y el protocolo a
+      nivel de transporte (TCP/IP). Se encarga de gestionar la seguridad
+      mediante criptografía de clave pública que encripta la comunicación
+      entre cliente y servidor. La versión 2.0 de SSL (la primera mundialmente
+      aceptada), proporciona autentificación en la parte del servidor,
+      confidencialidad e integridad. Funciona como sigue: </p>
+           
+      <ul>
+        <li>Un cliente se conecta a un lugar seguro utilizando el protocolo
+          HTTPS (HTTP + SSL). Podemos detectar estos sitios porque las URLs
+          comienzan con <i>https://</i></li>
+        <li>El servidor envía su clave pública al cliente.</li>
+        <li>El navegador comprueba si la clave está firmada por un certificado
+          de confianza. Si no es así, pregunta al cliente si quiere confiar en
+          la clave proporcionada.</li>
+      </ul>
+           
+      <p>SSL 3.0 proporciona también soporte para certificados y
+      autentificación del cliente. Funcionan de la misma forma que los
+      explicados para el servidor, pero residiendo en el cliente. </p>
+           
+      <p>&nbsp; </p>
+           
+      </blockquote>
+      <b>      
+<h2>A.4. Aplicaciones Web</h2>
+      </b>
+           
+      <p>Hemos visto el protocolo HTTP, pero no cómo utilizarlo para
+      implementar una aplicación. </p>
+           
+      <h4>A.4.1. Aplicaciones en el lado del servidor</h4>
+           
+      <p>En el lado del servidor, tenemos que conseguir que nuestro servidor
+      HTTP sea capaz de ejecutar programas de aplicación que recojan los
+      parámetros de peticiones del cliente, los procesen y devuelvan al
+      servidor un documento que éste pasará a su vez al cliente.</p>
+      <p>Así, para el cliente el servidor no habrá hecho nada distinto a lo
+      estipulado en el protocolo HTTP, pero el servidor podrá valerse de
+      herramientas externas para procesar y servir la petición solicitada,
+      pudiendo así no limitarse a servir páginas estáticas, sino utilizar
+      otras aplicaciones (servlets, JSP, PHP, etc) para servir documentos con
+      contenido dinámico.</p>
+      <p>Los programas de aplicación son típicamente programas que realizan
+      consultas a bases de datos, procesan la información resultante y
+      devuelven la salida al servidor, entre otras tareas.</p>
+      <h4>A.4.2. Aplicaciones en el lado del cliente</h4>
+           
+      <p>Se tienen muchas tecnologías relacionadas con extensiones del lado del
+      cliente (entendiendo cliente como un navegador que interpreta código HTML).
+      El código HTML es un código estático que sólo permite formatear la
+      apariencia de una página y definir enlaces a otras páginas o URLs. Esto
+      no es suficiente si queremos que el navegador realice funciones más
+      complicadas: validar entradas de formularios, mostrar la evolución del
+      precio de unas acciones, etc.</p>
+      <p>Para ampliar las funcionalidades del navegador (respetando el protocolo
+      HTTP), se utilizan tecnologías como JavaScript, Applets, Flash, etc.
+      Estas se basan en hacer que el navegador ejecute código que le pasa el
+      servidor, bien embebido en documentos HTML (como es el caso de JavaScript),
+      o bien mediante ficheros compilados multiplataforma (como es el caso de
+      los Applets Java o los ficheros Flash).</p>
+      <p>&nbsp;</p>
+           
+      <b>      
+<h2>A.5. Ejemplos</h2>
+      </b>
+           
+      <p>Como ejercicio acerca del protocolo HTTP, practicaremos con unos
+      comandos HTTP y veremos la forma de trabajar del protocolo. Nos vamos a
+      basar para ello en algunas herramientas: </p>
+           
+      <h4>A.5.1. Ejemplo de cliente y servidor HTTP</h4>
+           
+      <p>En este <a href="ejemplos/anexos/pruebaHTTP.zip"> ZIP</a> tenéis disponible un ejemplo de funcionamiento de cliente
+      y servidor HTTP. El ZIP tiene 4 clases Java: </p>
+           
+      <ul>
+        <li><b>CliHTTP</b>: proporciona métodos para un cliente HTTP básico,
+          que se conecta a un servidor, le envía peticiones y recibe
+          respuestas.</li>
+        <li><b>ClienteHTTP</b>: es la parte gráfica del programa cliente.
+          Utiliza un objeto <i>CliHTTP</i> para las tareas de comunicación con
+          el servidor, y luego muestra los resultados en un<i> JFrame</i>.</li>
+        <li><b>ServHTTP</b>: proporciona métodos para un servidor HTTP básico,
+          que recibe peticiones de los clientes y les envía las respuestas</li>
+        <li><b>ServidorHTTP</b>: es la parte gráfica del programa cliente.
+          Utiliza un objeto <i>ServHTTP</i> para las tareas de comunicación con
+          los clientes, y luego muestra los resultados en un <i>JFrame</i>.</li>
+      </ul>
+      <p>Para probar esta utilidad, primero debemos colocarnos en el directorio
+      donde están, y compilarlas. Luego las probamos siguiendo los pasos: </p>
+           
+      <p><b>1. El servidor</b> </p>
+           
+      <p>Para ejecutar el servidor, escribimos: </p>
+           
+      <pre class="codigo">java ServidorHTTP</pre>
+           
+      <p>Aparecerá una ventana como la siguiente: </p>
+           
+      <div align="center">
+      <img border="0" src="imagenes/auxiliar/servHTTP.jpg" width="508" height="380">
+      </div>
+	   <p class="caption">Figura 1. Ejemplo de aplicación servidor HTTP</p>           
+           
+      <p>En el cuadro superior indicamos el puerto por el que escuchará las
+      peticiones de los clientes. Luego, pulsando en <i>Esperar Petición</i> se
+      quedará a la espera de que algún cliente el envíe alguna petición </p>
+           
+      <p><b>2. El cliente</b> </p>
+           
+      <p>Para ejecutar el cliente, escribimos: </p>
+           
+      <pre class="codigo">java ClienteHTTP</pre>
+           
+      <p>Aparecerá una ventana como la siguiente: </p>
+           
+      <div align="center">
+      <img border="0" src="imagenes/auxiliar/cliHTTP.jpg" width="508" height="380">
+      </div>
+	   <p class="caption">Figura 2. Ejemplo de aplicación cliente HTTP</p>           
+           
+      <p>En los cuadros superiores indicamos la dirección del servidor al que
+      nos conectamos (<i>127.0.0.1, </i>por ejemplo), y el puerto por el que
+      dicho servidor está esperando peticiones (por defecto es el 80). Pulsando
+      el botón de <i>Conectar</i> nos conectaremos con el servidor. </p>
+           
+      <p align="center">En el cuadro de petición del cliente escribimos el
+      comando HTTP que le queremos enviar al servidor. Por ejemplo: </p>
+           
+      <pre class="codigo">GET / HTTP/1.1
+Host:127.0.0.1
+&lt;2 veces Intro para el salto de linea tras las cabeceras&gt;</pre>
+           
+      <p align="center">Luego, pulsando en <i>Enviar</i> se quedará a la espera
+      de que el servidor le envíe la respuesta. </p>
+           
+      <p><b>3. Ultimos pasos</b> </p>
+           
+      <p>Tras enviar el cliente la petición, en el cuadro <i>Petición del
+      cliente</i> del programa servidor nos aparecerá esa misma petición. </p>
+           
+      <p>Ahora, el servidor debe responder. Para ello, en el cuadro <i>Respuesta
+      del servidor </i>(dentro de la aplicación servidor) escribimos algo como: </p>
+           
+      <pre class="codigo">HTTP/1.1 200 OK
+&lt;2 veces Intro para el salto de linea tras las cabeceras&gt;</pre>
+           
+      <p>Pulsando el botón de <i>Enviar</i> en el servidor se enviará esta
+      respuesta, que aparecerá en el cuadro <i>Respuesta del servidor</i> de la
+      aplicación cliente. </p>
+           
+      <p><b>4. Conexión con un servidor real</b> </p>
+           
+      <p>Podemos utilizar la aplicación cliente para conectar con un servidor
+      real y ver lo que devuelve. Para ello, por ejemplo ponemos como host: </p>
+           
+      <pre class="codigo">www.ua.es</pre>
+           
+      <p>Luego le damos al botón de <i>Conectar</i>, y en el cuadro de <i>Petición
+      del cliente</i> escribimos: </p>
+           
+      <pre class="codigo">GET / HTTP/1.1
+Host:www.ua.es
+&lt;2 veces Intro para el salto de linea tras las cabeceras&gt;</pre>
+           
+      <p>Y el servidor nos devolverá algo como: </p>
+           
+      <pre class="codigo">HTTP/1.1 200 OK
+Age:965
+Date: Thu,24 Oct 2002 20:52:13 GMT
+Content-Length:2657
+Content-Type=text/html
+...
+
+&lt;!DOCTYPE...&gt;
+...</pre>
+           
+      <h4>A.5.2. Otra utilidad: WebClient</h4>
+           
+      <p>En este <a href="ejemplos/anexos/WebClient.zip"> ZIP</a> tenéis otra utilidad para poder probar el protocolo HTTP.
+      Se trata de la herramienta <i>WebClient</i>, desarrollada por el autor del
+      libro <i>Core Servlets And JavaServer Pages</i>, para probar sus ejemplos.
+      Es un fichero JAR que simula un cliente HTTP (el servidor al que conectar
+      será cualquier servidor que se tenga disponible: el de nuestra máquina,
+      o uno remoto). </p>
+           
+      <p>Se ejecuta con: </p>
+           
+      <pre class="codigo">java -jar WebClient.jar</pre>
+           
+      <p>Aparece luego una ventana como esta: </p>
+           
+      <div align="center">
+      <img border="0" src="imagenes/auxiliar/webclient.jpg" width="506" height="446">
+      </div>
+	   <p class="caption">Figura 3. WebClient</p>           
+           
+      <p>En ella pondremos: </p>
+           
+      <ul>
+        <li>El servidor al que conectarnos (por ejemplo, <i>www.ua.es</i>)</li>
+        <li>El puerto por el que escucha el servidor (por defecto, 80)</li>
+        <li>El comando que se le envía. Por ejemplo:</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo">GET / HTTP/1.1</pre>
+           
+      </blockquote>
+      <ul>
+        <li>Las cabeceras e información adicional después del comando.&nbsp;</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo">Host:www.ua.es</pre>
+           
+      </blockquote>
+      <p>Tras enviar los datos de la petición, nos aparece abajo la respuesta
+      del servidor (la misma que con la aplicación anterior): </p>
+           
+      <pre class="codigo">HTTP/1.1 200 OK
+Age:965
+Date: Thu,24 Oct 2002 20:52:13 GMT
+Content-Length:2657
+Content-Type=text/html
+...
+
+&lt;!DOCTYPE...&gt;
+...</pre>
+           
+      <h4>A.5.3. Clientes más sofisticados: navegadores</h4>
+           
+      <p>El funcionamiento visto con los ejemplos de clientes HTTP anteriores es
+      el mismo que el que emplean los navegadores, sólo que ellos permiten
+      configurar las cabeceras de otra forma, y no presentan la respuesta del
+      servidor como texto plano, sino que dan formato al documento enviado. </p>
+           
+        </body>
+        </html>

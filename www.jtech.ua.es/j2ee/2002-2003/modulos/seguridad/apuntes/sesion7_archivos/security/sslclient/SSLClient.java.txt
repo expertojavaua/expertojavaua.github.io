@@ -1,0 +1,286 @@
+package examples.security.sslclient;
+
+import java.io.File;
+import java.net.URL;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.util.Hashtable;
+import java.security.Provider;
+
+import javax.naming.NamingException;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.servlet.ServletOutputStream;
+
+//import com.sun.net.ssl.internal.www.protocol.https.*;
+//import com.sun.net.ssl.*;
+
+import weblogic.net.http.*;
+import weblogic.jndi.Environment;
+
+/** SSLClient is a short example of how to use the SSL library of WebLogic
+ *   to make outgoing SSL connections. It shows both how to do this from
+ *   a stand-alone application as well as from within WebLogic (in a Servlet).
+ *   <p>
+ *   Be carefull to notice that the WebLogic Server, when making an
+ *    outgoing SSL connection, will use that instance of the server's
+ *    certificate. When communicating to either the same or another
+ *    WebLogic Server with two-way SSL, the originating server's
+ *    certificate will be verified against the client root CA list in
+ *    the receiving WebLogic Server.
+ *
+ * @author Copyright (c) 1999-2002 by BEA Systems, Inc. All Rights Reserved.
+ */
+
+public class SSLClient {
+
+  public void SSLClient() {}
+
+  public static void main (String [] argv)
+    throws IOException {
+    if ((!((argv.length == 4) || (argv.length == 5))) ||
+        (!((argv[0].equals("wls") || argv[0].equals("jsse"))))
+        ) {
+      System.out.println("usage:   java SSLClient jsse|wls host port sslport <query>");
+      System.out.println("example: java SSLClient wls server2.weblogic.com 80 443 /examplesWebApp/SnoopServlet.jsp");
+      System.exit(-1);
+    }
+
+    try {
+
+      System.out.println("----");
+
+      if (argv.length == 5) {
+        if (argv[0].equals("wls"))
+          wlsURLConnect(argv[1], argv[2], argv[3], argv[4], System.out);
+        else
+          jsseURLConnect(argv[1], argv[2], argv[3], argv[4], System.out);
+      } else {  // for null query, default page returned...
+        if (argv[0].equals("wls"))
+          wlsURLConnect(argv[1], argv[2], argv[3], null, System.out);
+        else
+          jsseURLConnect(argv[1], argv[2], argv[3], null, System.out);
+      }
+
+      System.out.println("----");
+
+    } catch (Exception e) {
+      e.printStackTrace();
+      printSecurityProviders(System.out);
+      System.out.println("----");
+    }
+
+  }
+
+  private static void printOut(String outstr, OutputStream stream) {
+    if (stream instanceof PrintStream) {
+      ((PrintStream)stream).print(outstr);
+      return;
+    } else if (stream instanceof ServletOutputStream) {
+      try {
+        ((ServletOutputStream)stream).print(outstr);
+        return;
+      } catch (IOException ioe) {
+        System.out.println(" IOException: "+ioe.getMessage());
+      }
+    }
+    System.out.print(outstr);
+
+  }
+
+  private static void printSecurityProviders(OutputStream stream) {
+    StringBuffer outstr = new StringBuffer();
+    outstr.append(" JDK Protocol Handlers and Security Providers:\n");
+    outstr.append("   java.protocol.handler.pkgs - ");
+    outstr.append(System.getProperties().getProperty("java.protocol.handler.pkgs"));
+    outstr.append("\n");
+    Provider[] provs = java.security.Security.getProviders();
+    for (int i=0; i<provs.length; i++)
+        outstr.append("   provider[" + i + "] - " + provs[i].getName() +
+                      " - " + provs[i].getInfo() + "\n");
+    outstr.append("\n");
+    printOut(outstr.toString(), stream);
+  }
+
+  private static void tryConnection(java.net.HttpURLConnection connection,
+                                    OutputStream stream)
+    throws IOException {
+      connection.connect();
+
+      String responseStr = "\t\t" +
+                           connection.getResponseCode() + " -- " +
+                           connection.getResponseMessage() + "\n\t\t" +
+                           connection.getContent().getClass().getName() + "\n";
+
+      connection.disconnect();
+
+      printOut(responseStr, stream);
+  }
+
+  /**
+   * This method contains an example of how to use the URL and
+   *  URLConnection objects to create a new SSL connection, using
+   *  JSSE SSL client classes.
+   *
+   * This method is commented out for compilation without the JSSE
+   *  classes. To observe JSSE in action, see intructions in package.html.
+   */
+  public static void jsseURLConnect(String host, String port,
+                                    String sport, String query,
+                                    OutputStream out) {
+    /*
+    try {
+
+      if (query == null)
+        query = "/examplesWebApp/index.jsp";
+
+      String handlers = System.getProperty("java.protocol.handler.pkgs");
+      System.setProperty("java.protocol.handler.pkgs",
+                          "com.sun.net.ssl.internal.www.protocol|" + handlers);
+      java.security.Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
+      printSecurityProviders(out);
+
+      printOut(" Trying a new HTTP connection using JDK client classes - \n\thttp://" +
+               host + ":" + port + query + "\n", out);
+      URL url = null;
+      try {
+        url = new URL( "http", host, Integer.valueOf(port).intValue(), query);
+        java.net.HttpURLConnection connection =
+          (java.net.HttpURLConnection) url.openConnection();
+        tryConnection(connection, out);
+      } catch (Exception e) {
+        printOut(e.getMessage(), out);
+        e.printStackTrace();
+        printSecurityProviders(System.out);
+        System.out.println("----");
+      }
+
+
+      printOut(" Trying a new HTTPS connection using JDK client classes - \n\thttps://" +
+               host + ":" + sport + query +"\n", out);
+      URL jsseUrl = new URL( "https", host, Integer.valueOf(sport).intValue(), query,
+      						new com.sun.net.ssl.internal.www.protocol.https.Handler() );
+      java.net.HttpURLConnection sconnection =
+        (java.net.HttpURLConnection) jsseUrl.openConnection();
+
+      /* Uncomment this and the inner class at the bottom of the file to observe
+         how the HostnameVerifier works with JSSE.
+      *//*
+      if (sconnection instanceof com.sun.net.ssl.HttpsURLConnection)
+        ((com.sun.net.ssl.HttpsURLConnection)sconnection)
+          .setHostnameVerifier(new NullHostnameVerifier());
+      *//*
+      printOut("\t using a "+sconnection.getClass().getName() + "\n", out);
+      tryConnection(sconnection, out);
+
+    } catch (IOException ioe) {
+      ioe.printStackTrace();
+      printOut(ioe.getMessage(), out);
+    }
+    // end of jsseURLConnect method */
+  }
+
+
+  /*
+   * This method contains an example of how to use the URL and
+   *  URLConnection objects to create a new SSL connection, using
+   *  WebLogic SSL client classes.
+   */
+  public static void wlsURLConnect(String host, String port,
+                                   String sport, String query,
+                                   OutputStream out) {
+    try {
+
+      if (query == null)
+        query = "/examplesWebApp/index.jsp";
+
+      // The following protocol registeration is taken care of in the
+      //  normal startup sequence of WebLogic. It can be turned off
+      //  using the console SSL panel.
+      //
+      // We duplicate it here as a proof of concept in a stand alone
+      //  java application. Using the URL object for a new connection
+      //  inside of WebLogic would work as expected.
+      java.util.Properties p = System.getProperties();
+      String s = p.getProperty("java.protocol.handler.pkgs");
+      if (s == null) {
+        s = "weblogic.net";
+      } else if (s.indexOf("weblogic.net") == -1) {
+        s += "|weblogic.net";
+      }
+      p.put("java.protocol.handler.pkgs", s);
+      System.setProperties(p);
+      printSecurityProviders(out);
+      // end of protocol registration
+
+
+      printOut(" Trying a new HTTP connection using WLS client classes - \n\thttp://" +
+               host + ":" + port + query + "\n", out);
+      URL wlsUrl = null;
+      try {
+        wlsUrl = new URL("http", host, Integer.valueOf(port).intValue(), query);
+        weblogic.net.http.HttpURLConnection connection =
+          new weblogic.net.http.HttpURLConnection(wlsUrl);
+        tryConnection(connection, out);
+      } catch (Exception e) {
+        printOut(e.getMessage(), out);
+        e.printStackTrace();
+        printSecurityProviders(System.out);
+        System.out.println("----");
+      }
+
+      printOut(" Trying a new HTTPS connection using WLS client classes - \n\thttps://" +
+               host + ":" + sport + query + "\n", out);
+      wlsUrl = new URL("https", host, Integer.valueOf(sport).intValue(), query);
+      weblogic.net.http.HttpsURLConnection sconnection =
+        new weblogic.net.http.HttpsURLConnection(wlsUrl);
+
+      // Only when one has a two-way SSL connection, i.e. ClientCertificateEnforced is selected
+      // in the server under the SSL tab, the following private key and the client cert chain is used.
+
+
+      File ClientKeyFile  = new File ("clientkey.pem");
+      File ClientCertsFile  = new File ("client2certs.pem");
+      if (!ClientKeyFile.exists() || !ClientCertsFile.exists())
+	{
+	   System.out.println("Error : clientkey.pem/client2certs.pem is not present in this directory.");
+	   System.out.println("To create it run - ant createmycerts.");
+	   System.exit(0);
+	}
+
+      InputStream [] ins = new InputStream[2];
+      ins[0] = new FileInputStream("client2certs.pem");
+      ins[1] = new FileInputStream("clientkey.pem");
+      String pwd = "clientkey";
+      sconnection.loadLocalIdentity(ins[0], ins[1], pwd.toCharArray());
+
+
+      tryConnection(sconnection, out);
+
+    } catch (Exception ioe) {
+      printOut(ioe.getMessage(), out);
+      ioe.printStackTrace();
+    }
+  }
+
+  /* This inner class is a null version which always returns true when checking
+      the server certificate SubectDN CommonName against the hostname of the
+      server we're connecting to. Uncomment this class and the registration of
+      this class in JSSE (also commented out above in the jsseURLConnect method)
+      to observe how it works.
+  *//*
+  static class NullHostnameVerifier implements com.sun.net.ssl.HostnameVerifier {
+    public boolean verify(String urlHostname,
+                          String certHostname) {
+      return true;
+    }
+    }*/
+
+}
+
+
+
+

@@ -1,0 +1,113 @@
+import java.io.*;
+import java.security.*;
+import java.security.cert.*;
+import java.util.*;
+import sun.security.x509.X509CertImpl;
+import sun.security.x509.X509CertInfo;
+import sun.security.x509.X500Name;
+import sun.security.x509.AlgorithmId;
+import sun.security.x509.CertificateIssuerName;
+import sun.security.x509.CertificateSubjectName;
+import sun.security.x509.CertificateValidity;
+import sun.security.x509.CertificateSerialNumber;
+import sun.security.x509.CertificateAlgorithmId;
+
+public class FirmarCertificado {
+
+	// Algoritmo usado para firmar el certificado
+	private static final String ALG = "MD5WithRSA";
+
+	// Validez del certificado en dias
+	private static final int VALIDEZ = 365;
+
+
+	public static void main (String[] args) throws Exception {
+
+		if (args.length != 4) {
+			System.err.println(
+				"Uso: java FirmarCertificado keystore aliasCA aliasCert aliasNuevo");
+			System.exit(1);
+		}
+
+		String fich_keystore = args[0];
+		String aliasCA = args[1];
+		String aliasCert = args[2];
+		String aliasNuevo = args[3];
+
+		// Obtener los passwords
+		BufferedReader in = new BufferedReader
+		(new InputStreamReader(System.in));
+		System.out.print("Password del keystore: ");
+		char[] password = in.readLine().toCharArray();
+		System.out.print("Password de la CA (" + aliasCA + "): ");
+		char[] passwordCA = in.readLine().toCharArray();
+		System.out.print("Password del certificado (" + aliasCert + "): ");
+		char[] passwordCert = in.readLine().toCharArray();
+
+		// Leer el keystore
+		FileInputStream input = new FileInputStream(fich_keystore);
+		KeyStore keystore = KeyStore.getInstance("JKS");
+		keystore.load(input, password);
+		input.close();
+
+		// 1. Leer la clave privada y el certificado de la CA
+		PrivateKey clavePrivadaCA = (PrivateKey)keystore.getKey(aliasCA, passwordCA);
+		java.security.cert.Certificate certificadoCA = keystore.getCertificate(aliasCA);
+
+		// 2. Crear una implementación X.509 para el certificado del CA
+		byte[] codificado = certificadoCA.getEncoded();
+		X509CertImpl implementacionCA = new X509CertImpl(codificado);
+		X509CertInfo infoCA = (X509CertInfo)implementacionCA.get
+			(X509CertImpl.NAME + "." + X509CertImpl.INFO);
+
+		X500Name emisorCA = (X500Name)infoCA.get
+			(X509CertInfo.SUBJECT + "." + CertificateIssuerName.DN_NAME);
+
+		// 3. Leer  la clave privada y el certificado a firmar
+		java.security.cert.Certificate cert = keystore.getCertificate(aliasCert);
+		PrivateKey clavePrivada = (PrivateKey)keystore.getKey(aliasCert, passwordCert);
+
+		// 4. Crear de nuevo otra implementación X.509 para el certificado a firmar como CA
+		codificado = cert.getEncoded();
+		X509CertImpl implementacionCert = new X509CertImpl(codificado);
+		X509CertInfo infoCert = (X509CertInfo)implementacionCert.get
+			(X509CertImpl.NAME + "." + X509CertImpl.INFO);
+
+		// 5. Especificar y almacenar el período de validez
+		Date inicio = new Date();
+		Date fin = new Date(inicio.getTime() + VALIDEZ*24*60*60*1000L);
+		CertificateValidity intervalo = new CertificateValidity(inicio, fin);
+
+		infoCert.set(X509CertInfo.VALIDITY, intervalo);
+
+		// 6. Crear y almacenar un número de serie
+		infoCert.set(X509CertInfo.SERIAL_NUMBER,
+			new CertificateSerialNumber((int)(inicio.getTime()/1000)));
+
+		// 7. Poner como emisor a la CA
+		infoCert.set(X509CertInfo.ISSUER +
+			"." + CertificateSubjectName.DN_NAME, emisorCA);
+
+		// 8. Fijar el algoritmo
+		AlgorithmId algoritmo = new AlgorithmId(AlgorithmId.md5WithRSAEncryption_oid);
+		infoCert.set(CertificateAlgorithmId.NAME + "." +
+			CertificateAlgorithmId.ALGORITHM, algoritmo);
+
+		// 9. Crear el nuevo certificado a partir del info
+		X509CertImpl nuevoCert = new X509CertImpl(infoCert);
+
+		// 10. Firmar el nuevo certificado que acabamos de crear
+		nuevoCert.sign(clavePrivadaCA, ALG);
+
+		// 11. Almacenar en el keystore
+		keystore.setKeyEntry(aliasNuevo, clavePrivada, passwordCert,
+			new java.security.cert.Certificate[] { nuevoCert } );
+
+		// 12. Almacenar el keystore en el fichero
+		FileOutputStream output = new FileOutputStream(fich_keystore);
+		keystore.store(output, password);
+		output.close();
+
+	}
+}
+

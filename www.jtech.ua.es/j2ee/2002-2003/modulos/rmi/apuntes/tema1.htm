@@ -1,0 +1,284 @@
+<html>
+<head>
+<title>Tema 1: Arquitectura RMI</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<h1><span class="section">1. Arquitectura RMI</span> </h1>
+<p>RMI (<i>Remote Method Invocation</i>) es un mecanismo que permite realizar 
+  llamadas a m&eacute;todos de objetos remotos situados en distintas (o la misma) 
+  m&aacute;quinas virtuales Java, compartiendo as&iacute; recursos y carga de 
+  procesamiento a trav&eacute;s de varios sistemas.</p>
+<p>RMI permite exportar objetos como objetos remotos para que otro proceso remoto 
+  pueda acceder directamente como un objeto Java. Todos los objetos de una apliaci&oacute;n 
+  distribuida basada en RMI deben ser implementados en Java. Esta es una de las 
+  principales ventajas de RMI, ya que RMI forma parte del API de Java, con lo 
+  que la integraci&oacute;n de objetos remotos en aplicaciones distribuidas se 
+  realiza sin necesidad de usar recursos adicionales (como por ejemplo un lenguaje 
+  de descripci&oacute;n de interfaces o IDL). De hecho, se utiliza la misma sintasis 
+  para una llamada a un objeto remoto o un objeto local. 
+<p>La Figura 1.1 ilustra los componentes implicados en un sistema RMI: un interfaz 
+  remoto, un cliente, y uno o m&aacute;s servidores (objetos remotos) residentes 
+  en un host.</p>
+<center>
+  <img border="0" src="Fig1-1.gif"> 
+</center>
+<p class="caption">Figura 1.1. Componentes de un sistema RMI.</p>
+
+<p>El cliente invoca a los objetos remotos mediante la interfaz remota. Un <b>servicio 
+  de nombres</b> (registro RMI) reside en el <i>host</i> proporcionando el mecanismo 
+  que el cliente usa para encontrar uno m&aacute;s servidores iniciales RMI. </p>
+<p>La interacci&oacute;n con el objeto remoto se lleva a cabo a trav&eacute;s 
+  de la <b>interfaz remota</b>. Esencialmente, &eacute;sta describe los m&eacute;todos 
+  que pueden ser invocados de forma remota, y que el objeto remoto implementa. 
+  Cuando se obtiene una referencia a un objeto remoto, el objeto no se env&iacute;a 
+  a trav&eacute;s de la red al cliente que lo solicita. En su lugar se genera 
+  un objeto <i>proxy</i> o <i>stub</i> que consituye el <i>proxy</i> de la parte 
+  del cliente del objeto remoto. Todas las interacciones del cliente se realizar&aacute;n 
+  con esta clase <i>stub</i>, la cual es responsable de gestionar los datos entre 
+  el sistema local y el remoto. Muchos clientes pueden tener referencias a un 
+  &uacute;nico objeto remoto. Cada cliente tiene su propio objeto <i>stub</i> 
+  que representa al objeto remoto, pero dicho objeto remoto NO se replica.</p>
+<p>En la parte del servidor, una clase <i>skeleton</i> es la responsable de gestionar 
+  las llamadas al m&eacute;todo y los datos enviados al objeto real referenciado. 
+  &Eacute;ste es el <i>proxy</i> de la parte del servidor para el objeto remoto. 
+  El sistema completo puede verse como un modelo de cuatro capas, tal y como se 
+  ilustra en la Figura 1.2.</p>
+  <center>
+  <img border="0" src="Fig1-2.gif"> 
+</center>
+<p class="caption">Figura 1.2. Arquitectura RMI: modelo de cuatro capas.</p>
+<p>La primera capa es la de <b>aplicaci&oacute;n</b>, y se corresponde con la 
+  implementaci&oacute;n real de las aplicaciones cliente y servidor. Aqu&iacute; 
+  tienen lugar las llamadas a alto nivel para acceder y exportar objetos remotos. 
+  Cualquier aplicaci&oacute;n que quiera que sus m&eacute;todos est&eacute;n disponibles 
+  para su acceso por clientes remotos debe declarar dichos m&eacute;todos en una 
+  interfaz que extienda <code>java.rmi.Remote</code>. Dicha interfaz se usa b&aacute;sicamente 
+  para &quot;marcar&quot; un objeto como remotamente accesible. Una vez que los 
+  m&eacute;todos han sido implementados, el objeto debe ser exportado. Esto puede 
+  hacerse de forma impl&iacute;cita si el objeto extiende la clase <code>UnicastRemoteObject</code> 
+  (paquete <code>java.rmi.server</code>), o puede hacerse de forma expl&iacute;cita 
+  con una llamada al m&eacute;todo <code>exportObject()</code> del mismo paquete.</p>
+<p>La capa 2 es la capa <b><i>proxy</i></b>, o capa stub-skeleton. Esta capa es 
+  la que interact&uacute;a directamente con la capa de aplicaci&oacute;n. Todas 
+  las llamadas a objetos remotos y acciones core sus par&aacute;metros y retorno 
+  de objetos tienen lugar en esta capa. </p>
+<p>La capa 3 es la de <b>referencia remota</b>, es responsable del manejo de la 
+  parte sem&aacute;ntica de las invocaciones remotas. Tambi&eacute;n es responsable 
+  de la gesti&oacute;n de la replicaci&oacute;n de objetos y realizaci&oacute;n 
+  de tareas espec&iacute;ficas de la implementaci&oacute;n con los objetos remotos, 
+  como el establecimiento de las persistencias sem&aacute;nticas y estrategias 
+  adecuadas para la recuperaci&oacute;n de conexiones perdidas. En esta capa se 
+  espera una conexi&oacute;n de tipo <i>stream</i> (<i>stream-oriented</i> <i>connection</i>) 
+  desde la capa de transporte.</p>
+<p>La capa 4 es la de <b>transporte</b>. Es la responsable de realizar las conexiones 
+  necesarias y manejo del transporte de los datos de una m&aacute;quina a otra. 
+  El protocolo de transporte subyacente para RMI es JRMP (<i>Java Remote Method 
+  Protocol</i>), que solamente es &quot;comprendido&quot; por programas Java.</p>
+<h2 class="subsection">1.1. Sintaxis de RMI</h2>
+<p>RMI reduce la complejidad de la programaci&oacute;n distribuida, convirtiendo 
+  las tareas de localizar el servidor, realizar la conexi&oacute;n a la red, transferencia 
+  de datos, sincronizaci&oacute;n y propagaci&oacute;n de errores en una simple 
+  llamada a un m&eacute;todo y manejador de excepciones en el cliente. </p>
+<p>La sintaxis de RMI es la siguiente:</p>
+<pre class="codigo">try
+{    result= remoteInterface.method(args)
+}
+catch (RemoteException ex)
+{
+  //manejo de excepciones remotas
+}</pre>
+<p>&nbsp;</p>
+<h2 class="subsection">1.2. Principales conceptos sobre invocaci&oacute;n remota 
+  de objetos</h2>
+<p>Un <u><b>objeto remoto</b></u> es un objeto cuyos m&eacute;todos pueden ser 
+  invocados (via una interfaz remota) desde otra m&aacute;quina virtual de Java. 
+  Tiene las propiedades usuales de un objeto Java, dadas por su estado y m&eacute;todos, 
+  pueden hacer referencias a otros objetos, e incluso tienen implementaciones 
+  de los m&eacute;todos <code>Object.clone</code>, <code>Object.equals</code>, 
+  <code>Object.hashCode</code> y <code>Object.toString.</code></p>
+
+<p>Una <u><b>interfaz remota</b></u> es una interfaz Java que extiende <code>java.rmi.Remote</code>. 
+  Todos sus m&eacute;todos deben indicar que pueden lanzar la excepci&oacute;n 
+  <code>RemoteException</code>.</p>
+<p>Debido a que las interfaces Java no pueden especificar m&eacute;todos <code>static</code>, 
+  un m&eacute;todo remoto no puede ser <code>static</code>. </p>
+<p>Cualquier objeto, incluso un objeto local, puede ser visto como un <i>servidor</i>, 
+  y sus usuarios son sus <i>clientes</i>.</p>
+<p>Un objeto remoto es accedido via un <u><i><b>stub</b></i><b> remoto</b></u>. 
+  Un <i>stub</i> remoto es un objeto que implementa las mismas interfaces remotas 
+  que el objeto remoto al que hace referencia. La clase asociada al <i>stub</i> 
+  se genera por el correspondiente objeto remoto por el sistema RMI en tiempo 
+  de compilaci&oacute;n. </p>
+<p>El cliente usa el <i>stub</i> remoto como una instancia de la interfaz remota 
+  implementada por el objeto remoto. El <i>stub</i> remoto no es en s&iacute; 
+  el objeto remoto, ni una instancia de la clase remota, realmente es un <i>proxy</i> 
+  para el objeto remoto.</p>
+<p>El <i>stub</i> remoto es el responsable de iniciar la llamada al objeto remoto 
+  que representa a trav&eacute;s de la capa de referencia remota. Tambi&eacute;n 
+  es responsable de organizar adecuadamente los argumentos del m&eacute;todo a 
+  trav&eacute;s de un <i><b><u>marshal stream</u></b></i>, obtenido tambi&eacute;n 
+  a trav&eacute;s de la capa de referencia remota. Un <i>marshal stream</i> no 
+  es m&aacute;s que un objeto que se utiliza para transportar par&aacute;metros, 
+  excepciones, y errores necesarios para la ejecuci&oacute;n del m&eacute;todo 
+  y el retorno de los resultados. Finalmente, la clase <i>stub</i> informa a la 
+  capa de referencia remota que la llamada se ha completado.</p>
+<p>La clase <i><b><u>skeleton</u></b></i> es similar a la clase stub, pero en 
+  el lado del servidor, de forma que trata directamente con la implementaci&oacute;n 
+  del m&eacute;todo remoto que est&aacute; siendo utilizado. El <i>skeleton </i>es 
+  responsable de enviar los par&aacute;metros al m&eacute;todo remoto y recoger 
+  los valores de los resultados y excepciones para envi&aacute;rlos al cliente 
+  que realiz&oacute; la llamada. Constituye el <i>proxy</i> del lado del servidor 
+  del objeto remoto.</p>
+<p>Cuando un proceso servidor desea exportar alg&uacute;n servicio basado en RMI 
+  a los clientes, debe hacerlo registrando uno o m&aacute;s objetos a trav&eacute;s 
+  de su registro local RMI (representado por la interfaz <code>Registry</code>). 
+  Cada objeto es registrado con un nombre que puede utilizarse por los clientes 
+  para referenciarlo (es lo que se denomina <u><b>servicio de nombres</b></u>). 
+  Un cliente puede obtener una referencia al <i>stub</i> correspondiente al objeto 
+  remoto utilizando la interfaz <code>Naming</code>. El m&eacute;todo <code>Naming.lookup()</code> 
+  obtiene el nombre del objeto remoto y localiza a dicho objeto en la red. El 
+  nombre del objeto tiene una sintaxis similar a una direcci&oacute;n URL e incluye 
+  el nombre del <i>host</i> del objeto y el nombre registrado de ese objeto.</p>
+<p>El <u><b>servicio de activaci&oacute;n de objetos</b></u> permite a los objetos 
+  servidores ser activados seg&uacute;n las necesidades. Sin una activaci&oacute;n 
+  remota, el objeto servidor tiene que ser registrado mediante el servicio de 
+  nombres de RMI (<i>naming/registry service</i>) desde una m&aacute;quina virtual 
+  de Java en ejecuci&oacute;n. Un objeto remoto registrado de esta forma solamente 
+  est&aacute; disponible durante el tiempo que permanezca en ejecuci&oacute;n 
+  la m&aacute;quina virtual que lo registr&oacute;. Si el servidor de la m&aacute;quina 
+  virtual termina o se interrumpe por alguna raz&oacute;n, el objeto servidor 
+  deja de estar disponible, y cualquier referencia desde un cliente al objeto 
+  se convierte en inv&aacute;lida. Cualquier intento de los clientes de llamar 
+  a los m&eacute;todos remotos utilizando estas referencias inv&aacute;lidas generar&aacute;n 
+  una excepci&oacute;n RMI, que ser&aacute; entregada al cliente.</p>
+<p>El servicio de activaci&oacute;n de objetos permite activar el objeto servidor 
+  de forma autom&aacute;tica cuando un cliente lo solicita. Esto implica la creaci&oacute;n 
+  de un objeto servidor desde una m&aacute;quina virtual existente o nueva, y 
+  obtener una referencia a este nuevo objeto para el cliente que provoc&oacute; 
+  la activaci&oacute;n. Un objeto servidor que quiera ser activado autom&aacute;ticamente 
+  necesita registrar un m&eacute;todo de activaci&oacute;n a trav&eacute;s del 
+  demonio de activaci&oacute;n de RMI ejecut&aacute;ndose en su <i>host</i>.</p>
+
+<h2 class="subsection">1.3. Sem&aacute;ntica de RMI</h2>
+<p>Aunque la sintaxis de una llamada a un objeto remoto es id&eacute;ntica a la 
+  de un objeto local, su sem&aacute;ntica es algo diferente. Las diferencias sem&aacute;nticas 
+  de una llamada remota respecto a una local son las siguientes: </p>
+<ul>
+  <li>Un cliente siempre hace referencia a un objeto remoto a trav&eacute;s de 
+    una de las interfaces <code>Remote</code> que &eacute;ste implementa.</li>
+  <li>Un m&eacute;todo remoto siempre debe declararse indicando que puede lanzar 
+    una <code>RemoteException</code>.</li>
+  <li>Los clientes de objetos remotos deben capturar y tratar las excepciones 
+    remotas.</li>
+  <li>Un objeto pasado como parámetro a un objeto remoto o devuelto desde un método 
+    remoto debe ser <i>serializable</i>, o ser otro objeto <code>Remote</code>.</li>
+  <li>Un objeto pasado como parámetro a un objeto remoto o devuelto desde un método 
+    remoto lo hace valor en vez de por referencia, excepto si dicho objeto es 
+    remoto.</li>
+  <li>Los m&eacute;todos <code>equals()</code>, <code>hashCode()</code>, y <code>toString()</code>, 
+    son sobreescritos por <code>java.rmi.RemoteObject</code>. As&iacute;, el m&eacute;todo 
+    <code>equals()</code> comprueba si dos referencias a objetos son iguales, 
+    no si los contenidos son iguales. El m&eacute;todo <code>hashCode()</code> 
+    devuelve la misma clave para cualquier referencia al mismo objeto remoto. 
+    El m&eacute;todo <code>toString()</code> se ha modificado para que incluya 
+    informaci&oacute;n sobre el transporte del objeto, como el protocolo de red 
+    subyacente, nombre del <i>host</i>, y n&uacute;mero de puerto de donde proviene 
+    el objeto.</li>
+</ul>
+<h2 class="subsection">1.4. Ejemplo: servicio <i>echo</i> remoto y no remoto</h2>
+<p>Vamos a considerar la implementaci&oacute;n de un sencillo servicio <i>echo</i> 
+  que utiliza una interfaz intermedia entre el cliente y el servidor, y una clase 
+  adicional para crear objetos servidores. </p>
+<pre class="codigo">public interface Echo
+{    
+  Object   echo(Object object);
+}
+
+class EchoServer implements Echo
+{
+  public Object  echo(Object object)  {return object;}
+}
+
+class EchoFactory
+{
+  public static Echo getEcho()   {return new EchoServer();}
+}
+
+class EchoClient
+{
+   public static void main(String[]args) throws Exception
+   {
+     Echo echo = EchoFactory.getEcho();
+     System.out.println(echo.echo(&quot;Feliz Navidad&quot;));
+   }
+}</pre>
+<p>Una versi&oacute;n RMI del servicio <i>echo</i> anterior se consigue realizando 
+  los sisguientes cambios:</p>
+<ul>
+  <li> importamos los paquetes RMI </li>
+  <li> la interfaz <code>Echo</code> extiende <code>java.rmi.Remote</code>, y 
+    sus métodos lanzan la excepción <code>RemoteException</code> </li>
+  <li> la clase <code>EchoServer</code> extiende <code>java.rmi.server.UnicastRemoteObject</code> 
+  </li>
+  <li> la clase <code>EchoServer</code> tiene un procedimiento main para que pueda 
+    ejecutarse en su propia JVM </li>
+  <li> la clase <code>EchoFactory</code> ahora obtiene su objeto <code>Echo</code> 
+    via el registro RMI en lugar de instanciar directamente un objeto <code>EchoServer</code> 
+  </li>
+  <li> se pueden lanzar varias excepciones. Por brevedad, en el ejemplo no hemos 
+    incluido las sentencias <code>try...catch</code> en los métodos <code>main</code> 
+  </li>
+</ul>  
+<pre class="codigo">import java.rmi.Remote;
+import java.rmi.RemoteException;
+import java.rmi.server.*;
+import java.rmi.Naming;
+
+
+public interface RemoteEcho extends Remote
+{    
+  Object   echo(Object object) throws RemoteException;
+}
+
+class RemoteEchoServer extends UnicastRemoteObject
+                       implements RemoteEcho
+{
+  public RemoteEchoServer() throws RemoteException { }
+ 
+  public Object  echo(Object object) throws RemoteException  {return object;}
+
+  
+  public static void main(String[] args) throws Exception
+  { String direcc= &quot;//198.162.34.12/:1200&quot;;
+    RemoteEchoServer server = new RemoteEchoServer();
+    Naming.rebind(direcc+RemoteEcho.class.getName(),server);
+  }
+}
+
+public class RemoteEchoFactory
+{ String direcc=&quot;//198.162.34.12/:1200&quot;;
+  public static RemoteEcho getEcho() throws Exception
+    {return (RemoteEcho)Naming.lookup(RemoteEcho.class.getName());}
+}
+
+class RemoteEchoClient
+{
+   public static void main(String[]args) throws Exception
+   {
+     RemoteEcho echo = RemoteEchoFactory.getEcho();
+     System.out.println(echo.echo(&quot;Feliz Navidad&quot;));
+   }
+}</pre>
+<p>La variable <code>direcc</code>, contiene la direcci&oacute;n IP del servidor, 
+  seguida del n&uacute;mero de puerto por el que el servidor estar&aacute; &quot;escuchando&quot;. 
+  Por ejemplo, si la direcci&oacute;n IP es 198.162.34.12 y el puerto es el 1200, 
+  entonces <code>direcc</code> tomar&aacute; el valor:</p>
+<pre class="codigo">"//198.162.34.12/:1200"</pre>
+<p>Ambas versiones pueden ejecutarse en una única JVM. La versión RMI puede ejecutarse 
+  en una única JVM, en dos JVMs sobre el mismo ordenador, o en dos JVMs en dos 
+  máquinas conectadas mediante la red.</p>
+</body>
+</html>

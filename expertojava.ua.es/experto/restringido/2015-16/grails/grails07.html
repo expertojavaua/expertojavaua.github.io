@@ -1,0 +1,2397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 1.5.2">
+<meta name="author" content="Fran García">
+<title>Grails</title>
+<style>/*! normalize.css v2.1.2 | MIT License | git.io/normalize */
+/* ========================================================================== HTML5 display definitions ========================================================================== */
+/** Correct `block` display not defined in IE 8/9. */
+article, aside, details, figcaption, figure, footer, header, hgroup, main, nav, section, summary { display: block; }
+
+/** Correct `inline-block` display not defined in IE 8/9. */
+audio, canvas, video { display: inline-block; }
+
+/** Prevent modern browsers from displaying `audio` without controls. Remove excess height in iOS 5 devices. */
+audio:not([controls]) { display: none; height: 0; }
+
+/** Address `[hidden]` styling not present in IE 8/9. Hide the `template` element in IE, Safari, and Firefox < 22. */
+[hidden], template { display: none; }
+
+script { display: none !important; }
+
+/* ========================================================================== Base ========================================================================== */
+/** 1. Set default font family to sans-serif. 2. Prevent iOS text size adjust after orientation change, without disabling user zoom. */
+html { font-family: sans-serif; /* 1 */ -ms-text-size-adjust: 100%; /* 2 */ -webkit-text-size-adjust: 100%; /* 2 */ }
+
+/** Remove default margin. */
+body { margin: 0; }
+
+/* ========================================================================== Links ========================================================================== */
+/** Remove the gray background color from active links in IE 10. */
+a { background: transparent; }
+
+/** Address `outline` inconsistency between Chrome and other browsers. */
+a:focus { outline: thin dotted; }
+
+/** Improve readability when focused and also mouse hovered in all browsers. */
+a:active, a:hover { outline: 0; }
+
+/* ========================================================================== Typography ========================================================================== */
+/** Address variable `h1` font-size and margin within `section` and `article` contexts in Firefox 4+, Safari 5, and Chrome. */
+h1 { font-size: 2em; margin: 0.67em 0; }
+
+/** Address styling not present in IE 8/9, Safari 5, and Chrome. */
+abbr[title] { border-bottom: 1px dotted; }
+
+/** Address style set to `bolder` in Firefox 4+, Safari 5, and Chrome. */
+b, strong { font-weight: bold; }
+
+/** Address styling not present in Safari 5 and Chrome. */
+dfn { font-style: italic; }
+
+/** Address differences between Firefox and other browsers. */
+hr { -moz-box-sizing: content-box; box-sizing: content-box; height: 0; }
+
+/** Address styling not present in IE 8/9. */
+mark { background: #ff0; color: #000; }
+
+/** Correct font family set oddly in Safari 5 and Chrome. */
+code, kbd, pre, samp { font-family: monospace, serif; font-size: 1em; }
+
+/** Improve readability of pre-formatted text in all browsers. */
+pre { white-space: pre-wrap; }
+
+/** Set consistent quote types. */
+q { quotes: "\201C" "\201D" "\2018" "\2019"; }
+
+/** Address inconsistent and variable font size in all browsers. */
+small { font-size: 80%; }
+
+/** Prevent `sub` and `sup` affecting `line-height` in all browsers. */
+sub, sup { font-size: 75%; line-height: 0; position: relative; vertical-align: baseline; }
+
+sup { top: -0.5em; }
+
+sub { bottom: -0.25em; }
+
+/* ========================================================================== Embedded content ========================================================================== */
+/** Remove border when inside `a` element in IE 8/9. */
+img { border: 0; }
+
+/** Correct overflow displayed oddly in IE 9. */
+svg:not(:root) { overflow: hidden; }
+
+/* ========================================================================== Figures ========================================================================== */
+/** Address margin not present in IE 8/9 and Safari 5. */
+figure { margin: 0; }
+
+/* ========================================================================== Forms ========================================================================== */
+/** Define consistent border, margin, and padding. */
+fieldset { border: 1px solid #c0c0c0; margin: 0 2px; padding: 0.35em 0.625em 0.75em; }
+
+/** 1. Correct `color` not being inherited in IE 8/9. 2. Remove padding so people aren't caught out if they zero out fieldsets. */
+legend { border: 0; /* 1 */ padding: 0; /* 2 */ }
+
+/** 1. Correct font family not being inherited in all browsers. 2. Correct font size not being inherited in all browsers. 3. Address margins set differently in Firefox 4+, Safari 5, and Chrome. */
+button, input, select, textarea { font-family: inherit; /* 1 */ font-size: 100%; /* 2 */ margin: 0; /* 3 */ }
+
+/** Address Firefox 4+ setting `line-height` on `input` using `!important` in the UA stylesheet. */
+button, input { line-height: normal; }
+
+/** Address inconsistent `text-transform` inheritance for `button` and `select`. All other form control elements do not inherit `text-transform` values. Correct `button` style inheritance in Chrome, Safari 5+, and IE 8+. Correct `select` style inheritance in Firefox 4+ and Opera. */
+button, select { text-transform: none; }
+
+/** 1. Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio` and `video` controls. 2. Correct inability to style clickable `input` types in iOS. 3. Improve usability and consistency of cursor style between image-type `input` and others. */
+button, html input[type="button"], input[type="reset"], input[type="submit"] { -webkit-appearance: button; /* 2 */ cursor: pointer; /* 3 */ }
+
+/** Re-set default cursor for disabled elements. */
+button[disabled], html input[disabled] { cursor: default; }
+
+/** 1. Address box sizing set to `content-box` in IE 8/9. 2. Remove excess padding in IE 8/9. */
+input[type="checkbox"], input[type="radio"] { box-sizing: border-box; /* 1 */ padding: 0; /* 2 */ }
+
+/** 1. Address `appearance` set to `searchfield` in Safari 5 and Chrome. 2. Address `box-sizing` set to `border-box` in Safari 5 and Chrome (include `-moz` to future-proof). */
+input[type="search"] { -webkit-appearance: textfield; /* 1 */ -moz-box-sizing: content-box; -webkit-box-sizing: content-box; /* 2 */ box-sizing: content-box; }
+
+/** Remove inner padding and search cancel button in Safari 5 and Chrome on OS X. */
+input[type="search"]::-webkit-search-cancel-button, input[type="search"]::-webkit-search-decoration { -webkit-appearance: none; }
+
+/** Remove inner padding and border in Firefox 4+. */
+button::-moz-focus-inner, input::-moz-focus-inner { border: 0; padding: 0; }
+
+/** 1. Remove default vertical scrollbar in IE 8/9. 2. Improve readability and alignment in all browsers. */
+textarea { overflow: auto; /* 1 */ vertical-align: top; /* 2 */ }
+
+/* ========================================================================== Tables ========================================================================== */
+/** Remove most spacing between table cells. */
+table { border-collapse: collapse; border-spacing: 0; }
+
+meta.foundation-mq-small { font-family: "only screen and (min-width: 768px)"; width: 768px; }
+
+meta.foundation-mq-medium { font-family: "only screen and (min-width:1280px)"; width: 1280px; }
+
+meta.foundation-mq-large { font-family: "only screen and (min-width:1440px)"; width: 1440px; }
+
+*, *:before, *:after { -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
+
+html, body { font-size: 97%; }
+
+body { background: white; color: #222222; padding: 0; margin: 0; font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif; font-weight: normal; font-style: normal; line-height: 1; position: relative; cursor: auto; }
+
+a:hover { cursor: pointer; }
+
+img, object, embed { max-width: 100%; height: auto; }
+
+object, embed { height: 100%; }
+
+img { -ms-interpolation-mode: bicubic; }
+
+#map_canvas img, #map_canvas embed, #map_canvas object, .map_canvas img, .map_canvas embed, .map_canvas object { max-width: none !important; }
+
+.left { float: left !important; }
+
+.right { float: right !important; }
+
+.text-left { text-align: left !important; }
+
+.text-right { text-align: right !important; }
+
+.text-center { text-align: center !important; }
+
+.text-justify { text-align: justify !important; }
+
+.hide { display: none; }
+
+.antialiased, body { -webkit-font-smoothing: antialiased; }
+
+img { display: inline-block; vertical-align: middle; }
+
+textarea { height: auto; min-height: 50px; }
+
+select { width: 100%; }
+
+p.lead, .paragraph.lead > p, #preamble > .sectionbody > .paragraph:first-of-type p { font-size: 1.21875em; line-height: 1.6; }
+
+.subheader, .admonitionblock td.content > .title, .audioblock > .title, .exampleblock > .title, .imageblock > .title, .listingblock > .title, .literalblock > .title, .stemblock > .title, .openblock > .title, .paragraph > .title, .quoteblock > .title, table.tableblock > .title, .verseblock > .title, .videoblock > .title, .dlist > .title, .olist > .title, .ulist > .title, .qlist > .title, .hdlist > .title { line-height: 1.4; color: #6f6f6f; font-weight: 300; margin-top: 0.2em; margin-bottom: 0.5em; }
+
+/* Typography resets */
+div, dl, dt, dd, ul, ol, li, h1, h2, h3, #toctitle, .sidebarblock > .content > .title, h4, h5, h6, pre, form, p, blockquote, th, td { margin: 0; padding: 0; direction: ltr; }
+
+/* Default Link Styles */
+a { color: #1164be; text-decoration: none; line-height: inherit; }
+a img { border: none; }
+
+/* Default paragraph styles */
+p { font-family: inherit; font-weight: normal; font-size: 1em; line-height: 1.4; margin-bottom: 1em; text-rendering: optimizeLegibility; }
+p aside { font-size: 0.875em; line-height: 1.35; font-style: italic; }
+
+/* Default header styles */
+h1, h2, h3, #toctitle, .sidebarblock > .content > .title, h4, h5, h6 { font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif; font-weight: bold; font-style: normal; color: #1c355e; text-rendering: optimizeLegibility; margin-top: 1em; margin-bottom: 0.5em; line-height: 1.2125em; }
+h1 small, h2 small, h3 small, #toctitle small, .sidebarblock > .content > .title small, h4 small, h5 small, h6 small { font-size: 60%; color: #6f6f6f; line-height: 0; }
+
+h1 { font-size: 2.125em; }
+
+h2 { font-size: 1.6875em; }
+
+h3, #toctitle, .sidebarblock > .content > .title { font-size: 1.375em; }
+
+h4 { font-size: 1.125em; }
+
+h5 { font-size: 1.125em; }
+
+h6 { font-size: 1em; }
+
+hr { border: solid #dddddd; border-width: 1px 0 0; clear: both; margin: 1.25em 0 1.1875em; height: 0; }
+
+/* Helpful Typography Defaults */
+em, i { font-style: italic; line-height: inherit; }
+
+strong, b { font-weight: bold; line-height: inherit; }
+
+small { font-size: 60%; line-height: inherit; }
+
+code { font-family: Consolas, "Liberation Mono", Courier, monospace; font-weight: bold; }
+
+/* Lists */
+ul, ol, dl { font-size: 1em; line-height: 1.4; margin-bottom: 1.25em; list-style-position: outside; font-family: inherit; }
+
+ul, ol { margin-left: 2.5em; }
+ul.no-bullet, ol.no-bullet { margin-left: 1.5em; }
+
+/* Unordered Lists */
+ul li ul, ul li ol { margin-left: 1.25em; margin-bottom: 0; font-size: 1em; /* Override nested font-size change */ }
+ul.square li ul, ul.circle li ul, ul.disc li ul { list-style: inherit; }
+ul.square { list-style-type: square; }
+ul.circle { list-style-type: circle; }
+ul.disc { list-style-type: disc; }
+ul.no-bullet { list-style: none; }
+
+/* Ordered Lists */
+ol li ul, ol li ol { margin-left: 1.25em; margin-bottom: 0; }
+
+/* Definition Lists */
+dl dt { margin-bottom: 0.3125em; font-weight: bold; }
+dl dd { margin-bottom: 1.25em; }
+
+/* Abbreviations */
+abbr, acronym { text-transform: uppercase; font-size: 90%; color: #222222; border-bottom: 1px dotted #dddddd; cursor: help; }
+
+abbr { text-transform: none; }
+
+/* Blockquotes */
+blockquote { margin: 0 0 1.25em; padding: 0.5625em 1.25em 0 1.1875em; border-left: 1px solid #dddddd; }
+blockquote cite { display: block; font-size: 0.8125em; color: #555555; }
+blockquote cite:before { content: "\2014 \0020"; }
+blockquote cite a, blockquote cite a:visited { color: #555555; }
+
+blockquote, blockquote p { line-height: 1.6; color: #6f6f6f; }
+
+/* Microformats */
+.vcard { display: inline-block; margin: 0 0 1.25em 0; border: 1px solid #dddddd; padding: 0.625em 0.75em; }
+.vcard li { margin: 0; display: block; }
+.vcard .fn { font-weight: bold; font-size: 0.9375em; }
+
+.vevent .summary { font-weight: bold; }
+.vevent abbr { cursor: auto; text-decoration: none; font-weight: bold; border: none; padding: 0 0.0625em; }
+
+/*@media only screen and (min-width: 768px) { h1, h2, h3, #toctitle, .sidebarblock > .content > .title, h4, h5, h6 { line-height: 1.4; }
+  h1 { font-size: 2.75em; }
+  h2 { font-size: 2.3125em; }
+  h3, #toctitle, .sidebarblock > .content > .title { font-size: 1.6875em; }
+  h4 { font-size: 1.4375em; } }*/
+/* Tables */
+table { background: white; margin-bottom: 1.25em; border: solid 1px #dddddd; }
+table thead, table tfoot { background: whitesmoke; font-weight: bold; }
+table thead tr th, table thead tr td, table tfoot tr th, table tfoot tr td { padding: 0.5em 0.625em 0.625em; font-size: inherit; color: #222222; text-align: left; }
+table tr th, table tr td { padding: 0.5625em 0.625em; font-size: inherit; color: #222222; }
+table tr.even, table tr.alt, table tr:nth-of-type(even) { background: #f9f9f9; }
+table thead tr th, table tfoot tr th, table tbody tr td, table tr td, table tfoot tr td { display: table-cell; line-height: 1.4; }
+
+h1, h2, h3, #toctitle, .sidebarblock > .content > .title, h4, h5, h6 { line-height: 1.4; border-bottom: 1px solid #dddddd }
+
+.clearfix:before, .clearfix:after, .float-group:before, .float-group:after { content: " "; display: table; }
+.clearfix:after, .float-group:after { clear: both; }
+
+*:not(pre) > code { font-size: inherit; font-style: normal !important; letter-spacing: 0; padding: 3px 2px 1px 2px; background-color: #eeeeee; border: 1px solid #dddddd; -webkit-border-radius: 0; border-radius: 0; line-height: inherit; font-weight: normal; }
+
+pre, pre > code { line-height: 1.4; color: black; font-family: monospace, serif; font-weight: normal; }
+
+.keyseq { color: #555555; }
+
+kbd { display: inline-block; color: #222222; font-size: 0.75em; line-height: 1.4; background-color: #f7f7f7; border: 1px solid #ccc; -webkit-border-radius: 3px; border-radius: 3px; -webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 0 0 0.1em white inset; box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 0 0 0.1em white inset; margin: -0.15em 0.15em 0 0.15em; padding: 0.2em 0.6em 0.2em 0.5em; vertical-align: middle; white-space: nowrap; }
+
+.keyseq kbd:first-child { margin-left: 0; }
+
+.keyseq kbd:last-child { margin-right: 0; }
+
+.menuseq, .menu { color: #090909; }
+
+b.button:before, b.button:after { position: relative; top: -1px; font-weight: normal; }
+
+b.button:before { content: "["; padding: 0 3px 0 2px; }
+
+b.button:after { content: "]"; padding: 0 2px 0 3px; }
+
+#header, #content, #footnotes, #footer { width: 100%; margin-left: auto; margin-right: auto; margin-top: 0; margin-bottom: 0; max-width: 62.5em; *zoom: 1; position: relative; padding-left: 0.9375em; padding-right: 0.9375em; }
+#header:before, #header:after, #content:before, #content:after, #footnotes:before, #footnotes:after, #footer:before, #footer:after { content: " "; display: table; }
+#header:after, #content:after, #footnotes:after, #footer:after { clear: both; }
+
+#content { margin-top: 1.25em; }
+
+#content:before { content: none; }
+
+#header > h1:first-child { color: black; margin-top: 2.25rem; margin-bottom: 0; }
+#header > h1:first-child + #toc { margin-top: 8px; border-top: 1px solid #dddddd; }
+#header > h1:only-child, body.toc2 #header > h1:nth-last-child(2) { border-bottom: 1px solid #dddddd; padding-bottom: 8px; }
+#header .details { border-bottom: 1px solid #dddddd; line-height: 1.45; padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; color: #555555; display: -ms-flexbox; display: -webkit-flex; display: flex; -ms-flex-flow: row wrap; -webkit-flex-flow: row wrap; flex-flow: row wrap; }
+#header .details span:first-child { margin-left: -0.125em; }
+#header .details span.email a { color: #6f6f6f; }
+#header .details br { display: none; }
+#header .details br + span:before { content: "\00a0\2013\00a0"; }
+#header .details br + span.author:before { content: "\00a0\22c5\00a0"; color: #6f6f6f; }
+#header .details br + span#revremark:before { content: "\00a0|\00a0"; }
+#header #revnumber { text-transform: capitalize; }
+#header #revnumber:after { content: "\00a0"; }
+
+#content > h1:first-child:not([class]) { color: black; border-bottom: 1px solid #dddddd; padding-bottom: 8px; margin-top: 0; padding-top: 1rem; margin-bottom: 1.25rem; }
+
+#floating {
+  position: fixed;
+  z-index: 1000;
+  padding: 0.5em;
+  right: 0;
+  top: 0;
+  background: white;
+  box-shadow: 0 0 1em #777777;
+  -webkit-box-shadow: 0 0 1em #777777;
+  -moz-box-shadow: 0 0 1em #777777;
+  -webkit-border-bottom-left-radius: 5px;
+  -moz-border-radius-bottomleft: 5px;
+  max-height: 80%;
+  overflow: auto;
+}
+
+#floating #full { display: none; } /* Hide the full TOC by default */
+
+#floating:hover #full{
+  display: block; /* Show it on hover */
+}
+
+
+#toc { border-bottom: 1px solid #dddddd; padding-bottom: 0.5em; }
+#toc > ul { margin-left: 0.125em; }
+#toc ul.sectlevel0 > li > a { font-style: italic; }
+#toc ul.sectlevel0 ul.sectlevel1 { margin: 0.5em 0; }
+#toc ul { font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif; list-style-type: none; }
+#toc a { text-decoration: none; }
+#toc a:active { text-decoration: underline; }
+
+#toctitle { color: #6f6f6f; font-size: 1.2em; }
+
+@media only screen and (min-width: 768px) { #toctitle { font-size: 1.375em; }
+  body.toc2 { padding-left: 15em; padding-right: 0; }
+  #toc.toc2 { margin-top: 0 !important; background-color: #f2f2f2; position: fixed; width: 15em; left: 0; top: 0; border-right: 1px solid #dddddd; border-top-width: 0 !important; border-bottom-width: 0 !important; z-index: 1000; padding: 1.25em 1em; height: 100%; overflow: auto; }
+  #toc.toc2 #toctitle { margin-top: 0; font-size: 1.2em; }
+  #toc.toc2 > ul { font-size: 0.9em; margin-bottom: 0; }
+  #toc.toc2 ul ul { margin-left: 0; padding-left: 1em; }
+  #toc.toc2 ul.sectlevel0 ul.sectlevel1 { padding-left: 0; margin-top: 0.5em; margin-bottom: 0.5em; }
+  body.toc2.toc-right { padding-left: 0; padding-right: 15em; }
+  body.toc2.toc-right #toc.toc2 { border-right-width: 0; border-left: 1px solid #dddddd; left: auto; right: 0; } }
+@media only screen and (min-width: 1280px) { body.toc2 { padding-left: 20em; padding-right: 0; }
+  #toc.toc2 { width: 20em; }
+  #toc.toc2 #toctitle { font-size: 1.375em; }
+  #toc.toc2 > ul { font-size: 0.95em; }
+  #toc.toc2 ul ul { padding-left: 1.25em; }
+  body.toc2.toc-right { padding-left: 0; padding-right: 20em; } }
+#content #toc { border-style: solid; border-width: 1px; border-color: #d9d9d9; margin-bottom: 1.25em; padding: 1.25em; background: #f2f2f2; -webkit-border-radius: 0; border-radius: 0; }
+#content #toc > :first-child { margin-top: 0; }
+#content #toc > :last-child { margin-bottom: 0; }
+
+#footer { max-width: 100%; background-color: #222222; padding: 1.25em; }
+
+#footer-text { color: #dddddd; line-height: 1.44; }
+
+.sect1 { padding-bottom: 0.625em; }
+
+@media only screen and (min-width: 768px) { .sect1 { padding-bottom: 1.25em; } }
+.sect1 + .sect1 { border-top: 1px solid #dddddd; }
+
+#content h1 > a.anchor, h2 > a.anchor, h3 > a.anchor, #toctitle > a.anchor, .sidebarblock > .content > .title > a.anchor, h4 > a.anchor, h5 > a.anchor, h6 > a.anchor { position: absolute; z-index: 1001; width: 1.5ex; margin-left: -1.5ex; display: block; text-decoration: none !important; visibility: hidden; text-align: center; font-weight: normal; }
+#content h1 > a.anchor:before, h2 > a.anchor:before, h3 > a.anchor:before, #toctitle > a.anchor:before, .sidebarblock > .content > .title > a.anchor:before, h4 > a.anchor:before, h5 > a.anchor:before, h6 > a.anchor:before { content: "\00A7"; font-size: 0.85em; display: block; padding-top: 0.1em; }
+#content h1:hover > a.anchor, #content h1 > a.anchor:hover, h2:hover > a.anchor, h2 > a.anchor:hover, h3:hover > a.anchor, #toctitle:hover > a.anchor, .sidebarblock > .content > .title:hover > a.anchor, h3 > a.anchor:hover, #toctitle > a.anchor:hover, .sidebarblock > .content > .title > a.anchor:hover, h4:hover > a.anchor, h4 > a.anchor:hover, h5:hover > a.anchor, h5 > a.anchor:hover, h6:hover > a.anchor, h6 > a.anchor:hover { visibility: visible; }
+#content h1 > a.link, h2 > a.link, h3 > a.link, #toctitle > a.link, .sidebarblock > .content > .title > a.link, h4 > a.link, h5 > a.link, h6 > a.link { color: #222222; text-decoration: none; }
+#content h1 > a.link:hover, h2 > a.link:hover, h3 > a.link:hover, #toctitle > a.link:hover, .sidebarblock > .content > .title > a.link:hover, h4 > a.link:hover, h5 > a.link:hover, h6 > a.link:hover { color: #151515; }
+
+.audioblock, .imageblock, .literalblock, .listingblock, .stemblock, .videoblock { margin-bottom: 1.25em; }
+
+.admonitionblock td.content > .title, .audioblock > .title, .exampleblock > .title, .imageblock > .title, .listingblock > .title, .literalblock > .title, .stemblock > .title, .openblock > .title, .paragraph > .title, .quoteblock > .title, table.tableblock > .title, .verseblock > .title, .videoblock > .title, .dlist > .title, .olist > .title, .ulist > .title, .qlist > .title, .hdlist > .title { text-rendering: optimizeLegibility; text-align: left; }
+
+table.tableblock > caption.title { white-space: nowrap; overflow: visible; max-width: 0; }
+
+.paragraph.lead > p, #preamble > .sectionbody > .paragraph:first-of-type p { color: black; }
+
+table.tableblock #preamble > .sectionbody > .paragraph:first-of-type p { font-size: inherit; }
+
+.admonitionblock > table { border-collapse: separate; border: 0; background: none; width: 100%; }
+.admonitionblock > table td.icon { text-align: center; width: 80px; }
+.admonitionblock > table td.icon img { max-width: none; }
+.admonitionblock > table td.icon .title { font-weight: bold; font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif; text-transform: uppercase; }
+.admonitionblock > table td.content { padding-left: 1.125em; padding-right: 1.25em; border-left: 1px solid #dddddd; color: #555555; }
+.admonitionblock > table td.content > :last-child > :last-child { margin-bottom: 0; }
+
+.exampleblock > .content { border-style: solid; border-width: 1px; border-color: #e6e6e6; margin-bottom: 1.25em; padding: 1.25em; background: white; -webkit-border-radius: 0; border-radius: 0; }
+.exampleblock > .content > :first-child { margin-top: 0; }
+.exampleblock > .content > :last-child { margin-bottom: 0; }
+
+.sidebarblock { border-style: solid; border-width: 1px; border-color: #d9d9d9; margin-bottom: 1.25em; padding: 1.25em; background: #f2f2f2; -webkit-border-radius: 0; border-radius: 0; }
+.sidebarblock > :first-child { margin-top: 0; }
+.sidebarblock > :last-child { margin-bottom: 0; }
+.sidebarblock > .content > .title { color: #6f6f6f; margin-top: 0; }
+
+.exampleblock > .content > :last-child > :last-child, .exampleblock > .content .olist > ol > li:last-child > :last-child, .exampleblock > .content .ulist > ul > li:last-child > :last-child, .exampleblock > .content .qlist > ol > li:last-child > :last-child, .sidebarblock > .content > :last-child > :last-child, .sidebarblock > .content .olist > ol > li:last-child > :last-child, .sidebarblock > .content .ulist > ul > li:last-child > :last-child, .sidebarblock > .content .qlist > ol > li:last-child > :last-child { margin-bottom: 0; }
+
+.literalblock pre, .listingblock pre:not(.highlight), .listingblock pre[class="highlight"], .listingblock pre[class^="highlight "], .listingblock pre.CodeRay, .listingblock pre.prettyprint { background: #eeeeee; }
+.sidebarblock .literalblock pre, .sidebarblock .listingblock pre:not(.highlight), .sidebarblock .listingblock pre[class="highlight"], .sidebarblock .listingblock pre[class^="highlight "], .sidebarblock .listingblock pre.CodeRay, .sidebarblock .listingblock pre.prettyprint { background: #f2f1f1; }
+
+.literalblock pre, .literalblock pre[class], .listingblock pre, .listingblock pre[class] { border: 1px solid #cccccc; -webkit-border-radius: 0; border-radius: 0; word-wrap: break-word; padding: 0.8em 0.8em 0.65em 0.8em; font-size: 0.8125em; }
+.literalblock pre.nowrap, .literalblock pre[class].nowrap, .listingblock pre.nowrap, .listingblock pre[class].nowrap { overflow-x: auto; white-space: pre; word-wrap: normal; }
+@media only screen and (min-width: 768px) { .literalblock pre, .literalblock pre[class], .listingblock pre, .listingblock pre[class] { font-size: 0.90625em; } }
+@media only screen and (min-width: 1280px) { .literalblock pre, .literalblock pre[class], .listingblock pre, .listingblock pre[class] { font-size: 1em; } }
+
+.literalblock.output pre { color: #eeeeee; background-color: black; }
+
+.listingblock pre.highlightjs { padding: 0; }
+.listingblock pre.highlightjs > code { padding: 0.8em 0.8em 0.65em 0.8em; -webkit-border-radius: 0; border-radius: 0; }
+
+.listingblock > .content { position: relative; }
+
+.listingblock code[data-lang]:before { display: none; content: attr(data-lang); position: absolute; font-size: 0.75em; top: 0.425rem; right: 0.5rem; line-height: 1; text-transform: uppercase; color: #999; }
+
+.listingblock:hover code[data-lang]:before { display: block; }
+
+.listingblock.terminal pre .command:before { content: attr(data-prompt); padding-right: 0.5em; color: #999; }
+
+.listingblock.terminal pre .command:not([data-prompt]):before { content: "$"; }
+
+table.pyhltable { border-collapse: separate; border: 0; margin-bottom: 0; background: none; }
+
+table.pyhltable td { vertical-align: top; padding-top: 0; padding-bottom: 0; }
+
+table.pyhltable td.code { padding-left: .75em; padding-right: 0; }
+
+pre.pygments .lineno, table.pyhltable td:not(.code) { color: #999; padding-left: 0; padding-right: .5em; border-right: 1px solid #dddddd; }
+
+pre.pygments .lineno { display: inline-block; margin-right: .25em; }
+
+table.pyhltable .linenodiv { background: none !important; padding-right: 0 !important; }
+
+.quoteblock { margin: 0 1em 1.25em 1.5em; display: table; }
+.quoteblock > .title { margin-left: -1.5em; margin-bottom: 0.75em; }
+.quoteblock blockquote, .quoteblock blockquote p { color: #6f6f6f; font-size: 1.15rem; line-height: 1.75; word-spacing: 0.1em; letter-spacing: 0; font-style: italic; text-align: justify; }
+.quoteblock blockquote { margin: 0; padding: 0; border: 0; }
+.quoteblock blockquote:before { content: "\201c"; float: left; font-size: 2.75em; font-weight: bold; line-height: 0.6em; margin-left: -0.6em; color: #6f6f6f; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); }
+.quoteblock blockquote > .paragraph:last-child p { margin-bottom: 0; }
+.quoteblock .attribution { margin-top: 0.5em; margin-right: 0.5ex; text-align: right; }
+.quoteblock .quoteblock { margin-left: 0; margin-right: 0; padding: 0.5em 0; border-left: 3px solid #555555; }
+.quoteblock .quoteblock blockquote { padding: 0 0 0 0.75em; }
+.quoteblock .quoteblock blockquote:before { display: none; }
+
+.verseblock { margin: 0 1em 1.25em 1em; }
+.verseblock pre { font-family: "Open Sans", "DejaVu Sans", sans; font-size: 1.15rem; color: #6f6f6f; font-weight: 300; text-rendering: optimizeLegibility; }
+.verseblock pre strong { font-weight: 400; }
+.verseblock .attribution { margin-top: 1.25rem; margin-left: 0.5ex; }
+
+.quoteblock .attribution, .verseblock .attribution { font-size: 0.8125em; line-height: 1.45; font-style: italic; }
+.quoteblock .attribution br, .verseblock .attribution br { display: none; }
+.quoteblock .attribution cite, .verseblock .attribution cite { display: block; letter-spacing: -0.05em; color: #555555; }
+
+.quoteblock.abstract { margin: 0 0 1.25em 0; display: block; }
+.quoteblock.abstract blockquote, .quoteblock.abstract blockquote p { text-align: left; word-spacing: 0; }
+.quoteblock.abstract blockquote:before, .quoteblock.abstract blockquote p:first-of-type:before { display: none; }
+
+table.tableblock { max-width: 100%; border-collapse: separate; }
+table.tableblock td > .paragraph:last-child p > p:last-child, table.tableblock th > p:last-child, table.tableblock td > p:last-child { margin-bottom: 0; }
+
+table.spread { width: 100%; }
+
+table.tableblock, th.tableblock, td.tableblock { border: 0 solid #dddddd; }
+
+table.grid-all th.tableblock, table.grid-all td.tableblock { border-width: 0 1px 1px 0; }
+
+table.grid-all tfoot > tr > th.tableblock, table.grid-all tfoot > tr > td.tableblock { border-width: 1px 1px 0 0; }
+
+table.grid-cols th.tableblock, table.grid-cols td.tableblock { border-width: 0 1px 0 0; }
+
+table.grid-all * > tr > .tableblock:last-child, table.grid-cols * > tr > .tableblock:last-child { border-right-width: 0; }
+
+table.grid-rows th.tableblock, table.grid-rows td.tableblock { border-width: 0 0 1px 0; }
+
+table.grid-all tbody > tr:last-child > th.tableblock, table.grid-all tbody > tr:last-child > td.tableblock, table.grid-all thead:last-child > tr > th.tableblock, table.grid-rows tbody > tr:last-child > th.tableblock, table.grid-rows tbody > tr:last-child > td.tableblock, table.grid-rows thead:last-child > tr > th.tableblock { border-bottom-width: 0; }
+
+table.grid-rows tfoot > tr > th.tableblock, table.grid-rows tfoot > tr > td.tableblock { border-width: 1px 0 0 0; }
+
+table.frame-all { border-width: 1px; }
+
+table.frame-sides { border-width: 0 1px; }
+
+table.frame-topbot { border-width: 1px 0; }
+
+th.halign-left, td.halign-left { text-align: left; }
+
+th.halign-right, td.halign-right { text-align: right; }
+
+th.halign-center, td.halign-center { text-align: center; }
+
+th.valign-top, td.valign-top { vertical-align: top; }
+
+th.valign-bottom, td.valign-bottom { vertical-align: bottom; }
+
+th.valign-middle, td.valign-middle { vertical-align: middle; }
+
+table thead th, table tfoot th { font-weight: bold; }
+
+tbody tr th { display: table-cell; line-height: 1.4; background: whitesmoke; }
+
+tbody tr th, tbody tr th p, tfoot tr th, tfoot tr th p { color: #222222; font-weight: bold; }
+
+p.tableblock > code:only-child { background: none; padding: 0; }
+
+p.tableblock { font-size: 1em; }
+
+td > div.verse { white-space: pre; }
+
+ol { margin-left: 2.5em; }
+
+ul li ol { margin-left: 1.5em; }
+
+dl dd { margin-left: 1.125em; }
+
+dl dd:last-child, dl dd:last-child > :last-child { margin-bottom: 0; }
+
+ol > li p, ul > li p, ul dd, ol dd, .olist .olist, .ulist .ulist, .ulist .olist, .olist .ulist { margin-bottom: 0.625em; }
+
+ul.unstyled, ol.unnumbered, ul.checklist, ul.none { list-style-type: none; }
+
+ul.unstyled, ol.unnumbered, ul.checklist { margin-left: 0.625em; }
+
+ul.checklist li > p:first-child > .fa-check-square-o:first-child, ul.checklist li > p:first-child > input[type="checkbox"]:first-child { margin-right: 0.25em; }
+
+ul.checklist li > p:first-child > input[type="checkbox"]:first-child { position: relative; top: 1px; }
+
+ul.inline { margin: 0 auto 0.625em auto; margin-left: -1.375em; margin-right: 0; padding: 0; list-style: none; overflow: hidden; }
+ul.inline > li { list-style: none; float: left; margin-left: 1.375em; display: block; }
+ul.inline > li > * { display: block; }
+
+.unstyled dl dt { font-weight: normal; font-style: normal; }
+
+ol.arabic { list-style-type: decimal; }
+
+ol.decimal { list-style-type: decimal-leading-zero; }
+
+ol.loweralpha { list-style-type: lower-alpha; }
+
+ol.upperalpha { list-style-type: upper-alpha; }
+
+ol.lowerroman { list-style-type: lower-roman; }
+
+ol.upperroman { list-style-type: upper-roman; }
+
+ol.lowergreek { list-style-type: lower-greek; }
+
+.hdlist > table, .colist > table { border: 0; background: none; }
+.hdlist > table > tbody > tr, .colist > table > tbody > tr { background: none; }
+
+td.hdlist1 { padding-right: .75em; font-weight: bold; }
+
+td.hdlist1, td.hdlist2 { vertical-align: top; }
+
+.literalblock + .colist, .listingblock + .colist { margin-top: -0.5em; }
+
+.colist > table tr > td:first-of-type { padding: 0 0.75em; line-height: 1; }
+.colist > table tr > td:last-of-type { padding: 0.25em 0; }
+
+.thumb, .th { line-height: 0; display: inline-block; border: solid 4px white; -webkit-box-shadow: 0 0 0 1px #dddddd; box-shadow: 0 0 0 1px #dddddd; }
+
+.imageblock.left, .imageblock[style*="float: left"] { margin: 0.25em 0.625em 1.25em 0; }
+.imageblock.right, .imageblock[style*="float: right"] { margin: 0.25em 0 1.25em 0.625em; }
+.imageblock > .title { margin-bottom: 0; }
+.imageblock.thumb, .imageblock.th { border-width: 6px; }
+.imageblock.thumb > .title, .imageblock.th > .title { padding: 0 0.125em; }
+
+.image.left, .image.right { margin-top: 0.25em; margin-bottom: 0.25em; display: inline-block; line-height: 0; }
+.image.left { margin-right: 0.625em; }
+.image.right { margin-left: 0.625em; }
+
+a.image { text-decoration: none; }
+
+span.footnote, span.footnoteref { vertical-align: super; font-size: 0.875em; }
+span.footnote a, span.footnoteref a { text-decoration: none; }
+span.footnote a:active, span.footnoteref a:active { text-decoration: underline; }
+
+#footnotes { padding-top: 0.75em; padding-bottom: 0.75em; margin-bottom: 0.625em; }
+#footnotes hr { width: 20%; min-width: 6.25em; margin: -.25em 0 .75em 0; border-width: 1px 0 0 0; }
+#footnotes .footnote { padding: 0 0.375em; line-height: 1.3; font-size: 0.875em; margin-left: 1.2em; text-indent: -1.2em; margin-bottom: .2em; }
+#footnotes .footnote a:first-of-type { font-weight: bold; text-decoration: none; }
+#footnotes .footnote:last-of-type { margin-bottom: 0; }
+
+#content #footnotes { margin-top: -0.625em; margin-bottom: 0; padding: 0.75em 0; }
+
+.gist .file-data > table { border: 0; background: #fff; width: 100%; margin-bottom: 0; }
+.gist .file-data > table td.line-data { width: 99%; }
+
+div.unbreakable { page-break-inside: avoid; }
+
+.big { font-size: larger; }
+
+.small { font-size: smaller; }
+
+.underline { text-decoration: underline; }
+
+.overline { text-decoration: overline; }
+
+.line-through { text-decoration: line-through; }
+
+.aqua { color: #00bfbf; }
+
+.aqua-background { background-color: #00fafa; }
+
+.black { color: black; }
+
+.black-background { background-color: black; }
+
+.blue { color: #0000bf; }
+
+.blue-background { background-color: #0000fa; }
+
+.fuchsia { color: #bf00bf; }
+
+.fuchsia-background { background-color: #fa00fa; }
+
+.gray { color: #606060; }
+
+.gray-background { background-color: #7d7d7d; }
+
+.green { color: #006000; }
+
+.green-background { background-color: #007d00; }
+
+.lime { color: #00bf00; }
+
+.lime-background { background-color: #00fa00; }
+
+.maroon { color: #600000; }
+
+.maroon-background { background-color: #7d0000; }
+
+.navy { color: #000060; }
+
+.navy-background { background-color: #00007d; }
+
+.olive { color: #606000; }
+
+.olive-background { background-color: #7d7d00; }
+
+.purple { color: #600060; }
+
+.purple-background { background-color: #7d007d; }
+
+.red { color: #bf0000; }
+
+.red-background { background-color: #fa0000; }
+
+.silver { color: #909090; }
+
+.silver-background { background-color: #bcbcbc; }
+
+.teal { color: #006060; }
+
+.teal-background { background-color: #007d7d; }
+
+.white { color: #bfbfbf; }
+
+.white-background { background-color: #fafafa; }
+
+.yellow { color: #bfbf00; }
+
+.yellow-background { background-color: #fafa00; }
+
+span.icon > .fa { cursor: default; }
+
+.admonitionblock td.icon [class^="fa icon-"] { font-size: 2.5em; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); cursor: default; }
+.admonitionblock td.icon .icon-note:before { content: "\f05a"; color: #207c98; }
+.admonitionblock td.icon .icon-tip:before { content: "\f0eb"; text-shadow: 1px 1px 2px rgba(155, 155, 0, 0.8); color: #111; }
+.admonitionblock td.icon .icon-warning:before { content: "\f071"; color: #bf6900; }
+.admonitionblock td.icon .icon-caution:before { content: "\f06d"; color: #bf3400; }
+.admonitionblock td.icon .icon-important:before { content: "\f06a"; color: #bf0000; }
+
+.conum[data-value] { display: inline-block; color: #fff !important; background-color: #222222; -webkit-border-radius: 100px; border-radius: 100px; text-align: center; font-size: 0.75em; width: 1.67em; height: 1.67em; line-height: 1.67em; font-family: "Open Sans", "DejaVu Sans", sans-serif; font-style: normal; font-weight: bold; }
+.conum[data-value] * { color: #fff !important; }
+.conum[data-value] + b { display: none; }
+.conum[data-value]:after { content: attr(data-value); }
+pre .conum[data-value] { position: relative; top: -0.125em; }
+
+b.conum * { color: inherit !important; }
+
+.conum:not([data-value]):empty { display: none; }
+
+.literalblock pre, .listingblock pre { background: #eeeeee; }
+
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css">
+<style>.listingblock .pygments .hll { background-color: #ffffcc }
+.listingblock .pygments  { background: #f8f8f8; }
+.listingblock .pygments .tok-c { color: #408080; font-style: italic } /* Comment */
+.listingblock .pygments .tok-err { border: 1px solid #FF0000 } /* Error */
+.listingblock .pygments .tok-k { color: #008000; font-weight: bold } /* Keyword */
+.listingblock .pygments .tok-o { color: #666666 } /* Operator */
+.listingblock .pygments .tok-cm { color: #408080; font-style: italic } /* Comment.Multiline */
+.listingblock .pygments .tok-cp { color: #BC7A00 } /* Comment.Preproc */
+.listingblock .pygments .tok-c1 { color: #408080; font-style: italic } /* Comment.Single */
+.listingblock .pygments .tok-cs { color: #408080; font-style: italic } /* Comment.Special */
+.listingblock .pygments .tok-gd { color: #A00000 } /* Generic.Deleted */
+.listingblock .pygments .tok-ge { font-style: italic } /* Generic.Emph */
+.listingblock .pygments .tok-gr { color: #FF0000 } /* Generic.Error */
+.listingblock .pygments .tok-gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.listingblock .pygments .tok-gi { color: #00A000 } /* Generic.Inserted */
+.listingblock .pygments .tok-go { color: #888888 } /* Generic.Output */
+.listingblock .pygments .tok-gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.listingblock .pygments .tok-gs { font-weight: bold } /* Generic.Strong */
+.listingblock .pygments .tok-gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.listingblock .pygments .tok-gt { color: #0044DD } /* Generic.Traceback */
+.listingblock .pygments .tok-kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.listingblock .pygments .tok-kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.listingblock .pygments .tok-kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.listingblock .pygments .tok-kp { color: #008000 } /* Keyword.Pseudo */
+.listingblock .pygments .tok-kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.listingblock .pygments .tok-kt { color: #B00040 } /* Keyword.Type */
+.listingblock .pygments .tok-m { color: #666666 } /* Literal.Number */
+.listingblock .pygments .tok-s { color: #BA2121 } /* Literal.String */
+.listingblock .pygments .tok-na { color: #7D9029 } /* Name.Attribute */
+.listingblock .pygments .tok-nb { color: #008000 } /* Name.Builtin */
+.listingblock .pygments .tok-nc { color: #0000FF; font-weight: bold } /* Name.Class */
+.listingblock .pygments .tok-no { color: #880000 } /* Name.Constant */
+.listingblock .pygments .tok-nd { color: #AA22FF } /* Name.Decorator */
+.listingblock .pygments .tok-ni { color: #999999; font-weight: bold } /* Name.Entity */
+.listingblock .pygments .tok-ne { color: #D2413A; font-weight: bold } /* Name.Exception */
+.listingblock .pygments .tok-nf { color: #0000FF } /* Name.Function */
+.listingblock .pygments .tok-nl { color: #A0A000 } /* Name.Label */
+.listingblock .pygments .tok-nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+.listingblock .pygments .tok-nt { color: #008000; font-weight: bold } /* Name.Tag */
+.listingblock .pygments .tok-nv { color: #19177C } /* Name.Variable */
+.listingblock .pygments .tok-ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
+.listingblock .pygments .tok-w { color: #bbbbbb } /* Text.Whitespace */
+.listingblock .pygments .tok-mb { color: #666666 } /* Literal.Number.Bin */
+.listingblock .pygments .tok-mf { color: #666666 } /* Literal.Number.Float */
+.listingblock .pygments .tok-mh { color: #666666 } /* Literal.Number.Hex */
+.listingblock .pygments .tok-mi { color: #666666 } /* Literal.Number.Integer */
+.listingblock .pygments .tok-mo { color: #666666 } /* Literal.Number.Oct */
+.listingblock .pygments .tok-sb { color: #BA2121 } /* Literal.String.Backtick */
+.listingblock .pygments .tok-sc { color: #BA2121 } /* Literal.String.Char */
+.listingblock .pygments .tok-sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.listingblock .pygments .tok-s2 { color: #BA2121 } /* Literal.String.Double */
+.listingblock .pygments .tok-se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
+.listingblock .pygments .tok-sh { color: #BA2121 } /* Literal.String.Heredoc */
+.listingblock .pygments .tok-si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
+.listingblock .pygments .tok-sx { color: #008000 } /* Literal.String.Other */
+.listingblock .pygments .tok-sr { color: #BB6688 } /* Literal.String.Regex */
+.listingblock .pygments .tok-s1 { color: #BA2121 } /* Literal.String.Single */
+.listingblock .pygments .tok-ss { color: #19177C } /* Literal.String.Symbol */
+.listingblock .pygments .tok-bp { color: #008000 } /* Name.Builtin.Pseudo */
+.listingblock .pygments .tok-vc { color: #19177C } /* Name.Variable.Class */
+.listingblock .pygments .tok-vg { color: #19177C } /* Name.Variable.Global */
+.listingblock .pygments .tok-vi { color: #19177C } /* Name.Variable.Instance */
+.listingblock .pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
+</style>
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>Grails</h1>
+<div class="details">
+<span id="author" class="author">Fran García</span><br>
+<span id="email" class="email">&lt;<a href="mailto:fgarciarico@gmail.com">fgarciarico@gmail.com</a>&gt;</span><br>
+</div>
+<div id="toc" class="toc2">
+<div id="toctitle">Índice de contenidos</div>
+<ul class="sectlevel1">
+<li><a href="#sesion07">7. Seguridad con Spring Security plugin.</a>
+<ul class="sectlevel2">
+<li><a href="#_instalaci%C3%B3n_del_plugin">7.1. Instalación del plugin</a></li>
+<li><a href="#_configuraci%C3%B3n_del_plugin">7.2. Configuración del plugin</a></li>
+<li><a href="#_clases_de_dominio">7.3. Clases de dominio</a></li>
+<li><a href="#_asegurar_peticiones">7.4. Asegurar peticiones</a></li>
+<li><a href="#_controladores">7.5. Controladores</a></li>
+<li><a href="#_librer%C3%ADas_adicionales">7.6. Librerías adicionales</a></li>
+<li><a href="#_otros_aspectos_interesantes_de_spring_security">7.7. Otros aspectos interesantes de Spring Security</a></li>
+<li><a href="#_ejercicios">7.8. Ejercicios</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div style="page-break-after: always;"></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="sesion07">7. Seguridad con Spring Security plugin.</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>En esta séptima sesión del módulo de Groovy&amp;Grails veremos como podemos utilizar un plugin de Grails que nos permitirá descargar toda la implementación de la seguridad de nuestra aplicación en Spring Security.</p>
+</div>
+<div class="paragraph">
+<p>Mediante este plugin podremos asignar determinados roles a usuarios y posteriormente crear algunos permisos que podrán ser asignados tanto a usuarios como a roles.</p>
+</div>
+<div class="sect2">
+<h3 id="_instalación_del_plugin">7.1. Instalación del plugin</h3>
+<div class="paragraph">
+<p>En la introducción a Grails decíamos que, aquello que no está implementado en el núcleo de Grails, es muy probable que lo podamos encontrar entre los plugins, realizados tanto por la comunidad de usuarios como por la gente de Spring Source.</p>
+</div>
+<div class="paragraph">
+<p>En este caso, el plugin es mantenido directamente por la gente de Spring Source, algo que nos garantiza su durabilidad y mantenimiento. Este plugin se llama <em>spring-security-core</em> y podemos encontrar toda la información relativa al mismo en la dirección <a href="http://grails.org/plugin/spring-security-core" class="bare">http://grails.org/plugin/spring-security-core</a>.</p>
+</div>
+<div class="paragraph">
+<p>Tal y como se explica en la página del plugin, éste tiene una serie de plugins adicionales que permiten la autenticación mediante OpenID, LDAP o Kerberos (entre otras). Además, a esta lista se han añadido recientemente otros plugins que permiten la autenticación utilizando Facebook o Twitter.</p>
+</div>
+<div class="paragraph">
+<p>El plugin de spring-security-core es uno de los mejor documentados de todos los desarrollados y podrás encontrar esta documentación en la dirección <a href="http://grails-plugins.github.io/grails-spring-security-core/guide/index.html" class="bare">http://grails-plugins.github.io/grails-spring-security-core/guide/index.html</a> y su autor, Burt Beckwith (<a href="https://www.twitter.com/burtbeckwith">@burtbeckwith</a>) uno de los <em>commiters</em> más activos de la comunidad.</p>
+</div>
+<div class="paragraph">
+<p>En Grails, para instalar cualquier plugin tenemos el comando <em>grails install-plugin</em> con lo que para instalar el plugin de spring-security-core únicamente deberíamos ejecutar el comando <em>grails install-plugin spring-security-core</em>. Pero además, podemos editar el archivo <em>BuildConfig.groovy</em> y añadir una nueva línea en la parte dedicada a los plugins:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-n">plugins</span> <span class="tok-o">{</span>
+	<span class="tok-o">...</span>
+	<span class="tok-n">compile</span> <span class="tok-s2">&quot;:spring-security-core:2.0-RC6&quot;</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Nosotros vamos a optar por esta segunda opción puesto que quedarán contemplados todos los plugins que instalemos en nuestra aplicación en un único archivo que luego vamos a poder compartir con el resto de desarrolladores de la aplicación.</p>
+</div>
+<div class="paragraph">
+<p>Durante la instalación del plugin se realizará automáticamente la descarga de todas las dependencias del plugin. En algunos casos, la instalación de plugins supone la creación de nuevos comandos en Grails y éste es el caso de spring-security-core, en el que, tal y como nos indican una vez finalizada la instalación nos indica que podemos ejecutar el comando <em>grails s2-quickstart</em> que nos servirá para inicializar el plugin y crear las clases de dominio necesarias.</p>
+</div>
+<div class="paragraph">
+<p>El nuevo comando instalado <em>s2-quickstart</em> necesita de una serie de parámetros que serán los siguientes</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>paquete</em> donde queremos crear las clases de dominio a generar</p>
+</li>
+<li>
+<p><em>clase de dominio para los usuarios</em> que habitualmente se llamará User o Person</p>
+</li>
+<li>
+<p><em>clase de dominio para los roles</em> que habitualmente se llamará Role o Authority</p>
+</li>
+<li>
+<p><em>clase de dominio para el mapeo de peticiones</em> que habitualmente se llamará RequestMap. Este parámetro es opcional puesto que este mapeo podemos hacerlo directamente en el archivo de configuración <em>Config.groovy</em></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Nosotros ejecutaremos el comando <em>grails s2-quickstart es.ua.expertojava.todo Person Role RequestMap</em> que creará cuatro nuevas clases de dominio en nuestra aplicación en el paquete <em>es.ua.expertojava.todo</em> que son las siguientes:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Person</p>
+</li>
+<li>
+<p>PersonRole</p>
+</li>
+<li>
+<p>Role</p>
+</li>
+<li>
+<p>RequestMap</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_configuración_del_plugin">7.2. Configuración del plugin</h3>
+<div class="paragraph">
+<p>Toda la configuración del plugin se añade automáticamente en el archivo de configuración Config.groovy y básicamente lo que se indica en esta configuración es el nombre de cada una de las clases necesarias para el plugin así como el tipo de seguridad implementada.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-c1">// Added by the Spring Security Core plugin:</span>
+<span class="tok-n">grails</span><span class="tok-o">.</span><span class="tok-na">plugin</span><span class="tok-o">.</span><span class="tok-na">springsecurity</span><span class="tok-o">.</span><span class="tok-na">userLookup</span><span class="tok-o">.</span><span class="tok-na">userDomainClassName</span> <span class="tok-o">=</span> <span class="tok-s1">&#39;es.ua.expertojava.todo.Person&#39;</span>
+<span class="tok-n">grails</span><span class="tok-o">.</span><span class="tok-na">plugin</span><span class="tok-o">.</span><span class="tok-na">springsecurity</span><span class="tok-o">.</span><span class="tok-na">userLookup</span><span class="tok-o">.</span><span class="tok-na">authorityJoinClassName</span> <span class="tok-o">=</span> <span class="tok-s1">&#39;es.ua.expertojava.todo.PersonRole&#39;</span>
+<span class="tok-n">grails</span><span class="tok-o">.</span><span class="tok-na">plugin</span><span class="tok-o">.</span><span class="tok-na">springsecurity</span><span class="tok-o">.</span><span class="tok-na">authority</span><span class="tok-o">.</span><span class="tok-na">className</span> <span class="tok-o">=</span> <span class="tok-s1">&#39;es.ua.expertojava.todo.Role&#39;</span>
+<span class="tok-n">grails</span><span class="tok-o">.</span><span class="tok-na">plugin</span><span class="tok-o">.</span><span class="tok-na">springsecurity</span><span class="tok-o">.</span><span class="tok-na">requestMap</span><span class="tok-o">.</span><span class="tok-na">className</span> <span class="tok-o">=</span> <span class="tok-s1">&#39;es.ua.expertojava.todo.RequestMap&#39;</span>
+<span class="tok-n">grails</span><span class="tok-o">.</span><span class="tok-na">plugin</span><span class="tok-o">.</span><span class="tok-na">springsecurity</span><span class="tok-o">.</span><span class="tok-na">securityConfigType</span> <span class="tok-o">=</span> <span class="tok-s1">&#39;Requestmap&#39;</span>
+<span class="tok-n">grails</span><span class="tok-o">.</span><span class="tok-na">plugin</span><span class="tok-o">.</span><span class="tok-na">springsecurity</span><span class="tok-o">.</span><span class="tok-na">controllerAnnotations</span><span class="tok-o">.</span><span class="tok-na">staticRules</span> <span class="tok-o">=</span> <span class="tok-o">[</span>
+	<span class="tok-s1">&#39;/&#39;</span><span class="tok-o">:</span>                              <span class="tok-o">[</span><span class="tok-s1">&#39;permitAll&#39;</span><span class="tok-o">],</span>
+	<span class="tok-s1">&#39;/index&#39;</span><span class="tok-o">:</span>                         <span class="tok-o">[</span><span class="tok-s1">&#39;permitAll&#39;</span><span class="tok-o">],</span>
+	<span class="tok-s1">&#39;/index.gsp&#39;</span><span class="tok-o">:</span>                     <span class="tok-o">[</span><span class="tok-s1">&#39;permitAll&#39;</span><span class="tok-o">],</span>
+	<span class="tok-s1">&#39;/assets/**&#39;</span><span class="tok-o">:</span>                     <span class="tok-o">[</span><span class="tok-s1">&#39;permitAll&#39;</span><span class="tok-o">],</span>
+	<span class="tok-s1">&#39;/**/js/**&#39;</span><span class="tok-o">:</span>                      <span class="tok-o">[</span><span class="tok-s1">&#39;permitAll&#39;</span><span class="tok-o">],</span>
+	<span class="tok-s1">&#39;/**/css/**&#39;</span><span class="tok-o">:</span>                     <span class="tok-o">[</span><span class="tok-s1">&#39;permitAll&#39;</span><span class="tok-o">],</span>
+	<span class="tok-s1">&#39;/**/images/**&#39;</span><span class="tok-o">:</span>                  <span class="tok-o">[</span><span class="tok-s1">&#39;permitAll&#39;</span><span class="tok-o">],</span>
+	<span class="tok-s1">&#39;/**/favicon.ico&#39;</span><span class="tok-o">:</span>                <span class="tok-o">[</span><span class="tok-s1">&#39;permitAll&#39;</span><span class="tok-o">]</span>
+<span class="tok-o">]</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Como te habrás dado cuenta, todos los parámetros de configuración empiezan por <em>grails.plugin.springsecurity</em>. De esta forma podemos especificar por ejemplo que tipo de algoritmo queremos para encriptar la contraseña de los usuarios de la siguiente forma</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-n">grails</span><span class="tok-o">.</span><span class="tok-na">plugin</span><span class="tok-o">.</span><span class="tok-na">springsecurity</span><span class="tok-o">.</span><span class="tok-na">password</span><span class="tok-o">.</span><span class="tok-na">algorithm</span><span class="tok-o">=</span><span class="tok-s1">&#39;SHA-512&#39;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_clases_de_dominio">7.3. Clases de dominio</h3>
+<div class="paragraph">
+<p>Como comentábamos anteriormente, cuatro son las clases que se han creado al ejecutar el comando <em>grails s2-quickstart</em>, tres obligatorias (Person, Role y PersonRole) y una opcional (RequestMap). La clase PersonRole es una clase que relaciona que implementa la relación muchos-a-muchos entre la clase Person y la clase Role. Veamos cada una de estas clases en detalle:</p>
+</div>
+<div class="sect3">
+<h4 id="_clase_de_dominio_person">7.3.1. Clase de dominio Person</h4>
+<div class="paragraph">
+<p>La clase de dominio Person es la clase encargada de almacenar los datos de todos los usuarios de la aplicación. Estos datos son los típicos que desearíamos almacenar de un usuario como son el nombre de usuario y la contraseña. Además, también tiene una serie de propiedades que nos indicará si el usuario está activo o no, si la cuenta ha expirado, si la cuenta está bloqueada o si la contraseña ha expirado.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-kn">package</span> <span class="tok-n">es</span><span class="tok-o">.</span><span class="tok-na">ua</span><span class="tok-o">.</span><span class="tok-na">expertojava</span><span class="tok-o">.</span><span class="tok-na">todo</span>
+
+<span class="tok-kd">class</span> <span class="tok-nc">Person</span> <span class="tok-o">{</span>
+
+	<span class="tok-kd">transient</span> <span class="tok-n">springSecurityService</span>
+
+	<span class="tok-n">String</span> <span class="tok-n">username</span>
+	<span class="tok-n">String</span> <span class="tok-n">password</span>
+	<span class="tok-kt">boolean</span> <span class="tok-n">enabled</span> <span class="tok-o">=</span> <span class="tok-kc">true</span>
+	<span class="tok-kt">boolean</span> <span class="tok-n">accountExpired</span>
+	<span class="tok-kt">boolean</span> <span class="tok-n">accountLocked</span>
+	<span class="tok-kt">boolean</span> <span class="tok-n">passwordExpired</span>
+
+	<span class="tok-kd">static</span> <span class="tok-n">transients</span> <span class="tok-o">=</span> <span class="tok-o">[</span><span class="tok-s1">&#39;springSecurityService&#39;</span><span class="tok-o">]</span>
+
+	<span class="tok-kd">static</span> <span class="tok-n">constraints</span> <span class="tok-o">=</span> <span class="tok-o">{</span>
+		<span class="tok-n">username</span> <span class="tok-nl">blank:</span> <span class="tok-kc">false</span><span class="tok-o">,</span> <span class="tok-nl">unique:</span> <span class="tok-kc">true</span>
+		<span class="tok-n">password</span> <span class="tok-nl">blank:</span> <span class="tok-kc">false</span>
+	<span class="tok-o">}</span>
+
+	<span class="tok-kd">static</span> <span class="tok-n">mapping</span> <span class="tok-o">=</span> <span class="tok-o">{</span>
+		<span class="tok-n">password</span> <span class="tok-nl">column:</span> <span class="tok-s1">&#39;`password`&#39;</span>
+	<span class="tok-o">}</span>
+
+	<span class="tok-n">Set</span><span class="tok-o">&lt;</span><span class="tok-n">Role</span><span class="tok-o">&gt;</span> <span class="tok-n">getAuthorities</span><span class="tok-o">()</span> <span class="tok-o">{</span>
+		<span class="tok-n">PersonRole</span><span class="tok-o">.</span><span class="tok-na">findAllByPerson</span><span class="tok-o">(</span><span class="tok-k">this</span><span class="tok-o">).</span><span class="tok-na">collect</span> <span class="tok-o">{</span> <span class="tok-n">it</span><span class="tok-o">.</span><span class="tok-na">role</span> <span class="tok-o">}</span>
+	<span class="tok-o">}</span>
+
+	<span class="tok-kt">def</span> <span class="tok-nf">beforeInsert</span><span class="tok-o">()</span> <span class="tok-o">{</span>
+		<span class="tok-n">encodePassword</span><span class="tok-o">()</span>
+	<span class="tok-o">}</span>
+
+	<span class="tok-kt">def</span> <span class="tok-nf">beforeUpdate</span><span class="tok-o">()</span> <span class="tok-o">{</span>
+		<span class="tok-k">if</span> <span class="tok-o">(</span><span class="tok-n">isDirty</span><span class="tok-o">(</span><span class="tok-s1">&#39;password&#39;</span><span class="tok-o">))</span> <span class="tok-o">{</span>
+			<span class="tok-n">encodePassword</span><span class="tok-o">()</span>
+		<span class="tok-o">}</span>
+	<span class="tok-o">}</span>
+
+	<span class="tok-kd">protected</span> <span class="tok-kt">void</span> <span class="tok-nf">encodePassword</span><span class="tok-o">()</span> <span class="tok-o">{</span>
+		<span class="tok-n">password</span> <span class="tok-o">=</span> <span class="tok-n">springSecurityService</span><span class="tok-o">?.</span><span class="tok-na">passwordEncoder</span> <span class="tok-o">?</span> <span class="tok-n">springSecurityService</span><span class="tok-o">.</span><span class="tok-na">encodePassword</span><span class="tok-o">(</span><span class="tok-n">password</span><span class="tok-o">)</span> <span class="tok-o">:</span> <span class="tok-n">password</span>
+	<span class="tok-o">}</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Además, también se implementa un método llamado <em>getAuthorities()</em> que nos devolverá todos los roles que el usuario tenga asignados. Este método podíamos decir que es análogo a la definición <em>static hasMany = [authorities: Authority]</em> de la forma tradicional.</p>
+</div>
+<div class="paragraph">
+<p>Esta clase podrá ser modificada a nuestro gusto para añadirle tantas propiedades como necesitemos, como por ejemplo, nombre, apellidos o email. Sin embargo, es más conveniente dejar esta clase tal cual está y extenderla utilizando una clase llamada por ejemplo <em>User</em>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-kn">package</span> <span class="tok-n">es</span><span class="tok-o">.</span><span class="tok-na">ua</span><span class="tok-o">.</span><span class="tok-na">expertojava</span><span class="tok-o">.</span><span class="tok-na">todo</span>
+
+<span class="tok-kd">class</span> <span class="tok-nc">User</span> <span class="tok-kd">extends</span> <span class="tok-n">Person</span><span class="tok-o">{</span>
+	<span class="tok-n">String</span> <span class="tok-n">name</span>
+	<span class="tok-n">String</span> <span class="tok-n">surnames</span>
+	<span class="tok-n">String</span> <span class="tok-n">confirmPassword</span>
+	<span class="tok-n">String</span> <span class="tok-n">email</span>
+	<span class="tok-n">Date</span> <span class="tok-n">dateOfBirth</span>
+	<span class="tok-n">String</span> <span class="tok-n">description</span>
+
+	<span class="tok-kd">static</span> <span class="tok-n">hasMany</span> <span class="tok-o">=</span> <span class="tok-o">[</span><span class="tok-nl">todos:</span><span class="tok-n">Todo</span><span class="tok-o">]</span>
+
+	<span class="tok-kd">static</span> <span class="tok-n">constraints</span> <span class="tok-o">=</span> <span class="tok-o">{</span>
+		<span class="tok-n">name</span><span class="tok-o">(</span><span class="tok-nl">blank:</span><span class="tok-kc">false</span><span class="tok-o">)</span>
+		<span class="tok-n">surnames</span><span class="tok-o">(</span><span class="tok-nl">blank:</span><span class="tok-kc">false</span><span class="tok-o">)</span>
+		<span class="tok-n">confirmPassword</span><span class="tok-o">(</span><span class="tok-nl">blank:</span><span class="tok-kc">false</span><span class="tok-o">,</span> <span class="tok-nl">password:</span><span class="tok-kc">true</span><span class="tok-o">)</span>
+		<span class="tok-n">email</span><span class="tok-o">(</span><span class="tok-nl">blank:</span><span class="tok-kc">false</span><span class="tok-o">,</span> <span class="tok-nl">email:</span><span class="tok-kc">true</span><span class="tok-o">)</span>
+		<span class="tok-n">dateOfBirth</span><span class="tok-o">(</span><span class="tok-nl">nullable:</span><span class="tok-kc">true</span><span class="tok-o">,</span> <span class="tok-nl">validator:</span> <span class="tok-o">{</span>
+			<span class="tok-k">if</span> <span class="tok-o">(</span><span class="tok-n">it</span><span class="tok-o">?.</span><span class="tok-na">compareTo</span><span class="tok-o">(</span><span class="tok-k">new</span> <span class="tok-n">Date</span><span class="tok-o">())</span> <span class="tok-o">&lt;</span> <span class="tok-mi">0</span><span class="tok-o">)</span>
+				<span class="tok-k">return</span> <span class="tok-kc">true</span>
+			<span class="tok-k">return</span> <span class="tok-kc">false</span>
+		<span class="tok-o">})</span>
+		<span class="tok-n">description</span><span class="tok-o">(</span><span class="tok-nl">maxSize:</span><span class="tok-mi">1000</span><span class="tok-o">,</span><span class="tok-nl">nullable:</span><span class="tok-kc">true</span><span class="tok-o">)</span>
+	<span class="tok-o">}</span>
+
+	<span class="tok-kd">static</span> <span class="tok-n">transients</span> <span class="tok-o">=</span> <span class="tok-o">[</span><span class="tok-s2">&quot;confirmPassword&quot;</span><span class="tok-o">]</span>
+
+	<span class="tok-n">String</span> <span class="tok-nf">toString</span><span class="tok-o">(){</span>
+		<span class="tok-s2">&quot;@${username}&quot;</span>
+	<span class="tok-o">}</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Date cuenta de la relación que hemos establecido entre los usuarios y las tareas con <em>static hasMany = [todos:Todo]</em> con lo que habrá también que modificar la clase de domninio <em>Todo</em> para establecer la otra parte de la relación.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-kn">package</span> <span class="tok-n">es</span><span class="tok-o">.</span><span class="tok-na">ua</span><span class="tok-o">.</span><span class="tok-na">expertojava</span><span class="tok-o">.</span><span class="tok-na">todo</span>
+
+<span class="tok-kd">class</span> <span class="tok-nc">Todo</span> <span class="tok-o">{</span>
+	<span class="tok-o">...</span>
+
+	<span class="tok-n">User</span> <span class="tok-n">user</span>
+
+	<span class="tok-o">...</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Para facilitar la generación de usuarios desde la propia aplicación, vamos a generar las vistas y los controladores referentes a los usuarios con</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-n">grails</span> <span class="tok-n">generate</span><span class="tok-o">-</span><span class="tok-n">all</span> <span class="tok-n">es</span><span class="tok-o">.</span><span class="tok-na">ua</span><span class="tok-o">.</span><span class="tok-na">expertojava</span><span class="tok-o">.</span><span class="tok-na">todo</span><span class="tok-o">.</span><span class="tok-na">User</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_clase_de_dominio_role">7.3.2. Clase de dominio Role</h4>
+<div class="paragraph">
+<p>El plugin spring-security-core necesita de una clase que implemente los diferentes roles que pueden coexistir en nuestra aplicación. Habitualmente, esta clase se encarga de restringir el acceso a determinadas URLs a aquellos usuarios que tengan los permisos adecuados. Un usuario puede tener varios roles asignados que indiquen diferentes niveles de acceso a la aplicación y por lo normal, cada usuario debería tener al menos un rol asignado.</p>
+</div>
+<div class="paragraph">
+<p>También es posible que un usuario no tenga ningún rol asignado (aunque no es muy habitual). En estos casos, cuando un usuario sin ningún rol asignado se identifica en la aplicación, automáticamente se le asigna un rol <em>virtual</em> llamado <em>ROLE_NO_ROLES</em>. Este usuario, sólo podrá acceder a aquellos recursos que no estén <em>asegurados</em>.</p>
+</div>
+<div class="paragraph">
+<p>La clase Role tiene una única propiedad llamada <em>authority</em> de tipo <em>String</em> que será el nombre dado al rol. Esta propiedad debe ser única, tal y como vemos en las restricciones de la clase.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-kn">package</span> <span class="tok-n">es</span><span class="tok-o">.</span><span class="tok-na">ua</span><span class="tok-o">.</span><span class="tok-na">expertojava</span><span class="tok-o">.</span><span class="tok-na">todo</span>
+
+<span class="tok-kd">class</span> <span class="tok-nc">Role</span> <span class="tok-o">{</span>
+
+	<span class="tok-n">String</span> <span class="tok-n">authority</span>
+
+	<span class="tok-kd">static</span> <span class="tok-n">mapping</span> <span class="tok-o">=</span> <span class="tok-o">{</span>
+		<span class="tok-n">cache</span> <span class="tok-kc">true</span>
+	<span class="tok-o">}</span>
+
+	<span class="tok-kd">static</span> <span class="tok-n">constraints</span> <span class="tok-o">=</span> <span class="tok-o">{</span>
+		<span class="tok-n">authority</span> <span class="tok-nl">blank:</span> <span class="tok-kc">false</span><span class="tok-o">,</span> <span class="tok-nl">unique:</span> <span class="tok-kc">true</span>
+	<span class="tok-o">}</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_clase_de_dominio_personrole">7.3.3. Clase de dominio PersonRole</h4>
+<div class="paragraph">
+<p>Para especificar la relación de muchos-a-muchos entre las clases de dominio Person y Role utilizamos una nueva clase llamada PersonRole. Esta clase tiene únicamente dos propiedades que serán las referidas a la clase de dominio Person y a la clase de dominio Role. Además, le especificaremos que la clave primaria de la clase será la composición de ambas propiedades y que no necesitamos almacenar la versión actual del objeto.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-kn">package</span> <span class="tok-n">es</span><span class="tok-o">.</span><span class="tok-na">ua</span><span class="tok-o">.</span><span class="tok-na">expertojava</span><span class="tok-o">.</span><span class="tok-na">todo</span>
+
+<span class="tok-kn">import</span> <span class="tok-nn">org.apache.commons.lang.builder.HashCodeBuilder</span>
+
+<span class="tok-kd">class</span> <span class="tok-nc">PersonRole</span> <span class="tok-kd">implements</span> <span class="tok-n">Serializable</span> <span class="tok-o">{</span>
+
+	<span class="tok-kd">private</span> <span class="tok-kd">static</span> <span class="tok-kd">final</span> <span class="tok-kt">long</span> <span class="tok-n">serialVersionUID</span> <span class="tok-o">=</span> <span class="tok-mi">1</span>
+
+	<span class="tok-n">Person</span> <span class="tok-n">person</span>
+	<span class="tok-n">Role</span> <span class="tok-n">role</span>
+
+	<span class="tok-kt">boolean</span> <span class="tok-nf">equals</span><span class="tok-o">(</span><span class="tok-n">other</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+		<span class="tok-k">if</span> <span class="tok-o">(!(</span><span class="tok-n">other</span> <span class="tok-k">instanceof</span> <span class="tok-n">PersonRole</span><span class="tok-o">))</span> <span class="tok-o">{</span>
+			<span class="tok-k">return</span> <span class="tok-kc">false</span>
+		<span class="tok-o">}</span>
+
+		<span class="tok-n">other</span><span class="tok-o">.</span><span class="tok-na">person</span><span class="tok-o">?.</span><span class="tok-na">id</span> <span class="tok-o">==</span> <span class="tok-n">person</span><span class="tok-o">?.</span><span class="tok-na">id</span> <span class="tok-o">&amp;&amp;</span>
+		<span class="tok-n">other</span><span class="tok-o">.</span><span class="tok-na">role</span><span class="tok-o">?.</span><span class="tok-na">id</span> <span class="tok-o">==</span> <span class="tok-n">role</span><span class="tok-o">?.</span><span class="tok-na">id</span>
+	<span class="tok-o">}</span>
+
+	<span class="tok-kt">int</span> <span class="tok-nf">hashCode</span><span class="tok-o">()</span> <span class="tok-o">{</span>
+		<span class="tok-kt">def</span> <span class="tok-n">builder</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-n">HashCodeBuilder</span><span class="tok-o">()</span>
+		<span class="tok-k">if</span> <span class="tok-o">(</span><span class="tok-n">person</span><span class="tok-o">)</span> <span class="tok-n">builder</span><span class="tok-o">.</span><span class="tok-na">append</span><span class="tok-o">(</span><span class="tok-n">person</span><span class="tok-o">.</span><span class="tok-na">id</span><span class="tok-o">)</span>
+		<span class="tok-k">if</span> <span class="tok-o">(</span><span class="tok-n">role</span><span class="tok-o">)</span> <span class="tok-n">builder</span><span class="tok-o">.</span><span class="tok-na">append</span><span class="tok-o">(</span><span class="tok-n">role</span><span class="tok-o">.</span><span class="tok-na">id</span><span class="tok-o">)</span>
+		<span class="tok-n">builder</span><span class="tok-o">.</span><span class="tok-na">toHashCode</span><span class="tok-o">()</span>
+	<span class="tok-o">}</span>
+
+	<span class="tok-kd">static</span> <span class="tok-n">PersonRole</span> <span class="tok-nf">get</span><span class="tok-o">(</span><span class="tok-kt">long</span> <span class="tok-n">personId</span><span class="tok-o">,</span> <span class="tok-kt">long</span> <span class="tok-n">roleId</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+		<span class="tok-n">PersonRole</span><span class="tok-o">.</span><span class="tok-na">where</span> <span class="tok-o">{</span>
+			<span class="tok-n">person</span> <span class="tok-o">==</span> <span class="tok-n">Person</span><span class="tok-o">.</span><span class="tok-na">load</span><span class="tok-o">(</span><span class="tok-n">personId</span><span class="tok-o">)</span> <span class="tok-o">&amp;&amp;</span>
+			<span class="tok-n">role</span> <span class="tok-o">==</span> <span class="tok-n">Role</span><span class="tok-o">.</span><span class="tok-na">load</span><span class="tok-o">(</span><span class="tok-n">roleId</span><span class="tok-o">)</span>
+		<span class="tok-o">}.</span><span class="tok-na">get</span><span class="tok-o">()</span>
+	<span class="tok-o">}</span>
+
+	<span class="tok-kd">static</span> <span class="tok-kt">boolean</span> <span class="tok-nf">exists</span><span class="tok-o">(</span><span class="tok-kt">long</span> <span class="tok-n">personId</span><span class="tok-o">,</span> <span class="tok-kt">long</span> <span class="tok-n">roleId</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+		<span class="tok-n">PersonRole</span><span class="tok-o">.</span><span class="tok-na">where</span> <span class="tok-o">{</span>
+			<span class="tok-n">person</span> <span class="tok-o">==</span> <span class="tok-n">Person</span><span class="tok-o">.</span><span class="tok-na">load</span><span class="tok-o">(</span><span class="tok-n">personId</span><span class="tok-o">)</span> <span class="tok-o">&amp;&amp;</span>
+			<span class="tok-n">role</span> <span class="tok-o">==</span> <span class="tok-n">Role</span><span class="tok-o">.</span><span class="tok-na">load</span><span class="tok-o">(</span><span class="tok-n">roleId</span><span class="tok-o">)</span>
+		<span class="tok-o">}.</span><span class="tok-na">count</span><span class="tok-o">()</span> <span class="tok-o">&gt;</span> <span class="tok-mi">0</span>
+	<span class="tok-o">}</span>
+
+	<span class="tok-kd">static</span> <span class="tok-n">PersonRole</span> <span class="tok-nf">create</span><span class="tok-o">(</span><span class="tok-n">Person</span> <span class="tok-n">person</span><span class="tok-o">,</span> <span class="tok-n">Role</span> <span class="tok-n">role</span><span class="tok-o">,</span> <span class="tok-kt">boolean</span> <span class="tok-n">flush</span> <span class="tok-o">=</span> <span class="tok-kc">false</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+		<span class="tok-kt">def</span> <span class="tok-n">instance</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-n">PersonRole</span><span class="tok-o">(</span><span class="tok-nl">person:</span> <span class="tok-n">person</span><span class="tok-o">,</span> <span class="tok-nl">role:</span> <span class="tok-n">role</span><span class="tok-o">)</span>
+		<span class="tok-n">instance</span><span class="tok-o">.</span><span class="tok-na">save</span><span class="tok-o">(</span><span class="tok-nl">flush:</span> <span class="tok-n">flush</span><span class="tok-o">,</span> <span class="tok-nl">insert:</span> <span class="tok-kc">true</span><span class="tok-o">)</span>
+		<span class="tok-n">instance</span>
+	<span class="tok-o">}</span>
+
+	<span class="tok-kd">static</span> <span class="tok-kt">boolean</span> <span class="tok-nf">remove</span><span class="tok-o">(</span><span class="tok-n">Person</span> <span class="tok-n">u</span><span class="tok-o">,</span> <span class="tok-n">Role</span> <span class="tok-n">r</span><span class="tok-o">,</span> <span class="tok-kt">boolean</span> <span class="tok-n">flush</span> <span class="tok-o">=</span> <span class="tok-kc">false</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+		<span class="tok-k">if</span> <span class="tok-o">(</span><span class="tok-n">u</span> <span class="tok-o">==</span> <span class="tok-kc">null</span> <span class="tok-o">||</span> <span class="tok-n">r</span> <span class="tok-o">==</span> <span class="tok-kc">null</span><span class="tok-o">)</span> <span class="tok-k">return</span> <span class="tok-kc">false</span>
+
+		<span class="tok-kt">int</span> <span class="tok-n">rowCount</span> <span class="tok-o">=</span> <span class="tok-n">PersonRole</span><span class="tok-o">.</span><span class="tok-na">where</span> <span class="tok-o">{</span>
+			<span class="tok-n">person</span> <span class="tok-o">==</span> <span class="tok-n">Person</span><span class="tok-o">.</span><span class="tok-na">load</span><span class="tok-o">(</span><span class="tok-n">u</span><span class="tok-o">.</span><span class="tok-na">id</span><span class="tok-o">)</span> <span class="tok-o">&amp;&amp;</span>
+			<span class="tok-n">role</span> <span class="tok-o">==</span> <span class="tok-n">Role</span><span class="tok-o">.</span><span class="tok-na">load</span><span class="tok-o">(</span><span class="tok-n">r</span><span class="tok-o">.</span><span class="tok-na">id</span><span class="tok-o">)</span>
+		<span class="tok-o">}.</span><span class="tok-na">deleteAll</span><span class="tok-o">()</span>
+
+		<span class="tok-k">if</span> <span class="tok-o">(</span><span class="tok-n">flush</span><span class="tok-o">)</span> <span class="tok-o">{</span> <span class="tok-n">PersonRole</span><span class="tok-o">.</span><span class="tok-na">withSession</span> <span class="tok-o">{</span> <span class="tok-n">it</span><span class="tok-o">.</span><span class="tok-na">flush</span><span class="tok-o">()</span> <span class="tok-o">}</span> <span class="tok-o">}</span>
+
+		<span class="tok-n">rowCount</span> <span class="tok-o">&gt;</span> <span class="tok-mi">0</span>
+	<span class="tok-o">}</span>
+
+	<span class="tok-kd">static</span> <span class="tok-kt">void</span> <span class="tok-nf">removeAll</span><span class="tok-o">(</span><span class="tok-n">Person</span> <span class="tok-n">u</span><span class="tok-o">,</span> <span class="tok-kt">boolean</span> <span class="tok-n">flush</span> <span class="tok-o">=</span> <span class="tok-kc">false</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+		<span class="tok-k">if</span> <span class="tok-o">(</span><span class="tok-n">u</span> <span class="tok-o">==</span> <span class="tok-kc">null</span><span class="tok-o">)</span> <span class="tok-k">return</span>
+
+		<span class="tok-n">PersonRole</span><span class="tok-o">.</span><span class="tok-na">where</span> <span class="tok-o">{</span>
+			<span class="tok-n">person</span> <span class="tok-o">==</span> <span class="tok-n">Person</span><span class="tok-o">.</span><span class="tok-na">load</span><span class="tok-o">(</span><span class="tok-n">u</span><span class="tok-o">.</span><span class="tok-na">id</span><span class="tok-o">)</span>
+		<span class="tok-o">}.</span><span class="tok-na">deleteAll</span><span class="tok-o">()</span>
+
+		<span class="tok-k">if</span> <span class="tok-o">(</span><span class="tok-n">flush</span><span class="tok-o">)</span> <span class="tok-o">{</span> <span class="tok-n">PersonRole</span><span class="tok-o">.</span><span class="tok-na">withSession</span> <span class="tok-o">{</span> <span class="tok-n">it</span><span class="tok-o">.</span><span class="tok-na">flush</span><span class="tok-o">()</span> <span class="tok-o">}</span> <span class="tok-o">}</span>
+	<span class="tok-o">}</span>
+
+	<span class="tok-kd">static</span> <span class="tok-kt">void</span> <span class="tok-nf">removeAll</span><span class="tok-o">(</span><span class="tok-n">Role</span> <span class="tok-n">r</span><span class="tok-o">,</span> <span class="tok-kt">boolean</span> <span class="tok-n">flush</span> <span class="tok-o">=</span> <span class="tok-kc">false</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+		<span class="tok-k">if</span> <span class="tok-o">(</span><span class="tok-n">r</span> <span class="tok-o">==</span> <span class="tok-kc">null</span><span class="tok-o">)</span> <span class="tok-k">return</span>
+
+		<span class="tok-n">PersonRole</span><span class="tok-o">.</span><span class="tok-na">where</span> <span class="tok-o">{</span>
+			<span class="tok-n">role</span> <span class="tok-o">==</span> <span class="tok-n">Role</span><span class="tok-o">.</span><span class="tok-na">load</span><span class="tok-o">(</span><span class="tok-n">r</span><span class="tok-o">.</span><span class="tok-na">id</span><span class="tok-o">)</span>
+		<span class="tok-o">}.</span><span class="tok-na">deleteAll</span><span class="tok-o">()</span>
+
+		<span class="tok-k">if</span> <span class="tok-o">(</span><span class="tok-n">flush</span><span class="tok-o">)</span> <span class="tok-o">{</span> <span class="tok-n">PersonRole</span><span class="tok-o">.</span><span class="tok-na">withSession</span> <span class="tok-o">{</span> <span class="tok-n">it</span><span class="tok-o">.</span><span class="tok-na">flush</span><span class="tok-o">()</span> <span class="tok-o">}</span> <span class="tok-o">}</span>
+	<span class="tok-o">}</span>
+
+	<span class="tok-kd">static</span> <span class="tok-n">constraints</span> <span class="tok-o">=</span> <span class="tok-o">{</span>
+		<span class="tok-n">role</span> <span class="tok-nl">validator:</span> <span class="tok-o">{</span> <span class="tok-n">Role</span> <span class="tok-n">r</span><span class="tok-o">,</span> <span class="tok-n">PersonRole</span> <span class="tok-n">ur</span> <span class="tok-o">-&gt;</span>
+			<span class="tok-k">if</span> <span class="tok-o">(</span><span class="tok-n">ur</span><span class="tok-o">.</span><span class="tok-na">person</span> <span class="tok-o">==</span> <span class="tok-kc">null</span><span class="tok-o">)</span> <span class="tok-k">return</span>
+			<span class="tok-kt">boolean</span> <span class="tok-n">existing</span> <span class="tok-o">=</span> <span class="tok-kc">false</span>
+			<span class="tok-n">PersonRole</span><span class="tok-o">.</span><span class="tok-na">withNewSession</span> <span class="tok-o">{</span>
+				<span class="tok-n">existing</span> <span class="tok-o">=</span> <span class="tok-n">PersonRole</span><span class="tok-o">.</span><span class="tok-na">exists</span><span class="tok-o">(</span><span class="tok-n">ur</span><span class="tok-o">.</span><span class="tok-na">person</span><span class="tok-o">.</span><span class="tok-na">id</span><span class="tok-o">,</span> <span class="tok-n">r</span><span class="tok-o">.</span><span class="tok-na">id</span><span class="tok-o">)</span>
+			<span class="tok-o">}</span>
+			<span class="tok-k">if</span> <span class="tok-o">(</span><span class="tok-n">existing</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+				<span class="tok-k">return</span> <span class="tok-s1">&#39;userRole.exists&#39;</span>
+			<span class="tok-o">}</span>
+		<span class="tok-o">}</span>
+	<span class="tok-o">}</span>
+
+	<span class="tok-kd">static</span> <span class="tok-n">mapping</span> <span class="tok-o">=</span> <span class="tok-o">{</span>
+		<span class="tok-n">id</span> <span class="tok-nl">composite:</span> <span class="tok-o">[</span><span class="tok-s1">&#39;role&#39;</span><span class="tok-o">,</span> <span class="tok-s1">&#39;person&#39;</span><span class="tok-o">]</span>
+		<span class="tok-n">version</span> <span class="tok-kc">false</span>
+	<span class="tok-o">}</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>También se han creado una serie de métodos que facilitan la asignación de roles a usuario así como la revocación. Con esto, suponiendo que ya tenemos creados un rol y un usuario, podemos asignar o revocar un rol a un usuario de la siguiente forma:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-n">User</span> <span class="tok-n">user</span> <span class="tok-o">=</span> <span class="tok-o">...</span>
+<span class="tok-n">Role</span> <span class="tok-n">role</span> <span class="tok-o">=</span> <span class="tok-o">...</span>
+<span class="tok-c1">//Asignación de rol a un usuario</span>
+<span class="tok-n">UserRole</span><span class="tok-o">.</span><span class="tok-na">create</span> <span class="tok-n">user</span><span class="tok-o">,</span> <span class="tok-n">role</span>
+<span class="tok-c1">//Asignación de rol a un usuario indicándole el atributo flush</span>
+<span class="tok-n">UserRole</span><span class="tok-o">.</span><span class="tok-na">create</span> <span class="tok-n">user</span><span class="tok-o">,</span> <span class="tok-n">role</span><span class="tok-o">,</span> <span class="tok-kc">true</span>
+
+<span class="tok-c1">//Revocación de un rol a un usuario</span>
+<span class="tok-n">User</span> <span class="tok-n">user</span> <span class="tok-o">=</span> <span class="tok-o">...</span>
+<span class="tok-n">Role</span> <span class="tok-n">role</span> <span class="tok-o">=</span> <span class="tok-o">...</span>
+<span class="tok-n">UserRole</span><span class="tok-o">.</span><span class="tok-na">remove</span> <span class="tok-n">user</span><span class="tok-o">,</span> <span class="tok-n">role</span>
+<span class="tok-c1">//Revocación de un rol a un usuario indicándole el atributo flush</span>
+<span class="tok-n">UserRole</span><span class="tok-o">.</span><span class="tok-na">remove</span> <span class="tok-n">user</span><span class="tok-o">,</span> <span class="tok-n">role</span><span class="tok-o">,</span> <span class="tok-kc">true</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_clase_de_dominio_requestmap">7.3.4. Clase de dominio RequestMap</h4>
+<div class="paragraph">
+<p>La clase de dominio <em>RequestMap</em> es una clase opcional que nos permite registrar que peticiones queremos asegurar introduciéndolas en la base de datos en lugar de tener que especificarlo en el archivo de configuración <em>Config.groovy</em> o mediante anotaciones (lo veremos a continuación).</p>
+</div>
+<div class="paragraph">
+<p>Esta opción nos permite configurar estas entradas en tiempo de ejecución y podremos añadir, modificar o eliminar entradas sin tener que reiniciar la aplicación. Esta es la clase generada:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-kn">package</span> <span class="tok-n">es</span><span class="tok-o">.</span><span class="tok-na">ua</span><span class="tok-o">.</span><span class="tok-na">expertojava</span><span class="tok-o">.</span><span class="tok-na">todo</span>
+
+<span class="tok-kn">import</span> <span class="tok-nn">org.springframework.http.HttpMethod</span>
+
+<span class="tok-kd">class</span> <span class="tok-nc">RequestMap</span> <span class="tok-o">{</span>
+
+	<span class="tok-n">String</span> <span class="tok-n">url</span>
+	<span class="tok-n">String</span> <span class="tok-n">configAttribute</span>
+	<span class="tok-n">HttpMethod</span> <span class="tok-n">httpMethod</span>
+
+	<span class="tok-kd">static</span> <span class="tok-n">mapping</span> <span class="tok-o">=</span> <span class="tok-o">{</span>
+		<span class="tok-n">cache</span> <span class="tok-kc">true</span>
+	<span class="tok-o">}</span>
+
+	<span class="tok-kd">static</span> <span class="tok-n">constraints</span> <span class="tok-o">=</span> <span class="tok-o">{</span>
+		<span class="tok-n">url</span> <span class="tok-nl">blank:</span> <span class="tok-kc">false</span><span class="tok-o">,</span> <span class="tok-nl">unique:</span> <span class="tok-s1">&#39;httpMethod&#39;</span>
+		<span class="tok-n">configAttribute</span> <span class="tok-nl">blank:</span> <span class="tok-kc">false</span>
+		<span class="tok-n">httpMethod</span> <span class="tok-nl">nullable:</span> <span class="tok-kc">true</span>
+	<span class="tok-o">}</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>El campo <em>url</em> será la dirección accedida a asegurar mientras que el campo <em>configAttributeField</em> indicará los roles permitidos para acceder a esa dirección url. También podemos especificar que método HTTP vamos a permitir. Si no lo asignamos, significará que podemos utilizar cualquier método.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_asegurar_peticiones">7.4. Asegurar peticiones</h3>
+<div class="paragraph">
+<p>En esta sección vamos a ver las diversas formas que nos permite el plugin de Spring Security para configurar las diferentes peticiones que necesitemos asegurar en nuestra aplicación. Básicamente, tenemos cuatro formas de hacer esto, de las cuales debemos elegir sólo una para espeficar que direcciones queremos asegurar en nuestra aplicación:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Anotaciones</p>
+</li>
+<li>
+<p>Archivo de configuración Config.groovy</p>
+</li>
+<li>
+<p>Instancias de la clase RequestMap</p>
+</li>
+<li>
+<p>Expresiones específicas</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Pero antes de ver cada una de estas formas, veamos unos cuantos aspectos interesantes. Habitualmente, las aplicaciones web son públicas con algunas páginas privadas que son las que aseguraremos. Sin embargo, si la mayor parte de nuestra aplicación es privada, podemos usar la aproximación pesimista para denegar el acceso a todas las urls que no tengan una regla configurada. Esto lo podemos hacer especificando en el archivo de configuración <em>Config.groovy</em> el siguiente valor:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-n">grails</span><span class="tok-o">.</span><span class="tok-na">plugin</span><span class="tok-o">.</span><span class="tok-na">springsecurity</span><span class="tok-o">.</span><span class="tok-na">rejectIfNoRule</span> <span class="tok-o">=</span> <span class="tok-kc">true</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>De esta forma, cualquier url que no tenga una regla especificada, será denegada para cualquier usuario.</p>
+</div>
+<div class="paragraph">
+<p>Cualquier dirección que necesitemos asegurar debe tener especificada una regla. Por ejemplo, podremos proteger la url <em>/todo/tag/**</em> para que sólo los usuarios con el rol <em>ROLE_ADMIN</em> puedan crear etiquetas. Pero además, estas entradas podemos combinarlas con una serie de tokens predefinidos:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>IS_AUTHENTICATED_ANONYMOUSLY</em>, indica que cualquier usuario podría acceder a esa url.</p>
+</li>
+<li>
+<p><em>IS_AUTHENTICATED_REMEMBERED</em>, indica que el usuario se ha autenticado en la aplicación con la opción de <em>remember me</em>.</p>
+</li>
+<li>
+<p><em>IS_AUTHENTICATED_FULLY</em>, indica que el usuario se ha identificado completando el formulario de autenticación.</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="_anotaciones">7.4.1. Anotaciones</h4>
+<div class="paragraph">
+<p>Si queremos utilizar este método en nuestra aplicación, debemos especificar el siguiente parámetro en el archivo de configuración <em>Config.groovy</em></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-n">grails</span><span class="tok-o">.</span><span class="tok-na">plugin</span><span class="tok-o">.</span><span class="tok-na">springsecurity</span><span class="tok-o">.</span><span class="tok-na">securityConfigType</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;Annotation&quot;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Podemos especificar anotaciones tanto a nivel de clase como a nivel de método. En caso de que se especifiquen reglas tanto a nivel de clase como a nivel de método, serán estas últimas las que se apliquen.</p>
+</div>
+<div class="paragraph">
+<p>En el siguiente ejemplo especificamos la seguridad a nivel de método:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-kn">package</span> <span class="tok-n">com</span><span class="tok-o">.</span><span class="tok-na">mycompany</span><span class="tok-o">.</span><span class="tok-na">myapp</span>
+<span class="tok-kn">import</span> <span class="tok-nn">grails.plugin.springsecurity.annotation.Secured</span>
+
+<span class="tok-kd">class</span> <span class="tok-nc">SecureAnnotatedController</span> <span class="tok-o">{</span>
+
+   <span class="tok-nd">@Secured</span><span class="tok-o">([</span><span class="tok-s1">&#39;ROLE_ADMIN&#39;</span><span class="tok-o">])</span>
+   <span class="tok-kt">def</span> <span class="tok-nf">index</span><span class="tok-o">()</span> <span class="tok-o">{</span>
+      <span class="tok-n">render</span> <span class="tok-s1">&#39;you have ROLE_ADMIN&#39;</span>
+   <span class="tok-o">}</span>
+
+   <span class="tok-nd">@Secured</span><span class="tok-o">([</span><span class="tok-s1">&#39;ROLE_ADMIN&#39;</span><span class="tok-o">,</span> <span class="tok-s1">&#39;ROLE_SUPERUSER&#39;</span><span class="tok-o">])</span>
+   <span class="tok-kt">def</span> <span class="tok-nf">adminEither</span><span class="tok-o">()</span> <span class="tok-o">{</span>
+      <span class="tok-n">render</span> <span class="tok-s1">&#39;you have ROLE_ADMIN or SUPERUSER&#39;</span>
+   <span class="tok-o">}</span>
+
+   <span class="tok-kt">def</span> <span class="tok-nf">anybody</span><span class="tok-o">()</span> <span class="tok-o">{</span>
+      <span class="tok-n">render</span> <span class="tok-s1">&#39;anyone can see this&#39;</span>
+   <span class="tok-o">}</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Pero también podemos especificarlo a nivel de clase:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-kn">package</span> <span class="tok-n">com</span><span class="tok-o">.</span><span class="tok-na">mycompany</span><span class="tok-o">.</span><span class="tok-na">myapp</span>
+<span class="tok-kn">import</span> <span class="tok-nn">grails.plugin.springsecurity.annotation.Secured</span>
+
+<span class="tok-nd">@Secured</span><span class="tok-o">([</span><span class="tok-s1">&#39;ROLE_ADMIN&#39;</span><span class="tok-o">])</span>
+<span class="tok-kd">class</span> <span class="tok-nc">SecureClassAnnotatedController</span> <span class="tok-o">{</span>
+
+   <span class="tok-kt">def</span> <span class="tok-nf">index</span><span class="tok-o">()</span> <span class="tok-o">{</span>
+      <span class="tok-n">render</span> <span class="tok-s1">&#39;index: you have ROLE_ADMIN&#39;</span>
+   <span class="tok-o">}</span>
+
+   <span class="tok-kt">def</span> <span class="tok-nf">otherAction</span><span class="tok-o">()</span> <span class="tok-o">{</span>
+      <span class="tok-n">render</span> <span class="tok-s1">&#39;otherAction: you have ROLE_ADMIN&#39;</span>
+   <span class="tok-o">}</span>
+
+   <span class="tok-nd">@Secured</span><span class="tok-o">([</span><span class="tok-s1">&#39;ROLE_SUPERUSER&#39;</span><span class="tok-o">])</span>
+   <span class="tok-kt">def</span> <span class="tok-nf">super</span><span class="tok-o">()</span> <span class="tok-o">{</span>
+      <span class="tok-n">render</span> <span class="tok-s1">&#39;super: you have ROLE_SUPERUSER&#39;</span>
+   <span class="tok-o">}</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>En ocasiones, necesitaremos incluso definir reglas para proteger el acceso a determinados directorios, como por ejemplo, los directorios de imágenes o los archivos javascript. Para esto, debemos especificar reglas estáticas en el archivo de configuración <em>Config.groovy</em>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-n">grails</span><span class="tok-o">.</span><span class="tok-na">plugin</span><span class="tok-o">.</span><span class="tok-na">springsecurity</span><span class="tok-o">.</span><span class="tok-na">controllerAnnotations</span><span class="tok-o">.</span><span class="tok-na">staticRules</span> <span class="tok-o">=</span> <span class="tok-o">[</span>
+   <span class="tok-s1">&#39;/js/admin/**&#39;</span><span class="tok-o">:</span> <span class="tok-o">[</span><span class="tok-s1">&#39;ROLE_ADMIN&#39;</span><span class="tok-o">],</span>
+   <span class="tok-s1">&#39;/images/**&#39;</span><span class="tok-o">:</span> <span class="tok-o">[</span><span class="tok-s1">&#39;ROLE_ADMIN&#39;</span><span class="tok-o">]</span>
+<span class="tok-o">]</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_archivo_de_configuración_config_groovy">7.4.2. Archivo de configuración Config.groovy</h4>
+<div class="paragraph">
+<p>Para poder utilizar este método, debemos especificar en el archivo de configuración <em>Config.groovy</em> el siguiente parámetro:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-n">grails</span><span class="tok-o">.</span><span class="tok-na">plugin</span><span class="tok-o">.</span><span class="tok-na">springsecurity</span><span class="tok-o">.</span><span class="tok-na">securityConfigType</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;InterceptUrlMap&quot;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Posteriormente, lo único que debemos hacer es especificar en el archivo <em>Config.groovy</em> todas las reglas que necesitemos de la siguiente forma:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-n">grails</span><span class="tok-o">.</span><span class="tok-na">plugin</span><span class="tok-o">.</span><span class="tok-na">springsecurity</span><span class="tok-o">.</span><span class="tok-na">interceptUrlMap</span> <span class="tok-o">=</span> <span class="tok-o">[</span>
+   <span class="tok-s1">&#39;/&#39;</span><span class="tok-o">:</span>                  <span class="tok-o">[</span><span class="tok-s1">&#39;permitAll&#39;</span><span class="tok-o">],</span>
+   <span class="tok-s1">&#39;/index&#39;</span><span class="tok-o">:</span>             <span class="tok-o">[</span><span class="tok-s1">&#39;permitAll&#39;</span><span class="tok-o">],</span>
+   <span class="tok-s1">&#39;/index.gsp&#39;</span><span class="tok-o">:</span>         <span class="tok-o">[</span><span class="tok-s1">&#39;permitAll&#39;</span><span class="tok-o">],</span>
+   <span class="tok-s1">&#39;/assets/**&#39;</span><span class="tok-o">:</span>         <span class="tok-o">[</span><span class="tok-s1">&#39;permitAll&#39;</span><span class="tok-o">],</span>
+   <span class="tok-s1">&#39;/**/js/**&#39;</span><span class="tok-o">:</span>          <span class="tok-o">[</span><span class="tok-s1">&#39;permitAll&#39;</span><span class="tok-o">],</span>
+   <span class="tok-s1">&#39;/**/css/**&#39;</span><span class="tok-o">:</span>         <span class="tok-o">[</span><span class="tok-s1">&#39;permitAll&#39;</span><span class="tok-o">],</span>
+   <span class="tok-s1">&#39;/**/images/**&#39;</span><span class="tok-o">:</span>      <span class="tok-o">[</span><span class="tok-s1">&#39;permitAll&#39;</span><span class="tok-o">],</span>
+   <span class="tok-s1">&#39;/**/favicon.ico&#39;</span><span class="tok-o">:</span>    <span class="tok-o">[</span><span class="tok-s1">&#39;permitAll&#39;</span><span class="tok-o">],</span>
+   <span class="tok-s1">&#39;/login/**&#39;</span><span class="tok-o">:</span>          <span class="tok-o">[</span><span class="tok-s1">&#39;permitAll&#39;</span><span class="tok-o">],</span>
+   <span class="tok-s1">&#39;/logout/**&#39;</span><span class="tok-o">:</span>         <span class="tok-o">[</span><span class="tok-s1">&#39;permitAll&#39;</span><span class="tok-o">],</span>
+   <span class="tok-s1">&#39;/secure/**&#39;</span><span class="tok-o">:</span>         <span class="tok-o">[</span><span class="tok-s1">&#39;ROLE_ADMIN&#39;</span><span class="tok-o">],</span>
+   <span class="tok-s1">&#39;/finance/**&#39;</span><span class="tok-o">:</span>        <span class="tok-o">[</span><span class="tok-s1">&#39;ROLE_FINANCE&#39;</span><span class="tok-o">,</span> <span class="tok-s1">&#39;isFullyAuthenticated()&#39;</span><span class="tok-o">],</span>
+<span class="tok-o">]</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>En este listado, es importante que especifiquemos las reglas en el orden correcto y esto se consigue siendo más específico para pasar posteriormente a ser más general. El siguiente ejemplo sería incorrecto, puesto que estaríamos dando permisos a los usuarios de tipo ROLE_ADMIN a las direcciones <em>/secure/reallysecure/**</em>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-s1">&#39;/secure/**&#39;</span><span class="tok-o">:</span>              <span class="tok-o">[</span><span class="tok-s1">&#39;ROLE_ADMIN&#39;</span><span class="tok-o">,</span> <span class="tok-s1">&#39;ROLE_SUPERUSER&#39;</span><span class="tok-o">],</span>
+<span class="tok-s1">&#39;/secure/reallysecure/**&#39;</span><span class="tok-o">:</span> <span class="tok-o">[</span><span class="tok-s1">&#39;ROLE_SUPERUSER&#39;</span><span class="tok-o">]</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Si un usuario de tipo ROLE_ADMIN intentase acceder a la dirección <em>/secure/reallysecure/list</em> se le daría acceso sin ningún problema puesto que casaría con la primera regla encontrada. La solución correcta sería la siguiente:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-s1">&#39;/secure/reallysecure/**&#39;</span><span class="tok-o">:</span> <span class="tok-o">[</span><span class="tok-s1">&#39;ROLE_SUPERUSER&#39;</span><span class="tok-o">]</span>
+<span class="tok-s1">&#39;/secure/**&#39;</span><span class="tok-o">:</span>              <span class="tok-o">[</span><span class="tok-s1">&#39;ROLE_ADMIN&#39;</span><span class="tok-o">,</span> <span class="tok-s1">&#39;ROLE_SUPERUSER&#39;</span><span class="tok-o">]</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_instancias_de_la_clase_requestmap">7.4.3. Instancias de la clase RequestMap</h4>
+<div class="paragraph">
+<p>Con esta forma, almacenaremos en la base de datos todas las urls que queremos proteger junto con la regla que debe cumplir, de forma muy similar a como hemos visto en el anterior apartado.</p>
+</div>
+<div class="paragraph">
+<p>Lo primero que debemos hacer es especificar que utilizaremos este método en el archivo de configuración <em>Config.groovy</em>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-n">grails</span><span class="tok-o">.</span><span class="tok-na">plugin</span><span class="tok-o">.</span><span class="tok-na">springsecurity</span><span class="tok-o">.</span><span class="tok-na">securityConfigType</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;Requestmap&quot;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Posteriormente, podemos especificar estas urls junto con sus reglas en el archivo <em>BootStrap.groovy</em>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-k">for</span> <span class="tok-o">(</span><span class="tok-n">String</span> <span class="tok-n">url</span> <span class="tok-k">in</span> <span class="tok-o">[</span>
+      <span class="tok-s1">&#39;/&#39;</span><span class="tok-o">,</span> <span class="tok-s1">&#39;/index&#39;</span><span class="tok-o">,</span> <span class="tok-s1">&#39;/index.gsp&#39;</span><span class="tok-o">,</span> <span class="tok-s1">&#39;/**/favicon.ico&#39;</span><span class="tok-o">,</span>
+      <span class="tok-s1">&#39;/assets/**&#39;</span><span class="tok-o">,</span> <span class="tok-s1">&#39;/**/js/**&#39;</span><span class="tok-o">,</span> <span class="tok-s1">&#39;/**/css/**&#39;</span><span class="tok-o">,</span> <span class="tok-s1">&#39;/**/images/**&#39;</span><span class="tok-o">,</span>
+      <span class="tok-s1">&#39;/login&#39;</span><span class="tok-o">,</span> <span class="tok-s1">&#39;/login.*&#39;</span><span class="tok-o">,</span> <span class="tok-s1">&#39;/login/*&#39;</span><span class="tok-o">,</span>
+      <span class="tok-s1">&#39;/logout&#39;</span><span class="tok-o">,</span> <span class="tok-s1">&#39;/logout.*&#39;</span><span class="tok-o">,</span> <span class="tok-s1">&#39;/logout/*&#39;</span><span class="tok-o">])</span> <span class="tok-o">{</span>
+   <span class="tok-k">new</span> <span class="tok-nf">Requestmap</span><span class="tok-o">(</span><span class="tok-nl">url:</span> <span class="tok-n">url</span><span class="tok-o">,</span> <span class="tok-nl">configAttribute:</span> <span class="tok-s1">&#39;permitAll&#39;</span><span class="tok-o">).</span><span class="tok-na">save</span><span class="tok-o">()</span>
+<span class="tok-o">}</span>
+<span class="tok-k">new</span> <span class="tok-nf">Requestmap</span><span class="tok-o">(</span><span class="tok-nl">url:</span> <span class="tok-s1">&#39;/profile/**&#39;</span><span class="tok-o">,</span>    <span class="tok-nl">configAttribute:</span> <span class="tok-s1">&#39;ROLE_USER&#39;</span><span class="tok-o">).</span><span class="tok-na">save</span><span class="tok-o">()</span>
+<span class="tok-k">new</span> <span class="tok-nf">Requestmap</span><span class="tok-o">(</span><span class="tok-nl">url:</span> <span class="tok-s1">&#39;/admin/**&#39;</span><span class="tok-o">,</span>      <span class="tok-nl">configAttribute:</span> <span class="tok-s1">&#39;ROLE_ADMIN&#39;</span><span class="tok-o">).</span><span class="tok-na">save</span><span class="tok-o">()</span>
+<span class="tok-k">new</span> <span class="tok-nf">Requestmap</span><span class="tok-o">(</span><span class="tok-nl">url:</span> <span class="tok-s1">&#39;/admin/role/**&#39;</span><span class="tok-o">,</span> <span class="tok-nl">configAttribute:</span> <span class="tok-s1">&#39;ROLE_SUPERVISOR&#39;</span><span class="tok-o">).</span><span class="tok-na">save</span><span class="tok-o">()</span>
+<span class="tok-k">new</span> <span class="tok-nf">Requestmap</span><span class="tok-o">(</span><span class="tok-nl">url:</span> <span class="tok-s1">&#39;/admin/user/**&#39;</span><span class="tok-o">,</span> <span class="tok-nl">configAttribute:</span> <span class="tok-s1">&#39;ROLE_ADMIN,ROLE_SUPERVISOR&#39;</span><span class="tok-o">).</span><span class="tok-na">save</span><span class="tok-o">()</span>
+<span class="tok-k">new</span> <span class="tok-nf">Requestmap</span><span class="tok-o">(</span><span class="tok-nl">url:</span> <span class="tok-s1">&#39;/j_spring_security_switch_user&#39;</span><span class="tok-o">,</span>
+               <span class="tok-nl">configAttribute:</span> <span class="tok-s1">&#39;ROLE_SWITCH_USER,isFullyAuthenticated()&#39;</span><span class="tok-o">).</span><span class="tok-na">save</span><span class="tok-o">()</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>A diferencia del método anterior, en esta ocasión no es necesario que tengamos en cuenta el orden de las reglas, ya que será el propio plugin quien se encargue de calcular que regla es la más específica.</p>
+</div>
+<div class="paragraph">
+<p>Por defecto, las reglas especificadas de esta forma son cacheadas en la aplicación, con lo que debemos tener en cuenta que cuando creemos, modifiquemos o eliminemos una regla, deberemos actualizar la caché para que se tengan en cuenta los cambios introducidos. Esto lo podemos hacer con el método <em>clearCachedRequestmaps()</em> del servicio <em>springSecurityService</em>, tal y como vemos en el siguiente ejemplo.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-kd">class</span> <span class="tok-nc">RequestmapController</span> <span class="tok-o">{</span>
+   <span class="tok-kt">def</span> <span class="tok-n">springSecurityService</span>
+
+   <span class="tok-o">...</span>
+
+   <span class="tok-kt">def</span> <span class="tok-nf">save</span><span class="tok-o">()</span> <span class="tok-o">{</span>
+      <span class="tok-kt">def</span> <span class="tok-n">requestmapInstance</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-n">Requestmap</span><span class="tok-o">(</span><span class="tok-n">params</span><span class="tok-o">)</span>
+      <span class="tok-k">if</span> <span class="tok-o">(!</span><span class="tok-n">requestmapInstance</span><span class="tok-o">.</span><span class="tok-na">save</span><span class="tok-o">(</span><span class="tok-nl">flush:</span> <span class="tok-kc">true</span><span class="tok-o">))</span> <span class="tok-o">{</span>
+         <span class="tok-n">render</span> <span class="tok-nl">view:</span> <span class="tok-s1">&#39;create&#39;</span><span class="tok-o">,</span> <span class="tok-nl">model:</span> <span class="tok-o">[</span><span class="tok-nl">requestmapInstance:</span> <span class="tok-n">requestmapInstance</span><span class="tok-o">]</span>
+         <span class="tok-k">return</span>
+      <span class="tok-o">}</span>
+
+      <span class="tok-n">springSecurityService</span><span class="tok-o">.</span><span class="tok-na">clearCachedRequestmaps</span><span class="tok-o">()</span>
+
+      <span class="tok-n">flash</span><span class="tok-o">.</span><span class="tok-na">message</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;${message(code: &#39;default.created.message&#39;, args: [message(code: &#39;requestmap.label&#39;, default: &#39;Requestmap&#39;), requestmapInstance.id])}&quot;</span>
+      <span class="tok-n">redirect</span> <span class="tok-nl">action:</span> <span class="tok-s1">&#39;show&#39;</span><span class="tok-o">,</span> <span class="tok-nl">id:</span> <span class="tok-n">requestmapInstance</span><span class="tok-o">.</span><span class="tok-na">id</span>
+   <span class="tok-o">}</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_expresiones_específicas">7.4.4. Expresiones específicas</h4>
+<div class="paragraph">
+<p>En Spring Security podemos utilizar también <em>Spring Expression Language (SpEL)</em> para especificar las reglas de acceso a determinadas partes de nuestra aplicación. Mediante este lenguaje, vamos a poder ser algo más específicos. Veamos el mismo ejemplo utilizando cualquiera de los métodos que acabamos de ver. Empecemos por las anotaciones:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-kn">package</span> <span class="tok-n">com</span><span class="tok-o">.</span><span class="tok-na">yourcompany</span><span class="tok-o">.</span><span class="tok-na">yourapp</span>
+<span class="tok-kn">import</span> <span class="tok-nn">grails.plugin.springsecurity.annotation.Secured</span>
+
+<span class="tok-kd">class</span> <span class="tok-nc">SecureController</span> <span class="tok-o">{</span>
+
+   <span class="tok-nd">@Secured</span><span class="tok-o">([</span><span class="tok-s2">&quot;hasRole(&#39;ROLE_ADMIN&#39;)&quot;</span><span class="tok-o">])</span>
+   <span class="tok-kt">def</span> <span class="tok-nf">someAction</span><span class="tok-o">()</span> <span class="tok-o">{</span>
+      <span class="tok-o">...</span>
+   <span class="tok-o">}</span>
+
+   <span class="tok-nd">@Secured</span><span class="tok-o">([</span><span class="tok-s2">&quot;authentication.name == &#39;ralph&#39;&quot;</span><span class="tok-o">])</span>
+   <span class="tok-kt">def</span> <span class="tok-nf">someOtherAction</span><span class="tok-o">()</span> <span class="tok-o">{</span>
+      <span class="tok-o">...</span>
+   <span class="tok-o">}</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Sigamos con el método de almacenamiento de instancias de la clase RequestMap.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-k">new</span> <span class="tok-nf">Requestmap</span><span class="tok-o">(</span><span class="tok-nl">url:</span> <span class="tok-s2">&quot;/secure/someAction&quot;</span><span class="tok-o">,</span>
+               <span class="tok-nl">configAttribute:</span> <span class="tok-s2">&quot;hasRole(&#39;ROLE_ADMIN&#39;)&quot;</span><span class="tok-o">).</span><span class="tok-na">save</span><span class="tok-o">()</span>
+<span class="tok-k">new</span> <span class="tok-nf">Requestmap</span><span class="tok-o">(</span><span class="tok-nl">url:</span> <span class="tok-s2">&quot;/secure/someOtherAction&quot;</span><span class="tok-o">,</span>
+               <span class="tok-nl">configAttribute:</span> <span class="tok-s2">&quot;authentication.name == &#39;ralph&#39;&quot;</span><span class="tok-o">).</span><span class="tok-na">save</span><span class="tok-o">()</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Terminemos por la modificación del archivo de configuración <em>Config.groovy</em>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-n">grails</span><span class="tok-o">.</span><span class="tok-na">plugin</span><span class="tok-o">.</span><span class="tok-na">springsecurity</span><span class="tok-o">.</span><span class="tok-na">interceptUrlMap</span> <span class="tok-o">=</span> <span class="tok-o">[</span>
+   <span class="tok-s1">&#39;/secure/someAction&#39;</span><span class="tok-o">:</span>      <span class="tok-o">[</span><span class="tok-s2">&quot;hasRole(&#39;ROLE_ADMIN&#39;)&quot;</span><span class="tok-o">],</span>
+   <span class="tok-s1">&#39;/secure/someOtherAction&#39;</span><span class="tok-o">:</span> <span class="tok-o">[</span><span class="tok-s2">&quot;authentication.name == &#39;ralph&#39;&quot;</span><span class="tok-o">]</span>
+<span class="tok-o">]</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Aquí tienes una tabla con las expresiones que podemos utilizar:</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-middle">Expresión</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">hasRole(role)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Devuelve cierto si el usuario tiene asignado este rol</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">hasAnyRole([role1,role2])</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Devuelve cierto si el usuario tiene asignado cualquiera de los roles pasados por parámetro</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">principal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Devuelve los datos del usuario registrado</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">authentication</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Devuelve todos los datos relativos a la autenticación</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">permitAll</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Siempre devuelve cierto</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">denyAll</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Siempre devuelve falso</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">isAnonymous()</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Devuelve cierto si el usuario actual es anónimo</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">isRememberMe()</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Devuelve cierto si el usuario ha entrado con la opción <em>remember me</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">isAuthenticated()</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Devuelve cierto si el usuario no es anónimo</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">isFullyAuthenticated()</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Devuelve cierto si el usuario no es anónimo o no ha entrado con la opción <em>remember me</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">request</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La petición HTTP, permitiendo expresiones como <em>isFullyAuthenticated() &amp;&amp; request.getMethod().equals('OPTIONS')</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>La siguiente tabla muestra las equivalencias si lo hacemos de forma tradicional o mediante las expresiones <em>SpEL</em>.</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-middle">Modo tradicional</th>
+<th class="tableblock halign-left valign-top">Expresión</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">ROLE_ADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">hasRole('ROLE_ADMIN')</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">ROLE_USER, ROLE_ADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">hasAnyRole('ROLE_USER','ROLE_ADMIN')</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">ROLE_ADMIN, IS_AUTHENTICATED_FULLY</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">hasRole('ROLE_ADMIN') and isFullyAuthenticated()</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">IS_AUTHENTICATED_ANONYMOUSLY</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">permitAll</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">IS_AUTHENTICATED_REMEMBERED</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">isAnonymous() or isRememberMe()</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">IS_AUTHENTICATED_FULLY</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">isFullyAuthenticated()</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_aspectos_importantes">7.4.5. Aspectos importantes</h4>
+<div class="paragraph">
+<p>Como veremos más adelante, el plugin utiliza dos controladores para gestionar el proceso de <em>login</em> y <em>logout</em> del sistema. Estos controladores se llaman <em>LoginController</em> y <em>LogoutController</em>. Cualquier método de estos dos controladores debe ser accesible por cualquer usuario. Además, también debemos de dar acceso global a determinados recursos de nuestra aplicación.</p>
+</div>
+<div class="paragraph">
+<p>Teniendo esto en cuenta, en función del método escogido para proteger nuestra aplicación, deberemos añadir una serie de reglas en nuestro archivo de configuración <em>Config.groovy</em>.</p>
+</div>
+<div class="sect4">
+<h5 id="_mediante_anotaciones">Mediante anotaciones</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-n">grails</span><span class="tok-o">.</span><span class="tok-na">plugin</span><span class="tok-o">.</span><span class="tok-na">springsecurity</span><span class="tok-o">.</span><span class="tok-na">securityConfigType</span> <span class="tok-o">=</span> <span class="tok-s1">&#39;Annotation&#39;</span>
+<span class="tok-n">grails</span><span class="tok-o">.</span><span class="tok-na">plugin</span><span class="tok-o">.</span><span class="tok-na">springsecurity</span><span class="tok-o">.</span><span class="tok-na">controllerAnnotations</span><span class="tok-o">.</span><span class="tok-na">staticRules</span> <span class="tok-o">=</span> <span class="tok-o">[</span>
+	<span class="tok-s1">&#39;/&#39;</span><span class="tok-o">:</span>                              	<span class="tok-o">[</span><span class="tok-s1">&#39;permitAll&#39;</span><span class="tok-o">],</span>
+	<span class="tok-s1">&#39;/index&#39;</span><span class="tok-o">:</span>                         	<span class="tok-o">[</span><span class="tok-s1">&#39;permitAll&#39;</span><span class="tok-o">],</span>
+	<span class="tok-s1">&#39;/index.gsp&#39;</span><span class="tok-o">:</span>                     	<span class="tok-o">[</span><span class="tok-s1">&#39;permitAll&#39;</span><span class="tok-o">],</span>
+	<span class="tok-s1">&#39;/assets/**&#39;</span><span class="tok-o">:</span>                     	<span class="tok-o">[</span><span class="tok-s1">&#39;permitAll&#39;</span><span class="tok-o">],</span>
+	<span class="tok-s1">&#39;/**/js/**&#39;</span><span class="tok-o">:</span>                      	<span class="tok-o">[</span><span class="tok-s1">&#39;permitAll&#39;</span><span class="tok-o">],</span>
+	<span class="tok-s1">&#39;/**/css/**&#39;</span><span class="tok-o">:</span>                     	<span class="tok-o">[</span><span class="tok-s1">&#39;permitAll&#39;</span><span class="tok-o">],</span>
+	<span class="tok-s1">&#39;/**/images/**&#39;</span><span class="tok-o">:</span>                  	<span class="tok-o">[</span><span class="tok-s1">&#39;permitAll&#39;</span><span class="tok-o">],</span>
+	<span class="tok-s1">&#39;/**/favicon.ico&#39;</span><span class="tok-o">:</span>                	<span class="tok-o">[</span><span class="tok-s1">&#39;permitAll&#39;</span><span class="tok-o">],</span>
+	<span class="tok-s1">&#39;/login/**&#39;</span><span class="tok-o">:</span>						<span class="tok-o">[</span><span class="tok-s1">&#39;permitAll&#39;</span><span class="tok-o">],</span>
+	<span class="tok-s1">&#39;/logout/**&#39;</span><span class="tok-o">:</span>                		<span class="tok-o">[</span><span class="tok-s1">&#39;permitAll&#39;</span><span class="tok-o">],</span>
+	<span class="tok-s1">&#39;/dbconsole/**&#39;</span><span class="tok-o">:</span>               		<span class="tok-o">[</span><span class="tok-s1">&#39;permitAll&#39;</span><span class="tok-o">]</span>
+<span class="tok-o">]</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_mediante_instancias_de_la_clase_de_dominio_requestmap">Mediante instancias de la clase de dominio RequestMap</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-n">grails</span><span class="tok-o">.</span><span class="tok-na">plugin</span><span class="tok-o">.</span><span class="tok-na">springsecurity</span><span class="tok-o">.</span><span class="tok-na">securityConfigType</span> <span class="tok-o">=</span> <span class="tok-s1">&#39;Requestmap&#39;</span>
+
+<span class="tok-cm">/* Esto debe ir en el archivo BootStrap.groovy */</span>
+<span class="tok-k">for</span> <span class="tok-o">(</span><span class="tok-n">String</span> <span class="tok-n">url</span> <span class="tok-k">in</span> <span class="tok-o">[</span>
+      <span class="tok-s1">&#39;/&#39;</span><span class="tok-o">,</span> <span class="tok-s1">&#39;/index&#39;</span><span class="tok-o">,</span> <span class="tok-s1">&#39;/index.gsp&#39;</span><span class="tok-o">,</span> <span class="tok-s1">&#39;/assets/**&#39;</span><span class="tok-o">,</span>
+      <span class="tok-s1">&#39;/**/js/**&#39;</span><span class="tok-o">,</span> <span class="tok-s1">&#39;/**/css/**&#39;</span><span class="tok-o">,</span> <span class="tok-s1">&#39;/**/images/**&#39;</span><span class="tok-o">,</span>
+      <span class="tok-s1">&#39;/**/favicon.ico&#39;</span><span class="tok-o">,</span> <span class="tok-s1">&#39;/login/**&#39;</span><span class="tok-o">,</span> <span class="tok-s1">&#39;/logout/**&#39;</span><span class="tok-o">,</span> <span class="tok-s1">&#39;/dbconsole/**&#39;</span><span class="tok-o">])</span> <span class="tok-o">{</span>
+   <span class="tok-k">new</span> <span class="tok-nf">RequestMap</span><span class="tok-o">(</span><span class="tok-nl">url:</span> <span class="tok-n">url</span><span class="tok-o">,</span> <span class="tok-nl">configAttribute:</span> <span class="tok-s1">&#39;permitAll&#39;</span><span class="tok-o">).</span><span class="tok-na">save</span><span class="tok-o">()</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_mediante_reglas_en_el_archivo_config_groovy_con_intercepturlmap">Mediante reglas en el archivo Config.groovy con InterceptUrlMap</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-n">grails</span><span class="tok-o">.</span><span class="tok-na">plugin</span><span class="tok-o">.</span><span class="tok-na">springsecurity</span><span class="tok-o">.</span><span class="tok-na">securityConfigType</span> <span class="tok-o">=</span> <span class="tok-s1">&#39;InterceptUrlMap&#39;</span>
+<span class="tok-n">grails</span><span class="tok-o">.</span><span class="tok-na">plugin</span><span class="tok-o">.</span><span class="tok-na">springsecurity</span><span class="tok-o">.</span><span class="tok-na">interceptUrlMap</span> <span class="tok-o">=</span> <span class="tok-o">[</span>
+   <span class="tok-s1">&#39;/&#39;</span><span class="tok-o">:</span>                  <span class="tok-o">[</span><span class="tok-s1">&#39;permitAll&#39;</span><span class="tok-o">],</span>
+   <span class="tok-s1">&#39;/index&#39;</span><span class="tok-o">:</span>             <span class="tok-o">[</span><span class="tok-s1">&#39;permitAll&#39;</span><span class="tok-o">],</span>
+   <span class="tok-s1">&#39;/index.gsp&#39;</span><span class="tok-o">:</span>         <span class="tok-o">[</span><span class="tok-s1">&#39;permitAll&#39;</span><span class="tok-o">],</span>
+   <span class="tok-s1">&#39;/assets/**&#39;</span><span class="tok-o">:</span>         <span class="tok-o">[</span><span class="tok-s1">&#39;permitAll&#39;</span><span class="tok-o">],</span>
+   <span class="tok-s1">&#39;/**/js/**&#39;</span><span class="tok-o">:</span>          <span class="tok-o">[</span><span class="tok-s1">&#39;permitAll&#39;</span><span class="tok-o">],</span>
+   <span class="tok-s1">&#39;/**/css/**&#39;</span><span class="tok-o">:</span>         <span class="tok-o">[</span><span class="tok-s1">&#39;permitAll&#39;</span><span class="tok-o">],</span>
+   <span class="tok-s1">&#39;/**/images/**&#39;</span><span class="tok-o">:</span>      <span class="tok-o">[</span><span class="tok-s1">&#39;permitAll&#39;</span><span class="tok-o">],</span>
+   <span class="tok-s1">&#39;/**/favicon.ico&#39;</span><span class="tok-o">:</span>    <span class="tok-o">[</span><span class="tok-s1">&#39;permitAll&#39;</span><span class="tok-o">],</span>
+   <span class="tok-s1">&#39;/login/**&#39;</span><span class="tok-o">:</span>          <span class="tok-o">[</span><span class="tok-s1">&#39;permitAll&#39;</span><span class="tok-o">],</span>
+   <span class="tok-s1">&#39;/logout/**&#39;</span><span class="tok-o">:</span>         <span class="tok-o">[</span><span class="tok-s1">&#39;permitAll&#39;</span><span class="tok-o">],</span>
+   <span class="tok-s1">&#39;/dbconsole/**&#39;</span><span class="tok-o">:</span>      <span class="tok-o">[</span><span class="tok-s1">&#39;permitAll&#39;</span><span class="tok-o">]</span>
+<span class="tok-o">]</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_controladores">7.5. Controladores</h3>
+<div class="paragraph">
+<p>Con el plugin de Grails tendremos acceso a un par de controladores, que aunque en un principio no vamos a tener que modificar, está bien que conozcamos de su existencia. Estos dos controladores son <em>LoginController</em> y <em>LogoutController</em> y este es su contenido:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-kn">package</span> <span class="tok-n">grails</span><span class="tok-o">.</span><span class="tok-na">plugin</span><span class="tok-o">.</span><span class="tok-na">springsecurity</span>
+
+<span class="tok-kn">import</span> <span class="tok-nn">grails.converters.JSON</span>
+
+<span class="tok-kn">import</span> <span class="tok-nn">javax.servlet.http.HttpServletResponse</span>
+
+<span class="tok-kn">import</span> <span class="tok-nn">org.springframework.security.access.annotation.Secured</span>
+<span class="tok-kn">import</span> <span class="tok-nn">org.springframework.security.authentication.AccountExpiredException</span>
+<span class="tok-kn">import</span> <span class="tok-nn">org.springframework.security.authentication.CredentialsExpiredException</span>
+<span class="tok-kn">import</span> <span class="tok-nn">org.springframework.security.authentication.DisabledException</span>
+<span class="tok-kn">import</span> <span class="tok-nn">org.springframework.security.authentication.LockedException</span>
+<span class="tok-kn">import</span> <span class="tok-nn">org.springframework.security.core.context.SecurityContextHolder</span> <span class="tok-k">as</span> <span class="tok-n">SCH</span>
+<span class="tok-kn">import</span> <span class="tok-nn">org.springframework.security.web.WebAttributes</span>
+
+<span class="tok-nd">@Secured</span><span class="tok-o">(</span><span class="tok-s1">&#39;permitAll&#39;</span><span class="tok-o">)</span>
+<span class="tok-kd">class</span> <span class="tok-nc">LoginController</span> <span class="tok-o">{</span>
+
+	<span class="tok-cm">/**</span>
+<span class="tok-cm">	 * Dependency injection for the authenticationTrustResolver.</span>
+<span class="tok-cm">	 */</span>
+	<span class="tok-kt">def</span> <span class="tok-n">authenticationTrustResolver</span>
+
+	<span class="tok-cm">/**</span>
+<span class="tok-cm">	 * Dependency injection for the springSecurityService.</span>
+<span class="tok-cm">	 */</span>
+	<span class="tok-kt">def</span> <span class="tok-n">springSecurityService</span>
+
+	<span class="tok-cm">/**</span>
+<span class="tok-cm">	 * Default action; redirects to &#39;defaultTargetUrl&#39; if logged in, /login/auth otherwise.</span>
+<span class="tok-cm">	 */</span>
+	<span class="tok-kt">def</span> <span class="tok-nf">index</span><span class="tok-o">()</span> <span class="tok-o">{</span>
+		<span class="tok-k">if</span> <span class="tok-o">(</span><span class="tok-n">springSecurityService</span><span class="tok-o">.</span><span class="tok-na">isLoggedIn</span><span class="tok-o">())</span> <span class="tok-o">{</span>
+			<span class="tok-n">redirect</span> <span class="tok-nl">uri:</span> <span class="tok-n">SpringSecurityUtils</span><span class="tok-o">.</span><span class="tok-na">securityConfig</span><span class="tok-o">.</span><span class="tok-na">successHandler</span><span class="tok-o">.</span><span class="tok-na">defaultTargetUrl</span>
+		<span class="tok-o">}</span>
+		<span class="tok-k">else</span> <span class="tok-o">{</span>
+			<span class="tok-n">redirect</span> <span class="tok-nl">action:</span> <span class="tok-s1">&#39;auth&#39;</span><span class="tok-o">,</span> <span class="tok-nl">params:</span> <span class="tok-n">params</span>
+		<span class="tok-o">}</span>
+	<span class="tok-o">}</span>
+
+	<span class="tok-cm">/**</span>
+<span class="tok-cm">	 * Show the login page.</span>
+<span class="tok-cm">	 */</span>
+	<span class="tok-kt">def</span> <span class="tok-nf">auth</span><span class="tok-o">()</span> <span class="tok-o">{</span>
+
+		<span class="tok-kt">def</span> <span class="tok-n">config</span> <span class="tok-o">=</span> <span class="tok-n">SpringSecurityUtils</span><span class="tok-o">.</span><span class="tok-na">securityConfig</span>
+
+		<span class="tok-k">if</span> <span class="tok-o">(</span><span class="tok-n">springSecurityService</span><span class="tok-o">.</span><span class="tok-na">isLoggedIn</span><span class="tok-o">())</span> <span class="tok-o">{</span>
+			<span class="tok-n">redirect</span> <span class="tok-nl">uri:</span> <span class="tok-n">config</span><span class="tok-o">.</span><span class="tok-na">successHandler</span><span class="tok-o">.</span><span class="tok-na">defaultTargetUrl</span>
+			<span class="tok-k">return</span>
+		<span class="tok-o">}</span>
+
+		<span class="tok-n">String</span> <span class="tok-n">view</span> <span class="tok-o">=</span> <span class="tok-s1">&#39;auth&#39;</span>
+		<span class="tok-n">String</span> <span class="tok-n">postUrl</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;${request.contextPath}${config.apf.filterProcessesUrl}&quot;</span>
+		<span class="tok-n">render</span> <span class="tok-nl">view:</span> <span class="tok-n">view</span><span class="tok-o">,</span> <span class="tok-nl">model:</span> <span class="tok-o">[</span><span class="tok-nl">postUrl:</span> <span class="tok-n">postUrl</span><span class="tok-o">,</span>
+		                           <span class="tok-nl">rememberMeParameter:</span> <span class="tok-n">config</span><span class="tok-o">.</span><span class="tok-na">rememberMe</span><span class="tok-o">.</span><span class="tok-na">parameter</span><span class="tok-o">]</span>
+	<span class="tok-o">}</span>
+
+	<span class="tok-cm">/**</span>
+<span class="tok-cm">	 * The redirect action for Ajax requests.</span>
+<span class="tok-cm">	 */</span>
+	<span class="tok-kt">def</span> <span class="tok-nf">authAjax</span><span class="tok-o">()</span> <span class="tok-o">{</span>
+		<span class="tok-n">response</span><span class="tok-o">.</span><span class="tok-na">setHeader</span> <span class="tok-s1">&#39;Location&#39;</span><span class="tok-o">,</span> <span class="tok-n">SpringSecurityUtils</span><span class="tok-o">.</span><span class="tok-na">securityConfig</span><span class="tok-o">.</span><span class="tok-na">auth</span><span class="tok-o">.</span><span class="tok-na">ajaxLoginFormUrl</span>
+		<span class="tok-n">response</span><span class="tok-o">.</span><span class="tok-na">sendError</span> <span class="tok-n">HttpServletResponse</span><span class="tok-o">.</span><span class="tok-na">SC_UNAUTHORIZED</span>
+	<span class="tok-o">}</span>
+
+	<span class="tok-cm">/**</span>
+<span class="tok-cm">	 * Show denied page.</span>
+<span class="tok-cm">	 */</span>
+	<span class="tok-kt">def</span> <span class="tok-nf">denied</span><span class="tok-o">()</span> <span class="tok-o">{</span>
+		<span class="tok-k">if</span> <span class="tok-o">(</span><span class="tok-n">springSecurityService</span><span class="tok-o">.</span><span class="tok-na">isLoggedIn</span><span class="tok-o">()</span> <span class="tok-o">&amp;&amp;</span>
+				<span class="tok-n">authenticationTrustResolver</span><span class="tok-o">.</span><span class="tok-na">isRememberMe</span><span class="tok-o">(</span><span class="tok-n">SCH</span><span class="tok-o">.</span><span class="tok-na">context</span><span class="tok-o">?.</span><span class="tok-na">authentication</span><span class="tok-o">))</span> <span class="tok-o">{</span>
+			<span class="tok-c1">// have cookie but the page is guarded with IS_AUTHENTICATED_FULLY</span>
+			<span class="tok-n">redirect</span> <span class="tok-nl">action:</span> <span class="tok-s1">&#39;full&#39;</span><span class="tok-o">,</span> <span class="tok-nl">params:</span> <span class="tok-n">params</span>
+		<span class="tok-o">}</span>
+	<span class="tok-o">}</span>
+
+	<span class="tok-cm">/**</span>
+<span class="tok-cm">	 * Login page for users with a remember-me cookie but accessing a IS_AUTHENTICATED_FULLY page.</span>
+<span class="tok-cm">	 */</span>
+	<span class="tok-kt">def</span> <span class="tok-nf">full</span><span class="tok-o">()</span> <span class="tok-o">{</span>
+		<span class="tok-kt">def</span> <span class="tok-n">config</span> <span class="tok-o">=</span> <span class="tok-n">SpringSecurityUtils</span><span class="tok-o">.</span><span class="tok-na">securityConfig</span>
+		<span class="tok-n">render</span> <span class="tok-nl">view:</span> <span class="tok-s1">&#39;auth&#39;</span><span class="tok-o">,</span> <span class="tok-nl">params:</span> <span class="tok-n">params</span><span class="tok-o">,</span>
+			<span class="tok-nl">model:</span> <span class="tok-o">[</span><span class="tok-nl">hasCookie:</span> <span class="tok-n">authenticationTrustResolver</span><span class="tok-o">.</span><span class="tok-na">isRememberMe</span><span class="tok-o">(</span><span class="tok-n">SCH</span><span class="tok-o">.</span><span class="tok-na">context</span><span class="tok-o">?.</span><span class="tok-na">authentication</span><span class="tok-o">),</span>
+			        <span class="tok-nl">postUrl:</span> <span class="tok-s2">&quot;${request.contextPath}${config.apf.filterProcessesUrl}&quot;</span><span class="tok-o">]</span>
+	<span class="tok-o">}</span>
+
+	<span class="tok-cm">/**</span>
+<span class="tok-cm">	 * Callback after a failed login. Redirects to the auth page with a warning message.</span>
+<span class="tok-cm">	 */</span>
+	<span class="tok-kt">def</span> <span class="tok-nf">authfail</span><span class="tok-o">()</span> <span class="tok-o">{</span>
+
+		<span class="tok-n">String</span> <span class="tok-n">msg</span> <span class="tok-o">=</span> <span class="tok-s1">&#39;&#39;</span>
+		<span class="tok-kt">def</span> <span class="tok-n">exception</span> <span class="tok-o">=</span> <span class="tok-n">session</span><span class="tok-o">[</span><span class="tok-n">WebAttributes</span><span class="tok-o">.</span><span class="tok-na">AUTHENTICATION_EXCEPTION</span><span class="tok-o">]</span>
+		<span class="tok-k">if</span> <span class="tok-o">(</span><span class="tok-n">exception</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+			<span class="tok-k">if</span> <span class="tok-o">(</span><span class="tok-n">exception</span> <span class="tok-k">instanceof</span> <span class="tok-n">AccountExpiredException</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+				<span class="tok-n">msg</span> <span class="tok-o">=</span> <span class="tok-n">g</span><span class="tok-o">.</span><span class="tok-na">message</span><span class="tok-o">(</span><span class="tok-nl">code:</span> <span class="tok-s2">&quot;springSecurity.errors.login.expired&quot;</span><span class="tok-o">)</span>
+			<span class="tok-o">}</span>
+			<span class="tok-k">else</span> <span class="tok-nf">if</span> <span class="tok-o">(</span><span class="tok-n">exception</span> <span class="tok-k">instanceof</span> <span class="tok-n">CredentialsExpiredException</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+				<span class="tok-n">msg</span> <span class="tok-o">=</span> <span class="tok-n">g</span><span class="tok-o">.</span><span class="tok-na">message</span><span class="tok-o">(</span><span class="tok-nl">code:</span> <span class="tok-s2">&quot;springSecurity.errors.login.passwordExpired&quot;</span><span class="tok-o">)</span>
+			<span class="tok-o">}</span>
+			<span class="tok-k">else</span> <span class="tok-nf">if</span> <span class="tok-o">(</span><span class="tok-n">exception</span> <span class="tok-k">instanceof</span> <span class="tok-n">DisabledException</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+				<span class="tok-n">msg</span> <span class="tok-o">=</span> <span class="tok-n">g</span><span class="tok-o">.</span><span class="tok-na">message</span><span class="tok-o">(</span><span class="tok-nl">code:</span> <span class="tok-s2">&quot;springSecurity.errors.login.disabled&quot;</span><span class="tok-o">)</span>
+			<span class="tok-o">}</span>
+			<span class="tok-k">else</span> <span class="tok-nf">if</span> <span class="tok-o">(</span><span class="tok-n">exception</span> <span class="tok-k">instanceof</span> <span class="tok-n">LockedException</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+				<span class="tok-n">msg</span> <span class="tok-o">=</span> <span class="tok-n">g</span><span class="tok-o">.</span><span class="tok-na">message</span><span class="tok-o">(</span><span class="tok-nl">code:</span> <span class="tok-s2">&quot;springSecurity.errors.login.locked&quot;</span><span class="tok-o">)</span>
+			<span class="tok-o">}</span>
+			<span class="tok-k">else</span> <span class="tok-o">{</span>
+				<span class="tok-n">msg</span> <span class="tok-o">=</span> <span class="tok-n">g</span><span class="tok-o">.</span><span class="tok-na">message</span><span class="tok-o">(</span><span class="tok-nl">code:</span> <span class="tok-s2">&quot;springSecurity.errors.login.fail&quot;</span><span class="tok-o">)</span>
+			<span class="tok-o">}</span>
+		<span class="tok-o">}</span>
+
+		<span class="tok-k">if</span> <span class="tok-o">(</span><span class="tok-n">springSecurityService</span><span class="tok-o">.</span><span class="tok-na">isAjax</span><span class="tok-o">(</span><span class="tok-n">request</span><span class="tok-o">))</span> <span class="tok-o">{</span>
+			<span class="tok-n">render</span><span class="tok-o">([</span><span class="tok-nl">error:</span> <span class="tok-n">msg</span><span class="tok-o">]</span> <span class="tok-k">as</span> <span class="tok-n">JSON</span><span class="tok-o">)</span>
+		<span class="tok-o">}</span>
+		<span class="tok-k">else</span> <span class="tok-o">{</span>
+			<span class="tok-n">flash</span><span class="tok-o">.</span><span class="tok-na">message</span> <span class="tok-o">=</span> <span class="tok-n">msg</span>
+			<span class="tok-n">redirect</span> <span class="tok-nl">action:</span> <span class="tok-s1">&#39;auth&#39;</span><span class="tok-o">,</span> <span class="tok-nl">params:</span> <span class="tok-n">params</span>
+		<span class="tok-o">}</span>
+	<span class="tok-o">}</span>
+
+	<span class="tok-cm">/**</span>
+<span class="tok-cm">	 * The Ajax success redirect url.</span>
+<span class="tok-cm">	 */</span>
+	<span class="tok-kt">def</span> <span class="tok-nf">ajaxSuccess</span><span class="tok-o">()</span> <span class="tok-o">{</span>
+		<span class="tok-n">render</span><span class="tok-o">([</span><span class="tok-nl">success:</span> <span class="tok-kc">true</span><span class="tok-o">,</span> <span class="tok-nl">username:</span> <span class="tok-n">springSecurityService</span><span class="tok-o">.</span><span class="tok-na">authentication</span><span class="tok-o">.</span><span class="tok-na">name</span><span class="tok-o">]</span> <span class="tok-k">as</span> <span class="tok-n">JSON</span><span class="tok-o">)</span>
+	<span class="tok-o">}</span>
+
+	<span class="tok-cm">/**</span>
+<span class="tok-cm">	 * The Ajax denied redirect url.</span>
+<span class="tok-cm">	 */</span>
+	<span class="tok-kt">def</span> <span class="tok-nf">ajaxDenied</span><span class="tok-o">()</span> <span class="tok-o">{</span>
+		<span class="tok-n">render</span><span class="tok-o">([</span><span class="tok-nl">error:</span> <span class="tok-s1">&#39;access denied&#39;</span><span class="tok-o">]</span> <span class="tok-k">as</span> <span class="tok-n">JSON</span><span class="tok-o">)</span>
+	<span class="tok-o">}</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-kn">package</span> <span class="tok-n">grails</span><span class="tok-o">.</span><span class="tok-na">plugin</span><span class="tok-o">.</span><span class="tok-na">springsecurity</span>
+
+<span class="tok-kn">import</span> <span class="tok-nn">javax.servlet.http.HttpServletResponse</span>
+
+<span class="tok-kn">import</span> <span class="tok-nn">org.springframework.security.access.annotation.Secured</span>
+
+<span class="tok-nd">@Secured</span><span class="tok-o">(</span><span class="tok-s1">&#39;permitAll&#39;</span><span class="tok-o">)</span>
+<span class="tok-kd">class</span> <span class="tok-nc">LogoutController</span> <span class="tok-o">{</span>
+
+	<span class="tok-cm">/**</span>
+<span class="tok-cm">	 * Index action. Redirects to the Spring security logout uri.</span>
+<span class="tok-cm">	 */</span>
+	<span class="tok-kt">def</span> <span class="tok-nf">index</span><span class="tok-o">()</span> <span class="tok-o">{</span>
+
+		<span class="tok-k">if</span> <span class="tok-o">(!</span><span class="tok-n">request</span><span class="tok-o">.</span><span class="tok-na">post</span> <span class="tok-o">&amp;&amp;</span> <span class="tok-n">SpringSecurityUtils</span><span class="tok-o">.</span><span class="tok-na">getSecurityConfig</span><span class="tok-o">().</span><span class="tok-na">logout</span><span class="tok-o">.</span><span class="tok-na">postOnly</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+			<span class="tok-n">response</span><span class="tok-o">.</span><span class="tok-na">sendError</span> <span class="tok-n">HttpServletResponse</span><span class="tok-o">.</span><span class="tok-na">SC_METHOD_NOT_ALLOWED</span> <span class="tok-c1">// 405</span>
+			<span class="tok-k">return</span>
+		<span class="tok-o">}</span>
+
+		<span class="tok-c1">// TODO put any pre-logout code here</span>
+		<span class="tok-n">redirect</span> <span class="tok-nl">uri:</span> <span class="tok-n">SpringSecurityUtils</span><span class="tok-o">.</span><span class="tok-na">securityConfig</span><span class="tok-o">.</span><span class="tok-na">logout</span><span class="tok-o">.</span><span class="tok-na">filterProcessesUrl</span> <span class="tok-c1">// &#39;/j_spring_security_logout&#39;</span>
+	<span class="tok-o">}</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_librerías_adicionales">7.6. Librerías adicionales</h3>
+<div class="paragraph">
+<p>El plugin de Spring Security viene además con una serie de librerías accesibles en forma de etiquetas o servicio. Veamos cada uno de ellos.</p>
+</div>
+<div class="sect3">
+<h4 id="_librería_de_etiquetas_securitytaglib">7.6.1. Librería de etiquetas: SecurityTagLib</h4>
+<div class="paragraph">
+<p>Con esta librería podremos insertar en nuestros archivos GSPs comprobaciones del tipo, ¿el usuario está identificado? o ¿tiene los permisos necesarios para ver esto?</p>
+</div>
+<div class="sect4">
+<h5 id="_ifloggedin">ifLoggedIn</h5>
+<div class="paragraph">
+<p>Muestra el contenido del cuerpo que pongamos dentro de esta etiqueta siempre que el usuario esté autenticado en el sistema.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-o">&lt;</span><span class="tok-nl">sec:</span><span class="tok-n">ifLoggedIn</span><span class="tok-o">&gt;</span>
+	<span class="tok-n">Welcome</span> <span class="tok-n">Back</span><span class="tok-o">!</span>
+<span class="tok-o">&lt;/</span><span class="tok-nl">sec:</span><span class="tok-n">ifLoggedIn</span><span class="tok-o">&gt;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_ifnotloggedin">ifNotLoggedIn</h5>
+<div class="paragraph">
+<p>Muestra el contenido del cuerpo que pongamos dentro de esta etiqueta siempre que el usuario no esté autenticado en el sistema.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-o">&lt;</span><span class="tok-nl">sec:</span><span class="tok-n">ifNotLoggedIn</span><span class="tok-o">&gt;</span>
+	<span class="tok-o">&lt;</span><span class="tok-nl">g:</span><span class="tok-n">link</span> <span class="tok-n">controller</span><span class="tok-o">=</span><span class="tok-s1">&#39;login&#39;</span> <span class="tok-n">action</span><span class="tok-o">=</span><span class="tok-s1">&#39;auth&#39;</span><span class="tok-o">&gt;</span>
+		<span class="tok-n">Login</span>
+	<span class="tok-o">&lt;</span><span class="tok-s">/g:link&gt;</span>
+<span class="tok-s">&lt;/</span><span class="tok-nl">sec:</span><span class="tok-n">ifNotLoggedIn</span><span class="tok-o">&gt;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_ifallgranted">ifAllGranted</h5>
+<div class="paragraph">
+<p>Muestra el contenido del cuerpo que pongamos dentro de esta etiqueta siempre que el usuario tenga todos los roles pasados por parámetro.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-o">&lt;</span><span class="tok-nl">sec:</span><span class="tok-n">ifAllGranted</span> <span class="tok-n">roles</span><span class="tok-o">=</span><span class="tok-s2">&quot;ROLE_ADMIN,ROLE_SUPERVISOR&quot;</span><span class="tok-o">&gt;</span><span class="tok-n">secure</span> <span class="tok-n">stuff</span> <span class="tok-n">here</span><span class="tok-o">&lt;/</span><span class="tok-nl">sec:</span><span class="tok-n">ifAllGranted</span><span class="tok-o">&gt;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_ifanygranted">ifAnyGranted</h5>
+<div class="paragraph">
+<p>Muestra el contenido del cuerpo que pongamos dentro de esta etiqueta siempre que el usuario tenga al menos uno de los roles pasados por parámetro.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-o">&lt;</span><span class="tok-nl">sec:</span><span class="tok-n">ifAnyGranted</span> <span class="tok-n">roles</span><span class="tok-o">=</span><span class="tok-s2">&quot;ROLE_ADMIN,ROLE_SUPERVISOR&quot;</span><span class="tok-o">&gt;</span><span class="tok-n">secure</span> <span class="tok-n">stuff</span> <span class="tok-n">here</span><span class="tok-o">&lt;/</span><span class="tok-nl">sec:</span><span class="tok-n">ifAnyGranted</span><span class="tok-o">&gt;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_ifnotgranted">ifNotGranted</h5>
+<div class="paragraph">
+<p>Muestra el contenido del cuerpo que pongamos dentro de esta etiqueta siempre que el usuario no tenga asignado ninguno de los roles pasados por parámetro.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-o">&lt;</span><span class="tok-nl">sec:</span><span class="tok-n">ifNotGranted</span> <span class="tok-n">roles</span><span class="tok-o">=</span><span class="tok-s2">&quot;ROLE_USER&quot;</span><span class="tok-o">&gt;</span><span class="tok-n">non</span><span class="tok-o">-</span><span class="tok-n">user</span> <span class="tok-n">stuff</span> <span class="tok-n">here</span><span class="tok-o">&lt;/</span><span class="tok-nl">sec:</span><span class="tok-n">ifNotGranted</span><span class="tok-o">&gt;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_loggedinuserinfo">loggedInUserInfo</h5>
+<div class="paragraph">
+<p>Muestra el valor del campo especificado por parámetro del usuario identificado en el sistema.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-o">&lt;</span><span class="tok-nl">sec:</span><span class="tok-n">loggedInUserInfo</span> <span class="tok-n">field</span><span class="tok-o">=</span><span class="tok-s2">&quot;username&quot;</span><span class="tok-o">/&gt;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_username">username</h5>
+<div class="paragraph">
+<p>Muestra el nombre de usuario del usuario autenticado en el sistema</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-o">&lt;</span><span class="tok-nl">sec:</span><span class="tok-n">ifLoggedIn</span><span class="tok-o">&gt;</span>
+	<span class="tok-n">Welcome</span> <span class="tok-n">Back</span> <span class="tok-o">&lt;</span><span class="tok-nl">sec:</span><span class="tok-n">username</span><span class="tok-s">/&gt;!</span>
+<span class="tok-s">&lt;/</span><span class="tok-nl">sec:</span><span class="tok-n">ifLoggedIn</span><span class="tok-o">&gt;</span>
+<span class="tok-o">&lt;</span><span class="tok-nl">sec:</span><span class="tok-n">ifNotLoggedIn</span><span class="tok-o">&gt;</span>
+	<span class="tok-o">&lt;</span><span class="tok-nl">g:</span><span class="tok-n">link</span> <span class="tok-n">controller</span><span class="tok-o">=</span><span class="tok-s1">&#39;login&#39;</span> <span class="tok-n">action</span><span class="tok-o">=</span><span class="tok-s1">&#39;auth&#39;</span><span class="tok-o">&gt;</span><span class="tok-n">Login</span><span class="tok-o">&lt;</span><span class="tok-s">/g:link&gt;</span>
+<span class="tok-s">&lt;/</span><span class="tok-nl">sec:</span><span class="tok-n">ifNotLoggedIn</span><span class="tok-o">&gt;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_access">access</h5>
+<div class="paragraph">
+<p>Muestra el contenido del cuerpo que pongamos dentro de esta etiqueta siempre que la expresión se evalúe a cierto o el usuario tenga acceso a la url pasada por parámetro.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-o">&lt;</span><span class="tok-nl">sec:</span><span class="tok-n">access</span> <span class="tok-n">expression</span><span class="tok-o">=</span><span class="tok-s2">&quot;hasRole(&#39;ROLE_USER&#39;)&quot;</span><span class="tok-o">&gt;</span>
+	<span class="tok-n">You</span><span class="tok-s1">&#39;re a user</span>
+<span class="tok-s1">&lt;/sec:access&gt;</span>
+
+<span class="tok-s1">&lt;sec:access url=&quot;/admin/user&quot;&gt;</span>
+<span class="tok-s1">	&lt;g:link controller=&#39;</span><span class="tok-n">admin</span><span class="tok-s1">&#39; action=&#39;</span><span class="tok-n">user</span><span class="tok-err">&#39;</span><span class="tok-o">&gt;</span><span class="tok-n">Manage</span> <span class="tok-n">Users</span><span class="tok-o">&lt;</span><span class="tok-s">/g:link&gt;</span>
+<span class="tok-s">&lt;/</span><span class="tok-nl">sec:</span><span class="tok-n">access</span><span class="tok-o">&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Incluso podemos especificar el controlador y la acción que queremos referenciar:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-o">&lt;</span><span class="tok-nl">sec:</span><span class="tok-n">access</span> <span class="tok-n">controller</span><span class="tok-o">=</span><span class="tok-s1">&#39;admin&#39;</span> <span class="tok-n">action</span><span class="tok-o">=</span><span class="tok-s1">&#39;user&#39;</span><span class="tok-o">&gt;</span>
+	<span class="tok-o">&lt;</span><span class="tok-nl">g:</span><span class="tok-n">link</span> <span class="tok-n">controller</span><span class="tok-o">=</span><span class="tok-s1">&#39;admin&#39;</span> <span class="tok-n">action</span><span class="tok-o">=</span><span class="tok-s1">&#39;user&#39;</span><span class="tok-o">&gt;</span>
+		<span class="tok-n">Manage</span> <span class="tok-n">Users</span>
+	<span class="tok-o">&lt;</span><span class="tok-s">/g:link&gt;</span>
+<span class="tok-s">&lt;/</span><span class="tok-nl">sec:</span><span class="tok-n">access</span><span class="tok-o">&gt;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_noaccess">noAccess</h5>
+<div class="paragraph">
+<p>Muestra el contenido del cuerpo que pongamos dentro de esta etiqueta siempre que la expresión se evalúe a falso o el usuario no tenga acceso a la url pasada por parámetro.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-o">&lt;</span><span class="tok-nl">sec:</span><span class="tok-n">noAccess</span> <span class="tok-n">expression</span><span class="tok-o">=</span><span class="tok-s2">&quot;hasRole(&#39;ROLE_USER&#39;)&quot;</span><span class="tok-o">&gt;</span>
+	<span class="tok-n">You</span><span class="tok-err">&#39;</span><span class="tok-n">re</span> <span class="tok-n">not</span> <span class="tok-n">a</span> <span class="tok-n">user</span>
+<span class="tok-o">&lt;/</span><span class="tok-nl">sec:</span><span class="tok-n">noAccess</span><span class="tok-o">&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_servicio_springsecurityservice">7.6.2. Servicio: SpringSecurityService</h4>
+<div class="paragraph">
+<p>El servicio <em>grails.plugin.springsecurity.SpringSecurityService</em> ofrece algunos métodos que podremos utilizar en los controladores u otros servicios simplemente inyectándolos debidamente.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-kt">def</span> <span class="tok-n">springSecurityService</span></code></pre>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_getcurrentuser">getCurrentUser()</h5>
+<div class="paragraph">
+<p>Obtiene una instancia de las clase de dominio correspondiente al usuario autenticado en el sistema.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-kd">class</span> <span class="tok-nc">SomeController</span> <span class="tok-o">{</span>
+   <span class="tok-kt">def</span> <span class="tok-n">springSecurityService</span>
+
+   <span class="tok-kt">def</span> <span class="tok-nf">someAction</span><span class="tok-o">()</span> <span class="tok-o">{</span>
+      <span class="tok-kt">def</span> <span class="tok-n">user</span> <span class="tok-o">=</span> <span class="tok-n">springSecurityService</span><span class="tok-o">.</span><span class="tok-na">currentUser</span>
+      <span class="tok-o">...</span>
+   <span class="tok-o">}</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_isloggedin">isLoggedIn()</h5>
+<div class="paragraph">
+<p>Comprueba si el usuario está autenticado en el sistema</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-kd">class</span> <span class="tok-nc">SomeController</span> <span class="tok-o">{</span>
+   <span class="tok-kt">def</span> <span class="tok-n">springSecurityService</span>
+
+   <span class="tok-kt">def</span> <span class="tok-nf">someAction</span><span class="tok-o">()</span> <span class="tok-o">{</span>
+      <span class="tok-k">if</span> <span class="tok-o">(</span><span class="tok-n">springSecurityService</span><span class="tok-o">.</span><span class="tok-na">isLoggedIn</span><span class="tok-o">())</span> <span class="tok-o">{</span>
+         <span class="tok-o">...</span>
+      <span class="tok-o">}</span>
+      <span class="tok-k">else</span> <span class="tok-o">{</span>
+         <span class="tok-o">...</span>
+      <span class="tok-o">}</span>
+   <span class="tok-o">}</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_getauthentication">getAuthentication()</h5>
+<div class="paragraph">
+<p>Obtiene los datos del usuario autenticado en el sistema</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-kd">class</span> <span class="tok-nc">SomeController</span> <span class="tok-o">{</span>
+   <span class="tok-kt">def</span> <span class="tok-n">springSecurityService</span>
+
+   <span class="tok-kt">def</span> <span class="tok-nf">someAction</span><span class="tok-o">()</span> <span class="tok-o">{</span>
+      <span class="tok-kt">def</span> <span class="tok-n">auth</span> <span class="tok-o">=</span> <span class="tok-n">springSecurityService</span><span class="tok-o">.</span><span class="tok-na">authentication</span>
+      <span class="tok-n">String</span> <span class="tok-n">username</span> <span class="tok-o">=</span> <span class="tok-n">auth</span><span class="tok-o">.</span><span class="tok-na">username</span>
+      <span class="tok-kt">def</span> <span class="tok-n">authorities</span> <span class="tok-o">=</span> <span class="tok-n">auth</span><span class="tok-o">.</span><span class="tok-na">authorities</span> <span class="tok-c1">// a Collection of GrantedAuthority</span>
+      <span class="tok-kt">boolean</span> <span class="tok-n">authenticated</span> <span class="tok-o">=</span> <span class="tok-n">auth</span><span class="tok-o">.</span><span class="tok-na">authenticated</span>
+      <span class="tok-o">...</span>
+   <span class="tok-o">}</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_getprincipal">getPrincipal()</h5>
+<div class="paragraph">
+<p>Obtiene los datos del usuario autenticado en el sistema</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-kd">class</span> <span class="tok-nc">SomeController</span> <span class="tok-o">{</span>
+   <span class="tok-kt">def</span> <span class="tok-n">springSecurityService</span>
+
+   <span class="tok-kt">def</span> <span class="tok-nf">someAction</span><span class="tok-o">()</span> <span class="tok-o">{</span>
+      <span class="tok-kt">def</span> <span class="tok-n">principal</span> <span class="tok-o">=</span> <span class="tok-n">springSecurityService</span><span class="tok-o">.</span><span class="tok-na">principal</span>
+      <span class="tok-n">String</span> <span class="tok-n">username</span> <span class="tok-o">=</span> <span class="tok-n">principal</span><span class="tok-o">.</span><span class="tok-na">username</span>
+      <span class="tok-kt">def</span> <span class="tok-n">authorities</span> <span class="tok-o">=</span> <span class="tok-n">principal</span><span class="tok-o">.</span><span class="tok-na">authorities</span> <span class="tok-c1">// a Collection of GrantedAuthority</span>
+      <span class="tok-kt">boolean</span> <span class="tok-n">enabled</span> <span class="tok-o">=</span> <span class="tok-n">principal</span><span class="tok-o">.</span><span class="tok-na">enabled</span>
+      <span class="tok-err">…</span>
+   <span class="tok-o">}</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_encodepassword">encodePassword()</h5>
+<div class="paragraph">
+<p>Codifica la contraseña a partir del esquema de encriptación configurado. Por defecto, se utiliza el método SHA-256, pero éste se puede modificar en el archivo de configuración <em>Config.groovy</em> especificando el parámetro <em>grails.plugin.springsecurity.password.algorithm</em>, pudiendo utilizar cualquiera de los valores comentados en esta página de Java: <a href="http://docs.oracle.com/javase/7/docs/technotes/guides/security/crypto/CryptoSpec.html#Architecture" class="bare">http://docs.oracle.com/javase/7/docs/technotes/guides/security/crypto/CryptoSpec.html#Architecture</a>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-kd">class</span> <span class="tok-nc">PersonController</span> <span class="tok-o">{</span>
+   <span class="tok-kt">def</span> <span class="tok-n">springSecurityService</span>
+
+   <span class="tok-kt">def</span> <span class="tok-nf">updateAction</span><span class="tok-o">()</span> <span class="tok-o">{</span>
+      <span class="tok-kt">def</span> <span class="tok-n">person</span> <span class="tok-o">=</span> <span class="tok-n">Person</span><span class="tok-o">.</span><span class="tok-na">get</span><span class="tok-o">(</span><span class="tok-n">params</span><span class="tok-o">.</span><span class="tok-na">id</span><span class="tok-o">)</span>
+
+      <span class="tok-n">params</span><span class="tok-o">.</span><span class="tok-na">salt</span> <span class="tok-o">=</span> <span class="tok-n">person</span><span class="tok-o">.</span><span class="tok-na">salt</span>
+      <span class="tok-k">if</span> <span class="tok-o">(</span><span class="tok-n">person</span><span class="tok-o">.</span><span class="tok-na">password</span> <span class="tok-o">!=</span> <span class="tok-n">params</span><span class="tok-o">.</span><span class="tok-na">password</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+         <span class="tok-n">params</span><span class="tok-o">.</span><span class="tok-na">password</span> <span class="tok-o">=</span> <span class="tok-n">springSecurityService</span><span class="tok-o">.</span><span class="tok-na">encodePassword</span><span class="tok-o">(</span><span class="tok-n">password</span><span class="tok-o">,</span> <span class="tok-n">salt</span><span class="tok-o">)</span>
+         <span class="tok-kt">def</span> <span class="tok-n">salt</span> <span class="tok-o">=</span> <span class="tok-err">…</span> <span class="tok-c1">// e.g. randomly generated using some utility method</span>
+         <span class="tok-n">params</span><span class="tok-o">.</span><span class="tok-na">salt</span> <span class="tok-o">=</span> <span class="tok-n">salt</span>
+      <span class="tok-o">}</span>
+      <span class="tok-n">person</span><span class="tok-o">.</span><span class="tok-na">properties</span> <span class="tok-o">=</span> <span class="tok-n">params</span>
+      <span class="tok-k">if</span> <span class="tok-o">(!</span><span class="tok-n">person</span><span class="tok-o">.</span><span class="tok-na">save</span><span class="tok-o">(</span><span class="tok-nl">flush:</span> <span class="tok-kc">true</span><span class="tok-o">))</span> <span class="tok-o">{</span>
+         <span class="tok-n">render</span> <span class="tok-nl">view:</span> <span class="tok-s1">&#39;edit&#39;</span><span class="tok-o">,</span> <span class="tok-nl">model:</span> <span class="tok-o">[</span><span class="tok-nl">person:</span> <span class="tok-n">person</span><span class="tok-o">]</span>
+         <span class="tok-k">return</span>
+      <span class="tok-o">}</span>
+      <span class="tok-n">redirect</span> <span class="tok-nl">action:</span> <span class="tok-s1">&#39;show&#39;</span><span class="tok-o">,</span> <span class="tok-nl">id:</span> <span class="tok-n">person</span><span class="tok-o">.</span><span class="tok-na">id</span>
+   <span class="tok-o">}</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_updaterole">updateRole()</h5>
+<div class="paragraph">
+<p>Actualiza un rol, y en caso de que estemos utilizando el método <em>RequestMap</em>, también actualizará el nombre del rol en todas las instancias de la base de datos.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-kd">class</span> <span class="tok-nc">RoleController</span> <span class="tok-o">{</span>
+   <span class="tok-kt">def</span> <span class="tok-n">springSecurityService</span>
+
+   <span class="tok-kt">def</span> <span class="tok-nf">update</span><span class="tok-o">()</span> <span class="tok-o">{</span>
+      <span class="tok-kt">def</span> <span class="tok-n">roleInstance</span> <span class="tok-o">=</span> <span class="tok-n">Role</span><span class="tok-o">.</span><span class="tok-na">get</span><span class="tok-o">(</span><span class="tok-n">params</span><span class="tok-o">.</span><span class="tok-na">id</span><span class="tok-o">)</span>
+      <span class="tok-k">if</span> <span class="tok-o">(!</span><span class="tok-n">springSecurityService</span><span class="tok-o">.</span><span class="tok-na">updateRole</span><span class="tok-o">(</span><span class="tok-n">roleInstance</span><span class="tok-o">,</span> <span class="tok-n">params</span><span class="tok-o">))</span> <span class="tok-o">{</span>
+         <span class="tok-n">render</span> <span class="tok-nl">view:</span> <span class="tok-s1">&#39;edit&#39;</span><span class="tok-o">,</span> <span class="tok-nl">model:</span> <span class="tok-o">[</span><span class="tok-nl">roleInstance:</span> <span class="tok-n">roleInstance</span><span class="tok-o">]</span>
+         <span class="tok-k">return</span>
+      <span class="tok-o">}</span>
+
+      <span class="tok-n">flash</span><span class="tok-o">.</span><span class="tok-na">message</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;The role was updated&quot;</span>
+      <span class="tok-n">redirect</span> <span class="tok-nl">action:</span> <span class="tok-n">show</span><span class="tok-o">,</span> <span class="tok-nl">id:</span> <span class="tok-n">roleInstance</span><span class="tok-o">.</span><span class="tok-na">id</span>
+   <span class="tok-o">}</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_deleterole">deleteRole()</h5>
+<div class="paragraph">
+<p>Elimina un rol, y en caso de que estemos utilizando el método <em>Requestmap</em>, también lo eliminará de aquellas instancias donde estuviera especificado.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-kd">class</span> <span class="tok-nc">RoleController</span> <span class="tok-o">{</span>
+   <span class="tok-kt">def</span> <span class="tok-n">springSecurityService</span>
+
+   <span class="tok-kt">def</span> <span class="tok-nf">delete</span><span class="tok-o">()</span> <span class="tok-o">{</span>
+      <span class="tok-kt">def</span> <span class="tok-n">roleInstance</span> <span class="tok-o">=</span> <span class="tok-n">Role</span><span class="tok-o">.</span><span class="tok-na">get</span><span class="tok-o">(</span><span class="tok-n">params</span><span class="tok-o">.</span><span class="tok-na">id</span><span class="tok-o">)</span>
+      <span class="tok-k">try</span> <span class="tok-o">{</span>
+         <span class="tok-n">springSecurityService</span><span class="tok-o">.</span><span class="tok-na">deleteRole</span> <span class="tok-o">(</span><span class="tok-n">roleInstance</span>
+         <span class="tok-n">flash</span><span class="tok-o">.</span><span class="tok-na">message</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;The role was deleted&quot;</span>
+         <span class="tok-n">redirect</span> <span class="tok-nl">action:</span> <span class="tok-n">list</span>
+      <span class="tok-o">}</span>
+      <span class="tok-k">catch</span> <span class="tok-o">(</span><span class="tok-n">DataIntegrityViolationException</span> <span class="tok-n">e</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+         <span class="tok-n">flash</span><span class="tok-o">.</span><span class="tok-na">message</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;Unable to delete the role&quot;</span>
+         <span class="tok-n">redirect</span> <span class="tok-nl">action:</span> <span class="tok-n">show</span><span class="tok-o">,</span> <span class="tok-nl">id:</span> <span class="tok-n">params</span><span class="tok-o">.</span><span class="tok-na">id</span>
+      <span class="tok-o">}</span>
+   <span class="tok-o">}</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_clearcachedrequestmaps">clearCachedRequestmaps()</h5>
+<div class="paragraph">
+<p>Este método fuerza una actualización de toda la caché referente al sistema de autenticación de nuestra aplicación. Siempre que creemos, modifiquemos o eliminemos una instancia de la clase <em>RequestMap</em> debemos invocar este método. En los métodos <em>updateRole()</em> y <em>deleteRole()</em> ya se llama automáticamente al método <em>clearCachedRequestmaps()</em> para que nosotros no tengamos que preocuparnos.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-kd">class</span> <span class="tok-nc">RequestmapController</span> <span class="tok-o">{</span>
+   <span class="tok-kt">def</span> <span class="tok-n">springSecurityService</span>
+
+   <span class="tok-kt">def</span> <span class="tok-nf">save</span><span class="tok-o">()</span> <span class="tok-o">{</span>
+      <span class="tok-kt">def</span> <span class="tok-n">requestmapInstance</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-n">Requestmap</span><span class="tok-o">(</span><span class="tok-n">params</span><span class="tok-o">)</span>
+      <span class="tok-k">if</span> <span class="tok-o">(!</span><span class="tok-n">requestmapInstance</span><span class="tok-o">.</span><span class="tok-na">save</span><span class="tok-o">(</span><span class="tok-nl">flush:</span> <span class="tok-kc">true</span><span class="tok-o">))</span> <span class="tok-o">{</span>
+         <span class="tok-n">render</span> <span class="tok-nl">view:</span> <span class="tok-s1">&#39;create&#39;</span><span class="tok-o">,</span> <span class="tok-nl">model:</span> <span class="tok-o">[</span><span class="tok-nl">requestmapInstance:</span> <span class="tok-n">requestmapInstance</span><span class="tok-o">]</span>
+         <span class="tok-k">return</span>
+      <span class="tok-o">}</span>
+
+      <span class="tok-n">springSecurityService</span><span class="tok-o">.</span><span class="tok-na">clearCachedRequestmaps</span><span class="tok-o">()</span>
+      <span class="tok-n">flash</span><span class="tok-o">.</span><span class="tok-na">message</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;Requestmap created&quot;</span>
+      <span class="tok-n">redirect</span> <span class="tok-nl">action:</span> <span class="tok-n">show</span><span class="tok-o">,</span> <span class="tok-nl">id:</span> <span class="tok-n">requestmapInstance</span><span class="tok-o">.</span><span class="tok-na">id</span>
+   <span class="tok-o">}</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_reauthenticate">reauthenticate()</h5>
+<div class="paragraph">
+<p>Este método renueva los datos de la autenticación del usuario. Esto se debe hacer después de que se actualicen los roles de un usuario.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-kd">class</span> <span class="tok-nc">UserController</span> <span class="tok-o">{</span>
+   <span class="tok-kt">def</span> <span class="tok-n">springSecurityService</span>
+
+   <span class="tok-kt">def</span> <span class="tok-nf">update</span><span class="tok-o">()</span> <span class="tok-o">{</span>
+      <span class="tok-kt">def</span> <span class="tok-n">userInstance</span> <span class="tok-o">=</span> <span class="tok-n">User</span><span class="tok-o">.</span><span class="tok-na">get</span><span class="tok-o">(</span><span class="tok-n">params</span><span class="tok-o">.</span><span class="tok-na">id</span><span class="tok-o">)</span>
+
+      <span class="tok-n">params</span><span class="tok-o">.</span><span class="tok-na">salt</span> <span class="tok-o">=</span> <span class="tok-n">person</span><span class="tok-o">.</span><span class="tok-na">salt</span>
+      <span class="tok-k">if</span> <span class="tok-o">(</span><span class="tok-n">params</span><span class="tok-o">.</span><span class="tok-na">password</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+         <span class="tok-n">params</span><span class="tok-o">.</span><span class="tok-na">password</span> <span class="tok-o">=</span> <span class="tok-n">springSecurityService</span><span class="tok-o">.</span><span class="tok-na">encodePassword</span><span class="tok-o">(</span><span class="tok-n">params</span><span class="tok-o">.</span><span class="tok-na">password</span><span class="tok-o">,</span> <span class="tok-n">salt</span><span class="tok-o">)</span>
+         <span class="tok-kt">def</span> <span class="tok-n">salt</span> <span class="tok-o">=</span> <span class="tok-err">…</span> <span class="tok-c1">// e.g. randomly generated using some utility method</span>
+         <span class="tok-n">params</span><span class="tok-o">.</span><span class="tok-na">salt</span> <span class="tok-o">=</span> <span class="tok-n">salt</span>
+      <span class="tok-o">}</span>
+      <span class="tok-n">userInstance</span><span class="tok-o">.</span><span class="tok-na">properties</span> <span class="tok-o">=</span> <span class="tok-n">params</span>
+      <span class="tok-k">if</span> <span class="tok-o">(!</span><span class="tok-n">userInstance</span><span class="tok-o">.</span><span class="tok-na">save</span><span class="tok-o">(</span><span class="tok-nl">flush:</span> <span class="tok-kc">true</span><span class="tok-o">))</span> <span class="tok-o">{</span>
+         <span class="tok-n">render</span> <span class="tok-nl">view:</span> <span class="tok-s1">&#39;edit&#39;</span><span class="tok-o">,</span> <span class="tok-nl">model:</span> <span class="tok-o">[</span><span class="tok-nl">userInstance:</span> <span class="tok-n">userInstance</span><span class="tok-o">]</span>
+         <span class="tok-k">return</span>
+      <span class="tok-o">}</span>
+
+      <span class="tok-k">if</span> <span class="tok-o">(</span><span class="tok-n">springSecurityService</span><span class="tok-o">.</span><span class="tok-na">loggedIn</span> <span class="tok-o">&amp;&amp;</span>
+             <span class="tok-n">springSecurityService</span><span class="tok-o">.</span><span class="tok-na">principal</span><span class="tok-o">.</span><span class="tok-na">username</span> <span class="tok-o">==</span> <span class="tok-n">userInstance</span><span class="tok-o">.</span><span class="tok-na">username</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+         <span class="tok-n">springSecurityService</span><span class="tok-o">.</span><span class="tok-na">reauthenticate</span> <span class="tok-n">userInstance</span><span class="tok-o">.</span><span class="tok-na">username</span>
+      <span class="tok-o">}</span>
+
+      <span class="tok-n">flash</span><span class="tok-o">.</span><span class="tok-na">message</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;The user was updated&quot;</span>
+      <span class="tok-n">redirect</span> <span class="tok-nl">action:</span> <span class="tok-n">show</span><span class="tok-o">,</span> <span class="tok-nl">id:</span> <span class="tok-n">userInstance</span><span class="tok-o">.</span><span class="tok-na">id</span>
+   <span class="tok-o">}</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_otros_aspectos_interesantes_de_spring_security">7.7. Otros aspectos interesantes de Spring Security</h3>
+<div class="paragraph">
+<p>El plugin de Spring Security es sin duda uno de los más completos de Grails y en la documentación oficial encontrarás otros detalles del mismo. Sin embargo, aquí vamos a resaltar un par de ellos como son las restricciones por IP o la internacionalización del plugin.</p>
+</div>
+<div class="sect3">
+<h4 id="_restricciones_por_ip">7.7.1. Restricciones por IP</h4>
+<div class="paragraph">
+<p>En ocasiones nos puede interesar proporcionar una serie de restricciones por IP de tal forma que únicamente las peticiones que vengan de esta IP podrán acceder al recurso. Esto lo debemos hacer en el archivo <em>Config.groovy</em> y este sería un ejemplo:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span class="tok-n">grails</span><span class="tok-o">.</span><span class="tok-na">plugin</span><span class="tok-o">.</span><span class="tok-na">springsecurity</span><span class="tok-o">.</span><span class="tok-na">ipRestrictions</span> <span class="tok-o">=</span> <span class="tok-o">[</span>
+   <span class="tok-s1">&#39;/pattern1/**&#39;</span><span class="tok-o">:</span> <span class="tok-s1">&#39;123.234.345.456&#39;</span><span class="tok-o">,</span>
+   <span class="tok-s1">&#39;/pattern2/**&#39;</span><span class="tok-o">:</span> <span class="tok-s1">&#39;10.0.0.0/8&#39;</span><span class="tok-o">,</span>
+   <span class="tok-s1">&#39;/pattern3/**&#39;</span><span class="tok-o">:</span> <span class="tok-o">[</span><span class="tok-s1">&#39;10.10.200.42&#39;</span><span class="tok-o">,</span> <span class="tok-s1">&#39;10.10.200.63&#39;</span><span class="tok-o">]</span>
+<span class="tok-o">]</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_internacionalización">7.7.2. Internacionalización</h4>
+<div class="paragraph">
+<p>El plugin de Spring Security viene traducido al inglés y al francés (entre otros idiomas), así que si necesitamos traducirlo al castellano por ejemplo, debemos crear las siguientes propiedades en el archivo de literales correspondiente:</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-middle">Propiedad</th>
+<th class="tableblock halign-left valign-top">Valor por defecto en inglés</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">springSecurity.errors.login.expired</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sorry, your account has expired</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">springSecurity.errors.login.passwordExpired</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sorry, your password has expired.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">springSecurity.errors.login.disabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sorry, your password is disabled.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">springSecurity.errors.login.locked</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sorry, your account is locked.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">springSecurity.errors.login.fail</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sorry, we were not able to find a user with that username and password.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">springSecurity.login.title</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Login</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">springSecurity.login.header</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Please Login..</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">springSecurity.login.button</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Login</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">springSecurity.login.username.label</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Username</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">springSecurity.login.password.label</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Password</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">springSecurity.login.remember.me.label</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Remember me</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">springSecurity.denied.title</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Denied</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">springSecurity.denied.message</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sorry, you&#8217;re not authorized to view this page.</p></td>
+</tr>
+</tbody>
+</table>
+<div style="page-break-after: always;"></div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_ejercicios">7.8. Ejercicios</h3>
+<div class="sect3">
+<h4 id="_roles_y_usuarios_0_50_puntos">7.8.1. Roles y usuarios (0.50 puntos)</h4>
+<div class="paragraph">
+<p>En nuestra aplicación vamos a introducir dos tipos de usuarios: los administradores y los usuarios básicos. Los administradores serán capaces de crear nuevos usuarios, etiquetas y categorías mientras que los usuarios básicos simplemente podrán gestionar sus propias tareas.</p>
+</div>
+<div class="paragraph">
+<p>Para ello introduce en el <em>Bootstrap.groovy</em> la creación de:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Dos roles (ROLE_ADMIN, ROLE_BASIC)</p>
+</li>
+<li>
+<p>Un usuario administrador con nombre de usuario y contraseña "admin"</p>
+</li>
+<li>
+<p>Un par de usuarios básicos con nombres de usuario y contraseñas "usuario1" y "usuario2"</p>
+</li>
+<li>
+<p>Asigna varias tareas a ambos usuarios básicos</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_modificar_plantillas_y_vistas_0_25_puntos">7.8.2. Modificar plantillas y vistas (0.25 puntos)</h4>
+<div class="paragraph">
+<p>En su momento creábamos una plantilla llamada <em>header.gsp</em> que se renderiza en la parte superior de la aplicación y que básicamente <em>pinta</em> un enlace para que el usuario se pueda identificar en el sistema.</p>
+</div>
+<div class="paragraph">
+<p>En este ejercicio vamos a modificar esta plantilla para especificar los enlaces correctos <em>/login/auth</em> para identificarse en el sistema y <em>/logout/index</em> para abandonar el mismo. Una cosa que debes tener en cuenta es que para abandonar el sistema, el plugin Spring Security sólo acepta el método POST, con lo que tendrás que crear un botón dentro de un formulario para enviar esta petición utilizando el método adecuado. No olvides también imprimir en la cabecera el nombre de usuario de la persona identificada en el sistema.</p>
+</div>
+<div class="paragraph">
+<p>Por otro lado, vamos a modificar la pantalla inicial de la aplicación para mostrar el contenido de la misma en función del tipo de usuario identificado, es decir, los administradores verán varios enlaces para mantener usuarios, etiquetas y categorías mientras que los usuarios básicos sólo podrán mantener sus tareas.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_diferente_rol_diferentes_reglas_0_25_punto">7.8.3. Diferente rol, diferentes reglas (0.25 punto)</h4>
+<div class="paragraph">
+<p>Por último, ahora que la aplicación soporta varios roles, deberemos distinguir que rol tiene acceso a que partes de la aplicación. Como comentábamos en el primer ejercicio, los administradores serán los encargados de gestionar usuarios, etiquetas y categorías, mientras que los usuarios básicos sólo podrán acceder a sus tareas. No olvides añadir reglas para los endpoints que añadíamos cuando hablamos sobre servicios REST.</p>
+</div>
+<div class="paragraph">
+<p>Tendremos que realizar una serie de cambios en nuestra aplicación para que al crear una tarea, ésta sea asignada automáticamente al usuario identificado en el sistema. Deberemos proceder de la misma forma con el listado de las tareas para que sólo se muestren al usuario sus propias tareas.</p>
+</div>
+<div class="paragraph">
+<p>Además, deberemos eliminar cualquier enlace presente en la aplicación que enlace a alguna parte que el usuario no deba tener acceso, como por ejemplo, la posibilidad de crear etiquetas desde la página de creación de tareas.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_modificar_los_tests_unitarios_0_25_puntos">7.8.4. Modificar los tests unitarios (0.25 puntos)</h4>
+<div class="paragraph">
+<p>Si volvemos a ejecutar los tests unitarios, nos daremos cuenta de que acabamos de romper aquellos que creaban tareas y ésto ha sido provocado por la introducción de la relación entre las tareas y los usuarios.</p>
+</div>
+<div class="paragraph">
+<p>Soluciona estos problemas en los tests <em>TodoSpec.groovy</em>, <em>TodoServiceSpec.groovy</em> y <em>TodoControllerSpec.groovy</em>.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2015-10-05 20:14:58 CEST
+</div>
+</div>
+</body>
+</html>

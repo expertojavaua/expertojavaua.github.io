@@ -1,0 +1,263 @@
+<!-- saved from url=(0022)http://internet.e-mail -->
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+                                                            
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+                                                            
+  <meta name="Author" content="Nacho">
+                                                            
+  <meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+                                                        
+  <link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+  <title>Tema 1: Conceptos b&aacute;sicos de Servlets</title>
+</head>
+  <body>
+      <b>      
+<h1>1. Conceptos básicos de servlets</h1>
+<h2>&nbsp;</h2>
+<h2>1.1. Concepto de servlet</h2>
+      </b><p><b><br>
+      </b> Un <b> servlet</b> es un programa Java que se ejecuta en un servidor Web y
+      construye o sirve páginas web. De esta forma se pueden construir páginas
+      dinámicas, basadas en diferentes fuentes variables: datos proporcionados
+      por el usuario, fuentes de información variable (páginas de noticias,
+      por ejemplo), o programas que extraigan información de bases de datos. </p>
+           
+      <p>Comparado con un CGI, un servlet es más sencillo de utilizar, más
+      eficiente (se arranca un hilo por cada petición y no un proceso entero),
+      más potente y portable. Con los servlets podremos,
+      entre otras cosas, procesar, sincronizar y coordinar múltiples peticiones
+      de clientes, reenviar peticiones a otros servlets o a otros servidores,
+      etc. </p>
+           
+      <h4>1.1.1. Recursos de servlets y JSP</h4>
+           
+      <p>Normalmente al hablar de servlets se habla de JSP y viceversa, puesto
+      que ambos conceptos están muy interrelacionados. Para trabajar con ellos
+      se necesitan tener presentes algunos recursos: </p>
+           
+      <ul>
+        <li>Un <b>servidor web</b> que dé soporte a servlets / JSP (contenedor
+          de servlets y páginas JSP). Ejemplos de
+          estos servidores son Apache Tomcat, Resin, JRun, Java Web Server, BEA WebLogic, etc.</li>
+        <li>Las <b> librerías</b> (clases) necesarias para trabajar con servlets /
+          JSP. Normalmente vienen en ficheros JAR en un
+          directorio <i>lib </i>(<i>common/lib</i> en Tomcat):
+          <i>servlets.jar</i> (con la API de servlets), y <i>jsp.jar</i>, <i>jspengine.jar</i>
+          o <i>jasper.jar</i> para JSP. Al desarrollar nuestra aplicación,
+          deberemos incluir las librerías necesarias en el classpath para que
+          compilen los ficheros. También se puede utilizar el fichero JAR <i>j2ee.jar</i>
+          que viene con Java Enterprise Edition, pero no es recomendable si se
+          puede disponer de las librerías específicas del servidor.</li>
+        <li>La <b> documentación</b> sobre la API de servlets / JSP (no necesaria, pero
+          sí recomendable)</li>
+      </ul>
+      <p>Para encontrar información sobre servlets y JSP, son de utilidad las
+      siguientes direcciones:</p>
+      <ul>
+        <li><a href="http://java.sun.com/j2ee/">http://java.sun.com/j2ee/</a>:
+          referencia de todos los elementos que componen J2EE</li>
+        <li><a href="http://java.sun.com/products/jsp">http://java.sun.com/products/jsp</a>:
+          referencia para las últimas actualizaciones en JSP</li>
+        <li><a href="http://java.sun.com/products/servlets">http://java.sun.com/products/servlets</a>:
+          referencia para las últimas actualizaciones en servlets</li>
+      </ul>
+           
+      <h4>1.1.2. Arquitectura del paquete servlet</h4>
+           
+      <p>Dentro del paquete <b>javax.servlet</b> tenemos toda la infraestructura
+      para poder trabajar con servlets. El elemento central es la interfaz <b>Servlet</b>,
+      que define los métodos para cualquier servlet. La clase <b>GenericServlet
+      </b>es una clase abstracta que implementa dicha interfaz para un servlet
+      genérico, independiente del protocolo. Para definir un servlet que se
+      utilice vía web, se tiene la clase <b>HttpServlet</b> dentro del
+      subpaquete <b>javax.servlet.http</b>. Esta clase hereda de <i>GenericServlet</i>,
+      y también es una clase
+      abstracta, de la que heredaremos para construir los servlets para nuestras
+      aplicaciones web. </p>
+           
+      <p>Cuando un servlet acepta una petición de un cliente, se reciben dos
+      objetos: </p>
+           
+      <ul>
+        <li>Un objeto de tipo <b>ServletRequest</b> que contiene los datos de la
+      petición del usuario (toda la información entrante). Con esto se accede
+      a los parámetros pasados por el cliente, el protocolo empleado, etc. Se
+      puede obtener también un objeto <b>ServletInputStream</b> para obtener
+      datos del cliente que realiza la petición. La subclase <b>HttpServletRequest</b>
+      procesa peticiones de tipo HTTP.</li>
+        <li>Un objeto de tipo <b>ServletResponse</b> que contiene (o contendrá) la
+      respuesta del servlet ante la petición (toda la información saliente).
+      Se puede obtener un objeto <b>ServletOutputStream</b>, y un <i>Writer</i>,
+      para poder escribir la respuesta. La clase <b>HttpServletResponse</b> se
+      emplea para respuestas a peticiones HTTP.</li>
+      </ul>
+           
+      <h4>1.1.3. Ciclo de vida de un servlet</h4>
+           
+      <p>Todos los servlets tienen el mismo ciclo de vida: </p>
+           
+      <ul>
+        <li>Un servidor carga e inicializa el servlet</li>
+        <li>El servlet procesa cero o más peticiones de clientes (por cada
+          petición se lanza un hilo)</li>
+        <li>El servidor destruye el servlet (en un momento dado o cuando se
+          apaga)&nbsp;</li>
+      </ul>
+      <p><b>1. Inicialización</b> </p>
+           
+      <p>En cuanto a la inicialización de un servlet, se tiene una por defecto
+      en el método <b>init()</b>.&nbsp; </p>
+           
+      <pre class="codigo">public void init() throws ServletException
+{
+	...
+}
+
+public void init(ServletConfig conf) throws ServletException
+{
+	super.init(conf);
+	...
+}</pre>
+           
+      <p>El primer método se utiliza si el servlet no necesita parámetros de
+      configuración externos. El segundo se emplea para tomar dichos
+      parámetros del objeto <i>ServletConfig </i>que se le pasa. La llamada a <i>super.init(...)</i>
+      al principio del método es MUY importante, porque el servlet utiliza esta
+      configuración en otras zonas.&nbsp; </p>
+           
+      <p>Si queremos definir nuestra propia
+      inicialización, deberemos sobreescribir alguno de estos métodos. Si ocurre algún error
+      al inicializar y el servlet no es capaz de atender
+          peticiones, debemos lanzar una excepción de tipo <i>UnavailableException</i>.&nbsp; </p>
+           
+      <p>Podemos utilizar la inicialización para establecer una conexión con
+      una base de datos (si trabajamos con base de datos), abrir ficheros, o
+      cualquier tarea que se necesite hacer una sola vez antes de que el servlet
+      comience a funcionar. </p>
+           
+      <p><b>2. Procesamiento de peticiones</b> </p>
+           
+      <p>Una vez inicializado, cada petición de usuario lanza un hilo que llama
+      al método <b>service()</b> del servlet.&nbsp; </p>
+           
+      <pre class="codigo">public void service(HttpServletRequest request, 
+		    HttpServletResponse response) 
+throws ServletException, IOException</pre>
+           
+      <p> Este método obtiene el tipo de
+      petición que se ha realizado (GET, POST, PUT, DELETE). Dependiendo del tipo de petición
+      que se tenga, se llama luego a uno de los métodos: </p>
+           
+      <ul>
+        <li><b>doGet()</b>:&nbsp;</li>
+      </ul>
+           
+      <blockquote>
+        <pre class="codigo">public void doGet(HttpServletRequest request, 
+		  HttpServletResponse response) 
+throws ServletException, IOException</pre>
+           
+        <p>Para peticiones de tipo GET (aquellas realizadas al
+      escribir una dirección en un navegador, pinchar un enlace o rellenar un
+      formulario que no tenga METHOD=POST)</p>
+      </blockquote>
+           
+      <ul>
+        <li><b>doPost()</b>:&nbsp;</li>
+      </ul>
+           
+      <blockquote>
+        <pre class="codigo">public void doPost(HttpServletRequest request, 
+		   HttpServletResponse response) 
+throws ServletException, IOException</pre>
+           
+        <p>Para peticiones POST (aquellas realizadas al rellenar
+      un formulario que tenga METHOD=POST)</p>
+      </blockquote>
+           
+      <ul>
+        <li><b>doXXX()</b>: normalmente sólo se emplean los dos métodos
+          anteriores, pero se tienen otros métodos para peticiones de tipo
+          DELETE (<b>doDelete()</b>), PUT (<b>doPut()</b>), OPTIONS (<b>doOptions()</b>)
+          y TRACE (<b>doTrace()</b>).</li>
+      </ul>
+           
+      <p><b>3. Destrucción</b> </p>
+           
+      <p>El método <b>destroy()</b> de los servlets se emplea para eliminar un
+      servlet y sus recursos asociados.&nbsp; </p>
+           
+      <pre class="codigo">public void destroy() throws ServletException</pre>
+           
+      <p> Aquí debe deshacerse cualquier elemento
+      que se construyó en la inicialización (cerrar conexiones con bases de
+      datos, cerrar ficheros, etc). </p>
+           
+      <p>El servidor llama a <i>destroy() </i>cuando todas las llamadas de
+      servicios del servlet han concluido, o cuando haya pasado un determinado
+      número de segundos (lo que ocurra primero). Si esperamos que el servlet
+      haga tareas que requieran mucho tiempo, tenemos que asegurarnos de que
+      dichas tareas se completarán. Podemos hacer lo siguiente: </p>
+           
+      <ul>
+        <li>Definir un contador de tareas activas, que se incremente cada vez
+          que una tarea comienza (entendemos por <i>tarea</i> cada petición que
+          se realice al servlet), y se decremente cada vez que una termina.
+          Podemos utilizar bloques de código <i>synchronized</i> para evitar
+          problemas de concurrencia.</li>
+        <li>Hacer que el método <i>destroy()</i> no termine hasta que lo hagan
+          todas las tareas pendientes (comprobando el contador de tareas
+          pendientes)</li>
+        <li>Hacer que las tareas pendientes terminen su trabajo si se quiere
+          cerrar el servlet (comprobando algún flag que indique si el servlet
+          se va a cerrar o no).</li>
+      </ul>
+      <b>      
+           
+      <h4>1.1.4. Estructura básica de un servlet</h4>
+           
+      </b>
+           
+      <p>La plantilla común para implementar un servlet es: </p>
+           
+      <pre class="codigo">import javax.servlet.*;
+import javax.servlet.http.*;
+
+public class ClaseServlet extends HttpServlet
+{
+	public void doGet(HttpServletRequest request, 
+			  HttpServletResponse response) 
+	throws ServletException, IOException
+	{
+	<b>	// ... codigo para una peticion GET
+</b>	}
+
+	public void doPost(HttpServletRequest request, 
+			   HttpServletResponse response) 
+	throws ServletException, IOException
+
+	{
+	<b>	// ... codigo para una peticion POST
+</b>	}
+}</pre>
+           
+      <p>El servlet hereda de la clase <i>HttpServlet</i>. Normalmente se deben
+      sobreescribir los métodos <b>doGet()</b>, <b>doPost()</b> o ambos,
+      colocando el código que queremos que se ejecute cuando se reciba una
+      petición GET o POST, respectivamente. Conviene definir los dos para
+      distinguir ambas peticiones. En caso de que queramos hacer lo mismo para
+      GET o POST, definimos el código en uno de ellos, y hacemos que el otro lo
+      llame.</p>
+      <p>Aparte de estos métodos, podemos utilizar otros de los que hemos
+      visto: <b>init() </b>(para inicializaciones), <b>doXXX()</b> (para tratar
+      otros tipos de peticiones (PUT, DELETE, etc)), <b>destroy()</b> (para
+      finalizar el servlet), etc, así como nuestros propios métodos internos
+      de la clase.
+      </p>
+      <b>      
+      </b>
+           
+        </body>
+        </html>

@@ -1,0 +1,327 @@
+<html>
+<head>
+<title>Tema 4: Construcción de un servidor</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<h1><span class="section">4. </span>Construcci&oacute;n de un servidor</h1>
+<p>La forma m&aacute;s simple de un servidor RMI es un servidor <i>&quot;unicast&quot;</i>. 
+  Trat&aacute;ndose de programaci&oacute;n orientada a objetos, cualquier objeto 
+  puede considerarse un servidor. Un servidor RMI es un objeto remoto que: implementa 
+  una interfaz remota, y es exportado al sistema RMI. </p>
+<p>Las clases base que proporciona RMI para la construcci&oacute;n de servidores 
+  son: <code>RemoteObject</code>, <code>RemoteServer</code>, y <code>UnicastRemoteObject</code>. 
+  Las tres forman una jerarqu&iacute;a de clases, en ese orden.</p>
+<p><code>RemoteObject</code> proporciona la sem&aacute;ntica b&aacute;sica para 
+  objetos remotos adecuados para servidores y <i>stubs</i>. <code>RemoteServer</code> 
+  proporciona los m&eacute;todos <code>getClientHost</code> y <code>getLog</code>. 
+  <code>UnicastRemoteObject</code> soporta la transmisi&oacute;n punto a punto 
+  desde el servidor RMI.</p>
+<p>Un objeto remoto <i>unicast</i> es un objeto servidor con las siguientes caracter&iacute;sticas:</p>
+<ul>
+  <li>las referencias a dichos objetos (<i>stubs</i> remotos) solamente son válidas, 
+    como mucho, durante la vida del proceso que crea el objeto remoto</li>
+  <li>la comunicaci&oacute;n con el objeto remoto utiliza transporte TCP</li>
+  <li>las invocaciones, par&aacute;metros y resultados usan un protocolo de flujo 
+    de datos (<i>stream</i>) para la comunicaci&oacute;n entre el servidor y el 
+    cliente</li>
+</ul>
+<p>Para ilustrar los pasos a seguir para construir un servidor <i>unicast</i>, 
+  vamos a utilizar como ejemplo la implementaci&oacute;n de un servidor de <i>chat</i>. 
+  El servidor permite a los clientes registrarse y mantiene una tabla activa de 
+  participantes. Cuando un participante quiere enviar un mensaje a otros participantes 
+  que est&aacute;n actualmente conectados, se env&iacute;a un mensaje al servidor, 
+  y &eacute;ste lo distribuye a los otros participantes. </p>
+
+<h2 class="subsection">4.1. Arquitectura b&aacute;sica del servidor</h2>
+<p>El dise&ntilde;o del servidor es relativamente simple. El servidor inicia un 
+  servicio <i>registry</i> y comienza por registrarse &eacute;l mismo. El servidor 
+  exporta un m&eacute;todo para permitir a los clientes registrarse ellos mismos, 
+  pedir al servidor una lista de participantes, y enviar mensajes al grupo actual 
+  de participantes. Ver Figura 4.1.</p>
+<center>
+  <img border="0" src="Fig4-1.gif"> 
+</center>
+<p class="caption">Figura 4.1. Arquitectura del servidor de chat.</p>  
+<p>Cuando un cliente se registra, env&iacute;a una referencia de s&iacute; mismo 
+  que el servidor usa para enviar los mensajes de vuelta al cliente. De esta forma 
+  el cliente puede permanecer ocioso hasta que los mensajes son recibidos y no 
+  necesita realizar ninguna consulta al servidor. El cliente realiza un contacto 
+  inicial con el servidor a trav&eacute;s del registro. A continuaci&oacute;n 
+  el servidor pasa una referencia a uno de sus propios objetos remotos via un 
+  m&eacute;todo remoto que es invocado en el servidor. </p>
+<p>El servidor utiliza un objeto <code>Message</code> que contiene mensajes de 
+  texto o l&iacute;neas de dibujo. </p>
+<p>Para mantener un rendimiento razonable entre clientes, se crea un hilo de ejecuci&oacute;n 
+  para manejar los datos enviados a cada cliente individual que est&aacute; recibiendo 
+  datos. De esta manera, un cliente, con una conexi&oacute;n particularmente lenta 
+  no causa que el resto de clientes esperen hasta que el cliente anterior sea 
+  atendido. El n&uacute;mero de conexiones que el servidor puede mantener est&aacute; 
+  limitado al n&uacute;mero de <i>threads</i> que permita activar simult&aacute;neamente 
+  la plataforma en la que se ejecute el servidor.</p>
+
+<h2 class="subsection">4.2. Interfaz del servidor</h2>
+<p>Lo primero que hay que realizar es definir la interfaz para los m&eacute;todos 
+  que vamos a permitir sean invocados de forma remota. La interfaz debe ser una 
+  subclase de la interfaz <code>java.rmi.Remote</code> y describir los m&eacute;todos 
+  para registrar un cliente, enviar un mensaje al servidor y recuperar una lista 
+  de clientes actualmente conectados. Dicha interfaz se especifica a continuaci&oacute;n: 
+</p>
+<pre class="codigo">public interface ChatServer extends Remote {
+  public void register(Chat c, String name) throws RemoteException;
+  public void postMessage(Message m) throws RemoteException;
+  public Sring[] listChatters() throws RemoteException;
+
+}</pre>
+
+<p>El siguiente paso es la creaci&oacute;n de una clase que implemente dicha interfaz. 
+  En este caso la vamos a denominar <code>ChatServerImpl</code>, cuyo m&eacute;todo 
+  <code>main()</code> fija un manejador de seguridad, crea una instancia de s&iacute; 
+  misma para ser exportada, crea un servicio de nombres para que los clientes 
+  pueden localizar al servidor usando direcciones URL y la clase <code>java.rmi.Naming</code>, 
+  y mantiene una lista de clientes registrados.</p>
+<pre class="codigo">public class ChatServerImpl 
+             extends UnicastRemoteObject
+			 implements ChatServer {};</pre>
+<p>Cuando se construye un objeto <code>UnicastRemoteObject</code>, &eacute;ste 
+  es autom&aacute;ticamente exportado, registrado en el sistema RMI y preparado 
+  para escuchar en un puerto TCP.</p>
+<p>Las clases remotas pueden ser definidas sin &quot;extender&quot; ninguna de 
+  las clases base comentadas en el apartado 4. En este caso, los objetos remotos 
+  deben ser expl&iacute;citamente exportados por uno de los m&eacute;todos est&aacute;ticos 
+  de <code>UnicastRemoteObject.exportObject</code>.</p>
+<p>Usaremos un <code>Vector</code> para almacenar las conexiones individuales. 
+  Cuando un usuario se conecte, se crear&aacute; un objeto <code>Talker</code> 
+  y se a&ntilde;adir&aacute; a dicho <code>Vector</code>. De esta forma, cuando 
+  un mensaje tenga que ser enviado a los participatnes, la aplicaci&oacute;n simplemente 
+  recorre el <code>vector</code> y a&ntilde;ade el mensaje a cada objeto <code>Talker</code> 
+  del mismo.</p>
+<pre class="codigo">private Vector chatters = new Vector(); </pre>
+<p>El constructor de la clase simplemente llama al constructor de su super-clase 
+  (<code>UnicastRemoteObject</code>). Existen varios constructores para la clase 
+  <code>UnicastRemoteObject</code>, permitiendo a sus clases derivadas elegir 
+  entre: (a) exportar el objeto sobre un puerto por defecto elegido en tiempo 
+  de ejecuci&oacute;n, (b) exportar el objeto sobre un puerto especificado, y 
+  (c) exportar el objeto sobre un puerto especificado con un utilizando <i>socket 
+  factories</i> espec&iacute;ficas para el cliente y el servidor. En este caso 
+  se utiliza la opci&oacute;n (a). </p>
+<p>Una <i>socket factory</i> es una clase que permite proporcionar nuestros propios 
+  objetos <code>Socket</code> o <code>ServerSocket</code> a RMI. Las aplicaciones 
+  que usan RMI pueden proporcionar sus propias <i>socket factories</i>, que RMI 
+  usar&aacute; cuando construya los <i>sockets</i> cliente y servidor en nombre 
+  de los servidores y clientes RMI. Esta facilidad tiene dos usos principales:</p>
+<ul>
+  <li>Para superponer un protocolo a medida, por ejemplo un protocolo de autentificación 
+    o encriptaci&oacute;n, sobre el protocolo de transporte RMI</li>
+  <li>Para controlar el propio <code>Socket</code> o <code>ServerSocket</code>, 
+    por ejemplo para fijar un <i>timeout</i> para el cliente, o para usar una 
+    interfaz de escucha de red en el lado del servidor en hosts &quot;<i>multi-homed&quot;</i>. 
+  </li>
+</ul>
+<pre class="codigo">public ChatServerImpl() throws RemoteException {
+   super();
+   Sytem.out.println(&quot;Inicializando el servidor&quot;);
+
+}</pre>
+<p>Es necesario incluir una instancia de RMI <i>security manager</i> expl&iacute;citamente. 
+  Si no se hace as&iacute; las clases <i>stub</i> solamente podr&aacute;n cargarse 
+  desde el sistema de ficheros local, y no atrav&eacute;s de la red.</p>
+<p>El nombre del registro de nombres es &quot;ChatServerImpl&quot;, que se ejecutar&aacute; 
+  en el puerto 5050 (se trata de un puerto arbitrario que debe ser conocido por 
+  los clientes que se quieran conectar al servidor). A continuaci&oacute;n se 
+  muestra el c&oacute;digo del procedimiento <code>main()</code>.</p>
+<pre class="codigo">public static void main(String args[]) {
+  Registry reg;
+
+  
+  System.setSecurityManager(new RMISecurityManager());
+  try {
+    ChatServerImpl cs = new ChatServerImpl();
+    reg = LocateRegistry.createRegistry(5050);
+    reg.bind(&quot;ChatServerImpl&quot;,cs);
+    System.out.println (&quot;Servidor en marcha&quot;);
+  }
+  catch (AlreadyBoundException e){<br>    System.out.println(&quot;El nombre ya se encuentra instanciado:  &quot; + e);
+    System.exit(0);
+  }
+  catch (RemoteException e){<br>    System.out.println(&quot;Error general del servidor:  &quot; + e);
+    System.exit(0);
+  }
+}</pre>
+<p>Seguidamente implementamos los m&eacute;todos de la interfaz. El m&eacute;todo 
+  <code>register()</code> simplemente obtiene un objeto <code>Chat</code> y un 
+  nombre como par&aacute;metro y crea un objeto <code>Talker</code> con dichos 
+  par&aacute;metros para que tengan su propio hilo para recibir mensajes. Tambi&eacute;n 
+  a&ntilde;ade el objeto al <code>Vector</code>.</p>
+<pre class="codigo">synchronized public void register(Chat c, String name) {
+  chatters.addElement(new Talker(c,name));
+
+}</pre>
+
+<p>El m&eacute;todo <code>listChatters()</code> devuelve una lista de los participantes 
+  actuales, obtenida a partir de la estructura de datos <code>Vector</code>. </p>
+  <pre class="codigo">public String[] listChatters() {
+  String list[] = new STring[chatters.size()];
+  Talker c;
+
+  for (int i=0; i &lt; list.lenght; i++) {
+    c=(Talker)chatters.elementAt(i);
+    list[i] = c.getChatterName();
+  }
+  return list;
+}</pre>
+
+<p>El m&eacute;todo <code>postMessage()</code> se usa por los clientes para enviar 
+  un mensaje al servidor. El servidor distribuye el mensaje a cada uno de los 
+  clientes registrados. Como este m&eacute;todo es llamado por muchos clientes, 
+  tomamos la precauci&oacute;n de declararlo <code>synchronized</code> (al igual 
+  que hemos hecho con <code>register</code>). Esto evita la posibilidad de que 
+  se pierdan mensjaes debido a que un cliente llame a este m&eacute;todo mientras 
+  el servidor est&aacute; procesando una invocaci&oacute;n previa. </p>
+  <pre class="codigo">synchronized public void postMessage(Message m) {
+  Talker t; 
+ 
+  for (int i=0; i &lt; chatters.size; i++) {
+    t=(Talker)chatters.elementAt(i);
+    if (!t.addMessage(m))
+       chatters.removeElementAt(i--);
+  }
+  return list;
+}</pre>
+<p>Esta interfaz remota (<code>ChatServer</code>), junto con la clase que la implementa 
+  (<code>ChatServerImpl</code>) ser&aacute;n usadas por RMI para generar un <i>stub</i> 
+  cliente y un <i>skeleton</i> servidor, que manejar&aacute;n la comunicaci&oacute;n 
+  entre los objetos locales y los remotos. </p>
+<p>El compilador RMI (<code>rmic</code>) genera de forma autom&aacute;tica las 
+  clases <i>stub</i> y <i>skeleton</i>. Para la clase <i>stub</i> se genera una 
+  implementaci&oacute; para cada m&eacute;todo remoto, que simplemente codifica 
+  adecuadamente los argumentos del m&eacute;todo (<i>marshals</i>) y los transmite 
+  al servidor. Para la clase <i>skeleton</i>, el compilador RMI genera otro conjunto 
+  de implementaciones de los m&eacute;todos remotos, que son dise&ntilde;ados 
+  para recibir los argumentos de los m&eacute;todos desde la llamada al m&eacute;todo 
+  remoto, decodificarlos, y realizar la correspondiente llamada a la implementaci&oacute;n 
+  del objeto. El resultado (datos o una excepci&oacute;n) son codificados y devueltos 
+  al cliente remoto. El m&eacute;todo <i>stub</i> correspondiente del cliente 
+  (que todav&iacute;a est&aacute; en ejecuci&oacute;n) decodifica los resultados 
+  y los entrega al cliente como resultado de la llamada al m&eacute;todo remoto).</p>
+<p>Despu&eacute;s de definir la interfaz remota y la clase que la implementa, 
+  se deben compilar utilizando el compilador est&aacute;ndar de Java. Para crear 
+  los correspondientes <i>stubs</i> y <i>skeletons </i> se utilizar&aacute; el 
+  compilador <code>rmic</code> utilizando el nombre de la clase que implementa 
+  la interfaz como argumento.</p>
+
+<h2 class="subsection">4.3. Uso de <i>threads</i> en el servidor</h2>
+<p>La clase <code>Talker</code> crea un hilo de ejecuci&oacute;n (<i>thread</i>) 
+  separado para cada cliente conectado al servidor. Los hilos de ejecuci&oacute;n 
+  forman parte de la mayor&iacute;a de las aplicaciones servidor debido a la asociaci&oacute;n 
+  natural de una comunicaci&oacute;n con el cliente y los hilos de ejecuci&oacute;n. 
+  El soporte de ejecuci&oacute;n de RMI no proporciona ninguna garant&iacute;a 
+  de qu&eacute; invocaci&oacute;n de objeto remoto se asigna a qu&eacute; <i>thread</i>. 
+  Ya que las invocaciones de un m&eacute;todo remoto sobre el mismo objeto pueden 
+  ejecutarse de forma concurrente, la implementaci&oacute;n del objeto remoto 
+  necesita asegurarse de que es &quot;segura&quot; (<i>thread-safe</i>).</p>
+<p>En nuestra aplicaci&oacute;n servidor, el objeto <code>Talker</code> comprueba 
+  si hay mensajes en su cola. Mientras haya mensajes, intenta enviarlos al cliente. 
+  Tan pronto como la cola de mensajes est&eacute; vac&iacute;a, el <i>thread</i> 
+  se mantiene en modo &quot;espera&quot; hasta que se a&ntilde;adan m&aacute;s 
+  mensajes a la cola. </p>
+<pre class="codigo">public class Talker extends Thread {
+  private Vector messages = new Vector();
+  private Chat c;
+  boolean isActive = true;
+  private String name; 
+ 
+  public Talker(Chat c, String name) {
+    this.c = c;
+    this.name = name; 
+    this.start();
+  }
+
+  
+  public boolean addMessage(Message e) {
+    if(!isActive)
+      return false;
+
+    messages.addElement(e);
+    resume();
+    return true;
+  }
+
+  
+  public void run() {
+    while (true) {
+      try {
+        if (messages.isEmpty()) suspend();
+        c.chatNotify((Message)messages.elementAt(0));
+        messages.removeElementAt(0);
+      }
+      catch (RemoteException e) {
+        System.out.println(&quot;Removing &quot;+name);
+        isActive = false;
+        this.stop();
+      }  
+      yield();
+    }
+  }
+
+  
+  public String getChatterName() {
+    return name;
+  }
+
+}</pre>
+
+<p>El constructor realiza una llamada al m&eacute;todo <code>start()</code>, que 
+  origina el inicio de la ejecuci&oacute;n del <i>thread</i>, esencialmente realizando 
+  un bucle con el m&eacute;todo <code>run()</code>. Los par&aacute;metros de entrada 
+  del constructor son un objeto <code>Chat</code>, representando al cliente que 
+  se est&aacute; comunicando, y un <code>String</code> que contiene el nombre 
+  por el que el cliente es referenciado.</p>
+<p>Cuando un mensaje es enviado, &eacute;ste se elimina de <code>Vector</code>. 
+  Cuando el vector est&aacute; vac&iacute;o pasa al estado <i>sleep. </i>Cuando 
+  se a&ntilde;ade un nuevo mensaje el <i>thread </i>es &quot;despertado&quot; 
+  con una llamada a <code>resume()</code> y contin&uacute;a intentando enviar 
+  mensajes.</p>
+<p>El m&eacute;todo <code>addMessage()</code> verifica primero que la conexi&oacute;n 
+  todav&iacute;a permanece activa chequeando la variable <code>isActive</code> 
+  (que se pondr&aacute; a false si se provoca una <code>RemoteException</code> 
+  cuando se intente enviar un mensaje). </p>
+<p>El servidor descrito tambi&eacute;n act&uacute;a como cliente (y el cliente 
+  como servidor), por lo que hay ciertas dependencias entre las interfaces remotas 
+  necesarias para ambas aplicaciones. Ambos, cliente y servidor, exportan objetos 
+  remotos. El servidor exporta objetos utilizados para enviar mensajes entre otros 
+  clientes, y los clientes exportan objetos usados para notificarles que hay datos 
+  para leer (env&iacute;o de datos al cliente). El servidor es un cliente en el 
+  sentido de que realiza llamadas al m&eacute;todo <code>chatNotify()</code> de 
+  los objetos clientes <code>Chat</code> que se conectan al servidor. El cliente 
+  exporta este m&eacute;todo de la misma forma que el servidor exporta los suyos. 
+  Por lo tatno, el servidor no puede construirse sin tener en cuenta la especificaci&oacute;n 
+  de las interfaces remotas del cliente con el que interact&uacute;a.</p>
+<p>La interface <code>Chat</code> declara dos m&eacute;todos: un m&eacute;todo 
+  <code>chatNotify()</code>, usado para enviar mensajes a un cliente <code>Chat</code>, 
+  y un m&eacute;todo <code>getName()</code>, que puede usarse para preguntarle 
+  al cliente su nombre. </p>
+  
+<pre class="codigo">public interface Chat extends Remote {
+
+
+  public void chatNotify(Message m) throws RemoteException;
+
+  
+  public String getName() throws RemoteException;
+
+}</pre>
+
+<p>Finalmente se deben compilar los c&oacute;digos fuente, as&iacute; como las 
+  clases stub y skeleton par la clase <code>ChatImpl</code>. Para ejecutar la 
+  aplicaci&oacute;n debemos asegurarnos de que el servidor est&aacute; en marcha. 
+</p>
+<pre class="codigo">javac -d /usr/MyClasses/ *.java   //compilamos los fuentes
+ 
+rmic -d /usr/MyClasses ChatServerImpl  //generamos las clases <i>stub</i> y <i>skeleton</i>
+
+java ChatServerImpl &amp;     //arrancamos el servidor</pre>
+</body>
+</html>

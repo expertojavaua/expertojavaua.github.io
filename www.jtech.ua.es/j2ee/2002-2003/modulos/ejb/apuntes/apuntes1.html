@@ -1,0 +1,605 @@
+<head>
+<title>Sesion 1 Enterprise Java Beans</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../../ejercicios.css" type="text/css">
+</head>
+<body>
+
+<h1>Tema 1. Introducci&oacute;n a la tecnolog&iacute;a Enterprise JavaBeans</h1>
+
+
+<p>La tecnolog&iacute;a Enterprise JavaBeans es la propuesta del mundo Java (Sun 
+  y un amplio grupo de empresas colaboradoras entre las que no se encuentra, evidentemente, 
+  Microsoft) para el desarrollo de aplicaciones de empresa. Entendemos por aplicaciones 
+  de empresa las aplicaciones inform&aacute;ticas de gesti&oacute;n que se implantan 
+  en grandes corporaciones con m&uacute;ltiples oficinas distribuidas por toda 
+  la geograf&iacute;a nacional (o internacional). Suelen ser aplicaciones distribuidas, 
+  usadas por m&uacute;ltiples clientes, que hacen un uso intensivo de transacciones, 
+  bases de datos y pol&iacute;ticas de seguridad.</p>
+  
+ <p>La arquitectura Enterprise JavaBeans es el n&uacute;cleo de un conjunto de tecnolog&iacute;as 
+  Java que recibe el nombre de J2EE (Java 2 Enterprise Edition) y hace uso intensivo 
+  de librer&iacute;as incluidas en esta plataforma. Algunos ejemplos de APIs Java 
+  usados por la arquitectura EJB son los siguientes:</p>
+
+  <ul>
+    <li>JNDI para acceder a recursos<BR>
+    <li>JMS para tratar con mensajes<BR>
+    <li>JTA para programar expl&iacute;citamente las transacciones<BR>
+  </ul>
+
+  <p>La tecnolog&iacute;a Enterprise JavaBeans esta siendo apoyada por la mayor parte 
+  de las empresas de inform&aacute;tica que se orientan al mundo de la empresa 
+  (IBM, ORACLE, SUN,...) y tambi&eacute;n por los clientes de estas empresas, 
+  que valoran de forma muy positiva, entre otros aspectos, el car&aacute;cter 
+  abierto de la arquitectura.</p>
+
+  <p>En este tema veremos una introducci&oacute;n a las distintas arquitecturas que 
+  se han ido proponiendo para las aplicaciones de empresa, y situaremos en este 
+  contexto la propuesta de arquitectura Enterprise JavaBeans. Comentaremos las 
+  caracter&iacute;sticas principales de la propuesta, dando algunos ejemplos pr&aacute;cticos 
+  de componentes Enterprise JavaBeans (EJB). Como parte pr&aacute;ctica, explicaremos 
+  c&oacute;mo realizar un despliegue de componentes EJB en el servidor de aplicaciones 
+  Weblogic.</p>
+
+  <h2>1.1. Arquitecturas de aplicaciones de empresa</h2>
+
+  <p>Las aplicaciones de empresa han sufrido una transformaci&oacute;n extensa. La 
+  primera generaci&oacute;n de aplicaciones de empresa consist&iacute;an en aplicaciones 
+  centralizadas usando computadores mainframes. A finales de 1980 y comienzos 
+  de 1990, la mayor&iacute;a de las nuevas aplicaciones de empresa se construyeron 
+  siguiendo una arquitectura de dos capas (tambi&eacute;n conocida como arquitectura 
+  cliente/servidor). Despu&eacute;s, las aplicaciones de empresa evolucionaron 
+  a arquitecturas de tres capas, despu&eacute;s a arquitecturas basadas en Web. 
+  El estado de evoluci&oacute;n actual est&aacute; representado por la arquitectura 
+  de aplicaciones J2EE. </p>
+  
+  <p>El p&aacute;rrafo anterior se aplica a pa&iacute;ses con un alto grado de desarrollo 
+  tecnol&oacute;gico (l&eacute;ase Estados Unidos, y poco m&aacute;s). En pa&iacute;ses 
+  como Espa&ntilde;a nos encontramos en la mayor&iacute;a de los casos todav&iacute;a 
+  usando aplicaciones cliente/servidor, y comenzando a implantar soluciones basadas 
+  en Web. </p>
+  
+  <h3>1.1.1. Arquitectura de dos capas</h3>
+
+  <p>Con una aplicaci&oacute;n de dos capas, un sistema de negocio se estructura 
+  como un conjunto de aplicaciones a nivel de sistema operativo que se ejecutan 
+  en la m&aacute;quina cliente, t&iacute;picamente un PC. Las aplicaciones se 
+  comunican a trav&eacute;s de la red con el servidor de bases de datos, que almacena 
+  la informaci&oacute;n corporativa y que es el que implementa el manejo de transacciones 
+  y la seguridad. La comunicaci&oacute;n entre las aplicaciones y el servidor 
+  de base de datos se realiza normalmente usando el lenguaje SQL.</p>
+  
+  <p>Las aplicaciones cliente implementan uno o varios procesos de negocio, junto 
+  con la interfaz de usuario que proporciona la l&oacute;gica de presentaci&oacute;n 
+  que realiza la interacci&oacute;n entre el usuario y el proceso de negocio. 
+  El concepto de proceso de negocio encapsula una interacci&oacute;n del usuario 
+  con alguna informaci&oacute;n de la empresa.</p>
+
+<div align="center">
+<IMG SRC="imagenes/sesion11.png"> 
+</div>
+<p class="caption">Figura 1: arquitectura de aplicaciones de dos capas.</p>
+  <p>
+    Entre las ventajas de esta arquitectura se encuentra la facilidad de desarrollo 
+    debido a que la presentaci&oacute;n y la l&oacute;gica de negocio residen 
+    en la misma aplicaci&oacute;n. Los inconvenientes son mucho m&aacute;s numerosos. 
+    Entre ellos destacan :</p>
+
+  <ul>
+    <li>Dificultad de administrar las aplicaciones en grandes empresas<BR>
+    <li>La integridad de la base de datos se puede comprometer f&aacute;cilmente<BR>
+    <li>Dificultad de mantener el c&oacute;digo<BR>
+    <li>Expone las aplicaciones a violaciones de seguridad<BR>
+    <li>Su escalabilidad es limitada, es dif&iacute;cil escalar a 
+      un alto n&uacute;mero de usuarios<BR>
+    <li>Requiere una estructura homog&eacute;nea de las m&aacute;quinas 
+      cliente<BR>
+    <li>Liga una aplicaci&oacute;n a un tipo particular de presentaci&oacute;n<BR>
+    <li>Incompatibilidad con la Web (uno de los inconvenientes m&aacute;s 
+      importantes en la actualidad) <BR>
+  </ul>
+
+  <h3>1.1.2. Arquitectura de tres capas</h3>
+
+  <p>El avance fundamental de las arquitecturas de tres capas es la separaci&oacute;n 
+  de la l&oacute;gica de presentaci&oacute;n de la l&oacute;gica de negocio. Para 
+  ello se introduce una capa intermedia que se encarga espec&iacute;ficamente 
+  de la l&oacute;gica de negocio y de la gesti&oacute;n de transacciones y de 
+  seguridad. Se introducen monitores de procesamiento de transacciones (TP, transaction 
+  processing, monitors) como CICS o Tuxedo que dan soporte a esta capa intermedia. 
+  La mayor&iacute;a de los sistemas ERP* (Enterprise Resource Planning) usan esta 
+  arquitectura.</p>
+
+  <p>*ERP (Enterprise resource planning) es un t&eacute;rmino de la industria para 
+  un amplio conjunto de actividades soportadas por software de aplicaci&oacute;n 
+  que facilitan a un fabricante o a otro negocio manejar partes importantes de 
+  su negocio, incluyendo planificaci&oacute;n de productos, compra de material, 
+  mantenimiento de inventario, interacci&oacute;n con suministradores, servicios 
+  al cliente y seguimiento de pedidos. Los ERP tambi&eacute;n incluyen m&oacute;dulos 
+  de aplicaci&oacute;n para los aspectos de finanzas y de recursos humanos del 
+  negocio. Normalmente, un sistema ERP usa o est&aacute; integrado con una base 
+  de datos relacional. El despliegue de sistemas ERP obliga normalmente a realizar 
+  un considerable an&aacute;lisis de los procesos de negocio, as&iacute; como 
+  la formaci&oacute;n de los empleados y nuevos procedimientos de trabajo. Entre 
+  las empresas que desarrollan y despliegan ERP se encuentran SAP o Peoplesoft. 
+  (definici&oacute;n cortes&iacute;a de whatis.com).</p>
+
+  <div align="center">
+  <IMG SRC="imagenes/sesion12.png">
+  </div>
+  <p class="caption"> Figura 2: Arquitectura de aplicaciones de tres capas</p>
+ 
+ <p>Aunque esta arquitectura elimina algunos de los inconvenientes de la arquitectura 
+    de dos capas, todav&iacute;a sufre de inconvenientes:</p>
+ 
+  <ul>
+    <li>Complejidad<BR>
+    <li>Ausencia de portabilidad de la aplicaci&oacute;n<BR>
+    <li>Incompatibilidad entre fabricantes<BR>
+    <li>Falta de difusi&oacute;n y compartici&oacute;n de conocimientos 
+      y experiencias<BR>
+    <li>Incompatibilidad con la Web<BR>
+      <BR>
+  </ul>
+  <h3>1.1.3 Arquitectura de tres capas con componentes distribuidos</h3>
+ 
+  <p>Los sistemas de componentes distribuidos representan un enfoque m&aacute;s moderno 
+  a la arquitectura de tres capas. Estos sistemas definen objetos o componentes 
+  que se ejecutan en la capa intermedia y que est&aacute;n disponibles para servir 
+  a otros procesos a trav&eacute;s de proxies remotos. Estos proxies remotos comunican 
+  peticiones a los componentes distribuidos a lo largo de la red. Ejempo de sistemas 
+  de componentes distribuidos son RMI, CORBA y DCOM. </p>
+  
+  <div align="center">
+  <IMG SRC="imagenes/sesion13.png">
+  </div>
+  <p class="caption"> Figura 3: Arquitectura de tres capas con componentes distribuidos</p>
+  <p>
+    Los componentes distribuidos son m&aacute;s reusables y flexibles que las 
+    aplicaciones basadas en procedimientos usadas en los monitores TP tradicionales, 
+    debido a que pueden ser ensamblados en una gran variedad de combinaciones 
+    para el desarrollo de aplicaciones de negocio, pero pueden ser complicados 
+    de programar y carecen de la infraestructura robusta que ofrecen los monitores 
+    TP.</p>
+    
+	<h3>1.1.4 Arquitectura inicial de Aplicaciones Web</h3>
+    
+    <p>La introducci&oacute;n de la Web lo cambi&oacute; todo. El modelo simplificado 
+    de funcionamiento consiste en incorporar extensiones a los servidores Web. 
+    Estas extensiones invocan programas en el servidor que construyen din&aacute;micamente 
+    documentos HTML a partir de la informaci&oacute;n almacenada en la base de 
+    datos corporativa. Adem&aacute;s, estas extensiones en el servidor tambi&eacute;n 
+    introducen cambios en las bases de datos corporativas a partir de la informaci&oacute;n 
+    de formularios HTML.</p>
+    <p>Un ejemplo de estas extensiones son los scripts cgi-bin. Aunque estos mecanismos 
+    han permitido a los desarrolladores corporativos construir aplicaciones Web 
+    simples, el enfoque no escala bien para aplicaciones de empresa m&aacute;s 
+    complejas por las siguientes razones:</p>
+
+  <ul>
+    <li>Los scripts cgi-bin no proporcionan una buena encapsulaci&oacute;n 
+      de los procesos o entidades de negocio.<BR>
+    <li>Los scripts cgi-bin son complicados de desarrollar, probar 
+      y mantener. Las herramientas de desarrollo de alto nivel no soportan bien 
+      estos scripts.<BR>
+    <li>Los scripts cgi-bin mezclan la l&oacute;gica de negocio con 
+      la l&oacute;gica de presentaci&oacute;n.<BR>
+    <li>Los scripts cgi-bin no proporcionan soporte para el manejo 
+      de transacciones ni de seguridad.<BR>
+    <li>Los scripts cgi-bin no promueven el mantenimiento de la integridad 
+      de las reglas de negocio.<BR>
+  </ul>
+
+  <p>(hacer una peque&ntilde;a ronda de debate sobre qu&eacute; tipo de sistemas 
+  da cada una de las clases conocen los alumnos).</p>
+
+  <h3>1.1.5 Arquitectura de aplicaciones J2EE</h3>
+
+  <p>J2EE es una arquitectura est&aacute;ndar orientada espec&iacute;ficamente hacia 
+  el desarrollo y el despliegue de aplicaciones de empresa orientadas a Web usando 
+  el lenguaje de programaci&oacute;n Java. Las empresas y los vendedores independientes 
+  de software (ISV, en ingl&eacute;s) pueden usar la arquitectura J2EE tanto para 
+  el desarrollo y despliegue de aplicaciones intranet, sustituyendo de esta forma 
+  las aplicaciones de dos capas y de tres capas, y para el desarrollo de aplicaciones 
+  Web, sustituyendo el enfoque basado en cgi. </p>
+  
+  <p>La siguiente figura ilustra el modelo de programaci&oacute;n propuesto por J2EE 
+  para el desarrollo de aplicaciones cliente/servidor. La M&aacute;quina Virtual 
+  Java hace de Contenedor de Aplicaciones Cliente.</p>
+
+  <div align="center">
+  <IMG SRC="imagenes/sesion14.png">
+  </div>
+  <p class="caption"> Figura 4: Modelo de programaci&oacute;n cliente/servidor de las aplicaciones 
+    J2EE</p>
+ 
+  <p>
+    La siguiente figura ilustra el modelo de programaci&oacute;n propuesto por 
+    J2EE para el desarrollo de aplicaciones de tres capas.</p>
+   
+  <div align="center">
+  <img src="imagenes/sesion15.png">
+  </div>
+  <p class="caption">Figura 5: Modelo de programaci&oacute;n de tres capas de las aplicaciones 
+  J2EE</p>
+    
+	<p>La siguiente figura ilustra el modelo de programaci&oacute;n para las aplicaciones 
+    basadas en Web:</p>
+
+<div align="center">
+<IMG SRC="imagenes/sesion16.png">
+</div>
+<p class="caption"> Figura 6: Modelo de programaci&oacute;n de aplicaciones J2EE para 
+aplicaciones basadas en Web.</p>
+   
+   <p> La plataforma J2EE consiste en cuatro entornos de programaci&oacute;n, llamados 
+    contenedores:</p>
+
+  <ul>
+    <li> <B>El contenedor EJB</b>: proporciona el entorno para el 
+      desarrollo, despliegue, y manejo en tiempo de ejecuci&oacute;n de enterprise 
+      beans. Los enteprise beans son componentes que implementan los procesos 
+      y las entidades de negocio. <BR>
+    <li class="sep"><B>El contenedor Web</b>: proporciona el entorno para el desarrollo, 
+      despliegue y manejo en tiempo de ejecuci&oacute;n de servlets y p&aacute;ginas 
+      JSP (JavaServer Pages). Los servelts y las p&aacute;ginas JSP se agrupan 
+      en unidades desplegables llamadas aplicaciones Web. Una aplicaci&oacute;n 
+      Web implementa la l&oacute;gica de presentaci&oacute;n de una aplicaci&oacute;n 
+      de empresa.<BR>
+    <li class="sep"><B>El contenedor de aplicaciones</b> cliente: se trata de 
+      la m&aacute;quina virtual Java. Proporciona el entorno para la ejecuci&oacute;n 
+      de aplicaciones cliente J2EE.<BR>
+    <li class="sep"><B>El contenedor de applets</b>: proporciona el entorno para 
+      ejecutar applets Java. Este entorno est&aacute; embebido t&iacute;picamente 
+      en un navegador Web.<BR>
+  </ul>
+
+  <p>En m&oacute;dulos anteriores del curso hemos estudiado las partes de J2EE que 
+  configuran una aplicaci&oacute;n Web. Vamos a centrarnos en este modulo en el 
+  estudio de los componentes enterprise beans y de los contenedores EJB.</p>
+  
+  <h2>1.2. La arquitectura Enterprise JavaBeans</h2>
+
+  <p>La arquitectura de componentes Enterprise JavaBeans (arquitectura EJB) es el 
+  n&uacute;cleo de la plataforma J2EE. Esta arquitectura de componentes combina 
+  lo mejor de los monitores de procesamiento de transacciones y de los componentes 
+  distribuidos, proporcionando un entorno al estilo de los monitores de transacciones 
+  orientado a componentes distribuidos. La arquitectura EJB est&aacute; constituida 
+  por un conjunto de componentes software llamados enterprise beans y un contenedor 
+  EJB que da soporte de ejecuci&oacute;n a estos componentes.</p>
+  <p>
+  En este apartado realizaremos una breve introducci&oacute;n a las caracter&iacute;sticas 
+  generales de la arquitectura.</p>
+
+<h3>1.2.1 Especificaciones de la arquitectura Enterprise JavaBeans</h3>
+
+<p>En Marzo de 1998 Sun Microsystems propone la especificaci&oacute;n 1.0 de la 
+  arquitectura Enterprise JavaBeans. Esta especificaci&oacute;n comienza con la 
+  siguiente definici&oacute;n:</p>
+
+    
+<blockquote>
+  <p><cite>La arquitectura Enterprise JavaBeans es una arquitectura de componentes 
+    para el desarrollo y despliegue de aplicaciones de empresa distribuidas y 
+    orientadas a objetos. Las aplicaciones escritas usando la arquitectura Enterprise 
+    JavaBeans son escalables, transaccionales y seguras para multi usuarios. Estas 
+    aplicaciones pueden escribirse una vez, y luego desplegarse en cualquier servidor 
+    que soporte la especificaci&oacute;n Enterprise JavaBeans.</cite></p>
+</blockquote>
+<p>Aunque se han introducido nuevas versiones de la especificaci&oacute;n, que 
+  incorporan muchas mejoras a la propuesta inicial, la definici&oacute;n de la 
+  arquitectura sigue siendo la misma. La siguiente tabla muestra las distintas 
+  revisiones que ha sufrido la especificaci&oacute;n de la arquitectura EJB.</p>
+<div align="center"> 
+  <table border="1" cellpadding="5" width=423 height=312>
+    <TR> 
+      <TD align=left VALIGN=TOP> 
+        <p></P>
+        <P ALIGN=CENTER>Espeficiaci&oacute;n EJB</P>
+      </TD>
+      <TD align=left VALIGN=TOP> 
+        <P ALIGN=CENTER>Fecha</P>
+      </TD>
+      <TD align=left VALIGN=TOP> 
+        <P ALIGN=CENTER>Principales novedades</P>
+      </TD>
+    </TR>
+    <TR> 
+      <TD align=left VALIGN=TOP> 
+        <P>EJB 1.0 
+      </TD>
+      <TD align=left VALIGN=TOP> Marzo 1998 </TD>
+      <TD align=left VALIGN=TOP> Propuesta inicial de la arquitectura EJB. Se 
+        introducen los beans de sesi&oacute;n y los de entidad (de implementaci&oacute;n 
+        opcional). Persistencia manejada por el contendedor en los beans de entidad. 
+        Manejo de transacciones. Manejo de seguridad. </TD>
+    </TR>
+    <TR> 
+      <TD align=left VALIGN=TOP> EJB 1.1 </TD>
+      <TD align=left VALIGN=TOP> Diciembre 1999 </TD>
+      <TD align=left VALIGN=TOP> Implementaci&oacute;n obligatoria de los beans 
+        de entidad. Acceso al entorno de los beans mediante JNDI. </TD>
+    </TR>
+    <TR> 
+      <TD align=left VALIGN=TOP> EJB 2.0 </TD>
+      <TD align=left VALIGN=TOP> Agosto 2001 </TD>
+      <TD align=left VALIGN=TOP> Manejo de mensajes con los beans dirigidos por 
+        mensajes. Relaciones entre beans manejadas por el contenedor. Uso de interfaces 
+        locales entre beans que se encuentran en el mismo servidor. Consultas 
+        de beans declarativas, usando el EJB QL. </TD>
+    </TR>
+    <TR> 
+      <TD align=left VALIGN=TOP> EJB 2.1 </TD>
+      <TD align=left VALIGN=TOP> Agosto 2002 </TD>
+      <TD align=left VALIGN=TOP> Soporte para servicios web. Temporizador manejado 
+        por el contenedor de beans. Mejora en el EJB QL. </TD>
+  </TABLE>
+</div>
+<p class="caption"> Tabla 1: Evoluci&oacute;n de las especificaciones de la arquitectura 
+  Enterprise JavaBeans
+<p> 
+<p>Entre los objetivos que se enumeraban en ese primer documento de especificaci&oacute;n 
+  1.0 se encuentran los siguientes:</p>
+<ul>
+  <li>Definir una arquitectura de componentes est&aacute;ndar con la que construir 
+    aplicaciones de gesti&oacute;n (business applications) distribuidas y orientadas 
+    a objetos en el lenguaje de programaci&oacute;n Java. Enterprise JavaBeans 
+    permitir&aacute; construir aplicaciones combinando componentes desarrollados 
+    por herramientas de distintas compa&ntilde;&iacute;as.<BR>
+  <li class="sep">La arquitectura Enterprise JavaBeans har&aacute; f&aacute;cil 
+    la construcci&oacute;n de aplicaciones. Los desarrolladores de aplicaciones 
+    no tendr&aacute;n que entender los detalles de bajo nivel referidos al manejo 
+    de transacciones, manejo de estado, multi threading, pooling de recursos y 
+    otras APIs complejas de bajo nivel. <BR>
+  <li class="sep">Las aplicaciones Enterprise JavaBeans seguir&aacute;n la filosof&iacute;a 
+    &#147;escribe una vez, ejecuta en cualquier sitio&#148; del lenguaje de programaci&oacute;n 
+    Java. Un enterprise bean puede desarrollarse una vez, y despu&eacute;s desplegado 
+    en m&uacute;ltiples plataformas sin necesidad de recompilarlo o modificar 
+    su c&oacute;digo fuente.<BR>
+</ul>
+<h3>1.2.2 Roles en la arquitectura Enterprise JavaBeans</h3>
+<p>La arquitectura EJB define seis papeles principales. Brevemente, son:</p>
+<ul>
+  <li> <B>Desarrollador de beans</b>: desarrolla los componentes enterprise beans.<BR>
+  <li class="sep"><B>Ensamblador de aplicaciones</b>: compone los enterprise beans y las aplicaciones 
+    cliente para conformar una aplicaci&oacute;n completa <BR>
+  <li class="sep"><B>Desplegador</b>: despliega la aplicaci&oacute;n en un entorno operacional 
+    particular (servidor de aplicaciones)<BR>
+  <li class="sep"><B>Administrador del sistema</b>: configura y administra la infraestructura 
+    de computaci&oacute;n y de red del negocio<BR>
+  <li class="sep"><B>Proporcionador del Contenedor EJB y Proporcionador del Servidor EJB</b>: 
+    un fabricante (o fabricantes) especializado en manejo de transacciones y de 
+    aplicaciones y otros servicios de bajo nivel. Desarrollan el servidor de aplicaciones.<BR>
+</ul>
+
+<h3>1.2.3. Contendor de beans</h3>
+
+<p>Los enterprise beans (que tambi&eacute;n se denominan beans) son componentes software 
+que se ejecutan en un entorno especial denominado contenedor EJB. El contenedor 
+hospeda y maneja un enterprise bean de la misma forma que un servidor web Java 
+hospeda un servlet o un navegador hospeda un applet. Un enterprise bean no puede 
+funcionar fuera de un contenedor EJB. El contenedor EJB maneja cualquier aspecto 
+del bean en tiempo de ejecuci&oacute;n, incluyendo acceso remoto al bean, seguridad, 
+persistencia, transacciones, concurrencia y acceso y pooling de recursos. El contenedor 
+EJB tambi&eacute;n suele proporcionar servicios relacionados con la escalabilidad 
+de la aplicaci&oacute;n, como son la definici&oacute;n de clusters de contenedores, 
+el balanceo de carga o la tolerancia a fallos.</p>
+
+<div align="center">
+<IMG SRC="imagenes/sesion17.png">
+</div>
+<p class="caption">Figura 7: El contenedor EJB captura la petici&oacute;n del cliente 
+y realiza servicios de bajo nivel antes y despu&eacute;s de pedir al bean que ejecute 
+la l&oacute;gica de negocio de la petici&oacute;n.</p>
+
+<p>El contenedor aisla el enterprise bean del acceso directo de las aplicaciones 
+cliente. Cuando una aplicaci&oacute;n cliente invoca un m&eacute;todo remoto en 
+un enterprise bean, el contenedor intercepta la invocaci&oacute;n para asegurar 
+que la persistencia, transacciones y seguridad se aplican correctamente. De esta 
+forma, el desarrollador de beans puede concentrarse en encapsular correctamente 
+la l&oacute;gica de negocio, mientras que el contenedor se encarga de todo lo 
+dem&aacute;s.</p>
+
+<p>El contenedor EJB se ejecuta a su vez en una m&aacute;quina virtual Java, con 
+lo que tiene acceso a toda la infraestructura proporcionada por este lenguaje 
+de programaci&oacute;n.</p>
+
+<p>Los contenedores manejan muchos beans simult&aacute;neamente, en la misma forma 
+que un servidor web Java maneja muchos servlets. Para reducir el consumo de memoria 
+y el procesamiento, los contenedores almacenan (pool) los recursos y los ciclos 
+de vida de los beans de forma muy cuidadosa. Cuando un bean no est&aacute; siendo 
+usado, el contenedor lo colocar&aacute; en un almac&eacute;n para ser reusado 
+por otro cliente, o lo eliminar&aacute; de la memoria y s&oacute;lo lo recuperar&aacute; 
+cuando sea necesario. Debido a que las aplicaciones clientes no tienen acceso 
+a los beans, la aplicaci&oacute;n cliente desconoce completamente las actividades 
+de manejo de recursos del bean. Por ejemplo, un bean que no est&aacute; siendo 
+usado puede ser eliminado de la memoria, mientras que su referencia remota en 
+el cliente permanece intacta. Cuando el cliente invoca un m&eacute;todo sobre 
+la referencia remota, el contenedor simplemente recupera el bean para dar servicio 
+a la petici&oacute;n. La aplicaci&oacute;n cliente no se da cuenta de todo este 
+proceso.</p>
+
+<p>Un enterprise bean depende del contenedor para todo lo que necesita. Si un enterprise 
+bean tiene que acceder a una conexi&oacute;n JDBC o a otro enterprise bean, lo 
+hace a trav&eacute;s del contenedor; si un enterprise bean tiene que acceder a 
+la identidad de su llamador, obtener una referencia a &eacute;l mismo, o acceder 
+a propiedades, lo hace a trav&eacute;s del contenedor.</p>
+
+<p>En las pr&oacute;ximas sesiones veremos c&oacute;mo se implementa todo este funcionamiento. 
+Veremos c&oacute;mo el contenedor EJB intercepta las llamadas y c&oacute;mo los 
+beans pueden acceder a los servicios que proporciona el contenedor.</p>
+
+<h3>1.2.4. Componentes enterprise beans</h3>
+
+<p>Los componentes enterprise bean encapsulan t&iacute;picamente un proceso o una 
+entidad de negocio. Un enterprise bean, por ejemplo, podr&iacute;a calcular los 
+pagos de inter&eacute;s de un pr&eacute;stamo, o encapsular la informaci&oacute;n 
+sobre una cuenta bancaria que se encuentra f&iacute;sicamente en una base de datos 
+relacional. Un cliente que necesita informaci&oacute;n llama a los m&eacute;todos 
+de negocio en el bean y esta llamada provoca una invocaci&oacute;n remota que 
+llega al contenedor EJB.</p>
+
+<p>Hay tres tipos de enterprise beans: beans de sesi&oacute;n, beans de entidad y 
+beans dirigidos por mensajes. En la siguiente sesi&oacute;n los presentaremos 
+con m&aacute;s detalle. Por ahora, vamos a adelantar s&oacute;lo algunas de sus 
+caracter&iacute;sticas</p>
+
+<p>En la especificaci&oacute;n 2.0 de la arquitectura EJB se definen tres tipos de 
+beans: beans de sesi&oacute;n, beans de entidad y beans dirigidos por mensaje:</p>
+
+<ul>
+  <li>Los beans de sesi&oacute;n realizan una tarea a petici&oacute;n de un cliente, 
+    pero no se corresponden con ninguna entidad persistente de negocio. Pueden 
+    ser a su vez de dos tipos: con estado y sin estado. El estado lo almancenan 
+    localmente en la memoria, no en almacenamiento secundario, y dura el tiempo 
+    que est&aacute; activa la sesi&oacute;n con el cliente.<BR>
+  <li class="sep">Los beans de entidad representan objetos persistentes de negocio, normalmente 
+    datos existentes en alguna o algunas bases de datos del negocio. T&iacute;picamente, 
+    un bean de entidad representa una fila de una tabla de una base de datos relacional.<BR>
+  <li class="sep">Los beans dirigidos por mensajes permiten procesar mensajes as&iacute;ncronos 
+    generados por otros beans o por aplicaciones externas que necesitamos conectar 
+    al sistema.<BR>
+</ul>
+
+<p>El cliente que usa los beans es una aplicaci&oacute;n Java independiente, 
+un servlet o una p&aacute;gina JSP. En cualquier caso se trata de c&oacute;digo 
+Java que tiene acceso a las interfaces definidas para cada bean. Tambi&eacute;n 
+lo veremos con m&aacute;s detalle en la pr&oacute;xima sesi&oacute;n, pero adelantemos 
+que existen dos tipos de acceso a los beans:</p>
+
+<ul>
+  <li>Acceso remoto. El cliente usa RMI-IIOP para comunicarse con el bean. El 
+    desarrollador del bean define dos tipos de interfaces: la mencionada interfaz 
+    remota, en la que se definen la interfaz de los procesos de negocio, y la 
+    interfaz home, en la que se definen la interfaz de los m&eacute;todos de gesti&oacute;n 
+    (creaci&oacute;n, borrado, etc.) de las instancias del bean.<BR>
+  <li class="sep">Acceso local. Si el cliente se ejecuta en la misma m&aacute;quina virtual 
+    Java que el bean, puede acceder a versiones locales de las interfaces. De 
+    esta forma no es necesario serializar los par&aacute;metros ni los valores 
+    devueltos por el bean, mejor&aacute;ndose la eficiencia de las llamadas.<BR>
+</ul>
+
+<h3>1.2.6.Ventajas de la arquitectura Enterprise JavaBeans</h3>
+
+<p>La arquitectura EJB proporciona beneficios a todos los papeles que hemos mencionado 
+previamente (desarrolladores, ensambladores de aplicaciones, administradores, 
+desplegadores, fabricantes de servidores). Vamos en enumerar las ventajas que 
+obtendr&aacute;n los desarrolladores de aplicaciones y los clientes finales.</p>
+
+<p>Las ventajas que ofrece la arquitectura Enterprise JavaBeans a un desarrollador 
+de aplicaciones se listan a continuaci&oacute;n.</p>
+
+<ul>
+  <li> <B>Simplicidad</b>. Debido a que el contenedor de aplicaciones libera al 
+    programador de realizar las tareas del nivel del sistema, la escritura de 
+    un enterprise bean es casi tan sencilla como la escritura de una clase Java. 
+    El desarrollador no tiene que preocuparse de temas de nivel de sistema como 
+    la seguridad, transacciones, multi-threading o la programaci&oacute;n distribuida. 
+    Como resultado, el desarrollador de aplicaciones se concentra en la l&oacute;gica 
+    de negocio y en el dominio espec&iacute;fico de la aplicaci&oacute;n.<BR>
+  <li class="sep"><B>Portabilidad de la aplicaci&oacute;n</b>. Una aplicaci&oacute;n EJB puede 
+    ser desplegada en cualquier servidor de aplicaciones que soporte J2EE. <BR>
+  <li class="sep"><B>Reusabilidad de componentes</b>. Una aplicaci&oacute;n EJB est&aacute; 
+    formada por componentes enterprise beans. Cada enterprise bean es un bloque 
+    de construcci&oacute;n reusable. Hay dos formas esenciales de reusar un enterprise 
+    bean a nivel de desarrollo y a nivel de aplicaci&oacute;n cliente. Un bean 
+    desarrollado puede desplegarse en distintas aplicaciones, adaptando sus caracter&iacute;sticas 
+    a las necesidades de las mismas. Tambi&eacute;n un bean desplegado puede ser 
+    usado por m&uacute;ltiples aplicaciones cliente.<BR>
+  <li class="sep"><B>Posibilidad de construcci&oacute;n de aplicaciones complejas</b>. La 
+    arquitectura EJB simplifica la construcci&oacute;n de aplicaciones complejas. 
+    Al estar basada en componentes y en un conjunto claro y bien establecido de 
+    interfaces, se facilita el desarrollo en equipo de la aplicaci&oacute;n.<BR>
+  <li class="sep"><B>Separaci&oacute;n de la l&oacute;gica de presentaci&oacute;n de la l&oacute;gica 
+    de negocio</b>. Un enterprise bean encapsula t&iacute;picamente un proceso 
+    o una entidad de negocio. (un objeto que representa datos del negocio), haci&eacute;ndolo 
+    independiente de la l&oacute;gica de presentaci&oacute;n. El programador de 
+    gesti&oacute;n no necesita de preocuparse de c&oacute;mo formatear la salida; 
+    ser&aacute; el programador que desarrolle la p&aacute;gina Web el que se ocupe 
+    de ello usando los datos de salida que proporcionar&aacute; el bean. Esta 
+    separaci&oacute;n hace posible desarrollar distintas l&oacute;gicas de presentaci&oacute;n 
+    para la misma l&oacute;gica de negocio o cambiar la l&oacute;gica de presentaci&oacute;n 
+    sin modificar el c&oacute;digo que implementa el proceso de negocio.<BR>
+  <li class="sep"><B>Despliegue en muchos entornos operativos</b>. Entendemos por entornos 
+    operativos el conjunto de aplicaciones y sistemas (bases de datos, sistemas 
+    operativos, aplicaciones ya en marcha, etc.) que est&aacute;n instaladas en 
+    una empresa. Al detallarse claramente todas las posibilidades de despliegue 
+    de las aplicaciones, se facilita el desarrollo de herramientas que asistan 
+    y automaticen este proceso. La arquitectura permite que los beans de entidad 
+    se conecten a distintos tipos de sistemas de bases de datos.<BR>
+  <li class="sep"><B>Despliegue distribuido</b>. La arquitectura EJB hace posible que las 
+    aplicaciones se desplieguen de forma distribuida entre distintos servidores 
+    de una red. El desarrollador de beans no necesita considerar la topolog&iacute;a 
+    del despliegue. Escribe el mismo c&oacute;digo independientemente de si el 
+    bean se va a despleguar en una m&aacute;quina o en otra (cuidado: con la especificaci&oacute;n 
+    2.0 esto se modifica ligeramente, al introducirse la posibilidad de los interfaces 
+    locales).<BR>
+  <li class="sep"><B>Interoperabilidad entre aplicaciones</b>. La arquitectura EJB hace m&aacute;s 
+    f&aacute;cil la integraci&oacute;n de m&uacute;ltiples aplicaciones de diferentes 
+    vendedores. El interfaz del enterprise bean con el cliente sirve como un punto 
+    bien definido de integraci&oacute;n entre aplicaciones.<BR>
+  <li class="sep"><B>Integraci&oacute;n con sistemas no-Java</b>. Las APIs relacionadas, como 
+    las especificaciones Connector y Java Message Service (JMS), as&iacute; como 
+    los beans manejados por mensajes, hacen posible la integraci&oacute;n de los 
+    enterprise beans con sistemas no Java, como sistemas ERP o aplicaciones mainframes.<BR>
+  <li class="sep"><B>Recursos educativos y herramientas de desarrollo</b>. El hecho de que 
+    la especificaci&oacute;n EJB sea un est&aacute;ndar hace que exista una creciente 
+    oferta de herramientas y formaci&oacute;n que facilita el trabajo del desarrollador 
+    de aplicacioines EJB.<BR>
+</ul>
+
+<p>Entre las ventajas que aporta esta arquitectura al cliente final, destacamos la 
+posibilidad de elecci&oacute;n del servidor, la mejora en la gesti&oacute;n de 
+las aplicaciones, la integraci&oacute;n con las aplicaciones y datos ya existentes 
+y la seguridad.</p>
+
+<ul>
+  <li> <B>Elecci&oacute;n del servidor</b>. Debido a que las aplicaciones EJB 
+    pueden ser ejecutadas en cualquier servidor J2EE, el cliente no queda ligado 
+    a un vendedor de servidores. Antes de que existiera la arquitectura EJB era 
+    muy dif&iacute;cil que una aplicaci&oacute;n desarrollada para una determinada 
+    capa intermedia (Tuxedo, por ejemplo) puediera portarse a otro servidor. Con 
+    la arquitectura EJB, sin embargo, el cliente deja de estar atado a un venededor 
+    y puede cambiar de servidor cuando sus necesidades de escalabilidad, integraci&oacute;n, 
+    precio, seguridad, etc.lo requieran. <BR>
+    Existen en el mercado algunos servidores de aplicaciones gratuitos (JBOSS, 
+    el servidor de aplicaciones de Sun, etc.) con los que ser&iacute;a posible 
+    hacer unas primeras pruebas del sistema, para despu&eacute;s pasar a un servidor 
+    de aplicaciones con m&aacute;s funcionalidades.<BR>
+  <li class="sep"><B>Gesti&oacute;n de las aplicaciones</b>. Las aplicaciones son mucho m&aacute;s 
+    sencillas de manejar (arrancar, parar, configurar, etc.) debido a que existen 
+    herramientas de control m&aacute;s elaboradas.<BR>
+  <li class="sep"><B>Integraci&oacute;n con aplicaciones y datos ya existentes</b>. La arquitectura 
+    EJB y otras APIs de J2EE simplifican y estandarizan la integraci&oacute;n 
+    de aplicaciones EJB con aplicaciones no Java y sistemas en el entorno operativo 
+    del cliente. Por ejemplo, un clliente no tiene que cambiar un esquema de base 
+    de datos para encajar en una aplicaci&oacute;n. En lugar de ello, se puede 
+    construir una aplicaci&oacute;n EJB que encaje en el esquema cuando sea desplegada.<BR>
+  <li class="sep"><B>Seguridad</b>. La arquitectura EJB traslada la mayor parte de la responsabilidad 
+    de la seguridad de una aplicaci&oacute;n de el desarrollador de aplicaciones 
+    al vendedor del servidor, el Administrador de Sistemas y al Desplegador (papeles 
+    de la especificaci&oacute;n EJB) La gente que ejecuta esos papeles est&aacute;n 
+    m&aacute;s cualificados que el desarrollador de aplicaciones para hacer segura 
+    la aplicaci&oacute;n. Esto lleva a una mejor seguridad en las aplicaciones 
+    operacionales.<BR>
+</ul>
+  <h2>1.3. Bibliograf&iacute;a</h2>
+<ul>
+  <li class="nojustify">Platform de Vlada Matena y Beth Stearns: <i>Appliying 
+    Enterprise JavaBeans: Component-Based Development for the J2EE</i> . Ed. Addison 
+    Wesley.<BR>
+  <li class="nojustify">Gail Anderson y Paul Anderson: <i>Enterprise JavaBeans 
+    Componente Architecture: Designing and Codign Enterprise Applications</i>. 
+    Ed. Prentice Hall.<BR>
+  
+  <li class="nojustify"><i>Short Course Enterprise JavaBeans Technology Fundamentals</i> 
+    (URL:http://developer.java.sun.com/developer/onlineTraining/EJBIntro/EJBIntro.html)<BR>
+  
+  <li class="nojustify">Especificaciones oficiales de la arquitectura Enterprise 
+    JavaBeans (URL:http://java.sun.com/products/ejb/docs.html#specs) 
+</ul>
+
+</BODY>
+</HTML>
+

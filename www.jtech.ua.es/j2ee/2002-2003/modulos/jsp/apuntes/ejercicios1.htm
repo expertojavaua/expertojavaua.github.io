@@ -1,0 +1,567 @@
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+  <link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+  <title>Ejercicio de JSP</title>
+</head>
+  <body>
+      <b>      
+<h1>Ejercicio de JSP: Sistema de gestión de FAQs</h1>
+<h2>&nbsp;</h2>
+<h2>Indice</h2>
+      </b>
+      <p>1. <a href="#Introduccion">Introducción</a></p>
+      <blockquote>
+        <p>1.1. <a href="#FAQBean">Componente FAQ: clase FAQBean</a></p>
+      </blockquote>
+      <p>2. <a href="#Almacenamiento">El módulo de almacenamiento</a></p>
+      <blockquote>
+        <p>2.1. <a href="#bd">La base de datos</a><br>
+        2.2. <a href="#FAQBD">Gestión de la base de datos: clase FAQBD</a><br>
+        2.3. <a href="#FAQBDException">Excepciones que se tratan: clases
+        FAQBDException y<br>
+        FAQDesconocidoException</a></p>
+      </blockquote>
+      <p>3. <a href="#Administracion">El módulo de administración</a></p>
+      <blockquote>
+        <p>3.1. <a href="#FAQCentralServlet">El servlet de administración:
+        clase FAQCentralServlet</a><br>
+        3.2. <a href="#FAQComandoToken">Seguridad en las transacciones: clase
+        FAQComandoToken</a><br>
+        3.3. <a href="#AdminJSP">Páginas JSP</a><br><a href="ejercicios/faqs.zip"></a>
+        3.4. <a href="#Comandos">Comandos posibles</a></p>
+        
+  
+      </blockquote>
+      <p>4. <a href="#AccesoWeb">El módulo de acceso Web</a></p>
+      <blockquote>
+        <p>4.1. <a href="#FAQServlet">Servlet de acceso Web: clase FAQServlet</a><br>
+        4.2. <a href="#AccesoJSP">Páginas JSP para acceso a las FAQs</a></p>
+        
+      </blockquote>
+      <p>5. <a href="#Configuracion">Configuración de la aplicación</a></p>
+      <blockquote>
+        <p>5.1. <a href="#Descriptor">Fichero descriptor (web.xml)</a><br>
+        5.2. <a href="#Usuarios">Fichero de usuarios (tomcat-users.xml)</a></p>
+        <p>&nbsp;</p>
+      </blockquote>
+      <b>      
+<h2>Estructura de la aplicación</h2>
+      </b>
+      <p>La estructura de ficheros y directorios de <a href="ejercicios/faqs.zip">la aplicación</a> es la
+      siguiente:</p>
+      
+<pre class="codigo">/<em>    (aqu&iacute; se deben colocar las p&aacute;ginas JSP del m&oacute;dulo de acceso web)</em>
+/jsp <em>(aqu&iacute; se colocar&aacute;n las p&aacute;ginas JSP del m&oacute;dulo de administraci&oacute;n)</em>
+/WEB-INF/<a href="#Usuarios">tomcat-users.xml</a>
+/WEB-INF/<a href="#Descriptor">web.xml</a>
+/WEB-INF/classes/faqs/<a href="implementacion.htm#FAQBean">FAQBean.java</a>
+/WEB-INF/classes/faqs/bd/<a href="implementacion.htm#FAQBD">FAQBD.java</a>
+/WEB-INF/classes/faqs/bd/<a href="implementacion.htm#FAQBDException">FAQBDException.java</a>
+/WEB-INF/classes/faqs/bd/<a href="implementacion.htm#FAQBDException">FAQDesconocidoException.java</a>
+/WEB-INF/classes/faqs/comandos/<a href="implementacion.htm#FAQComando">FAQComando.java</a>
+/WEB-INF/classes/faqs/comandos/<a href="implementacion.htm#FAQComandoAbortar">FAQComandoAbortar.java</a>
+/WEB-INF/classes/faqs/comandos/<a href="implementacion.htm#FAQComandoDelete">FAQComandoDelete.java</a>
+/WEB-INF/classes/faqs/comandos/<a href="implementacion.htm#FAQComandoException">FAQComandoException.java</a>
+/WEB-INF/classes/faqs/comandos/<a href="implementacion.htm#FAQComandoGet">FAQComandoGet.java</a>
+/WEB-INF/classes/faqs/comandos/<a href="implementacion.htm#FAQComandoGetAll">FAQComandoGetAll.java</a>
+/WEB-INF/classes/faqs/comandos/<a href="implementacion.htm#FAQComandoInsert">FAQComandoInsert.java</a>
+/WEB-INF/classes/faqs/comandos/<a href="implementacion.htm#FAQComandoNull">FAQComandoNull.java</a>
+/WEB-INF/classes/faqs/comandos/<a href="implementacion.htm#FAQComandoToken">FAQComandoToken.java</a>
+/WEB-INF/classes/faqs/comandos/<a href="implementacion.htm#FAQComandoUpdate">FAQComandoUpdate.java</a>
+/WEB-INF/classes/faqs/servlets/<a href="implementacion.htm#FAQCentralServlet">FAQCentralServlet.java</a>
+/WEB-INF/classes/faqs/servlets/<a href="implementacion.htm#FAQServlet">FAQServlet.java</a>
+/WEB-INF/lib/mm.mysql-2.0.4-bin.jar</pre>
+           
+      <p>&nbsp;</p>
+      <b>      
+<h2><a name="Introduccion"></a>1. Introducción</h2>
+      </b><p>Como ejercicio se va a desarrollar un sistema que permite gestionar
+      (crear, manipular y visualizar) una lista de FAQs (<i>Frequently Asked
+      Questions</i>), manteniendo las mismas en una base de datos, y
+      haciéndolas accesibles vía web. El sistema de FAQs permitirá añadir, actualizar y eliminar entradas
+      de la lista de preguntas, y también podremos consultar las preguntas que
+      hay en cada momento en la base de datos.</p>
+      <p>La aplicación deberá tener las siguientes características:</p>
+      <ul>
+        <li>Cada entrada de la lista tendrá una pregunta y una respuesta</li>
+        <li>Cuando se modifica una entrada, se almacena la fecha de la última
+          modificación</li>
+        <li>Las entradas (FAQs) tienen un identificador único e invariable</li>
+        <li>Las listas de FAQs deben generarse dinámicamente</li>
+      </ul>
+      <p>Se permitirá que los usuarios de la intranet del sitio web puedan
+      manipular las FAQs, y que los usuarios externos puedan obtener los
+      listados de las mismas.</p>
+      <p>Para desarrollar la aplicación se va a dividir en 3 módulos que
+      pueden desarrollarse individual e independientemente.</p>
+      <ul>
+        <li><b>Módulo de almacenamiento</b>: que se encargará de guardar y
+          obtener información en/de la base de datos</li>
+        <li><b>Módulo de administración</b>: para que los administradores
+          añadan y manipulen las FAQs</li>
+        <li><b>Módulo de acceso Web</b>: para mostrar las FAQs en una web de
+          acceso público</li>
+      </ul>
+      <p>Todas las clases Java están dentro del paquete <b>faqs</b> (cada una
+      en el subpaquete que corresponda). Las páginas JSP de administración se
+      encuentran en el directorio <b>jsp</b>, y las páginas Web visibles desde
+      fuera (las del módulo de acceso Web) quedan en el directorio raíz.</p>
+      <h4><a name="FAQBean"></a>1.1. Componente FAQ: clase FAQBean</h4>
+           
+      <p>Para poder intercambiar información entre módulos, se tiene creada
+      una clase que representa cada FAQ. Es la clase <b>FAQBean</b> (dentro del
+      paquete <b>faqs</b>): </p>
+           
+      <pre class="codigo">package faqs;
+
+import java.util.Date;
+
+public class FAQBean
+{
+	int id;			<b>// Identificador del FAQ 
+</b>	String pregunta;	<b>// Texto de la pregunta
+</b>	String respuesta;	<b>// Texto de la respuesta
+</b>	Date fechaModif;	<b>// Fecha última modificacion
+</b>	
+	public FAQBean()
+	{
+		id = 0;
+		pregunta = &quot;&quot;;
+		respuesta = &quot;&quot;;
+		fechaModif = new Date();
+	}
+	
+<b>	// === METODOS GET Y SET PARA OBTENER CADA CAMPO ===
+	</b>
+	public int getID()
+	{
+		return id;
+	}
+
+	public void setID(int pID)
+	{
+		id = pID;
+	}
+
+	public String getPregunta()
+	{
+		return pregunta;
+	}
+
+	public void setPregunta(String pPregunta)
+	{
+		pregunta = pPregunta;
+		fechaModif = new Date();
+	}
+
+	public String getRespuesta()
+	{
+		return respuesta;
+	}
+
+	public void setRespuesta(String pRespuesta)
+	{
+		respuesta = pRespuesta;
+		fechaModif = new Date();
+	}
+	
+	public Date getFechaModif()
+	{
+		return fechaModif;
+	}
+
+	public void setFechaModif(Date pFecha)
+	{
+		fechaModif = pFecha;
+	}
+	
+	public String toString()
+	{
+		return &quot;[&quot; + id + &quot;] &quot; + 
+		       &quot;Pregunta: &quot; + pregunta + 
+		       &quot;; Respuesta: &quot; + respuesta + &quot;\n&quot;;
+	}
+}</pre>
+           
+      <p>Los métodos para modificar el ID y la fecha no se utilizan realmente
+      (se modifican internamente). También notar que al modificar el texto de
+      la pregunta o la respuesta, se actualiza la fecha de última
+      modificación. </p>
+           
+      <p>Vemos que para cada FAQ se almacenan 4 datos: </p>
+           
+      <ul>
+        <li><b>id</b>: un identificador autonumérico para cada pregunta</li>
+        <li><b>pregunta</b>: texto de la pregunta</li>
+        <li><b>respuesta</b>: texto de la respuesta</li>
+        <li><b>fechaModif</b>: fecha de la última modificación de la pregunta</li>
+      </ul>
+           
+      <p>&nbsp;</p>
+      <b>      
+<h2><a name="Almacenamiento"></a>2. El módulo de almacenamiento</h2>
+      </b><p>Este módulo controla el acceso a la base de datos donde se
+      almacenan las FAQs. Así se separa la administración y acceso web de la
+      manipulación de la base de datos, y se proporciona una
+      abstracción que permite modificar este módulo sin tener que alterar el
+      resto de la aplicación (el acceso a base de datos es transparente, e
+      incluso podría considerarse utilizar otro sistema de almacenamiento
+      (ficheros de texto, etc)).&nbsp; </p>
+           
+      <p>Las clases Java utilizadas en este módulo se encuentran en el paquete <b>faqs.bd</b>. </p>
+           
+      <h4><a name="bd"></a>2.1. La base de datos</h4>
+           
+      <p>La base de datos se llama <b>faqs</b>, y tiene una sola tabla, <b>faqs</b>,
+      con los siguientes campos: </p>
+           
+      <ul>
+        <li><b>ID</b>: un entero autonumérico que identifica cada FAQ.</li>
+        <li><b>pregunta</b>: una cadena de texto que contiene el texto de la
+          pregunta.</li>
+        <li><b>respuesta</b>: una cadena de texto que contiene el texto de la
+          respuesta.</li>
+        <li><b>fechamodif</b>: una variable fecha con la fecha de la última
+          modificación de la pregunta.</li>
+      </ul>
+      <p>Notamos que es una estructura idéntica a los campos de la clase <i><a href="#FAQBean">FAQBean</a></i>. </p>
+           
+      
+<p>Tenemos aquí un fichero <a href="ejercicios/bdfaqs.zip">ZIP</a> con la base 
+  de datos. Para instalarla: </p>
+           
+ Para ello, si tenéis un usuario creado con
+    login <i>root</i> y password <i>mysql</i>, seguid los pasos siguientes (si
+    no, cambiad dicho login y password por el que tengáis, a la hora de seguir
+    los pasos):
+    <ul>
+      <li>Lanzad el servidor de MySQL</li>
+      <li>Descomprimid el ZIP de la base de datos. Es un fichero de texto con
+        las sentencias para crear la base de datos. Lo que hay que hacer para
+        crearla es pasárselo como entrada al cliente de MySQL:</li>
+    </ul>
+  <blockquote>
+    <pre class="codigo">mysql -uroot -pmysql &lt; faqs.sql</pre>
+           
+  </blockquote>
+<ul>
+  <li>Lanzad el cliente MySQL (si no estáis ya dentro)</li>
+</ul>
+  <blockquote>
+    <pre class="codigo">mysql -uroot -pmysql</pre>
+           
+  </blockquote>
+<ul>
+  <li>Ejecutad los siguientes comandos, para dar permiso al usuario <i>root</i>
+    sobre la base de datos <i>prueba</i>:</li>
+</ul>
+  <blockquote>
+    <pre class="codigo">GRANT ALL PRIVILEGES ON faqs.* to 
+'root'@'localhost.localdomain' 
+identified by 'mysql';
+
+FLUSH PRIVILEGES;</pre>
+           
+  </blockquote>
+           
+      <h4><a name="FAQBD"></a>2.2. Gestión de la base de datos: clase FAQBD</h4>
+           
+      
+<p align="left">La clase <b>FAQBD</b> se encarga de gestionar todo el acceso a 
+  base de datos (selecci&oacute;n, inserci&oacute;n, eliminaci&oacute;n,...). 
+  La clase FAQBean se emplea como &quot;intermediaria&quot; entre la base de datos 
+  y la aplicaci&oacute;n.</p>
+<p align="left"><a href="implementacion.htm#FAQBD">Detalles sobre la implementaci&oacute;n</a></p>
+           
+      <h4><a name="FAQBDException"></a>2.3. Excepciones que se tratan: clases FAQBDException y
+      FAQDesconocidoException</h4>
+           
+      <p align="left">Se capturan todas las excepciones (<i>SQLException</i> y
+      otras) para tratarlas como <b>FAQBDException</b>, un tipo propio de
+      excepción. Como subtipo se tiene <b>FAQDesconocidoException</b>, que se
+      lanza cuando no se puede localizar una FAQ. </p>
+           
+      
+<p align="left"><a href="implementacion.htm#FAQBDException">Detalles sobre la implementaci&oacute;n</a></p>
+<b>
+<h2><a name="Administracion"></a>3. El módulo de administración</h2>
+      </b><p>Este módulo es una herramienta que permite al personal encargado
+      crear y mantener la base de datos de FAQs. Se proporciona una interfaz
+      basada en páginas JSP que permite añadir, borrar y modificar FAQs en la
+      base de datos. Esta herramienta será para uso interno, y no visible desde
+      el exterior. </p>
+           
+      <p>El módulo de administración está compuesto de una serie de pantallas
+      interconectadas, donde en cada pantalla se da al usuario la opción de
+      volver al menú principal o realizar la acción asociada a la página. La
+      estructura general del módulo viene en el siguiente esquema: </p>
+           
+      <p align="center"><img border="0" src="file:///D|/DOCENCIA/CURSOS/j2ee/jsp/faqs/ejercicios/ejadministracion.jpg" width="369" height="309"> </p>
+           
+      <p>donde se tienen 3 operaciones: </p>
+           
+      <ul>
+        <li><b>Añadir</b> una nueva FAQ a la base de datos (1 pantalla)</li>
+        <li><b>Actualizar</b> los datos de una FAQ existente (2 pantallas)</li>
+        <li><b>Borrar</b> una FAQ de la base de datos (2 pantallas)</li>
+      </ul>
+      <p>Todas las pantallas serán páginas JSP. Más adelante veremos qué
+      pantallas componen cada una de las operaciones. Todas ellas se gestionan a
+      través de un servlet central <b>FAQCentralServlet</b> que veremos
+      también a continuación. </p>
+           
+      <h4><a name="FAQCentralServlet"></a>3.1. El servlet de administración: clase FAQCentralServlet</h4>
+           
+      
+<p>El servlet <b>FAQCentralServlet</b> se encarga de controlar la lógica de la 
+  aplicación y redirigir cada petición a la página apropiada, según el estado 
+  de la aplicación y los datos de la petición. Las páginas serán páginas JSP que 
+  harán uso de los datos que les proporcione el servlet. De esta forma, las páginas 
+  JSP se utilizarán sólo para mostrar y presentar la información.</p>
+<p><a href="implementacion.htm#FAQCentralServlet">Detalles sobre la implementaci&oacute;n</a></p>
+
+<h3>3.2. Seguridad en las transacciones: clase FAQComandoToken</h3>
+<p>En el servlet central <i>FAQCentralServlet </i>se utiliza una clase <b>FAQComandoToken</b>, 
+  para mantener la integridad de las transacciones que se realicen en la base 
+  de datos.&nbsp; </p>
+<p>Algunas acciones en una aplicación son vulnerables si se re-ejecutan accidentalmente. 
+  Por ejemplo, cuando insertemos un FAQ, podemos correr el riesgo de realizar 
+  operaciones incorrectas si recargamos la página (podría intentar re-insertar 
+  de nuevo el FAQ). </p>
+<p>Para estos casos, necesitamos capturar la acción a realizar e impedir que pueda 
+  causar problemas. Hay que advertir al servlet de que esa acción ya se ha realizado. 
+  Para eso aplicamos una técnica de <b>tokens</b>, mediante la clase <b>FAQComandoToken</b>.</p>
+<p><a href="implementacion.htm#FAQComandoToken">Detalles sobre la implementaci&oacute;n</a></p>
+<h4><a name="AdminJSP"></a>3.3. Páginas JSP</h4>
+           
+      
+<p>Las p&aacute;ginas JSP ser&aacute;n las encargadas de mostrar las opciones 
+  del men&uacute; de administraci&oacute;n y permitir que el usuario introduzca 
+  los datos de las operaciones. </p>
+<p>Todas las p&aacute;ginas tienen en com&uacute;n las siguientes caracter&iacute;sticas:</p>
+<ul>
+  <li>Cuando se desea realizar alguna operaci&oacute;n (insertar, borrar, ...) 
+    hay que llamar al <b>FAQCentralServlet</b>, con el par&aacute;metro <code>cmd</code> 
+    indicando la operaci&oacute;n. Hay que tener en cuenta que este servlet est&aacute; 
+    mapeado con la URL <code>faqcentral</code>.</li>
+  <li>Las p&aacute;ginas que muestran datos (por ejemplo, una lista de FAQs para 
+    que el usuario indique cu&aacute;l desea borrar) reciben estos datos de la 
+    petici&oacute;n (objeto <b>request</b>).</li>
+  <li>Las p&aacute;ginas que realizan alguna operaci&oacute;n cr&iacute;tica deben 
+    pasar al <b>FAQCentral</b><b>Servlet</b> un par&aacute;metro <code>token</code>, 
+    que toman de la petici&oacute;n.</li>
+</ul>
+<p>Deben desarrollarse las siguientes p&aacute;ginas:</p>
+<ul>
+  <li><b>menu.jsp</b>: Men&uacute; principal. Debe mostrar las opciones para insertar, 
+    actualizar y borrar una FAQ.</li>
+  <li><b>insert.jsp</b>: p&aacute;gina para insertar los datos de una nueva FAQ.Se 
+    muestran dos cuadros de texto para introducir la pregunta y la respuesta, 
+    y luego opciones para <b>abortar</b> la operación o <b>insertar la FAQ</b>. 
+  </li>
+  <ul>
+    <li>Operaciones: abortar (<code>cmd=abortar</code>), insertar (<code>cmd=exe-insert</code>).</li>
+    <li>Par&aacute;metros de la operaci&oacute;n: <code>pregunta</code> (pregunta 
+      del FAQ), <code>respuesta</code> (respuesta del FAQ).</li>
+    <li>Utiliza par&aacute;metro <code>token</code>.</li>
+  </ul>
+  <li><b>delete-menu.jsp:</b> muestra un listado con todas las FAQs, para que 
+    el usuario elija la que quiere eliminar. </li>
+  <ul>
+    <li>Operaciones: abortar (<code>cmd=abortar</code>), borrar (<code>cmd=delete</code>).</li>
+    <li>Par&aacute;metros de la operaci&oacute;n: <code>id</code> del FAQ a borrar.</li>
+    <li>Datos recibidos: <code>faqs</code>, un array de objetos <b>FAQBean</b>.</li>
+  </ul>
+  <li><b>delete.jsp</b> para borrar la FAQ seleccionada.</li>
+  <ul>
+    <li> Operaciones: abortar (<code>cmd=abortar</code>), borrar FAQ (<code>cmd=exe-delete</code>)</li>
+    <li>Par&aacute;metros de la operaci&oacute;n: <code>id </code>del FAQ a borrar.</li>
+    <li>Datos recibidos: <code>faq</code>, un objeto <b>FAQBean</b> con el FAQ 
+      a borrar.</li>
+    <li>Utiliza el par&aacute;metro <code>token</code></li>
+  </ul>
+  <li><b>update-menu.jsp</b>: muestra un listado con todas las FAQs, para que 
+    el usuario elija la que quiere modificar. </li>
+	
+  <ul>
+    <li>Operaciones: abortar (<code>cmd=abortar</code>), actualizar FAQ (<code>cmd=update</code>)</li>
+    <li>Par&aacute;metros de la operaci&oacute;n: <code>id </code>del FAQ a actualizar.</li>
+    <li>Datos recibidos: <code>faqs</code>, un array de objetos <b>FAQBean</b>.</li>
+  </ul>
+  <li><b>update.jsp</b> para actualizar la FAQ seleccionada.</li>
+  <ul>
+    <li> Operaciones: abortar (<code>cmd=abortar</code>), actualizar FAQ (<code>cmd=exe-update</code>)</li>
+    <li>Par&aacute;metros de la operaci&oacute;n: <code>id </code>del FAQ a actualizar.</li>
+    <li>Datos recibidos: <code>faq</code>, un objeto <b>FAQBean</b> con el FAQ 
+      a actualizar.</li>
+    <li>Utiliza el par&aacute;metro <code>token</code></li>
+  </ul>
+  <li><b>error.jsp</b> debe mostrar un mensaje de error al realizar una operación 
+    determinada.</li>
+</ul>
+
+           
+      <h4><a name="Comandos"></a>3.4. Comandos posibles</h4>
+           
+      
+<p>Utilizamos nombres de comandos para indicar qué tareas realizar en el administrador 
+  (añadir un FAQ, borrarla, etc). Cada actividad se representa por un comando 
+  específico, implementado por una clase, que utiliza la interfaz genérica <i>FAQComando</i>. 
+  Todos los comandos y clases en general se encuentran en el paquete <b>faqs.comandos</b>. 
+</p>
+<p><a href="implementacion.htm#comandosPosibles">Detalles sobre la implementaci&oacute;n</a> 
+</p>
+           
+      
+
+           
+      <b>      
+<h2><a name="AccesoWeb"></a>4. El módulo de acceso web</h2>
+      </b><p>Este módulo permite obtener las FAQs almacenadas y mostrarlas en
+      páginas web. Distinguiremos dos posibles modos de acceso: </p>
+           
+      <ul>
+        <li>Ver un listado de todas las FAQs</li>
+        <li>Ver una FAQ en concreto</li>
+      </ul>
+      <p>Para proporcionar estos dos posibles modos, se tiene un servlet que
+      facilita la información solicitada (todas las FAQs en el primer caso, y
+      una FAQ con un <i>id</i> determinado en el segundo), y luego tendremos una
+      serie de páginas JSP para mostrar la información. </p>
+           
+      <h4><a name="FAQServlet"></a>4.1. Servlet de acceso web: clase FAQServlet</h4>
+           
+      <p>Se tiene el servlet <b>FAQServlet</b> en el paquete <b>faqs.servlets </b>que
+      se encarga de devolver bien un listado con todas las FAQs de la base de
+      datos, bien los datos de una&nbsp; FAQ en concreto. </p>
+           
+           
+      
+<p>En función de si encuentra o no un parámetro <i>id</i>, se buscará la FAQ del 
+  <i>id</i> indicado, o todas las FAQs, utilizando para ello los comandos <i>FAQComandoGet</i> 
+  y <i>FAQComandoGetAll</i> vistos antes, respectivamente.</p>
+<p><a href="implementacion.htm#FAQServlet">Detalles sobre la implementaci&oacute;n</a> 
+</p>
+           
+      <h4><a name="AccesoJSP"></a>4.2. Páginas JSP para acceso a las FAQs</h4>
+           
+      
+<p>Todas las páginas JSP de este m&oacute;dulo deben colocarse en el directorio 
+  raíz de la aplicación. Las p&aacute;ginas tienen tres caracter&iacute;sticas 
+  comunes: </p>
+<ul>
+  <li>Cuando se desea realizar alguna operaci&oacute;n hay que llamar al <b>FAQServlet</b>. 
+    Hay que tener en cuenta que este servlet est&aacute; mapeado con la URL <code>faqs</code>.</li>
+  <li>El servlet utiliza el par&aacute;metro <code>pagina</code> para saber qu&eacute; 
+    pagina debe mostrar los resultados de la operaci&oacute;n.</li>
+  <li>Las p&aacute;ginas que muestran datos (por ejemplo, la lista de FAQs) reciben 
+    estos datos de la petici&oacute;n (objeto <b>request</b>).</li>
+  
+</ul>
+<p>Hay que implementar las siguientes p&aacute;ginas:</p>
+<ul>
+  <li><b>index.jsp</b> podremos acceder al listado de todas las FAQs (página <i>faqs.jsp</i>) 
+    o al menú de administración para insertar/actualizar/eliminar FAQs (página 
+    <i>menu.jsp</i>).</li>
+	<ul>
+	 
+    <li> Operaciones: listado de faqs (llamar al servlet <b>FAQServlet</b> con 
+      el par&aacute;metro <code>pagina=faqs.jsp</code>). </li>
+	</ul>
+  <li> <b>faqs.jsp</b> permite tener un listado de todas las FAQs disponibles, 
+    cada una con un enlace a la página <i>faq.jsp</i>, que muestra los datos concretos 
+    de la FAQ.</li>
+  <ul>
+    <li>Operaciones: ver una FAQ. Llamar al servlet FAQServlet con los par&aacute;metros: 
+      <code>id</code>, identificador de la FAQ a ver, <code>pagina=faq.jsp</code></li>
+    <li>Datos recibidos: <code>faqs</code>, un array de objetos <b>FAQBean</b> 
+      con todos los FAQs.</li>
+  </ul>
+  <li> <b>faq.jsp</b> permite ver los datos de una FAQ en concreto.</li>
+  <ul>
+    <li> Datos recibidos: <code>faq</code>, el objeto FAQBean a visualizar.</li>
+  </ul>
+</ul>
+ 
+  
+  
+
+
+<b> 
+<h2><a name="Configuracion"></a>5. Configuración de la aplicación</h2>
+      </b><p>Nos falta, por último, ver los ficheros de configuración de la
+      aplicación Web:&nbsp; </p>
+           
+      <h4><a name="Descriptor"></a>5.1. Fichero descriptor (web.xml)</h4>
+           
+      <p>El fichero descriptor <b>web.xml </b>tiene el siguiente contenido: </p>
+           
+      <pre class="codigo">&lt;!DOCTYPE web-app PUBLIC &quot;-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN&quot; 
+ &quot;http://java.sun.com/j2ee/dtds/web-app_2_3.dtd&quot;&gt;
+
+&lt;web-app&gt;
+        &lt;display-name&gt;Aplicacion de FAQs&lt;/display-name&gt;
+        &lt;description&gt;
+                Aplicacion de FAQs con JSP
+        &lt;/description&gt;
+
+	&lt;servlet&gt;
+		&lt;servlet-name&gt;faqcentral&lt;/servlet-name&gt;
+		&lt;servlet-class&gt;faqs.servlets.FAQCentralServlet&lt;/servlet-class&gt;
+	&lt;/servlet&gt;
+	&lt;servlet&gt;
+		&lt;servlet-name&gt;faqs&lt;/servlet-name&gt;
+		&lt;servlet-class&gt;faqs.servlets.FAQServlet&lt;/servlet-class&gt;
+	&lt;/servlet&gt;
+
+	&lt;servlet-mapping&gt;
+		&lt;servlet-name&gt;faqcentral&lt;/servlet-name&gt;
+		&lt;url-pattern&gt;/faqcentral&lt;/url-pattern&gt;
+	&lt;/servlet-mapping&gt;
+	&lt;servlet-mapping&gt;
+		&lt;servlet-name&gt;faqs&lt;/servlet-name&gt;
+		&lt;url-pattern&gt;/faqs&lt;/url-pattern&gt;
+	&lt;/servlet-mapping&gt;
+
+	&lt;security-constraint&gt;
+		&lt;web-resource-collection&gt;
+			&lt;web-resource-name&gt;FAQS&lt;/web-resource-name&gt;
+			&lt;url-pattern&gt;/jsp/*&lt;/url-pattern&gt;
+		&lt;/web-resource-collection&gt;
+		&lt;auth-constraint&gt;
+			&lt;role-name&gt;administrador&lt;/role-name&gt;
+		&lt;/auth-constraint&gt;
+	&lt;/security-constraint&gt;
+
+	&lt;login-config&gt;
+		&lt;auth-method&gt;BASIC&lt;/auth-method&gt;
+		&lt;realm-name&gt;FAQS&lt;/realm-name&gt;
+	&lt;/login-config&gt;
+
+&lt;/web-app&gt;</pre>
+           
+      <p>Se mapea el servlet <i>FAQCentralServlet </i>con la URL <b>/faqcentral</b>,
+      y el servlet <i>FAQServlet</i> con la URL <b>/faqs</b>. Luego, se protege
+      el directorio <b>/jsp/ </b>de la aplicación, para que sólo puedan
+      acceder usuarios administradores. Se utiliza para ello autentificación
+      BASIC.</p>
+      <h4><a name="Usuarios"></a>5.2. Fichero de usuarios (tomcat-users.xml)</h4>
+           
+      <p>El fichero con los usuarios registrados <b>tomcat-users.xml </b>tiene
+      un usuario <i>usuario1</i> con password <i>password1</i>, con un rol de <i>administrador</i>.
+      Sólo este usuario podría acceder al sitio Web. </p>
+           
+      <p>Si tenemos algún fichero de usarios ya establecido en nuestro
+      servidor, tendríamos que añadir este usuario en él. Si no, podemos
+      copiar el fichero entero. </p>
+           
+      <pre class="codigo">&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot; ?&gt;
+&lt;tomcat-users&gt;
+	&lt;user name=&quot;usuario1&quot; password=&quot;password1&quot; roles=&quot;administrador&quot;/&gt;
+&lt;/tomcat-users&gt;</pre>
+           
+        </body>
+        </html>

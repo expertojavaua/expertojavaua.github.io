@@ -1,0 +1,690 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.7">
+<meta name="Forrest-skin-name" content="pelt">
+<title>Desarrollo, despliegue y pruebas  de aplicaciones web con Maven</title>
+<link type="text/css" href="skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="skin/print.css" rel="stylesheet">
+<link type="text/css" href="skin/profile.css" rel="stylesheet">
+<script src="skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<div class="header">
+<div class="grouplogo">
+<a href="http://web.ua.es/especialistajava"><img class="logoImage" alt="jtech" src="images/baner_j2ee_izq.gif" title="Especialista Universitario Java Enterprise"></a>
+</div>
+<div class="projectlogoA1">
+<a href="http://www.dccia.ua.es/"><img class="logoImage" alt="Servidores Web" src="images/baner_j2ee_der.gif" title="Servidores Web"></a>
+</div>
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="javascript:location.href='../index.html'">Home</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../aplic-web.html'">Aplicaciones Web</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../aplic-ent.html'">Aplicaciones Enterprise</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../charlas.html'">Charlas</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../proy-int/index.html'">Proyecto</a>
+</li>
+<li class="current">
+<a class="base-selected" href="index.html">Servidores Web</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<div id="level2tabs"></div>
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<div id="menu">
+<div onclick="SwitchMenu('menu_selected_1.1', 'skin/')" id="menu_selected_1.1Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Servidores Web</div>
+<div id="menu_selected_1.1" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="index.html" title="Servidores Web">&Iacute;ndice</a>
+</div>
+<div onclick="SwitchMenu('menu_selected_1.1.2', 'skin/')" id="menu_selected_1.1.2Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Teor&iacute;a</div>
+<div id="menu_selected_1.1.2" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="sesion01-apuntes.html">Sesion 1</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-apuntes.html">Sesion 2</a>
+</div>
+<div class="menupage">
+<div class="menupagetitle">Sesion 3</div>
+</div>
+<div class="menuitem">
+<a href="sesion04-apuntes.html">Sesion 4</a>
+</div>
+<div class="menuitem">
+<a href="roadmap-apuntes.html">Roadmap</a>
+</div>
+</div>
+<div onclick="SwitchMenu('menu_1.1.3', 'skin/')" id="menu_1.1.3Title" class="menutitle">Ejercicios</div>
+<div id="menu_1.1.3" class="menuitemgroup">
+<div class="menuitem">
+<a href="sesion01-ejercicios.html">Sesion 1</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-ejercicios.html">Sesion 2</a>
+</div>
+<div class="menuitem">
+<a href="sesion03-ejercicios.html">Sesion 3</a>
+</div>
+<div class="menuitem">
+<a href="sesion04-ejercicios.html">Sesion 4</a>
+</div>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<div id="credit2"></div>
+</div>
+<div id="content">
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="sesion03-apuntes.pdf"><img alt="PDF -icon" src="skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1>Desarrollo, despliegue y pruebas  de aplicaciones web con Maven</h1>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#Creaci%C3%B3n+y+empaquetado+de+un+proyecto+web+con+Maven">Creaci&oacute;n y empaquetado de un proyecto web con Maven</a>
+<ul class="minitoc">
+<li>
+<a href="#Creaci%C3%B3n+del+proyecto">Creaci&oacute;n del proyecto</a>
+</li>
+<li>
+<a href="#Configuraci%C3%B3n+de+la+fase+de+compilaci%C3%B3n">Configuraci&oacute;n de la fase de compilaci&oacute;n</a>
+</li>
+<li>
+<a href="#Trabajar+con+proyectos+web+Maven+desde+Eclipse">Trabajar con proyectos web Maven desde Eclipse</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Despliegue+de+aplicaciones+web+con+maven">Despliegue de aplicaciones web con maven</a>
+<ul class="minitoc">
+<li>
+<a href="#Despliegue+de+aplicaciones">Despliegue de aplicaciones</a>
+</li>
+<li>
+<a href="#Inclusi%C3%B3n+de+librer%C3%ADas+comunes">Inclusi&oacute;n de librer&iacute;as comunes</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Pruebas+en+aplicaciones+web">Pruebas en aplicaciones web</a>
+<ul class="minitoc">
+<li>
+<a href="#Pruebas+unitarias+en+la+capa+web">Pruebas unitarias en la capa web</a>
+</li>
+<li>
+<a href="#Pruebas+de+integraci%C3%B3n+y+funcionales">Pruebas de integraci&oacute;n y funcionales</a>
+<ul class="minitoc">
+<li>
+<a href="#Adaptar+la+estructura+del+proyecto">Adaptar la estructura del proyecto</a>
+</li>
+<li>
+<a href="#Gestionar+el+servidor+web+en+la+fase+de+pruebas">Gestionar el servidor web en la fase de pruebas</a>
+</li>
+<li>
+<a href="#Ejecutar+las+pruebas">Ejecutar las pruebas</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+
+<a name="N1000C"></a><a name="Creaci%C3%B3n+y+empaquetado+de+un+proyecto+web+con+Maven"></a>
+<h2 class="underlined_10">Creaci&oacute;n y empaquetado de un proyecto web con Maven</h2>
+<div class="section">
+<p>Vamos a ver c&oacute;mo crear y empaquetar en un WAR una aplicaci&oacute;n web usando Maven. </p>
+<a name="N10015"></a><a name="Creaci%C3%B3n+del+proyecto"></a>
+<h3 class="underlined_5">Creaci&oacute;n del proyecto</h3>
+<p>Aunque se puede crear el POM partiendo de cero, es aconsejable usar uno de los arquetipos que nos ofrece Maven. Si no vamos a emplear ning&uacute;n <em>framework</em> 
+	de desarrollo web, podemos usar el arquetipo para aplicaciones web m&aacute;s sencillo que ofrece Maven: <span class="codefrag">maven-archetype-webapp</span>. Este arquetipo usa la estructura de directorios est&aacute;ndar    
+	de aplicaciones JavaEE y empaquetar&aacute; el resultado de la compilaci&oacute;n en un WAR en lugar de un JAR. </p>
+<p>Podemos crear el proyecto usando el plugin de Eclipse para Maven o bien en l&iacute;nea de comandos.
+	Vamos a ver aqu&iacute; el proceso en l&iacute;nea de comandos. Supongamos que nuestra aplicaci&oacute;n se va a llamar <span class="codefrag">WebAppEjemplo</span>
+</p>
+<p>Primero ejecutamos <span class="codefrag">mvn archetype:generate</span> pas&aacute;ndole el <span class="codefrag">artifactId</span> <em>WebAppEjemplo</em> y el <span class="codefrag">groupId</span> <em>es.ua.jtech</em>.
+	Elegiremos el arquetipo 85, "maven-archetype-webapp".</p>
+<div class="frame note">
+<div class="label">Elegir el arquetipo web m&aacute;s apropiado</div>
+<div class="content">Los repositorios de Maven tienen un gran n&uacute;mero de arquetipos para aplicaciones web. En realidad el arquetipo denominado "webapp-jee5" crear&iacute;a un pom.xml exactamente
+	con la versi&oacute;n de JavaEE que estamos usando durante el curso. Pero aunque solo sea la primera vez, es mucho m&aacute;s instructivo examinar qu&eacute; necesitamos
+	a&ntilde;adir al arquetipo b&aacute;sico y ver por qu&eacute;, que usar una plantilla hecha sin saber c&oacute;mo funciona ni c&oacute;mo adaptarla a la versi&oacute;n de JavaEE que podamos necesitar. Una vez entendidas las ideas b&aacute;sicas, para aumentar la productividad
+	 es mejor ir al arquetipo 
+	m&aacute;s similar a nuestras necesidades finales. </div>
+</div>
+<pre class="code">
+mvn archetype:generate -DgroupId=es.ua.jtech -DartifactId=WebAppEjemplo
+</pre>
+<p>Se nos pedir&aacute; el n&uacute;mero del arquetipo (85) y los par&aacute;metros que	 no
+	hemos especificado en l&iacute;nea de comandos, como el package o la versi&oacute;n. </p>
+<p>Si abrimos el POM.xml generado veremos que es bastante sencillo y muy similar a los proyectos Java de escritorio. &Uacute;nicamente se ha cambiado el tipo de empaquetado (<span class="codefrag">&lt;packaging&gt;</span>)a WAR. La
+	&uacute;nica dependencia del proyecto por el momento es JUnit (modificaremos esto m&aacute;s tarde).</p>
+<p>Por otro lado, la estructura de directorios es ligeramente m&aacute;s compleja que en un proyecto est&aacute;ndar. Dentro de la carpeta <span class="codefrag">src/main</span> tendremos
+	una subcarpeta <span class="codefrag">webapp</span> donde se colocan los recursos web (p&aacute;ginas HTML o JSP, im&aacute;genes, etc) y el directorio <span class="codefrag">WEB-INF</span> con el descriptor de despliegue. El arquetipo seleccionado
+	habr&aacute; creado un descriptor de despliegue m&iacute;nimo y una p&aacute;gina index.jsp tipo "hola, mundo".</p>
+<p>Podemos probar el empaquetado e instalaci&oacute;n de la aplicaci&oacute;n en el repositorio local ejecutando</p>
+<pre class="code">
+mvn install
+</pre>
+<p>Esto generar&aacute; dentro del directorio <span class="codefrag">target</span> el WAR con la aplicaci&oacute;n empaquetada. El nombre del .war sigue el
+formato <span class="codefrag">${artifactId}-${version}.war</span>. Adem&aacute;s instalar&aacute; el mismo .war en el respositorio local de maven. Podemos
+desplegar la aplicaci&oacute;n en Tomcat sin m&aacute;s que dejar dicho .war en su directorio <span class="codefrag">webapps</span>. Posteriormente veremos
+c&oacute;mo hacer el despliegue de forma automatizada con maven</p>
+<a name="N1006C"></a><a name="Configuraci%C3%B3n+de+la+fase+de+compilaci%C3%B3n"></a>
+<h3 class="underlined_5">Configuraci&oacute;n de la fase de compilaci&oacute;n</h3>
+<p>El arquetipo generado por Maven no tiene ning&uacute;n fichero fuente Java de ejemplo. Evidentemente un proyecto web real contendr&aacute; clases java,
+que se colocar&iacute;an en <span class="codefrag">src/main/java</span>.</p>
+<p>La configuraci&oacute;n m&aacute;s habitual en la fase de compilaci&oacute;n es la versi&oacute;n de Java que debe usar el compilador a la hora de leer el fuente y
+generar el <em>bytecode</em>. Por defecto se supone la versi&oacute;n 1.4, as&iacute; que si nuestro proyecto usa elementos de la 1.5 como 
+gen&eacute;ricos, anotaciones, etc, tendremos que cambiarlo a esta versi&oacute;n. Para ello debemos configurar el <span class="codefrag">maven-compiler-plugin</span>. Hacia el final del POM.xml
+	 a&ntilde;adiremos el c&oacute;digo necesario, quedando el fichero como se muestra:</p>
+<pre class="code">
+&lt;project xmlns="http://maven.apache.org/POM/4.0.0"
+ 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+  	http://maven.apache.org/maven-v4_0_0.xsd"&gt;
+  &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+  &lt;groupId&gt;es.ua.jtech&lt;/groupId&gt;
+  &lt;artifactId&gt;WebAppEjemplo&lt;/artifactId&gt;
+  &lt;packaging&gt;war&lt;/packaging&gt;
+  &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;
+  &lt;name&gt;WebAppEjemplo Maven Webapp&lt;/name&gt;
+  &lt;url&gt;http://maven.apache.org&lt;/url&gt;
+  &lt;dependencies&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;junit&lt;/groupId&gt;
+      &lt;artifactId&gt;junit&lt;/artifactId&gt;
+      &lt;version&gt;3.8.1&lt;/version&gt;
+      &lt;scope&gt;test&lt;/scope&gt;
+    &lt;/dependency&gt;
+  &lt;/dependencies&gt;
+  &lt;build&gt;
+    &lt;finalName&gt;WebAppEjemplo&lt;/finalName&gt;
+    <strong>&lt;plugins&gt;
+      &lt;plugin&gt;
+        &lt;artifactId&gt;maven-compiler-plugin&lt;/artifactId&gt;
+        &lt;configuration&gt;
+          &lt;source&gt;1.5&lt;/source&gt;
+          &lt;target&gt;1.5&lt;/target&gt;
+        &lt;/configuration&gt;
+      &lt;/plugin&gt;
+    &lt;/plugins&gt;</strong>
+  &lt;/build&gt;
+&lt;/project&gt;
+</pre>
+<p>Por otro lado, lo habitual es que nuestro proyecto dependa de librer&iacute;as propias o de terceros adem&aacute;s de JUnit. Como m&iacute;nimo si es una aplicaci&oacute;n web 
+y tenemos alg&uacute;n servlet habr&aacute; dependencias del API de servlets que ser&aacute; necesario resolver para poder compilar. Los JAR con el API de servlets se suelen incluir
+en el propio servidor de aplicaciones, por lo que a maven habr&aacute; que decirle que es una dependencia &uacute;nicamente en tiempo de compilaci&oacute;n, pero que no
+debe empaquetarla en el .war resultante. Esto se especifica diciendo que la dependencia tiene &aacute;mbito (scope) <em>provided</em>.</p>
+<pre class="code">
+&lt;project xmlns="http://maven.apache.org/POM/4.0.0"
+ 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+  	http://maven.apache.org/maven-v4_0_0.xsd"&gt;
+  [...]
+  &lt;dependencies&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;junit&lt;/groupId&gt;
+      &lt;artifactId&gt;junit&lt;/artifactId&gt;
+      &lt;version&gt;3.8.1&lt;/version&gt;
+      &lt;scope&gt;test&lt;/scope&gt;
+    &lt;/dependency&gt;
+    <strong>&lt;dependency&gt;
+      &lt;groupId&gt;javax.servlet&lt;/groupId&gt;
+      &lt;artifactId&gt;servlet-api&lt;/artifactId&gt;
+      &lt;version&gt;2.5&lt;/version&gt;
+      &lt;scope&gt;provided&lt;/scope&gt;
+    &lt;/dependency&gt;</strong>	  
+  &lt;/dependencies&gt;
+  [...]
+&lt;/project&gt;
+</pre>
+<p>Como se ver&aacute; en el m&oacute;dulo de servlets y JSP, si nuestra aplicaci&oacute;n incluye alguna librer&iacute;a de etiquetas (<em>taglib</em>) JSP propia, tendremos
+que especificar la dependencia del API de JSP. Al igual que ocurre con los servlets el JAR se suele tomar del servidor, por lo que es de &aacute;mbito <em>provided</em>.</p>
+<pre class="code">
+&lt;dependency&gt;
+     &lt;groupId&gt;javax.servlet.jsp&lt;/groupId&gt;
+     &lt;artifactId&gt;jsp-api&lt;/artifactId&gt;
+     &lt;version&gt;2.0&lt;/version&gt;
+     &lt;scope&gt;provided&lt;/scope&gt;
+&lt;/dependency&gt;	
+</pre>
+<a name="N100A3"></a><a name="Trabajar+con+proyectos+web+Maven+desde+Eclipse"></a>
+<h3 class="underlined_5">Trabajar con proyectos web Maven desde Eclipse</h3>
+<p>Si queremos editar el c&oacute;digo, compilarlo y probar el proyecto desde dentro de Eclipse podemos usar el plugin <em>m2eclipse</em>
+que ya hemos empleado en el curso. Simplemente tenemos que importar el proyecto de Maven a Eclipse, pero antes tenemos que asegurarnos
+de que el plugin opcional para trabajar con proyectos web est&aacute; instalado. Si lo est&aacute;, al seleccionar la opci&oacute;n de men&uacute; <span class="codefrag">Help &gt; About Eclipse</span>
+y pulsar en <span class="codefrag">Installation details</span> deber&iacute;a aparecer entre los plugins instalados "Maven integration for WTP (optional)".</p>
+<p>Para instalar este extra, en Eclipse ir a <span class="codefrag">Help &gt; Install new software...</span>. Tenemos que a&ntilde;adir un nuevo <em>site</em> de donde descargar el extra. Pulsar sobre el
+bot&oacute;n <span class="codefrag">Add...</span>. Como nombre del sitio podemos poner por ejemplo "m2eclipse extras". La URL debe ser <span class="codefrag">http://m2eclipse.sonatype.org/sites/m2e-extras</span>.
+Tras un tiempo nos aparecer&aacute;n los plugins disponibles. Seleccionamos "Maven integration for Eclipse Extras" y dentro de &eacute;l debemos instalar al menos el "Maven integration for WTP (optional)".</p>
+<p>Falta importar el proyecto que se ha creado con Maven a Eclipse. Se seleccionar&iacute;a la opci&oacute;n de men&uacute; <span class="codefrag">File &gt; Import...</span>
+y dentro de la categor&iacute;a <span class="codefrag">Maven</span> se elegir&iacute;a <span class="codefrag">Existing Maven projects</span>. A partir de este momento podemos trabajar con el proyecto como es habitual en Eclipse, con la &uacute;nica diferencia de que tambi&eacute;n podemos gestionar su ciclo de vida a trav&eacute;s de Maven.</p>
+</div>
+
+<a name="N100D2"></a><a name="Despliegue+de+aplicaciones+web+con+maven"></a>
+<h2 class="underlined_10">Despliegue de aplicaciones web con maven</h2>
+<div class="section">
+<p>Aunque ya conocemos diversos modos de desplegar una aplicaci&oacute;n web en Tomcat, es interesante integrar el proceso de despliegue
+o de arranque/parada del contenedor con Maven. Para ello existen diversos plugins, de los cuales el m&aacute;s conocido es el plugin de Cargo para Maven. <a href="http://cargo.codehaus.org">Cargo</a> es un
+<em>framework</em> java para controlar servidores de aplicaciones (parar/arrancar, controlar el estado actual, desplegar/replegar aplicaciones,...). Se pueden controlar tanto servidores locales
+como remotos, y se acepta un gran n&uacute;mero de servidores JavaEE: no solo Tomcat, sino tambi&eacute;n JBoss, Glassfish, Weblogic, Jetty y otros.</p>
+<div class="frame note">
+<div class="label">Plugins y m&aacute;s plugins...</div>
+<div class="content">Existe un <a href="http://mojo.codehaus.org/tomcat-maven-plugin/">plugin Maven para Apache Tomcat</a>, aunque aqu&iacute; veremos Cargo porque est&aacute; m&aacute;s extendido y adem&aacute;s lo podremos usar tambi&eacute;n
+con el servidor Glassfish en aplicaciones enterprise. Otro plugin muy conocido es el <a href="http://docs.codehaus.org/display/JETTY/Maven+Jetty+Plugin">plugin de Jetty</a>, ya que Jetty es un servidor ligero y de tama&ntilde;o reducido. Por ello es muy usado en
+demos y en proyectos web distribuidos como c&oacute;digo de ejemplo de alguna tecnolog&iacute;a.  As&iacute; ejecutar el ejemplo es muy sencillo porque Maven se encarga de resolver todas las dependencias incluyendo
+instalar y ejecutar el propio servidor web.</div>
+</div>
+<p>Cargo ofrece una gran versatilidad: se puede configurar c&oacute;mo desplegar el artefacto creado por Maven (su localizaci&oacute;n f&iacute;sica, la ruta de su contexto,...), todos los aspectos del servidor (si es local
+o remoto, de d&oacute;nde tomar sus ficheros de configuraci&oacute;n,...). Incluso se pueden hacer cosas como instalar el servidor sobre la marcha sin m&aacute;s que dar una URL de donde baj&aacute;rselo en formato .zip. Es de esperar por tanto que su configuraci&oacute;n
+detallada sea compleja. Nos limitaremos aqu&iacute; a dar una configuraci&oacute;n apropiada para nuestros prop&oacute;sitos.</p>
+<p>Como nosotros usamos un servidor instalado en local, nos basta con decirle a Cargo qu&eacute; servidor es y qu&eacute; versi&oacute;n, en qu&eacute;
+directorio est&aacute; instalado y d&oacute;nde queremos hacer el despliegue f&iacute;sico de la aplicaci&oacute;n (se usar&aacute; un directorio temporal). El plugin se incluir&iacute;a en el POM.xml y 
+se configurar&iacute;a del siguiente modo:</p>
+<pre class="code">
+[...]
+&lt;plugin&gt;
+   &lt;groupId&gt;org.codehaus.cargo&lt;/groupId&gt;
+   &lt;artifactId&gt;cargo-maven2-plugin&lt;/artifactId&gt;
+   &lt;!-- configuraci&oacute;n del plugin de cargo --&gt;
+   &lt;configuration&gt;
+      &lt;!-- configuraci&oacute;n del contenedor --&gt;
+      &lt;container&gt;
+         &lt;containerId&gt;tomcat6x&lt;/containerId&gt;
+         &lt;home&gt;/opt/apache-tomcat-6.0.29&lt;/home&gt;
+      &lt;/container&gt;
+      &lt;!-- configuraci&oacute;n del despliegue --&gt;
+      &lt;configuration&gt;
+         &lt;home&gt;${project.build.directory}/tomcat6x&lt;/home&gt;
+      &lt;/configuration&gt;
+   &lt;/configuration&gt;
+&lt;/plugin&gt;
+[...]
+</pre>
+<p>En el caso de Tomcat, en el directorio donde se va a hacer el despliegue se hace una copia temporal de la 
+estructura de directorios del servidor ("conf", "logs", "webapps", etc.). El despliegue se hace copiando el war generado por maven en esta carpeta
+"webapps" (no en la original de la instalaci&oacute;n local de Tomcat). Esto nos permitir&iacute;a usar una configuraci&oacute;n distinta
+para el servidor y espec&iacute;fica para nuestro proyecto (algo parecido a lo que hace el plugin WTP de Eclipse).</p>
+<a name="N100FB"></a><a name="Despliegue+de+aplicaciones"></a>
+<h3 class="underlined_5">Despliegue de aplicaciones</h3>
+<p>Para arrancar el servidor, hay que ejecutar el objetivo <span class="codefrag">cargo:start</span>. El despliegue del .war generado por Maven se har&aacute; autom&aacute;ticamente,
+pero antes tendr&iacute;amos que asegurarnos de que se genere con <span class="codefrag">mvn install</span>. Por tanto podemos hacer:</p>
+<pre class="code">
+mvn install cargo:start
+</pre>
+<p>Por supuesto tambi&eacute;n podr&iacute;amos enlazar el objetivo start con alguna de las fases del ciclo de vida est&aacute;ndar, para que se ejecute autom&aacute;ticamente. 
+Posteriormente veremos c&oacute;mo hacer esto en el contexto de pruebas de integraci&oacute;n. El shell desde el que se arranca el servidor se queda parado por defecto con el servidor ejecut&aacute;ndose (salvo que especifiquemos <span class="codefrag">&lt;wait&gt;false&lt;/wait&gt;</span> en la configuraci&oacute;n
+del plugin). La parada del servidor se puede hacer con Ctrl-C desde el shell con el que se ha arrancado o bien ejecutando el objetivo
+<span class="codefrag">cargo:stop</span>
+</p>
+<p>Si lo &uacute;nico que queremos hacer es el despliegue, ejecutamos <span class="codefrag">cargo:deploy</span>. Para replegar, <span class="codefrag">cargo:undeploy</span> 
+</p>
+<a name="N10120"></a><a name="Inclusi%C3%B3n+de+librer%C3%ADas+comunes"></a>
+<h3 class="underlined_5">Inclusi&oacute;n de librer&iacute;as comunes</h3>
+<p>Es muy t&iacute;pico tener un mismo JAR que est&aacute; compartido por varias aplicaciones. Normalmente todos los servidores tienen un directorio donde
+dejar estos JAR de manera que son accesibles a todas las aplicaciones desplegadas, o un mecanismo equivalente (recordemos que en Tomcat este directorio es "lib"). As&iacute;
+no es necesario incluir el JAR por separado en cada aplicaci&oacute;n. 
+</p>
+<p>Cargo nos permite incluir el JAR en el servidor y hacerlo accesible a todas las aplicaciones sin necesidad
+de preocuparnos de en qu&eacute; directorio f&iacute;sico debe residir con el servidor actual. Para ello hay que incluir en el POM la dependencia
+del JAR del modo est&aacute;ndar en Maven y luego a&ntilde;adir un <span class="codefrag">&lt;dependencies&gt;</span> con la lista de dependencias dentro de la configuraci&oacute;n
+del contenedor de Cargo. Por ejemplo, para incluir en el servidor el JAR con el driver de MySQL har&iacute;amos algo como:</p>
+<pre class="code">
+&lt;!-- secci&oacute;n est&aacute;ndar de dependencias  --&gt;
+<strong>&lt;dependencies&gt;
+[...]
+   &lt;dependency&gt;
+      &lt;groupId&gt;mysql&lt;/groupId&gt;
+      &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
+      &lt;version&gt;5.1.13&lt;/version&gt;
+      &lt;scope&gt;provided&lt;/scope&gt;
+   &lt;/dependency&gt;
+&lt;/dependencies&gt;</strong>
+
+&lt;build&gt;
+   &lt;plugins&gt;
+      &lt;plugin&gt;
+         [...]
+      &lt;/plugin&gt;
+      &lt;plugin&gt;
+         &lt;groupId&gt;org.codehaus.cargo&lt;/groupId&gt;
+         &lt;artifactId&gt;cargo-maven2-plugin&lt;/artifactId&gt;
+         &lt;configuration&gt;
+            &lt;container&gt;
+               &lt;containerId&gt;tomcat6x&lt;/containerId&gt;
+               &lt;home&gt;/opt/apache-tomcat-6.0.29&lt;/home&gt;
+               <strong>&lt;!-- dependencias para el contenedor &gt;
+               &lt;dependencies&gt;
+                  &lt;dependency&gt;
+                     &lt;groupId&gt;mysql&lt;/groupId&gt;
+                     &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
+                     &lt;!-- n&oacute;tese que aqu&iacute; no ponemos la versi&oacute;n ya que solo
+                     estamos referenciando la dependencia 
+                     que est&aacute; en la secci&oacute;n "est&aacute;ndar" de Maven --&gt;
+                  &lt;/dependency&gt;
+               &lt;/dependencies&gt;</strong>
+            &lt;/container&gt;
+            &lt;configuration&gt;
+               ${project.build.directory}/tomcat6x&lt;/home&gt;
+            &lt;/configuration&gt;
+		&lt;/configuration&gt;
+      &lt;/plugin&gt;
+      [...]
+     &lt;/plugins&gt;
+[...]
+&lt;/build&gt;
+</pre>
+</div> 
+
+<a name="N1013B"></a><a name="Pruebas+en+aplicaciones+web"></a>
+<h2 class="underlined_10">Pruebas en aplicaciones web</h2>
+<div class="section">
+<p>En la capa web puede ser necesario hacer diversos tipos de pruebas:</p>
+<ul>
+
+<li>
+<strong>Pruebas unitarias:</strong>, que comprueben el funcionamiento de los servlets propiamente dichos. Se usar&iacute;an
+ <em>mocks</em> para modelar el resto de elementos con los que va a interactuar el servlet, sean clases de
+la capa de negocio o bien elementos del contexto de los servlets (la petici&oacute;n, la respuesta, <em>cookies</em>, la sesi&oacute;n,...).
+Un ejemplo de herramienta que nos permite hacer pruebas de este tipo es <a href="http://httpunit.sourceforge.net/doc/servletunit-intro.html">ServletUnit</a>,
+herramienta que forma parte de <a href="http://httpunit.sourceforge.net">HttpUnit</a>.</li>
+
+<li>
+<strong>Pruebas de integraci&oacute;n</strong> de los servlets con el resto de elementos que forman parte de la aplicaci&oacute;n. En este caso
+es apropiado probar los servlets dentro de un contenedor web real. Esto podemos hacerlo por ejemplo con la herramienta <a href="http://jakarta.apache.org/cactus/">Cactus</a>.</li>
+
+<li>
+<strong>Pruebas funcionales:</strong> un tercer tipo de pruebas ser&iacute;an aquellas que se hacen acerc&aacute;ndose m&aacute;s al punto de vista
+del usuario final. Es decir, seguir la secuencia de un caso de uso y comprobar que el sistema devuelve los resultados esperados. Para hacer este
+tipo de pruebas disponemos de herramientas como <a href="http://htmlunit.sourceforge.net/">HtmlUnit</a>, <a href="http://seleniumhq.org/">Selenium</a> o  <a href="http://jwebunit.sourceforge.net/">JWebUnit</a> (esta &uacute;ltima "envuelve" a las dos primeras para 
+poder realizar las pruebas con un API com&uacute;n).</li>
+
+</ul>
+<a name="N10174"></a><a name="Pruebas+unitarias+en+la+capa+web"></a>
+<h3 class="underlined_5">Pruebas unitarias en la capa web</h3>
+<p>Gestionar las pruebas unitarias con Maven ser&iacute;a muy similar a gestionar el tipo de pruebas unitarias que hemos hecho hasta ahora en el curso, con la &uacute;nica
+diferencia de que nos ayudar&iacute;a disponer de una herramienta que incorpore los <em>mocks</em> de las clases del contenedor
+con las que debe interactuar el servlet. Como hemos dicho, ServletUnit es una de dichas herramientas. Como forma parte de HttpUnit habr&aacute; que incluir la
+dependencia de esta &uacute;ltima en el POM.</p>
+<pre class="code">
+&lt;dependency&gt;
+   &lt;groupId&gt;httpunit&lt;/groupId&gt;
+   &lt;artifactId&gt;httpunit&lt;/artifactId&gt;
+   &lt;version&gt;1.7&lt;/version&gt;
+&lt;/dependency&gt;
+</pre>
+<p>ServletUnit nos permite hacer pruebas de "caja negra", comprobando el valor de la respuesta que devuelve el servlet.
+Tambi&eacute;n podemos ejecutar m&eacute;todos individuales
+del servlet y comprobar los valores que devuelve el m&eacute;todo o los que coloca el servlet en los distintos &aacute;mbitos (petici&oacute;n, sesi&oacute;n, ...).</p>
+<p>Por ejemplo, supongamos el c&oacute;digo del siguiente servlet:</p>
+<pre class="code">
+public class SaludoServlet extends HttpServlet {
+  public SaludoServlet() {
+	super();
+  }
+
+  protected void doGet(HttpServletRequest request,
+		HttpServletResponse response) throws ServletException, IOException {
+	doPost(request, response);
+  }
+
+  protected void doPost(HttpServletRequest request, HttpServletResponse response)
+		throws ServletException, IOException {
+	PrintWriter out = response.getWriter();
+	String nom = request.getParameter("nombre");
+	request.getSession().setAttribute("usuario", nom);
+	out.println("&lt;html&gt; &lt;head&gt; &lt;title&gt;Saludo&lt;/title&gt;&lt;/head&gt;");
+	out.println("&lt;body&gt; &lt;h1&gt; Hola " + nom + "&lt;/h1&gt;");
+	out.println("&lt;/body&gt; &lt;/html&gt;");
+	}
+  }
+</pre>
+<p>Podemos comprobar por ejemplo que al llamar al doPost se guarda en la sesi&oacute;n el valor esperado:</p>
+<pre class="code">
+public class SaludoTest extends TestCase {
+  //esto es lo que nos permite lanzar el servlet en el entorno simulado
+  ServletRunner sr;
+	
+  protected void setUp() throws Exception {
+	super.setUp();
+	sr = new ServletRunner();
+	//registramos el servlet para poder llamarlo
+	sr.registerServlet("SaludoServlet", SaludoServlet.class.getName());
+  }
+	
+  public void testSaludo() throws IOException, SAXException, ServletException {
+	//Llamamos al servlet por el nombre registrado, no por su URL del web.xml
+	WebRequest pet = new GetMethodWebRequest("http://localhost:8080/SaludoServlet");
+	pet.setParameter("nombre", "Juan");
+	//Queremos obtener el "invocation context", necesario para
+	//poder llamar a los m&eacute;todos del servlet
+	ServletUnitClient sc = sr.newClient();
+	InvocationContext ic = sc.newInvocation(pet);
+	//Del "invocation context" obtenemos el servlet
+	SaludoServlet ss = (SaludoServlet) ic.getServlet();
+	//Llamamos manualmente al m&eacute;todo "doPost"
+	ss.doPost(ic.getRequest(), ic.getResponse());
+	//comprobamos que en la sesi&oacute;n se guarda el valor correcto
+	assertEquals("nombre en sesi&oacute;n", "Juan", 
+		ic.getRequest().getSession().getAttribute("usuario"));
+}
+</pre>
+<p>Tambi&eacute;n podemos probar el resultado devuelto por el servlet sin entrar a ejecutar los m&eacute;todos manualmente. Esto es m&aacute;s sencillo (aunque para eso hay
+otras herramientas m&aacute;s sofisticadas)</p>
+<pre class="code">
+public void testSaludoCajaNegra()  {
+	ServletUnitClient sc = sr.newClient();
+	WebRequest pet = new GetMethodWebRequest("http://localhost:8080/SaludoServlet");
+	pet.setParameter("nombre", "Juan");
+	WebResponse resp = sc.getResponse(pet);
+	assertEquals("Titulo de la p&aacute;gina","Saludo", resp.getTitle());
+}
+
+</pre>
+<a name="N1019D"></a><a name="Pruebas+de+integraci%C3%B3n+y+funcionales"></a>
+<h3 class="underlined_5">Pruebas de integraci&oacute;n y funcionales</h3>
+<p>No obstante, el asunto de las pruebas funcionales y de integraci&oacute;n es distinto, ya que se deben ejecutar con el contenedor web arrancado, y por
+tanto en una fase distinta a las pruebas unitarias. En el ciclo de vida est&aacute;ndar de Maven hay tres fases correspondientes a pruebas de integraci&oacute;n: <span class="codefrag">pre-integration-test</span>,
+<span class="codefrag">integration-test</span> y <span class="codefrag">post-integration-test</span>. Estas fases se ejecutan despu&eacute;s de <span class="codefrag">package</span>, cuando se empaqueta el artefacto
+generado en un JAR, WAR o EAR. Vamos a ver c&oacute;mo usar estas fases para hacer las pruebas.</p>
+<a name="N101B2"></a><a name="Adaptar+la+estructura+del+proyecto"></a>
+<h4>Adaptar la estructura del proyecto</h4>
+<p>Por desgracia, Maven no incluye por defecto la posibilidad de ejecutar un conjunto de prueba en la fase <span class="codefrag">test</span> (pruebas unitarias) y usar otro distinto en la fase
+<span class="codefrag">integration-test</span>. Tendremos que conseguirlo configurando manualmente el POM. Caben dos posibilidades:</p>
+<ul>
+
+<li>Configurar el plugin <span class="codefrag">surefire</span> de modo que ejecute algunos ficheros de prueba en la fase de pruebas unitarias y otros en la fase de integraci&oacute;n. La distinci&oacute;n entre unos
+y otros se puede hacer por el directorio en que est&aacute;n guardados o por el nombre de las clases de prueba. Cargo incluye un arquetipo que nos crear&aacute; un proyecto de esta clase: cargo-archetype-webapp-single-module (179).
+En el POM podremos ver que los test de integraci&oacute;n se meten en un directorio llamado <span class="codefrag">it</span> dentro de <span class="codefrag">src/test/java</span> y 
+que se configura el plugin surefire para que ignore este directorio durante la fase de pruebas unitarias y ejecute los
+tests durante la fase de pruebas de integraci&oacute;n.
+<pre class="code">
+&lt;plugin&gt;
+ &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+ &lt;artifactId&gt;maven-surefire-plugin&lt;/artifactId&gt;
+ &lt;configuration&gt;
+  &lt;!--
+	Excluir los test de integraci&oacute;n de la fase de test
+	(fase de pruebas unitarias)
+  --&gt;
+  &lt;excludes&gt;
+     &lt;exclude&gt;**/it/**&lt;/exclude&gt;
+  &lt;/excludes&gt;
+ &lt;/configuration&gt;
+ &lt;executions&gt;
+   &lt;execution&gt;
+      &lt;phase&gt;integration-test&lt;/phase&gt;
+         &lt;goals&gt;
+            &lt;goal&gt;test&lt;/goal&gt;
+         &lt;/goals&gt;
+         &lt;configuration&gt;
+            &lt;!--
+                Incluir los test de integraci&oacute;n en la fase
+                integration-test
+            --&gt;
+            &lt;excludes&gt;
+               &lt;exclude&gt;none&lt;/exclude&gt;
+            &lt;/excludes&gt;
+            &lt;includes&gt;
+               &lt;include&gt;**/it/**&lt;/include&gt;
+            &lt;/includes&gt;
+         &lt;/configuration&gt;
+   &lt;/execution&gt;
+ &lt;/executions&gt;
+&lt;/plugin&gt;
+</pre>
+
+
+</li>
+
+<li>Construir un proyecto multim&oacute;dulo. En uno de los m&oacute;dulos ir&aacute; la aplicaci&oacute;n web junto con las pruebas unitarias, y en otro ir&aacute;n las pruebas de integraci&oacute;n. As&iacute; tenemos
+por separado este c&oacute;digo, lo que hace la estructura m&aacute;s limpia y m&aacute;s flexible. Podemos, por ejemplo, ejecutar las pruebas de integraci&oacute;n o funcionales solo en determinadas ocasiones y no en cada compilaci&oacute;n
+del proyecto. Cargo nos ofrece un arquetipo que seguir&aacute; esta estructura: cargo-archetype-webapp-functional-tests-module (178)</li>
+
+</ul>
+<a name="N101D8"></a><a name="Gestionar+el+servidor+web+en+la+fase+de+pruebas"></a>
+<h4>Gestionar el servidor web en la fase de pruebas</h4>
+<p>En cualquier caso, hay que arrancar el servidor web antes de ejecutar las pruebas de integraci&oacute;n (fase "pre-integration-test") y pararlo despu&eacute;s de
+ejecutar dichas pruebas (fase "post-integration-test"). Simplemente tendremos que enlazar el objetivo cargo:start con la primera fase y cargo:stop con la otra. Podemos
+conseguirlo introduciendo en el POM un c&oacute;digo como este:</p>
+<pre class="code">
+ [...]
+ &lt;plugin&gt;
+    &lt;groupId&gt;org.codehaus.cargo&lt;/groupId&gt;
+    &lt;artifactId&gt;cargo-maven2-plugin&lt;/artifactId&gt;
+    &lt;configuration&gt;
+      &lt;container&gt;
+         &lt;!-- Aqu&iacute; faltar&iacute;a la configuraci&oacute;n del contenedor
+          (qu&eacute; servidor es, d&oacute;nde est&aacute;,...) --&gt;
+         [...]
+      &lt;/container&gt;      
+      &lt;wait&gt;false&lt;/wait&gt;
+    &lt;/configuration&gt;
+    &lt;executions&gt;
+      &lt;execution&gt;
+        &lt;id&gt;start&lt;/id&gt;
+        &lt;phase&gt;pre-integration-test&lt;/phase&gt;
+        &lt;goals&gt;
+           &lt;goal&gt;start&lt;/goal&gt;
+        &lt;/goals&gt;
+      &lt;/execution&gt;
+      &lt;execution&gt;
+        &lt;id&gt;stop&lt;/id&gt;
+        &lt;phase&gt;post-integration-test&lt;/phase&gt;
+        &lt;goals&gt;
+           &lt;goal&gt;stop&lt;/goal&gt;
+        &lt;/goals&gt;
+      &lt;/execution&gt;
+    &lt;/executions&gt;
+ &lt;/plugin&gt;
+</pre>
+<p>N&oacute;tese que en la configuraci&oacute;n del contenedor ponemos <span class="codefrag">&lt;wait&gt;false&lt;/wait&gt;</span> para que Maven no se quede "esperando" tras arrancar el contenedor.</p>
+<a name="N101EC"></a><a name="Ejecutar+las+pruebas"></a>
+<h4>Ejecutar las pruebas</h4>
+<p>Como ya hemos dicho, existen diversas herramientas para ejecutar pruebas de integraci&oacute;n y funcionales. Vamos a ver aqu&iacute; un ejemplo de JWebUnit, que nos ofrece un API sencillo
+para probar la aplicaci&oacute;n web del mismo modo que lo har&iacute;a un usuario final. As&iacute; podemos acceder a una p&aacute;gina, rellenar los campos de un formulario y enviarlo o pinchar en un enlace. Podemos tambi&eacute;n comprobar si
+en la p&aacute;gina aparece alg&uacute;n elemento que tendr&iacute;a que estar (un determinado enlace, un texto, una tabla) o si tiene las caracter&iacute;sticas deseadas (el t&iacute;tulo, el tama&ntilde;o,...).</p>
+<p>Para usar JWebUnit debemos incluir la siguiente dependencia en el POM</p>
+<pre class="code">
+&lt;dependency&gt;
+	&lt;groupId&gt;net.sourceforge.jwebunit&lt;/groupId&gt;
+	&lt;artifactId&gt;jwebunit-htmlunit-plugin&lt;/artifactId&gt;
+	&lt;version&gt;2.2&lt;/version&gt;
+	&lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;
+</pre>
+<p>JWebUnit es una capa de abstracci&oacute;n sobre HtmlUnit (una herramienta bastante veterana para pruebas web), as&iacute; que veremos que Maven descarga tambi&eacute;n 
+a nuestro repositorio esta &uacute;ltima.</p>
+<p>Suponiendo que tuvi&eacute;ramos el servlet <span class="codefrag">SaludoServlet</span> del que habl&aacute;bamos en el apartado de pruebas unitarias y adem&aacute;s el siguiente JSP
+que lo llama a trav&eacute;s de un formulario:</p>
+<pre class="code">
+&lt;html&gt;
+  &lt;head&gt; &lt;title&gt;P&aacute;gina principal&lt;/title&gt; &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h2&gt;Esto es la p&aacute;gina principal&lt;/h2&gt;
+    &lt;form action="SaludoServlet" method="get"&gt;
+      Escribe tu nombre: &lt;input type="text" name="nombre"&gt;&lt;br&gt;
+      &lt;input type="submit" value="Enviar"&gt;
+    &lt;/form&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p>Podr&iacute;amos comprobar que tanto el JSP como el servlet devuelven el resultado esperado:</p>
+<pre class="code">
+public class WebAppTest extends WebTestCase {
+   public void setUp() throws Exception {
+      super.setUp();
+      //especificar la URL base de la aplicaci&oacute;n
+      setBaseUrl("http://localhost:8080/EjemploTestsIntWebApp");
+   }
+	
+   public void testIndex() {
+      //p&aacute;gina por la que empezamos a navegar ("/" ser&aacute; la principal)
+      beginAt("/");
+      //comprobar el &lt;title&gt; de la p&aacute;gina
+      assertTitleEquals("P&aacute;gina principal");
+   }
+
+   public void testSaludo() {
+      beginAt("/");
+      //rellenar un formulario
+      setTextField("nombre", "Pepe");
+      //enviarlo
+      submit();
+      assertTitleEquals("Saludo");
+      //comprobar que la p&aacute;gina contiene un determinado texto
+      assertTextPresent("Hola Pepe");
+   }
+}
+</pre>
+<p>Se recomienda consultar la <a href="http://jwebunit.sourceforge.net/quickstart.html">referencia b&aacute;sica</a> de JWebUnit para ver con m&aacute;s detalle las posibilidades que ofrece la herramienta.</p>
+</div> 
+
+<p class="pageBreakAfter"></p>
+
+</div>
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+        Copyright &copy;
+         2010-11 Dpto. Ciencia de la Computaci&oacute;n e IA</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<html>
+<head>
+<title>Tema 3: Las capas de negocio y acceso a datos</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<h1>Tema 3: Las capas de negocio y de acceso a datos</h1>
+<p>&nbsp;</p>
+<h2>3.1 Funciones de las capas</h2>
+<p>La <strong>capa de negocio</strong> implementa la &quot;l&oacute;gica de negocio&quot;, 
+  es decir, en ella se localiza el n&uacute;cleo del procesamiento de datos que 
+  realiza la aplicaci&oacute;n. T&iacute;picamente una aplicaci&oacute;n J2EE 
+  usar&aacute; en esta capa <em>EJBs</em> o clases Java arbitrarias para modelar 
+  <em>objetos de negocio</em>.</p>
+<p>La <strong>capa de acceso a datos</strong> implementa la persistencia de la 
+  informaci&oacute;n, que se consigue casi siempre mediante una base de datos 
+  relacional. En caso de usar EJBs de entidad con persistencia manejada por el 
+  contenedor, la persistencia estar&aacute; ya implementada en gran medida. En 
+  otro caso, esta persistencia se implementar&aacute; mediante clases Java con 
+  JDBC para acceder a la base de datos.</p>
+<h2>3.2 Patrones J2EE para la capa de negocio</h2>
+<p>En el Sun Java Center se definen una serie de patrones J2EE orientados a la 
+  capa de negocio. La mayor&iacute;a de ellos est&aacute;n dise&ntilde;ados para 
+  aplicaciones que hagan uso de EJBs. Algunos son: </p>
+<ul>
+  <li> <strong>Business delegate: </strong>sirve de interfaz entre la capa de 
+    presentaci&oacute;n y la de negocio. La capa de presentaci&oacute;n no debe 
+    conocer c&oacute;mo est&aacute; implementada la de negocio (por ejemplo si 
+    &eacute;sta usa o no EJBs). Es el <em>business delegate</em> el que conoce 
+    estos detalles. Si se cambia la implementaci&oacute;n de la capa de negocio, 
+    bastar&aacute; con cambiar el <em>business delegate</em> para que todo funcione 
+    igual, siempre que &eacute;ste mantenga el mismo interfaz con la capa de presentaci&oacute;n. 
+    El business delegate no ser&aacute; m&aacute;s que una clase Java arbitraria.</li>
+  <li><strong>Session Facade: </strong>sirve de interfaz entre el <em>business 
+    delegate</em> y los beans de entidad de la aplicaci&oacute;n. Cuando una operaci&oacute;n 
+    implica el acceso a varios beans de entidad (por ejemplo, reservar varios 
+    vuelos de avi&oacute;n para un trayecto en el que no hay avi&oacute;n directo) 
+    hay que realizar varias llamadas a procedimientos remotos, lo que supone un 
+    coste considerable. El <em>session facade</em> puede implementarse como un 
+    <em>bean de sesi&oacute;n</em> (normalmente sin estado) que haga llamadas 
+    locales a cada uno de los beans de entidad. Adem&aacute;s, se mejora la mantenibilidad 
+    del c&oacute;digo, ya que la operaci&oacute;n se realiza desde un solo objeto.</li>
+  <li><strong>Service Locator: </strong> para que un <em>business delegate</em> 
+    pueda llamar a un <em>session facade</em>, &eacute;ste pueda llamar a un bean 
+    de entidad o para acceder a una base de datos, normalmente es necesario hacer 
+    llamadas a JNDI, que pueden ser bastante costosas. El <em>service locator</em> 
+    es una clase Java que act&uacute;a de cache, de manera que no es necesario 
+    obtener el interfaz <em>home</em> a un bean o el <em>datasource</em> de una 
+    base de datos m&aacute;s que una vez. Adem&aacute;s, mejora la mantenibilidad 
+    del c&oacute;digo al centralizar todas las llamadas a JNDI.</li>
+  <li><strong>Transfer object</strong> o <strong>Value object</strong>: la capa 
+    de negocio necesita intercambiar datos con la de presentaci&oacute;n. Estos 
+    datos se modelan con un <em>value object</em>, que no ser&aacute; m&aacute;s 
+    que un<em> bean</em> de Java (no un EJB) que encapsule la informaci&oacute;n. 
+    La capa de presentaci&oacute;n siempre utiliza estas clases, independientemente 
+    de que &quot;por debajo&quot; hayan o no EJBs. Aun en el caso de que la capa 
+    de negocio utilice EJBs, acceder directamente a ellos desde la capa de presentaci&oacute;n 
+    es muy costoso si se accede individualmente a los campos del objeto.</li>
+</ul>
+<h2>3.3 Ejemplo de implementaci&oacute;n de la capa de negocio</h2>
+<p>La aplicaci&oacute;n <strong>amigosJ2EE</strong> implementa algunos patrones 
+  de la capa de negocio. Esta aplicaci&oacute;n es el &quot;esqueleto b&aacute;sico&quot; 
+  de una mini-comunidad virtual en la que los usuarios pueden darse de alta, generando 
+  una p&aacute;gina web con sus datos y pudiendo buscar a los dem&aacute;s usuarios 
+  de la comunidad seg&uacute;n distintos criterios (edad, sexo, lugar de residencia,...).</p>
+<h3>3.3.1 Business delegate (clases <code>UsuarioDelegate</code> y <code>UsuarioDelegateEJB</code>)</h3>
+<p>Estas clases proporcionan una serie de servicios (m&eacute;todos) que sirven 
+  para acceder a la capa de negocio. La diferencia es que la clase <code>UsuarioDelegateEJB</code> 
+  utiliza EJBs para implementar l&oacute;gica de negocio y acceso a datos, mientras 
+  que la clase <code>UsuarioDelegate</code> implementa el acceso a datos mediante 
+  JDBC.</p>
+<h3>3.3.2 Session Facade (bean de sesi&oacute;n sin estado <code>UsuarioFacade</code>)</h3>
+<p>Este bean tiene &uacute;nicamente un interfaz remoto, ya que su cliente (el 
+  business delegate) no tiene por qu&eacute; estar en el contenedor EJB. Como 
+  ejemplo del tipo de m&eacute;todos que contiene, se muestra el que permite obtener 
+  un <em>value object</em> con los datos de un usuario</p>
+<pre class="codigo">public class UsuarioFacadeBean implements SessionBean {
+
+
+(...)
+
+
+ public UsuarioVO getUsuario(String login) {
+   ServiceLocator locator;
+   UsuarioLocalHome home;
+   UsuarioLocal usuario;
+   UsuarioVO uvo;
+   
+   //obtener el interfaz home local del bean de entidad
+   //mediante los servicios de un ServiceLocator
+   locator = ServiceLocator.getServiceLocator();
+   try {
+      home = (UsuarioLocalHome) locator.getEJBLocalHome(ServiceLocator.USUARIO_LOCAL,
+                                                        UsuarioLocalHome.class);
+      //obtener el usuario mediante su login (clave primaria del bean)
+      usuario = home.findByPrimaryKey(login);
+      //obtener el value object
+
+      uvo = usuario.getUsuarioVO();
+      return uvo;
+   }
+   catch(Exception e) {
+      throw new EJBException(e);
+   } 
+}
+ </pre>
+
+<p>El <em>session facade</em> accede mediante un interfaz local a los beans de 
+  entidad (aunque en este caso solo hay uno), para aumentar la eficiciencia. Se 
+  hace uso de un <em>Service Locator</em> para obtener este interfaz local. Los 
+  beans de entidad utilizan persistencia manejada por el contenedor.</p>
+<h3>3.3.3 Service Locator (clase <code>ServiceLocator</code>)</h3>
+<p>Esta clase realiza las llamadas JNDI necesarias para obtener los interfaces 
+  home de acceso a los beans de entidad. Una vez obtenido el interfaz home, se 
+  guarda en una cach&eacute; (implementada en este caso mediante una <code>HashTable</code>), 
+  para que si se solicita otra vez, no sea necesario hacer otra llamada JNDI. 
+  Toda la aplicaci&oacute;n comparte la misma instancia de <code>ServiceLocator</code>, 
+  por lo que esta clase implementa lo que se denomina el patr&oacute;n <em>singleton</em> 
+  (una clase cuyo constructor no es p&uacute;blico, sino que su &uacute;nica instancia 
+  se obtiene mediante un m&eacute;todo est&aacute;tico. La propia clase se encarga 
+  de controlar que solo haya una instancia).</p>
+<h3>3.3.4 Value Object (clase <code>UsuarioVO</code>)</h3>
+<p>Esta clase no es m&aacute;s que un bean ordinario de Java que encapsula los 
+  datos de un usuario del sistema (<em>login</em>, edad, localidad, ....).</p>
+<h2>3.4 Patrones J2EE para la capa de acceso a datos</h2>
+<p>El patr&oacute;n b&aacute;sico para la capa de acceso a datos es el <strong>Data 
+  Access Object</strong>, empleado cuando se accede a la base de datos con JDBC 
+  en lugar de utilizar persistencia manejada por el contenedor. Gracias a este 
+  patr&oacute;n, la capa de negocio se independiza del almac&eacute;n de datos 
+  empleado (que normalmente ser&aacute; una base de datos relacional pero podr&iacute;a 
+  ser incluso un fichero XML o de texto, para casos sencillos).</p>
+<p>En la mini-aplicaci&oacute;n <strong>amigosJ2EE</strong>, este patr&oacute;n 
+  se implementa por ejemplo en la clase <code>UsuarioDAO</code>. Esta clase encapsula 
+  el c&oacute;digo JDBC necesario para obtener, crear y buscar usuarios en la 
+  base de datos. Si se cambia la estructura o el motor de la base de datos, &uacute;nicamente 
+  ser&aacute; necesario cambiar la clase <code>UsuarioDAO</code>, quedando igual 
+  que estaba la capa de negocio. </p>
+<p>&nbsp;</p>
+</body>
+</html>

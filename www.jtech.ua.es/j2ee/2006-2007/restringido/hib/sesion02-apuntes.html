@@ -1,0 +1,985 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.7">
+<meta name="Forrest-skin-name" content="pelt">
+<title>Mapeado de clases persistentes</title>
+<link type="text/css" href="skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="skin/print.css" rel="stylesheet">
+<link type="text/css" href="skin/profile.css" rel="stylesheet">
+<script src="skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<div class="header">
+<div class="grouplogo">
+<a href="http://www.jtech.ua.es/j2ee"><img class="logoImage" alt="J2EE" src="images/baner_j2ee_izq.gif" title="Curso Especialista Universitario J2EE"></a>
+</div>
+<div class="projectlogoA1">
+<a href="http://www.dccia.ua.es/"><img class="logoImage" alt="Hibernate" src="images/baner_j2ee_der.gif" title="Hibernate"></a>
+</div>
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="../index.html">M&oacute;dulos</a>
+</li>
+<li class="current">
+<a class="base-selected" href="index.html">Hibernate</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<div id="level2tabs"></div>
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<div id="menu">
+<div onclick="SwitchMenu('menu_selected_1.1', 'skin/')" id="menu_selected_1.1Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Hibernate</div>
+<div id="menu_selected_1.1" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="index.html" title="Hibernate">&Iacute;ndice</a>
+</div>
+<div onclick="SwitchMenu('menu_selected_1.1.2', 'skin/')" id="menu_selected_1.1.2Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Teor&iacute;a</div>
+<div id="menu_selected_1.1.2" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="sesion01-apuntes.html" title="Sesi&oacute;n 1: Introducci&oacute;n a Hibernate:Configuraci&oacute;n e Inicio">Sesi&oacute;n 1</a>
+</div>
+<div class="menupage">
+<div class="menupagetitle">Sesi&oacute;n 2</div>
+</div>
+<div class="menuitem">
+<a href="sesion03-apuntes.html" title="Sesi&oacute;n 3: Relaciones entre objetos">Sesi&oacute;n 3</a>
+</div>
+<div class="menuitem">
+<a href="sesion04-apuntes.html" title="Sesi&oacute;n 4: Consultas HQL">Sesi&oacute;n 4</a>
+</div>
+<div class="menuitem">
+<a href="roadmap-apuntes.html" title="Roadmap">Roadmap</a>
+</div>
+</div>
+<div onclick="SwitchMenu('menu_1.1.3', 'skin/')" id="menu_1.1.3Title" class="menutitle">Ejercicios</div>
+<div id="menu_1.1.3" class="menuitemgroup">
+<div class="menuitem">
+<a href="sesion01-ejercicios.html" title="Sesi&oacute;n 1: Introducci&oacute;n a Hibernate:Configuraci&oacute;n e Inicio">Sesi&oacute;n 1</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-ejercicios.html" title="Sesi&oacute;n 2: Mapeado de clases persistentes">Sesi&oacute;n 2</a>
+</div>
+<div class="menuitem">
+<a href="sesion03-ejercicios.html" title="Sesi&oacute;n 3: Relaciones entre objetos">Sesi&oacute;n 3</a>
+</div>
+<div class="menuitem">
+<a href="sesion04-ejercicios.html" title="Sesi&oacute;n 4: Consultas HQL">Sesi&oacute;n 4</a>
+</div>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<div id="credit2"></div>
+</div>
+<div id="content">
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="sesion02-apuntes.pdf"><img alt="PDF -icon" src="skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1>Mapeado de clases persistentes</h1>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#Clases+persistentes">Clases persistentes</a>
+<ul class="minitoc">
+<li>
+<a href="#Ciclo+de+vida+de+los+objetos+persistentes">Ciclo de vida de los objetos persistentes</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Modelo+de+programaci%C3%B3n+de+clases+persistentes">Modelo de programaci&oacute;n de clases persistentes</a>
+</li>
+<li>
+<a href="#Mapeado+de+clases+persistentes">Mapeado de clases persistentes</a>
+</li>
+<li>
+<a href="#Modelos+de+objetos+de+%22grano+fino%22+%28">Modelos de objetos de "grano fino" (fine-grained models)</a>
+</li>
+<li>
+<a href="#Colecciones+de+valores">Colecciones de valores</a>
+</li>
+<li>
+<a href="#Sesiones+y+transacciones">Sesiones y transacciones</a>
+</li>
+<li>
+<a href="#Operaciones+con+objetos+persistentes">Operaciones con objetos persistentes</a>
+</li>
+</ul>
+</div>
+
+
+<p>En esta sesi&oacute;n explicaremos c&oacute;mo (mapear) crear correspondencias entre 
+  clases persistentes y elementos de una base de datos para poder trabajar con 
+  Hibernate. Tambi&eacute;n hablaremos de los tipos Hibernate, explicando las diferencias entre los objetos de tipo 
+  <em>value</em> y de tipo <em>entity</em>. Los objetos Hibernate (u objetos persistentes) pueden
+  estar en varios estados, explicaremos c&oacute;mo se puede cambiar de un estado a otro y 
+  as&iacute; comenzaremos a trabajar con los objetos persistentes asociados a objetos Java.</p>
+ 
+
+<a name="N10015"></a><a name="Clases+persistentes"></a>
+<h2 class="underlined_10">Clases persistentes</h2>
+<div class="section">
+<p>En una aplicaci&oacute;n, la capa de persistencia est&aacute; formada por un 
+  conjunto de clases y componentes responsables del almacenamiento y recuperaci&oacute;n 
+  de datos, a y desde una o m&aacute;s fuentes de datos. Esta capa, necesariamente 
+  incluye un modelo de las entidades del modelo del negocio.</p>
+<p>Las clases persistentes, por lo tanto, son clases situadas en la capa de persistencia que implementan las entidades del negocio del problema (por ejemplo Cliente y Pedido en una aplicaci&oacute;n de comercio electr&oacute;nico). 
+Hibernate trabaja mejor si estas clases siguen unas sencillas reglas, tambi&eacute;n conocidas  como el modelo de programaci&oacute;n <strong>POJO</strong> (<strong>Plain Old Java Object</strong>).  Ninguna de estas reglas son un requerimiento necesario, de hecho, Hibernate3 asume muy poco o nada acerca de sus objetos persistentes.</p>
+<p>Las reglas para crear clases persistentes en forma de POJOs son:</p>
+<ul>
+  
+<li>Declarar m&eacute;todos para acceder a las variables miembro de la clase</li>
+  
+<li>Implementar un constructor sin argumentos</li>
+  
+<li>Proporcionar una propiedad que sirva como identificador (opcional)</li>
+  
+<li>Utilizar clases no "finales" (opcional)</li>
+
+</ul>
+<p>A continuaci&oacute;n mostramos un ejemplo sencillo de un POJO (<span class="codefrag">Customer.java</span>):</p>
+<pre class="code">
+package example;
+public class Customer {
+
+	private Long id;
+	private CustomerLocation customerLocation;
+	private String name;
+
+	public Customer() {}
+
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public CustomerLocation getCustomerLocation() {
+		return customerLocation;
+	}
+	public void setCustomerLocation(CustomerLocation customerLocation) {
+		this.customerLocation = customerLocation;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}	
+}
+</pre>
+<a name="N10043"></a><a name="Ciclo+de+vida+de+los+objetos+persistentes"></a>
+<h3 class="underlined_5">Ciclo de vida de los objetos persistentes</h3>
+<p>Como ya vimos en la sesi&oacute;n anterior, la persistencia de objetos significa que los objetos individuales pueden "sobrevivir" 
+  fuera del proceso de la aplicaci&oacute;n que los cre&oacute;. Esto significa que pueden ser almacenados 
+  en un almac&eacute;n de datos y ser recuperados m&aacute;s tarde.</p>
+<p>Un objeto <strong>persistente</strong>, por lo tanto, es cualquier instancia con una identidad 
+  de base de datos persistente (valor de clave primaria), 
+  es decir, representa una fila de una tabla en una base de datos.</p>
+<p>Ya que Hibernate es un mecanismo transparente de persistencia (las clases no 
+  son "conscientes" de su propia capacidad de persistencia), es posible 
+  escribir la l&oacute;gica de una aplicaci&oacute;n sin tener en cuenta si los 
+  objetos con los que trabaja mantienen una representaci&oacute;n persistente 
+  de su estado, o solamente la mantienen de forma temporal en memoria. La aplicaci&oacute;n, 
+  por lo tanto, no deber&iacute;a tener en cuenta si un objeto es persistente 
+  o no cuando invoca a sus m&eacute;todos.</p>
+<p>Sin embargo, en una aplicaci&oacute;n con estados persistentes, la aplicaci&oacute;n 
+  debe interactuar con la capa de persistencia siempre que necesite propagar los 
+  estados almacenados en memoria a la base de datos o viceversa. Para hacer &eacute;sto, 
+  llamamos al gestor de persistencia y a las interfaces <em>query</em>. Una de las interfaces del gestor 
+  de persistencia de Hibernate, <span class="codefrag">Session</span>, es la responsable de gestionar 
+  el estado de los objetos, por lo que es importante entender c&oacute;mo utilizar 
+  este API. </p>
+<p>Cuando interaccionamos con el mecanismo de persistencia es necesario que la 
+  aplicaci&oacute;n tenga en cuenta el estado y el ciclo de vida de un objeto 
+  con respecto a su persistencia (por ejemplo para saber si los cambios a ese 
+  objeto estar&aacute;n sincronizados con su estado persistente almacenado). Hibernate 
+  utiliza tres estados para un objeto: <em>transient</em>, <em>persistent</em>, y 
+  <em>detached</em>. La Figura 2.1 muestra los estados y transiciones de un 
+  objeto en una aplicaci&oacute;n Hibernate.</p>
+<p>
+  
+<img alt="Figura 2.1 estados y transiciones de un         objeto en una aplicaci&oacute;n Hibernate." content-width="11cm" src="imagenes/Fig2-1.gif" width="450"> 
+</p>
+<p>En la Figura 2.1 se pueden observar las llamadas a m&eacute;todos del gestor de 
+  persistencia que lanzan las transiciones. En este ciclo de vida, un objeto puede 
+  sufrir transiciones entre <em>transient</em>, <em>persistent</em> y <em>detached</em>. 
+  Ve&aacute;mos con un poco m&aacute;s de detalle cada uno de estos estados:</p>
+<p>
+<strong>Objetos transient</strong>
+</p>
+<p>En Hibernate, los objetos instanciados con el operador <em>new</em> no son inmediatamente  persistentes. Su estado es <em>transient</em>, lo cual significa que todav&iacute;a 
+  no est&aacute;n asociados con ninguna fila de una base de datos, y por lo tanto 
+  su estado se pierde en cuanto dejan de estar referenciados en la aplicaci&oacute;n. Una instancia <em>transient</em> no est&aacute;, ni nunca ha estado asociado con ning&uacute;n contexto persistente (por lo que no tiene identidad persistente).
+  Para pasar a un estado <em>persistent</em> es necesario realizar una llamada a 
+  <em>save().</em>
+</p>
+<p>
+<strong>Objetos persistent</strong>
+</p>
+<p>Una instancia persistente es cualquier instancia que representa una fila de 
+  una tabla de la base de datos (actualmente est&aacute; asociada con un contexto persistente), y por lo tanto tiene un valor de clave primaria 
+  asignado como su identificador de base de datos. Un objeto se convierte en persistente
+  mediante una llamada a <span class="codefrag">save()</span>. Las instancias persistentes est&aacute;n 
+  siempre asociadas con una <span class="codefrag">Session</span> y son transaccionales (participan en 
+  las transacciones, lo cual significa que su estado se sincroniza con la base 
+  de datos al final de la transacci&oacute;n). Una instancia persistente puede 
+  convertirse en <em>transient</em> mediante una llamada a <span class="codefrag">delete()</span> sobre 
+  el API gestor de persistencia, y como resultado se borra la correspondiente 
+  fila de la base de datos.</p>
+<p>
+<strong>Objetos detached</strong>
+</p>
+<p>Cuando se completa una transacci&oacute;n, las instancias persistentes asociadas 
+  con el gestor de persistencias todav&iacute;a existen (si la transacci&oacute;n 
+  ha tenido &eacute;xito, el estado en memoria del objeto se ha sincronizado con 
+  la base de datos). En el caso de Hibernate, estas instancias pierden su asociaci&oacute;n 
+  con el gestor de persistencia cuando cerramos la <span class="codefrag">Session</span> (ejecutamos 
+  <span class="codefrag">close()</span>). Nos referiremos a estos objetos como <em>detached</em>, 
+  indicando que ya no hay garant&iacute;as de que su estado se sincronice con el 
+  de la base de datos. Una instancia <em>detached</em>, por tanto, estuvo en alg&uacute;n momento asociada con un contexto persistente, pero dicho contexto fue cerrado. Hibernate proporciona una operaci&oacute;n de <em>detachment</em> 
+  expl&iacute;cita: el m&eacute;todo <span class="codefrag">evict()</span> de la <span class="codefrag">Session</span>. 
+  Aunque no es usual el llamar a esta operaci&oacute;n de forma expl&iacute;cita. 
+  Una instancia <em>detached</em> puede volver a ser persistente asoci&aacute;ndola 
+  con una nueva <span class="codefrag">Session</span>.</p>
+</div>
+
+
+<a name="N100CB"></a><a name="Modelo+de+programaci%C3%B3n+de+clases+persistentes"></a>
+<h2 class="underlined_10">Modelo de programaci&oacute;n de clases persistentes</h2>
+<div class="section">
+<p>El dise&ntilde;o e implementaci&oacute;n de clases persistentes es un proceso 
+en el que hay que seguir los siguientes pasos: </p>
+<ol>
+    
+<li>Identificaci&oacute;n de las entidades de negocio del domino del problema</li>
+	
+<li>Creaci&oacute;n de un modelo conceptual de estas entidades y sus atributos, 
+	es lo que se conoce como un modelo del dominio. El uso de persistencia de 
+	objetos con ORM es m&aacute;s adecuado para aplicaciones basadas en un modelo 
+	del dominio "rico". Si una aplicaci&oacute;n no implementa reglas 
+	de negocio complejas o interacciones complejas entre entidades (o si se tienen 
+	pocas entidades), no ser&aacute; necesario un modelo del dominio. Hay muchos 
+	problemas que son perfectamente adaptables a soluciones orientadas a tablas, 
+	en los que la aplicaci&oacute;n se dise&ntilde;a alrededor del modelo de base 
+	de datos en lugar del modelo orientado a objetos, a menudo con una l&oacute;gica 
+	que se ejecuta en dicha base de datos (procedimientos almacenados). Sin embargo, 
+	cuanto m&aacute;s complejo y expresivo sea el modelo del dominio, m&aacute;s 
+	nos beneficiaremos del uso de Hibernate.</li>
+	
+<li>Implementaci&oacute;n del modelo del dominio en Java creando una clase persistente 
+	para cada entidad (usando POJO's).</li>
+	
+<li>Definici&oacute;n de los metadatos de la correspondencia (Object/Relational 
+	Mapping metadata), para indicarle a Hibernate c&oacute;mo se relacionan las 
+	clases y sus propiedades con las tablas y columnas de la base de datos. Estos 
+	metadatos de correspondencia se escriben en formato XML (utilizando ficheros 
+	con extensi&oacute;n <em>hbm.xml</em>). </li>
+
+</ol>
+<p>En esta sesi&oacute;n utilizaremos los ficheros de correspondencia para definir las clases persistentes. 
+En la  siguiente sesi&oacute;n explicaremos c&oacute;mo incluir las relaciones entre clases persistentes en dichos ficheros de correspondencia.</p>
+</div>
+
+
+<a name="N100EA"></a><a name="Mapeado+de+clases+persistentes"></a>
+<h2 class="underlined_10">Mapeado de clases persistentes</h2>
+<div class="section">
+<p>Las correspondencias O/R se definen normalmente con un documento XML. La forma 
+b&aacute;sica que presenta dicho documento es:</p>
+<pre class="code"> 
+&lt;?xml version="1.0"?&gt;
+&lt;!DOCTYPE hibernate-mapping PUBLIC
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd"&gt;
+&lt;hibernate-mapping package="nombre"&gt;
+    &lt;class name="Nombre_clase"
+           table="nombre_tabla"&gt;
+       &lt;id name="nombre_clave_primaria"
+	       column="nombre_tabla"
+           &lt;generator class="nombre_clase_generadora_ids"/&gt;
+       &lt;/id&gt;
+	   &lt;property name="nombrePropiedad"
+	       column="nombre_columna"
+           type="tipo_hibernate"
+           not-null="true|false"
+           update="true|false"
+		   insert="true|false"/&gt;
+	    &lt;property name=... /&gt;
+        ...
+    &lt;/class&gt;
+
+</pre>
+<p>Una correspondencia XML debe declarar en primer lugar el <strong><span class="codefrag">DOCTYPE</span></strong> 
+  indicado. A continuaci&oacute;n se especifica el elemento <strong><span class="codefrag">hibernate-mapping</span></strong>, 
+  que tiene varios atributos opcionales (ver el manual de referencia de hibernate), 
+  como por ejemplo <span class="codefrag">schema</span> (define el nombre del esquema de la base de datos), <span class="codefrag">catalog</span> (define el 
+  nombre del cat&aacute;logo de la base de datos), y <span class="codefrag">package</span> (especifica un prefijo de paquete para 
+  poder omitirlo en el nombre de las clases en el resto de documento de mapeado).</p>
+<p>Para declarar una clase persistente utilizamos el elemento <strong><span class="codefrag">class</span></strong>, 
+  en el que algunos de sus atributos son: </p>
+<ul>
+    
+<li>
+<span class="codefrag">name</span>: nombre de la clase java</li>
+	
+<li>
+<span class="codefrag">table</span>: nombre de la tabla asociada a la clase</li>
+	
+<li>
+<span class="codefrag">schema</span>, <span class="codefrag">catalog</span>: sobreescriben el nombre del esquema y cat&aacute;logo, respectivamente,  
+  si ya han sido especificados en el elemento <span class="codefrag">hibernate-mapping</span>
+</li>
+	
+<li>
+<span class="codefrag">table</span> es opcional, por defecto toma el valor del nombre 
+  asignado al atributo <span class="codefrag">name</span>, es decir, por defecto la tabla en la BD y la clase asociada tienen el mismo nombre.</li>
+  
+</ul>
+<p>Se debe declarar cu&aacute;l es la columna de <strong>clave primaria</strong> mediante 
+  el elemento <strong><span class="codefrag">id</span></strong>. El atributo <span class="codefrag">name</span> es opcional y representa 
+  el nombre del identificados en la clase Java. Si se omite el atributo <span class="codefrag">name</span> se asume que la 
+  clase no tiene una propiedad que representa el identificador. El atributo <span class="codefrag">column</span> tambi&eacute;n es opcional
+  y representa el nombre de la columna de clave primaria, por defecto se asume el nombre de la propiedad <span class="codefrag">name</span>.
+</p>
+<p>
+  El elemento hijo <span class="codefrag">generator</span> (opcional) indica cu&aacute;l es el nombre de la clase Java utilizada
+   para generar identificadores 
+  &uacute;nicos para las instancias de la clase persistente. Todos los generadores 
+  implementan la interface <span class="codefrag">org.hibernate.id.IdentifierGenerator</span>. 
+  Hibernate proporciona varias implementaciones de dicha interfaz, como por ejemplo 
+  <span class="codefrag">native</span>, que genera identificadores de tipo <span class="codefrag">long</span>, <span class="codefrag">short</span> 
+  o <span class="codefrag">int</span>, dependiendo de la base de datos subyacente. Otros valores posibles para el 
+  atributo <span class="codefrag">class</span> son <em>increment</em> y <em>sequence</em>. Ver en el manual de referencia de 
+  Hibernate todos los valores posibles, apartado 5.1.4.</p>
+<p>Con respecto a la elecci&oacute;n de la clave primaria de una tabla, muchos 
+	modelos de datos SQL antiguos utilizan claves primarias naturales. Una <strong>clave natural</strong> es una clave con un significado para el negocio: un atributo o combinaci&oacute;n 
+  de atributos que son &uacute;nicos en virtud de su sem&aacute;ntica de negocio. 
+  Por ejemplo un n&uacute;mero de la seguridad social. Distinguir las claves naturales 
+  es sencillo: si un atributo candidato a clave primaria tiene un significado 
+  fuera del contexto de la base de datos, entonces es una clave natural, es decir, 
+  no generada autom&aacute;ticamente.</p>
+<p>La experiencia ha demostrado que las claves naturales casi siempre causan problemas 
+  a lo largo del tiempo. Una buena clave primaria deber&iacute;a ser &uacute;nica, 
+  constante y debe ser requerida (nunca debe tener un valor nulo o desconocido). 
+  Muy pocos atributos de entidades satisfacen estos requerimientos, y algunos 
+  que s&iacute; lo hacen no son indexables de forma eficiente en bases de datos 
+  SQL. Adem&aacute;s, se deber&iacute;a asegurar que un candidato a clave nunca 
+  cambiar&aacute; durante el tiempo de vida de la base de datos antes de proponerlo 
+  como clave primaria (cambiar la definici&oacute;n de una clave primaria y todas 
+  las claves ajenas a las que hace referencia es una tarea frustrante).</p>
+<p>Por todas estas razones, recomendamos que las nuevas aplicaciones utilicen 
+  identificadores sint&eacute;ticos, tambi&eacute;n denominados <strong>claves "suced&aacute;neas"</strong> 
+  (<em>surrogate keys</em>). Las <em>surrogate keys</em> no tienen ning&uacute;n 
+  significado para el negocio: son simplemente valores &uacute;nicos generados 
+  por la base de datos o la aplicaci&oacute;n. De ah&iacute; la conveniencia de 
+  utilizar el elemento <span class="codefrag">generator</span>.</p>
+<p>El elemento <strong><span class="codefrag">property</span></strong> declara una <strong>propiedad persistente</strong> 
+  de la clase. Algunos de sus atributos son:</p>
+<ul>
+     
+<li>
+<span class="codefrag">name</span>: nombre de la propiedad, comenzando por letra min&uacute;scula. </li>
+	 
+<li>
+<span class="codefrag">column</span>: nombre de   la columna asociada. Este atributo es opcional, por defecto toma 
+  el nombre de la propiedad <span class="codefrag">name</span>.</li>
+     
+<li>
+<span class="codefrag">type</span>: puede ser el nombre de un tipo b&aacute;sico de Hibernate (<span class="codefrag">integer</span>, 
+	 <span class="codefrag">string</span>, <span class="codefrag">character</span>, <span class="codefrag">date</span>, <span class="codefrag">timestamp</span>, <span class="codefrag">float</span>, <span class="codefrag">binary</span>,
+	  <span class="codefrag">serializable</span>, <span class="codefrag">object</span>, <span class="codefrag">blob</span>,...), el nombre de una clase Java con un tipo b&aacute;sico por 
+	  defecto (<span class="codefrag">int</span>, <span class="codefrag">float</span>, <span class="codefrag">char</span>, <span class="codefrag">java.lang.String</span>, <span class="codefrag">java.util.Date</span>, ...), 
+	  el nombre de una clase Java serializable, o el nombre de un tipo (clase) creado por nosotros. Si no especificamos un tipo, Hibernate
+	   utiliza el proceso de <em>reflection</em> sobre el valor del elemento <span class="codefrag">name</span> para asignar el tipo Hibernate.</li>
+	  
+<li>
+<span class="codefrag">not-null</span>: restricci&oacute;n de valor no nulo.</li>
+	  
+<li>
+<span class="codefrag">unique</span>: restricci&oacute;n de unicidad.</li>
+	  
+<li>
+<span class="codefrag">update</span>, <span class="codefrag">insert</span>: para indicar si las columnas 
+  pueden incluirse en sentencias SQL <span class="codefrag">update</span> e <span class="codefrag">insert</span>, 
+  respectivamente.</li>
+  
+</ul>
+<p>Por ejemplo, para la clase <strong>Customer</strong> definida anteriormente, el fichero <span class="codefrag">Customer.hbm.xml</span> contendr&iacute;a lo siguiente:</p>
+<pre class="code"> 
+&lt;?xml version="1.0"?&gt;
+&lt;!DOCTYPE hibernate-mapping PUBLIC
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd"&gt;
+&lt;hibernate-mapping&gt;
+    &lt;class name="example.Customer"
+           table="CUSTOMER"&gt;
+	   &lt;id name="id"
+	       column="CUSTOMER_ID"
+           &lt;generator class="native"/&gt;
+       &lt;/id&gt;
+	   &lt;property name="customerLocation"
+	       column="C_LOCATION"
+           type="example.CustomerLocation"
+       /&gt;
+	    &lt;property name="name"
+		    column="C_NAME"/&gt;
+    &lt;/class&gt;
+
+</pre>
+<p>En este caso, la propiedad <span class="codefrag">name</span> no incluye el atributo <span class="codefrag">type</span>, de forma que
+Hibernate obtiene el tipo correcto del nombre de la clase Java correspondiente.</p>
+</div>
+
+
+<a name="N101FE"></a><a name="Modelos+de+objetos+de+%22grano+fino%22+%28"></a>
+<h2 class="underlined_10">Modelos de objetos de "grano fino" (fine-grained models)</h2>
+<div class="section">
+<p>Un objetivo principal del proyecto Hibernate es el de soportar modelos de objetos 
+  de "grano fino". Hablando informalmente, de "grano fino" 
+  significa "m&aacute;s clases que tablas". Por ejemplo, un usuario 
+  podr&iacute;a tener una direcci&oacute;n a la que enviar las facturas y una 
+  direcci&oacute;n personal. En la base de datos, podr&iacute;amos tener una &uacute;nica 
+  tabla USUARIO con las columnas FACTURA_CALLE, FACTURA_CIUDAD, y FACTURA_CODPOSTAL, 
+  junto con PERSONAL_CALLE, PERSONAL_CIUDAD , y PERSONAL_CODPOSTAL. Hay buenas 
+  razones para utilizar este modelo relacional algo "desnormalizado", 
+  como por ejemplo el rendimiento.</p>
+<p>En nuestro modelo de objetos, podr&iacute;amos utilizar la misma aproximaci&oacute;n, 
+  representando las dos direcciones como seis propiedades de tipo <em>string</em> 
+  de la clase <em>Usuario</em>. Pero para que nuestro modelo de objetos tenga 
+  una mejor cohesi&oacute;n y m&aacute;s facilidad de reutilizaci&oacute;n de 
+  c&oacute;digo, as&iacute; como ser m&aacute;s legible, ser&iacute;a mejor definir 
+  una clase <em>Direccion</em>, con una sem&aacute;ntica de m&aacute;s alto nivel 
+  as&iacute; como un comportamiento, por ejemplo con un m&eacute;todo <span class="codefrag">enviarCorreo()</span>.</p>
+<p>Esto nos lleva a una cuesti&oacute;n importante, y es que en Java, todas las 
+  clases tienen el mismo "status": todos los objetos tienen su propia 
+  identidad y ciclo de vida, y todas las instancias de clases se pasan por referencia. 
+  Solamente los tipos primitivos se pasan por valor. Sin embargo, puesto que estamos 
+  apostando por un dise&ntilde;o en el que hay m&aacute;s clases que tablas, una 
+  fila puede representar m&uacute;ltiples objetos, de los cuales algunos tendr&aacute;n 
+  su propia identidad (implementada como la clave primaria) y otros depender&aacute;n 
+  de &eacute;sta. </p>
+<p>Hibernate hace la siguiente distinci&oacute;n fundamental:</p>
+<ul>
+  
+<li>Un objeto de tipo <em><strong>entity</strong></em> tiene su propia identidad 
+    en la base de datos (valor de la clave primaria). Las instancias de tipo <em>entity</em> deben 
+	ser guardadas y borradas de forma expl&iacute;cita (excepto si se ha especificado el atributo 
+	<span class="codefrag">cascade</span> para dichas operaciones; veremos el uso de este atributo en la siguiente
+	sesi&oacute;n). Cuando hablamos de "clases persistentes" 
+    nos estamos refiriendo a objetos <em>entity</em>.
+	Un <em>entity</em> tiene su propio ciclo de vida: puede existir independientemente de otros <em>entitys</em>.</li>
+  
+<li>Un objeto de tipo <em><strong>value</strong></em> no tiene identidad en 
+    la base de datos; pertenece a un objeto <em>entity</em>, y depende de &eacute;l. 
+	Un tipo <strong><em>value</em></strong> es un tipo primitivo, una <em>collection</em> (no lo que hay
+   dentro de una <em>collection</em>) o un componente (definiremos este t&eacute;rmino m&aacute;s adelante, cuando hablemos de la relaci&oacute;n
+   de composici&oacute;n). A diferencia de las entidades, los valores son almacenados y borrados
+   por "alcanzabilidad" (desde la instancia <em>entity</em> a la que pertenecen), es decir, 
+   los objetos <em>value</em>   se convierten en persistentes y son borrados juntamente con la entidad que los contiene. 
+   Adem&aacute;s, una instancia de tipo valor tiene exactamente una &uacute;nica entidad propietaria cuando es recuperada de la base 
+   de datos, y por lo tanto no puede ser compartida </li>
+
+</ul>
+<p>Siguiendo con el ejemplo anterior de las clases <em>Usuario</em> y <em>Direccion</em>, 
+  en la base de datos la clase <em>Usuario</em> se podr&iacute;a corresponder con un tipo 
+  <em>entity</em> (con su clave primaria en la tabla correspondiente), y la clase 
+  <em>Direccion</em> con tipo <em>value</em> (depende del usuario) . Volveremos 
+  sobre &eacute;sto cuando veamos c&oacute;mo establecer 
+  la correspondencia O/R cuando existe una relaci&oacute;n de composici&oacute;n 
+  entre las clases de objetos.</p>
+<p>Es necesario realizar una correspondencia entre el sistema de tipos Java y el sistema de tipos de base de datos SQL. El 
+   puente entre ambos lo proporciona Hibernate. Para las entidades usamos <span class="codefrag">&lt;class&gt;</span>. Para tipos <em>value</em>
+   utilizamos <span class="codefrag">&lt;property&gt;</span>, <span class="codefrag">&lt;component&gt;</span>, etc. normalmente con un atributo <span class="codefrag">type</span>.
+   El valor de este atributo es el nombre de un tipo de mapeado Hibernate (Hibernate <em>mapping type</em>), al que llamaremos 
+   un tipo Hibernate para simplificar. Como ya hemos comentado en la sesi&oacute;n anterior, hay un conjunto de tipos Hibernate b&aacute;sicos 
+   (que utilizaremos como valor del atributo <span class="codefrag">type</span>:
+   <span class="codefrag">integer</span>, <span class="codefrag">character</span>, <span class="codefrag">calendar</span>,..., y podemos incluso definirnos nuestros propios tipos.
+   Para m&aacute;s informaci&oacute;n sobre los <em>value types</em> de Hibernate pod&eacute;is consultar el manual de referencia, en el apartado 5.2.
+</p>
+</div>
+
+
+<a name="N1028C"></a><a name="Colecciones+de+valores"></a>
+<h2 class="underlined_10">Colecciones de valores</h2>
+<div class="section">
+<p>Vamos a ver c&oacute;mo a&ntilde;adimos una colecci&oacute;n de objetos de tipo <em>value</em> a un objeto <em>entity</em>. Tomemos como ejemplo
+   la clase Usuario anterior, a la que a&ntilde;adiremos una colecci&oacute;n de tel&eacute;fonos (colecci&oacute;n de objetos de tipo <em>value</em>):
+   </p>
+<pre class="code">
+public class Usuario {
+  ...
+  private Set telefonos = new HashSet();
+  
+  public Set getTelefonos() {
+    return telefonos;
+  }
+  public void setTelefonos (Set telefonos) {
+    this.telefonos = telefonos;
+  }	
+}
+</pre>
+<div class="frame note">
+<div class="label">Atenci&oacute;n:</div>
+<div class="content">F&iacute;jate que hemos inicializado la variable <em>telefonos</em> como una instancia de <em>HashSet</em>. 
+   <strong>Esta es la
+   mejor forma de inicializar los valores de las propiedades de la colecci&oacute;n (cuando son instancias no persistentes)</strong>.
+   Cuando estas instancias se convierten en persistentes (llamando a <span class="codefrag">persist()</span>, por ejemplo), Hibernate
+   reemplaza el <em>HashSet</em> con una instancia de Hibernate con su propia implementaci&oacute;n de <em>Set</em>.
+</div>
+</div>
+<p>Las variables de instancia de tipo colecci&oacute;n tienen el comportamiento usual de los tipos <em>value</em>. Dichas
+   variables se convierten en persistentes de forma autom&aacute;tica cuando son referenciadas por un objeto persistente y
+   se borran autom&aacute;ticamente cuando dejan de estar referenciadas. Si una colecci&oacute;n se pasa de un objeto persistente
+   a otro, sus elementos podr&iacute;an moverse de una tabla a otra (esto lo veremos en la siguiente sesi&oacute;n cuando hablemos
+   de las asociaciones). Dos entidades no pueden compartir una referencia a la misma instancia de colecci&oacute;n. Debido
+   al modelo relacional subyacente, las propiedades que son colecciones de valores no soportan sem&aacute;ntica de valores
+   nulos; Hibernate no distingue entre una referencia a una colecci&oacute;n nula y a una colecci&oacute;n vac&iacute;a.</p>
+<p>El mapeado de la propiedad de tipo colecci&oacute;n de valores <em>telefonos</em> es:</p>
+<pre class="code">
+&lt;set name="telefonos" table="USU_TELEFONOS"
+     lazy="false"&gt;
+     &lt;key column="USUARIO_ID"/&gt;
+	 &lt;element type="string" column="TELEFONOS"/&gt;
+&lt;/set&gt;	 
+
+</pre>
+<p>Utilizamos el elemento (etiqueta) <strong><span class="codefrag">&lt;set&gt;</span></strong> para mapear propiedades de tipo <em>Set</em>. 
+   El atributo <strong><span class="codefrag">name</span></strong>
+   representa el nombre de la propiedad colecci&oacute;n. El atributo <strong><span class="codefrag">table</span></strong> es opcional y hace 
+   referencia al nombre de la
+   tabla que contiene la colecci&oacute;n de elementos, por defecto toma el nombre de la propiedad. El atributo 
+   <strong><span class="codefrag">table</span></strong> no se
+   utiliza en asociaciones <em>one-to-many</em>, como veremos m&aacute;s adelante. </p>
+<div class="frame note">
+<div class="label">Atenci&oacute;n:</div>
+<div class="content">   Fijaos que esta tabla la utiliza Hibernate en el 
+   modelo de datos para almacenar la colecci&oacute;n de tel&eacute;fonos, pero <strong>no se corresponde con ninguna clase del modelo de 
+   objetos</strong>.
+   </div>
+</div>
+<p>El atributo <strong><span class="codefrag">lazy</span></strong> es 
+   opcional y nos permite
+   decidir si queremos que Hibernate recupere los elementos de la colecci&oacute;n al mismo tiempo que recupera los elementos 
+   de <em>Usuario</em>
+   o no. Podemos elegir entre los siguientes valores:</p>
+<ul>
+     
+<li>
+<span class="codefrag">true</span>: es el <strong>valor por defecto</strong>. La colecci&oacute;n es recuperada de la base de datos cuando la 
+	     aplicaci&oacute;n invoque
+	     una operaci&oacute;n sobre dicha colecci&oacute;n.</li>
+	
+<li>
+<span class="codefrag">false</span>: Hibernate recupera la colecci&oacute;n asociada a <em>Usuario</em> en la misma <em>select</em>, utilizando
+	    un <em>outer join</em>. (Hablaremos sobre &eacute;sto en la &uacute;ltima sesi&oacute;n).</li>
+	
+<li>
+<span class="codefrag">extra</span>: Los elementos individuales de la colecci&oacute;n son accedidos desde la base de datos cuando son necesitados. 
+	    Hibernate no intenta recuperar la colecci&oacute;n en su totalidad a menos que sea absolutamente necesario (&eacute;sto es &uacute;til cuando
+		tenemos colecciones de elementos muy grandes).</li>
+   
+</ul>
+<p>As&iacute;, por ejemplo, si queremos a&ntilde;adir un nuevo tel&eacute;fono, utilizando el valor de <em>lazy</em> por defecto (<em>true</em>), 
+   podemos utilizar el siguiente c&oacute;digo:</p>
+<pre class="code">
+  private void addTelToUsuario(Long usuId, String telefono) {
+     Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+     session.beginTransaction();
+     Usuario usu = (Usuario) session.load(Usuario.class, usuId);
+     // El m&eacute;todo getTelefonos() lanza un "lazy load" de la colecci&oacute;n
+     usu.getTelefonos().add(telefono);
+     session.getTransaction().commit();
+  }
+</pre>
+<p>Es decir, no necesitamos generar de forma expl&iacute;cita una consulta (<em>query</em>) para inicializar la colecci&oacute;n de
+   valores. Cuando llamamos al m&eacute;todo <em>getTelefonos()</em> se lanza una <em>select</em> adicional para inicializar
+   el valor de la propiedad <em>telefonos</em> del <em>Usuario</em>, para que podamos a&ntilde;adirle un elemento. Se puede optimizar
+   este c&oacute;digo con la propiedad <em>lazy=false</em>, en cuyo caso, cuando recuperamos la instancia <em>usu</em>, cargamos
+   tambi&eacute;n los valores de la colecci&oacute;n <em>telefonos</em> en la misma <em>select</em> que se utiliza para recuperar <em>usu</em>,
+   incluyendo un <em>outer join</em> en dicha sentencia <em>select</em>. Estas dos posibilidades son dos estratagias que
+   puede utilizar Hibernate para recuperar informaci&oacute;n de la base de datos y que comentaremos en la &uacute;ltima sesi&oacute;n como
+   "Estrategias de <em>fetching</em>".</p>
+<p>Continuando con el mapeado, la etiqueta <strong><span class="codefrag">&lt;key&gt;</span></strong> se utiliza cuando el elemento de mapeado padre (en este caso <span class="codefrag">&lt;set&gt;</span>)
+   hace referencia (define un enlace (<em>join</em>))a una nueva tabla (en este caso <span class="codefrag">USU_TELEFONOS</span>), y define la clave ajena en dicha tabla, que hace referencia a la clave primaria
+   en la primera tabla (en este caso <span class="codefrag">USUARIO_ID</span> ser&iacute;a clave ajena en la tabla <span class="codefrag">USU_TELEFONOS</span>, que hace referencia
+   a la clave primaria de la tabla <span class="codefrag">USUARIO</span>), y se especifica con el atributo <span class="codefrag">column</span>. 
+</p>
+<p>La etiqueta <strong><span class="codefrag">&lt;element&gt;</span></strong> est&aacute; indicando que la colecci&oacute;n no contiene referencias a otra 
+   entidad, sino a una colecci&oacute;n de elementos de tipo <em>String</em> (fijaos que se indica en <strong>min&uacute;scula</strong> 
+   (<span class="codefrag">string</span>) y representa el tipo de mapeado Hibernate).
+   </p>
+<p>Si implementamos la propiedad <em>telefonos</em> utilizando Java 5.0, que incorpora el uso de gen&eacute;ricos, deberemos concretar el
+   tipo de elementos del tipo <em>Set</em> si queremos que el compilador chequee que estamos utilizando dicha colecci&oacute;n
+   de forma consistente, para ello el c&oacute;digo para el POJO anterior se convertir&iacute;a en:</p>
+<pre class="code">
+public class Usuario {
+  ...
+  private Set &lt;String&gt; telefonos = new HashSet&lt;String&gt;();
+  
+  public Set getTelefonos() {
+    return telefonos;
+  }
+  public void setTelefonos (Set telefonos) {
+    this.telefonos = telefonos;
+  }	
+}
+
+</pre>
+</div>
+
+
+<a name="N10381"></a><a name="Sesiones+y+transacciones"></a>
+<h2 class="underlined_10">Sesiones y transacciones</h2>
+<div class="section">
+<p>La interfaz central entre la aplicaci&oacute;n e Hibernate es <span class="codefrag">Session</span>: 
+  es el punto de partida para todas las operaciones con objetos persistentes que 
+  realiza el gestor de persistencia. Como ya hemos comentado en la sesi&oacute;n anterior 
+  trabajaremos con instancias de <span class="codefrag">Session</span>, puesto que son objetos cuya creaci&oacute;n es
+  "m&aacute;s barata" que la de una <span class="codefrag">SessionFactory</span> (normalmente crearemos una &uacute;nica <span class="codefrag">SessionFactory</span>
+   al principio de la aplicaci&oacute;n a partir de una instancia de <span class="codefrag">Configuration</span>).</p>
+<p>Una <strong>sesi&oacute;n</strong> representa una <strong>unidad de trabajo</strong>, y engloba un conjunto de operaciones
+   con la base de datos. Hibernate permite trabajar con sesiones mediante el API <span class="codefrag">Session</span>.</p>
+<p>Una sesi&oacute;n ejecutar&aacute; de cuando en cuando las sentencias SQL necesarias para sincronizar el estado de las conexiones 
+   JDBC con el estado de los objetos almacenados en memoria. A este proceso se le denomina <strong><em>flush</em></strong>. 
+   Este proceso tiene lugar, por defecto, en los siguientes momentos:
+</p>
+<ul>
+  
+<li>antes de ejecutar algunas <em>query</em>
+</li>
+  
+<li>desde una llamada a <span class="codefrag">org.hibernate.Transaction.commit()</span>
+</li>
+  
+<li>desde una llamada a <span class="codefrag">Session.flush()</span>
+</li>
+
+</ul>
+<p>Las sentencias SQL se ejecutan en un cierto orden (ver el manual de referencia apartado 10.10). No hay niguna garant&iacute;a sobre 
+   cu&aacute;ndo la sesi&oacute;n ejecuta las llamadas JDBC, excepto cuando llamamos de forma expl&iacute;cita a <span class="codefrag">flush</span>, aunque 
+   Hibernate garantiza que una llamada a <span class="codefrag">Query.list(..)</span> devolver&aacute; los datos actualizados correctamente.
+</p>
+<p>Por otro lado, una <strong>transacci&oacute;n</strong> hace referencia a un conjunto de operaciones con la base de datos que deben 
+   realizarse todas o bien no realizarse ninguna. Una transacci&oacute;n es at&oacute;mica, de forma que las operaciones que la
+    componen forman una unidad indivisible. Hibernate proporciona el API <span class="codefrag">Transaction</span> para trabajar con transacciones.</p>
+<p>Las transacciones con la base de datos nunca son opcionales, toda la comunincaci&oacute;n con una base de datos
+   ocurre dentro de una transacci&oacute;n, no importa si leemos o escribimos datos. Una transacci&oacute;n se obtiene a partir
+    de una instancia de una sesi&oacute;n. Para simplificar podemos asumir una relaci&oacute;n uno-a-uno
+   entre una sesi&oacute;n y una transacci&oacute;n.</p>
+<p>Hibernate se puede utilizar tanto en entornos gestionados como no gestionados. Un entorno gestionado normalmente proporciona 
+   transacciones manejadas por el contenedor. En un entorno no gestionado, Hibernate es responsable del manejo del <em>pool</em> de 
+   conexiones con la base de datos. Es recomendable hacer que la capa de persistencia sea portable entre ambos entornos, por lo 
+   que aconsejamos que se proporcionen los l&iacute;mites de la transacci&oacute;n mediante programaci&oacute;n, a trav&eacute;s del API <span class="codefrag">Transaction</span>.</p>
+<p>La gesti&oacute;n de transacciones presenta un aspecto como &eacute;ste:</p>
+<pre class="code">
+ //gesti&oacute;n de transacciones
+ Session sess = factory.openSession();
+ Transacion tx = null;
+ try {
+     tx = sess.beginTransaction();
+	 // hacer algo
+	 ...
+	 tx.commit();
+ } 
+ catch (RuntimeException e) {
+    if (tx!= null) tx.rollback();
+	throw e; // or display error message
+ }
+ finally {
+    sess.close();
+ }
+ </pre>
+<p>No es necesario realizar <span class="codefrag">flush</span> sobre la sesi&oacute;n de forma expl&iacute;cita, ya que la llamada a <span class="codefrag">commit()</span> 
+   provoca la sincronizaci&oacute;n con la base de datos. Una llamada a <span class="codefrag">close()</span> marca el final de una sesi&oacute;n. La principal
+   implicaci&oacute;n de <span class="codefrag">close()</span> es que la conexi&oacute;n JDBC ser&aacute; abandonada por la sesi&oacute;n y devuelta al <em>pool</em> de 
+   conexiones. Este c&oacute;digo Java es portable entre
+   entornos gestionados y no gestionados.</p>
+<p>Otra soluci&oacute;n, m&aacute;s flexible que la anterior, es utilizar la "sesi&oacute;n actual" medidante el m&eacute;todo <span class="codefrag">getCurrentSession()</span> 
+   a trav&eacute;s de la <span class="codefrag">SessionFactory</span>, como en el siguiente ejemplo:</p>
+<pre class="code">
+//gesti&oacute;n de transacciones mediante la "sesi&oacute;n actual"
+ try {
+     sessionFactory.getCurrentSession().beginTransaction();
+	 // hacer algo
+ 	...
+ 	sessionFactory.getCurrentSession().getTransaction().commit();
+ }
+ catch(RuntimeException e) {
+     sessionFactory.getCurrentSession().getTransaction().rollback();
+     throw e; // or display error message
+ }
+</pre>
+<p>&iquest;Qu&eacute; hace la llamada <span class="codefrag">sessionFactory.getCurrentSession()</span>? En primer lugar, &eacute;sta puede realizarse
+    tantas veces como se quiera y donde se quiera, siempre y cuando tengamos almacenada en alguna variable nuestra 
+	instancia de <em>SessionFactory</em>. El m&eacute;todo <span class="codefrag">getCurrentSession()</span> devuelve siempre la unidad de 
+	trabajo actual. Para poder utilizar este m&eacute;todo, deberemos especificar la configuraci&oacute;n de la propiedad <em>current_session_context_class</em> 
+	como <em>thread</em>, en el fichero <span class="codefrag">hibernate.cfg.xml</span>, de la siguiente forma:</p>
+<pre class="code"> 
+	  &lt;property name="current_session_context_class"&gt;thread&lt;/property&gt;
+	
+	</pre>
+<p>Una sesi&oacute;n comienza cuando se la llama mediante <span class="codefrag">getCurrentSession()</span>. En ese momento Hibernate la enlaza con el 
+   hilo de ejecuci&oacute;n (<em>thread</em>) actual. Cuando la transacci&oacute;n finaliza, realizando una operaci&oacute;n <em>commit</em> o <em>rollback</em>, 
+   entonces Hibernate desvincula la sesi&oacute;n del hilo de ejecuci&oacute;n y la cierra (por lo que no es necesario realizar una llamda expl&iacute;cita a 
+   <span class="codefrag">close()</span> para la sesi&oacute;n). Si volvemos a realizar una llamada a <span class="codefrag">getCurrentSession()</span>, obtendremos una nueva 
+   sesi&oacute;n y podremos comenzar una nueva unidad de trabajo.
+</p>
+<p>Notar que para el primer caso debemos seleccionar <span class="codefrag">org.hibernate.transaction.JDBCTransactionFactory</span>, como valor
+   de la propiedad <span class="codefrag">org.hibernate.transaction.factory_class</span> (cosa que no es necesaria, ya que es la opci&oacute;n por
+   defecto). En el segundo caso (cuando utilizamos <span class="codefrag">getCurrentSession()</span> tenemos que utilizar la variable
+   <span class="codefrag">hibernate.current_session_context_class</span> con el valor <span class="codefrag">thread</span>.</p>
+</div>
+
+
+<a name="N10443"></a><a name="Operaciones+con+objetos+persistentes"></a>
+<h2 class="underlined_10">Operaciones con objetos persistentes</h2>
+<div class="section">
+<p>Hibernate es una ORM que no solamente aisla al desarrollador de los detalles de implementaci&oacute;n de
+   la base de datos subyacente, sino que permite una gesti&oacute;n del estado de los objetos. Esto constituye una 
+   vista orientada a objetos de la persistencia en las aplicaciones Java.
+</p>
+<p>En otras palabras, los desarrolladores de aplicaciones con Hibernate deber&iacute;an pensar siempre en el estado 
+   de sus objetos, y no necesariamente en la ejecuci&oacute;n de sentencias SQL. A continuaci&oacute;n veremos algunas de 
+   las operaciones que podemos realizar con objetos persistentes dentro de una sesi&oacute;n de Hibernate.
+</p>
+<p>
+<strong>C&Oacute;MO HACER QUE UN OBJETO SEA PERSISTENTE</strong>
+</p>
+<p>Lo primero que querremos hacer con una <span class="codefrag">Session</span> es hacer que un 
+  nuevo objeto <em>transient</em> se convierta en persistente, utilizando el m&eacute;todo <span class="codefrag">save()</span>:</p>
+<pre class="code">
+  Usuario user = new Usuario(); //user aqu&iacute; es transient (no persistente)
+  user.getNombre().setNombre("Juan"); 
+  user.getNombre().setApellidos("Penalva"); 
+  Session session= sessions.openSession(); //sessions es de tipo SessionFactory 
+  Transaction tx = session.beginTransaction(); 
+  session.save(user); 
+  tx.commit(); //sincronizaci&oacute;n con la BD
+  session.close(); //liberamos la conexi&oacute;n con la BD
+</pre>
+<p>Una llamada a <span class="codefrag">save()</span> hace que la instancia <em>transient</em> 
+	de <span class="codefrag">Usuario</span> se convierta en persistente. En ese momento, se asocia 
+  con la <span class="codefrag">Session</span> actual. Sin embargo, todav&iacute;a no se ha ejecutado 
+  ninguna sentencia <span class="codefrag">INSERT</span> de SQL. Una <span class="codefrag">Session</span> Hibernate 
+  nunca ejecuta ninguna sentencia SQL hasta que sea absolutamente necesario.</p>
+<p>Tambi&eacute;n podemos utilizar <span class="codefrag">persist()</span> en vez de <span class="codefrag">save</span>. O tambi&eacute;n 
+   una versi&oacute;n sobrecargada de <span class="codefrag">save</span> que permite 
+   asignar un identificador. Por ejemplo: <span class="codefrag">session.save(user, new Long(3));</span>
+</p>
+<p>Los cambios realizados sobre los objetos persistentes se sincronizan cuando hacemos <span class="codefrag">commit()</span>
+   sobre la transacci&oacute;n Hibernate. En este caso, Hibernate obtiene una conexi&oacute;n JDBC y lanza una &uacute;nica 
+   sentencia SQL<span class="codefrag"> INSERT</span>. Finalmente, se cierra la <span class="codefrag">Session</span> y se libera la conexi&oacute;n JDBC.</p>
+<p>Hay que remarcar que es mejor (aunque no es indispensable) inicializar completamente 
+  la instancia de<span class="codefrag"> Usuario</span> antes de asociarla con una <span class="codefrag">Session</span>. 
+  La sentencia SQL <span class="codefrag">INSERT</span> contiene los valores almacenados en el 
+  objeto en el momento en el que se llama a <span class="codefrag">save()</span>. Por supuesto, 
+  podemos modificar el objeto despu&eacute;s de llamar a <span class="codefrag">save()</span>, 
+  y los cambios se propagar&aacute;n a la base de datos como una sentencia SQL 
+  <span class="codefrag">UPDATE</span>.</p>
+<p>
+<strong>C&Oacute;MO ACTUALIZAR EL ESTADO PERSISTENTE DE UNA INSTANCIA  <em>DETACHED</em></strong>
+</p>
+<p>Si modificamos la instancia <span class="codefrag">user</span> anterior despu&eacute;s de cerrar la sesi&oacute;n, 
+  las modificaciones no tendr&aacute;n efecto sobre su representaci&oacute;n persistente 
+  en la base de datos. Cuando se cierra la sesi&oacute;n, <span class="codefrag">user</span> se 
+  convierte en una instancia <em>detached</em>, que puede volver a asociarse con 
+  una nueva <span class="codefrag">Session</span>, llamando a <span class="codefrag">update()</span>, o <span class="codefrag">lock()</span>.</p>
+<p>El m&eacute;todo <span class="codefrag">update()</span> fuerza una actualizaci&oacute;n del 
+  estado persistente de objeto en la base de datos, lanzando una SQL <span class="codefrag">UPDATE</span>:</p>
+<pre class="code"> 
+user.setClave("secret");
+Session sessionDos = sessions.openSession();
+Transaction tx = sessionDos.beginTransaction();
+sessionDos.update(user);
+user.setLogin("Juanito");
+tx.commit();
+sessionDos.close();
+</pre>
+<p>No importa si el objeto se modifica antes o despu&eacute;s de que sea pasado 
+  como par&aacute;metro de <span class="codefrag">update()</span>. Lo importante es que la llamada 
+  a <span class="codefrag">update()</span> se utiliza para reasociar la instancia <em>detached</em> a la 
+  nueva <span class="codefrag">Session</span> (y transacci&oacute;n actual) y le indica a Hibernate 
+  el cambio en el estado del objeto (el objeto se trata como <em><strong>dirty</strong></em>, concepto que explicaremos un poco m&aacute;s adelante), para sincronizar el estado actualizado con la base de datos.</p>
+<p>Una llamada a <span class="codefrag">lock()</span> asocia el objeto con la <span class="codefrag">Session</span> 
+  sin forzar una actualizaci&oacute;n: </p>
+<pre class="code">
+Session sessionDos = sessions.openSession();
+Transaction tx = sessionDos.beginTransaction();
+sessionDos.lock(user, LockMode.NONE);
+user.setClave("secret");
+user.setLogin("Juanito");
+tx.commit();
+sessionDos.close();
+</pre>
+<p>En este caso, s&iacute; importa si los cambios se realizan antes o despu&eacute;s 
+  de que el objeto haya sido asociado con la sesi&oacute;n. Los cambios hechos 
+  antes de la llamada a <span class="codefrag">lock()</span> no se propagan a la base de datos; 
+  solamente debemos utilizar <span class="codefrag">lock()</span> si estamos seguros de que la 
+  instancia <em>detached</em> no ha sido modificada. Especificando <span class="codefrag">LockMode.NONE</span>, estamos indicando a Hibernate que no realice una comprobaci&oacute;n de la versi&oacute;n, ni obtenga ning&uacute;n nivel de bloqueo cuando reasocie el objeto con la Session (se podr&iacute;a haber utilizado <span class="codefrag">LockMode.READ</span> o <span class="codefrag">LockMode.UPGRADE</span>, 
+  para realizar una comprobaci&oacute;n de versiones y obtener un bloqueo de lectura 
+  o actualizaci&oacute;n, respectivamente).</p>
+<p>
+<strong>C&Oacute;MO RECUPERAR UN OBJETO PERSISTENTE</strong>
+</p>
+<p>La <span class="codefrag">Session</span> tambi&eacute;n se utiliza para hacer consultas  
+  a la base de datos y recuperar objetos persistentes existentes:</p>
+<pre class="code">
+Session session = sessions.openSession();
+Transaction tx = session.beginTransaction();
+int userID = 1234;
+Usuario user = (Usuario) session.get(Usuario.class, new Long(userID);
+tx.commit();
+session.close();
+</pre>
+<p>El objeto recuperado <span class="codefrag">user</span> puede pasarse ahora a la capa de presentaci&oacute;n 
+  para usarse fuera de la transacci&oacute;n como una instancia <em>detached</em> 
+  (despu&eacute;s de que la sesi&oacute;n se haya cerrado). Si no se encuentra 
+  ning&uacute;na fila en la tabla con el identificador proporcionado, el m&eacute;todo 
+  <span class="codefrag">get()</span> devuelve <span class="codefrag">null</span>.</p>
+<p>Tambi&eacute;n se podr&iacute;a utilizar el m&eacute;todo <span class="codefrag">load()</span> 
+  (de hecho es anterior a <span class="codefrag">get()</span>, que fu&eacute; a&ntilde;adido al 
+  API de Hibernate con posterioridad). Las diferencias son:</p>
+<ul>
+  
+<li>Si <span class="codefrag">load()</span> no puede encontrar el objeto en la cach&eacute; o 
+    en la base de datos, se lanza una excepci&oacute;n. El m&eacute;todo <span class="codefrag">load()</span> 
+    nunca devuelve <span class="codefrag">null</span>. El m&eacute;todo <span class="codefrag">get()</span> devuelve 
+    <span class="codefrag">null</span> si el objeto no puede encontrarse.</li>
+
+<li>El m&eacute;todo <span class="codefrag">load()</span> puede devolver un <em>proxy</em> en vez de la 
+    instancia persistente real. Por otro lado <span class="codefrag">get()</span> nunca devuelve 
+    un <em>proxy</em>. Un <em>proxy</em> es un "sustituto" de un objeto 
+    cuando se accede a &eacute;l por vez primera.</li>
+
+</ul>
+<p>Elegir entre <span class="codefrag">get()</span> y <span class="codefrag">load()</span> es f&aacute;cil: si estamos 
+  seguros de que el objeto persistente existe, y su no existencia puede considerarse 
+  excepcional, entonces <span class="codefrag">load()</span> es una buena opci&oacute;n. Si no 
+  estamos seguros de que haya una instancia persistente con el identificador dado, 
+  la mejor opci&oacute;n es utilizar<span class="codefrag"> get() </span>y comprobar el que el 
+  valor devuelto no es <span class="codefrag">null</span>. El uso de <span class="codefrag">load()</span> tiene 
+  otra implicaci&oacute;n m&aacute;s: la aplicaci&oacute;n puede recuperar una 
+  referencia v&aacute;lida (<em>proxy</em>) a una instancia persistente sin acceder 
+  a la base de datos para recuperar su estado persistente. De forma que <span class="codefrag">load()</span> 
+  podr&iacute;a no lanzar una excepci&oacute;n al no encontrar el objeto persistente 
+  en la cach&eacute; o en la base de datos; la excepci&oacute;n se lanzar&iacute;a 
+  m&aacute;s tarde, cuando se accediera al <em>proxy</em>.</p>
+<div class="frame note">
+<div class="label">Importante</div>
+<div class="content"> Tenemos que tener en cuenta que las instancias asociadas (forma parte
+   de una relaci&oacute;n de asociaci&oacute;n entre dos entidades) o las colecciones de elementos <strong>NO son
+   seleccionadas</strong> para las sentencias SQL <em>UPDATE</em>, a menos que, por ejemplo, definamos un estilo
+   de "cascada" para la asociaci&oacute;n. Hablaremos de las asociaciones y de las operaciones en "cascada" en
+   la siguiente sesi&oacute;n. 
+</div>
+</div>
+<p>Esto plantea una cuesti&oacute;n importante y es: <strong>&iquest;cu&aacute;ntos</strong> elementos deber&iacute;a cargar (en memoria) Hibernate desde
+   la base de datos y <strong>cu&aacute;ntas sentencias SQL</strong> debe utilizar para ello?. Esto depender&aacute; de la estrategia
+   de <strong><em>fetching</em></strong> utilizada. Hablaremos sobre las estrategias de <em>fetching</em> en la &uacute;ltima sesi&oacute;n.
+</p>
+<p>
+<strong>C&Oacute;MO ACTUALIZAR UN OBJETO PERSISTENTE</strong>
+</p>
+<p>Cualquier objeto persistente devuelto por <span class="codefrag">get()</span>, o cualquier otro 
+  tipo de consulta, puede ser modificado, y su estado se sincronizar&aacute; con 
+  la base de datos gracias a un mecanismo denominado <em><strong>automatic dirty checking</strong></em>. 
+  Consiste en Hibernate sigue la pista y se anota los cambios realizados 
+  sobre un objeto persistente mientras siga estando en dicho estado, es decir, mientras siga dentro de una sesi&oacute;n, 
+  de forma que no tenemos que indicar 
+  de forma expl&iacute;cita a Hibernate que actualice la base de datos cuando 
+  modificamos el estado de un objeto dentro de dicha unidad de trabajo.</p>
+<pre class="code">
+Session session = sessions.openSession();
+Transaction tx = session.beginTransaction();
+int userID = 1234;
+Usuario user = (Usuario) session.get(Usuario.class, new Long(userID);
+user.setClave("secret");
+tx.commit();
+session.close();
+</pre>
+<p>Primero recuperamos el objeto de la base de datos con el identificador dado. 
+  Modificamos el objeto, y estas modificaciones se propagan a la base de datos 
+  cuando se llama a <span class="codefrag">tx.commit()</span>. Por supuesto, tan pronto como cerremos 
+  la <span class="codefrag">Session</span>, la instancia se considerar&aacute; <em>detached</em>.</p>
+<p>
+<strong>C&Oacute;MO HACER QUE UN OBJETO PASE DE <em>PERSISTENT</em> A <em>TRANSIENT</em></strong>
+</p>
+<p>Tambi&eacute;n podemos hacer que un objeto persistente se convierta en <em>transient</em>, 
+  eliminando su estado persistente de la base de datos, utilizando el m&eacute;todo 
+  <span class="codefrag">delete()</span>:</p>
+<pre class="code">
+Session session = sessions.openSession();
+Transaction tx = session.beginTransaction();
+int userID = 1234;
+Usuario user = (Usuario) session.get(Usuario.class, new Long(userID);
+session.delete(user);
+tx.commit();
+session.close();
+</pre>
+<p>La sentencia SQL <span class="codefrag">DELETE</span> se ejecutar&aacute; solamente cuando la 
+  <span class="codefrag">Session</span> se sincronice con la base de datos al final de la transacci&oacute;n. 
+  Despu&eacute;s de cerrar la <span class="codefrag">Session</span>, el objeto <span class="codefrag">user</span> se considera 
+  como una instancia <em>transient</em> ordinaria. La instancia <em>transient</em> 
+  ser&aacute; destruida por el recolector de basuras si ya no est&aacute; referenciada 
+  por ning&uacute;n otro objeto. En ese momento se borrar&aacute;n la instancia 
+  en memoria del objeto, y la fila de la base de datos.</p>
+<p>
+<strong>C&Oacute;MO HACER QUE UN OBJETO PASE DE <em>DETACHED </em>A <em>TRANSIENT</em></strong>
+</p>
+<p>Finalmente, podemos hacer que una instancia <em>detached</em>, se convierta 
+  en <em>transient</em>, borrando su estado persistente de la base de datos:</p>
+<pre class="code">
+Session session = sessions.openSession();
+Transaction tx = session.beginTransaction();
+session.delete(user);
+tx.commit();
+session.close();
+</pre>
+<p>En este caso, la llamada a <span class="codefrag">delete()</span> hace dos cosas: asocia el 
+  objeto con la <span class="codefrag">Session</span> y a continuaci&oacute;n incluye dicho objeto 
+  para ser borrado cuando realicemos la operaci&oacute;n <span class="codefrag">tx.commit()</span>.</p>
+<p>Otra operaci&oacute;n que podemos realizar con los objetos persistentes es la de distintos tipos 
+   de consultas (<em>queries</em>), y que trataremos en la sesi&oacute;n 4.
+</p>
+</div>
+
+
+<p class="pageBreakAfter"></p>
+
+</div>
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+        Copyright &copy;
+         2006-2007 Depto. CCIA</div>
+</div>
+</body>
+</html>

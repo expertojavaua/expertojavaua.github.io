@@ -1,0 +1,254 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0052)http://www.dccia.ua.es/j2ee/mensajes/apuntes/sesion3.htm -->
+<HTML><HEAD><TITLE>Mensajes en Java</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=iso-8859-1">
+<META content=Sco name=Author><LINK href="sesion23_archivos/apuntes.css"
+type=text/css rel=stylesheet>
+<META content="Microsoft FrontPage 4.0" name=GENERATOR></HEAD>
+<BODY>
+<H1>Tema 2: JMS: Java Message Service (continuación)</H1>
+
+<H2>2.5.Browser de Mensajes</H2>
+<P>En el tema anterior vimos como recibir mensajes de una cola, pero supongamos que solo queremos 
+consultar la cola. Esto se puede hacer reemplazando los objetos <B>QueueReceiver</B> con 
+objetos <B>QueueBrowswer</B>. En el método <B>init()</B> del ejemplo
+<A href="sesion23_archivos/jms/queue/QueueBrowse.java.txt">QueueBrowse.java</A> se crea uno de
+estos objetos:
+<PRE class=codigo>
+qbrowser = qsession.<B>createBrowser</B>(queue);
+</PRE>
+<P>En el método <B>displayQueue()</B> se muestra como consultar la cola. En primer lugar se obtiene 
+un <B>Enumeration</B> con los mensajes:</P>
+<PRE class=codigo>
+Enumeration e = qbrowser.<B>getEnumeration();</B>
+</PRE>
+<P>A partir de aquí se itera obteniendo las propiedades del mensaje, tales como la prioridad, el
+identificador, etc...</P>
+<PRE class=codigo>
+...
+if (! e.hasMoreElements()) {
+      System.out.println(&quot;There are no messages on this queue.&quot;);
+    } else {
+      System.out.println(&quot;Queued JMS Messages: &quot;);
+      while (e.hasMoreElements()) {
+        m = (Message) e.nextElement();
+        System.out.println(&quot;Message ID &quot; + m.<B>getJMSMessageID()</B> +
+                           &quot; delivered &quot; + new Date(m.<B>getJMSTimestamp()</B>) +
+                           &quot; to &quot; + m.<B>getJMSDestination()</B>);
+        System.out.print(&quot;\tExpires        &quot;);
+        if (m.getJMSExpiration() &gt; 0) {
+          System.out.println( new Date( m.<B>getJMSExpiration()</B>));
+            }
+        else
+          System.out.println(&quot;never&quot;);
+        System.out.println(&quot;\tPriority       &quot; + m.<B>getJMSPriority()</B>);
+        System.out.println(&quot;\tMode           &quot; + (
+                      m.getJMSDeliveryMode() == DeliveryMode.PERSISTENT ?
+                                       &quot;PERSISTENT&quot; : &quot;NON_PERSISTENT&quot;));
+        System.out.println(&quot;\tCorrelation ID &quot; + m.<B>getJMSCorrelationID()</B>);
+        System.out.println(&quot;\tReply to       &quot; + m.<B>getJMSReplyTo()</B>);
+        System.out.println(&quot;\tMessage type   &quot; + m.<B>getJMSType()</B>);
+        if (m instanceof TextMessage) {
+          System.out.println(&quot;\tTextMessage    \&quot;&quot; + ((TextMessage)m).<B>getText()</B> + &quot;\&quot;&quot;);
+        }
+      }
+    }
+
+</PRE>
+
+<P>Estos métodos <B>getXXXX</B> tienen sus contrapartidas <B>setXXXX</B>. De todas maneras estas 
+propiedades se establecen en el momento en que enviamos un mensaje.</P>
+
+<H2>2.6. Transacciones en JMS</H2>
+<P>El objetivo de las transacciones en este contexto es tratar un grupo de mensajes que se producen
+o consumen <I>como una unidad atómica</I>. Esto implica que en el momento en que una aplicacion realiza
+el <I>commit</I> de una transacción, todos los mensajes que recibió durante esta transacción se
+borran del sistema de mensajes y todos los que envió son distribuidos.</P> 
+
+<P>Por el contrario, si se realiza
+un <I>rollback</I> los mensajes recibidos son devueltos al sistema de mensajes y los que envió son
+descartados. Si un suscriptor de tópicos hace un <I>rollback</I> de un mensaje éste se re-envía al 
+tópico. Cuandi un receptor de mensajes PTP hace el <I>rollback</I> el mensaje se re-envía a la 
+cola para que otro consumidor lo pueda recibir.</P>
+
+<P>La forma más directa de usar transacciones en JMS es crear una <I>sesión transaccional</I>, lo
+cual implica poner un flag a verdadero en el momento en que creamos la sesión. Tomando como
+referencia el ejemplo <A href="sesion23_archivos/jms/drawdemo/JMSDrawDemo.java.txt">JMSDrawDemo.java</A>,
+que iremos detallando durante esta sección, en el método <B>initJMS()</B> que es donde se inicia el 
+contexto, se crea la sesión no-transaccional y otra transaccional, en un esquema Pub/sub:</P>
+<PRE class=codigo>
+...
+session = connection.createTopicSession(<B>false</B>, Session.AUTO_ACKNOWLEDGE);
+sessionTX = connection.createTopicSession(<B>true</B>, Session.AUTO_ACKNOWLEDGE);
+...
+</PRE>
+<P>donde <B>session</B> y <B>sessionTX</B> son objetos <B>TopicSession</B>. A partir de este punto los
+<B>TopicPublisher</B> que se creeen serán no-transaccionales o transaccionales en función de si
+se crean a partir de una sesión no-transaccional o transaccional:</P>
+<PRE class=codigo>
+topic = (Topic) ctx.lookup(TOPIC);
+publisher = session.createPublisher(topic);
+publisherTX = sessionTX.createPublisher(topic);
+</PRE>
+<P>En lo que respecta al objeto <B>TopicSubscriber</B> llamado <B>subscriber</B> no haremos tal 
+distinción y solamente nos interesa especificar si es de tipo <I>durable</I> o no. En el primer 
+caso JMS almacena el mensaje en un medio persistente (como una BD) hasta asegurarse de que ha sido 
+entregado o ha expirado, incluso si el suscriptor no estaba activo en el momento en que se envió
+el mensaje. A continuación se registra el oyente, se crea un mensaje y se inicia la conexión:</P>
+<PRE class=codigo>
+if (durableSubscriberID == null) {
+      subscriber = session.createSubscriber(topic, &quot;TRUE&quot;, noLocal);
+    } else {
+      subscriber = session.<B>createDurableSubscriber</B>(topic, durableSubscriberID);
+    }
+subscriber.<B>setMessageListener</B>(this);
+msg = session.<B>createMessage</B>();
+connection.<B>start</B>();
+</PRE>
+
+<P>Esta aplicación ejemplo se lanza desde dos clientes (ver instrucciones HTML en el directorio 
+de ejemplos de JMS). Cada cliente crea un panel en donde se puede seleccionar si la sesión va a ser 
+transaccional o no y después puede pinchar para añadir iconos.
+Cada icono se traduce en un mensaje que se publica. Esto se hace en el método <B>publishPoint</B> que 
+recibe como argumento las coordenadas donde hemos pinchado con el ratón. A partir de estas coordenadas 
+construye un mensaje y almacena todos los puntos enviados en el vector <B>pointsSent</B>:</P>
+<PRE class=codigo>
+private void publishPoint(int x, int y)
+  {
+    try {
+      msg.<B>setIntProperty</B>(&quot;x&quot;, x);
+      msg.<B>setIntProperty</B>(&quot;y&quot;, y);
+      <B>pointsSent</B>.addElement(new Point(x, y));
+      if (isTransacted) {
+        publisherTX.publish(msg, deliveryMode(), 5, 0);
+      } else {
+        publisher.publish(msg, deliveryMode(), 5, 0);
+      }
+    } catch (JMSException jmse) {
+      jmse.printStackTrace();
+    }
+  }
+</PRE>
+<P>El mensaje es publicado de forma transaccional o no según el caso. El método <B>setIntProperty()</B> 
+establece un campo de propiedad (<I>property field</I>).</P>
+<P>Una vez publicado, el suscriptor lo recibe a través del método <B>onMessage()</B> que obtiene 
+con <B>getIntProperty()</B> los enteros y pinta una imagen de una furgoneta 
+(caso no-transaccional) o un asterisco (caso transaccional):</P>
+<PRE class=codigo>
+public void onMessage(Message msg)
+  {
+    try {
+      String command = msg.getStringProperty(&quot;command&quot;);
+      if (command != null &amp;&amp; command.equals(&quot;clearScreen&quot;)) {
+        clearScreen();
+      } else {
+        int x = msg.<B>getIntProperty</B>(&quot;x&quot;);
+        int y = msg.<B>getIntProperty</B>(&quot;y&quot;);
+        Point p = new Point(x,y);
+        updateImage(p);
+      }
+    } catch (JMSException e) {
+      e.printStackTrace();
+    }
+  }
+</PRE>
+<P>En el panel de cada cliente hay un botón para hacer <I>commit</I> y otro para hacer 
+<I>rollback</I>. Con ellos se llama respectivamente a los métodos <B>doCommit()</B> y 
+<B>doRollback()</B> desde los que se invocan a los métodos <B>commit()</B> y <B>rollback()</B> de 
+la sesión:</P>
+<PRE class=codigo>
+  private void doCommit()
+  {
+    try {
+      sessionTX.<B>commit();</B>
+      commitButton.setEnabled(false);
+      rollbackButton.setEnabled(false);
+      repaint();
+    } catch (JMSException jmse) {
+      jmse.printStackTrace();
+    }
+  }
+
+private void doRollback()
+  {
+    try {
+      sessionTX.<B>rollback();</B>
+      pointsSent.removeAllElements();
+      commitButton.setEnabled(false);
+      rollbackButton.setEnabled(false);
+      offScreenImage = null;
+      repaint();
+    } catch (JMSException jmse) {
+      jmse.printStackTrace();
+    }
+  }
+</PRE>
+<P> En una sesión transaccional, los asteriscos no se pintan hasta que se hace <I>commit</I> y se
+borran del panel si se decide hacer <I>rollback</I>.
+
+<H2>2.7. Interacción con Aplicaciones</H2>
+<P>Vamos a ver un ejemplo de un servlet que interacciona, a través de un mensaje MAP (pares de
+atributo valor) con un cliente que a su vez invoca a un
+EJB para realizar una tarea concreta. El código del cliente se encuentra en el fichero
+<A href="sesion23_archivos/jms/trader/TraderReceive.java.txt">TraderReceive.java</A>. También en 
+este ejemplo utilizamos transacciones, pero a través del package <B>javax.transaction</B>. Se 
+usa un esquema Pub/sub</P>
+
+<P>En el método <B>init()</B> se acaba creando un objeto <B>Trader</B> a partir de una sesión 
+EJB, y una transacción:</P>
+<PRE class=codigo>
+public void init(Context ctx, String topicName)
+       throws NamingException, JMSException, RemoteException, CreateException
+  {
+    connectionFactory = (TopicConnectionFactory) ctx.lookup(JMS_FACTORY);
+
+    connection = connectionFactory.createTopicConnection();
+    connection.setClientID(&quot;traderReceive&quot;);
+    session = connection.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
+    topic = (Topic) ctx.lookup(topicName);
+    subscriber = session.createDurableSubscriber(topic, &quot;traderReceive&quot;);
+    <B>TraderHome</B> brokerage = (TraderHome) ctx.lookup(EJB_HOME);
+    <B>ejbTrader</B> = brokerage.create();
+    tx = (<B>javax.transaction.UserTransaction</B>) ctx.lookup(TX);
+    connection.start();
+  }
+</PRE>
+<P>La recepción y tratamiento de los mensajes se realiza en el método <B>processMessages()</B> en 
+donde:</P>
+<P>1. Nos quedamos en modo recepción:</P>
+<PRE class=codigo>
+Message msg = subscriber.<B>receive();</B>
+</PRE>
+<P>2. Iniciamos la transacción:</P>
+<PRE class=codigo>
+tx.<B>begin();</B>
+</PRE>
+
+<P>3. Leemos el contenido del objeto <B>MapMessage</B>:</P>
+<PRE class=codigo>
+<B>MapMessage</B> m = (MapMessage) msg;
+String customerName = m.<B>getString</B>(&quot;CustomerName&quot;);
+String tradeType = m.<B>getString</B>(&quot;TradeType&quot;);
+String symbol = m.<B>getString</B>(&quot;Symbol&quot;);
+int numberOfShares = m.<B>getInt</B>(&quot;Shares&quot;);
+</PRE>
+
+<P>4. Detectamos el tipo de comando y lanzamos las órden correspondiente. Si ésta tiene
+éxtito entonces se confirma la transacción y en caso contrario se deshace:</P>
+<PRE class=codigo>
+...
+if (<B>&quot;sell&quot;</B>.equalsIgnoreCase(tradeType)) {
+  tr = ejbTrader.<B>sell</B>(symbol, numberOfShares);
+  System.out.println(&quot;Sold &quot; + tr.<B>getNumberTraded()</B>);
+  tx.<B>commit();</B>
+} else {
+  System.out.println(&quot;Rolling Back Transaction&quot;);
+  tx.<B>rollback();</B>
+  System.out.println(&quot;Unknown TradeType: &quot;+tradeType);
+}
+...
+</PRE>
+
+
+
+</BODY></HTML>

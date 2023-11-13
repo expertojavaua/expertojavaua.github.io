@@ -1,0 +1,334 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="Nacho">
+   <meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+   <title>Tema 3: Conceptos avanzados</title>
+<link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+</head>
+<body>
+
+<h2>3.3. JDBC y servlets: pooling de conexiones</h2>
+<p>JDBC proporciona una librería para acceso a bases de datos relacionales, de
+forma que podemos acceder a diferentes tipos de bases de datos con la misma
+sintaxis, proporcionada por Java. En este apartado se asume que el alumno ya
+conoce JDBC, y sabe cómo conectar con una base de datos (MySQL) y ejecutar
+sentencias SQL sobre ella y obtener resultados. </p>
+
+<p>Abrir una conexión con una base de datos consume un tiempo que, para
+consultas cortas, incluso puede ser mayor que el tiempo empleado luego en
+realizar la consulta en sí. Con esto, puede resultar útil reutilizar un objeto
+<i>Connection</i> que ya esté previamente abierto, para realizar diversas
+operaciones secuenciales sobre una base de datos. Sobre este esquema añadimos
+una funcionalidad más: la eficiencia del sistema puede aumentar mucho si
+mantenemos varios objetos <i>Connection</i> abiertos, y vamos asignando objetos
+libres ante nuevas peticiones, y liberando los que ya hayan concluido. Eso es lo
+que se conoce como un <i>pooling</i> de conexiones. </p>
+
+<p>La siguiente clase, <i>PoolConexiones</i>, gestiona un conjunto de objetos <i>Connection,
+</i>controlando qué operaciones van terminando para liberar objetos, y
+reasignarlos ante nuevas peticiones. </p>
+
+<pre class="codigo">import java.sql.*;
+import java.util.*;
+
+public class PoolConexiones
+{
+   <b>// Maximo numero de conexiones permitidas</b>
+   int maxConexiones;		
+   <b>// Nombre de la base de datos a la que se conecta</b>
+   String nombreBD;		
+   <b>// Conjunto de conexiones</b>
+   Connection[] conexiones;	
+   <b>// Conexiones disponibles a true, y ocupadas a false</b>
+   boolean[] disponibles;		
+	
+   <b>// Constructor
+</b>	
+   public PoolConexiones(int maxConexiones, String nombreBD) 
+   throws SQLException
+   {
+	this.maxConexiones = maxConexiones;
+	this.nombreBD = nombreBD;
+	conexiones = new Connection[maxConexiones];
+	disponibles = new boolean[maxConexiones];
+
+	for (int i = 0; i &lt; maxConexiones; i++)
+	{
+		conexiones[i] = nuevaConexion();
+		disponibles[i] = true;
+	}
+   }
+	
+   <b>// Crea una nueva conexion
+</b>	
+   private Connection nuevaConexion() throws SQLException
+   {
+	try
+	{
+		Class.forName(&quot;org.gjt.mm.mysql.Driver&quot;);
+		Connection con = 
+			DriverManager.getConnection(
+			&quot;jdbc:mysql://localhost/&quot; + 
+			nombreBD, &quot;root&quot;, &quot;mysql&quot;);
+		return con;
+	} catch (Exception e) {
+		throw new SQLException (&quot;Error con driver&quot;);
+	}
+   } 
+	
+   <b>// Obtiene una conexion libre, 
+   // o devuelve null si no hay ninguna
+</b>	
+   public synchronized Connection conexionLibre()
+   {
+	for (int i = 0; i &lt; maxConexiones; i++)
+		if (disponibles[i])
+		{
+			disponibles[i] = false;
+			return conexiones[i];
+		}
+	return null;
+   }
+	
+<b>   // Libera una conexion
+</b>	
+   public synchronized void liberaConexion(Connection conexion)
+   {
+	for (int i = 0; i &lt; maxConexiones; i++)
+		if (conexiones[i].equals(conexion))
+		{
+			try
+			{
+			   if (conexiones[i].isClosed())
+			      conexiones[i] = nuevaConexion();
+			   disponibles[i] = true;
+			} catch (Exception ex) {}
+			return;
+		}
+   }
+	
+   <b>// Cierra una conexion
+</b>	
+   public void cierraConexion(int indice)
+   {
+	Connection con = conexiones[indice];
+	try
+	{
+		if (!con.isClosed())
+			con.close();
+	} catch (Exception ex) {}
+   }	
+	
+   <b>// Obtiene el maximo numero de conexiones
+</b>	
+   public int getMaxConexiones()
+   {
+	return maxConexiones;
+   }
+}</pre>
+           
+<ul>
+  <li><i>maxConexiones</i> es el número de conexiones que se manejan</li>
+  <li><i>nombreBD</i> es el nombre de la base de datos a la que se conecta el
+    pooling</li>
+  <li><i>conexiones</i> tiene las conexiones que se manejan (un total de <i>maxConexiones</i>)</li>
+  <li><i>disponibles</i> indica qué conexiones están libres (a <i>true</i>) y
+    cuáles no (a <i>false</i>) </li>
+</ul>
+<p>&nbsp;</p>
+<ul>
+  <li>El constructor crea todas las conexiones del array, con la base de datos
+    que se le pasa como parámetro (llamando al método <i>nuevaConexion() </i>para
+    crear cada una). </li>
+  <li><i>nuevaConexion() </i>obtiene un objeto de tipo <i>Connection</i> contra
+    la base de datos <i>nombreBD</i> a través del driver de MySQL. Se asume un
+    usuario <i>root</i> con password <i>mysql</i>.</li>
+  <li><i>conexionLibre()</i> obtiene una conexión libre, o <i>null</i> si no
+    hay ninguna en el array</li>
+  <li><i>liberaConexion()</i> libera una conexión (pone a <i>true</i> su flag
+    del array <i>disponibles</i>)</li>
+  <li><i>cierraConexion()</i> cierra una conexion</li>
+  <li><i>getMaxConexiones() </i>obtiene el número de conexiones del pooling (el
+    campo <i>maxConexiones</i>)</li>
+</ul>
+<p>&nbsp; </p>
+
+<p>El siguiente servlet utiliza un objeto de tipo <i>PoolConexiones</i>,
+creándolo en su método <i>init()</i>. Con él asigna conexiones vacías ante
+nuevas peticiones de consultas de usuarios. </p>
+
+<pre class="codigo">import java.io.*;
+import java.sql.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
+
+public class ServletPooling extends HttpServlet
+{
+	PoolConexiones pc;
+	
+<b>	// Metodo de inicializacion
+</b>	
+	public void init()
+	{
+		try
+		{
+			pc = new PoolConexiones (30, &quot;prueba&quot;);
+		} catch (Exception ex) {
+			pc = null;
+		}
+	}
+	
+<b>	// Metodo para GET
+</b>	
+	public void doGet(HttpServletRequest request, 
+			  HttpServletResponse response) 
+	throws ServletException, IOException
+	{
+		response.setContentType(&quot;text/html&quot;);
+		
+		PrintWriter out = response.getWriter();
+		
+		if (pc == null)
+		{
+			out.println (&quot;Error con el pooling&quot;);
+			return;
+		}
+
+		try
+		{	
+<b>			// Obtener una conexión libre
+</b><b>	
+</b>			Connection con = null;
+				
+			do
+			{
+				con = pc.conexionLibre();
+			} while (con == null);
+<b>	
+</b><b>			// Realizar una sentencia SQL y obtener 
+			// los resultados
+</b>
+			Statement stmt = con.createStatement();
+
+			ResultSet rs = 
+			 stmt.executeQuery(&quot;SELECT * FROM datos&quot;);
+
+			out.println (&quot;&lt;HTML&gt;&quot;);
+			out.println (&quot;&lt;BODY&gt;&quot;);
+			out.println (&quot;Listado de nombres:&quot;);
+			out.println (&quot;&lt;BR&gt;&lt;BR&gt;&quot;);
+			
+			while (rs.next())
+			{
+			   out.println (rs.getString(&quot;nombre&quot;));
+			   out.println (&quot;&lt;BR&gt;&quot;);
+			}
+
+			out.println (&quot;&lt;/BODY&gt;&quot;);
+			out.println (&quot;&lt;/HTML&gt;&quot;);
+
+			pc.liberaConexion(con);		
+			
+		} catch (Exception ex) {
+			out.println (&quot;ERROR: &quot; + ex.getMessage());
+		}		
+	}
+	
+<b>	// Metodo de finalizacion
+</b>	
+	public void destroy()
+	{
+		for (int i = 0; i &lt; pc.getMaxConexiones(); i++)
+		{
+			pc.cierraConexion(i);
+		}
+	}
+}</pre>
+           
+<p>Ante cada petición, el servlet obtiene una conexión libre del pooling
+(espera hasta encontrarla en el bucle <i>do...while</i>), y con ella obtiene
+todos los campos <i>nombre</i> de la tabla <i>datos</i>, mostrándolos en la
+página. </p>
+
+<p>Aquí se tiene un <a href="ejemplos/avanzado/ejemplopool.war.zip">WAR</a> con una aplicación que utiliza este
+servlet, y aquí un <a href="ejemplos/avanzado/prueba.zip">ZIP</a> con la base de datos de ejemplo. </p>
+
+<p align="left">La base de datos se llama <i>prueba</i>, y tiene una sola tabla <i>datos</i>,
+con un campo <i>nombre </i>(que es el que se busca en el servlet) y uno <i>descripcion</i>.
+Se tienen 2000 registros insertados </p>
+
+<p align="left">En la aplicación, se tiene
+el servlet <i>ServletPooling </i>(que crea un pooling de 30 conexiones), y una variante, <i>ServletPooling2</i>, que
+crea un pooling con una sola conexión. La página <i>index.html</i> utiliza el
+primer servlet para realizar 200 peticiones, y la página <i>index2.html</i>
+utiliza el segundo para lo mismo. La diferencia de tiempos que se estimó es muy
+importante: </p>
+
+<center>
+<table border="1" width="40%">
+  <tr>
+    <td width="50%" align="center">30 conexiones</td>
+    <td width="50%" align="center">65 segundos</td>
+  </tr>
+  <tr>
+    <td width="50%" align="center">1 conexión</td>
+    <td width="50%" align="center">185 segundos</td>
+  </tr>
+</table>
+</center>
+
+<p>Podéis probar el ejemplo, siguiendo estos pasos:</p>
+<ul>
+  <li>Instalar la base de datos. Para ello, si tenéis un usuario creado con
+    login <i>root</i> y password <i>mysql</i>, seguid los pasos siguientes (si
+    no, cambiad dicho login y password por el que tengáis, a la hora de seguir
+    los pasos):
+    <ul>
+      <li>Lanzad el servidor de MySQL</li>
+      <li>Descomprimid el ZIP de la base de datos. Es un fichero de texto con
+        las sentencias para crear la base de datos. Lo que hay que hacer para
+        crearla es pasárselo como entrada al cliente de MySQL:</li>
+    </ul>
+  </li>
+</ul>
+<blockquote>
+  <blockquote>
+    <pre class="codigo">mysql -uroot -pmysql &lt; prueba.sql</pre>
+           
+  </blockquote>
+<ul type="circle">
+  <li>Lanzad el cliente MySQL (si no estáis ya dentro)</li>
+</ul>
+  <blockquote>
+    <pre class="codigo">mysql -uroot -pmysql</pre>
+           
+  </blockquote>
+<ul type="circle">
+  <li>Ejecutad los siguientes comandos, para dar permiso al usuario <i>root</i>
+    sobre la base de datos <i>prueba</i>:</li>
+</ul>
+  <blockquote>
+    <pre class="codigo">GRANT ALL PRIVILEGES ON prueba.* to 
+'root'@'localhost.localdomain' 
+identified by 'mysql';
+
+FLUSH PRIVILEGES;</pre>
+           
+  </blockquote>
+</blockquote>
+<ul>
+  <li>Copiar el fichero WAR en el directorio <i>webapps </i>de Tomcat y
+    reiniciar el servidor</li>
+  <li>Solicitar cada una de las páginas y ver lo que se tarda en cada una:</li>
+</ul>
+<blockquote>
+  <pre class="codigo">http://localhost:8080/ejemplopool/index.html
+http://localhost:8080/ejemplopool/index2.html</pre>
+           
+</blockquote>
+<p>&nbsp;</p>
+
+</body>
+</html>

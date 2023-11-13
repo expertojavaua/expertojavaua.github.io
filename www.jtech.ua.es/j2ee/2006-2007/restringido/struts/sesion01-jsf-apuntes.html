@@ -1,0 +1,890 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.7">
+<meta name="Forrest-skin-name" content="pelt">
+<title>Introducci&oacute;n a JavaServer Faces</title>
+<link type="text/css" href="skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="skin/print.css" rel="stylesheet">
+<link type="text/css" href="skin/profile.css" rel="stylesheet">
+<script src="skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<div class="header">
+<div class="grouplogo">
+<a href="http://www.jtech.ua.es/j2ee"><img class="logoImage" alt="J2EE" src="images/baner_j2ee_izq.gif" title="Curso Especialista Universitario J2EE"></a>
+</div>
+<div class="projectlogoA1">
+<a href="http://www.dccia.ua.es/"><img class="logoImage" alt="Struts y JSF" src="images/baner_j2ee_der.gif" title="Struts y JSF"></a>
+</div>
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="../index.html">M&oacute;dulos</a>
+</li>
+<li class="current">
+<a class="base-selected" href="index.html">Struts y JSF</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<div id="level2tabs"></div>
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<div id="menu">
+<div onclick="SwitchMenu('menu_selected_1.1', 'skin/')" id="menu_selected_1.1Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">JSF y Struts</div>
+<div id="menu_selected_1.1" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="index.html" title="JSF y Struts">&Iacute;ndice</a>
+</div>
+<div onclick="SwitchMenu('menu_selected_1.1.2', 'skin/')" id="menu_selected_1.1.2Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Teor&iacute;a</div>
+<div id="menu_selected_1.1.2" class="selectedmenuitemgroup" style="display: block;">
+<div class="menupage">
+<div class="menupagetitle">Sesion 1</div>
+</div>
+<div class="menuitem">
+<a href="sesion02-jsf-apuntes.html">Sesion 2</a>
+</div>
+<div class="menuitem">
+<a href="roadmap-jsf.html">Roadmap JSF</a>
+</div>
+<div class="menuitem">
+<a href="sesion01-apuntes.html">Sesion 3</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-apuntes.html">Sesion 4</a>
+</div>
+</div>
+<div onclick="SwitchMenu('menu_1.1.3', 'skin/')" id="menu_1.1.3Title" class="menutitle">Ejercicios</div>
+<div id="menu_1.1.3" class="menuitemgroup">
+<div class="menuitem">
+<a href="sesion01-jsf-ejercicios.html">Sesion 1</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-jsf-ejercicios.html">Sesion 2</a>
+</div>
+<div class="menuitem">
+<a href="sesion01-ejercicios.html">Sesion 3</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-ejercicios.html">Sesion 4</a>
+</div>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<div id="credit2"></div>
+</div>
+<div id="content">
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="sesion01-jsf-apuntes.pdf"><img alt="PDF -icon" src="skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1>Introducci&oacute;n a JavaServer Faces</h1>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#Configurar+una+aplicaci%C3%B3n+para+JSF">Configurar una aplicaci&oacute;n para JSF</a>
+<ul class="minitoc">
+<li>
+<a href="#Las+librer%C3%ADas+y">Las librer&iacute;as y taglibs</a>
+</li>
+<li>
+<a href="#Los+ficheros+de+configuraci%C3%B3n">Los ficheros de configuraci&oacute;n</a>
+</li>
+<li>
+<a href="#P%C3%A1ginas+JSF">P&aacute;ginas JSF</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#El+ciclo+de+proceso+de+una+p%C3%A1gina+JSF">El ciclo de proceso de una p&aacute;gina JSF</a>
+</li>
+<li>
+<a href="#Componentes+para+la+interfaz+de+usuario">Componentes para la interfaz de usuario</a>
+<ul class="minitoc">
+<li>
+<a href="#Formularios">Formularios</a>
+</li>
+<li>
+<a href="#Comandos">Comandos</a>
+</li>
+<li>
+<a href="#Componentes+de+entrada">Componentes de entrada</a>
+</li>
+<li>
+<a href="#Componentes+de+salida">Componentes de salida</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Creaci%C3%B3n+de+los+backing+beans">Creaci&oacute;n de los backing beans</a>
+<ul class="minitoc">
+<li>
+<a href="#Definir+la+clase+del+bean">Definir la clase del bean</a>
+</li>
+<li>
+<a href="#Instanciar+los+backing+beans">Instanciar los backing beans</a>
+</li>
+<li>
+<a href="#Vincular+las+propiedades+del+bean+a+la+interfaz+de+usuario">Vincular las propiedades del bean a la interfaz de usuario</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Acciones+y+navegaci%C3%B3n+entre+p%C3%A1ginas">Acciones y navegaci&oacute;n entre p&aacute;ginas</a>
+<ul class="minitoc">
+<li>
+<a href="#Disparar+una+acci%C3%B3n">Disparar una acci&oacute;n</a>
+</li>
+<li>
+<a href="#Decidir+cu%C3%A1l+es+la+p%C3%A1gina+destino">Decidir cu&aacute;l es la p&aacute;gina destino</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Validaci%C3%B3n+de+datos+y+control+de+errores">Validaci&oacute;n de datos y control de errores</a>
+<ul class="minitoc">
+<li>
+<a href="#Validaci%C3%B3n+sint%C3%A1ctica%3A+conversores">Validaci&oacute;n sint&aacute;ctica: conversores</a>
+</li>
+<li>
+<a href="#Validaci%C3%B3n+sem%C3%A1ntica%3A+validadores">Validaci&oacute;n sem&aacute;ntica: validadores</a>
+</li>
+<li>
+<a href="#Mostrar+los+errores+de+los+datos+introducidos">Mostrar los errores de los datos introducidos</a>
+</li>
+<li>
+<a href="#Definir+mensajes+de+error+propios">Definir mensajes de error propios</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#El+estado+actual+de+JSF">El estado actual de JSF</a>
+</li>
+</ul>
+</div>
+		
+
+<p>JavaServer Faces (JSF) es un <em>framework</em> para el desarrollo de interfaces web en Java que ofrece al desarrollador:</p>
+
+
+<ul>
+   
+<li>
+      
+<strong>Un conjunto est&aacute;ndar de componentes gr&aacute;ficos </strong>(<em>widgets</em>) para la web, al estilo de los componentes de Swing.  En JavaServer Faces los componentes se definen mediante <em>taglibs</em> propias.</li>
+   
+<li>
+      
+<strong>Vinculaci&oacute;n entre dichos componentes y <em>beans</em> Java</strong> denominados <em>backing beans</em>. Los componentes muestran la informaci&oacute;n que hay en los <em>backing beans</em> y la informaci&oacute;n introducida en los componentes modifica su contenido.</li>
+
+   
+<li>
+      
+<strong>Soporte para validaci&oacute;n y conversi&oacute;n autom&aacute;tica de los datos</strong> introducidos en los componentes web.</li>
+
+   
+<li>
+      
+<strong>Un modelo de navegaci&oacute;n</strong> en el que el desarrollador puede decidir qu&eacute; p&aacute;gina JSP se mostrar&aacute; a continuaci&oacute;n en funci&oacute;n de cu&aacute;l es la p&aacute;gina actual y el resultado de la &uacute;ltima acci&oacute;n realizada.</li>
+
+   
+<li>
+      
+<strong>Soporte para la internacionalizaci&oacute;n</strong> de las aplicaciones.</li>
+
+</ul>
+
+
+<p>El framework JSF implementa un MVC (Modelo, Vista, Controlador), en donde la <em>Vista</em> se compone de p&aacute;ginas JSP con etiquetas espec&iacute;ficas JSF, el <em>Modelo</em> est&aacute; representado por los denominados <em>backing beans</em>, beans Java definidos en el fichero de configuraci&oacute;n y asociados a las p&aacute;ginas JSF y el <em>Controlador</em> se implementa mediante m&eacute;todos en los <em>backing beans</em> que son llamados desde acciones disparadas por eventos de usuario (pulsar un bot&oacute;n o un enlace).</p>
+
+
+<p>En ciertas funcionalidades JSF se solapa con Struts. Por ejemplo, ambos <em>frameworks</em> implementan una arquitectura MVC (aunque no exactamente de la misma forma, siendo adem&aacute;s la de Struts m&aacute;s sofisticada) y una serie de etiquetas propias que implementan componentes de la interfaz (aunque los componentes JSF llevan mucha ventaja a las <em>taglibs</em> de Struts). Al ofrecer Struts y JSF funcionalidades distintas en algunos aspectos es de esperar que ambos convivan durante un tiempo. De hecho, el l&iacute;der de la especificaci&oacute;n JSF es Craig McClanahan, el desarrollador original y principal responsable de Struts. Fuera del mundo J2EE, el competidor principal de JSF es la arquitectura de componentes web de ASP.NET. De hecho, muchos ven en la versi&oacute;n actual de JSF la respuesta de Sun a esta tecnolog&iacute;a de Microsoft. </p>
+
+ 
+<a name="N1005D"></a><a name="Configurar+una+aplicaci%C3%B3n+para+JSF"></a>
+<h2 class="underlined_10">Configurar una aplicaci&oacute;n para JSF</h2>
+<div class="section">
+<p>JavaServer Faces se ha implementado como un conjunto de librer&iacute;as Java, servlets, taglibs y ficheros de configuraci&oacute;n XML que hay que colocar en un contenedor web Java, como por ejemplo Tomcat. Sun ha desarrollado dos especificaciones: JSF 1.1 y JSF 1.2. Nosotros vamos a trabajar en estas sesiones con la versi&oacute;n 1.1, en concreto la implementaci&oacute;n de referencia denominada <em>JavaServer Faces v1.1.01 Reference Implementation</em>. Para que una aplicaci&oacute;n JSF funcione correctamente es necesario instalar tambi&eacute;n las JSTL. En concreto, vamos a trabajar con los ficheros JAR de la distribuci&oacute;n de Apache Jakarta <em>jakarta-taglibs-standard-1.1.2</em>: <span class="codefrag">jstl.jar</span> y <span class="codefrag">standard.jar</span>.</p>
+<a name="N10072"></a><a name="Las+librer%C3%ADas+y"></a>
+<h3 class="underlined_5">Las librer&iacute;as y taglibs</h3>
+<p>La implementaci&oacute;n de referencia est&aacute; compuesta de dos librer&iacute;as: <span class="codefrag">jsf-api.jar</span> y <span class="codefrag">jsf-impl.jar</span> que contienen las clases b&aacute;sicas del <em>framework</em> y el servlet que se encarga del procesamiento de las p&aacute;ginas JSF.</p>
+<p>Adem&aacute;s JSF se apoya en varias librer&iacute;as del proyecto Apache, concretamente <span class="codefrag">commons-beanutils.jar</span>, <span class="codefrag">commons-collections.jar,</span> <span class="codefrag">commons-digester.jar</span> y <span class="codefrag">commons-logging.jar</span>. Dichas librer&iacute;as se incluyen dentro de la distribuci&oacute;n de JSF, aunque tambi&eacute;n pueden conseguirse en la web del proyecto Apache (<span class="codefrag">http://jakarta.apache.org</span>).</p>
+<p>Por &uacute;ltimo, se necesitan tambi&eacute;n los ficheros JAR que dan soporte a las JSTL: <span class="codefrag">jstl.jar</span> y <span class="codefrag">standard.jar</span>.</p>
+<ul>
+
+<li>
+<span class="codefrag">jsf-api.jar</span>
+</li>
+
+<li>
+<span class="codefrag">jsf-impl.jar</span>
+</li>
+
+<li>
+<span class="codefrag">commons-beanutils.jar</span>
+</li>
+
+<li>
+<span class="codefrag">commons-collections.jar</span>
+</li>
+
+<li>
+<span class="codefrag">commons-digester.jar</span>
+</li>
+
+<li>
+<span class="codefrag">commons-logging.jar</span>
+</li>
+
+<li>
+<span class="codefrag">jstl.jar</span>
+</li>
+
+<li>
+<span class="codefrag">standard.jar</span>
+</li>
+
+</ul>
+<p>Todos estos ficheros deber&aacute;n colocarse en el directorio <span class="codefrag">WEB-INF/lib</span> de la aplicaci&oacute;n web.</p>
+<p>Puedes encontrar estos ficheros en cualquiera de los ejemplos que hay en los ejercicios de esta sesi&oacute;n.</p>
+<a name="N100CE"></a><a name="Los+ficheros+de+configuraci%C3%B3n"></a>
+<h3 class="underlined_5">Los ficheros de configuraci&oacute;n</h3>
+<p>Adem&aacute;s de los ficheros JAR vistos en el apartado anterior, para configurar una aplicaci&oacute;n Web JSF son necesarios los ficheros:</p>
+<ul>
+
+<li>
+<span class="codefrag">web.xml</span>
+</li>
+
+<li>
+<span class="codefrag">faces-config.xml</span>
+</li>
+
+</ul>
+<p>Todo el procesamiento de las p&aacute;ginas basadas en JavaServer Faces lo realiza un servlet de la clase <span class="codefrag">javax.faces.webapp.FacesServlet</span>. Por tanto, el primer paso para configurar nuestra aplicaci&oacute;n JSF ser&aacute; redirigir las peticiones de las p&aacute;ginas JSF a este servlet. Esto podemos hacerlo en el fichero <span class="codefrag">web.xml</span> de la aplicaci&oacute;n. La convenci&oacute;n habitual es mapear todas las URLs de la forma <span class="codefrag">*.jsf</span> hacia este servlet. El siguiente c&oacute;digo muestra un ejemplo de un fichero <span class="codefrag">web.xml</span> que contiene todo lo necesario para que JSF funcione correctamente:</p>
+<pre class="code">
+&lt;?xml version='1.0' encoding='UTF-8'?&gt;
+
+&lt;!DOCTYPE web-app PUBLIC
+  "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+  "http://java.sun.com/dtd/web-app_2_3.dtd"&gt;
+
+&lt;web-app&gt;
+
+    &lt;display-name&gt;Mini aplicaci&oacute;n JSF&lt;/display-name&gt;
+    &lt;description&gt;
+        Plantilla m&iacute;nima de aplicaci&oacute;n JSF
+    &lt;/description&gt;
+	
+    &lt;context-param&gt;
+        &lt;param-name&gt;com.sun.faces.validateXml&lt;/param-name&gt;
+        &lt;param-value&gt;true&lt;/param-value&gt;
+        &lt;description&gt;
+            Set this flag to true if you want the JavaServer Faces
+            Reference Implementation to validate the XML in your
+            faces-config.xml resources against the DTD.  Default
+            value is false.
+        &lt;/description&gt;
+    &lt;/context-param&gt;
+
+    &lt;!-- Faces Servlet --&gt;
+    &lt;servlet&gt;
+        &lt;servlet-name&gt;Faces Servlet&lt;/servlet-name&gt;
+        &lt;servlet-class&gt;javax.faces.webapp.FacesServlet&lt;/servlet-class&gt;
+        &lt;load-on-startup&gt; 1 &lt;/load-on-startup&gt;
+    &lt;/servlet&gt;
+
+    &lt;!-- Faces Servlet Mapping --&gt;
+    &lt;servlet-mapping&gt;
+        &lt;servlet-name&gt;Faces Servlet&lt;/servlet-name&gt;
+        &lt;url-pattern&gt;*.jsf&lt;/url-pattern&gt;
+    &lt;/servlet-mapping&gt;
+    
+    &lt;welcome-file-list&gt;
+	&lt;welcome-file&gt;index.html&lt;/welcome-file&gt;
+	&lt;welcome-file&gt;index.htm&lt;/welcome-file&gt;
+	&lt;welcome-file&gt;index.jsp&lt;/welcome-file&gt;
+    &lt;/welcome-file-list&gt;
+&lt;/web-app&gt;
+</pre>
+<p>La aplicaci&oacute;n JSF se configura mediante un fichero adicional en formato XML dentro de la carpeta <span class="codefrag">WEB-INF</span>, con el nombre <span class="codefrag">faces-config.xml</span>. Un ejemplo es el siguiente: </p>
+<pre class="code">
+&lt;?xml version='1.0' encoding='UTF-8'?&gt;
+&lt;!DOCTYPE faces-config PUBLIC
+  "-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.1//EN"
+  "http://java.sun.com/dtd/web-facesconfig_1_1.dtd"&gt;
+
+&lt;faces-config&gt;
+  &lt;managed-bean&gt;
+    &lt;managed-bean-name&gt;userBean&lt;/managed-bean-name&gt;
+    &lt;managed-bean-class&gt;es.ua.jtech.jsf.login.UserBean&lt;/managed-bean-class&gt;
+    &lt;managed-bean-scope&gt;session&lt;/managed-bean-scope&gt;
+  &lt;/managed-bean&gt;
+  
+  
+ &lt;navigation-rule&gt;
+    &lt;from-view-id&gt;/registro.jsp&lt;/from-view-id&gt;
+    &lt;navigation-case&gt;
+       &lt;from-outcome&gt;registro-OK&lt;/from-outcome&gt;
+       &lt;to-view-id&gt;/welcome.jsf&lt;/to-view-id&gt;
+    &lt;/navigation-case&gt;
+ &lt;/navigation-rule&gt;
+ 
+  &lt;navigation-rule&gt;
+     &lt;from-view-id&gt;/login.jsp&lt;/from-view-id&gt;
+     &lt;navigation-case&gt;
+        &lt;from-outcome&gt;login-OK&lt;/from-outcome&gt;
+        &lt;to-view-id&gt;/welcome.jsf&lt;/to-view-id&gt;
+     &lt;/navigation-case&gt;
+     &lt;navigation-case&gt;
+        &lt;from-outcome&gt;bad-login&lt;/from-outcome&gt;
+        &lt;to-view-id&gt;/badLogin.jsp&lt;/to-view-id&gt;
+     &lt;/navigation-case&gt;
+  &lt;/navigation-rule&gt;
+  
+&lt;/faces-config&gt;
+</pre>
+<p>M&aacute;s adelante veremos qu&eacute; se puede configurar dentro de este fichero.</p>
+<a name="N10106"></a><a name="P%C3%A1ginas+JSF"></a>
+<h3 class="underlined_5">P&aacute;ginas JSF</h3>
+<p>Las p&aacute;ginas JSF son p&aacute;ginas JSP en las que se utiliza las taglibs proporcionadas por JSF. Al ser p&aacute;ginas JSP, deben tener la extensi&oacute;n <span class="codefrag">.jsp</span>. Cuando al servlet de JSF le llega una petici&oacute;n de una p&aacute;gina (por ejemplo <span class="codefrag">login.jsf</span>) busca la p&aacute;gina JSP correspondiente (<span class="codefrag">login.jsp</span>) y la procesa.</p>
+<p>Un ejemplo de p&aacute;gina JSF, es el siguiente fichero <span class="codefrag">login.jsp</span>
+</p>
+<pre class="code">
+&lt;html&gt; 
+   &lt;head&gt; &lt;title&gt;Login&lt;/title&gt; &lt;/head&gt;
+    &lt;%@ taglib uri="http://java.sun.com/jsf/html" prefix="h" %&gt;
+    &lt;%@ taglib uri="http://java.sun.com/jsf/core" prefix="f" %&gt;
+    &lt;body&gt;
+    &lt;h3&gt;P&aacute;gina de login&lt;/h3&gt;
+   &lt;f:view&gt; 
+   &lt;h:form&gt;
+      Nombre: &lt;h:inputText value="#{userBean.name}"/&gt; &lt;br/&gt;
+      Contrase&ntilde;a: &lt;h:inputSecret value="#{userBean.contrase&ntilde;a}"/&gt; 
+      &lt;h:commandButton value="Login" action="#{userBean.doLogin}"/&gt; 
+      &lt;br/&gt;
+  &lt;/h:form&gt; 
+  &lt;/f:view&gt;
+  &lt;/body&gt;
+&lt;/html&gt; 
+</pre>
+<p>Como se ve, la p&aacute;gina JSF utiliza una serie de componentes de interfaz de usuario en forma de etiquetas propias ( <span class="codefrag">inputText</span>, <span class="codefrag">inputSecret</span>, <span class="codefrag">commandButton</span>). Es trabajo de JSF convertir estas etiquetas a etiquetas HTML.</p>
+<p>Los componentes de la vista est&aacute;n asociados a datos de un bean Java (<em>backing bean</em>) a trav&eacute;s del atributo <span class="codefrag">value</span>. Por ejemplo, el valor del componente <span class="codefrag">inputText</span> est&aacute; asociado a la propiedad <span class="codefrag">login</span> del <em>bean</em> Java llamado <span class="codefrag">userBean</span>. Estos <em>backing bean</em> se definen en el fichero <span class="codefrag">faces-config.xml</span>. En JSF existe un lenguaje de expresiones (EL) parecido al de JSP, pero las expresiones vienen precedidas de un "#" en lugar de un "$". No se ha utilizado directamente el EL de JSP para independizar JSF en la medida de lo posible de la tecnolog&iacute;a empleada para la vista. Como se ve, tambi&eacute;n se pueden asociar componentes al "disparo" de m&eacute;todos java, como en el caso del atributo <span class="codefrag">action</span> del bot&oacute;n <span class="codefrag">commandButton</span>.</p>
+</div>
+
+
+<a name="N10150"></a><a name="El+ciclo+de+proceso+de+una+p%C3%A1gina+JSF"></a>
+<h2 class="underlined_10">El ciclo de proceso de una p&aacute;gina JSF</h2>
+<div class="section">
+<p>Supongamos que el navegador accede por primera vez a la p&aacute;gina anterior. El servlet que procesa las p&aacute;ginas JSF ir&aacute; pasando por las siguientes fases de procesamiento:</p>
+<ul>
+   
+<li>
+      
+<strong>Construcci&oacute;n del &aacute;rbol de componentes</strong>: se construye un &aacute;rbol de objetos de la clase       <span class="codefrag">UIComponent</span>, que representa la estructura de componentes web de la p&aacute;gina JSF.</li>
+   
+<li>
+      
+<strong>Enlace con el modelo (<em>backing bean</em>)</strong>: cada componente toma su valor de la propiedad del backing bean asociada. Si el bean no existe, se crea, bas&aacute;ndose en informaci&oacute;n contenida en el fichero <span class="codefrag">faces-config.xml</span>.</li>
+   
+<li>
+      
+<strong>Generaci&oacute;n de la vista</strong>: cada componente JSF es el responsable de "mostrarse" en la vista (en este       caso, como etiquetas HTML) con los valores obtenidos en el paso anterior.</li>
+
+</ul>
+<p>Cuando el usuario pulsa sobre un componente que dispara alguna acci&oacute;n (en nuestro caso el <span class="codefrag">commandButton</span>) se hace otra llamada al <em>servlet</em> que procesa las p&aacute;ginas JSF. En la web, los componentes que disparan acciones ser&aacute;n botones de tipo <em>submit</em> o bien enlaces. en este caso, las fases de proceso ser&aacute;n las siguientes:</p>
+<ul>
+   
+<li>
+      
+<strong>Aplicaci&oacute;n de los valores de la petici&oacute;n</strong>: se asigna a cada componente del &aacute;rbol de objetos el valor asociado en la  petici&oacute;n HTTP (en nuestro caso, los valores que el usuario haya introducido en los campos del formulario). Si el componente tiene asociada una propiedad del modelo con un tipo distinto a String, JSF intentar&aacute; hacer la conversi&oacute;n (ya que los par&aacute;metros HTTP son todos Strings).</li>
+   
+<li>
+      
+<strong>Validaci&oacute;n:</strong> se comprueba que los valores asignados sean v&aacute;lidos seg&uacute;n las condiciones especificadas por el usuario (en el ejemplo anterior, con el atributo <span class="codefrag">required</span> se especifica que el componente <span class="codefrag">inputText</span> debe contener alg&uacute;n valor). Si en esta fase se produce alg&uacute;n error, se termina el procesamiento.</li>
+   
+<li>
+      
+<strong>Actualizaci&oacute;n de los valores del modelo</strong>: si los componentes est&aacute;n vinculados a alg&uacute;n <em>bean</em> de Java, los valores asignados a los componentes pasan a asignarse a dicho <em>bean</em>. En el ejemplo anterior, se asignar&iacute;an a las propiedades  <span class="codefrag">login</span> y <span class="codefrag">password</span> del objeto <span class="codefrag">usuario</span>.</li>
+   
+<li>
+      
+<strong>Invocaci&oacute;n de la aplicaci&oacute;n:</strong> Recordemos que todo este ciclo se ha disparado a consecuencia de un componente (en el ejemplo un <span class="codefrag">commandButton</span>) que llevaba asociada una acci&oacute;n (en el ejemplo el m&eacute;todo <span class="codefrag">userBean.doLogin()</span>). En esta fase se dispara la acci&oacute;n propiamente dicha. El desarrollador debe colocar el dicho m&eacute;todo la "l&oacute;gica de negocio" de su aplicaci&oacute;n. Este m&eacute;todo devolver&aacute; una cadena que, junto con la configuraci&oacute;n en <span class="codefrag">faces-config.xml</span> decidir&aacute; la siguiente p&aacute;gina a mostrar.</li>
+   
+<li>
+      
+<strong>Generaci&oacute;n de la respuesta</strong>: finalmente, JSF muestra la p&aacute;gina deseada. Si se han producido errores, se mostrar&aacute; de nuevo la misma p&aacute;gina que ten&iacute;amos.</li>
+
+</ul>
+</div>
+
+
+<a name="N101C3"></a><a name="Componentes+para+la+interfaz+de+usuario"></a>
+<h2 class="underlined_10">Componentes para la interfaz de usuario</h2>
+<div class="section">
+<p>Una de las partes fundamentales de JSF es su biblioteca de componentes para la creaci&oacute;n de interfaces web. Como se ha visto en el ejemplo anterior, dichas componentes est&aacute;n disponibles en forma de etiquetas propias. Para usarlas es necesario importar dos <em>taglibs</em> de JSF, la <span class="codefrag">core</span> y la <span class="codefrag">html</span>.</p>
+<pre class="code">
+    &lt;%@ taglib uri="http://java.sun.com/jsf/html" prefix="h" %&gt;
+    &lt;%@ taglib uri="http://java.sun.com/jsf/core" prefix="f" %&gt;
+</pre>
+<p>Todas las etiquetas JSF deben venir dentro de la etiqueta <span class="codefrag">view</span> del <em>taglib core</em>. Esta etiqueta act&uacute;a como la ra&iacute;z del &aacute;rbol de componentes JSF. En una p&aacute;gina solo puede haber un &uacute;nico <span class="codefrag">view</span>.</p>
+<pre class="code">
+   &lt;f:view&gt; 
+   ...
+  &lt;/f:view&gt;
+</pre>
+<p>Cada componente JSF es de un tipo y tiene una forma de representarse en la vista. El nombre de la mayor parte de componentes sigue la convenci&oacute;n de unir ambos elementos. Por ejemplo, entre los tipos de componentes est&aacute;n los de entrada ( <span class="codefrag">input</span>). Un componente de entrada puede mostrarse como texto visible ( <span class="codefrag">text</span>) o bien como texto oculto ( <span class="codefrag">secret</span>). As&iacute;, por ejemplo un <span class="codefrag"> &lt;h:inputText&gt;</span> ser&iacute;a un campo de entrada con texto visible (que en HTML se traducir&iacute;a en un <span class="codefrag">&lt;input type="text"&gt;</span>) mientras que un <span class="codefrag"> &lt;h:inputSecret&gt;</span> ser&iacute;a un campo de entrada con texto oculto (en HTML un <span class="codefrag">&lt;input type="password"&gt;</span>).</p>
+<p>La lista completa de los taglibs JSF se puede consultar en la <a href="http://java.sun.com/javaee/javaserverfaces/1.1_01/docs/tlddocs/index.html">especificaci&oacute;n de Sun</a>.</p>
+<a name="N10208"></a><a name="Formularios"></a>
+<h3 class="underlined_5">Formularios</h3>
+<p>Engloban varios datos que deben procesarse conjuntamente. Para definirlos se utiliza la etiqueta <span class="codefrag">form</span> del <em>taglib html.</em>
+</p>
+<pre class="code">
+   &lt;h:form&gt;
+   ...
+  &lt;/h:form&gt; 
+</pre>
+<p>El nombre de este componente no sigue la notaci&oacute;n est&aacute;ndar que une tipo y forma de visualizaci&oacute;n ya que solo hay una forma de ver formularios.</p>
+<a name="N1021E"></a><a name="Comandos"></a>
+<h3 class="underlined_5">Comandos</h3>
+<p>Son componentes que disparan una acci&oacute;n cuando se activan, generalmente puls&aacute;ndolos con el rat&oacute;n. El ejemplo m&aacute;s t&iacute;pico de esta clase es el bot&oacute;n, que se define con la etiqueta <span class="codefrag">commandButton</span>. En HTML se traducir&aacute; generalmente en un <span class="codefrag">&lt;input type="submit"&gt;</span>. Para disparar una acci&oacute;n mediante un enlace HTML utilizar&iacute;amos un <span class="codefrag">commandLink</span>. Ambos tienen un atributo <span class="codefrag">action</span> que asignaremos al m&eacute;todo a ejecutar cuando se dispare la acci&oacute;n.</p>
+<a name="N10234"></a><a name="Componentes+de+entrada"></a>
+<h3 class="underlined_5">Componentes de entrada</h3>
+<p>Los componentes de entrada muestran valores y permiten al usuario modificarlos. JSF tiene un n&uacute;mero considerable de estos componentes, que en la web se visualizan como los t&iacute;picos controles de formulario HTML. La siguiente tabla muestra los tipos de componentes y los <em>renderer</em> que pueden asociarse a ellos (formas de visualizarlos).</p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+   
+<tr>
+      
+<th colspan="1" rowspan="1">Tipo</th>
+      <th colspan="1" rowspan="1"><em>Renderer</em></th>
+      <th colspan="1" rowspan="1">Resultado en HTML</th>
+   
+</tr>
+   
+<tr>
+            
+<td colspan="1" rowspan="3">input</td>
+            <td colspan="1" rowspan="1">hidden</td>
+            <td colspan="1" rowspan="1"><span class="codefrag">&lt;input type="hidden"&gt;</span></td>
+   
+</tr>
+   
+<tr>
+            
+<td colspan="1" rowspan="1">secret</td>
+            <td colspan="1" rowspan="1"><span class="codefrag">&lt;input type="password"&gt;</span></td>
+   
+</tr>
+   
+<tr>
+            
+<td colspan="1" rowspan="1">text</td>
+            <td colspan="1" rowspan="1"><span class="codefrag">&lt;input type="text"&gt;</span></td>
+   
+</tr>
+   
+<tr>
+            
+<td colspan="1" rowspan="1">selectBoolean</td>
+            <td colspan="1" rowspan="1">checkbox</td>
+            <td colspan="1" rowspan="1"><span class="codefrag">&lt;input type="checkbox"&gt;</span>
+            </td>
+   
+</tr>
+   
+<tr>
+            
+<td colspan="1" rowspan="3">selectMany</td>
+            <td colspan="1" rowspan="1">checkbox</td>
+            <td colspan="1" rowspan="1">grupo de <span class="codefrag">&lt;input type="checkbox"&gt;</span> en las celdas de una tabla</td>
+   
+</tr>
+   
+<tr>
+            
+<td colspan="1" rowspan="1">listbox</td>
+            <td colspan="1" rowspan="1"><span class="codefrag">&lt;select multiple&gt;</span> con un atributo <span class="codefrag">size</span> igual al n&ordm; de opciones</td>
+   
+</tr>
+   
+<tr>
+            
+<td colspan="1" rowspan="1">menu</td>
+            <td colspan="1" rowspan="1"><span class="codefrag">&lt;select multiple size="1"&gt;</span>
+            </td>
+   
+</tr>
+   
+<tr>
+            
+<td colspan="1" rowspan="3">selectOne</td>
+            <td colspan="1" rowspan="1">listbox</td>
+            <td colspan="1" rowspan="1"><span class="codefrag">&lt;select&gt;</span> con un atributo <span class="codefrag">size</span> igual al n&ordm; de opciones</td>
+   
+</tr>
+   
+<tr>
+            
+<td colspan="1" rowspan="1">menu</td>
+            <td colspan="1" rowspan="1"><span class="codefrag">&lt;select size="1"&gt;</span></td>
+   
+</tr>
+   
+<tr>
+            
+<td colspan="1" rowspan="1">radio</td>
+            <td colspan="1" rowspan="1">grupo de <span class="codefrag">&lt;input type="radio"&gt;</span> en las celdas de una tabla</td>
+   
+</tr>
+
+</table>
+<p>As&iacute;, por ejemplo un <span class="codefrag">&lt;h:selectOneMenu&gt;</span> generar&iacute;a un cuadro de listado desplegable. Como se ve, muchos de estos componentes JSF son bastante sencillos y tienen una correspondencia 1:1 con etiquetas HTML. No obstante, algunos son de un nivel un poco m&aacute;s alto: por ejemplo <span class="codefrag"> &lt;h:selectManyCheckbox&gt;</span> genera varias etiquetas HTML. Los <span class="codefrag">selectOne</span> y <span class="codefrag">selectMany</span> permiten especificar cada opci&oacute;n de forma individual con un elemento <span class="codefrag">&lt;f:listItem&gt;</span> o bien todas de una vez con <span class="codefrag">&lt;f:listItems&gt;</span>. En este &uacute;ltimo caso el <em>value</em> debe estar enlazado con un array, Collection o Map.</p>
+<a name="N1031D"></a><a name="Componentes+de+salida"></a>
+<h3 class="underlined_5">Componentes de salida</h3>
+<p>Estos componentes muestran valores no modificables. El caso m&aacute;s t&iacute;pico es la etiqueta <span class="codefrag">&lt;h:outputText&gt;</span>, que se utiliza para mostrar texto.  La siguiente tabla muestra algunos componentes de salida</p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+   
+<tr>
+            
+<th colspan="1" rowspan="1">Tipo</th>
+            <th colspan="1" rowspan="1">Renderer</th>
+            <th colspan="1" rowspan="1">Resultado en HTML</th>
+   
+</tr>
+   
+<tr>
+            
+<td colspan="1" rowspan="2">output</td>
+            <td colspan="1" rowspan="1">link</td>
+            <td colspan="1" rowspan="1"><span class="codefrag">&lt;a href="..."&gt;,</span> donde el enlace apunta donde especifica el
+                     atributo <span class="codefrag">value</span></td>
+   
+</tr>
+   
+<tr>
+            
+<td colspan="1" rowspan="1">text</td>
+            <td colspan="1" rowspan="1">texto</td>
+   
+</tr>
+
+</table>
+</div>
+
+
+<a name="N10363"></a><a name="Creaci%C3%B3n+de+los+backing+beans"></a>
+<h2 class="underlined_10">Creaci&oacute;n de los backing beans</h2>
+<div class="section">
+<p>Los backing beans contienen los datos que "rellenan" los componentes JSF. No hay que confundirlos con los datos del modelo propiamente dicho de la aplicaci&oacute;n web (la capa de datos definida por JDBC o por Hibernate). Los backing beans se deben comunicar con los objetos del modelo mediante la capa de negocio, pero esto es tarea del programador ya que el framework JSF no proporciona ninguna funcionalidad para ello.</p>
+<p>Los backing beans se representan mediante clases Java convencionales, y no tienen por tanto ninguna dependencia del API de JSF. Lo &uacute;nico que hay que tener en cuenta es utilizar la convenci&oacute;n JavaBean para el acceso/cambio de las propiedades (m&eacute;todos <span class="codefrag">getXXX/setXXX</span>).</p>
+<p>Para utilizar una clase en JSF habr&aacute; que hacer tres cosas</p>
+<ul>
+   
+<li>Definir la clase Java, utilizando m&eacute;todos <span class="codefrag">get/set</span> para el acceso a las propiedades </li>
+
+   
+<li>Instanciar uno o varios objetos de dicha clase para que los usen las p&aacute;ginas JSF. Esto normalmente se hace en el    fichero <span class="codefrag">faces-config.xml</span>
+</li>
+
+   
+<li>Vincular las propiedades del objeto instanciado a los componentes del interfaz de usuario. Los m&eacute;todos se pueden    vincular a comandos.</li>
+
+</ul>
+<a name="N10386"></a><a name="Definir+la+clase+del+bean"></a>
+<h3 class="underlined_5">Definir la clase del bean</h3>
+<p>El ejemplo anterior utiliza un objeto llamado <span class="codefrag">userBean</span> que es una instancia de la clase <span class="codefrag">UserBean</span> definida a continuaci&oacute;n:</p>
+<pre class="code">
+package es.ua.jtech.jsf.login;
+
+public class UserBean {
+	private String name; 
+	private String password; 
+	
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String doLogin() {
+	   if //login correcto
+	      return "login-OK"
+	      //login err&oacute;neo
+	      return "bad-login";
+	}
+	
+}
+</pre>
+<a name="N1039A"></a><a name="Instanciar+los+backing+beans"></a>
+<h3 class="underlined_5">Instanciar los backing beans</h3>
+<p>Los backing beans pueden definirse en la forma est&aacute;ndar en JSP, mediante la etiqueta <span class="codefrag">&lt;jsp:useBean/&gt;</span> o bien en el fichero de configuraci&oacute;n <span class="codefrag">faces-config.xml</span> (lo m&aacute;s normal en JSF). En este fichero se declaran los <em>beans</em> a instanciar y se especifica su &aacute;mbito (petici&oacute;n, sesi&oacute;n o aplicaci&oacute;n). En el siguiente ejemplo se instancia un bean llamado <span class="codefrag">usuario</span>, de la clase <span class="codefrag">UserBean</span> con &aacute;mbito de petici&oacute;n:</p>
+<pre class="code">
+&lt;?xml version='1.0' encoding='UTF-8'?&gt;
+&lt;!DOCTYPE faces-config PUBLIC
+  "-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.1//EN"
+  "http://java.sun.com/dtd/web-facesconfig_1_1.dtd"&gt;
+
+&lt;faces-config&gt;
+  &lt;managed-bean&gt;
+    &lt;managed-bean-name&gt;userBean&lt;/managed-bean-name&gt;
+    &lt;managed-bean-class&gt;es.ua.jtech.jsf.login.UserBean&lt;/managed-bean-class&gt;
+    &lt;managed-bean-scope&gt;session&lt;/managed-bean-scope&gt;
+  &lt;/managed-bean&gt;
+
+   ...
+  
+&lt;/faces-config&gt;
+</pre>
+<p>Cuando una p&aacute;gina JSF haga referencia a un objeto llamado <span class="codefrag">userBean</span> si no existe se crear&aacute; autom&aacute;ticamente con el &aacute;mbito especificado.</p>
+<a name="N103BD"></a><a name="Vincular+las+propiedades+del+bean+a+la+interfaz+de+usuario"></a>
+<h3 class="underlined_5">Vincular las propiedades del bean a la interfaz de usuario</h3>
+<p>La vinculaci&oacute;n entre la propiedad del <em>bean</em> y el componente de la interfaz se establece con el atributo <span class="codefrag">value</span> de este &uacute;ltimo. Por ejemplo, para vincular la propiedad <span class="codefrag">password</span> del objeto <span class="codefrag">usuario</span> al componente <span class="codefrag">inputSecret</span> se hac&iacute;a:</p>
+<pre class="code">
+&lt;h:inputSecret <strong>value="#{userBean.password}"</strong> /&gt;
+</pre>
+<p>Como se ve, la sintaxis utilizada es la misma del EL de JSP, pero con un s&iacute;mbolo # delante en lugar del $.</p>
+</div>
+
+
+<a name="N103E1"></a><a name="Acciones+y+navegaci%C3%B3n+entre+p%C3%A1ginas"></a>
+<h2 class="underlined_10">Acciones y navegaci&oacute;n entre p&aacute;ginas</h2>
+<div class="section">
+<p>Otra de las caracter&iacute;sticas fundamentales del framework JSF es la facilidad de codificar los manejadores de eventos del usuario (pulsar en botones o enlaces) y la navegaci&oacute;n entre p&aacute;ginas. Vamos a verlo.</p>
+<a name="N103EA"></a><a name="Disparar+una+acci%C3%B3n"></a>
+<h3 class="underlined_5">Disparar una acci&oacute;n</h3>
+<p>Los componentes <span class="codefrag">commandButton</span> y <span class="codefrag">commandLink</span> pueden disparar acciones en la aplicaci&oacute;n. En el atribution <span class="codefrag">action</span> de estas etiquetas se define el m&eacute;todo al que hay que llamar cuando el usuario pulsa el bot&oacute;n o el enlace. En el ejemplo que venimos utilizando, el c&oacute;digo asociado a la pulsaci&oacute;n del bot&oacute;n "login" es el m&eacute;todo <span class="codefrag">doLogin</span> del backing bean <span class="codefrag">userBean</span>
+</p>
+<pre class="code">
+&lt;h:commandButton value="login" <strong>action="#{userBean.doLogin}"</strong>/&gt;
+</pre>
+<p>El m&eacute;todo invocado a trav&eacute;s del atributo <span class="codefrag">action</span> debe devolver un <span class="codefrag">String</span> que es un nombre simb&oacute;lico para el resultado de la acci&oacute;n (por ejemplo, "login-OK", o "error"). En funci&oacute;n de dicho nombre y de las reglas de navegaci&oacute;n definidas en <span class="codefrag">faces-config.xml</span> se decide la siguiente p&aacute;gina JSP a mostrar.</p>
+<p>Tambi&eacute;n es posible en una acci&oacute;n no llamar a c&oacute;digo Java, sino simplemente devolver una cadena como resultado de la "acci&oacute;n" para mostrar otra p&aacute;gina seg&uacute;n las reglas de navegaci&oacute;n. En este caso se pone la cadena como valor del atributo <span class="codefrag">action</span>.</p>
+<pre class="code">
+&lt;h:commandButton value="cancel" <strong>action="cancel"</strong>/&gt;
+</pre>
+<a name="N10422"></a><a name="Decidir+cu%C3%A1l+es+la+p%C3%A1gina+destino"></a>
+<h3 class="underlined_5">Decidir cu&aacute;l es la p&aacute;gina destino</h3>
+<p>En el fichero <span class="codefrag">faces-config.xml</span> se puede definir a qu&eacute; p&aacute;gina hay que ir en funci&oacute;n de hasta tres factores</p>
+<ul>
+   
+<li>La p&aacute;gina en la que estamos en el momento actual</li>
+   
+<li>La acci&oacute;n ejecutada</li>
+   
+<li>El resultado devuelto por dicha acci&oacute;n</li>
+
+</ul>
+<p>Esto se define mediante un elemento <span class="codefrag">&lt;navigation-rule&gt;</span>. Por ejemplo, para indicar que, partiendo de <span class="codefrag">login.jsp</span> hay que realizar la petici&oacute;n JSF <span class="codefrag">personal.jsf</span> si todo va bien o mostrar <span class="codefrag">error.jsp</span> en caso de problemas, podr&iacute;amos poner:</p>
+<pre class="code">
+&lt;navigation-rule&gt;
+   &lt;from-view-id&gt;/login.jsp&lt;/from-view-id&gt;
+   &lt;navigation-case&gt;
+      &lt;from-action&gt;#{userBean.doLogin}&lt;/from-action&gt;
+      &lt;from-outcome&gt;OK&lt;/from-outcome&gt;
+      &lt;to-view-id&gt;/personal.jsf&lt;/to-view-id&gt;
+   &lt;/navigation-case&gt;
+   &lt;navigation-case&gt;
+      &lt;from-action&gt;#{userBean.doLogin}&lt;/from-action&gt;
+      &lt;from-outcome&gt;error&lt;/from-outcome&gt;
+      &lt;to-view-id&gt;/error.jsp&lt;/to-view-id&gt;
+   &lt;/navigation-case&gt;
+&lt;/navigation-rule&gt;
+</pre>
+<p>Como se ve en el ejemplo anterior, una regla de navegaci&oacute;n especifica la p&aacute;gina de la que se parte ( <span class="codefrag">&lt;from-view-id&gt;</span>) y puede contemplar uno m&aacute;s casos ( <span class="codefrag">&lt;navigation-case&gt;</span>) correspondientes a los resultados de una o varias acciones. Cada caso est&aacute; compuesto por:</p>
+<ul>
+   
+<li> 
+<span class="codefrag"> &lt;from-action&gt;</span> (opcional): El nombre de la acci&oacute;n. Si no se pone, la regla se aplica sea cual sea la    acci&oacute;n ejecutada.</li>
+
+   
+<li> 
+<span class="codefrag">&lt;from-outcome&gt;</span> (opcional): el resultado devuelto por la acci&oacute;n. Si no se pone, la regla se aplica sea    cual sea el resultado.</li>
+
+   
+<li> 
+<span class="codefrag"> &lt;to-view-id&gt;</span> (obligatorio): p&aacute;gina destino (terminada en la extensi&oacute;n .jsf si es una petici&oacute;n JSF o .jsp o .html).</li> 
+
+</ul>
+</div>
+
+
+<a name="N1046D"></a><a name="Validaci%C3%B3n+de+datos+y+control+de+errores"></a>
+<h2 class="underlined_10">Validaci&oacute;n de datos y control de errores</h2>
+<div class="section">
+<p>Podemos considerar dos tipos de validaci&oacute;n: <em>sint&aacute;ctica</em> y <em>sem&aacute;ntica</em>. La <em>sint&aacute;ctica</em> ser&iacute;a verificar que los datos pueden convertirse al tipo apropiado (al de la propiedad del bean enlazado con el componente JSF). La <em>sem&aacute;ntica</em> exigir&iacute;a verificar que adem&aacute;s cumplen una serie de condiciones impuestas por los requerimientos de la aplicaci&oacute;n (por ejemplo, que un password debe tener 6 o m&aacute;s caracteres).</p>
+<p>En JSF, el primer tipo de validaci&oacute;n se lleva a cabo cuando se asignan los valores de la petici&oacute;n HTTP a los componentes del modelo. Para llevar a cabo el segundo tipo es necesario que el desarrollador asigne <strong>validadores</strong> a los componentes. JSF trae por defecto implementados algunos validadores, aunque el desarrollador puede implementar los suyos propios, ya que no son m&aacute;s que clases que implementan la interfaz <span class="codefrag">Validator</span>.</p>
+<a name="N1048B"></a><a name="Validaci%C3%B3n+sint%C3%A1ctica%3A+conversores"></a>
+<h3 class="underlined_5">Validaci&oacute;n sint&aacute;ctica: conversores</h3>
+<p>Normalmente la conversi&oacute;n al tipo adecuado se hace de manera autom&aacute;tica. Para ciertos casos podemos especificar cu&aacute;l es el formato del valor de entrada para que JSF sea capaz de convertirlo. Casos t&iacute;picos son las fechas o los n&uacute;meros con formato especial.</p>
+<p>El conversor de fechas se coloca con la etiqueta <span class="codefrag"> &lt;f:convertDateTime&gt;</span> dicha etiqueta tiene un atributo <span class="codefrag">dateStyle</span> y otro <span class="codefrag">timeStyle</span> que pueden tomar los valores <span class="codefrag">default</span>, <span class="codefrag">long</span>, <span class="codefrag">medium</span>, <span class="codefrag">short</span> o <span class="codefrag">full</span>, correspondi&eacute;ndose con las constantes del mismo nombre de la clase <span class="codefrag">DateFormat</span> del API de J2SE. El atributo <span class="codefrag">pattern</span> permite especificar el formato utilizando los s&iacute;mbolos admitidos por <span class="codefrag">SimpleDateFormat</span>. Algo similar ocurre con el conversor de n&uacute;meros: <span class="codefrag"> &lt;f:convertNumber&gt;</span> admite los mismos formatos que <span class="codefrag">NumberFormat</span>. Para una explicaci&oacute;n m&aacute;s exhaustiva, consultar alguna referencia de las taglibs de JSF.</p>
+<p>As&iacute;, por ejemplo, para especificar que un determinado campo es una fecha en formato dd/mm/aaaa y debe asociarse con la propiedad <span class="codefrag">nacimiento</span> del bean <span class="codefrag">usuario</span>, har&iacute;amos algo como:</p>
+<pre class="code">
+&lt;h:inputText value="#{userBean.fechaNacimiento}"&gt;
+   &lt;f:convertDateTime pattern="dd/mm/yyyy"/&gt;
+&lt;/h:inputText&gt;
+</pre>
+<p>El campo "fechaNacimiento" en el backing bean debe ser de la clase <span class="codefrag">java.util.Date</span>.</p>
+<a name="N104D2"></a><a name="Validaci%C3%B3n+sem%C3%A1ntica%3A+validadores"></a>
+<h3 class="underlined_5">Validaci&oacute;n sem&aacute;ntica: validadores</h3>
+<p>En la p&aacute;gina los validadores se especifican mediante etiquetas o mediante atributos de los componentes. Por ejemplo, para exigir que un dato no pueda ser vac&iacute;o se utiliza el atributo <span class="codefrag">required</span> con valor true. Por otro lado, para controlar la longitud de un campo se utiliza la etiqueta <span class="codefrag">validateLength</span> con los atributos <span class="codefrag">minimum</span> (n&ordm; m&iacute;nimo de caracteres) y <span class="codefrag">maximum</span> (n&ordm; m&aacute;ximo).</p>
+<p>As&iacute;, para especificar que tanto login como password son obligatorios y que este &uacute;ltimo debe tener un m&iacute;nimo de 6 caracteres se har&iacute;a:</p>
+<pre class="code">
+... 
+&lt;h:inputText value="#{userBean.name}" <strong>required="true"</strong>/&gt; &lt;br&gt;
+&lt;h:inputSecret value="#{userBean.password}" <strong>required="true"</strong>&gt;
+   <strong>&lt;f:validateLength minimum="6"/&gt; </strong>
+&lt;/h:inputSecret&gt;
+...
+</pre>
+<p>La siguiente tabla muestra los validadores est&aacute;ndar definidos en JSF. Todos ellos admiten los atributos minimum y maximum. El usuario puede definir sus propios validadores, aunque no veremos aqu&iacute; c&oacute;mo se hace.</p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+   
+<tr>
+      
+<td colspan="1" rowspan="1"><strong>Etiqueta</strong></td>
+      <td colspan="1" rowspan="1"><strong>Validador</strong></td>
+   
+</tr>
+   
+<tr>
+         
+<td colspan="1" rowspan="1"><span class="codefrag">&lt;f:validateDoubleRange&gt;</span></td>
+         <td colspan="1" rowspan="1">rango para valores reales</td>
+   
+</tr>
+   
+<tr>
+         
+<td colspan="1" rowspan="1"><span class="codefrag">&lt;f:validateLength&gt;</span></td>
+         <td colspan="1" rowspan="1">longitud para cadenas</td>
+   
+</tr>
+   
+<tr>
+         
+<td colspan="1" rowspan="1"><span class="codefrag">&lt;f:validateLongRange&gt;</span></td>
+         <td colspan="1" rowspan="1">rango para valores enteros</td>
+   
+</tr>
+
+</table>
+<a name="N10537"></a><a name="Mostrar+los+errores+de+los+datos+introducidos"></a>
+<h3 class="underlined_5">Mostrar los errores de los datos introducidos</h3>
+<p>Como se ha comentado anteriormente, si se produce alg&uacute;n error en la fase de validaci&oacute;n, se vuelve a la misma p&aacute;gina. Para mostrar los errores asociados a un componente se puede utilizar la etiqueta <span class="codefrag">&lt;h:message&gt;</span>. Para ello es necesario asociar un identificador al componente (mediante el atributo <span class="codefrag">id</span>) y poner el mismo valor como atributo <span class="codefrag">for</span> de <span class="codefrag">&lt;h:message&gt;</span>. La etiqueta para mostrar el error puede colocarse en cualquier parte de la p&aacute;gina, aunque lo habitual es ponerla junto al componente que ha generado el error.</p>
+<pre class="code">
+&lt;h:inputText value="#{usuario.login}" required="true" id="login"/&gt; 
+<strong>&lt;h:message for="login"/&gt;</strong>
+
+</pre>
+<p>La etiqueta <span class="codefrag"> &lt;h:messages&gt;</span> muestra juntos los errores de
+todos los componentes.</p>
+<a name="N1055A"></a><a name="Definir+mensajes+de+error+propios"></a>
+<h3 class="underlined_5">Definir mensajes de error propios</h3>
+<p>Los mensajes de error que muestra la etiqueta <span class="codefrag">&lt;h:message&gt;</span> son gen&eacute;ricos y por tanto pueden no ser muy adecuados para nuestra aplicaci&oacute;n. Podemos definir nuestros propios mensajes en un fichero .properties en cualquier lugar del <em>classpath</em> de nuestra aplicaci&oacute;n (por ejemplo en <span class="codefrag">WEB-INF/classes</span>). Cada mensaje se declara con una clave, un igual y un valor de texto. Las claves para los mensajes se definen en la especificaci&oacute;n JSF y se corresponden con el nombre de la clase Java que implementa el validador seguido del atributo que "no se ha cumplido". Por ejemplo:</p>
+<pre class="code">
+javax.faces.validator.DoubleRangeValidator.MINIMUM=Por favor, introduzca un
+valor mayor o igual a {0}
+</pre>
+<p>El valor <span class="codefrag">{0}</span>lo sustituye JSF autom&aacute;ticamente por el valor introducido en el componente y que ha generado el error.</p>
+<p>Para que JSF tome el fichero <span class="codefrag">.properties</span> hay que poner su nombre dentro de la etiqueta <span class="codefrag"> &lt;message-bundle&gt;</span> en el fichero <span class="codefrag">faces-config.xml</span>. Por ejemplo, para decir que nuestros mensajes est&aacute;n en un fichero llamado <span class="codefrag"> mensajes.properties</span> dentro del classpath har&iacute;amos algo como</p>
+<pre class="code">
+&lt;faces-config&gt;
+   &lt;application&gt;
+      &lt;message-bundle&gt;mensajes&lt;/message-bundle&gt;
+   &lt;/application&gt;
+&lt;/faces-config&gt;
+</pre>
+</div>
+
+
+<a name="N1058B"></a><a name="El+estado+actual+de+JSF"></a>
+<h2 class="underlined_10">El estado actual de JSF</h2>
+<div class="section">
+<p>En la actualidad JSF es una tecnolog&iacute;a todav&iacute;a emergente. Aunque ya cuenta con una especificaci&oacute;n inicial y existen algunas herramientas IDE de ayuda para el desarrollo de aplicaciones basadas en ella, todav&iacute;a carece del grado de madurez e implantaci&oacute;n de otros <em>frameworks</em> MVC para Web como Struts. </p>
+<p>Sin embargo, se trata de una tecnolog&iacute;a que hay que tener presente, debido a distintos aspectos:</p>
+<ul>
+
+
+<li>
+<p>Hay que tener en cuenta que la especificaci&oacute;n actual de JSF 1.1 (JRS 127) se aprueba en marzo de 2004, con lo que no tiene ni tan siquiera dos a&ntilde;os de presencia estable. Frente a esto, Struts fue donado a la fundaci&oacute;n Apache en mayo de 2000 y tiene, por tanto, una antiguedad considerablemente mayor.</p>
+</li>
+
+
+<li>
+<p>Proporciona una soluci&oacute;n bastante m&aacute;s completa que Struts para el desarrollo de aplicaciones web siguiendo el modelo MVC: permite el desarrollo de componentes a medida, el fichero de configuraci&oacute;n <span class="codefrag">faces-config.xml</span> es mucho m&aacute;s f&aacute;cil de usar que <span class="codefrag">struts-config.xml</span>.</p>
+</li>
+
+
+<li>
+<p>La especificaci&oacute;n est&aacute; viva y se est&aacute;n corrigiendo distintos problemas que se han encontrado. En concreto, la JSR 252 ha liberado ya una propuesta de borrador final que dar&aacute; lugar a JSF 1.2 y que, junto con la especificaci&oacute;n de JSP 2.1 corrige algunos problemas de interacci&oacute;n entre ambas tecnolog&iacute;as.</p>
+</li>
+
+
+<li>
+<p>Existe una gran actividad en la comunidad de desarrolladores alrededor de JSF y los componentes reusables para aplicaciones web. Proyectos como <em>Apache MyFaces</em> (<a href="http://myfaces.apache.org/">http://myfaces.apache.org/</a>, muy impresionante la reciente implementaci&oacute;n denominada Tobago) o <em>icefaces</em> (<a href="http://www.icesoft.com/products/icefaces.html">http://www.icesoft.com/products/icefaces.html</a>) est&aacute;n elaborando nuevos y m&aacute;s flexibles componentes que hacen que las aplicaciones web se parezcan cada vez m&aacute;s a aplicaciones de clientes ricos.</p>
+</li>
+
+
+<li>
+<p>En la actualidad se est&aacute;n comenzando a desarrollar proyectos que relacionan JSF con otras tecnolog&iacute;as emergentes como AJAX (<em>Asynchronous JavaScript and XML</em>, ver <a href="http://en.wikipedia.org/wiki/AJAX">http://en.wikipedia.org/wiki/AJAX</a>) o XUL (<em>XML User Interface Language</em>, ver <a href="http://en.wikipedia.org/wiki/XUL">http://en.wikipedia.org/wiki/XUL</a>).</p>
+</li>
+
+
+<li>
+<p>La especificaci&oacute;n JSF est&aacute; abierta al soporte de otras tecnolog&iacute;as de interacci&oacute;n gr&aacute;fica con componentes (dispositivos m&oacute;viles, por ejemplo).</p>
+</li>
+
+
+<li>
+<p>Por &uacute;ltimo, pero no menos importante, JSF est&aacute; apoyado por Sun y por la mayor&iacute;a de empresas de importancia en el mundo de J2EE como Bea, IBM, JBoss o Oracle.</p>
+</li>
+
+
+</ul>
+<p>En conclusi&oacute;n, JSF es una tecnolog&iacute;a emergente que hay que conocer por sus previsibles expectativas de crecimiento e implantaci&oacute;n.</p>
+</div>
+
+
+<p class="pageBreakAfter"></p>
+
+</div>
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+        Copyright &copy;
+         2006-2007 Depto. CCIA</div>
+</div>
+</body>
+</html>

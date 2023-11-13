@@ -1,0 +1,624 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Plataforma como Servicio</title>
+
+		<meta name="description" content="Experto en desarrollo de aplicaciones web con JavaEE y Javascript">
+		<meta name="author" content="José Luis Zamora Sánchez">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/experto.css" id="theme">
+		
+    	<!-- coloreado de sintaxis con highlight.js -->
+    	<link rel="stylesheet" type="text/css" href="lib/css/github.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+		
+		<style type="text/css">.slides .header{
+			position:absolute;
+			top: -50%;
+			left: -50%;
+			width: 100%;
+			display: table;
+		}
+
+		.slides .logo {
+			display: table-cell;
+			vertical-align: middle;
+		}
+
+		.slides .bar {
+			background-color: rgb(18,64,128);
+			font-size: 20px;
+			padding-top: 5px;
+			padding-bottom: 5px;
+			color: white;
+			border-top-left-radius:10px;
+			border-bottom-left-radius:10px;
+			display: table-cell;
+			vertical-align: middle;
+			text-align: center;
+		}
+
+		.slides .footer{
+			position:absolute;
+			bottom: 50%;
+			left: -50%;
+			width: 100%;
+			font-size: 15px;
+			color: gray;
+			display: table;
+		}  
+		.slides .left {
+			display: table-cell;
+			text-align: left;
+		}
+		.slides .right {
+			display: table-cell;
+			text-align: right;
+		}
+		.slides .center {
+			display: table-cell;
+			text-align: center;
+		}
+
+</style>
+
+	</head>
+
+<body>
+	<div class="reveal">
+	<div class="slides">
+		<!-- todo lo que se ponga aqui (que no sea un <section>) aparecerá
+		en todas las diapositivas -->
+		<div class="header">
+			<div class="logo">
+			 <img src="css/images/logo_small.png">
+			</div>
+			<div class="bar">Experto en desarrollo de aplicaciones web con JavaEE y Javascript</div>
+		</div>
+		<div class="footer">
+			<div class="left">
+				Servidores Web y PaaS
+			</div>
+			<div class="center">
+				&copy; 2014-15 Dpto. Ciencia de la Computación e I.A.
+			</div>
+			<div class="right">
+				Sesión 6
+			</div>	
+		</div>	
+		<!-- Cada <section> es una slide -->	
+		
+		<section>
+			<!-- al poner el <h1> automáticamente aparece el logo del curso-->
+			<h1>Servidores Web y PaaS</h1>
+			<h2>Sesión 6: Plataforma como Servicio</h2>
+		</section>
+		
+		<section>
+			<h2>Índice</h2>
+			<ul>
+				<li>Conceptos propios de OpenShift</li>
+				<li>Creación de aplicaciones</li>
+				<li>Modificación y despliegue</li>
+				<li>MarketPlace</li>
+				<li>Monitorización</li>				
+			</ul>
+		</section>
+		
+		<section>
+			<h2>» Conceptos propios de OpenShift</h2>		
+		</section>
+					
+		<section>			
+			<ul>
+				<li><strong>Broker host</strong>: Encargado de las tareas administrativas. Framework <em>MCollective</em> de orquestación de procesos.</li>
+				<li><strong>Node hosts</strong>: Son las máquinas que ejecutarán nuestras aplicaciones. Utilizan también un cliente de MCollective para recibir las instrucciones.</li>
+			</ul>
+			
+			<p align=left><br>Comunicación asíncrona mediante colas de mensajes.</p>		
+		</section>		
+
+		<section>
+			<ul>
+				<li><strong>Applications</strong>: Fundamentalmente web/móviles, distintos lenguajes y frameworks.
+						<ul>
+							<li>Puertos: HTTP(80), HTTPS(443), SSH(22), WebSockets (8000, 8443)</li>							
+						</ul>
+				</li>
+				<li><strong>Domains</strong>: Agrupación de aplicaciones. </li>
+			</ul>
+			<p  align=center><img style="border: 0;" src="imagenes/paas06/applications.png"></p>	
+			<p> https://[APPNAME]-[DOMAIN].rhcloud.com </p>
+		</section>
+		
+		<section>
+			<br>
+			<ul>
+				<li><strong>Gear:</strong> Recurso sobre el que se ejecutan las aplicaciones. Partición de CPU, memoria y disco de un Node Host</li>
+			</ul>
+			<p  align=center><img style="border: 0;" height="500" src="imagenes/paas06/openshift4.png"></p>	
+		</section>
+		
+		<section>
+			<br>
+			<ul>
+				<li><strong>SELinux</strong> para aislar procesos de usuario.</li>
+				<li><strong>Cgroups</strong> cuotas de CPU, memoria y disco.</li>
+				<br>
+				<li>Ejemplo de capacidades:</li>
+			</ul>
+			<p  align=center><img style="border: 0;"  src="imagenes/paas06/openshift25.png"></p>	
+		</section>
+		
+		<section>
+			<br>
+			<ul>
+				<li><strong>Cartridge:</strong>Servicios <em>paquetizados</em> que se utilizarán en aplicaciones.
+					<ul>
+						<li><em>Standalone</em>: Los runtime o servidores de aplicaciones, suficientes para ejecutar una aplicación: JBoss, Tomcat, Node.JS ...</li>
+						<li><em>Embedded</em>: Proporcionan capacidades extendidas (almacenamiento, planificación de tareas). Normalmente no requieren de un Gear propio</li>
+					</ul>
+				</li>
+			</ul>			
+		</section>
+		
+		<section>
+			<ul>
+				<li><strong>Application Scaling</strong>:  OpenShift puede monitorizar el tráfico de entrada y la carga de trabajo de los gears y crear/eliminar gears cuando sea necesario.</li>
+				<li><strong>Proxy Ports</strong>: Permiten exponer los puertos de los servicios que estén en ejecución (hasta 5 puertos).</li>				
+			</ul>
+		</section>		
+
+		<section>
+			<h2>Herramientas de administración</h2>
+			<ul>
+				<li><strong>RHC</strong>: Herramienta de administración en línea de comandos multiplataforma. </li>
+				<li><strong>API REST</strong>: Ofrece una funcionalidad similar a RHC pero expuesta como servicios REST.</li>
+				<li><strong>Consola Web</strong>: Más amigable que RHC pero algo más limitada en cuanto a funcionalidad.</li>
+				<li><strong>JBoss Tools</strong>: Conjunto de plugins y herramientas para Eclipse que permiten trabajar tanto con JBoss/WildFly como desplegar en cloud OpenShift. <em>JBoss Developer Studio</em>.</li>
+			</ul>
+		</section>
+		
+		<section>	
+			<br>
+			<p align=left>SSH</p>
+			<ul>								
+				<li>Permite el acceso remoto a los gear desde nuestras máquina de desarrollo. La instalación de RHC crea las claves necesarias para acceder:
+					<ul>
+						<li>Claves RSA (id_rsa, id_rsa.pub) asociadas a nuestra máquina. 
+							<ul>
+								<li>Carpeta ./ssh</li>
+							</ul>
+						</li>
+						<li>Token de autorización que nos evita tener que introducir usuario/password.
+							<ul>
+								<li>Carpeta ./openshift.</li>
+								<li>Se puede especificar un _scope_ para limitar sus privilegios.</li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+				<li>No somos administradores de los gear</li>
+				<li>Port-forwarding</li>
+			</ul>
+		</section>
+		
+		<section>
+			<p align=left>Git</p>
+			<ul>
+				<li>Cada aplicación de OpenShift va ligada a un repositorio Git</li>
+				<li>OpenShift basa su ciclo de vida en Git:
+					<ul>
+						<li>Modificar la configuración de las aplicaciones</li>
+						<li>Tratamiento de eventos</li>
+						<li>Compilar y desplegar aplicaciones</li>
+						<li>Integración continua</li>
+					</ul>
+				</li>
+				<li>La salida de Git devuelve información de todas las tareas que se realizan.</li>
+			</ul>			
+		</section>
+		
+		<section>
+			<br>
+			<h2>Cómo funciona OpenShift</h2>					
+			<p  align=center><img style="border: 0;" height="530" src="imagenes/paas06/openshift3.png"></p>	
+		</section>		
+		
+		<section>
+			<h2>Ejecución de una petición HTTP</h2>
+			<ol>
+				<li>Mediante DNS se localiza el Node Host.</li>
+				<li>Cada Node Host tiene un apache que hace de proxy y encamina la petición al Gear en función de la aplicación.</li>
+			</ol>
+		</section>
+		
+		<section>
+			<br>
+			<h2>Creación de una nueva aplicación</h2>					
+			<p  align=center><img style="border: 0;" height="530" src="imagenes/paas06/newapp.png"></p>	
+		</section>		
+		
+		<section>
+			<h2>» Creación de aplicaciones</h2>
+		</section>
+		
+		<section>
+			<br>
+			<ul>
+				<li>Listar cartridges disponibles:
+<pre><code   class="bash" data-trim  style="font-size: 18px;">
+rhc cartridge list
+</code></pre>							
+				</li>
+				<p  align=center><img style="border: 0;" height="450" src="imagenes/paas06/rhc1.png"></p>	
+			</ul>			
+		</section>
+		
+		<section>
+			<br>
+			<ul>
+				<li>Crear una aplicación con RHC:
+<pre><code   class="bash" data-trim  style="font-size: 18px;">
+rhc app-create  [nombre_app]  [cartridge ...]
+</code></pre>							
+				</li>
+				<p  align=center><img style="border: 0;" height="450" src="imagenes/paas06/rhc2.png"></p>	
+			</ul>			
+		</section>
+		
+		<section>
+			<br>
+			<p align=left>Parámetros:</p>
+			<ul>
+				<li><em>-n, --namespace NAME</em>	
+					<p>Permite especificar el dominio de la aplicación.</p></li>
+				<li><em>-g, --gear-size SIZE</em> 
+					<p>Especifica el tamaño del gear (small por defecto)</p></li>
+				<li><em>-s, --[no-]scaling</em>	
+					<p>Habilita el Application Scaling</p></li>
+				<li><em>--from-app NAME</em>	
+					<p>Permite crear una aplicación tomando otra como plantilla.</li>
+				<li><em>--from-code URL</em>	
+				<p>Repositorio Git del código fuente inicial.</p></li>
+				<li><em>--region</em> (aws-eu-west-1, aws-us-east-1)</li>
+			</ul>
+		</section>
+		
+		<section>
+			<ul>
+				<li><strong>DIY Cartridge</strong>: Crea un gear "minimo" sobre el que podemos servicios que no encontremos entre los predefinidos.</li>
+				<li>Catridges de terceros: Podemos crear una aplicación que utilice un cartridge diseñado por terceros, especificando la URL al repositorio git donde se encuentre:
+<pre><code   class="bash" data-trim  style="font-size: 18px;">
+rhc wildfly8 create https://cartreflect-claytondev.rhcloud.com/reflect?github=OpenShift-cartridges/OpenShift-wildfly-cartridge
+</code></pre>				
+				</li>				
+			</ul>
+		</section>
+		
+		<section>
+			<br>
+			<p align=left>Crear una aplicación desde la consola web.</p>
+			<ul>
+				<li>Basta con seleccionar el tipo de aplicación y rellenar un formulario.</li>
+				<li>Podemos seleccionar un cartridge o un <em>QuickStart</em>.</li>
+				<li>DYC y Cartridges de terceros:								
+				<p  align=center><img style="border: 0;" src="imagenes/paas06/altaApp.png"></p>	
+				</li>
+				
+			</ul>			
+		</section>
+		
+		<section>
+			<br>
+			<p align=left>Credenciales de usuario:</p>
+			<ul>
+				<li>Al configurar una aplicación/cartridge se suele crear un usuario administrador.</li>
+				<li>Es importante <strong>anotar</strong> los datos del usuario administrador. No siempre es sencillo recuperarlos después.</li>				
+			</ul>			
+			<p  align=center><img style="border: 0;" src="imagenes/paas06/claves.png"></p>
+		</section>
+		
+		<section>
+			<br>
+			<p align=left>Añadir cartridges adicionales:</p>
+			<ul>
+				<li>Al crear la aplicación
+<pre><code   class="bash" data-trim  style="font-size: 18px;">
+rhc app create  [nombre_app]  [cartridge1] ... [cartridgen]
+</code></pre>								
+				</li>
+				<li>A posteriori:
+<pre><code   class="bash" data-trim  style="font-size: 18px;">
+rhc cartridge-add [cartridge] --app [nombre_app]
+</code></pre>								
+				</li>				
+			</ul>			
+			<p  align=center><img style="border: 0;" height="270" src="imagenes/paas06/bd1.png"></p>
+		</section>
+		
+		<section>
+			<p align=left>Cartridges de base de datos:</p>
+			<ul>
+				<li>PostgreSQL, MySQL y MongoDB</li>
+				<li>Cartridges adicionales de administración como <em>phpMyAdmin</em> sólo se instalarán si tenemos la base de datos</li>
+				<li>Después de añadir cualquier cartridge de BDes recomendable <em>reiniciar</em> la aplicación para que aplique la nueva configuración.</li>
+			</ul>
+		</section>
+		
+		<section>
+			<br>
+			<p align=left>Creación de Datasources en WildFly:</p>
+			<ul>
+				<li>Dentro del repositorio Git de la aplicación reside la configuración del servidor:
+<pre><code   class="bash" data-trim  style="font-size: 18px;">
+.openshift/config/standalone.xml
+</code></pre>												
+				</li>
+				<li>WildFly trae preconfigurados tres datasources de ejemplo (H2, MySQL, PostgreSQL):
+					<p  align=center><img style="border: 0;" height="270" src="imagenes/paas06/bd3.png"></p>
+				</li>
+			</ul>
+		</section>	
+		
+		<section>
+			<br>
+			<p align=left>Port Forwarding:</p>			
+<pre><code   class="bash" data-trim  style="font-size: 18px;">
+rhc port-forward [app]
+</code></pre>								
+			<p  align=center><img style="border: 0;" height="450" src="imagenes/paas06/portforward.png"></p>
+		</section>
+		
+		<section>
+			<h2>» Modificación y despliegue de las aplicaciones</h2>		
+		</section>
+				
+		<section>
+			<br>
+			<ul>
+				<li>Si creamos una aplicación con RHC, ya tenemos una copia del repositorio en local:
+				<p  align=center><img style="border: 0;" src="imagenes/paas06/repo.png"></p>
+				</li>
+				<li>Si no, siempre podemos descargarlo a partir de los datos de la aplicación:
+<pre><code   class="bash" data-trim  style="font-size: 18px;">				
+				git clone ssh://5408af5a4382ece19c00020f@wildfly8-jlzamora.rhcloud.com/~/git/wildfly8.git/
+</code></pre>					
+				</li>
+				<li>O directamente con rhc:
+<pre><code   class="bash" data-trim  style="font-size: 18px;">				
+				rhc git-clone [app]
+</code></pre>					
+				</li>
+			</ul>
+		</section>
+		
+		<section>
+			<br>
+			<ul>
+				<li>También es posible, desde IntelliJ, con la opción <em>Check Out from Version Control</em>				
+				</li>
+			</ul>
+		</section>
+		
+		<section>
+			<br>
+			<h2>Perfiles de Maven</h2>
+<pre><code   class="bash" data-trim  style="font-size: 18px;">							
+<profiles>
+    <profile>     
+     <id>openshift</id>
+     <build>
+        <finalName>wildfly8</finalName>
+        <plugins>
+          <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                    <outputDirectory>deployments</outputDirectory>
+              		  <warName>ROOT</warName>
+                </configuration>
+            </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+  </code></pre>
+ <pre><code   class="bash" data-trim  style="font-size: 18px;">				
+				mvn clean package -Popenshift -DskipTests
+</code></pre>	  
+		</section>
+		
+		<section>
+			<br>
+			<h2> Después de modificar el código... </h2>			
+			<ol>
+				<li>Es conveniente hacer pruebas en local utilizando el perfil por defecto de maven o uno específico para trabajar en <em>local</em>.</li>
+				<li>Una vez probado el código haremos un <em>push</em> al respositorio de OpenShift.</li>
+				<li>Se iniciará la compilación en OpenShift y si todo va bien, se desplegará automáticamente la aplicación modificada.</li>
+			</ol>
+			<h2> <br>Método alternativo (IntelliJ) </h2>
+			
+			<ul>
+				<li>Se basa en definir un  <em>OpenShift Deployment</em>.</li>
+				<li>IntelliJ no soporta WildFly8 en OpenShift → Hay que ayudarle.</li>				
+			</ul>
+		</section>
+		
+		<section>
+			<br>
+			<h2> Método alternativo (IntelliJ) </h2>
+			
+			<ol>
+				<li>Crear la aplicación WildFly8 desde la consola web o mediante <em>rhc</em>.</li>
+				<li>Abrir el proyecto en IntelliJ. Run→Edit configurations: 
+					<p  align=center><img style="border: 0;" src="imagenes/paas06/deploy1.png"></p>
+				</li>
+				<li>Añadir el perfil <em>openshift</em> al fichero <em>pom.xml</em></li>
+				<li>Ejecutar la aplicación mediante la nueva configuración de ejecución.</li>
+			</l>
+		</section>
+		
+		<section>
+			<br>
+			<p align=left>Consulta de logs: </p>
+<pre><code   class="bash" data-trim  style="font-size: 18px;">
+rhc tail [APP]
+</code></pre>										
+			<ul>				
+				<li> Vuelca todos los logs de los cartridges de la aplicación.
+					<ul>
+							<li>-f files <br>Permite especificar una o varias carpetas o ficheros a mostrará</li>
+							<li>-o  <br> Opciones, ejemplo nº de líneas:  o '-n 100'</li>
+					</ul>
+				</li>
+				<li>Borrado de logs y ficheros temporales:
+<pre><code   class="bash" data-trim  style="font-size: 18px;">
+rhc app tidy [APP]
+</code></pre>					
+				</li>
+			</ul>			
+		</section>
+						
+		<section>
+			<h2>Borrado de aplicaciones</h2>
+			<ul>
+				<li> Desde la consola web, o mediante RHC:
+<pre><code   class="bash" data-trim  style="font-size: 18px;">				
+				rhc app delete [APP]
+</code></pre>	  				
+				</li>
+				<li>Si borramos una aplicación eliminaremos el gear y el repositorio Git asociado →  <strong>Precaución</strong></li>
+			</ul>			
+		</section>
+		
+		<section>
+			<h2>Administración de dominios</h2>
+			<p  align=center><img style="border: 0;" src="imagenes/paas06/domain.png"></p>
+		</section>
+		
+		<section>
+			<h2>MarketPlace</h2>
+			<ol>
+				<li>Creado en 2014 como punto de encuentro entre clientes de OpenShift y proveedores de servicios.</li>
+				<li>Servicios clasificados por categorías y casi todos con modalidades gratuitas.</li>
+				<li>Muy inmaduro aún: pocos servicios, nula documentación y de integración dudosa en algunos casos.</li>				
+			</ol>
+			<p align=center><br>https://marketplace.openshift.com/openshift</p>
+		</section>
+		
+		<section>
+			<h2>» Monitorización</h2>		
+		</section>
+		
+		<section>
+			<h2>Herramientas</h2>
+			<ul>
+				<li>A día de hoy escaso soporte a la monitorización.</li>
+				<li>Podemos utilizar las mismas herramientas que en instalaciones propias.</li>
+				<li>http://[app]-[domain].rhcloud.com/snoop.jsp <br>
+				Datos de la JVM</li>				
+			</ul>			
+		</section>
+		
+		<section>
+			<br>
+			<h2>port-forwarding & JMX </h2>
+			<ul>
+				<li>Mediante JMX podemos obtener información de configuración y de ejecución de las aplicaciones (MBeans)</li>
+				<li>Combinando ambas herramientas podemos utilizar herramientas locales de monitorización.</li>								
+			</ul>
+<pre><code   class="bash" data-trim  style="font-size: 18px;">				
+$ jvisualvm --cp:a /usr/local/wildfly/bin/client/jboss-cli-client.jar
+</code></pre>	  				
+<p  align=center><img style="border: 0;" src="imagenes/paas06/visualvm1.png"></p>
+		</section>
+		
+		<section>
+			<br>
+			<h2>port-forwarding & JMX </h2>		
+			<p  align=center><img style="border: 0; "height="500" src="imagenes/paas06/visualvm2.png"></p>
+		</section>
+		
+		<section>
+			<br>
+			<h2>Cartridges de terceros</h2>		
+			<br>
+			<p align=left>Monit</p>
+			<p  align=center><img style="border: 0;" src="imagenes/paas06/monit.png"></p>
+		</section>
+		
+		<section>
+			<br>
+			<h2>Monitorización BBDD</h2>		
+			<br>
+				<ul>
+				<li>phpMyAdmin para MySQL.</li>
+				<li>RockMongo, MongoDB Monitoring Service para MongoDB.</li>								
+			</ul>
+			<p  align=center><img style="border: 0;" src="imagenes/paas06/mysql.png"></p>
+		</section>
+		
+		<section>
+			<h1>¿Preguntas...?</h1>
+		</section>
+
+		
+	</div>
+</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+				slideNumber: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
+
+		
+		</section>

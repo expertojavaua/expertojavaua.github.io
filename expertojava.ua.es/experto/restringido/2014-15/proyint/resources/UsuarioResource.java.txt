@@ -1,0 +1,132 @@
+package org.expertojava.jbibrest.rest;
+
+import org.expertojava.jbibrest.modelo.Prestamo;
+import org.expertojava.jbibrest.servicio.BibliotecarioServicio;
+import org.expertojava.jbibrest.servicio.DatosUsuario;
+import org.expertojava.jbibrest.servicio.UsuarioServicio;
+import org.expertojava.jbibrest.utils.BibliotecaException;
+
+import javax.ejb.EJB;
+import javax.ws.rs.*;
+import javax.ws.rs.core.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@Path("/usuarios")
+public class UsuarioResource {
+    @Context
+    UriInfo uriInfo;
+    @Context
+    SecurityContext securityContext;
+
+    @EJB
+    UsuarioServicio usuarioServicio;
+    @EJB
+    BibliotecarioServicio bibliotecarioServicio;
+
+    @GET
+    @Produces({"application/json"})
+    @Path("{usuario}")
+    public UsuarioDetalle getUsuario(@PathParam("usuario") String login) {
+        if (securityContext.getUserPrincipal().getName().equals(login) ||
+                securityContext.isUserInRole("bibliotecario")) {
+            DatosUsuario datosUsuario = usuarioServicio.recuperarUsuario(login);
+            if (datosUsuario == null)
+                throw new RestException(RestException.USUARIO_NO_EXISTENTE);
+            UsuarioDetalle usuarioDetalle = new UsuarioDetalle(datosUsuario);
+            return usuarioDetalle;
+        }
+        else throw new RestException(RestException.USUARIO_NO_ES_EL_LOGEADO);
+    }
+
+    @OPTIONS
+    @Consumes({"application/json"})
+    @Path("{usuario}")
+    public Response getUsuarioOptions(@PathParam("usuario") String login) {
+        return Response.ok().build();
+    }
+
+    @GET
+    @Produces({"application/json"})
+    @Path("{usuario}/prestamos")
+    public List<PrestamoItem> getPrestamos(@PathParam("usuario") String login) {
+        if (securityContext.getUserPrincipal().getName().equals(login)  ||
+                securityContext.isUserInRole("bibliotecario")) {
+            List<PrestamoItem> prestamosItem = new ArrayList<>();
+            DatosUsuario datosUsuario = usuarioServicio.recuperarUsuario(login);
+            if (datosUsuario == null)
+                throw new RestException(RestException.USUARIO_NO_EXISTENTE);
+            List<Prestamo> prestamos = usuarioServicio.prestamosActivos(datosUsuario.id);
+            for (Prestamo prestamo : prestamos) {
+                PrestamoItem prestamoItem = new PrestamoItem(prestamo);
+                LibroResource libroResource = new LibroResource();
+                prestamoItem.ejemplarItem.resourceUri = libroResource
+                        .getLibroUri(uriInfo.getBaseUriBuilder(), prestamoItem.ejemplarItem.isbn);
+                prestamosItem.add(prestamoItem);
+            }
+            return prestamosItem;
+        }
+        else throw new RestException(RestException.USUARIO_NO_ES_EL_LOGEADO);
+    }
+
+    @OPTIONS
+    @Consumes({"application/json"})
+    @Path("{usuario}/prestamos")
+    public Response realizarPrestamoOptions(@PathParam("usuario") String login, LibroItem libro) {
+        return Response.ok().build();
+    }
+
+    @OPTIONS
+    @Consumes({"application/json"})
+    @Path("{usuario}/prestamos")
+    public Response realizarPrestamoOptions(@PathParam("usuario") String login) {
+        return Response.ok().build();
+    }
+
+    @POST
+    @Consumes({"application/json"})
+    @Path("{usuario}/prestamos")
+    public Response realizarPrestamo(@PathParam("usuario") String login, LibroItem libro) {
+        if (securityContext.getUserPrincipal().getName().equals(login) ||
+                securityContext.isUserInRole("bibliotecario")) {
+            DatosUsuario datosUsuario = usuarioServicio.recuperarUsuario(login);
+            if (datosUsuario == null)
+                throw new RestException(RestException.USUARIO_NO_EXISTENTE);
+
+            try {
+                usuarioServicio.realizarPrestamoIsbn(datosUsuario.id, libro.isbn);
+            } catch (Exception be) {
+                Map<String, String> message = new HashMap<>();
+                String[] split = be.getMessage().split(":");
+
+                message.put("message", split[split.length == 1?0:1]);
+                return Response.status(403).type("application/json").entity(message).build();
+            }
+            return Response.ok().build();
+        }
+        else throw new RestException(RestException.USUARIO_NO_ES_EL_LOGEADO);
+    }
+
+    @OPTIONS
+    @Consumes({"application/json"})
+    @Path("{usuario}/devoluciones")
+    public Response realizarDevolucionOptions(@PathParam("usuario") String login, EjemplarItem ejemplar) {
+        return Response.ok().build();
+    }
+
+    @POST
+    @Consumes({"application/json"})
+    @Path("{usuario}/devoluciones")
+    public Response realizarDevolucion(@PathParam("usuario") String login, EjemplarItem ejemplar) {
+        if (securityContext.isUserInRole("bibliotecario")) {
+            DatosUsuario datosUsuario = usuarioServicio.recuperarUsuario(login);
+            if (datosUsuario == null)
+                throw new RestException(RestException.USUARIO_NO_EXISTENTE);
+            bibliotecarioServicio.devolverEjemplar(datosUsuario.id, ejemplar.ejemplarId);
+            return Response.ok().build();
+        }
+        else throw new RestException(RestException.AUTORIZADO_SOLO_A_BIBLIOTECARIOS);
+    }
+}

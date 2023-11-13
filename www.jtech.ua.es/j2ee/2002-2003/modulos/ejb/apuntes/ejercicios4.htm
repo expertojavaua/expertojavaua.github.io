@@ -1,0 +1,145 @@
+<head>
+<title>Sesion 4 Enterprise Java Beans</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../../ejercicios.css" type="text/css">
+</head>
+<body>
+
+<h1>Ejercicios sesi&oacute;n 4</h1>
+
+<h2>Ejercicio 1: Despliegue y prueba del bean SavingsAccountEJB</h2>
+
+<p>En este primer ejercicio probaremos y desplegaremos el bean SavingsAccountEJB. 
+  Se trata de un bean de entidad con persistencia gestionada por el bean.</p>
+<p>El ejercicio consta de los siguientes pasos:</p>
+<ol>
+  <li>Creaci&oacute;n del dominio weblogic &quot;ejemplos&quot;, basado en el 
+    servidor de ejemplos.</li>
+  <li>Creaci&oacute;n de la tabla SAVINGSACCOUNT de la base de datos Demo. Esta 
+    base de datos est&aacute; manejada por el servidor PointBase, un servidor 
+    de bases de datos escrito en Java que viene incluido en la distribuci&oacute;n 
+    de Weblogic.</li>
+  <li>Despliegue del bean.</li>
+  <li>Compilaci&oacute;n y prueba de la aplicaci&oacute;n cliente.</li>
+</ol>
+<h3>Creaci&oacute;n del dominio <code>ejemplos</code></h3>
+<p>Para crear el dominio <code>ejemplos</code> debemos ejecutar el comando</p>
+<pre class="codigo">% <em>WL_HOME</em>/bea/weblogic700/common/bin/dmwiz.sh</pre>
+<p>donde<em> WL_HOME</em> es el directorio donde se encuentra instalado el servidor 
+  de aplicaciones. Aparecer&aacute;n las ventanas de ayuda del asistente de creaci&oacute;n 
+  de dominios que nos ir&aacute; guiando para seleccionar las opciones adecuadas. 
+  Debemos seleccionar la plantilla <em>WLS Examples</em> y asignarle como nombre 
+  ejemplos. Escogeremos despu&eacute;s la opci&oacute;n <em>Single Server (Standalone 
+  Server)</em> y aceptaremos el directorio por defecto (<code><em>WL_HOME</em>\user_projects\ejemplos</code>). 
+  Aceptaremos el nombre de servidor por defecto (<code>myserver</code>) y los 
+  puertos de escucha. Dejaremos en blanco la direcci&oacute;n de escucha del servidor. 
+  Como usuario de administraci&oacute;n podemos escribir <code>system</code> y 
+  <code>weblogic</code> como contrase&ntilde;a.</p>
+<p>Una vez instalado el dominio de ejemplos, lanzaramos el servidor de aplicaciones</p>
+<pre class="codigo">% <em>WL_HOME</em>/user_projects/ejemplos/startExamplesServer.sh</pre>
+<p>y nos conectaremos con el navegador a la direcci&oacute;n <em>http://localhost:7001/examplesWebApp/index.jsp</em>. 
+  All&iacute; se encuentra la p&aacute;gina principal en la que se pueden probar 
+  distintos tipos de ejemplos proporcionados por el servidor de aplicaciones.</p>
+<h3>Creaci&oacute;n de la tabla <code>savingsaccount</code></h3>
+<p>Para usar EJB de entidad es necesario crear tablas en alguna base de datos. 
+  El servidor de aplicaciones weblogic proporciona el gestor de bases de datos 
+  PointBase, escrito en Java y completamente integrado en el servidor de ejemplos. 
+  Cuando lanzamos el servidor de aplicaciones, autom&aacute;ticamente se arranca 
+  el servidor de bases de datos.</p>
+<p>Podemos comprobar cu&aacute;l es el nombre JNDI de la fuente de datos que usa 
+  el servidor de ejemplos. Para ello, entramos en la consola de administraci&oacute;n 
+  (http://localhost:7001/console) y seleccionamos la opci&oacute;n <em>Tx Data 
+  Sources</em>, bajo el apartado <em>Services Configurations.</em> Aparecer&aacute;n 
+  distintas fuentes de datos. La que vamos a usar en los ejemplos es la fuente 
+  de datos <em>examples-dataSource-demoPool</em> que tiene ese mismo nombre JNDI. 
+  Si seleccionamos el Connection Pool asociado a esa fuente de datos (demoPool) 
+  veremos que las caracter&iacute;sticas de la base de datos son las siguientes:</p>
+<ul>
+  <li>URL: <em>jdbc:pointbase:server://localhost/demo </em></li>
+  <li>Driver class name: <em>com.pointbase.jdbc.jdbcUniversalDriver</em></li>
+  <li>Usuario y pasword: <em>examples</em>, <em>examples</em></li>
+</ul>
+<p>Vamos a crear la tabla que necesitamos en la base de datos <code>demo</code>:</p>
+<p>1. Descargamos el fichero <code>ejercicio4.zip</code>, y lo descomprimimos 
+  en el directorio de trabajo <code>$HOME/ejb</code></p>
+<p>2. Se habr&aacute; creado el directorio <code>$HOME/ejb/savingsaccount</code>. 
+  En ese directorio se encuentran los subdirectorios <code>java</code>, <code>xml</code> 
+  y <code>sql</code>. Dentro del directorio <code>sql</code>, se encuentra el 
+  script <code>savingsaccount.sql</code> con el que vamos a crear la base de datos.</p>
+<p>3. Copiar ese script al directorio <code>$WL_HOME/weblogic700/samples/server/eval/pointbase/tools</code></p>
+<pre class="codigo">% cp savingsaccount/sql/savingsaccount.sql $WL_HOME/weblogic700/samples/server/eval/pointbase/tools</pre>
+<p>4. Vamos a llamar a una aplicaci&oacute;n cliente que nos permite ejecutar 
+  comandos SQL contra la base de datos. No se encuentra directamente instalada 
+  en el directorio <code>tools</code>, pero podemos crearla f&aacute;cilmente. 
+  Nos movemos al directorio <code>tools</code> y copiamos el fichero <code>startPointBaseConsole.sh</code> 
+  con el nombre <code>startPointBaseCommander.sh</code></p>
+<pre class="codigo">% cd $WL_HOME/weblogic700/samples/server/eval/pointbase/tools
+% cp startPointBaseConsole.sh startPointBaseCommander.sh</pre>
+<p>y modificamos su &uacute;ltima l&iacute;nea de c&oacute;digo. Donde pone</p>
+<pre class="codigo">&quot;${JAVA_HOME}/bin/java&quot; -classpath &quot;${CLASSPATH}&quot; com.pointbase.tools.toolsConsole</pre>
+<p>lo cambiamos por </p>
+<pre class="codigo">&quot;${JAVA_HOME}/bin/java&quot; -classpath &quot;${CLASSPATH}&quot; com.pointbase.tools.toolsCommander</pre>
+<p>5. Ejecutamos la aplicaci&oacute;n cliente del gestor de bases de datos con 
+  la instrucci&oacute;n</p>
+<pre class="codigo">./startPointBaseCommander.sh</pre>
+<p>Introducimos los siguientes valores </p>
+<pre class="codigo">Do you wish to create a &quot;New/Overwrite&quot; Database? [default: N]: 
+  Select product to connect with: Embedded (E), or Server (S)? [default: E]: <strong>S</strong>
+  Please enter the driver to use: [default: [com.pointbase.jdbc.jdbcUniversalDriver]: 
+  
+  Please enter the database URL to use: [default: [jdbc:pointbase:server://localhost/sample]: 
+  <strong>jdbc:pointbase:server://localhost/demo</strong>
+  Username: [default: PBPUBLIC]: <strong>examples</strong>
+  Password: [default: PBPUBLIC]: <strong>examples</strong>
+  PointBase Commander 4.2ECF build 183 SERVER
+  Interactive SQL command language. Mac OS X/10.1.5(C) Copyright 1998 - 2002 PointBase(R), 
+  Inc. All rights reserved
+  SQL&gt;</pre>
+<p>6. Una vez en la consola SQL, ejecutaremos el comando</p>
+<pre class="codigo">SQL &gt; run &quot;savingsaccount.sql&quot;;</pre>
+<p>(Recuerda el punto y coma!!). Ahora ya se habr&aacute; creado la tabla necesaria 
+  para el probar el bean de entidad.</p>
+<h3>Despliegue del bean</h3>
+<p>1. Vuelve al directorio <code>ejb</code>, donde se encuentran todos los ficheros 
+  necesarios para el bean y comprueba que se encuentra el fichero EJB JAR <code>savingsaccount-ejb.jar</code>.</p>
+<p>2. Accede desde el navegador a la consola de administraci&oacute;n y realiza 
+  el despliegue del bean <code>savingsaccount-ejb.jar</code>. Debes seleccionar 
+  la opci&oacute;n<em> EJB &gt; Configure a new EJB </em>y pasar directamente 
+  al paso 2 para moverte por el &aacute;rbol de directorios hasta el directorio<code> 
+  $HOME/ejb/savingsaccount</code> y seleccionar el fichero <code>savingsaccount-ejb.jar</code>. 
+  Selecciona el servidor <code>myserver</code> y pulsa <em>Configure and Deploy</em>.</p>
+<h3>Compilaci&oacute;n y prueba de la aplicaci&oacute;n cliente</h3>
+<p>1. A&ntilde;ade el directorio WL_HOME/weblogic700/server/bin al path:</p>
+<pre class="codigo">% export PATH=$PATH:<em>WL_HOME</em>/weblogic700/server/bin</pre>
+<p>2. Actualiza las variables del entorno</p>
+<pre class="codigo">% . setWLSEnv.sh
+% export CLASSPATH=$CLASSPATH:.</pre>
+<p>3. Vuelve al directorio donde se encuentra los fuentes y compila todos los 
+  ficheros</p>
+<pre class="codigo">% cd $HOME/ejb/savingsaccount/src
+  % javac *.java</pre>
+<p>4. Ejecuta la aplicaci&oacute;n cliente</p>
+<pre class="codigo">% java SavingsAccountClient</pre>
+<p>Vuelve a ejecutarla otra vez; esta segunda vez tiene que arrojar una excepci&oacute;n 
+  de tipo InsuficientBalanceException, porque se intenta hacer un cargo de una 
+  cantidad superior a la que tiene una cuenta de balance.</p>
+<h2>Ejercicio 2: Modificaci&oacute;n del bean</h2>
+<p>1. Modifica el bean y el programa SQL para incluir las siguientes caracter&iacute;sticas</p>
+<ul>
+  <li>Incluir el campo <strong><code>String state</code></strong>, de 2 caracteres, 
+    que puede tener el valor &quot;OK&quot; o &quot;NU&quot; (No Usada), as&iacute; 
+    como los m&eacute;todos de negocio <strong><code>setUnused()</code></strong> 
+    y <strong><code>setUsed()</code></strong>, que permiten cambiar a NU y OK 
+    respectivamente el valor de ese campo. </li>
+  <li>A&ntilde;adir el m&eacute;todo Boolean <strong><code>getUsed()</code></strong> 
+    que nos devuelve true o false seg&uacute;n la cuenta est&aacute; usada o no.</li>
+  <li>Incluir el m&eacute;todo home <strong><code>clearAccounts()</code></strong>, 
+    que permita poner a 0.00 el balance todas las cuentas de aquellos clientes 
+    que tengan el campo state=&quot;NU&quot;.</li>
+</ul>
+<p>2. Escribe una peque&ntilde;a aplicaci&oacute;n cliente que pruebe la modificaciones 
+  del bean. </p>
+<p>&nbsp;</p>
+
+</body>
+</html>

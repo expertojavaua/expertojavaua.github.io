@@ -1,0 +1,509 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0052)http://www.dccia.ua.es/j2ee/mensajes/apuntes/sesion1.htm -->
+<HTML><HEAD><TITLE>Mensajes en Java</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=iso-8859-1">
+<META content=Sco name=Author><LINK href="sesion1_archivos/apuntes.css"
+type=text/css rel=stylesheet>
+<META content="Microsoft FrontPage 4.0" name=GENERATOR></HEAD>
+<BODY>
+<H1>Tema 1: Usando el API de JavaMail</H1>
+<H2>1.1. Introducción</H2>
+<P>JavaMail proporciona un conjunto de clases abstractas que definen los objetos e interfaces necesarias
+para implementar un sistema de e-mail.Los proveedores JavaMail que implementan el API proporcionan la 
+funcionalidad necesaria para establecer la comunicación a través de protocolos concretos. Concretamente,
+la implementación de Sun permite manejar los protocolos SMTP (Simple Mail Transfer Protocol),
+IMAP (Internet Message Access Protocol), MIME (Multipurspose Internet Mail Extensions) y
+Post Office Protocol 3 (POP3).</P>
+
+<P>En terminología JavaMail, usando los protocolos podemos implementar o bien un
+<B>Transport</B> o un <B>Store</B>. El primero se refiere a un servicio con capacidad para enviar
+mensajes a su destino (usualmente con SMTP), mientras que el segundo es un servicio con el que hay
+conectar para descargar mensajes que han sido enviados a nuestro buzón (p.e. POP3 o IMAP) .</P>
+
+<H2>1.2. Instalación y prueba</H2>
+<P>En cuanto a la instalación, lo primero es descargar la extensión JavaMail de
+<A href="http://java.sun.com/products/javamail">java.sun.com/products/javamail</A>. La última versión,
+por el momento es la 1.3. A continuación copiaremos el fichero <I>mail.jar</I> en el directorio de 
+extensiones <I>$JAVA_HOME/jre/lib/ext</I>. Seguidamente instalaremos JAF (JavaBeans Activation 
+Framework) tras descargarlo de
+<A href="http://java.sun.com/beans/glasgow/jaf.html">java.sun.com/beans/glasgow/jaf.html</A>. Copiaremos
+el fichero <I>activation.jar</I> en el fichero de extensiones.</P>
+<P>Para comprobar que todo está correctamente instalado, compilaremos y ejecutaremos el programa
+de ejemplo <A href="sesion1_archivos/msgsend.java.txt">msgsend.java</A>. Desde línea de comandos
+escribiremos algo como:</P>
+<P><I>java msgsend -o sco@dccia.ua.es -M luceros.dccia.ua.es otto@dccia.ua.es</I></P>
+<P>donde especificamos la dirección origen (-o) el servidor SMTP (-M) y el destino. A continuación
+nos pedirá el subject y después el texto (terminar con CTRL-D). Generará un mensaje de éxito y
+luego podremos comprobar que nos ha llegado el e-mail.</P>
+
+<H2>1.3. Clase javax.mail.Session</H2>
+<P>Esta clase permite definir una sesión a partir de objetos <B>java.util.Properties</B>, en donde
+se supone que tenemos almacenados. En el ejemplo anterior, suponiendo que la variable <I>mailhost</I>
+o servidor SMTP contiene p.e. <I>luceros.dccia.ua.es</I>, tendríamos que</P>
+<PRE class=codigo>
+<B>Properties</B> props = System.getProperties();
+
+if (mailhost != null)
+  props.put(&quot;mail.smtp.host&quot;, mailhost);
+
+// Get a Session object
+<B>Session</B> session = Session.<B>getDefaultInstance</B>(props, null);
+if (debug)
+   session.setDebug(true);
+</PRE>
+<P>crea una sesión compartida, mientras que usando <B>getInstance()</B> creamos una sesión no-compartida. El
+argumento <B>null</B> es un autentificador que veremos después.</P>
+
+
+
+<H2>1.4 Clases javax.mail.Message y javax.mail.internet.MimeMessage</H2>
+<P>Esta clase permite construir mensajes con todos sus atributos. Lo más habitual es utilizar la subclase
+<B>MimeMessage</B> que permite entender tipos MIME en donde los encabezados no se restringen a caracteres
+ASCII</P>
+<PRE class=codigo>
+<B>Message</B> msg = new <B>MimeMessage</B>(session);
+</PRE>
+
+<P>El método <B>setFrom()</B> fija la dirección origen del mensaje (from) haciendo uso de objetos de la
+clase de direcciones <B>javax.mail.internet.InternetAddress</B> sublclase de la clase abstracta <B>javax.mail.Address</B>.</P>
+<PRE class=codigo>
+if (from != null)
+    msg.<B>setFrom</B>(new <B>InternetAddress</B>(from));
+else
+    msg.setFrom();
+</PRE>
+
+<P>El método <B>setRecipients()</B> determina los receptores del mensaje (to, cc, bcc):</P>
+<PRE class=codigo>
+msg.<B>setRecipients</B>(Message.RecipientType.TO, InternetAddress.parse(to, false));
+</PRE>
+
+<P>EL método <B>setSubject()</B> establece el tema del mensaje.
+<PRE class=codigo>
+msg.<B>setSubject</B>(subject);
+</PRE>
+
+<P>Para rellenar el contenido del mensaje hay que tener en cuenta si se trata de un mensaje de solo-de-texto
+o no. En caso de que sea solo texto se dispone del método <B>setText()</B> que recibe una cadena de entrada.
+Si como en el ejemplo el contenido se lee de un stream entonces esta cadena se
+va construyendo a medida que se leen las líneas y una vez terminado el stream se hace la llamada al
+método. Si por el contrario estamos incluyendo tipos MIME, como HTML en el contenido, utilizaremos el
+método <B>setContent()</B>:</P>
+<PRE class=codigo>
+String contenido = &quot;&lt;HTML&gt;&lt;HEAD&gt;&lt;TITLE&gt; Hola&lt;/TITLE&gt;&lt;/HEAD&gt;&lt;BODY&gt; Texto&lt;BODY&gt;&lt;/HTML&gt;&quot;
+msg.<B>setContent</B>(contenido, &quot;text/html&quot;);
+</PRE>
+
+<P>Finalmente, para fijar el encabezado hacemos uso de <B>setHeader()</B>, inclueyendo el nombre
+de la clase java desde la que se envía el mail, y para incluir la fecha de envío usaremos
+<B>setSentDate()</B>:</P>
+<PRE class=codigo>
+String mailer = &quot;msgsend&quot;;
+...
+msg.<B>setHeader</B>(&quot;X-Mailer&quot;, mailer);
+msg.<B>setSentDate</B>(new Date());
+</PRE>
+
+<P>Finalmente, hay que reseñar que los
+métodos <B>setXXX</B> tienen sus contrapartidas <B>getXXX</B> como veremos más adelante.</P>
+
+<H2>1.5 Clase javax.mail.Transport</H2>
+<P>Una vez construido el mensaje utilizamos esta clase para enviarlo, normalmente
+a través del protocolo SMTP. Para ello utilizamos los métodos <B>send()</B> al cual le pasamos
+o bien un único argumento (el objeto <B>Message</B> en cuestión) o bien dicho objeto seguido de un 
+array de direcciones (objetos <B>Address</B>) con lo que se sustituyen los destinatarios 
+previamente establecidos.</P>
+<PRE class=codigo>
+// send the thing off
+Transport.<B>send</B>(msg);
+System.out.println(&quot;\nMail was sent successfully.&quot;);
+</PRE>
+
+<P>Alternativamente podemos utilizar un objeto <B>Transport</B>,obtenido a partir de la sesión
+actual, y llamar a <B>sendMessage()</B>:</P>
+<PRE class=codigo>
+msg.saveChanges(); // send() incluye una llamada a este método.
+Transport tr = session.<B>getTransport</B>(&quot;smtp&quot;);
+tr.<B>connect</B>(host, usuario, password);
+tr.<B>sendMessage</B>(msg, msg.getAllRecipients());
+tr.close();
+</PRE>
+<P>lo cual tiene la ventaja de que aprovechamos la misma conexión al servidor para enviar muchos mensajes, 
+mientras que con <B>send()</B> se establece una conexión diferente para cada uno de ellos.</P>
+
+<H2>1.6 Clases javax.mail.Store y javax.mail.Folder</H2>
+<P>Hasta ahora hemos visto cómo enviar mensajes. Para leerlos del servidor empezaremos definiendo un
+objeto sesión, y a partir de él llamaremos al método <B>getStore()</B> indicando el protocolo de lectura 
+(p.e. pop3 o imap). Seguidamente conectaremos, a través del método <B>connect()</B> con el servidor de 
+mail una vez hayamos indicado el host (p.e. luceros.dccia.ua.es) el usuario y su password 
+correspondiente (ver código en
+<A href="sesion1_archivos/GetMessageExample.java.txt">GetMessageExample.java</A>):</P>
+<PRE class=codigo>
+// Create empty properties
+Properties props = new Properties();
+
+// Get session
+Session session = Session.getDefaultInstance(props, null);
+
+// Get the store
+<B>Store</B> store = session.<B>getStore</B>(&quot;pop3&quot;);
+
+// Connect to store
+store.<B>connect</B>(host, username, password);
+</PRE>
+
+<P>Seguidamente, se obtiene una o varias carpetas (objetos <B>Folder</B>) y se accede a los mensajes:</P>
+<PRE class=codigo>
+// Get folder
+Folder folder = store.<B>getFolder</B>(&quot;INBOX&quot;);
+
+// Open read-only
+folder.<B>open</B>(Folder.READ_ONLY);
+
+BufferedReader reader = new BufferedReader (
+      new InputStreamReader(System.in));
+
+// Get directory
+Message message[] = folder.<B>getMessages</B>();
+
+for (int i=0, n=message.length; i&amp;ltn; i++) {
+
+  // Display from field and subject
+  System.out.println(i + &quot;: &quot; + message[i].getFrom()[0]
+     + &quot;\t&quot; + message[i].<B>getSubject</B>());
+
+  System.out.println(&quot;Do you want to read message? [YES to read/QUIT to end]&quot;);
+  String line = reader.readLine();
+  if (&quot;YES&quot;.equals(line)) {
+
+     // Display message content
+     System.out.println(message[i].<B>getContent</B>());
+
+  } else if (&quot;QUIT&quot;.equals(line)) {
+        break;
+}
+}
+</PRE>
+
+<P>Para probar este ejemplo haremos lo siguiente:</P>
+<P><I>java GetMessageExample luceros.dccia.ua.es sco password_sco</I></P>
+
+<P>Adicionalmente, algunos de los métodos para acceder y consultar las carpetas  son: </P>
+<table border="1">
+  <tr>
+    <td><B>Folder getDefaultFolder()  </B></td>
+    <td>Obtiene la carpeta por defecto.</td>
+  </tr>
+  <tr>
+    <td><B>Folder getFolder(String nom)  </B></td>
+    <td>Obtiene la carpeta de nombre <B>nom</B>.</td>
+  </tr>
+  <tr>
+    <td><B>Folder getParent()</B></td>
+    <td>Obtiene  el padre de esta carpeta o null si estamos en el tope.</td>
+  </tr>
+  <tr>
+    <td><B>Folder[] list()</B></td>
+    <td> Lista todas las sub-carpetas.</td>
+  </tr>
+  <tr>
+    <td><B>Folder[] list(String str)</B></td>
+    <td> Lista todas las sub-carpetas que hacen matching con el patrón <B>str</B>, donde "*" indica
+    cualquier carácter y "%" indica cualquier carácter menos el separador.</td>
+  </tr>
+  <tr>
+    <td><B>boolean exists()</B></td>
+    <td> Devuelve true si la carpeta existe físicamente.</td>
+  </tr>
+  <tr>
+    <td><B>boolean create(int tipo)</B></td>
+    <td> Crea una carpeta del tipo <B>tipo</B>, donde los tipos válidos son <B>Folder.HOLDS_FOLDERS</B>,
+    <B>Folder.HOLDS_MESSAGES</B> o ambos.</td>
+  </tr>
+    <tr>
+    <td><B>void open(int modo)</B></td>
+    <td>Abrir con el modo especificado: <B>Folder.READ_ONLY</B> o <B>Folder.READ_WRITE</B>.</td>
+  </tr>
+  
+    <tr>
+    <td><B>Message[] expunge()</B></td>
+    <td> Borra todos los mensajes marcados con el flag <B>Flags.Flag.DELETED</B> y devuelve los
+    mensajes borrados en un array.</td>
+  </tr>
+  
+    <tr>
+    <td><B>void close(boolean exp)</B></td>
+    <td>Cierra la carpeta indicando si debe haber expunge o no.</td>
+  </tr>
+  
+    <tr>
+    <td><B>boolean delete(boolean rec)  </B></td>
+    <td>Borra una carpeta aplicando recursividad o no en función de <B>rec</B>. </td>
+  </tr>
+</table>
+<P>Si queremos, por ejemplo borrar mensajes utilizaremos cualquiera de las siguientes variantes
+de <B>setFlags</B> suministrando el flag <B>Flags.Flag.DELETED</B> y posteriormente cerrando
+el folder con expunge <B>close(true)</B>. Previamente la carpeta tendrá que estar abierta para 
+lectura-escritura:</P>
+<table border="1">
+  <tr>
+    <td><B>void setFlags(int[] nums, Flags flag, boolean valor)</B></td>
+    <td>Indicando los números de mensajes a borrar en un array </td>
+  </tr>
+   <tr>
+    <td><B>void setFlags(int i, int j, Flags flag, boolean valor)</B></td>
+    <td>Indicando el rango de mensajes</td>
+  </tr>
+    <td><B>void setFlags(Message[] mens, Flags flag, boolean valor)  </B></td>
+    <td>Indicando el array de mensajes</td>
+  </tr>
+</table>
+
+<P>La información sobre los mensajes se obtiene de los métodos siguientes:</P>
+<table border="1">
+  <tr>
+    <td><B>int getMessageCount()</B></td>
+    <td>Devuelve el número de mensajes de la carpeta o -1 si no es posible.</td>
+  </tr>
+  <tr>
+    <td><B>boolean hasNewMessage()</B></td>
+    <td>Indica si se ha recibido un nuevo mensaje desde la última vez que se abrió la carpeta.</td>
+  </tr>
+  <tr>
+    <td><B>int getNewMessageCount()</B></td>
+    <td>Devuelve el número de mensajes nuevos o -1 si no es posible.</td>
+  </tr>
+  <tr>
+    <td><B>int getUnreadMessageCount()</B></td>
+    <td>Devuelve el número de mensajes no leidos.</td>
+  </tr>
+  <tr>
+    <td><B>int getMessage(int num)</B></td>
+    <td>Devuelve el mensaje correspondiente al número <B>num</B>.</td>
+  </tr>
+  <tr>
+    <td><B>Message[] getMessages()</B></td>
+    <td>Devuelve todos los mensajes.</td>
+  </tr>
+  <tr>
+    <td><B>Message[] getMessages(int i, int j)   </B></td>
+    <td>Devuelve todos los mensajes entre los números <B>i</B> y <B>j</B>.</td>
+  </tr>
+</table>
+
+<H2>1.7 Estructura de Mensajes: Enviar y Recibir Attachments</H2>
+<P>Hasta ahora hemos hecho referencia al contenido de los mensajes sin entrar en detalle en
+el complejo modelo de contenido utilizado en JavaMail. Pero conocer dicho modelo es necesario 
+si queremos manejar attachments.</P>
+<P>En términos generales, un mensaje está compuesto de múltiples partes, cada una de las cuales 
+es una <B>javax.mail.BodyPart</B> o una <B>javax.mail.internet.MimeBodyPart</B> y todas las
+partes pueden combinarse en un contenedor llamado <B>javax.mail.MultiPart</B> (o bien un 
+<B>javax.mail.internet.MimeMultiPart</B>).</P>
+<P>Veamos el código de una aplicación sencilla para enviar un attachment (ver 
+<A href="sesion1_archivos/AttachExample.java.txt">AttachExample.java</A>). Lo primero, tras crear la
+sesión es definir el mensaje:</P>
+<PRE class=codigo>
+Message message = new MimeMessage(session);
+message.setFrom(new InternetAddress(from));
+message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+message.setSubject(&quot;Hello JavaMail Attachment&quot;);
+</PRE>
+<P>Seguidamente, creamos la parte de texto y la rellenamos</P>
+<PRE class=codigo>
+// Create the message part
+<B>BodyPart</B> messageBodyPart = new <B>MimeBodyPart();</B>
+
+// Fill the message
+messageBodyPart.setText(&quot;Here's the file&quot;);
+</PRE>
+<P>Entonces creamos un contenedor y le añadimos el cuerpo de texto</P>
+<PRE class=codigo>
+// Create a Multipart
+<B>Multipart</B> multipart = new <B>MimeMultipart();</B>
+
+// Add part one
+multipart.<B>addBodyPart</B>(messageBodyPart);
+</PRE>
+<P>Entonces comenzamos a construir la parte que contendrá el attachment: (1) obtener el attachment,
+(2) instanciar un <B>javax.activation.DataHandler</B> que es una clase de JAF que permite manejar
+contenidos (por ello se requiere JAF), (3) indicar el fichero con el attachment, (4) >a>ñadir la
+parte con el attachment.</P>
+<PRE class=codigo>
+// Create second body part
+ messageBodyPart = new MimeBodyPart();
+
+// 1. Get the attachment
+<B>DataSource</B> source = new <B>FileDataSource</B>(filename);
+
+// 2. Set the data handler to the attachment
+messageBodyPart.<B>setDataHandler</B>(new <B>DataHandler</B>(source));
+
+// 3. Set the filename
+messageBodyPart.<B>setFileName</B>(filename);
+
+// 4. Add part two
+multipart.<B>addBodyPart</B>(messageBodyPart);
+</PRE>
+<P>Finalmente se pone el contenido del mensaje y se envía:</P>
+<PRE class=codigo>
+// Put parts in message
+message.<B>setContent</B>(multipart);
+
+// Send the message
+Transport.send(message);
+</PRE>
+<P>Una vez compilado, enviaremos un attachment desde la línea de comandos:</P>
+<P><I>java AttachExample luceros.dccia.ua.es sco@dccia.ua.es sco@dccia.ua.es AttachExample.java</I></P>
+<P>Supongamos ahora que queremos obtener los attachments. Para ello hemos de partir de que el 
+contenido de nuestro mensaje es un <B>Multipart</B>. Hay que procesar las partes para extraer el
+cuerpo de texto y el attachment.  Cuando llamamos al método <B>getDisposition()</B> de la clase
+<B>Part</B> para conocer la disposición de una parte, devuelve <B>Part.ATTACHMENT</B> o
+<B>Part.INLINE</B> si se trata de un attachment. En el código
+<A href="sesion1_archivos/GetAttachExample.java.txt">GetAttachExample.java</A> mostramos como
+podemos descargar el attachment de un mensaje en nuestro directorio. Modificando el ejemplo anterior
+<A href="sesion1_archivos/GetMessageExample.java.txt">GetMessageExample.java</A> en donde nos 
+conectábamos a un servidor de mail para leer un mensaje. Dentro del bucle que lee los mensajes, 
+si finalmente contestamos YES cuando nos pregunta si efectivamente queremos leer un mensaje dado, 
+entonces se procede a descargar el attachment si se detecta que dicho mensaje contiene uno:</P>
+<PRE class=codigo>
+if (&quot;YES&quot;.equals(line)) {
+
+  // Crear una multipart
+  <B>Multipart</B> mp = (Multipart)(message[i].getContent());
+
+  // Bucle para extraer las parts
+  for (int j=0, m=mp.getCount(); j&lt; m; j++) {
+
+     // Obtener las partes y su disposición
+     <B>Part</B> part = mp.<B>getBodyPart</B>(j);
+     String disposition = part.<B>getDisposition();</B>
+
+     // Testar Attachment
+     if ((disposition != null) &amp;&amp;
+         (disposition.equals(<B>Part.ATTACHMENT</B>) || disposition.equals(<B>Part.INLINE</B>))) {
+           <B>saveFile</B>(part.getFileName(), part.getInputStream());
+     }
+
+  }
+  ...
+</PRE>
+<P>donde el método <B>saveFile()</B> realiza la copia del attachment en un fichero con extensión
+"*.sco" para que no sobre-escriba uno de los ficheros de nuestro directorio.Así, con el siguiente
+comando:</P>
+<P><I>java GetAttachExample luceros.dccia.ua.es sco password_sco</I></P>
+<P>podemos descargar el fichero <I>AttachExample.java.sco</I>.</P>
+
+<H2>1.8 Búsqueda de Mensajes: javax.mail.search</H2>
+<P>JavaMail incorpora la posibilidad de realizar búsquedas de mensajes. Lo primero que hay que 
+hacer es construir un objeto <B>SearchTerm</B> que implementa un filtro de búsqueda. Algunas de las 
+clases que constituyen los argumentos de las expresiones del filtro son:</P>
+<table border="1">
+  <tr>
+    <td><B>AndTerm(SearchTerm t1, SearchTerm t2)  </B></td>
+    <td>Implementa el AND de dos términos t1 y t2.</td>
+  </tr>
+  <tr>
+    <td><B>OrTerm(SearchTerm t1, SearchTerm t2)  </B></td>
+    <td>Implementa el OR de dos términos t1 y t2.</td>
+  </tr>
+  <tr>
+    <td><B>NotTerm(SearchTerm t)</B></td>
+    <td>Implementa el NOT del término t.</td>
+  </tr>
+  <tr>
+    <td><B>FromTerm(Address a)</B></td>
+    <td>Buscar mensajes cuyo "From" sea la dirección d.</td>
+  </tr>
+  <tr>
+    <td><B>FromStringTerm(String p)</B></td>
+    <td>Buscar mensajes cuyo "From" haga matching con p.</td>
+  </tr>
+  <tr>
+    <td><B>SubjectTerm(String p)</B></td>
+    <td>Buscar mensajes cuyo "Subject" haga matching con p.</td>
+  </tr>
+  <tr>
+    <td><B>BodyTerm(String p)</B></td>
+    <td>En mensajes de texto busca mensaje "Subject" haga matching con p.</td>
+  </tr>
+  <tr>
+    <td><B>RecipientStringTerm(Message.RecipientType t, String p)  </B></td>
+    <td>Buscar receptores cuyo tipo sea t (p.e. <B>CC</B>, <B>TO</B>) y hagan matching con p.</td>
+  </tr>
+  <tr>
+    <td><B>SentDateTerm(int c, Date d)</B></td>
+    <td>Mensajes enviados comparados con d según c
+    (<B>EQ</B>, <B>GE</B>, <B>GT</B>, <B>LE</B>, <B>LT</B>, <B>NE</B>).</td>
+  </tr>
+  <tr>
+    <td><B>ReceivedDateTerm(int c, Date d)</B></td>
+    <td>Mensajes recibidos comparados con d según c
+    (<B>EQ</B>, <B>GE</B>, <B>GT</B>, <B>LE</B>, <B>LT</B>, <B>NE</B>).</td>
+  </tr>
+</table>
+
+<P>Por ejemplo, para buscar aquellos mensajes recibidos de "otto@dccia.ua.es" o de 
+"domingo@dccia.ua.es" cuyo subject sea "J2EE" y que contenga "Notas" haremos lo siguiente:</P>
+<PRE class=codigo>
+SearchTerm term =
+   new <B>AndTerm</B>(
+     new <B>OrTerm</B>(new <B>FromTerm</B>(new InternetAddress(&quot;otto@dccia.ua.es&quot;)) ,
+                new <B>FromStringTerm</B>(&quot;sco@dccia.ua.es&quot;)
+               ),
+     new <B>SubjectTerm</B>(&quot;J2EE&quot;),
+     new <B>BodyTerm</B>(&quot;Notas&quot;)
+   );
+</PRE>
+<P>Para realizar la búsqueda, llamaremos al método <B>search()</B> de la clase <B>Folder</B>:</P>
+<PRE class=codigo>
+...
+Message[] mensajes=folder.<B>search</B>(term)
+</PRE>
+
+<P>Y para comprobar si un determinado mensaje hace match con el término anterior llamanremos al
+método <B>match()</B> de la clase <B>Message</B>.</P>
+<PRE class=codigo>
+if (mensage.<B>match</B>(term)) {
+ ...
+}
+</PRE>
+
+<H2>1.9. Clases javax.Authenticator y javax.PasswordAuthenticator</H2>
+<P>Estas clases tienen por objeto controlar el acceso al servidor de mail. La primera es una clase
+abstracta por lo que utilizamos la segunda para crear instancias. Concretamente, la autentificación
+tiene lugar al construir el objeto sesión. De hecho el segundo parámetro que se le pasa al constructor
+de la sesión es un objeto de una subclase de <B>Authenticator</B> que debe implementar el método
+<B>getPasswordauthentication()</B> que devuelve un objeto <B>PasswordAuthentication</B>
+(ver código en <A href="sesion1_archivos/Autentificador.java.txt">Autentificador.java</A>):</P>
+<PRE class=codigo>
+import javax.mail.*;
+import javax.swing.*;
+import java.util.*;
+
+public class Autentificador extends Authenticator {
+
+  public PasswordAuthentication <B>getPasswordAuthentication()</B> {
+    String username, password;
+
+    String result = JOptionPane.showInputDialog(
+      &quot;Enter 'username,password'&quot;);
+
+    StringTokenizer st = new StringTokenizer(result, &quot;,&quot;);
+    username = st.nextToken();
+    password = st.nextToken();
+
+    return new <B>PasswordAuthentication</B>(username, password);
+  }
+
+}
+</PRE>
+
+<P>En este método incluimos el código necesario para solicitar el password (incluidos elementos
+gráficos).Posteriormente antes de crear una sesión haremos lo siguiente
+<PRE class=codigo>
+...
+<B>Authenticator</B> aut = new Autentificador();
+Session session = Session.getDefaultInstance(props, aut);
+</PRE>
+
+</BODY></HTML>

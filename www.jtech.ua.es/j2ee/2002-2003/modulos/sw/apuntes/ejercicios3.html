@@ -1,0 +1,879 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+  <title>Ejercicios de invocaci&oacute;n de Servicios Web</title>
+                                                                        
+     
+  <meta content="text/html; charset=iso-8859-1"
+ http-equiv="Content-Type">
+                                           
+  <link href="http://www.jtech.ua.es/j2ee/2002-2003/sw/apuntes/apuntes.css" rel="stylesheet" type="text/css">
+                                             
+  <meta content="Microsoft FrontPage 4.0" name="GENERATOR">
+<link href="../../../apuntes.css" rel="stylesheet" type="text/css">
+</head>
+  <body bgcolor="#ffffff" text="#000000">
+       
+<h1>Ejercicios de invocaci&oacute;n de Servicios Web</h1>
+           
+<p><br>
+  <strong>1.</strong> Vamos a ver como implementar un cliente para el servicio 
+  <em>HolaMundo</em> paso a paso. Vamos a generar el <em>stub</em> para el cliente 
+  a partir del archivo EAR donde tenemos implementado el servicio. </p>
+   
+<ul>
+  <li>Entrar al directorio <em>hola</em>.<br>
+  </li>
+  <li>Generar el fichero EAR con la implementaci&oacute;n del servicio con:</li>
+</ul>
+<pre class="codigo">ant service
+</pre>
+   
+<blockquote>
+  <p>De esta forma tendremos ya implementado el servicio, como vimos en la sesi&oacute;n 
+    anterior. Ahora vamos a generar el cliente a partir del fichero <em>sw_hola.ear</em> 
+    que nos ha generado con la implementaci&oacute;n del servicio.</p>
+</blockquote>
+<ul>
+  <li>El primer paso ser&aacute; generar las clases de <em>stub</em> para el cliente. 
+    Podemos utilizar la siguiente tarea de <em>ant</em>:</li>
+</ul>
+<pre class="codigo"><span class="codigo">&lt;target name="client"&gt;
+  &lt;clientgen ear="<strong>sw_hola.ear</strong>"
+    warName="<strong>sw_hola.war</strong>"
+    packageName="utils"
+    clientJar="<strong>client.jar</strong>" /&gt;
+&lt;/target&gt;</span></pre>
+   
+<ul>
+  <li>Generaremos estas clases con:</li>
+</ul>
+<pre class="codigo">ant client
+</pre>
+   
+<blockquote>
+  <p>Esto habr&aacute; generado el fichero JAR<em> client.jar</em> con las clases 
+    de <em>stub</em> necesarias para ejecutar el servicio. </p>
+  <p>Estas clases que ha generado se apoyan en las clases de la librer&iacute;a 
+    JAX-RPC. Weblogic nos proporciona un paquete con estas clases que deberemos 
+    distribuir junto a nuestro cliente, ya que ser&aacute;n necesarias para que 
+    compile. Estas clases est&aacute;n en el fichero:</p>
+</blockquote>
+<pre class="codigo">${dir.inst}/bea/weblogic700/server/lib/webserviceclient.jar
+</pre>
+   
+<ul>
+  <li>Copiaremos este fichero al directorio <em>comun</em> dentro del directorio 
+    de ejercicios de esta sesi&oacute;n, de forma que podamos incluirlo desde 
+    cualquiera de nuestras aplicaciones cliente.<br>
+  </li>
+  <li>Ahora vamos a implementar nuestra aplicaci&oacute;n cliente. La aplicaci&oacute;n 
+    cliente tendr&aacute; el siguiente c&oacute;digo fuente:</li>
+</ul>
+<pre class="codigo">package cliente;
+   
+import utils.*;
+   
+public class Cliente {
+  public static void main(String[] args) {
+    if(args.length &lt; 2) {
+      System.out.println("Uso: java cliente.Cliente &lt;wsdl&gt; &lt;nombre&gt;");
+      System.exit(0);
+    }
+   
+    try {
+      HolaPort serv = creaProxy(args[0]);
+      System.out.println("Devuelve: " +  serv.<strong>saluda</strong>(args[1]));
+   
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+   
+  private static HolaPort creaProxy(String wsdl) {
+    Hola_Impl serv = null;
+   
+    try {
+      serv = new Hola_Impl(wsdl);
+    } catch(Exception e) {}
+   
+    return serv.getHolaPort();
+  }
+}
+</pre>
+   
+<blockquote> 
+  <p>La funci&oacute;n <em>creaProxy() </em>es la que se encarga de obtener el 
+    <em>stub</em> para acceder al servicio. Como hemos generado el servicio a 
+    partir de un fichero EAR sin desplegar, el <em>stub</em> no conoce donde se 
+    encuentra desplegado realmente el servicio, por lo que se lo tendremos que 
+    decir explicitamente proporcionando como par&aacute;metro la URL del documento 
+    WSDL de dicho servicio ya desplegado.</p>
+  <p>El resto del c&oacute;digo lo &uacute;nico que hace es acceder al servicio 
+    mediante el <em>stub</em>, de igual forma que si estuviese accediendo a un 
+    m&eacute;todo de una clase Java de forma ordinaria.</p>
+</blockquote>
+<ul>
+  <li>Una vez lo tenemos implementado, podemos compilarlo:</li>
+</ul>
+<pre class="codigo">javac -classpath ../comun/webserviceclient.jar:client.jar cliente/*.java</pre>
+   
+<blockquote> 
+  <p>Debemos especificar en el CLASSPATH el fichero JAR generado para el cliente 
+    (<em>client.jar</em>) y el JAR con las clases necesarias para los clientes 
+    que nos proporciona Weblogic (<em>webserviceclient.jar</em>).</p>
+</blockquote>
+<ul>
+  <li>Una vez compilado, podremos invocar el servicio. Como par&aacute;metro deberemos 
+    proporcionar la URL donde est&aacute; el documento WSDL y nuestro nombre:</li>
+</ul>
+<pre class="codigo">java -cp client.jar:../comun/webserviceclient.jar:. cliente.Cliente 
+      http://localhost:7001/sw_hola/hola?WSDL  Miguel
+</pre>
+   
+<blockquote>
+  <p>Esto nos dar&aacute; como resultado:</p>
+</blockquote>
+<pre class="codigo">Devuelve: Hola Miguel
+</pre>
+   
+<ul>
+  <li>Podemos simplificar la ejecuci&oacute;n y la compilaci&oacute;n a&ntilde;adiendo 
+    sendas tareas de la herramienta <em>ant</em>. Para compilar podemos utilizar:</li>
+</ul>
+<pre class="codigo">&lt;target name="<strong>compile</strong>"&gt;
+  &lt;javac srcdir="."
+    destdir="."
+    includes="<strong>cliente/*.java</strong>"&gt;
+    &lt;classpath&gt;
+      &lt;pathelement location="<strong>client.jar</strong>"/&gt;
+      &lt;pathelement location="<strong>../comun/webserviceclient.jar</strong>"/&gt;
+    &lt;/classpath&gt;
+  &lt;/javac&gt;
+&lt;/target&gt;
+</pre>
+   
+<blockquote>
+  <p>Utilizaremos por lo tanto el comando:</p>
+</blockquote>
+<pre class="codigo">ant compile
+</pre>
+   
+<ul>
+  <li>Y para ejecutar la aplicaci&oacute;n:</li>
+</ul>
+<pre class="codigo">&lt;target name="<strong>run</strong>"&gt;
+  &lt;java classname="<strong>cliente.Cliente</strong>"
+    fork="true"&gt;
+    &lt;arg value="<strong>http://localhost:7001/sw_hola/hola?WSDL</strong>"/&gt;
+    &lt;arg value="<strong>${nombre}</strong>"/&gt;
+    &lt;classpath&gt;
+      &lt;pathelement location="<strong>client.jar</strong>"/&gt;
+      &lt;pathelement location="<strong>../comun/webserviceclient.jar</strong>"/&gt;
+      &lt;pathelement location="."/&gt;
+    &lt;/classpath&gt;
+  &lt;/java&gt;
+&lt;/target&gt;</pre>
+   
+<blockquote>
+  <p>De esta forma, al ejecutar con <em>ant</em> deberemos proporcionar el valor 
+    de la propiedad <em>${nombre}</em> que se utilizar&aacute; como par&aacute;metro 
+    al ejecutar la aplicaci&oacute;n:</p>
+</blockquote>
+<pre class="codigo">ant run -Dnombre=Miguel
+</pre>
+     
+<p><strong>2.</strong> Realizar un cliente para el servicio de conversi&oacute;n 
+  <em>euro-ptas</em>. Seguir lo mismos pasos que en el ejercicio anterior, esta 
+  vez para desarrollar un cliente para el servicio de conversi&oacute;n entre 
+  <em>euros</em> y <em>ptas</em> desarrollado en la sesi&oacute;n anterior.</p>
+   
+<p>El cliente deber&aacute; tomar como par&aacute;metros el documento WSDL y un 
+  valor num&eacute;rico en <em>euros</em>. Como resultado nos deber&aacute; mostrar 
+  a cuantas <em>ptas</em> corresponde dicha cantidad utilizando nuestro Servicio 
+  Web.</p>
+     
+<p><strong>3.</strong> Vamos a desarrollar clientes para varios servicios de demostraci&oacute;n 
+  ofrecidos por <em>XMethods</em>. Para ello deberemos acceder a </p>
+   
+<pre class="codigo">http://www.xmethods.net
+</pre>
+   
+<p>Para consultar la informaci&oacute;n sobre los servicios que ofrece y obtener 
+  el documento WSDL que necesitamos para crear nuestros clientes.</p>
+   
+<p>a) Cliente para el servicio de cambio de moneda (<em>Currency Exchange Rate</em>). 
+  Tenemos los ficheros correspondientes a este cliente en el directorio <em>currency</em> 
+  de los ejercicios de la sesi&oacute;n. Para construirlo hemos seguido los siguientes 
+  pasos:</p>
+   
+<ul>
+  <li>Obtenemos la URL del documento WSDL del servicio desde la p&aacute;gina 
+    de <em>XMethods</em>, y descargamos dicho documento:</li>
+</ul>
+<pre class="codigo">http://www.xmethods.net/sd/2001/CurrencyExchangeService.wsdl
+</pre>
+   
+<blockquote> 
+  <p>En nuestro caso hemos guardado este documento en el subdirectorio <em>wsdl</em>.</p>
+</blockquote>
+<ul>
+  <li>Creamos la tarea de <em>ant</em> para generar las clases de <em>stub</em>:</li>
+</ul>
+<pre class="codigo"><span class="codigo">&lt;target name="<strong>client</strong>"&gt;
+  &lt;clientgen
+    wsdl="<strong>http://www.xmethods.net/sd/2001/CurrencyExchangeService.wsdl</strong>"
+    packageName="utils"
+    clientJar="<strong>client.jar</strong>"&gt;
+  &lt;/clientgen&gt;
+&lt;/target&gt;</span></pre>
+   
+<ul>
+  <li>Para ejecutar dicha tarea introduciremos el comando:</li>
+</ul>
+<pre class="codigo">ant client
+</pre>
+   
+<blockquote> 
+  <p>Con esto habremos generado el JAR <em>client.jar</em> con las clases de <em>stub</em> 
+    necesarias.</p>
+</blockquote>
+<ul>
+  <li>Ahora deberemos escribir nuestra aplicaci&oacute;n cliente. Si nos fijamos 
+    en el documento WSDL o en las clases que ha generado la tarea <strong>clientgen</strong>, 
+    veremos que el servicio tiene de nombre <em>CurrencyExchangeService</em> y 
+    el tipo de puerto al que vamos a acceder se llama <em>CurrencyExchangePortType</em>. 
+    Con esta informaci&oacute;n creamos una funci&oacute;n <em>creaProxy()</em> 
+    donde se obtiene el <em>stub</em> para acceder al servicio.<br>
+    <p>Por otro lado, si consultamos la documentaci&oacute;n del servicio, el 
+      documento WSDL, o las clases generadas, veremos que tiene una operaci&oacute;n 
+      <em>getRate()</em> que toma dos par&aacute;metros: el pa&iacute;s de origen 
+      y el de destino. Nosotros invocaremos este m&eacute;todo desde el <em>stub</em>. 
+      En la p&aacute;gina de informaci&oacute;n sobre el servicio que nos proporciona 
+      <em>XMethods</em>, podremos consultar los posibles nombres de paises que 
+      podemos especificar, como por ejemplo <em>"euro" </em>o <em>"usa"</em>.</p>
+  </li>
+</ul>
+<pre class="codigo">package cliente;
+   
+import utils.*;
+   
+public class Cliente {
+  public static void main(String[] args) {
+    if(args.length &lt; 2) {
+      System.out.println(
+        "Uso: java cliente.Cliente pais_origen pais_destino");
+      System.exit(0);
+    }
+   
+    try {
+      CurrencyExchangePortType    serv = creaProxy();
+      float divisa = serv.<strong>getRate</strong>(args[0], args[1]);
+      System.out.println("Cambio de " + args[0] + " a " + 
+                          args[1] + " = " + divisa);
+   
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+   
+  private static CurrencyExchangePortType creaProxy() {
+    CurrencyExchangeService_Impl serv = null;
+   
+    try {
+      serv = new CurrencyExchangeService_Impl();
+    } catch(Exception e) {}
+   
+    return serv.getCurrencyExchangePortType();
+  }
+}</pre>
+   
+<ul>
+  <li>Compilamos la aplicaci&oacute;n con:</li>
+</ul>
+<pre class="codigo">javac -classpath client.jar:../comun/webserviceclient.jar 
+    cliente/Cliente.java
+</pre>
+   
+<ul>
+  <li>Ahora podemos ejecutarla con:</li>
+</ul>
+<pre class="codigo">java -cp client.jar:../comun/webserviceclient.jar:. 
+    cliente.Cliente usa  euro
+</pre>
+   
+<blockquote>
+  <p>Nos devolver&aacute; algo similar a:</p>
+</blockquote>
+<pre class="codigo">Cambio de usa a euro = 0.9424
+</pre>
+   
+<ul>
+  <li>Podemos, como hemos visto anteriormente, utilizar <em>ant</em> para la compilaci&oacute;n 
+    y ejecuci&oacute;n de la aplicaci&oacute;n. Para compilar podemos usar la 
+    tarea:</li>
+</ul>
+<pre class="codigo">&lt;target name="<strong>compile</strong>"&gt;
+  &lt;javac srcdir="."
+    destdir="."
+    includes="<strong>cliente/*.java</strong>"&gt;
+    &lt;classpath&gt;
+      &lt;pathelement location="<strong>client.jar</strong>"/&gt;
+      &lt;pathelement location="<strong>../comun/webserviceclient.jar</strong>"/&gt;
+    &lt;/classpath&gt;
+  &lt;/javac&gt;
+&lt;/target&gt;</pre>
+   
+<ul>
+  <li>Para compilar utilizaremos el comando</li>
+</ul>
+<pre class="codigo">ant compile
+</pre>
+   
+<ul>
+  <li>Para ejecutar podemos definir la tarea:</li>
+</ul>
+<pre class="codigo">&lt;target name="<strong>run</strong>"&gt;
+  &lt;java classname="<strong>cliente.Cliente</strong>"
+    fork="true"&gt;
+    &lt;arg value="<strong>${pais1}</strong>"/&gt;
+    &lt;arg value="<strong>${pais2}</strong>"/&gt;
+    &lt;classpath&gt;
+      &lt;pathelement location="<strong>client.jar</strong>"/&gt;
+      &lt;pathelement location="<strong>../comun/webserviceclient.jar</strong>"/&gt;
+      &lt;pathelement location="."/&gt;
+    &lt;/classpath&gt;
+  &lt;/java&gt;
+&lt;/target&gt;</pre>
+   
+<ul>
+  <li>Deberemos proporcionar el valor de las propiedades <em>${pais1}</em> y <em>${pais2}</em>, 
+    que ser&aacute;n los par&aacute;metros que se le pasan a nuestra aplicaci&oacute;n:</li>
+</ul>
+<pre class="codigo">ant run -Dpais1=usa -Dpais2=euro</pre>
+   
+<p>b) Consulta de la temperatura en EEUU, a partir del c&oacute;digo postal (<em>Weather 
+  - Temperature</em>). Seguir los pasos del punto anterior para desarrollar este 
+  cliente. Como par&aacute;metro deber&aacute; tomar el c&oacute;digo postal del 
+  &aacute;rea de la cual queremos obtener la temperatura. Por ejemplo:</p>
+   
+<pre class="codigo">ant run -Dzip=54124
+</pre>
+   
+<p>Nos deber&iacute;a devolver algo como:</p>
+   
+<pre class="codigo">La temperatura en 54124 es 60.0
+</pre>
+   
+<p>c) Construir un traductor espa&ntilde;ol-ingl&eacute;s. Utilizar para ello 
+  el servicio que nos ofrece <em>BabelFish</em>. Proporcionaremos como par&aacute;metro 
+  una palabra en castellano, y nos deber&aacute; devolver la traducci&oacute;n 
+  al ingl&eacute;s. </p>
+   
+<p>Si nos fijamos en la documentaci&oacute;n del servicio vemos que tiene una 
+  operaci&oacute;n <em>BabelFish</em> que toma dos par&aacute;metros. El primero 
+  indica entre qu&eacute; idiomas estamos traduciendo. En nuestro caso utilizaremos 
+  valor <em>"es_en"</em>, que significa de espa&ntilde;ol a ingl&eacute;s. Al 
+  pasarlo a Java, el nombre del m&eacute;todo comenzar&aacute; por min&uacute;scula, 
+  por lo que tendremos que invocar el m&eacute;todo <em>babelFish</em>, en lugar 
+  de <em>BabelFish</em>.</p>
+   
+<p>Haremos que la aplicaci&oacute;n tome como argumento de entrada la palabra 
+  que quedemos traducir. Por ejemplo:</p>
+   
+<pre class="codigo">ant run -Dpalabra=hola
+</pre>
+   
+<p>Nos deber&aacute; devolver algo como:</p>
+   
+<pre class="codigo">La palabra hola en ingles es hello
+</pre>
+     
+<p><strong>4.</strong> Cliente para <em>Amazon.com</em>. Vamos a realizar un cliente 
+  que acceda a los Servicios Web que ofrece <em>Amazon.com</em> para realizar 
+  b&uacute;squedas de productos en esta tienda.</p>
+ 
+<p>Este es un servicio bastante m&aacute;s complejo que los anteriores, por lo 
+  que necesitaremos documentaci&oacute;n adicional para crear nuestro cliente. 
+  Podemos descargar un kit de desarrollo en la direcci&oacute;n:</p>
+ 
+<pre class="codigo">http://associates.amazon.com/exec/panama/associates/join/developer/kit.html
+</pre>
+ 
+<p>Este kit incluye documentaci&oacute;n y ejemplos, aunque no es necesario para 
+  desarrollar los servicios. Si que necesitaremos registrarnos como desarrolladores 
+  de servicios, y obtener un c&oacute;digo (<em>token</em>) que nos identifique 
+  cuando utilizamos los servicios de <em>Amazon</em>. Este c&oacute;digo puede 
+  ser obtenido en la p&aacute;gina anterior.</p>
+ 
+<p>Para las pruebas que vamos a realizar no es necesario descargar el kit ni obtener 
+  dicho c&oacute;digo, ya que esto se proporciona implementado dentro de los ejercicios 
+  de la sesi&oacute;n, en el directorio <em>amazon</em>.</p>
+ 
+<p>Utilizaremos directamente el documento WSDL que define los servicios de <em>Amazon.com</em> 
+  para generar las clases necesarias para nuestro cliente. Este documento se proporciona 
+  con los ejercicios, aunque tambi&eacute;n podremos descargarlo directamente 
+  desde <em>Amazon</em> en la direcci&oacute;n:</p>
+ 
+<pre class="codigo">http://soap.amazon.com/schemas2/AmazonWebServices.wsdl
+</pre>
+ 
+<p>Si consultamos este documento, veremos que se definen tipos de datos propios. 
+  Por lo tanto, se deber&aacute;n generar clases para representar estos tipos 
+  de datos.</p>
+ 
+<ul>
+  <li>Como primer paso vamos a generar las clases necesarias a partir del documento 
+    WSDL. Para ello ejecutamos la siguiente tarea de <em>ant</em>:</li>
+</ul>
+<pre class="codigo">ant client
+</pre>
+<ul>
+  <li>Esto nos habr&aacute; generado las clases necesarias. Podemos descomprimir 
+    las clases generadas en un directorio temporal:</li>
+</ul>
+<pre class="codigo">mkdir temp
+cd temp
+jar xvf ../client.jar
+</pre>
+<blockquote> 
+  <p>Vemos que adem&aacute;s de las clases de <em>stub</em> generadas para nuestro 
+    cliente, nos ha generado una serie de clases en el paquete <strong>com.amazon.soap</strong>, 
+    que encapsulan los distintos tipos de datos que deberemos utilizar al invocar 
+    sus m&eacute;todos.</p>
+</blockquote>
+<ul>
+  <li>Para utilizar estas clases ser&aacute; necesario importar el paquete <strong>com.amazon.soap</strong> 
+    en nuestra aplicaci&oacute;n cliente:</li>
+</ul>
+<pre class="codigo">import com.amazon.soap.*;
+</pre>
+<blockquote>
+  <p>Por ejemplo, para buscar pel&iacute;culas por director podemos utilizar el 
+    siguiente c&oacute;digo:</p>
+</blockquote>
+<pre class="codigo"><span class="codigo">DirectorRequest dsr = new DirectorRequest(
+  nombre_director,  
+  pagina,    // La busqueda devuelve los productos en paginas
+  modo,      // (DVD, VHS, etc)
+  dev_tag,   // Token del desarrollador de servicios
+  tipo,      // Puede devolver informacion reducida o detallada
+  tag,       // Token del desarrollador de servicios
+  ordenacion,// Tipo de ordenaci&oacute;n del resultado
+  locale);</span></pre>
+<blockquote>
+  <p>Una vez hemos especificado en este objeto la b&uacute;squeda que vamos a 
+    realizar, podemos invocar el servicio con:</p>
+</blockquote>
+<pre class="codigo"><strong>ProductInfo</strong> pi = serv.<strong>directorSearchRequest</strong>(dsr);</pre>
+<blockquote>
+  <p>Esto nos devolver&aacute; un objeto <strong>ProductInfo</strong> del cual 
+    podemos obtener la informaci&oacute;n de los productos devueltos con:</p>
+</blockquote>
+<pre class="codigo"><span class="codigo"><strong>Details</strong> [] d = pi.<strong>getDetails</strong>();
+
+for(int i=0;i&lt;d.length;i++) {
+  System.out.println(d[i].<strong>getProductName</strong>() + ", " + d[i].<strong>getOurPrice</strong>());
+}</span></pre>
+ 
+<blockquote>
+  <p>A continuaci&oacute;n se muestra el c&oacute;digo de la aplicaci&oacute;n 
+    cliente completo:</p>
+</blockquote>
+<pre class="codigo">package cliente;
+  
+import utils.*;
+import java.util.*;
+import javax.xml.rpc.handler.*;
+import javax.xml.rpc.Stub;
+import javax.xml.namespace.QName;
+import com.amazon.soap.*;
+  
+public class Cliente {
+  public static void main(String[] args) {
+    if(args.length &lt; 1) {
+      System.out.println("Uso: ant run -Ddirector=nombre_director");
+      System.exit(0);
+    }
+  
+    System.out.println("Buscando peliculas de [" + args[0]  + "]");
+  
+    try {
+      AmazonSearchPort  serv = creaProxy();
+
+      <strong>DirectorRequest</strong> dsr = new <strong>DirectorRequest</strong>(args[0],  
+                          "1", "<strong>dvd</strong>", "D3JV7SSUMSD7I5", "<strong>lite</strong>", 
+                          "D3JV7SSUMSD7I5", null, null);
+  
+      <strong>ProductInfo</strong> pi = serv.<strong>directorSearchRequest</strong>(dsr);
+      <strong>Details</strong> [] d = pi.<strong>getDetails</strong>();
+  
+      for(int i=0;i&lt;d.length;i++) {
+        System.out.println(d[i].<strong>getProductName</strong>());
+      }
+  
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+  
+  private static AmazonSearchPort creaProxy() {
+    AmazonSearchService_Impl serv = null;
+  
+    try {
+      serv = new AmazonSearchService_Impl();
+    } catch(Exception e) {}
+  
+    return serv.getAmazonSearchPort();
+  }
+}</pre>
+ 
+<ul>
+  <li>Podemos compilar esta aplicaci&oacute;n con</li>
+</ul>
+<pre class="codigo">ant compile
+</pre>
+ 
+<ul>
+  <li>Ahora podremos ejecutar la aplicaci&oacute;n especificando como par&aacute;metro 
+    el nombre del director:</li>
+</ul>
+<pre class="codigo">ant run -Ddirector=lynch
+</pre>
+ 
+<blockquote>
+  <p>Esto nos mostrar&aacute; una lista de DVDs de pel&iacute;culas dirigidas 
+    por David Lynch.</p>
+</blockquote>
+<p><strong>5.</strong> Recordemos la tienda de venta de DVDs que vimos en la sesi&oacute;n 
+  anterior. A partir de ahora vamos a empezar a dedicarnos a la importaci&oacute;n 
+  de DVDs. Nuestro proveedor ser&aacute; <em>Amazon.com</em>, por lo que podremos 
+  ofrecer a nuestros clientes cualquier t&iacute;tulo que nos ofrezca esta compa&ntilde;&iacute;a.</p>
+     
+<p>Vamos a hacer que nuestro servicio de b&uacute;squeda de pel&iacute;culas coja 
+  directamente la informaci&oacute;n de <em>Amazon.com</em>, de forma que en todo 
+  momento ofreceremos un cat&aacute;logo totalmente actualizado sin necesidad 
+  de tener que hacer nosotros este trabajo.</p>
+     
+<p>a) Adaptar el servicio de b&uacute;squeda de pel&iacute;culas que vimos en 
+  la sesi&oacute;n anterior, para que en lugar de coger los datos de nuestra BD, 
+  se comporte como cliente de los servicios de <em>Amazon.com</em> para extraer 
+  la informaci&oacute;n directamente de all&iacute;. Este apartado se encuentra 
+  ya implementado en los ejercicios del curso, y vamos a ver como construirlo 
+  paso a paso.</p>
+ 
+<ul>
+  <li>Deberemos introducir en el servicio las clases generadas para el cliente. 
+    Generaremos las clases del cliente con:</li>
+</ul>
+<pre class="codigo">&lt;target name="<strong>amazon-client</strong>"&gt;
+  &lt;clientgen
+    wsdl="<strong>wsdl/AmazonWebServices.wsdl</strong>"
+    packageName="utils"
+    clientJar="<strong>amazon.jar</strong>"&gt;
+  &lt;/clientgen&gt;
+&lt;/target&gt;
+</pre>
+<ul>
+  <li>Podemos ejecutar esta tarea mediante el comando</li>
+</ul>
+<pre class="codigo">ant amazon-client
+</pre>
+ 
+<ul>
+  <li>Creamos una clase <strong>cliente.ClienteAmazon</strong> que actue como 
+    cliente de los servicios de <em>Amazon</em>:</li>
+</ul>
+<pre class="codigo">package cliente;
+ 
+import java.util.*;
+import javax.xml.rpc.handler.*;
+import javax.xml.rpc.Stub;
+import javax.xml.namespace.QName;
+import com.amazon.soap.*;
+import utils.*;
+import tienda.*;
+ 
+public class ClienteAmazon {
+  public static DatosPelicula [] busca(String director) {
+ 
+    ArrayList lista = new ArrayList();
+   
+    try {
+      AmazonSearchPort serv = creaProxy();
+ 
+      <strong>DirectorRequest</strong> dsr = new DirectorRequest(director, 
+                           "1", "dvd", "D3JV7SSUMSD7I5", "lite", 
+                           "D3JV7SSUMSD7I5", null, null);
+ 
+      <strong>ProductInfo</strong> pi = serv.<strong>directorSearchRequest</strong>(dsr);
+      <strong>Details</strong> [] d = pi.<strong>getDetails</strong>();
+ 
+      for(int i=0;i&lt;d.length;i++) {
+        float precio = 0.0f;
+ 
+        String sprecio = d[i].<strong>getOurPrice</strong>();
+        if(sprecio!=null) {
+          sprecio = sprecio.substring(1,sprecio.length());
+ 
+          try {
+            precio = Float.parseFloat(sprecio);
+          } catch(Exception e) {}
+        }
+ 
+        lista.add(new <strong>DatosPelicula</strong>(d[i].<strong>getProductName</strong>(), 
+                                         director, precio));
+      }
+
+    } catch (Exception e) { }
+ 
+    <strong>DatosPelicula</strong> [] result = new <strong>DatosPelicula</strong>[lista.size()];
+    lista.toArray(result);
+ 
+    return result;
+  }
+ 
+  private static AmazonSearchPort creaProxy() {
+    AmazonSearchService_Impl serv = null;
+ 
+    try {
+      serv = new AmazonSearchService_Impl();
+    } catch(Exception e) {}
+ 
+    return serv.getAmazonSearchPort();
+  }
+}
+</pre>
+<ul>
+  <li>Despu&eacute;s de esto compilamos la clase del cliente con la siguiente 
+    tarea de <em>ant</em>:</li>
+</ul>
+<pre class="codigo">&lt;target name="<strong>compile-client</strong>"&gt;
+  &lt;javac srcdir="."
+    destdir="."
+    includes="<strong>cliente/*.java</strong>"&gt;
+    &lt;classpath&gt;
+      &lt;pathelement location="<strong>amazon.jar</strong>"/&gt;
+      &lt;pathelement location="<strong>../comun/webserviceclient.jar</strong>"/&gt;
+    &lt;/classpath&gt;
+  &lt;/javac&gt;
+&lt;/target&gt;</pre>
+ 
+<ul>
+  <li>Ahora podemos compilarla con el comando:</li>
+</ul>
+<pre class="codigo">ant compile-client
+</pre>
+ 
+<ul>
+  <li>Ahora adaptamos el servicio para que utilice el cliente. La clase que implementa 
+    el servicio (<em>backend</em>) ser&aacute; la siguiente:</li>
+</ul>
+<pre class="codigo">package tienda;
+ 
+import java.util.*;
+import cliente.*;
+ 
+public class BuscaDVD {
+ 
+  public <strong>DatosPelicula</strong> [] <strong>buscaPorDirector</strong>(String director) {
+    <strong>DatosPelicula</strong> [] result = <strong>ClienteAmazon</strong>.busca(director);
+    return result;
+  }
+}
+</pre>
+ 
+<blockquote> 
+  <p>Vemos que ahora esta clase se apoya en la clase cliente generada anteriormente 
+    para acceder a los servicios de <em>Amazon</em>.</p>
+</blockquote>
+<ul>
+  <li>Para generar el servicio deberemos poner el directorio actual en el CLASSPATH 
+    para que localice las clases necesarias para crear los serializadores y deserializadores:</li>
+</ul>
+<pre class="codigo">export CLASSPATH=$CLASSPATH:${dir.ejercicios}/ejercicios_3/tienda/
+</pre>
+ 
+<ul>
+  <li>Generamos el servicio con las tareas de <em>ant</em>:</li>
+</ul>
+<pre class="codigo">&lt;target name="<strong>service</strong>" depends="compile_service"&gt;
+&lt;servicegen
+  destEar="<strong>sw_tienda.ear</strong>"
+  warName="<strong>sw_tienda.war</strong>"&gt;
+    &lt;service
+      javaClassComponents="<strong>tienda.BuscaDVD</strong>"
+      targetNamespace="http://www.rvg.ua.es/ws"
+      serviceName="<strong>BuscaDVD</strong>"
+      serviceURI="<strong>/busca</strong>"
+      generateTypes="True"
+      expandMethods="True"&gt;
+    &lt;/service&gt;
+  &lt;/servicegen&gt;
+&lt;/target&gt;
+ 
+&lt;target name="compile_service"&gt;
+  &lt;javac srcdir="."
+    destdir="."
+    includes="tienda/*.java"&gt;
+  &lt;/javac&gt;
+&lt;/target&gt;
+</pre>
+ 
+<ul>
+  <li>Para generarlo ejecutamos el comando:</li>
+</ul>
+<pre class="codigo">ant service
+</pre>
+ 
+<blockquote> 
+  <p>Con esto habremos generado un fichero <em>sw_tienda.ear</em>, pero tenemos 
+    el problema de que s&oacute;lo contiene la clase que implementa el servicio 
+    y los tipos de datos que se intercambian en la comunicaci&oacute;n. Sin embargo, 
+    no tenemos las clases generadas para los clientes, por lo que deberemos incluirlas 
+    manualmente, ya que el servicio depende de ellas.</p>
+</blockquote>
+<ul>
+  <li>Para ello deberemos desempaquetar la aplicaci&oacute;n creada e introducir 
+    en ella las clases necesarias. Desempaquetamos el EAR y el WAR:</li>
+</ul>
+<pre class="codigo">mkdir build-ear
+mkdir build-war
+cd build-ear
+jar xvf ../sw_tienda.ear
+<span class="codigo">cd ../build-war
+jar xvf ../build-ear/sw_tienda.war</span></pre>
+<ul>
+  <li>Introducimos el directorio <em>cliente</em> en <em>WEB-INF/classes</em> 
+    y el paquete <em>amazon.jar</em> en<em> WEB-INF/lib</em>:</li>
+</ul>
+<pre class="codigo">cp ../cliente WEB-INF/classes -R
+mkdir WEB-INF/lib
+cp ../amazon.jar WEB-INF/lib</pre>
+<ul>
+  <li>Empaquetar de nuevo la aplicaci&oacute;n:</li>
+</ul>
+<pre class="codigo">jar cvf sw_tienda.war *
+cp sw_tienda.war ../build-ear
+cd ../build-ear
+<span class="codigo">jar cvf sw_tienda.ear * 
+cp sw_tienda.ear ..</span>
+</pre>
+<ul>
+  <li>Cuando hayamos acabado podemos borrar los directorios temporales:</li>
+</ul>
+<pre class="codigo">rm -R build-war
+<span class="codigo">rm -R build-ear</span></pre>
+<ul>
+  <li>Ahora podemos desplegar el fichero EAR en Weblogic, y una vez desplegado 
+    podremos probar nuestro servicio.</li>
+</ul>
+<p>b) Necesitaremos tener un cierto margen de beneficios, por lo que deberemos 
+  ofrecer las pel&iacute;culas a un precio algo superior al que las compramos 
+  en <em>Amazon</em>. Por lo tanto, los precios que mostraremos en nuestro cat&aacute;logo 
+  ser&aacute;n un 10% m&aacute;s altos de los que ofrece <em>Amazon</em>. Introducir 
+  el c&oacute;digo necesario en el servicio, para que realice de forma autom&aacute;tica 
+  este aumento de precio.</p>
+     
+<p>c) Tenemos el problema de que nosotros compramos los DVDs de EEUU, donde los 
+  precios figuran en d&oacute;lares, mientras que nuestros potenciales clientes 
+  se encuentran en Espa&ntilde;a, donde se utiliza el euro. Por lo tanto, deberemos 
+  convertir los precios de d&oacute;lares a euros. Podr&iacute;amos establecer 
+  un valor fijo, y modificarlo manualmente seg&uacute;n varien las divisas, pero 
+  como var&iacute;an continuamente esto nos forzar&iacute;a a estar actualizando 
+  este valor casi a diario. Para solucionar este problema podemos utilizar el 
+  servicio <em>CurrencyExchangeService</em> que nos ofrece <em>XMethods</em> para 
+  realizar la conversi&oacute;n. </p>
+     
+<p>Hacer que nuestro servicio de b&uacute;squeda se comporte como cliente del 
+  servicio de cambio de divisas para obtener este valor de cambio de dolar a euro 
+  actualizado en cada momento.</p>
+     
+<p><strong>6.</strong> An&aacute;lisis de documentos WSDL. Si queremos ser capaces 
+  de integrar servicios din&aacute;micamente en nuestras aplicaciones, deberemos 
+  contar con alg&uacute;n m&eacute;todo que nos permita obtener la informaci&oacute;n 
+  necesaria para invocar el servicio. Esta informaci&oacute;n est&aacute; contenida 
+  en los documentos WSDL, por lo que podremos conseguirla si somos capaces de 
+  hacer que nuestra aplicaci&oacute;n entienda estos documentos.</p>
+ 
+<p>Utilizaremos la librer&iacute;a Java API for WSDL (<em>WSDL4J</em>) para analizar 
+  los documentos WSDL, y extraer de ellos la informaci&oacute;n necesaria.</p>
+ 
+<p>a) Hacer una aplicaci&oacute;n a la que se le pase como par&aacute;metro la 
+  URL del documento WSDL, y nos muestre como salida la lista de operaciones que 
+  define el servicio definido en este documento. Podemos encontrar una plantilla 
+  en el fichero <em>AnalizaWSDL.java</em>, dentro del directorio <em>wsdl</em>. 
+</p>
+<p>Para que compile deberemos tener en el CLASSPATH la librer&iacute;a <em>wsdl4j.jar</em>. 
+  Podemos:</p>
+<ul>
+  <li>Copiar wsdl4j.jar en el directorio wsdl.</li>
+</ul>
+<ul>
+  <li>Implementar la clase <em>AnalizaWSDL.java</em>, a&ntilde;adiendo el c&oacute;digo 
+    necesario para extraer la informaci&oacute;n sobre las operaciones definidas 
+    en el documento WSDL. </li>
+</ul>
+<ul>
+  <li>Compilar la clase <em>AnalizaWSDL.java</em> con:</li>
+</ul>
+<pre class="codigo">javac -classpath wsdl4j.jar AnalizaWSDL.java</pre>
+<ul>
+  <li>Ejecutar la aplicaci&oacute;n con:</li>
+</ul>
+<pre class="codigo">java -cp wsdl4j.jar:. AnalizaWSDL &lt;URL_del_documento_WSDL&gt;</pre>
+ 
+<p>NOTA: Para que la librer&iacute;a <em>WSDL4J</em> funcione correctamente es 
+  necesario utilizar JDK 1.4 o posteriores. Comprueba la versi&oacute;n de JDK 
+  antes de intentar compilar la aplicaci&oacute;n para asegurarte.</p>
+<p>b) Adem&aacute;s de los nombres de las operaciones, mostrar para cada operaci&oacute;n 
+  los tipos de datos de sus par&aacute;metros y el tipo del valor devuelto.</p>
+ 
+<p>c) Si quisiesemos invocar estos servicios descubiertos de forma din&aacute;mica, 
+  mientras se ejecuta la aplicaci&oacute;n, &iquest;qu&eacute; m&eacute;todo de 
+  invocaci&oacute;n deber&iacute;amos usar?</p>
+ 
+<p>d) La aplicaci&oacute;n de ejemplo WSE (Web Services Explorer) nos permite 
+  ejecutar servicios de forma din&aacute;mica. Descargamos la aplicaci&oacute;n 
+  desde la secci&oacute;n de recursos y la descomprimimos. </p>
+<ul>
+  <li>Desde el directorio donde est&eacute; instalada ejecutamos:</li>
+</ul>
+<pre class="codigo">ant compile
+</pre>
+ 
+<ul>
+  <li>Esto compilar&aacute; la aplicaci&oacute;n. Ahora ya podemos ejecutarla 
+    con:</li>
+</ul>
+<pre class="codigo">ant run
+</pre>
+ 
+<ul>
+  <li>Veremos la ventana del explorador. En la parte superior tenemos una barra 
+    de direcci&oacute;n (<em>WSDL URL</em>) donde introduciremos la URL del documento 
+    WSDL. Una vez introducida pulsamos el bot&oacute;n <em>Go</em>.</li>
+</ul>
+<ul>
+  <li>Se mostrar&aacute; en la parte izquierda un &aacute;rbol con los datos del 
+    servicio, donde tendremos una lista de servicios, que contendr&aacute;n puertos, 
+    y estos a su vez tendr&aacute;n definidas una lista de operaciones. Pulsaremos 
+    sobre la operaci&oacute;n que queramos invocar.</li>
+</ul>
+<ul>
+  <li>En la parte central de la ventana aparecer&aacute; un panel donde podremos 
+    introducir los par&aacute;metros que le vamos a pasar a la operaci&oacute;n. 
+    La aplicaci&oacute;n s&oacute;lo soporta tipos de datos b&aacute;sicos (<em>string</em>, 
+    <em>float</em>, <em>double, int</em>, <em>boolean</em>).<br>
+  </li>
+  <li>Cuando hayamos introducido los valores de los par&aacute;metros, pulsamos 
+    el bot&oacute;n <em>Invoke</em>. Se mostrar&aacute; el resultado del servicio 
+    en el cuadro <em>Results</em>, y los mensajes SOAP que han intervenido en 
+    la invocaci&oacute;n en los cuadros <em>SOAP Request</em> y <em>SOAP Response</em>.</li>
+</ul>
+<p>Puedes consultar el c&oacute;digo fuente como ejemplo de an&aacute;lisis de 
+  un documento WSDL e invocaci&oacute;n de servicios mediante interfaz din&aacute;mica 
+  (DII).</p>
+         
+</body>
+</html>

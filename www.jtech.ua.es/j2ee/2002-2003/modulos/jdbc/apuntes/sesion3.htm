@@ -1,0 +1,261 @@
+<html>
+<head>
+<title>Acceso a bases de datos con JDBC</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+
+</head>
+
+<body>
+<h1>Tema 3: Informaci&oacute;n de la BD y optimizaci&oacute;n 
+  en consultas</h1>
+<h2>3.1. Obtenci&oacute;n de informaci&oacute;n propia de la base de datos</h2>
+<p>Hasta ahora asum&iacute;amos que el programador conoc&iacute;a la estructura 
+  de la BD a la que estaba accediendo (el nombre de las tablas, su tipo de datos, 
+  etc.). Sin embargo, en determinadas aplicaciones es posible que necesitemos 
+  obtener esa informaci&oacute;n directamente de la propia BD. Esta informaci&oacute;n 
+  se conoce con el nombre de Metadatos, datos sobre la estructura de la base de 
+  datos. Para obtener y manejar esta informaci&oacute;n disponemos de la clase 
+  <b>DatabaseMetaData</b>. Su uso es el siguiente:</p>
+ 
+  <pre class="codigo"><b>DatabaseMetaData</b> dbmd = con.<b>getMetaData()</b>;</pre>
+
+<p>Ya tenemos toda la informaci&oacute;n de la base de datos. Ahora debemos manejarla. 
+  Para ello disponemos de m&aacute;s de 100 m&eacute;todos en la clase <b>DatabaseMetaData</b>. 
+  No vamos a verlos todos, s&oacute;lo los m&aacute;s interesantes. Los siguientes 
+  m&eacute;todos proporcionan informaci&oacute;n gen&eacute;rica de la base de 
+  datos:</p>
+<table width="95%" border="1">
+  <tr> 
+    <td width="41%"><b>getDatabaseProductName</b></td>
+    <td width="59%">Devuelve el nombre de la BD</td>
+  </tr>
+  <tr> 
+    <td width="41%"><b>getDatabaseProductVersion</b></td>
+    <td width="59%">&Iacute;dem versi&oacute;n</td>
+  </tr>
+  <tr> 
+    <td width="41%"><b>getDriverName</b></td>
+    <td width="59%">&Iacute;dem nombre del driver</td>
+  </tr>
+  <tr> 
+    <td width="41%"><b>supportsResultSetType(int)</b></td>
+    <td width="59%">Pas&aacute;ndole por par&aacute;metro algunos de los tipos 
+      de ResultSet (TYPE_FORWARD_ONLY, TYPE_SCROLL_SENSITIVE, etc.), nos devuelve 
+      si la BD los soporta</td>
+  </tr>
+</table>
+<p>Podemos obtener toda la informaci&oacute;n referente a las tablas en la BD. 
+  Para ello llamamos al siguiente m&eacute;todo:</p>
+ 
+  <pre class="codigo"><b>String[] tipos = {&quot;TABLE&quot;};
+ResultSet</b> resul = dbmd.<b>getTables(null,null,null,tipos)</b>;</pre>
+
+<p>Este m&eacute;todo devuelve un objeto de la clase <b>ResultSet</b>. Los par&aacute;metros 
+  pasados al m&eacute;todo sirven para: los dos primeros para especificar el cat&aacute;logo 
+  y el esquema de los que se obtendr&aacute; la informaci&oacute;n; el tercer 
+  par&aacute;metro es el nombre de la tabla a obtener y el &uacute;ltimo los tipos 
+  (tambi&eacute;n puede ser &quot;VIEW&quot;,&quot;SYSTEM TABLE&quot;, etc.). 
+  Los tres primeros par&aacute;metros son de tipo cadena y permiten utilizar comodines. 
+  Por ejemplo, si quisi&eacute;ramos obtener todas las tablas cuyo nombre empiece 
+  por Nom, pasar&iacute;amos el par&aacute;metro &quot;Nom%&quot;. Al devolver 
+  un objeto <b>ResultSet</b> podemos visitarlo tal como lo hac&iacute;amos antes. 
+  El esquema a seguir es el siguiente:</p>
+ 
+  
+<pre class="codigo">while<b> </b>(resul<b>.</b>next()) {<b>
+	String </b>nombreTabla = resul.getString(&quot;TABLE_NAME&quot;);
+<b>	ResultSet</b> columnas = dbmd.<b>getColumns</b>(null,null,<b>nombreTabla</b>,null);
+	while (columnas.next()) {	
+	<b>	String</b> nombreColumna = columnas.getString(&quot;<b>COLUMN_NAME</b>&quot;);
+		<b>int</b> tipoDato = columnas.getInt(&quot;<b>DATA_TYPE</b>&quot;);
+		String nombreTipo = columnas.getString(&quot;<b>TYPE_NAME</b>&quot;);
+		if (tipoDato==java.sql.Types.CHAR ||
+			tipoDato==java.sql.Types.VARCHAR) {
+				int tamanyo = columnas.getString(&quot;<b>COLUMN_SIZE</b>&quot;);
+		}
+    	String nulo = columnas.getString(&quot;<b>IS_NULLABLE</b>&quot;);
+		if (nulo.equalsIgnoreCase(&quot;no&quot;) 
+			System.out.println(&quot;NOT NULL&quot;);
+	}
+<b>	ResultSet</b> clavesPrimarias = 
+		dbmd.<b>getPrimaryKeys</b>(null,null,nombreTabla);
+	while(clavesPrimarias.next()) {
+		String nombreClave = clavesPrimarias.getString(&quot;<b>COLUMN_NAME</b>&quot;);
+	}
+}
+</pre>
+
+<p>Como vemos en este ejemplo hemos accedido a todas las tablas de la BD. Para 
+  cada tabla obtenemos la informaci&oacute;n de sus columnas, que tambi&eacute;n 
+  es devuelta mediante un <b>ResultSet</b>. Visitamos todas las columnas y obtenemos 
+  la informaci&oacute;n de cada una de ellas y por &uacute;ltimo obtenemos las 
+  claves primarias de la tabla.</p>
+<p>Tambi&eacute;n podemos obtener los metadatos de una consulta, es decir, directamente 
+  de un <b>ResultSet</b> obtenido al llamar a un m&eacute;todo <b>executeQuery</b>. 
+  Vamos a ver con otro ejemplo una forma distinta de acceder a los metadatos de 
+  un <b>ResultSet</b>:</p>
+ 
+  <pre class="codigo">ResultSet resul = stmt.executeQuery(&quot;SELECT * FROM ALUMNOS&quot;);
+<b>ResultSetMetaData</b> rsmd = resul.<b>getMetaData</b>();
+int columnas = rsmd.<b>getColumnCount</b>();
+for (int i=1; i&lt;=columnas; i++) {
+	System.out.println(&quot;Nombre tabla=&quot;+rsmd.<b>getTableName</b>(i));
+	System.out.println(&quot;Nombre columna=&quot;+rsmd.<b>getColumnName</b>(i));
+	System.out.println(&quot;Tipo de dato=&quot;+rsmd.<b>getTypeName</b>(i));
+	System.out.println(&quot;Autoincremento=&quot;+rsmd.<b>isAutoIncrement</b>(i));
+}
+</pre>
+
+<p>Hemos indicado algunos de los m&eacute;todos m&aacute;s &uacute;tiles. Consultad 
+  el API para conocer en detalle el resto de m&eacute;todos.</p>
+<h2>3.2. Optimizaci&oacute;n de sentencias</h2>
+<p>Cuando vamos a invocar una determinada sentencia repetidas veces, puede ser 
+  conveniente dejar esa sentencia preparada (precompilada) para que pueda ser 
+  ejecutada de forma m&aacute;s eficiente. Para hacer esto utilizaremos la interfaz 
+  <b>PreparedStatement</b>, que podr&aacute; obtenerse a partir de la conexi&oacute;n 
+  a la BD de la siguiente forma:</p>
+
+  
+<pre class="codigo"><b>PreparedStatement</b> ps = con.<b>prepareStatement</b>(&quot;UPDATE FROM alumnos
+						SET sexo = 'H'
+						WHERE exp&gt;1200 AND exp&lt;1300&quot;);</pre>
+
+<p>Vemos que a este objeto, a diferencia del objeto <b>Statement</b> visto anteriormente, 
+  le proporcionamos la sentencia SQL en el momento de su creaci&oacute;n, por 
+  lo que estar&aacute; preparado y optimizado para la ejecuci&oacute;n de dicha 
+  sentencia posteriormente.</p>
+<p>Sin embargo, lo m&aacute;s com&uacute;n es que necesitemos hacer variaciones 
+  sobre la sentencia, ya que normalmente no ser&aacute; necesario ejecutar repetidas 
+  veces la misma sentencia exactamente, sino variaciones de ella. Por ello, este 
+  objeto nos permite parametrizar la sentencia. Estableceremos las posiciones 
+  de los par&aacute;metros con el car&aacute;cter '?' dentro de la cadena de la 
+  sentencia, tal como se muestra a continuaci&oacute;n:</p>
+
+  
+<pre class="codigo"><b>PreparedStatement</b> ps = con.<b>prepareStatement</b>(&quot;UPDATE FROM alumnos
+						SET sexo = 'H'
+						WHERE exp &gt; ? AND exp &lt; ?&quot;);</pre>
+
+<p>En este caso tenemos dos par&aacute;metros, que ser&aacute; el n&uacute;mero 
+  de expediente m&iacute;nimo y el m&aacute;ximo del rango que queremos actualizar. 
+  Cuando ejecutemos esta sentencia, el sexo de los alumnos desde expediente inferior 
+  hasta expediente superior se establecer&aacute; a 'H'.</p>
+<p>Para dar valor a estos par&aacute;metros utilizaremos los m&eacute;todos <b>setXXX</b> 
+  donde <b>XXX</b> ser&aacute; el tipo de los datos que asignamos al par&aacute;metro 
+  (recordad los m&eacute;todos del <b>ResultSet</b>), indicando el n&uacute;mero 
+  del par&aacute;metro (que empieza desde 1) y el valor que le queremos dar. Por 
+  ejemplo, para asignar valores enteros a los par&aacute;metros de nuestro ejemplo 
+  haremos:</p>
+
+  <pre class="codigo">ps.<b>setInt</b>(1,1200);<b>
+</b>ps.<b>setInt</b>(2,1300);</pre>
+
+<p>Una vez asignados los par&aacute;metros, podremos ejecutar la sentencia llamando 
+  al m&eacute;todo <b>executeUpdate</b> (ahora sin par&aacute;metros) del objeto 
+  <b>PreparedStatement</b>:</p>
+
+  <pre class="codigo">int n = ps.<b>executeUpdate</b>();</pre>
+
+<p>Igual que en el caso de los objetos <b>Statement</b>, podremos utilizar cualquier 
+  otro de los m&eacute;todos para la ejecuci&oacute;n de sentencias, <b>executeQuery</b> 
+  o <b>execute</b>, seg&uacute;n el tipo de sentencia que vayamos a ejecutar.</p>
+<p>Una caracter&iacute;stica importante es que los par&aacute;metros s&oacute;lo 
+  sirven para datos, es decir, no podemos sustituir el nombre de la tabla o de 
+  una columna por el signo '?'. Otra cosa a tener en cuenta es que una vez asignados 
+  los par&aacute;metros, estos no desaparecen, sino que se mantienen hasta que 
+  se vuelvan a asignar o se ejecute una llamada al m&eacute;todo <b>clearParameters</b>.</p>
+<h2>3.3. Llamadas a procedimientos</h2>
+<p>Los procedimientos (PROCEDURES) son unidades de c&oacute;digo que contienen 
+  un conjunto de sentencias SQL. Estos pueden servirnos para tener en nuestra 
+  BD una serie de acciones comunes predefinidas. Al igual que las sentencias preparadas, 
+  los procedimientos aumentan la eficiencia en el acceso a una BD. Los procedimientos 
+  est&aacute;n creados en lenguaje SQL y DDL. Otra caracter&iacute;stica es que 
+  pueden tener par&aacute;metros de entrada y/o de salida. La principal caracter&iacute;stica 
+  que diferencia a los procedimientos de las sentencias preparadas es que, una 
+  vez creado, el procedimiento reside en la BD y puede ser llamado en otras partes 
+  del c&oacute;digo e incluso por otros programas.</p>
+<p>En cuanto a los par&aacute;metros, podemos tener de entrada (IN: su valor no 
+  puede ser cambiado por el procedimiento), de salida (OUT: dentro del procedimiento 
+  se le asigna un valor) y de entrada/salida (INOUT: la combinaci&oacute;n de 
+  ambas). </p>
+<p>Por ejemplo, si cuando realizamos una venta tenemos que a&ntilde;adir informaci&oacute;n 
+  de la venta, y reducir el stock del producto vendido, podemos definir un procedimiento 
+  que haga esto de la siguiente forma:</p>
+ 
+  
+<pre class="codigo">
+String procedure = &quot;CREATE PROCEDURE EFECTUAR_VENTA
+    (IN cod_cliente INT, IN cod_producto INT, IN cantidad INT)
+    LANGUAGE SQL
+    BEGIN
+	INSERT
+		INTO ventas(cliente, producto, cant)
+			VALUES(cod_cliente, cod_producto, cantidad);
+		UPDATE productos
+		    	SET stock = stock - cantidad
+		    	WHERE producto = cod_producto;
+	END&quot;;<br>
+stmt.executeUpdate(procedure);</pre>
+
+<p>Los procedimientos se crean mediante una sentencia DDL (un tipo de lenguaje 
+  procedural) como la del ejemplo, ejecut&aacute;ndola de la misma forma que cualquier 
+  sentencia DDL. En este caso tomar&aacute; tres par&aacute;metros de entrada 
+  y no devuelve ning&uacute;n resultado. La llamada a <b>executeUpdate</b> crea 
+  y almacena el procedimiento en la BD. A partir de ese momento podremos llamar 
+  a dicho procedimiento. Si el procedimiento no ha podido ser creado, el sistema 
+  lanza una excepci&oacute;n.</p>
+<p>En muchos SGBD podemos definir procedimientos tambi&eacute;n como se muestra 
+  a continuaci&oacute;n:</p>
+ 
+  <pre class="codigo">
+String procedure = &quot;CREATE PROCEDURE VER_VENTAS_CLIENTE
+	AS SELECT cliente, sum(precio) FROM ventas, productos
+		WHERE ventas.producto = productos.producto
+		GROUP BY cliente&quot;;<br>
+stmt.executeUpdate(procedure);</pre>
+
+<p>En este caso este procedimiento no toma par&aacute;metros de entrada pero s&iacute; 
+  que producir&aacute; resultados. Podremos tener procedimientos con distinto 
+  n&uacute;mero de par&aacute;metros de entrada, par&aacute;metros de salida, 
+  y podr&aacute;n generar incluso varios <b>ResultSet</b>.</p>
+<p>Para llamar al procedimiento necesitaremos un tipo especial de interfaz llamada<b> 
+  CallableStatement</b>. Con esta interfaz podremos invocar sentencias para la 
+  ejecuci&oacute;n de procedimientos como las que tenemos a continuaci&oacute;n:</p>
+<p> 
+  <pre class="codigo">CallableStatement cs = con.prepareCall(&quot;{call VER_VENTAS_CLIENTE}&quot;);
+
+ResultSet rs = cs.executeQuery();</pre>
+  
+<p>Podremos pasar par&aacute;metros de entrada de la misma forma que los pas&aacute;bamos 
+  con la interfaz <b>PreparedStatement</b>:</p>
+ 
+  
+<pre class="codigo">CallableStatement cs = con.prepareCall(&quot;{call EFECTUAR_VENTA[?, ?, ?]}&quot;);<br>
+cs.setInt(1, 112);
+cs.setInt(2, 3380);
+cs.setInt(3, 1);
+
+cs.executeUpdate();</pre>
+
+<p>Hay que tener en cuenta que si los par&aacute;metros de entrada no son asignados 
+  antes de llamar a <b>executeUpdate</b> se lanzar&aacute; una excepci&oacute;n. 
+  Disponemos de los mismos m&eacute;todos <b>setXXX</b> que anteriormente, siendo 
+  el primer par&aacute;metro el orden del par&aacute;metro y el segundo el valor 
+  asignado.</p>
+<p>Para hacer uso de los par&aacute;metros de salida (OUT) primero debemos registrar 
+  el tipo del par&aacute;metro. Si, por ejemplo, el segundo par&aacute;metro del 
+  procedimiento es de salida y su tipo original es VARCHAR debemos registrarlo 
+  de la siguiente forma:</p>
+ 
+  <pre class="codigo">cs.registerOutParameter(2, java.sql.Types.STRING);</pre>
+
+<p>En el caso de par&aacute;metros INOUT debemos realizar los dos pasos, registrarlo 
+  como de salida (con <b>registerOutParameter</b>) y asignarle valor (con <b>setXXX</b>). 
+  Una vez realizada la consulta a la BD podemos recuperar los valores de los par&aacute;metros 
+  OUT y INOUT con los m&eacute;todos <b>getXXX</b> disponibles en la clase <b>CallableStatements</b>.</p>
+<p>Es posible devolver un <b>ResultSet</b> como par&aacute;metro de salida de 
+  un procedimiento. Sin embargo, depende en gran medida del SGBD que estemos utilizando. 
+  Incluso algunos no soportan este tipo de par&aacute;metros.</p>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Ejercicios de la sesi&oacute;n JDBC 2</title>
+                
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+         
+  <link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+</head>
+ <body>
+<h1>Transacciones y RowSet</h1>
+<p>La primera parte de este bloque de ejercicios consiste en comprobar el funcionamiento 
+  de las transacciones. Para ello vamos a realizar dos clases que acceder&aacute;n 
+  a la misma tabla de forma concurrente y as&iacute; comprobaremos el funcionamiento 
+  en las transacciones. Las dos clases acceder&aacute;n a la tabla <i>vuelo</i>. 
+  De la tabla <i>vuelo</i> consultar&aacute;n el registro del vuelo n&uacute;mero 
+  9 y 10, y actualizar&aacute;n el valor del aeropuerto de inicio. </p>
+<p>Ambas clases tendr&aacute;n un m&eacute;todo <i>cambio</i> que primero realizar&aacute; 
+  una consulta del vuelo n&uacute;mero 9 y mostrar&aacute; el valor de su aeropuerto 
+  de inicio. A continuaci&oacute;n actualizar&aacute; el valor de su aeropuerto 
+  de inicio. La sentencia SQL puede ser la siguiente:</p>
+<blockquote> 
+  <pre class="codigo">Update vuelo set aeroinic='ALC2' where numero=9</pre>
+</blockquote>
+<p>A continuaci&oacute;n se quedar&aacute; esperando que el usuario pulse una 
+  tecla. Pod&eacute;is utilizar el siguiente c&oacute;digo:</p>
+<blockquote> 
+  <pre class="codigo">int pp = System.in.read();</pre>
+</blockquote>
+<p>Por &uacute;ltimo modificar&aacute; el valor del aeropuerto inicio del registro 
+  n&uacute;mero 10 a MAD2. Recordad que antes de la primera actualizaci&oacute;n 
+  se debe llamar al m&eacute;todo <b>setAutoCommit</b> y despu&eacute;s de la 
+  &uacute;ltima <b>commit</b> para que surtan efecto los cambios. Tambi&eacute;n 
+  deb&eacute;is llamar a <b>rollback</b> si se produce una excepci&oacute;n. Para 
+  probar este ejercicio se llamar&aacute;n a las dos clases desde sesiones distintas. 
+  Probad primero con PostGres. La primera clase actualizar&aacute; el valor de 
+  la fila y se quedar&aacute; esperando que pulsemos una tecla. En ese momento 
+  ejecutamos la segunda. Comprobad que la segunda se queda esperando, pero aunque 
+  pulsemos no contin&uacute;a su ejecuci&oacute;n, pues est&aacute; esperando 
+  que se libere el bloqueo producido por la primera. Cuando pulsamos en la primera 
+  aplicaci&oacute;n las dos finalizan. </p>
+<p>Otra prueba a realizar es el interbloqueo. Para ello simplemente cambi&aacute;is 
+  el orden de una de las clases, que primero acceda a la fila con n&uacute;mero 
+  10 y despu&eacute;s a la 9. Ver&eacute;is que PostGres detecta el interbloqueo.</p>
+<p>Cambiad ahora y comprobad el funcionamiento con MySQL. Con el primer ejemplo, 
+  cambiad el final de la primera clase para que no haga <b>commit</b> sino <b>rollback</b>. 
+  El sistema debe dar un error.</p>
+<p>&nbsp;</p>
+<p>En la segunda parte de la sesi&oacute;n vamos a utilizar los RowSet. Descargad 
+  la implementaci&oacute;n de RowSet que ha realizado Sun. Se encuentra disponible 
+  en la p&aacute;gina de recursos. Modificad el ejercicio desarrollado en la sesi&oacute;n 
+  2 para que trabaje con un objeto de la clase <i>CachedRowSet</i> (cread una 
+  nueva clase). Cread un nuevo m&eacute;todo en la misma clase que utilice un 
+  <i>WebRowSet</i> y que tenga la misma funcionalidad que <i>MuestraTray</i>, 
+  pero que el resultado lo env&iacute;e a un fichero en formato XML. Comprobad 
+  el resultado que se obtiene. No es posible leer el fichero XML de vuelta, pues 
+  el DTD no es correcto.</p>
+<p>&nbsp;</p>
+</body>
+            </html>

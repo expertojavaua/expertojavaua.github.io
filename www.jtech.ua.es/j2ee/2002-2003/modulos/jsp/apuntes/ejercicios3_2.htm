@@ -1,0 +1,109 @@
+<!-- saved from url=(0022)http://internet.e-mail -->
+<!-- saved from url=(0022)http://internet.e-mail -->
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+                                                            
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+                                                            
+  <meta name="Author" content="Nacho">
+                                                            
+  <meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+                                                        
+  <link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+  <title>Tema 3: Librer&iacute;as de Tags</title>
+</head>
+  <body>
+           
+      <b>      
+<h1>JSTL</h1>
+      </b><p>&nbsp; </p>
+           
+      <p><b>1. (FAQS) </b>Si echamos un vistazo a nuestra aplicación de FAQs,
+      las páginas <i>faqs.jsp</i>, <i>delete_menu.jsp</i> y <i>update_menu.jsp</i>
+      muestran listados de FAQs: la primera para elegir de qué FAQs queremos
+      obtener los datos, y las otras dos para elegir qué FAQ queremos borrar o
+      actualizar, respectivamente. </p>
+           
+      <p>Para poder mostrar estas listas, se emplean bucles &quot;for&quot; con
+      código Java: </p>
+           
+      <pre class="codigo">&lt;% FAQBean[] faqs = (FAQBean[])request.getAttribute(&quot;faqs&quot;); %&gt;
+
+... codigo HTML
+
+<b>&lt;% for (int i = 0; i &lt; faqs.length; i++) {%&gt;
+</b>	... codigo para mostrar cada FAQ
+&lt;% } %&gt;
+</pre>
+           
+      <p>Lo que se pide es sustituir esos bucles &quot;for&quot; en estas tres
+      páginas por tags <b>forEach</b> de JSTL que hagan lo mismo. Para ello: </p>
+           
+      <ul>
+        <li>Copiar el fichero TLD de la librería core (<i>c.tld</i>) en el
+          directorio <i>WEB-INF</i> de la aplicación</li>
+        <li>Copiar los ficheros JAR de la librería (<i>standard.jar </i>y <i>jstl.jar</i>)
+          en el directorio <i>WEB-INF/lib</i> de la aplicación</li>
+        <li>Añadir la librería en el fichero descriptor de la aplicación (<i>web.xml</i>):</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo">&lt;taglib&gt;
+	&lt;taglib-uri&gt;core&lt;/taglib-uri&gt;
+	&lt;taglib-location&gt;/WEB-INF/c.tld&lt;/taglib-location&gt;
+&lt;/taglib&gt;</pre>
+           
+        <p>NOTA: consultad la configuración de aplicaciones Web para ver dónde
+        debe ir la marca <i>taglib </i>en el fichero descriptor</p>
+      </blockquote>
+      <ul>
+        <li>En cada página donde vayamos a utilizar la librería, añadir al
+          principio la línea para importarla:</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo"><font size="2">&lt;%@ taglib uri=&quot;core&quot; prefix=&quot;c&quot; %&gt;</font></pre>
+           
+      </blockquote>
+      <ul>
+        <li>Para los bucles, recordamos la sintaxis de la etiqueta <b>forEach</b>:</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo"><font size="2">&lt;c:forEach var=&quot;nombreVar&quot; items=&quot;conjunto&quot;&gt;
+	...
+	...&lt;c:out value=&quot;${nombreVar.nombreCampo}&quot;/&gt;
+	...
+&lt;/c:forEach&gt;</font></pre>
+           
+        <p>donde <i>conjunto</i> sería el nombre de la lista que queremos
+        recorrer.</p>
+           
+        <p>No utilizaremos los beans, así que no necesitamos las líneas:</p>
+        <pre class="codigo">&lt;jsp:useBean ... /&gt;</pre>
+        <pre class="codigo">&lt;jsp:setProperty name=&quot;faq&quot; property=&quot;id&quot; .../&gt;
+&lt;jsp:setProperty name=&quot;faq&quot; property=&quot;pregunta&quot; .../&gt;
+&lt;jsp:setProperty name=&quot;faq&quot; property=&quot;respuesta&quot; .../&gt;
+&lt;jsp:setProperty name=&quot;faq&quot; property=&quot;fechaModif&quot; .../&gt;</pre>
+        <p>... etc.</p>
+        <p>Se trata simplemente de recorrer la lista de FAQs con un tag <i>forEach</i>:</p>
+        <pre class="codigo"><font size="2">&lt;c:forEach var=&quot;listafaqs&quot; items=&quot;${faqs}&quot;&gt;
+	...
+&lt;/c:forEach&gt;</font></pre>
+           
+        <p>luego, dentro del bucle, utilizamos el tag <i>out</i> para obtener
+        los valores deseados en los lugares indicados:</p>
+        <pre class="codigo"><font size="2">...
+&lt;c:out value=&quot;${listafaqs.id}&quot;/&gt;
+...</font></pre>
+           
+      </blockquote>
+           
+      <p>&nbsp; </p>
+           
+      <p><b>2. (FAQS) </b>En los ejercicios de la sesión anterior hemos
+      utilizado tags de la librería <i>request</i> para obtener el valor de
+      algunos parámetros en <i>delete.jsp, insert.jsp </i>y <i>update.jsp</i>. Si os da tiempo, lo que proponemos en este ejercicio
+      es que sustituyáis esos tags de la librería <i>request</i> por sus
+      correspondientes en JSTL. </p>
+           
+        </body>
+        </html>

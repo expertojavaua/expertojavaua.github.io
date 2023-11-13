@@ -1,0 +1,38 @@
+import java.io.*;
+import java.security.cert.*;
+
+// Comprueba si un determinado fichero que llega de entrada está revocado
+// Para ello revisa la lista de revocación que tbién se pasa como entrada. 
+public class Revocado {
+
+	public static void main (String[] args) throws Exception {
+
+		if (args.length != 2) {
+			System.err.println("Uso: java Revocado certificado lista");
+			System.exit(1);
+		}
+
+		CertificateFactory factoria = CertificateFactory.getInstance("X.509");
+
+		// Abrir el fichero del certificado 
+		FileInputStream fis = new FileInputStream (args[0]);
+
+		// Generar certificado para el fichero 
+		Certificate cert = factoria.generateCertificate(fis);
+		fis.close();
+
+		// Abrir el fichero de la lista de revocación
+		FileInputStream fis2 = new FileInputStream(args[1]); 
+
+		// Generar objeto X09CRL
+		X509CRL crl = (X509CRL) factoria.generateCRL(fis2); 
+		fis2.close(); 
+
+		// Testar si el certificado ha sido revocado 
+                if (crl.isRevoked(cert)) {
+			System.out.println("Certificado ha sido revocado"); 
+	        } else {
+			System.out.println("Certificado está OK"); 
+		}
+	}
+}

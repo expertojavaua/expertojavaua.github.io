@@ -1,0 +1,503 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.7">
+<meta name="Forrest-skin-name" content="pelt">
+<title> JMS en aplicaciones reales (2) </title>
+<link type="text/css" href="skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="skin/print.css" rel="stylesheet">
+<link type="text/css" href="skin/profile.css" rel="stylesheet">
+<script src="skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<div class="header">
+<div class="grouplogo">
+<a href="http://www.jtech.ua.es/j2ee"><img class="logoImage" alt="J2EE" src="images/baner_j2ee_izq.gif" title="Curso Especialista Universitario J2EE"></a>
+</div>
+<div class="projectlogoA1">
+<a href="http://www.dccia.ua.es/"><img class="logoImage" alt="Servidores Web" src="images/baner_j2ee_der.gif" title="Servidores Web"></a>
+</div>
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="../index.html">M&oacute;dulos</a>
+</li>
+<li class="current">
+<a class="base-selected" href="index.html">Servidores Web</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<div id="level2tabs"></div>
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<div id="menu">
+<div onclick="SwitchMenu('menu_selected_1.1', 'skin/')" id="menu_selected_1.1Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">JMS: Java Message Service</div>
+<div id="menu_selected_1.1" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="index.html" title="JMS: Java Message Service">&Iacute;ndice</a>
+</div>
+<div onclick="SwitchMenu('menu_selected_1.1.2', 'skin/')" id="menu_selected_1.1.2Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Teor&iacute;a</div>
+<div id="menu_selected_1.1.2" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="sesion01-apuntes.html">Sesion 1</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-apuntes.html">Sesion 2</a>
+</div>
+<div class="menuitem">
+<a href="sesion03-apuntes.html">Sesion 3</a>
+</div>
+<div class="menupage">
+<div class="menupagetitle">Sesion 4</div>
+</div>
+<div class="menuitem">
+<a href="roadmap-apuntes.html">Roadmap</a>
+</div>
+</div>
+<div onclick="SwitchMenu('menu_1.1.3', 'skin/')" id="menu_1.1.3Title" class="menutitle">Ejercicios</div>
+<div id="menu_1.1.3" class="menuitemgroup">
+<div class="menuitem">
+<a href="sesion01-ejercicios.html">Sesion 1</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-ejercicios.html">Sesion 2</a>
+</div>
+<div class="menuitem">
+<a href="sesion03-ejercicios.html">Sesion 3</a>
+</div>
+<div class="menuitem">
+<a href="sesion04-ejercicios.html">Sesion 4</a>
+</div>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<div id="credit2"></div>
+</div>
+<div id="content">
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="sesion04-apuntes.pdf"><img alt="PDF -icon" src="skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1> JMS en aplicaciones reales (2) </h1>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#JMS+con+MDBs%2C+EJBs+y+XML">JMS con MDBs, EJBs y XML</a>
+</li>
+<li>
+<a href="#ClientSend+produce+y+env%C3%ADa+mensaje+XML">ClientSend produce y env&iacute;a mensaje XML</a>
+</li>
+<li>
+<a href="#MessageTraderBean+recoge+el+mensaje+XML+y+lo+parsea">MessageTraderBean recoge el mensaje XML y lo parsea</a>
+<ul class="minitoc">
+<li>
+<a href="#Parsing+XML%3A+definici%C3%B3n+del+RequestHandler">Parsing XML: definici&oacute;n del RequestHandler</a>
+</li>
+<li>
+<a href="#Parsing+XML+con+SAX">Parsing XML con SAX</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Invocaci%C3%B3n+a+TraderBean">Invocaci&oacute;n a TraderBean</a>
+</li>
+<li>
+<a href="#MessageTraderBean+recibe+el+resultado+y+env%C3%ADa+un+mensaje+XML">MessageTraderBean recibe el resultado y env&iacute;a un mensaje XML</a>
+</li>
+<li>
+<a href="#ClientReceive+consulta+el+resultado+en+otra+cola">ClientReceive consulta el resultado en otra cola</a>
+</li>
+<li>
+<a href="#Despliegue+y+ejecuci%C3%B3n+del+ejemplo">Despliegue y ejecuci&oacute;n del ejemplo</a>
+</li>
+</ul>
+</div>
+
+<a name="N1000C"></a><a name="JMS+con+MDBs%2C+EJBs+y+XML"></a>
+<h2 class="underlined_10">JMS con MDBs, EJBs y XML</h2>
+<div class="section">
+<p>En esta sesi&oacute;n vamos a presentar una aplicaci&oacute;n ejemplo basada en EJBs que hace uso de mensajes. Concretamente se trata de que:</p>
+<p>1. Un cliente construye y env&iacute;a una petici&oacute;n a una cola.</p>
+<p>2. La petici&oacute;n es recogida (modo as&iacute;ncrono) por un bean de mensajes.</p>
+<p>3. El bean invoca (s&iacute;ncrono) a un EJB de sesi&oacute;n para realizar la petici&oacute;n del cliente.</p>
+<p>4. El EJB devuelve el resultado al bean de mensajes.</p>
+<p>5. El bean empaqueta el resultado en un mensaje y lo env&iacute;a a otra cola.</p>
+<p>6. Un segundo cliente recoge la respuesta.</p>
+</div>
+
+<a name="N10028"></a><a name="ClientSend+produce+y+env%C3%ADa+mensaje+XML"></a>
+<h2 class="underlined_10">ClientSend produce y env&iacute;a mensaje XML</h2>
+<div class="section">
+<p> El primer paso consiste en construir un cliente que construya y env&iacute;e un mensaje con la informaci&oacute;n necesaria para el EJB. Dicha informaci&oacute;n se pedir&aacute; en l&iacute;nea al usuario y se ir&aacute; construyendo un mensaje XML. El c&oacute;digo fuente del ejemplo se encuentra en  
+<a href="ejemplos/sesion4/ClientSend.java.txt">ClientSend.java</a>
+
+</p>
+<p>En el m&eacute;todo principal de esta clase se va construyendo un mensaje como el siguiente</p>
+<p>
+<span class="codefrag">
+&lt;stocktrade action=buy symbol=BEAS numShares=10 \&gt;
+</span>
+</p>
+<p>sobre un <span class="codefrag">String</span> llamado <span class="codefrag">buffer</span>. Todo ello se hace dentro de un bucle <span class="codefrag">do</span> hasta poder enviar el mensaje o bien recibir la opci&oacute;n <em>quit</em>.</p>
+<pre class="code">
+do {
+      buffer.append("&lt;stocktrade action=");
+      transactionSent = false;
+
+      //get action from user
+      System.out.print("Action (\"Buy\" or \"Sell\", \"quit\" to quit): \n");
+      line = msgStream.readLine();
+      if (line != null &amp;&amp; line.trim().length() != 0) {
+        quitNow = line.equalsIgnoreCase("quit");
+        buy = line.equalsIgnoreCase("buy");
+        sell = line.equalsIgnoreCase("sell");
+        buffer.append("\""+(buy ? "buy" : "sell")+"\"");
+        if ((buy || sell) &amp;&amp; !quitNow) {
+          buffer.append(" symbol=");
+          do {
+
+            //get stock symbol from user
+            System.out.print("Symbol (\"BEAS\" or \"MSFT\", \"quit\" to quit): \n");
+            line = msgStream.readLine();
+            if (line != null &amp;&amp; line.trim().length() != 0) {
+              quitNow = line.equalsIgnoreCase("quit");
+              beas = line.equalsIgnoreCase("BEAS");
+              msft = line.equalsIgnoreCase("MSFT");
+
+              if (beas == true) buffer.append("\""+ "BEAS" + "\"");
+              if (msft == true) buffer.append("\""+ "MSFT" + "\"");
+
+              if ((beas || msft) &amp;&amp; !quitNow) {
+                 do {
+                   // get number of shares from user
+                   System.out.print("Number of shares (\"quit\" to quit): \n");
+                   buffer.append(" numShares=");
+                   line = msgStream.readLine();
+                   if (line != null &amp;&amp; line.trim().length() != 0) {
+                     quitNow = line.equalsIgnoreCase("quit");
+                     buffer.append("\""+line+"\"");
+                     buffer.append("/&gt;");
+...
+</pre>
+<p>Si finalmente se envia el mensaje se llamar&aacute; al m&eacute;todo <span class="codefrag">send()</span>
+</p>
+<pre class="code">
+System.out.println("Sending trade information...");
+// send message to JMS queue
+client.send(buffer.toString());
+buffer.delete(0,buffer.length());
+System.out.println("Your message has been sent to queue");
+transactionSent = true;
+</pre>
+<p>donde en dicho m&eacute;todo hay que destacar que la variable <span class="codefrag">xmsg</span> es un objeto <span class="codefrag">weblogic.jms.extensions.XMLMessage</span> lo cual especifica contenido XML y esto facilita el filtrado de mensajes que es m&aacute;s complejo en este caso.</p>
+<pre class="code">
+public void send(String message) throws JMSException {
+    xmsg.setText(message);
+    qsender.send(xmsg);
+   }
+</pre>
+<p>El objeto <span class="codefrag">xmsg</span> se cre&oacute; en el m&eacute;todo <span class="codefrag">init()</span>, donde t&iacute;picamente inicializamos el contexto:</p>
+<pre class="code">
+xmsg = ((WLQueueSession)qsession).createXMLMessage();
+</pre>
+<p>siendo la clase <span class="codefrag">weblogic.jms.extensions.WLQueueSession</span> una extensi&oacute;n de la clase <span class="codefrag">Session</span> aportando nuevos campos no soportados.</p>
+<p>Por otro lado, la cola a la que se env&iacute;a este mensaje es <span class="codefrag">weblogic.examples.jms.messageformat.exampleQueueSend</span>.</p>
+</div>
+
+<a name="N10082"></a><a name="MessageTraderBean+recoge+el+mensaje+XML+y+lo+parsea"></a>
+<h2 class="underlined_10">MessageTraderBean recoge el mensaje XML y lo parsea</h2>
+<div class="section">
+<p>Un EJB de mensajes (Message Driven Bean o MDB) es una sublclase de <span class="codefrag">weblogic.ejb.GenericMessageDrivenBean</span> que 
+implementa la interfaz <span class="codefrag">MessageListener</span> (ver el c&oacute;digo completo en <a href="ejemplos/sesion4/MessageTraderBean.java.txt">MessageTraderBean.java</a>). Toda la actividad realizada por este bean se codifica el m&eacute;todo <span class="codefrag">OnMessage()</span>. Como siempre lo primero es recibir el mensaje XML de la cola. Pero adem&aacute;s hay que parsearlo antes de invocar al EJB que realizar&aacute; la acci&oacute;n especificada en el mensaje. 
+El c&oacute;digo de la primera parte de este m&eacute;todo, donde se lee el mensaje y se invoca al parser</p>
+<pre class="code">
+ public void onMessage(Message msg) {
+    log("MessageTraderBean.onMessage(msg)");
+    xmlmessage = (XMLMessage) msg;
+    RequestHandler rh = new RequestHandler();
+    try {
+      String txt = xmlmessage.getText();
+
+      SAXParserFactory fact = SAXParserFactory.newInstance();
+      SAXParser sp = fact.newSAXParser();
+
+      InputSource inSource = new InputSource();
+      inSource.setCharacterStream(new StringReader(txt));
+      sp.parse(inSource, rh);
+    } catch(JMSException ex) {
+      System.err.println("An exception occurred: "+ex.getMessage());
+    } catch (Exception e) {
+      System.err.println("An exception occurred: "+e.getMessage());
+      return;
+    }
+</pre>
+<a name="N1009C"></a><a name="Parsing+XML%3A+definici%C3%B3n+del+RequestHandler"></a>
+<h3 class="underlined_5">Parsing XML: definici&oacute;n del RequestHandler</h3>
+<p>Antes de realizar el parsing se especifica un manejador de eventos. Esto se hace en la clase <span class="codefrag">RequestHandler</span> que extiende  <span class="codefrag">org.xml.sax.helpers.DefaultHandler</span>. El c&oacute;digo completo del manejador de eventos se encuentra en <a href="ejemplos/sesion4/RequestHandler.java.txt">MessageTraderBean.java</a>.</p>
+<p>En t&eacute;rminos generales dicho manejador tiene un constructor (vac&iacute;o en este caso) y una serie de m&eacute;todos asociados a los eventos detectables durante el proceso de parsing.</p>
+<p>1. El primer evento a detectar es el comienzo del documento (o mensaje, como en este caso) XML:</p>
+<pre class="code">
+public void startDocument() throws SAXException {
+    nl();
+    nl();
+    trade = new Hashtable&lt;String,String&gt;();
+    log("START DOCUMENT");
+    nl();
+    log("&lt;?xml version='1.0' encoding='UTF-8'?&gt;");
+  }
+</pre>
+<p>donde <span class="codefrag">nl()</span> comienza una nueva linea y la identa de forma adecuada. Los m&eacute;todos del manejador van a ir construyendo una <span class="codefrag">Hashtable</span> denominada <span class="codefrag">trade</span> que se devolver&aacute; finalmente como resultado.El m&eacute;todo <span class="codefrag">log()</span> imprime en pantalla</p>
+<p>2.Una vez se ha detectado el comienzo del documento XML, se notificar&aacute; un evento cada vez que comience un nuevo elemento</p>
+<pre class="code">
+public void startElement(String uri, String localName, String qName,
+                           Attributes attrs)
+    throws SAXException
+  {
+    indentLevel++;
+    nl();
+    log("ELEMENT: " +qName);
+    	if (attrs != null) {
+        for (int i = 0; i &lt; attrs.getLength (); i++) {
+          nl();
+          trade.put(attrs.getQName(i), attrs.getValue(i));
+          log("   ATTR: " +attrs.getQName(i)+" = "+attrs.getValue(i));
+        }
+      }
+   }
+</pre>
+<p>Esta notificaci&oacute;n procede del parser y la informaci&oacute;n sobre el elemento se encuentra en el objeto de la clase <span class="codefrag">Attributtes</span>. Antes se incrementa la identaci&oacute;n.</p>
+<p>3. La notificaci&oacute;n del final de un elemento solo tiene como efecto el decremento de la identaci&oacute;n.</p>
+<pre class="code">
+public void endElement(String name) throws SAXException {
+     nl();
+     log ("END_ELM: " + name);
+     indentLevel--;
+   }
+
+</pre>
+<p>4.Una vez comenzado un elemento, el m&eacute;todo <span class="codefrag">characters()</span> lee su contenido.</p>
+<pre class="code">
+public void characters (char buf [], int offset, int len)
+    throws SAXException
+  {
+    nl();
+    String s = new String(buf, offset, len);
+    if (!s.trim().equals("")) log ("CHARS:   " + s);
+  }
+</pre>
+<p>5. Finalmente el m&eacute;todo <span class="codefrag">endDocument()</span> notifica el final del documento XLM.</p>
+<pre class="code">public void endDocument() throws SAXException {
+    nl();
+    log("END DOCUMENT");
+    try {
+      nl();
+    } catch (Exception e) {
+      throw new SAXException ("I/O error", e);
+    }
+</pre>
+<p>y el m&eacute;todo <span class="codefrag">getData()</span> devuelve la tabla hash con el contenido parseado:</p>
+<pre class="code">
+public Hashtable&lt;String,String&gt; getData() { return trade;} 
+</pre>
+<a name="N100FB"></a><a name="Parsing+XML+con+SAX"></a>
+<h3 class="underlined_5">Parsing XML con SAX</h3>
+<p>El proceso de parsing en s&iacute; viene dirigido por un objeto de la clase <span class="codefrag">javax.xml.parsers.SAXParser</span>. En <span class="codefrag">onMessage()</span> tenemos:</p>
+<pre class="code">
+try {
+      String txt = xmlmessage.getText();
+
+      SAXParserFactory fact = SAXParserFactory.newInstance();
+      SAXParser sp = fact.newSAXParser();
+
+      InputSource inSource = new InputSource();
+      inSource.setCharacterStream(new StringReader(txt));
+      sp.parse(inSource, rh);
+    } catch(JMSException ex) {
+      System.err.println("An exception occurred: "+ex.getMessage());
+    } catch (Exception e) {
+      System.err.println("An exception occurred: "+e.getMessage());
+      return;
+    }
+</pre>
+<p>con la llamada al m&eacute;todo <span class="codefrag">parse()</span> que es el que va a generar los eventos que analizar&aacute; el objeto <span class="codefrag">RequestHandler</span> llamado <span class="codefrag">rh</span>.</p>
+</div>
+
+<a name="N1011C"></a><a name="Invocaci%C3%B3n+a+TraderBean"></a>
+<h2 class="underlined_10">Invocaci&oacute;n a TraderBean</h2>
+<div class="section">
+<p>Seguimos dentro del m&eacute;todo <span class="codefrag">onMessage()</span>, ya que el resultado del parsing se ha recogido en una tabla hash invocando al manejador:</p>
+<pre class="code">
+java.util.Hashtable&lt;String,String&gt; trade = rh.getData();
+</pre>
+<p>A partir de aqu&iacute; el proceso sigue los pasos siguientes:</p>
+<p>1. Crear un EJB <span class="codefrag">Trader</span>llamado <span class="codefrag">trader</span>.</p>
+<p>2. Construir un objeto <span class="codefrag">TradeResult</span> llamado <span class="codefrag">tr</span>.</p>
+<p>3. Pasarle a <span class="codefrag">tr</span> los datos de la operaci&oacute;n consultando la tabla hash</p>
+<p>4. Invocar el m&eacute;todo pertinente del EJB.</p>
+<p>Estos pasos se realizar en el siguiente fragmento de c&oacute;digo:</p>
+<pre class="code">
+try {
+      // Create a trader object.
+      Context ctxt          =  new InitialContext();
+      TraderHome brokerage = (TraderHome) ctxt.lookup(TRADER_EJB_JNDI);
+
+      // Give this trader a name.
+      Trader trader = brokerage.create();
+
+      // Do trade.
+      if (((String) trade.get("action")).equals("buy")) {
+        TradeResult tr = trader.buy("Erin", (String) trade.get("symbol"),
+                         Integer.parseInt((String) trade.get("numShares")));
+....
+</pre>
+<p>As&iacute; pues, el control se cede al EJB cuyo c&oacute;digo completo se muestra en <a href="ejemplos/sesion4/TraderBean.java.txt">TraderBean.java</a>. El objeto <span class="codefrag">TraderBean</span> extiende la clase <span class="codefrag">GenericSessionBean</span>Una de las acciones a realizar puede ser por ejemplo comprar, soportada por el m&eacute;todo <span class="codefrag">buy()</span>:</p>
+<pre class="code">
+@RemoteMethod()
+  public TradeResult buy(String customerName, String stockSymbol, int shares)
+    throws ProcessingErrorException
+  {
+    log("buy ("+customerName+", "+stockSymbol+", "+shares+")");
+
+    double price = getStockPrice(stockSymbol);
+    tradingBalance -= (shares * price); // subtract purchases from cash account
+
+    return new TradeResult(shares, price, TradeResult.BUY);
+  }
+</pre>
+</div>
+
+<a name="N10166"></a><a name="MessageTraderBean+recibe+el+resultado+y+env%C3%ADa+un+mensaje+XML"></a>
+<h2 class="underlined_10">MessageTraderBean recibe el resultado y env&iacute;a un mensaje XML</h2>
+<div class="section">
+<p>Siguiendo en el m&eacute;todo <span class="codefrag">onMessage()</span> del bean de mensajes, el EJB le ha 
+devuelto el resultado de la operaci&oacute;n en el objeto <span class="codefrag">TradeResult</span> llamado <span class="codefrag">tr</span>. As&iacute; pues, se construye un nuevo mensaje sobre la cadena <span class="codefrag">buffer</span>. Este mensaje XML ser&aacute; del tipo:</p>
+<p>
+
+<span class="codefrag">
+&lt;traderesult action=bought symbol=BEAS numShares=10 price=2.0 changeInAccount=2000.0\&gt;
+</span>
+
+</p>
+<p>Siendo el fragmento de c&oacute;digo:</p>
+<pre class="code">
+buffer.append("&lt;traderesult action='bought' "+
+            "symbol='"+(String) trade.get("symbol")+
+            "' numShares='"+ tr.getNumberTraded() +
+            "' price ='"+ tr.getPrice() +"' "+
+            "changeInAccount ='"+trader.getBalance() +"'/&gt;");
+</pre>
+<p>Finalmente, todav&iacute;a dentro de <span class="codefrag">onMessage()</span> se pasa a <span class="codefrag">String</span> la variable <span class="codefrag">buffer</span> y se invoca el m&eacute;todo <span class="codefrag">send()</span>:</p>
+<pre class="code">
+Context ctx = getInitialContext();
+        init(ctx, QUEUE);
+        send(buffer.toString());
+</pre>
+<p>Siendo <span class="codefrag">QUEUE="java:comp/env/jms/exampleQueueReceive"</span> cuyo nombre JNDI es precisamente <span class="codefrag">weblogic.examples.jms.messageformat.exampleQueueReceive</span>. La correspondencia entre los nombres JNDI y los recursos a los que accede el EJB se especifica, en EJB 3.0, en la cabecera del mismo, junto con otros elementos:</p>
+<pre class="code">
+@JndiName(remote = "jms.Messageformat")
+@MessageDriven(maxBeansInFreePool = "1000",
+               destinationType = "javax.jms.Queue",
+               initialBeansInFreePool = "0",
+               transTimeoutSeconds = "600",
+               defaultTransaction = MessageDriven.DefaultTransaction.REQUIRED,
+               durable = Constants.Bool.FALSE,
+               ejbName = "jmsMessageformat",
+               destinationJndiName = "weblogic.examples.jms.messageformat.exampleQueueSend")
+@ResourceEnvRefs({
+    @ResourceEnvRef(name = "jms/exampleQueueReceive",
+                    type = "javax.jms.Queue",
+                    jndiName = "weblogic.examples.jms.messageformat.exampleQueueReceive")
+})
+@ResourceRefs({
+    @ResourceRef(auth = ResourceRef.Auth.CONTAINER,
+                 jndiName = "weblogic.examples.jms.messageformat.QueueConnectionFactory",
+                 name = "jms/QCF",
+                 type = "weblogic.examples.jms.messageformat.QueueConnectionFactory",
+                 sharingScope = ResourceRef.SharingScope.SHAREABLE)
+})
+</pre>
+</div>
+
+<a name="N101A9"></a><a name="ClientReceive+consulta+el+resultado+en+otra+cola"></a>
+<h2 class="underlined_10">ClientReceive consulta el resultado en otra cola</h2>
+<div class="section">
+<p>Un segundo cliente, cuyo c&oacute;digo se puede consultar en <a href="ejemplos/sesion4/ClientReceive.java.txt">ClientReceive.java</a>, se conecta a la cola a la que se envi&oacute; el resultado de la operaci&oacute;n y en su m&eacute;todo <span class="codefrag">receive()</span> realiza el parsing y muestra el contenido final del mensaje; algo as&iacute; como:</p>
+<pre class="code">
+START DOCUMENT
+
+?xml version='1.0' encoding='UTF-8'?
+
+    ELEMENT: traderesult
+
+       ATTR: action = bought
+
+       ATTR: symbol = BEAS
+
+       ATTR: numShares = 10
+
+       ATTR: price = 2.0
+
+       ATTR: changeInAccount = 2000.0
+
+    END_ELM: traderesult
+
+END DOCUMENT
+</pre>
+</div>
+
+<a name="N101BE"></a><a name="Despliegue+y+ejecuci%C3%B3n+del+ejemplo"></a>
+<h2 class="underlined_10">Despliegue y ejecuci&oacute;n del ejemplo</h2>
+<div class="section">
+<p>Las instrucciones para el despliegue de todos los ejemplos ya se han referenciado con anterioridad.
+ En este caso, y desplegando en el men&uacute; izquierdo la pesta&ntilde;a correspondiente a <em>Messaging</em> podemos acceder a todos los ejemplos de JMS. Concretamente seleccionaremos <em>Using JMS and Message-Driven EJB to Transmit XML</em>.</p>
+<p>En este caso el despliegue es algo m&aacute;s complejo que en los casos anterioroes ya que intervienen EJBs. Se contemplan los siguientes pasos:</p>
+<p>1. Establecer las variables de entorno.</p>
+<p>2. Ejecutar <span class="codefrag">ant build</span> para compilar.</p>
+<p>3. Ejecutar <span class="codefrag">ant deploy</span>
+</p>
+<p>4. Invocar la consola de administraci&oacute;n</p>
+<p>5. En la consola, activar el modo de hacer cambios en la configuraci&oacute;n haciendo click en 
+<em>Lock &amp; Make Changes</em>
+</p>
+<p>6. Expandir en el panel izquierdo el nodo <strong>Deployments</strong>.</p>
+<p>7. Expandir <strong>jmsMsgFormatEar</strong> en la tabla de deployments.</p>
+<p>8. Seleccionar <strong>JMSMessageFormatJMS</strong> y consultar los recursos JMS asociados.</p>
+<p>9.Seleccionar cada uno de los recursos y revisar su configuraci&oacute;n. En el tab de <strong>Targets</strong> comprobad que el SubDeployment seleccionado es <strong>examplesJMSServer</strong> y el servidor JMS es <strong>examplesJMSServer</strong>. Seleccionar update y click en <strong>Save</strong>.</p>
+<p>10. En el <em>Change Center</em> click en <em>Activate Changes</em>
+</p>
+<p>En cuanto a la ejecuci&oacute;n del ejemplo se puede lanzar el cliente que construye y env&iacute;a el mensaje XML con <span class="codefrag">ant run.send</span>. Desde otro shell se puede lanzar el cliente que va a recibir y mostrar el resultado con <span class="codefrag">ant run.receive</span>.</p>
+</div>
+
+<p class="pageBreakAfter"></p>
+
+</div>
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+        Copyright &copy;
+         2006 Depto. CCIA</div>
+</div>
+</body>
+</html>

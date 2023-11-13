@@ -1,0 +1,554 @@
+<head>
+<title>Sesion 5 Enterprise Java Beans</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../../ejercicios.css" type="text/css">
+</head>
+<body>
+<h1>Tema 5: Beans de entidad con persistencia gestionada por el contenedor</h1>
+<h2>5.1 Introducci&oacute;n</h2>
+<p> Como hemos visto en el tema anterior, en los beans de entidad con persistencia 
+  gestionada por el bean hay que declarar en el c&oacute;digo fuente del bean:</p>
+<UL>
+  <LI TYPE="disc"> funciones de conexi&oacute;n a la base de datos (abrir y cerrar base de 
+      datos)
+  <LI TYPE="disc"> funciones para hacer operaciones <code>SELECT</code>, <code>INSERT</code>, 
+    <code>UPDATE</code> sobre la tabla de la base de datos que guarda la informaci&oacute;n 
+    del bean 
+  <LI TYPE="disc"> nombre de la base de datos
+  <LI TYPE="disc"> nombre de la tabla donde se almacena el bean
+</UL>
+<p> En este tema describiremos los beans de entidad con persistencia gestionada 
+  por el contenedor. En ellos todas las funciones que antes hab&iacute;a que codificar 
+  se definen de forma declarativa en el fichero de descripci&oacute;n del despliegue 
+  del bean. Veremos dos ejemplos -<code>Customer</code> y <code>Address</code>- 
+  con los que explicaremos c&oacute;mo se definen los beans con persistencia gestionada 
+  por el contenedor y c&oacute;mo funcionan en tiempo de ejecuci&oacute;n. Veremos 
+  en el tema siguiente la definici&oacute;n de relaciones entre beans, que tambi&eacute;n 
+  son gestionadas autom&aacute;ticamente por el contenedor.</p>
+<p>La persistencia gestionada por el contenedor se ha introducido en la especificaci&oacute;n 
+  2.0 de la arquitectura EJB. En la literatura en ingl&eacute;s se suele referir 
+  a ella como CMP 2.0 (Container Managed Persistence).</p>
+<h3> 5.1.1 El modelo abstracto de programaci&oacute;n</h3>
+<p> En CMP 2.0 el contenedor gestiona autom&aacute;ticamente el estado de los 
+  beans de entidad. El contenedor se encarga de las transacciones y de la comunicaci&oacute;n 
+  con la base de datos. El desarrollador del bean describe los atributos y las 
+  relaciones de un bean de entidad usando campos de persistencia virtuales y campos 
+  de relaci&oacute;n. Se llaman campos virtuales porque el desarrollador no declara 
+  estos campos expl&iacute;citamente, sino que se definen m&eacute;todos abstractos 
+  de acceso (get y set) en la clase bean de entidad. La implementaci&oacute;n 
+  de estos m&eacute;todos se genera en tiempo de despliegue por las herramientas 
+  del servidor de aplicaciones. Es importante recordar que los t&eacute;rminos 
+  campo de relaci&oacute;n y campo de persistencia se refieren a los m&eacute;todos 
+  abstractos de acceso y no a los campos reales declarados en las clases.</p>
+<p align="center"> <IMG SRC="apuntes51.png"></p>
+<p> En la figura anterior, el EJB <code>Customer</code> tiene seis m&eacute;todos 
+  de acceso. Los primeros cuatro leen y actualizan los apellidos y el nombre del 
+  cliente. Estos son ejemplos de campos de persistencia: atributos directos del 
+  bean de entidad. Los &uacute;ltimos dos son m&eacute;todos de acceso que obtienen 
+  y definen referencias al EJB <code>Address</code> a trav&eacute;s de su interfaz 
+  local, <code>AddressLocal</code>. Este es un ejemplo de un campo de relaci&oacute;n 
+  llamado address.</p>
+<h3> 5.1.2 El esquema abstracto de persistencia</h3>
+<p> Las clases bean de entidad en CMP 2.0 se definen usando m&eacute;todos de 
+  acceso que representan campos virtuales de relaci&oacute;n y de persistencia. 
+  Como se ha mencionando antes, los campos reales no se declaran en las clases 
+  bean de entidad. En su lugar, las caracter&iacute;sticas de estos campos se 
+  describen en detalle en el fichero XML descriptor del despliegue que usa el 
+  bean. El esquema abstracto de persistencia es un conjunto de elementos XML que 
+  describen los campos de relaci&oacute;n y los campos de persistencia. Junto 
+  con el modelos abstracto de programaci&oacute;n (los m&eacute;todos abstractos 
+  de acceso) y alguna ayuda del desplegador, la herramienta del contenedor tendr&aacute; 
+  suficiente informaci&oacute;n para hacer corresponder la entidad y sus relaciones 
+  con otros beans en la base de datos.</p>
+<h3> 5.1.3 Herramientas del contenedor y persistencia</h3>
+<p> Una de las responsabilidades del vendedor de las herramientas de despliegue 
+  y del contenedor es la generaci&oacute;n de implementaciones concretas de los 
+  beans de entidad abstractos. Las clases concretas generadas por el contenedor 
+  se llaman clases de persistencia. Las instancias de las clases de persistencia 
+  son responsables de trabajar con el contenedor para leer y escribir datos entre 
+  el bean de entidad y la base de datos en tiempo de ejecuci&oacute;n. Una vez 
+  que las clases de persistencia se generan, pueden ser desplegadas en el contenedor 
+  EJB. El contenedor informa a las instancias de persistencia cu&aacute;ndo deben 
+  leer y escribir en la base de datos. Las instancias de persistencia realizan 
+  la lectura y escritura de una forma optimizada para la base de datos que se 
+  est&aacute; usando.</p>
+<p> Las clases de persistencia incluir&aacute;n l&oacute;gica de acceso a la base 
+  de datos adaptada a una base de datos particular. por ejemplo, un producto EJB 
+  podr&iacute;a proporcionar un contenedor que pueda hacer corresponder un bean 
+  de entidad a una base de datos espec&iacute;fica como una base de datos relacional 
+  Oracle o la base de datos de objetos POET. Esta especificidad permite a las 
+  clases de persistencia emplear optimizaciones personalizadas a bases de datos 
+  particulares.</p>
+<p> La herramienta del contenedor genera toda la l&oacute;gica de acceso a la 
+  base de datos en tiempo de despliegue y la embebe en las clases de persistencia. 
+  Esto significa que los desarrolladores no tienen que escribir la l&oacute;gica 
+  de acceso a la base de datos ellos mismos, lo que ahorra un mont&oacute;n de 
+  trabajo; adem&aacute;s este mecanismo puede resultar en un mejor rendimiento 
+  en los beans de entidad porque la implementaci&oacute;n est&aacute; optimizada. 
+  Un desarrollador de bean de entidad nunca tendr&aacute; que tratar con el c&oacute;digo 
+  de acceso a la base de datos si est&aacute; trabajando con entidades CMP 2.0. 
+  De hecho, ni siquiera tendr&aacute; acceso a las clases de persistencia que 
+  contienen esa l&oacute;gica, porque se generan de forma autom&aacute;tica por 
+  la herramienta. En la mayor&iacute;a de los casos este c&oacute;digo fuente 
+  no est&aacute; disponible para los desarrolladores de beans.</p>
+<h2> 5.2 El EJB <code>Customer</code></h2>
+<p> En el siguiente ejemplo, desarrollaremos un simple bean de entidad CMP 2.0 
+  - el EJB <code>Customer</code>. Conforme avancemos con el tema, el ejemplo se 
+  har&aacute; m&aacute;s complejo para ilustrar los conceptos comentados en cada 
+  secci&oacute;n. Este ejemplo supone que estas usando una base de datos relacional. 
+  Necesitaremos una tabla llamada <code>CUSTOMER</code> a partir de la cual obtener 
+  los datos de clientes. La definici&oacute;n de la tabla se hace en SQL con la 
+  siguiente sentencia:</p>
+<pre class="codigo">
+  CREATE TABLE CUSTOMER 
+  (ID INT PRIMARY KEY NOT NULL,
+  LAST_NAME CHAR(20),
+  FIRST_NAME CHAR(20))
+</pre>
+  
+<h3>5.2.2 La clase <code>CustomerBean</code></h3>
+<p> La clase <code>CustomerBean</code> es una clase abstracta a partir de la cual 
+  la herramienta del contenedor generar&aacute; una implementaci&oacute;n concreta 
+  que se ejecutar&aacute; en el contenedor EJB. El mecanismo por el que la herramienta 
+  del contenedor genera una clase entidad persistente a partir de la clase bean 
+  de entidad var&iacute;a, pero la mayor&iacute;a de fabricantes generan una subclase 
+  del la clase abstracta proporcionada por el desarrollador del bean (ver figura 
+  siguiente).</p>
+<p align="center"> <IMG SRC="apuntes52.png"></p>
+<p> La clase abstracta del bean debe declarar m&eacute;todos de acceso (<code>set</code> 
+  y <code>get</code>) para cada campo y relaci&oacute;n de persistencia definidos 
+  en el esquema abstracto de persistencia del descriptor de despliegue. La herramienta 
+  del contenedor necesita tanto los m&eacute;todos abstractos de acceso (definidos 
+  en la clase bean) como los elementos XML del descriptor de despliegue para describir 
+  completamente el esquema de persistencia del bean.</p>
+<p> He aqu&iacute; un definici&oacute;n muy simple de la clase <code>CustomerBean</code>.</p>
+<pre class="codigo"> 
+  import javax.ejb.EntityContext;
+  
+  public abstract class CustomerBean implements javax.ejb.EntityBean {
+  
+  public Integer ejbCreate(Integer id){
+     setId(id);
+     return null;
+  }
+
+  public void ejbPostCreate(Integer id) {}
+  
+  // abstract accessor methods
+  
+  public abstract Integer getId();
+  public abstract void setId(Integer id);
+  
+  public abstract String getLastName();
+  public abstract void setLastName(String lname);
+  
+  public abstract String getFirstName();
+  public abstract void setFirstName(String fname);
+  
+  // standard callback methods
+  
+  public void setEntityContext(EntityContext ec) {}
+  public void unsetEntityContext() {}
+  public void ejbLoad() {}
+  public void ejbStore() {}
+  public void ejbActivate() {}
+  public void ejbPassivate(){}
+  public void ejbRemove() {}
+  }
+  </pre>
+  
+<p>La clase <code>CustomerBean</code> se define como una clase abstracta. Esto 
+  es requerido por CMP 2.0 para reforzar la idea de que el <code>CustomerBean</code> 
+  no se despliega directamente en el sistema contenedor. Ya que las clases abstractas 
+  no pueden instanciarse, la herramienta del contenedor debe definir una subclase 
+  que es la que se instala en el contenedor. Tambi&eacute;n se declaran abstractos 
+  los propios m&eacute;todos de acceso, lo cual hace que la herramiente del contenedor 
+  los deba implementar.</p>
+<p> Al igual que en la persistencia gestionada por el bean, la clase <code>CustomerBean</code> 
+  implementa la <code>interfaz javax.ejb.EntityBean</code>, que define bastantes 
+  m&eacute;todos de callback, incluyendo <code>setEntityContext</code>, <code>unsetEntityContext</code>, 
+  <code>ejbLoad</code>, <code>ejbStore</code>, <code>ejbActivate</code>, <code>ejbPassivate</code> 
+  y <code>ejbRemove</code>.</p>
+<p> El primer m&eacute;todo en la clase bean de entidad es <code>ejbCreate</code>, 
+  que toma una referencia a un objeto Integer como &uacute;nico argumento. El 
+  m&eacute;todo <code>ejbCreate</code> se llama cuando el cliente remoto invoca 
+  el m&eacute;todo create en la interfaz home del bean de entidad. Este funcionamiento 
+  es similar al que ya hemos visto en el tema anterior. El m&eacute;todo <code>ejbCreate</code> 
+  es responsable de la inicializaci&oacute;n de los campos de persistencia antes 
+  de que el bean de entidad sea creado. En este ejemplo, el m&eacute;todo <code>ejbCreate</code> 
+  se usa para inicializar el campo de persistencia id, que est&aacute; representado 
+  por los m&eacute;todos de acceso <code>setId</code>/<code>getId</code>.</p>
+<p> El tipo devuelto por el m&eacute;todo <code>ejbCreate</code> es un <code>Integer</code>, 
+  que es la clave primaria del bean de entidad. La clave primaria es un identificador 
+  &uacute;nico que puede tomar distintas formas, incluyendo un wrapper de tipos 
+  primitivos y clases definidas por el desarrollador. En este caso, la clave primaria 
+  (el <code>Integer</code>) se hace corresponder con el campo <code>ID</code> 
+  en la tabla <code>CUSTOMER</code>. Esto se ver&aacute; con m&aacute;s claridad 
+  cuando definamos el descriptor de despliegue XML. Aunque el tipo devuelto por 
+  el m&eacute;todo <code>ejbCreate</code> es la clave primaria, el valor realmente 
+  devuelto por el m&eacute;todo <code>ejbCreate</code> es null. El contendor EJB 
+  y la clase de persistencia extraer&aacute;n la clave primaria del bean cuando 
+  sea necesario.</p>
+<p> El m&eacute;todo <code>ejbPostCreate</code> se usa para realizar una incializaci&oacute;n 
+  despu&eacute;s de que el bean de entidad haya sido inicializado, pero antes 
+  de que sirva cualquier petici&oacute;n de ning&uacute;n cliente. Este m&eacute;todo 
+  normalmente se usa para realizar algunas operaciones con los campos de relaci&oacute;n 
+  del bean de entidad, lo cual s&oacute;lo es posible despues de que el m&eacute;todo 
+  <code>ejbCreate</code> del bean haya sido invocado y el bean est&eacute; en 
+  la base de datos. Para cada m&eacute;todo <code>ejbCreate</code> debe haber 
+  un m&eacute;todo correspondiente <code>ejbPostCreate</code> con los mismos argumentos 
+  pero devolviendo <code>void</code>. Este funcionamiento en pareja de los m&eacute;todos 
+  <code>ejbCreate</code> y <code>ejbPostCreate</code> asegura que el contenedor 
+  llama a ambos m&eacute;todos correctamente. M&aacute;s adelante veremos alg&uacute;n 
+  ejemplo del uso de <code>ejbPostCreate</code>; por ahora dejaremos su implementaci&oacute;n 
+  vac&iacute;a.</p>
+<p> Los m&eacute;todos abstractos de acceso (<code>setLastName</code>, <code>getLastName</code>, 
+  <code>setFirstName</code>, <code>getFirstName</code>), representan los campos 
+  de persistencia de la clase <code>CustomerBean</code>. Estos m&eacute;todos 
+  se definen como abstractos sin cuerpos de m&eacute;todo. Como ya mencionamos, 
+  cuando el bean se procesa por una herramienta del contenedor, estos m&eacute;todos 
+  se implementar&aacute;n por una clase de persistencia basada en el esquema abstracto 
+  de persistencia (los elementos del descriptor de despliegue XML), el contenedor 
+  EJB y la base de datos usados. B&aacute;sicamente, estos m&eacute;todos obtienen 
+  y actualizan los valores en la base de datos y no se implementan por el desarrollador 
+  del bean.</p>
+<h3> 5.2.3 La interfaz remota</h3>
+<p> Necesitaremos una interfaz remota <code>Customer</code> para el EJB Customer, 
+  ya que se acceder&aacute; al bean por parte de clientes fuera del sistema del 
+  contenedor. La interfaz remota define, como siempre, los m&eacute;todos que 
+  el cliente podr&aacute; usar para interactuar con las instancias del bean de 
+  entidad. La interfaz remota deber&iacute;a definir los m&eacute;todos que modelan 
+  los aspectos p&uacute;blicos del concepto de negocio que se est&aacute;n modelando; 
+  esto es, aquellas conductas y datos que deber&iacute;a exponerse hacia las aplicaciones 
+  cliente. He aqu&iacute; la interfaz remota <code>Customer</code>:</p>
+<pre class="codigo"> 
+  import java.rmi.RemoteException;
+  
+  public interface Customer extends javax.ejb.EJBObject {
+  
+  public String getLastName() throws RemoteException;
+  public void setLastName(String lname) throws RemoteException;
+  
+  public String getFirstName() throws RemoteException;
+  public void setFirstName(String fname) throws RemoteException;
+  }
+</pre>
+<p>Las signaturas de todos los m&eacute;todos definidos en la interfaz remota 
+  debe corresponderse con las signaturas de los m&eacute;todos definidos en la 
+  clase bean. En este caso, los m&eacute;todos de acceso en la interfaz <code>Customer</code> 
+  se corresponden con los m&eacute;todos de acceso a los campos de persistencia 
+  en la clase <code>CustomerBean</code>. Cuando hacemos esto, el cliente tiene 
+  acceso directo a los campos de persistencia del bean de entidad.</p>
+<p> Sin embargo, no se requiere que se emparejen todos los m&eacute;todos abstractos 
+  de acceso con m&eacute;todos en la interfaz remota. De hecho, se recomienda 
+  que la interfaz remota sea lo m&aacute;s independiente posible del modelo de 
+  programaci&oacute;n abstracta. </p>
+<p> La especificaci&oacute;n EJB prohibe que los m&eacute;todos remotos se emparejen 
+  con los campos de relaci&oacute;n, que definen el acceso a otros beans de entidad. 
+  Adem&aacute;s, los m&eacute;todos remotos no deben modificar ning&uacute;n campo 
+  de persistencia gestionado por el contenedor que sea parte de la clave primaria 
+  de un bean de entidad. En este caso, la interfaz remota no define un m&eacute;todo 
+  <code>setId</code>, ya que &eacute;sto permitir&iacute;a a los clientes modificar 
+  la clave primaria.</p>
+<h3> 5.2.4 La interfaz Home remota</h3>
+<p> La interfaz home remota de cualquier bean de entidad se usa para crear, localizar 
+  y eliminar entidades del contenedor EJB. Cada tipo de bean de entidad debe tener 
+  su propia interfaz home remota, su interfaz home local, o ambas. De la misma 
+  forma que vimos en el tema anterior, las interfaces home definen tres clases 
+  de m&eacute;todos home: m&eacute;todos home de negocio, m&eacute;todos de creaci&oacute;n 
+  y m&eacute;todos de b&uacute;squeda. Los m&eacute;todos <code>create()</code> 
+  actuan como constructores remotos y definen c&oacute;mo se crean nuevas instancias 
+  del bean de entidad. En este ejemplo, proporcionaremos un &uacute;nico m&eacute;todo 
+  create, que se empareja con el m&eacute;todo ejbCreate definido en la clase 
+  de bean de entidad. El m&eacute;todo de b&uacute;squeda que vamos a definir 
+  se usa para localizar una instancia espec&iacute;fica del bean Customer usando 
+  la clave primaria como &uacute;nico identificador.</p>
+<p> He aqu&iacute; la definici&oacute;n de la interfaz <code>CustomerHome</code> 
+  remota:</p>
+<pre class="codigo"> import java.rmi.RemoteException;
+  import javax.ejb.CreateException;
+  import javax.ejb.FinderException;
+  
+  public interface CustomerHome extends javax.ejb.EJBHome {
+  
+  public Customer create(Integer id) 
+  throws CreateException, RemoteException;
+  
+  public Customer findByPrimaryKey(Integer id) 
+  throws FinderException, RemoteException;
+  
+  }
+  </pre>
+  
+<p>Al igual que vimos con los beans de entidad con persistencia gestionada por 
+  el bean, es posible definir distintos m&eacute;todos remotos create con distintas 
+  signaturas siempre que en la clase bean se definan los m&eacute;todos <code>ejbCreate</code> 
+  que emparejen con estas signaturas. Incluso es posible definir distintos m&eacute;todos 
+  create con la misma signatura a&ntilde;adiendo un sufijo al nombre del m&eacute;todo 
+  create. As&iacute;, por ejemplo, podr&iacute;amos tener dos m&eacute;todos create 
+  que toman como argumentos la clave primaria y un <code>String</code>. El argumento 
+  <code>String</code> podr&iacute;a ser el nombre en un caso o el DNI en otro:</p>
+  
+  
+<pre class="codigo">
+  public interface CustomerHom extends javax.ejb.EJBHome {
+  
+  public CustomerRemote createWithName (Integer id, String socialSecurityNumber) 
+  
+  throws CreateException, RemoteException;
+  
+  public CustomerRemote createWithDNI(Integer id, String taxIdentificationNumber)
+  throws CreateException, RemoteException;
+  
+  public CustomerRemote findByPrimaryKey(Integer id) 
+  throws FinderException, RemoteException;
+
+
+  public findBySocialSecurityNumber(String taxId)
+  throws FinderException, RemoteException;
+
+  }
+  </pre>
+  
+<p>Los sufijos son &uacute;tiles cuando necesitamos m&eacute;todos create que 
+  sen m&aacute;s descriptivos o necesitamos diferenciar los m&eacute;todos de 
+  creaci&oacute;n para permitir la posterior sobrecarga del m&eacute;todo. Cada 
+  m&eacute;todo <code>createXXX</code> debe tener un m&eacute;todo correspondiente 
+  <code>ejbCreateXXX</code> en la clase bean. Para mantener el ejemplo sencillo 
+  vamos a usar s&oacute;lo un &uacute;nico m&eacute;todo create y no vamos a definir 
+  sufijos. Los requisitos de los m&eacute;todos create son los mismos que en los 
+  beans con persistencia gestionada por el bean: </p>
+
+<UL>
+  <LI TYPE="disc"> Tiene la misma signatura que sus m&eacute;todos correspondientes 
+    <code>ejbCreate</code> en la clase bean enterprise. 
+  <LI TYPE="disc"> Devuelve el tipo de la interfaz remota del enterprise bean 
+  <LI TYPE="disc"> La cl&aacute;usula <code>throws</code> incluye las excepciones 
+    especificadas por la cl&aacute;usula <code>throws</code> en los m&eacute;todos 
+    correspondientes <code>ejbCreate</code> y <code>ejbPostCreate</code>. 
+  <LI TYPE="disc"> La cl&aacute;usula <code>throws</code> incluye la excepci&oacute;n 
+    <code>javax.ejb.CreateException</code>. 
+  <LI TYPE="disc"> Si el m&eacute;todo se define en una interfaz home remota -no 
+    local-, entonces la cl&aacute;usula <code>throws</code> incluye la excepci&oacute;n 
+    <code>RemoteException</code>. 
+</UL>
+<p> Las interfaces home remotas deben definir un m&eacute;todo <code>findByPrimaryKey</code> 
+  que tome como &uacute;nico argumento el tipo primario. A diferencia del tema 
+  anterior, no se debe especificar en la clase bean el m&eacute;todo de b&uacute;squeda 
+  correspondiente, sino que el m&eacute;todo que implemente la b&uacute;squeda 
+  ser&aacute; generado autom&aacute;ticamente por la herramienta de despliegue. 
+  En tiempo de ejecuci&oacute;n el m&eacute;todo <code>findByPrimaryKey</code> 
+  localizar&aacute; autom&aacute;ticamente y devolver&aacute; una referencia remota 
+  al bean de entidad con la clave primaria correspondiente.</p>
+<p> El desarrollador del bean tambi&eacute;n puede declarar otros m&eacute;todos 
+  de b&uacute;squeda. En este caso se ha incluido el m&eacute;todo <code>findBySocialSecurityNumber(String 
+  id) </code>que localiza a aquellos <code>Customer</code> con un n&uacute;mero 
+  determinado de identificaci&oacute;n. Estos tipos de m&eacute;todos de b&uacute;squeda 
+  tambi&eacute;n son implementados autom&aacute;ticamente por la herramiente de 
+  despliegue bas&aacute;ndose en la signatura del m&eacute;todo y en una sentencia 
+  EJB QL, similar a SQL pero espec&iacute;fica de los EJB, que se incluye en el 
+  descriptor de despliegue. </p>
+<h3> 5.2.5 El descriptor de despliegue XML</h3>
+<p> Los beans de entidad CMP 2.0 deben empaquetarse para el despliegue junto con 
+  un descriptor de despliegue XML que describe el bean y su esquema abstracto 
+  de persistencia. En la mayor&iacute;a de los casos, el desarrollador del bean 
+  no usar&aacute; directamente el fichero XML, sino que usar&aacute; una herramienta 
+  visual proporcionada por el contenedor de aplicaciones. M&aacute;s adelante 
+  veremos alg&uacute;n ejemplo de herramienta visual, pero ahora detallaremos 
+  los campos XML para poder entender completamente la especificaci&oacute;n y 
+  arquitectura.</p>
+<p> El descriptor de despliegue XML para nuestro EJB <code>Customer</code> contiene 
+  muchos elementos que ya hemos visto previamente. Aparece a continuaci&oacute;n:</p>
+<pre class="codigo">&lt;ejb-jar&gt;<br> &lt;enterprise-beans&gt;<br>   &lt;entity&gt;<br>      &lt;ejb-name&gt;CustomerEJB&lt;/ejb-name&gt;<br>      &lt;home&gt;CustomerHomeRemote&lt;/home&gt;<br>      &lt;remote&gt;CustomerRemote&lt;/remote&gt;<br>      &lt;ejb-class&gt;CustomerBean&lt;/ejb-class&gt;<br>      &lt;persistence-type&gt;Container&lt;/persistence-type&gt;<br>      &lt;prim-key-class&gt;java.lang.Integer&lt;/prim-key-class&gt;<br>      &lt;reentrant&gt;False&lt;/reentrant&gt;<br>      &lt;cmp-version&gt;2.x&lt;/cmp-version&gt;<br>      &lt;abstract-schema-name&gt;Customer&lt;/abstract-schema-name&gt;<br>          &lt;cmp-field&gt;&lt;field-name&gt;id&lt;/field-name&gt;&lt;/cmp-field&gt;<br>      &lt;cmp-field&gt;&lt;field-name&gt;lastName&lt;/field-name&gt;&lt;/cmp-field&gt;<br>      &lt;cmp-field&gt;&lt;field-name&gt;firstName&lt;/field-name&gt;&lt;/cmp-field&gt;<br>      &lt;cmp-field&gt;&lt;field-name&gt;hasGoodCredit&lt;/field-name&gt;&lt;/cmp-field&gt;
+      &lt;primkey-field&gt;id&lt;/primkey-field&gt;<br>      &lt;query&gt;<br>        &lt;query-method&gt;<br>          &lt;method-name&gt;findByLastName&lt;/method-name&gt;<br>          &lt;method-params&gt;<br>            &lt;method-param&gt;java.lang.String&lt;/method-param&gt;<br>          &lt;/method-params&gt;<br>        &lt;/query-method&gt;<br>        &lt;ejb-ql&gt;<br>           SELECT OBJECT(c) FROM Customer c<br>           WHERE c.lastName = ?1<br>        &lt;/ejb-ql&gt;<br>      &lt;/query&gt;<br>   &lt;/entity&gt;<br> &lt;/enterprise-beans&gt;
+
+</pre>
+  
+<p>Los primeros elementos, que declaran el nombre del EJB Customer (<code>CustomerEJB</code>) 
+  as&iacute; como sus clases home, remotas y bean, deber&iacute;an sernos ya familiares. 
+  El elemento <code>&lt;security-identity&gt;</code> lo describiremos en el tema 
+  en el que hablemos de seguridad. Tambi&eacute;n trataremos m&aacute;s adelante 
+  el elemento <code>&lt;assembly-descriptor&gt;</code>, con el que se definen 
+  atributos de seguridad y de transacciones del bean. En este caso, define que 
+  todos los empleados pueden acceder cualquier m&eacute;todo del bean y que todos 
+  los m&eacute;todos van a usar el atribute Required para las transacciones.</p>
+<p> Las entidades con persistencia gestionada por el contenedor tambi&eacute;n 
+  deben declarar su tipo de persistencia, versi&oacute;n y si son reentrantes. 
+  Estos elementos se declaran bajo el elemento <code>&lt;entity&gt;</code>.</p>
+<p> El elemento <code>&lt;persistence-type&gt;</code> indica al sistema contenedor 
+  si el bean usar&aacute; una persistencia gestionada por el contenedor o una 
+  persistencia gestionada por el bean. En este caso se trata de persistencia gestionada 
+  por el contenedor, por lo que usamos <code>Container</code>. En el tema pasado, 
+  us&aacute;bamos <code>Bean</code>.</p>
+<p> El elemento <code>&lt;cmp-version&gt;</code> indica al contenedor que versi&oacute;n 
+  se va a usar de persistencia gestionada por el contenedor. Los contenedor EJB 
+  2.0 deben soportar el nuevo modelo de persistencia, as&iacute; como el antiguo 
+  definido en EJB 1.1. El valor de <code>&lt;cmp-version&gt;</code> puede ser 
+  o bien 2.x o 1.x para las versiones EJB 2.0 y 1.1 respectivamente. Este elemento 
+  es opcional y si no se declara su valor por defecto es 2.x. </p>
+<p> El elemento <code>&lt;reentrant&gt;</code> indica si se permite o no una conducta 
+  reentrante. En este caso el valor es False, lo que indica que el CustomerEJB 
+  es no reentrante. Hablaremos de rentrada en el tema 7, cuando comentemos los 
+  aspectos relacionados con la concurrencia en el acceso a los beans de entidad.</p>
+<p> El bean de entidad tambi&eacute;n debe declara sus campos de persistencia 
+  gestionada por el contenedor y su clave primaria. Los campos de persistencia 
+  gestionada por el contenedor son <code>id</code>, <code>lastName</code> y <code>firstName</code>, 
+  como se indican en los elementos <code>&lt;cmp-field&gt;</code>. Los elementos 
+  <code>&lt;cmp-field&gt;</code> deben tener m&eacute;todos de acceso correspondientes 
+  en la clase de bean de entidad. Como se puede ver en la tabla siguiente, los 
+  valores declarados en el elemento <code>&lt;field-name&gt;</code> corresponden 
+  con los nombres de los m&eacute;todos de acceso abstractos que hemos declarado 
+  en la clase <code>CustomerBean</code>. </p>
+  
+<TABLE BORDER=1 width=479 height=133>
+  <TR> 
+    <TD align=left VALIGN=TOP> Campo CMP </TD>
+    <TD align=left VALIGN=TOP> M&eacute;todo abstracto de acceso </TD>
+  </TR>
+  <TR> 
+    <TD align=left VALIGN=TOP> id </TD>
+    <TD align=left VALIGN=TOP> public abstract Integer getId()<BR>
+      public abstract void setId(Integer id) </TD>
+  </TR>
+  <TR> 
+    <TD align=left VALIGN=TOP> lastName </TD>
+    <TD align=left VALIGN=TOP> public abstract String getLastName()<BR>
+      public abstract void setLastName(String lname) </TD>
+  </TR>
+  <TR> 
+    <TD align=left VALIGN=TOP> firstName </TD>
+    <TD align=left VALIGN=TOP> public abstract String getFirstName()<BR>
+      public abstract void setFirstName(String fname) </TD>
+</TABLE>
+<p>CMP 2.0 obliga a que los valores <code>&lt;field-name&gt;</code> comiencen 
+  con una letra min&uacute;scula, y a que sus correspondientes m&eacute;todos 
+  de acceson tengan la forma <code>get&lt;field-name&gt;</code> y <code>set&lt;field-name&gt;</code>, 
+  con la primera letra de <code>&lt;field-name&gt;</code> convertida en may&uacute;scula. 
+  El tipo devuelto por el m&eacute;todo <code>get</code> y el par&aacute;metro 
+  del m&eacute;todo <code>set</code> determinan el tipo del campo <code>&lt;cmp-field&gt;</code>.</P>
+<p> Finalmente, defininimos la sentencia EJB-QL que va a implementar la b&uacute;squeda 
+  <code>findByLastName(String)</code>.</P>
+<h3>5.2.6 El fichero weblogic-ejb-jar.xml</h3>
+<p>En el fichero de descripci&oacute;n del despliegue propio del servidor de aplicaciones, 
+  weblogic-ejb-jar.xml, se describen las caracter&iacute;sticas del bean que son 
+  particulares del servidor de aplicaciones. En este caso se trata de la correspondencia 
+  entre los campos de persistencia gestionada por el contenedor y los campos o 
+  los objetos de datos en la base de datos.</P>
+<p>Adem&aacute;s, es necesario corresponder los roles de seguridad con los sujetos 
+  del realm de seguridad del servidor de aplicaciones, as&iacute; como asignar 
+  un nombre JNDI al enterprise bean. En este caso no definimos ning&uacute;n tipo 
+  de seguridad. Lo veremos en el tema 7.</P>
+<pre class="codigo">&lt;weblogic-ejb-jar&gt;<br>  &lt;weblogic-enterprise-bean&gt;<br>    &lt;ejb-name&gt;CustomerEJB&lt;/ejb-name&gt;<br>    &lt;entity-descriptor&gt;<br>      &lt;entity-cache&gt;    <br>        &lt;max-beans-in-cache&gt;<strong>100</strong>&lt;/max-beans-in-cache&gt;<br>      &lt;/entity-cache&gt;    <br>      &lt;persistence&gt;<br>        &lt;persistence-use&gt;<br>          &lt;type-identifier&gt;WebLogic_CMP_RDBMS&lt;/type-identifier&gt;<br>          &lt;type-version&gt;6.0&lt;/type-version&gt;<br>          &lt;type-storage&gt;META-INF/weblogic-cmp-rdbms-jar.xml&lt;/type-storage&gt;<br>        &lt;/persistence-use&gt;<br>      &lt;/persistence&gt;<br>    &lt;/entity-descriptor&gt;<br>    &lt;jndi-name&gt;<strong>CustomerHomeRemote</strong>&lt;/jndi-name&gt;<br>  &lt;/weblogic-enterprise-bean&gt;<br>&lt;/weblogic-ejb-jar&gt;&nbsp;</pre>
+<h3>5.2.7 El fichero weblogic-cmp-rbms-jar.xml</h3>
+<p>Todos los beans de entidad con persistencia gestionada por el contenedor necesitan 
+  relacionar la base de datos con los campos de persistencia. Esto se realiza 
+  en un fichero de descripci&oacute;n del despliegue propio del servidor de aplicaciones. 
+  En este caso se llama <code>weblogic-cmp-rdbms-jar.xml</code>.</p>
+<pre class="codigo">&lt;weblogic-rdbms-jar&gt;<br>  &lt;weblogic-rdbms-bean&gt;<br>    &lt;ejb-name&gt;CustomerEJB&lt;/ejb-name&gt;<br>    &lt;data-source-name&gt;examples-dataSource-demoPool&lt;/data-source-name&gt;<br>    &lt;table-map&gt;<br>      &lt;table-name&gt;CUSTOMER&lt;/table-name&gt;<br>      &lt;field-map&gt;<br>        &lt;cmp-field&gt;id&lt;/cmp-field&gt;<br>        &lt;dbms-column&gt;ID&lt;/dbms-column&gt;<br>      &lt;/field-map&gt;<br>      &lt;field-map&gt;<br>        &lt;cmp-field&gt;lastName&lt;/cmp-field&gt;<br>        &lt;dbms-column&gt;LAST_NAME&lt;/dbms-column&gt;<br>      &lt;/field-map&gt;<br>      &lt;field-map&gt;<br>        &lt;cmp-field&gt;firstName&lt;/cmp-field&gt;<br>        &lt;dbms-column&gt;FIRST_NAME&lt;/dbms-column&gt;<br>      &lt;/field-map&gt;<br>      &lt;field-map&gt;<br>        &lt;cmp-field&gt;hasGoodCredit&lt;/cmp-field&gt;<br>        &lt;dbms-column&gt;HAS_GOOD_CREDIT&lt;/dbms-column&gt;<br>      &lt;/field-map&gt;<br>    &lt;/table-map&gt;<br>  &lt;/weblogic-rdbms-bean&gt;<br>&lt;/weblogic-rdbms-jar&gt;</pre>
+<p>&nbsp;</p>
+<h3>5.2.7 El fichero EJB JAR</h3>
+<p> Ahora que ya tenemos definidas las interfaces, la clase bean y el descriptor 
+  de despliegue, estamos listos para empaquetar el bean y dejarlo preparado para 
+  el despliegue. Como ya hemos visto en otros ejemplos, lo &uacute;nico que tenemos 
+  que hacer es usar el comando jar para comprimir todos los ficheros con la estructura 
+  adecuada:</P>
+<pre class="codigo">% jar cf customer.jar *.class META-INF/*.xml</pre>
+  
+<p>Una vez creado el fichero JAR deberemos preparar este fichero para el despliegue 
+  en servidor de aplicaciones.</p>
+<h3> 5.2.8 La aplicaci&oacute;n cliente </h3>
+<p> La apliaci&oacute;n cliente es un cliente remoto del <code>CustomerEJB</code> 
+  que crear&aacute; algunos clientes, los encontrar&aacute; y despu&eacute;s los 
+  eliminar&aacute;. He aqu&iacute; el c&oacute;digo fuente de la aplicaci&oacute;n 
+  <code>Client</code>:</p>
+<pre class="codigo">
+import javax.naming.InitialContext;
+import javax.naming.Context;
+import javax.naming.NamingException;
+import java.util.Properties;
+  
+public class Client {
+  public static void main(String [] args)) throws Exception {
+     //obtengo el home remoto
+     Context jndiContext = getInitialContext();
+     Object obj=jndiContext.lookup(&quot;CustomerHomeRemote&quot;);
+     CustomerHomeRemote home = (CustomerHomeRemote)
+     javax.rmi.PortableRemoteObject.narrow(obj,CustomerHomeRemote.class);
+    
+    //creo Customers
+    for(int i =0;i &lt;args.length;i++){
+       Integer primaryKey =new Integer(args [ i ]);
+       String firstName = args [ i ];
+       String lastName = args [ i ];
+       CustomerRemote customer = home.create(primaryKey);
+       customer.setFirstName(firstName);
+       customer.setLastName(lastName);
+    }
+  
+    //busco y encuentro Customer
+    for(int i =0;i &lt;args.length;i++){
+       Integer primaryKey = new Integer(args [i ]);
+       CustomerRemote customer = home.findByPrimaryKey(primaryKey);
+       String lastName = customer.getLastName();
+       String firstName = customer.getFirstName();
+       System.out.print(primaryKey+&quot;=&quot;);
+       System.out.println(firstName+&quot;&quot;+lastName);
+  
+    //remove Customer
+    customer.remove();
+    }
+  }
+
+  public static Context getInitialContext(
+     throws javax.naming.NamingException {
+     Properties p =new Properties();
+     //...Specify the JNDI properties specific to the vendor.
+     return new javax.naming.InitialContext(p);
+  }
+}</pre>
+  
+<h2> 5.3 Campos de persistencia </h2>
+<p>Los campos de persistencia gestionados por el contenedor (campos CMP en ingl&eacute;s) 
+  son campos virtuales cuyos valores se corresponden directamente con la base 
+  de datos. Los campos de persistencia pueden ser tipos serializables Java y tipos 
+  primitivos Java.</p>
+<p> Los tipos serializables Java pueden ser cualquier clase que implemente la 
+  interfaz <code>java.io.Serializable</code>. La mayor&iacute;a de herramientas 
+  de despliegue manejan los tipos <code>java.lang.String</code>,<code> java.util.Date</code> 
+  y los wrappers primitivos (<code>Byte</code>, <code>Boolean</code>, <code>Short</code>, 
+  <code>Integer</code>, <code>Long</code>, <code>Double</code> y <code>Float</code>) 
+  f&aacute;cilmente, porque estos tipos de objetos son parte del n&uacute;cleo 
+  de Java y se corresponden de forma natural con los campos de bases de datos 
+  relacionales.</p>
+<p> El bean CustomerEJB declara tres campos serializables, <code>id</code>, <code>lastName</code> 
+  y <code>firstName</code>, que se corresponden de forma natural con los campos 
+  <code>INT</code> y <code>CHAR</code> de la tabla <code>CUSTOMER</code> en la 
+  base de datos.</p>
+<p> Los objetos serializables siempres se devuelven como copias y no como referencias, 
+  por lo que la modificaci&oacute;n de un objeto serializable no afectar&aacute; 
+  a su valor en la base de datos. El valor debe actualizarse usando el m&eacute;todo 
+  abstracto <code>set&lt;field-name&gt;</code>.</p>
+<p> Tambi&eacute;n se permite que sean campos CMP los tipos primitivos (<code>byte</code>, 
+  <code>short</code>, <code>int</code>, <code>long</code>, <code>double</code>, 
+  <code>float</code> y <code>boolean</code>). Estos tipos se pueden corresponder 
+  f&aacute;cilmente con la base de datos y todas las herramientas de despliegue 
+  los soportan. Como ejemplo, el bean <code>CustomerEJB</code> deber&iacute;a 
+  haber declarado un boolean que represente si es adecuado conceder un cr&eacute;dito 
+  al cliente:</p>
+<pre class="codigo">
+public abstract class CustomerBean implements javax.ejb.EntityBean {
+ 
+  public Integer ejbCreate(Integer id){
+     setId(id);
+     return null;
+  }
+  
+  // metodos abstractos de acceso 
+  
+  public abstract boolean getHasGoodCredit();
+  public abstract void setHasGoodCredit(boolean creditRating);
+}
+</pre>
+  </BODY>
+</HTML>
+

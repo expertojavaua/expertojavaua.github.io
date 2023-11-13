@@ -1,0 +1,324 @@
+<html>
+<head>
+<title>Tema 1: Arquitectura CORBA</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<h1><span class="section">1. </span>Arquitectura CORBA</h1>
+<p><b>CORBA</b> (<i>Common Object Request Broquer</i> <i>Architecture</i>) es 
+  la especificaci&oacute;n de la funcionalidad de <b>ORB</b> (<i>Object Request 
+  Broker</i>). ORB act&uacute;a como un bus de mensajes que transporta peticiones 
+  de invocaci&oacute;n de operaciones y sus resultados sobre objetos CORBA, residentes 
+  en cualquier m&aacute;quina, implementados en cualquier lenguaje, y ejecutados 
+  sobre cualquier plataforma hardware o sistema operativo. </p>
+<p>La noci&oacute;n de transparencia es fundamental en CORBA. La <u>transparencia 
+  de localizaci&oacute;n</u> es la capacidad de acceder e invocar operaciones 
+  sobre un objeto CORBA sin necesidad de conocer d&oacute;nde reside dicho objeto. 
+  La idea es que deber&iacute;a ser igualmente sencillo invocar una operaci&oacute;n 
+  residente en una m&aacute;quina remota que un m&eacute;todo de un objeto en 
+  el mismo espacio de direcciones. La <u>transparencia de lenguaje de programaci&oacute;n</u> 
+  proporciona la libertad de implementar la funcionalidad encapsulada un un objeto 
+  usando el lenguaje m&aacute;s adecuado, bien por las habilidades de los programadores, 
+  la idoneidad del lenguaje para la tarea espec&iacute;fica, o la elecci&oacute;n 
+  de un &quot;tercer&quot; desarrollador que proporciona componentes ya creados 
+  (<i>off-the-shelf components</i>). La clave de este grado de libertad es un 
+  lenguaje de definici&oacute;n de interfaces que es neutral con respeco a la 
+  implementaci&oacute;n, y que proporciona una separaci&oacute;n entre la interfaz 
+  y su implementaci&oacute;n.</p>
+<p>Dicho lenguaje se denomina <i>Interface Denifition Language <b>(IDL)</b></i>, 
+  que proporciona la forma de definir las interfaces de los objetos, independientemente 
+  del lenguaje de programaci&oacute;n en el que est&eacute;n implementados. Es 
+  un lenguaje fuertemente declarativo, con un rico conjunto de tipos de datos 
+  para describir par&aacute;metros complejos. Una interfaz IDL act&uacute;a como 
+  un contrato entre los desarrolladores de objetos y los eventuales usuarios de 
+  dichos interfaces. Tambi&eacute;n permite a los usuarios de CORBA compilar las 
+  definiciones de las interfaces en c&oacute;digo oculto para la tranmisi&oacute;n 
+  de peticiones de invocaciones a trav&eacute;s de las redes y las arquitecturas 
+  de las m&aacute;quinas sin necesitar ning&uacute;n conocimiento sobre el protocolo 
+  de red utilizado, o incluso la localizaci&oacute;n del objeto involucrado.</p>
+<p>Las definiciones de interfaz IDL informan a los clientes de un objeto que oferta 
+  una interfaz sobre qu&eacute; operaciones soporta dicho objeto, los tipos de 
+  sus par&aacute;metros y qu&eacute; tipos de resultados se esperan. Un programador 
+  clientes solamente necesita el IDL para escribir c&oacute;digo cliente listo 
+  para incovar operaciones sobre un objeto remoto.</p>
+<p>El compilador IDL genera c&oacute;digo <i>stub</i> que el cliente deber&aacute; 
+  <i>linkar</i>, y los tipos de datos del lenguaje en un formato adecuado para 
+  su transmisi&oacute;n por la red (<i>marshals</i>). La implementaci&oacute;n 
+  del objeto remoto se debe <i>linkar</i> con un c&oacute;digo similar denominado 
+  <i>skeleton</i>, que decodifica <i>(unmarshals)</i> la petici&oacute;n en tipos 
+  de datos de un determianado lenguaje de programaci&oacute;n. La Figura 1.1 muestra 
+  el uso de <i>subs, skeletons </i> y ORB para realizar una invocaci&oacute;n 
+  remota. Las interfaces con los componentes de ORB son especificados en IDL.</p>
+  <center>
+  <img border="0" src="Fig1-1.gif"> 
+</center>
+<p class="caption">Figura 1.1. Invocación remota a través de ORB.</p>
+<p>Finalmente, destacamos los protolos de transmisi&oacute;n utilizados por CORBA. 
+  CORBA define tres protocolos por capas para enviar mensajes entre clientes y 
+  objetos: (a) <i>Common Data Representation</i> (CDR), (b) <i>General Inter-ORB 
+  protocol</i> (GIOP), que incluye CDR y adem&aacute;s especifica formatos de 
+  mensajes GIOP y ciertas asunciones sobre el transporte, e (c) <b>IIOP</b> <i>(Internet 
+  Inter-ORB Protocol</i>), que especializa GIOP para TCP/IP, especificando como 
+  los agentes abren conexiones y las usan para transferencias GIOP de mensajes. 
+</p>
+<h2 class="subsection">1.1. Modelo de objetos</h2>
+<p>El OMA (<i>Core Object Model</i>) proporciona algunas definiciones fundamentales 
+  de conceptos que son extendidos por la especificaci&oacute;n CORBA. 
+<p>En primer lugar, es necesario distinguir entre <i>servants</i> y referencias 
+  a objetos. El primero es una entidad del lenguaje de programaci&oacute;n que 
+  contiene c&oacute;digo que implementa las operaciones definidas por una definici&oacute;n 
+  de interfaz IDL (por ejemplo un objeto Java), proporcionando la sem&aacute;ntica 
+  de uno o m&aacute;s objetos CORBA. La segunda es una identidad de objeto que 
+  es usada por los clientes para invocar operaciones sobre el objeto. Es importante 
+  no pensar en un <i>servant</i> como un objeto CORBA, debido a que un objeto 
+  CORBA puede ser representado como diferentes <i>servants</i> durante su ciclo 
+  de vida. 
+<p>Un c&oacute;digo <i>servant</i>, la implementaci&oacute;n del objeto, es la 
+  parte de un objeto CORBA proporcionada por el desarrollador de la aplicaci&oacute;n. 
+  Suele incluir un estado interno, y a menudo causa efectos laterales en elementos 
+  que no son objetos, tales como una base de datos, la pantalla, o un elemento 
+  de la red de telecomunicaciones. Los m&eacute;todos de esta implementaci&oacute;n 
+  pueden ser accedidos por cualquier mecanismo, pero en la pr&aacute;ctica muchos 
+  <i>servants</i> ser&aacute;n invocados mediante el c&oacute;digo <i>skeleton</i> 
+  generado por un compilador IDL. 
+<p>Las referencias de objetos son manejadores de los objetos. Una rerencia de 
+  objetos denotar&aacute; siempre a un &uacute;nico objeto, pero varias referencias 
+  distintas de objetos pueden denotar el mismo objeto. Las referencias de objetos 
+  son &quot;opacas&quot; para sus usuarios. Es decir, contienen suficiente informaci&oacute;n 
+  para el ORB para enviar una petici&oacute;n al correspondiente <i>servant</i>, 
+  pero esta informaci&oacute;n es inaccesible para sus usuarios. Las referencias 
+  de objetos contienen informaci&oacute;n sobe la localizaci&oacute;n y tipo del 
+  objeto denotado, pero lo hacen de forma que si el objeto ha migrado, o ya no 
+  est&aacute; activo, el ORB puede realizar las tareas necesarias para redirigir 
+  la petici&oacute;n a un nuevo lugar o activar a un objeto para recibir la petici&oacute;n. 
+<p>A menos que un objeto sea expl&iacute;citamente destruido, o la red subyacente 
+  o infraestructura del sistema operativo no funcione bien, el ORB deber&iacute;a 
+  ser capaz de transmitir una invocaci&oacute;n de operaci&oacute;n y transmitir 
+  el resultado. 
+<p>Con respecto a los tipos de objetos, &eacute;stos est&aacute;n relacionados 
+  en una jerarqu&iacute;a de herencia, con el tipo Object como ra&iacute;z. Se 
+  definen tipos b&aacute;sicos num&eacute;ricos, <i>string</i> y <i>boolean</i>. 
+  Tambi&eacute;n se define un tipo <i>any</i> como tipo b&aacute;sico, el cual 
+  puede almacenar cualquier valor.
+<h2 class="subsection">1.2. Estructura ORB</h2>
+
+<p>Los compiladores IDL usan la definici&oacute;n de interfaces para crear los 
+  mecanismos mediante los cuales un cliente puede invocar una funci&oacute;n local, 
+  que se ejecutar&aacute; sobre un objeto en otra m&aacute;quina. El c&oacute;digo 
+  generado por el cliente se denomina <i>stub</i>, y el c&oacute;digo generado 
+  por la implementaci&oacute;n del objeto se denomina <i>skeleton. </i>La figura 
+  1.2 muestra el n&uacute;cleo ORB, los c&oacute;digos <i>stub</i> y <i>skeleton, 
+  </i>y los interfaces con ORB.</p>
+<center>
+  <img border="0" src="Fig1-2.gif"> 
+</center>
+<p class="caption">Figura 1.2. Arquitectura CORBA.</p>
+  
+<p>Una vez <i>linkados</i> los c&oacute;digos <i>stub</i> y <i>skeleton, </i>con 
+  las implementaciones correspondientes del cliente y del objeto remoto, el soporte 
+  de ejecuci&oacute;n (<i>run-tyme-system</i>) de ORB transporta las peticiones 
+  y resultados como invocaciones est&aacute;ticas. Est&aacute;ticas significa 
+  que la IDL es est&aacute;ticamente definida en tiempo de compilaci&oacute;n, 
+  y solamente las operaciones sobre tipos conocidos de interfaz pueden ser invocadas.
+<p>El est&aacute;ndar CORBA tambi&eacute;n define un interfaz que permite construir 
+  las peticiones desde un cliente de forma din&aacute;mica. Esto se conoce como 
+  <i>Dynamic Invocation Interface</i> <i>(DII).</i> Se define una interfaz sim&eacute;trica 
+  para responder a peticiones arbitrarias denominada <i>Dynamic Skeleton Interface 
+  (DSI).</i></p>
+<p>CORBA define una interfaz para la comunicaci&oacute;n con ORB, tanto desde 
+  el sevidor como desde el cliente. Esta interfaz trata principalmente con la 
+  inicializaci&oacute;n de ORB y la manipulaci&oacute;n de referencias de objetos.</p>
+<p>Finalmente, las implementaciones de objetos necesitan facilidades extra para 
+  manejar sus interacciones con ORB. Un componente llamado <i>Object Adapter</i> 
+  realiza este papel y es responsable de la b&uacute;squeda y potencial activaci&oacute;n 
+  de implementaciones para ejecutar las operaciones. Actualmente CORBA define 
+  un <i>Object Adapter</i> denominado POA (<i>Portable Object Adapter</i>). </p>
+<p>Adem&aacute;s de responsabilizarse de proporcionar las facilidades para la 
+  creaci&oacute;n y transmisi&oacute;n de mensajes de petici&oacute;n y de respuestas 
+  entre clientes y objetos, ORB proporciona funcionalidades para el cliente y 
+  el objeto en cuanto a manipulaci&oacute;n de referencias a objetos remotos y 
+  uso de servicios necesarios. ORB se implementa normalmente como un conjunto 
+  de librer&iacute;as (o paquetes) incluidos con cada aplicaci&oacute;n cliente 
+  y servidor. Adem&aacute;s, algunas implementaciones ORB incluyen procesos &quot;demonio&quot; 
+  usados para localizaci&oacute;n de objetos y/o lanzamiento de procesos servidores 
+  remotos. Una de las propiedades m&aacute;s importantes de un producto ORB es 
+  el nivel de cumplimiento con la especificaci&oacute;n CORBA que proporciona. 
+  Este nivel de cumplimiento garantiza la funcionalidad que ofrece ORB.</p>
+
+<h2 class="subsection">1.3. IDL</h2>
+<p>IDL es un lenguaje declarativo para la definici&oacute;n de interfaces de objetos 
+  CORBA. Es una forma independiente del lenguaje en la que los programadores y 
+  los usuarios de los objetos pueden estar seguros de que se invoca a la operaci&oacute;n 
+  correcta del objeto correcto, aunque la &uacute;nica informaci&oacute;n adicional 
+  que se necesita es la referencia al objeto. </p>
+<p>IDL genera c&oacute;digo <i>stub</i> y/o<i> skeleton</i> que convierten estructuras 
+  de datos en memoria en un lenguaje de programaci&oacute;n en flujos de datos 
+  que son enviados por la red, posteriormente los &quot;desempaqueta&quot; en 
+  otra m&aacute;quina en estructuras de datos equivalentes en otro (o el mismo) 
+  lenguaje, realiza la llamada al m&eacute;todo, y transmite los resultados en 
+  direcci&oacute;n contraria.</p>
+<p>La sintaxis de IDL se toma de C++, pero contiene palabras clave diferentes. 
+  No hay sentencias de programaci&oacute;n, y su &uacute;nico prop&oacute;sito 
+  es definir signaturas del lenguaje. Para hacer esto se utilizan un cierto n&uacute;mero 
+  de construcciones: constantes, declaraciones de tipos de datos, atributos, operaciones, 
+  interfaces, <i>valuetypes</i> y módulos. Todas las declaraciones hechas en IDL 
+  pueden estar disponibles a trav&eacute;s del Repositorio de Interfaz (<i>IR: 
+  Interfaz Repository</i>).</p>
+<p>Las <b>interfaces</b> agrupan tipos de datos, atributos y declaraciones de 
+  operaciones.</p>
+<p>Los <i><b>valuetypes</b></i> agrupan tipos de datos, estados (describen un 
+  estado accesible para un cliente), y declaraciones de operaciones. Las instancias 
+  de <i>valuetypes</i> son siempre implementaciones locales y, a diferencia de 
+  los objetos, se pasan por valor en las invocaciones de las operaciones. </p>
+<p>Los <b>m&oacute;dulos</b> se utilizan para separar espacios de nombres. </p>
+<h2 class="subsection">1.4. POA</h2>
+<p>POA (<i>Portable Object Adapter)</i> proporciona un conjunto de interfaces 
+  para el manejo de referencias y <i>servants</i>. El c&oacute;digo escrito usando 
+  las interfaces POA son portables a trav&eacute;s de las implementaciones ORB 
+  y tienen la misma sem&aacute;ntica en cada ORB que cumple las especificaciones 
+  de CORBA 2.2 o superior.</p>
+<p>POA define interfaces est&aacute;ndar para realizar lo siguiente:</p>
+<ul>
+  <li>"Mapea" una referencia de objeto a un <i>servant</i> que implementa dicho 
+    objeto</li>
+  <li>Permite una activaci&oacute;n transparente de los objetos</li>
+  <li>Asocia informaci&oacute;n a los objetos sobre diversas pol&iacute;ticas 
+    de acci&oacute;n</li>
+  <li>Dota de persistencia a un objeto CORBA durante varias ejecuciones de procesos 
+    servidores </li>
+</ul>
+<p>El prop&oacute;sito de POA es desviar peticiciones de invocaci&oacute;n entrantes 
+  al <i>servant</i> correcto (ver Figura 1.3). Para realizar esta tarea se utilizan 
+  pol&iacute;ticas determinadas por el programador del servidor CORBA. Puede haber 
+  m&aacute;s de un POA activo en un servidor particular. Sin embargo, siempre 
+  hay una raiz, a partir de la cual el resto de POAs son creados. Cada POA tiene 
+  un nombre relativo al POA en el cual fue creado, y una operaci&oacute;n de b&uacute;squeda 
+  definida para permitir la localizaci&oacute;n y activaci&oacute;n de POAs por 
+  sus padres. Un POA puede tener un <i>Default Servant Manager</i> al que van 
+  redirigidos todas las peticiones a objetos cuyos IDs no se encuentran en el 
+  <i>Active Object Map</i> (tabla de asociaciones entre identificadores de objetos 
+  y <i>servants</i> mantenidas por el POA).</p>
+<center>
+  <img border="0" src="Fig1-3.gif"> 
+</center>
+<p class="caption">Figura 1.3. Arquitectura POA.</p>
+<p>Cada POA tiene asociado una combinaci&oacute;n espec&iacute;fica de valores 
+  de pol&iacute;ticas que no pueden ser modificadas despu&eacute;s de que &eacute;ste 
+  es creado. Desde un punto de vista de gesti&oacute;n, las instancias POA pueden 
+  verse como dominios de pol&iacute;ticas: todos los objetos manejados por un 
+  POA est&aacute;n sujetos a la misma combinaci&oacute;n de pol&iacute;ticas. 
+  La raz&oacute;n de peritir varios POAs en un mismo servidor es simplemente permitir 
+  a un servidor contener varios objetos con diferentes pol&iacute;ticas.</p>
+<p>Las pol&iacute;ticas de CORBA se dividen en varias categor&iacute;as:</p>
+<ul>
+  <li>Unicidad de ID: determina si m&aacute;s de un identificador de objeto puede 
+    referirse al mismo objeto <i>servant</i>, puede tomar valores UNIQUE_ID<i> 
+    </i>y MULTIPLE_ID</li>
+  <li>Asignaci&oacute;n de ID: determina si el POA o el programador asigna identificadores 
+    de objetos, con valores: USER_ID y SYSTEM_ID</li>
+  <li><i>Lifespan</i>: dertermina si los objetos son transitorios o permanentes, 
+    es decir, si &eacute;stos son destruidos despu&eacute;s de su uso por los 
+    clientes o no. Los valores son TRANSIENT y PERSISTENT</li>
+  <li><i>Servant retention</i>: determina si el POA almacena la asociaci&oacute;n 
+    ID/<i>Servant</i> en su mapa de objetos activos (AOM) o utiliza <i>servants 
+    </i>por defecto, o localizadores de <i>servants </i>para encontrar <i>servants</i> 
+    para cada petici&oacute;n. Los nombres de las pol&iacute;ticas son RETAIN 
+    y NON_RETAIN</li>
+  <li>Petici&oacute;n de procesamiento: determina si el POA utiliza solamente 
+    el AOM, o s&oacute;lo el <i>servant</i> por defecto, o s&oacute;lo el localizador 
+    de <i>servants</i>, o alguna combinaci&oacute;n de ambos. Los valores son: 
+    USE_ACTIVE_OBJECT_MAP_ONLY, USE_DEFAULT_SERVANT, USE_SERVANT_MANAGER</li>
+  <li>Pol&iacute;tica de <i>thread</i>: determina si se utiliza un &uacute;nico 
+    hilo de ejecuci&oacute;n para que se pueda realizar un borrado seguro de <i>servants. 
+    </i>Los nombres de las pol&iacute;ticas son: ORB_CTRL_MODEL y SINGLE_THREAD_MODEL</li>
+  <li>Pol&iacute;tica impl&iacute;cita de activaci&oacute;n: determina si el POA 
+    puede activar de forma impl&iacute;cita un <i>servant</i> cuando una referencia 
+    o identificador de objeto es creada para un <i>servant</i>. Los valores son: 
+    IMPLICIT_ACTIVATION y NO_IMPLICIT_ACTIVATION</li>
+</ul>
+<p>Una interfaz IDL puede compilarse utilizando un complador IDL para generar 
+  los <i>stubs</i> en el cliente y los <i>skeletons</i> en el servidor, en un 
+  determinado lenguaje de programaci&oacute;n. El uso de diferentes compiladores 
+  IDL para diferentes lenguajes, junto con las interfaces definidas en IDL, permite 
+  que los clientes escriban en un lenguaje de programaci&oacute;n para acceder 
+  a objetos escritos en otro lenguaje diferente. </p>
+<h2 class="subsection">1.5. Interoperabilidad</h2>
+<p>La especificaci&oacute;n de CORBA tiene una secci&oacute;n llamada interoperabilidad, 
+  que hace referencia al hecho de que diferentes clientes y objetos ejecut&aacute;ndose 
+  en diferentes ORBs de distintos vendedores pueden comunicarse como si estuviesen 
+  en el mismo ORB.</p>
+<p>La arquitectura ORB contiene definiciones de dominios ORB, <i>bridges</i> (mecanismos 
+  para permitir el trasvase entre protocolos), y referencias a objetos interoperables 
+  (<i>Interoperable objects references: IORs)</i>. Define los dominios como &quot;islas&quot;, 
+  dentro de las cuales los objetos son accesibles debido al uso de los mismos 
+  protocolos de comunicaci&oacute;n, la misma seguridad, y el mismo modo de identificar 
+  a los objetos. Para establecer la interoperabilidad entre dominios, uno de estos 
+  elementos debe ser reemplazado con un elemento com&uacute;n, o se debe fijar 
+  un <i>bridge</i> para facilitar la conversi&oacute;n del protocolo, identidad 
+  o autoridad entre dominios.</p>
+<p>Se identifican elementos que pueden usarse como representaciones comunes (formas 
+  can&oacute;nicas) entre diferentes dominios y se sugieren los mecanismos con 
+  los que los dominios ORB pueden crear <i>bridges</i> para que puedan comunicarse 
+  a trav&eacute;s de dichas representaciones. Se define un formato de referencia 
+  de objetos como parte de la arquitectura. Un IOR contiene la misma informaci&oacute;n 
+  que una referencia a un objeto del dominio, pero a&ntilde;ade una lista de perfiles 
+  de protocolos, indicando con qu&eacute; protocolos el dominio del origen puede 
+  aceptar peticiones. La interoperabilidad del protocolo se trata como un componente 
+  separado denominado <i>General Inter ORB Protocol (GIOP).</i></p>
+<h2 class="subsection">1.6. Ejecuci&oacute;n de una invocaci&oacute;n de un objeto 
+  CORBA</h2>
+<p>Cuando un cliente quiere invocar m&eacute;todos sobre el objeto remoto, primero 
+  obtiene una referencia interoperable al objeto (IOR), o simplemente, una referencia 
+  al objeto remoto. La referencia al objeto se representar&aacute; en el cliente 
+  como un objeto local (una instancia de una clase en el lenguaje de programaci&oacute;n 
+  del cliente), conteniendo datos usados por el ORB para localizar el objeto remoto 
+  en la red. Los datos dentro de la referencia al objeto se consideran <i>opacos</i>, 
+  lo que significa que su formato y valor no son importantes en el nivel c&oacute;digo 
+  de aplicaci&oacute;n del cliente. Los contenidos reales y formato de los datos 
+  del objeto referenciado se definen por el OMG en la especificaci&oacute;n de 
+  CORBA/IIOP para asegurar que una referencia al objeto sea interoperable, significando 
+  que una IOR puede usarse para acceder al objeto remoto desde cualquier marco 
+  ORB, sin tener en cuenta d&oacute;nde se cre&oacute; dicho IOR. El tipo real 
+  de la referencia al objeto se define en el lenguaje de programaci&oacute;n del 
+  cliente dentro del <i>stub </i>IDL del cliente. </p>
+<p>Puede ser &uacute;til pensar en una referencia al objeto como en un objeto 
+  <i>proxy </i> del objeto remoto. Una vez obtenido, la aplicaci&oacute;n cliente 
+  puede invocar m&eacute;todos de la referencia al objeto como si fuese el objeto 
+  real:</p>
+<ul>
+  <li>Para cada invocación sobre la referdncia al objeto por parte del cliente, 
+    el objeto definido en el <i>stub</i> crea un objeto de petici&oacute;n CORBA, 
+    proporcionando los datos de los par&aacute;metros que sean necesarios, y env&iacute;a 
+    dicho objeto de petici&oacute;n (<i>request object</i>) al ORB. El proceso 
+    de insertar los par&aacute;metros en la petici&oacute;n para su transmisi&oacute;n 
+    se conoce como <i>marshalling</i>. El ORB examina la referencia al objeto 
+    para localizar el objeto remoto que contiene la aplicaci&oacute;n, crea un 
+    mensaje IIOP y lo env&iacute;a a trav&eacute;s de la red a la aplicaci&oacute;n 
+    servidor.</li>
+  <li>En la parte del servidor, la aplicaci&oacute;n servidor, cuando se inicia, 
+    crea una instancia del objeto real y notifica al ORB que el objeto existe. 
+    El ORB de la aplicaci&oacute;n servidor entonces espera la recepci&oacute;n 
+    de peticiones por parte de los clientes.</li>
+  <li>Cuando se recibe un mensaje IIOP en la aplicaci&oacute;n servidor, el ORB 
+    extrae los datos de invocaci&oacute;n del m&eacute;todo del mensaje. A partir 
+    del mensaje, el ORB identifica al objeto destino de la invocaci&oacute;n del 
+    metodo y env&iacute;a la informaci&oacute;n de la invocaci&oacute;n al <i>skeleton</i> 
+    IDL generado para el boejto corba. El objeto <i>skeleton</i> lee los datos 
+    del mensaje, extrae (<i>unmarshalling) </i>los datos de los par&aacute;metros, 
+    e invoca al m&eacute;todo correcto, pas&aacute;ndole los par&aacute;metros. 
+    El <i>skeleton</i> recibe cualquier valor de retorno o excepciones y crea 
+    la informaci&oacute;n de respuesta incluyendo estos tipos de retrono y/o excepciones. 
+    Esta informaci&oacute;n de respuesta se devuelve al ORB, aque crea un mensaje 
+    IIOP y lo env&iacute;a de vuelta al cliente.</li>
+  <li>El ORB en la parte del cliente, depu&eacute;s de recibir el mensaje de respuesta, 
+    extrae los datos del mensaje IIOP y lo pasa a la referencia al objeto definida 
+    en el <i>stub</i>. El <i>stub</i> entonces extrae los datos de retorno o la 
+    excepci&oacute;n a partir de la respuesta y la devuelve a la aplicaci&oacute;n 
+    del cliente a trav&eacute;s de la interfaz original <i>IDL-to-language</i> 
+    utilizada.</li>
+</ul>
+<p>&nbsp;</p>
+</body>
+</html>

@@ -1,0 +1,700 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.7">
+<meta name="Forrest-skin-name" content="pelt">
+<title>Identity Management en J2EE: SAML </title>
+<link type="text/css" href="skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="skin/print.css" rel="stylesheet">
+<link type="text/css" href="skin/profile.css" rel="stylesheet">
+<script src="skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<div class="header">
+<div class="grouplogo">
+<a href="http://www.jtech.ua.es/j2ee"><img class="logoImage" alt="J2EE" src="images/baner_j2ee_izq.gif" title="Curso Especialista Universitario J2EE"></a>
+</div>
+<div class="projectlogoA1">
+<a href="http://www.dccia.ua.es/"><img class="logoImage" alt="Servidores Web" src="images/baner_j2ee_der.gif" title="Servidores Web"></a>
+</div>
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="../index.html">M&oacute;dulos</a>
+</li>
+<li class="current">
+<a class="base-selected" href="index.html">Servidores Web</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<div id="level2tabs"></div>
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<div id="menu">
+<div onclick="SwitchMenu('menu_selected_1.1', 'skin/')" id="menu_selected_1.1Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Seguridad en JEEE</div>
+<div id="menu_selected_1.1" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="index.html" title="Seguridad en JEE">&Iacute;ndice</a>
+</div>
+<div onclick="SwitchMenu('menu_selected_1.1.2', 'skin/')" id="menu_selected_1.1.2Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Teor&iacute;a</div>
+<div id="menu_selected_1.1.2" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="sesion01-apuntes.html">Sesion 1</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-apuntes.html">Sesion 2</a>
+</div>
+<div class="menupage">
+<div class="menupagetitle">Sesion 3</div>
+</div>
+<div class="menuitem">
+<a href="sesion04-apuntes.html">Sesion 4</a>
+</div>
+<div class="menuitem">
+<a href="roadmap-apuntes.html">Roadmap</a>
+</div>
+</div>
+<div onclick="SwitchMenu('menu_1.1.3', 'skin/')" id="menu_1.1.3Title" class="menutitle">Ejercicios</div>
+<div id="menu_1.1.3" class="menuitemgroup">
+<div class="menuitem">
+<a href="sesion01-ejercicios.html">Sesion 1</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-ejercicios.html">Sesion 2</a>
+</div>
+<div class="menuitem">
+<a href="sesion03-ejercicios.html">Sesion 3</a>
+</div>
+<div class="menuitem">
+<a href="sesion04-ejercicios.html">Sesion 4</a>
+</div>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<div id="credit2"></div>
+</div>
+<div id="content">
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="sesion03-apuntes.pdf"><img alt="PDF -icon" src="skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1>Identity Management en J2EE: SAML </h1>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#Identity+Management">Identity Management</a>
+</li>
+<li>
+<a href="#Introduci%C3%B3n+a+SAML">Introduci&oacute;n a SAML</a>
+<ul class="minitoc">
+<li>
+<a href="#Motivaci%C3%B3n+de+SAML+a+partir+de+casos+pr%C3%A1cticos">Motivaci&oacute;n de SAML a partir de casos pr&aacute;cticos</a>
+</li>
+<li>
+<a href="#Arquitectura+de+SAML">Arquitectura de SAML</a>
+<ul class="minitoc">
+<li>
+<a href="#Modelo+Concentual+de+SAML">Modelo Concentual de SAML</a>
+</li>
+<li>
+<a href="#Arquitectura+L%C3%B3gica+de+SAML">Arquitectura L&oacute;gica de SAML</a>
+</li>
+<li>
+<a href="#Asertos+%28">Asertos (Assertions) SAML</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Declaraciones+%28Statements%29">Declaraciones (Statements)</a>
+</li>
+<li>
+<a href="#Protocolo+de+comunicaci%C3%B3n+SAML">Protocolo de comunicaci&oacute;n SAML</a>
+</li>
+<li>
+<a href="#Firma+XML+en+SAML">Firma XML en SAML</a>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+<a name="N1000C"></a><a name="Identity+Management"></a>
+<h2 class="underlined_10">Identity Management</h2>
+<div class="section">
+<p>La proliferaci&oacute;n de aplicaciones web obliga al usuario a crear nuevas cuentas en diferentes 
+sitios web por lo que se ven obligados a mantener un buen n&uacute;mero de <em>identidades digitales</em> 
+(normalmente usuario y password). Adicionalmente cada sitio gestiona de forma diferente la 
+informaci&oacute;n de identidad, dependiendo de la implementaci&oacute;n o de la infraestructura de seguridad 
+de que disponga. Esto supone un grave problema en escenarios tipo <em>B2B en cadena</em>, no solo 
+para los usuarios, que deben fichar (<em>sing on</em>) en cada sistema getionado por las entidades/socios 
+de negocio sino para los propios sistemas de gesti&oacute;n puesto que, p.e. cada cambio de password debe 
+propagarse. Todo ser&iacute;a m&aacute;s f&aacute;cil si se dispusiese de una identidad &uacute;nica, esto es si se fichase una sola vez 
+(<em>Single Sing-On (SSO))</em> y en esa direcci&oacute;n va J2EE. Hay tres conceptos clave:
+</p>
+<p>
+<em>Identidad de red:</em> soluci&oacute;n software que incorpora procesos de negocio en red y la tecnolog&iacute;a necesaria 
+para gestionar tanto el ciclo de vida de las identidades como las relaciones entre estas y las aplicaciones.</p>
+<p>El concepto de <em>identidad federada</em> se refiere al uso inter-dependiente de informaci&oacute;n de 
+identidad entre compa&ntilde;&iacute;as y aplicaciones o bien a trav&eacute;s de diversas infraestructuras en Internet, y el SSO 
+es una de sus funcionalidades. Extiende por tanto el concepto de identidad de red dentro de una compa&ntilde;&iacute;a a m&uacute;ltiples 
+empresas e infraestructuras de seguridad. Esto incluiria, p.e. implementar c&oacute;mo las identidades se registran, son revocadas 
+o desaparecen del proveedor de identidad.</p>
+<p>La <em>gesti&oacute;n de identidad</em> es el proceso de manejar identidad de red e identidad federada. Entre sus funcionalidades 
+m&aacute;s destacadas est&aacute;n: la administraci&oacute;n de las identidades, el mapeo de &eacute;stas a usuarios o grupos, la provisi&oacute;n de cuentas en 
+diferentes sistemas (incluyendo la sincronizaci&oacute;n de passwords y la aplicaci&oacute;n de pol&iacute;ticas de seguridad sobre ellos), la 
+administraci&oacute;n delegada(local o distribu&iacute;da), el tracking (<em>auditing</em>) del ciclo de vida de la identidad, y finalmente 
+el SSO y el <em>Global log-out</em>.</p>
+<p>A nivel industrial OASIS ha publicado una serie de est&aacute;ndares que soportan 
+identidad federada. Uno de ellos es <a href="http://oasis-open.org/committees/security">SAML</a>: <em>Security Assertion Markup Language</em> <a href="http://oasis-open.org/committees/security">SAML</a> que es el que estudiaremos 
+en esta sesi&oacute;n (especialmente su implementaci&oacute;n en servidores de aplicaciones). Otra iniciativa industrial muy 
+conocida es la <em>Liberty Alliance</em> 
+<a href="http://www.projectliberty.org">http://www.projectliberty.org</a> que involucra a m&aacute;s de 150 empresas, 
+organizaciones sin &aacute;nimo de lucro y gubernamentales. En lo que respecta al SSO, es la respuesta en sistemas abiertos a 
+la iniciativa Passport de Microsoft.</p>
+</div>
+
+<a name="N1004E"></a><a name="Introduci%C3%B3n+a+SAML"></a>
+<h2 class="underlined_10">Introduci&oacute;n a SAML</h2>
+<div class="section">
+<a name="N10054"></a><a name="Motivaci%C3%B3n+de+SAML+a+partir+de+casos+pr%C3%A1cticos"></a>
+<h3 class="underlined_5">Motivaci&oacute;n de SAML a partir de casos pr&aacute;cticos</h3>
+<p>Para motivar el uso de SAML, vamos a tener en cuenta tres posibles escenarios:</p>
+<p>
+<em>1. Sigle Sign-On (SSO):</em> Un analista que ha hecho login en el sitio PepitoCO tiene acceso directo a la informaci&oacute;n
+que hay en el sitio JuanitoCO de la misma compa&ntilde;&iacute;a CO.</p>
+<p>
+<em>2. Transacci&oacute;n Distribu&iacute;da:</em> Los empleados de PepitoCO pueden hacer pedidos directamente de OficinaOF 
+si tienen suficiente presupuesto para el pedido. </p>
+<p>
+<em>3. Servicios de autorizaci&oacute;n:</em> Los empleados de PepitoCO hacen pedidos directamente a OficinaOF quien se 
+encarga de pedir autorizaci&oacute;n. </p>
+<p>
+
+<img alt="Escenarios para SAML" content-width="12cm" src="imagenes/sesion3/escenarios.gif" width="600">
+</p>
+<p>Para implementar estos escenarios adecuadamente se necesita lo siguiente:</p>
+<p>
+<em> Formato XLM est&aacute;ndar:</em> Son solo datos navegando por el cable. Se 
+dispone de un amplio espectro de herramientas para manejar XML.</p>
+<p>
+<em> Protocolo est&aacute;ndar de intercambio de mensajes:</em> Debe especificarse claramente c&oacute;mo se pide y se obtiene la 
+informaci&oacute;n que uno necesita.</p>
+<p>
+<em> Reglas de interoperatividad:</em> Sobre como los mensajes se mueven sobre y los protocolos de transporte.</p>
+<p>
+<em>SAML es un framework basado en XML para el intercambio de informaci&oacute;n de seguridad</em>:</p>
+<p>1. Se basa en afirmaciones/asertos (<em>assertions</em>) codificadas en XML.</p>
+<p>2. Usa un protocolo de intercambio de petici&oacute;n/respuestas.</p>
+<p>3. Se basa en reglas para usar assertions con protocolos est&aacute;ndar y frameworks de mensajes tambi&eacute;n est&aacute;ndar.</p>
+<p>La primera especificaci&oacute;n de SAML fue la 1.0 (Nov. 2002), pero el servidor BEA-Weblogic 9.2 implementa la 1.1 
+(Sept. 2003) dando soporte a la identidad de red. La &uacute;ltima especificaci&oacute;n aprobada por OASIS es la 2.0 (Marzo 2005). 
+Lo bueno de SAML es que es una iniciativa que al surgir de OASIS garantiza la implicaci&oacute;n de usuarios y empresas.</p>
+<a name="N1009C"></a><a name="Arquitectura+de+SAML"></a>
+<h3 class="underlined_5">Arquitectura de SAML</h3>
+<a name="N100A2"></a><a name="Modelo+Concentual+de+SAML"></a>
+<h4>Modelo Concentual de SAML</h4>
+<p>La especificaci&oacute;n original SAML se introdujo usando un modelo de dominio que consiste en los siguientes elementos clave: 
+<strong>Credential Collector</strong>, <strong>Authentication Authority</strong>, <strong>Session Authority</strong>, 
+<strong>Attribute Authority</strong> y <strong>Policy Decision Point</strong>.</p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>Credential Collector</strong></td>
+<td colspan="1" rowspan="1">Objeto del sistema que recoge las credenciales del usuario para autentificarlas con las 
+<strong>Authentication Authority</strong>, <strong>Attribute Authority</strong> y <strong>Policy Decision Point</strong>.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>Authentication Authority</strong></td>
+<td colspan="1" rowspan="1">Entidad del sistema que produce asertos de autentificaci&oacute;n.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>Session Authority</strong></td>
+<td colspan="1" rowspan="1">Entidad del sistema (p.e. un proveedor de identidad) que mantiene el estado de la sesi&oacute;n.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>Attribute Authority</strong></td>
+<td colspan="1" rowspan="1">Entidad del sistema que produce asertos de atributo.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>Attribute Repository</strong></td>
+<td colspan="1" rowspan="1">Repositorio donde se almacenan los asertos de atributo.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>Policy Repository (Policy)</strong></td>
+<td colspan="1" rowspan="1">Repositorio donde se almancenan las pol&iacute;ticas.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>Policy Decision Point</strong></td>
+<td colspan="1" rowspan="1">Entidad del sistema toma decisiones de autorizaci&oacute;n para s&iacute; misma o para otras entidades del sistema que 
+requieren autorizaci&oacute;n.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>Policy Enforcement Point</strong></td>
+<td colspan="1" rowspan="1">Entidad del sistema que aplica las pol&iacute;ticas de seguridad para conceder o revocar el acceso al peticionario de 
+recursos.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>Policy Administration Point</strong></td>
+<td colspan="1" rowspan="1">Entidad del Sistema en donde se definen y mantienen las pol&iacute;ticas (p.e. reglas de control de acceso para un 
+determinado recurso).</td>
+
+</tr>
+
+</table>
+<p>Para ver como funcionan estos elementos en el dominio supongamos que una determinada entidad del sistema (cliente) 
+pretende enviar una petici&oacute;n de aplicaci&oacute;n para acceder a un determinado recurso. Para ello presenta sus 
+credenciales (p.e. usuario y password) al <strong>Credentials Collector</strong> quien proceder&aacute; a la autentificaci&oacute;n a 
+trav&eacute;s de la <strong>Authentication Authority</strong> correspondiente (que genera un aserto de autentificaci&oacute;n), 
+la <strong>Attribute Authority</strong> (que generar&iacute;a un aserto de atributo) y el <strong>Policy Decision Point</strong> 
+(aserto de autentificaci&oacute;n) antes de que se conceda al cliente acceso (decisi&oacute;n basada en una pol&iacute;tica) al recurso 
+deseado. El <strong>Policy Enforcement Point</strong> procesar&aacute; la petici&oacute;n de la aplicaci&oacute;n de acuerdo con los derechos de 
+acceso garantizados por la pol&iacute;tica.</p>
+<p>
+
+<img alt="Modelo de dominio para SAML" content-width="8cm" src="imagenes/sesion3/dominio.gif" width="400">
+</p>
+<p>Este es un modelo conceptual de producci&oacute;n-consumo de asertos. En la <em>pr&aacute;ctica</em>, m&uacute;ltiples tipos de autoridades 
+pueden estar en el mismo sistema (SAML permite, pero no exige, la federaci&oacute;n total de todos estos elementos). Adem&aacute;s, las 
+flechas no reflejan el flujo real de informaci&oacute;n: el orden de los asertos no es significativo, la informaci&oacute;n puede ser 
+depositada o extraida, no todos los asertos se producen siempre, y no todos los clientes potenciales se muestran en el modelo. 
+</p>
+<a name="N10166"></a><a name="Arquitectura+L%C3%B3gica+de+SAML"></a>
+<h4>Arquitectura L&oacute;gica de SAML</h4>
+<p>Los arquitectos y desarrolladores deben mapear este modelo a una arquitectura l&oacute;gica y eso va a depender del escenario. 
+Veamos primero de una forma general c&oacute;mo se hace esto para dos de los escenarios comentados arriba y despu&eacute;s entraremos en 
+detalles.</p>
+<p>En primer lugar veamos como se <em>mapea para el caso SSO</em>:</p>
+<p>
+
+<img alt="SAML para SSO" content-width="8cm" src="imagenes/sesion3/mapeo-sso.gif" width="400">
+</p>
+<p>1. El cliente pasa, p.e. a trav&eacute;s del navegador, sus credenciales para autorizarse al <em>Source Site</em>. 
+Es decir, se conecta a <span class="codefrag">http://pepitoco.com</span>.</p>
+<p>2. Una vez autorizado clickea en <span class="codefrag">http://juanitoco.com</span> que es a donde desea ir (<em>Destination 
+Site</em>).</p>
+<p>3. Ese click le llevar&aacute; realmente a una URL de transferencia entre sitios web: 
+<span class="codefrag">https://source.com/intersite?dest=juanitoco.com</span>.</p>
+<p>4. La redirecci&oacute;n se realiza a trav&eacute;s de un <em>artefacto SAML</em> que no es m&aacute;s que un string de 8 bytes 
+codificado en base 64.</p>
+<p>5. El usuario es redireccionado a la URL <span class="codefrag">https://juanitoco.com?SAMLart=&lt;artifact&gt;</span> (incluyendo 
+el artefacto), la URL del <em>consumidor de asertos o Destination Site</em>.</p>
+<p>6. Despu&eacute;s el sitio de destino pide un aserto al sitio fuente y &eacute;ste le responde con el aserto correspondiente.</p>
+<p>7. A partir de este punto el cliente es aceptado o revocado por el sitio de destino.</p>
+<p>
+
+<img alt="SAML para Trans. Distribuida" content-width="8cm" src="imagenes/sesion3/mapeo-dist.gif" width="400">
+</p>
+<p>Veamos ahora c&oacute;mo se <em>mapea para el caso de transacci&oacute;n distribu&iacute;da</em>
+</p>
+<p>1. El cliente (comprador) se autentifica ante un sitio web: <em>Trusted Issuer</em>.</p>
+<p>2. Despu&eacute;s le pide asertos de autentificaci&oacute;n y de atributo.</p>
+<p>3. Recibidos dichos asertos los incorpora a un P.O. y los env&iacute;a directamente al sitio vendedor <em>Seller</em>. 
+Usualmente el vendedor es conocido por el comprador pero no al contrario. Ser&iacute;a deseable que el comprador se autentificase 
+con certificados.</p>
+<p>4. Es en el <em>Seller</em> donde se procesan los asertos y el P.O.</p>
+<p>5. Finalmente el comprador recibe la respuesta en el P.0. (con el resultado de la compra).</p>
+<a name="N101D2"></a><a name="Asertos+%28"></a>
+<h4>Asertos (Assertions) SAML</h4>
+<p>Para entender mejor este proceso hay que entender c&oacute;mo funcionan los asertos, que son los elementos fundamentales 
+producidos por cada autoridad SAML teniendo en cuenta bien la acci&oacute;n de autentificaci&oacute;n realizada sobre un sujeto 
+(p.e. un peticionario de servicio), informaci&oacute;n de atributos acerca del sujeto o una petici&oacute;n de autorizaci&oacute;n  (p.e. 
+si el peticionario puede acceder al recurso). Los asertos son tres tipos de declaraciones acerca de un sujeto 
+(humano o programa):</p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>Authentication Assertion</strong></td>
+<td colspan="1" rowspan="1">Un aserto que contiene datos de negocio acerca de la autentificaci&oacute;n exitosa de un sujeto (p.e. un peticionario de servicio)</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>Authorization Decision Assertion</strong></td>
+<td colspan="1" rowspan="1">Aserto que contiene datos de negocio acerca de una decisi&oacute;n de autorizaci&oacute;n (&eacute;sta podr&iacute;a indicar p.e. que 
+al sujeto se le permite acceder al recurso solicitado).</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>Attribute Assertion</strong></td>
+<td colspan="1" rowspan="1">Aserto que contiene datos de negocio acerca de los atributos de un objeto.</td>
+
+</tr>
+
+</table>
+<p>SAML permite extender los tipos de asertos y declaraciones. Adem&aacute;s pueden firmarse digitalmente.</p>
+<p>Cualquier tipo de aserto tiene los siguientes <em>elementos comuntes</em>:</p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>AssertionID</strong></td>
+<td colspan="1" rowspan="1">Identificador &uacute;nico del aserto</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>Issuer</strong></td>
+<td colspan="1" rowspan="1">Emisor del aserto.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>IssueInstant</strong></td>
+<td colspan="1" rowspan="1">Timestamp indicando el momento en el que se realiza la emisi&oacute;n.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>Subject</strong></td>
+<td colspan="1" rowspan="1">Nombre (<strong>Name</strong>) y dominio de seguridad (<strong>SecurityDomain</strong>). Puede 
+incluir informaci&oacute;n de confirmaci&oacute;n (p.e. clave p&uacute;blica) llamada <strong>SubjectConfirmationData</strong> y 
+m&eacute;todo de confirmaci&oacute;n (password, sender-vouches...) llamado <strong>ConfirmationMethod</strong>.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>Conditions</strong></td>
+<td colspan="1" rowspan="1">Condiciones bajo las cuales el aserto es v&aacute;lido (los clientes SAML deben rechazar asertos cuando no 
+se cumpla alguna de estas condiciones. Ejemplos: <strong>NotBefore</strong>, <strong>NotOnOrAfter</strong>, 
+<strong>AudienceRestrictionConditions</strong> (p.e. una URI concreta)</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>Advice</strong></td>
+<td colspan="1" rowspan="1">Consejos, p.e. explicando c&oacute;mo se hizo el aserto.</td>
+
+</tr>
+
+</table>
+<p>Un aserto con estos elementos es el siguiente</p>
+<p>Y la estructura l&oacute;gica de los asertos es: </p>
+<p>
+
+<img alt="Estructura de Assertion" content-width="8cm" src="imagenes/sesion3/aserto.gif" width="400">
+</p>
+<p>Un aserto con estos elementos es el siguiente</p>
+<pre class="code">
+&lt;saml:Assertion
+  MajorVersion="1" MinorVersion="0" 
+  AssertionID="128.9.167.32.12345678"  
+  Issuer="Pepito Corporation"  
+  IssueInstant="2001-12-03T10:02:00Z"&gt;  
+  &lt;saml:Conditions  
+      NotBefore="2001-12-03T10:00:00Z"    
+      NotOnOrAfter="2001-12-03T10:05:00Z"&gt;    
+      &lt;saml:AudienceRestrictionCondition&gt;      
+         &lt;saml:Audience&gt;URI&lt;/saml:Audience&gt;    
+      &lt;/saml:AudienceRestrictionCondition&gt; 
+  &lt;/saml:Conditions&gt;  
+      &lt;saml:Advice&gt;
+      ...varios elementos... 
+      &lt;/saml:Advice&gt; 
+      ...las declaraciones (statements)...
+&lt;/saml:Assertion&gt;
+</pre>
+<a name="N10298"></a><a name="Declaraciones+%28Statements%29"></a>
+<h3 class="underlined_5">Declaraciones (Statements)</h3>
+<p>En cuanto a las declaraciones o <strong>Statements</strong>, es precisamente lo que se afirma acerca 
+del sujeto (subject).</p>
+<p>Los <strong>AuthenticationStatement</strong> especifican que la autoridad emisora asserta que el 
+sujeto S se autentific&oacute; mediante M en el tiempo T. Sin embargo, la comprobaci&oacute;n o revocaci&oacute;n de las 
+credenciales queda fuera del &aacute;mbito de SAML. Simplemente se establece un enlace con procesos de autentificaci&oacute;n 
+que ya deben haberse realizado. Los elementos clave son: el <strong>Authentication Method</strong>, el 
+<strong>AuthenticationInstant</strong>, el <strong>Subject</strong> y el <strong>ConfirmationMethod</strong>.</p>
+<p>
+
+<img alt="Estructura de AuthenticationStatement" content-width="12cm" src="imagenes/sesion3/autentificacion.gif" width="600">
+</p>
+<p>Y un ejemplo es el siguiente:</p>
+<pre class="code">
+&lt;saml:Assertion ...&gt;  
+...
+ &lt;saml:AuthenticationStatement
+    AuthenticationMethod="password"    
+    AuthenticationInstant="2001-12-03T10:02:00Z"&gt;    
+    &lt;saml:Subject&gt;
+          &lt;saml:NameIdentifier        
+             SecurityDomain="pepitoco.com"        
+             Name="juanuser"/&gt;      
+             &lt;saml:ConfirmationMethod&gt;        
+             http://core-25/sender-vouches      
+             &lt;/saml:ConfirmationMethod&gt;    
+    &lt;/saml:Subject&gt;  
+ &lt;/saml:AuthenticationStatement&gt; 
+&lt;/saml:Assertion&gt;
+</pre>
+<p>Un <strong>AttributeStatement</strong> pecifica que la autoridad emisora indica que el sujeto 
+S est&aacute; asociado con los atributos A, B,... con valores "a", "b",... Esto resulta &uacute;til para transacciones (items) 
+y servicios de autorizaci&oacute;n. Usualmente estos datos se recogen del LDAP: p.e., para el caso de una autorizaci&oacute;n 
+podr&iacute;amos extraer del LDAP que "juan.perez" en "pepitoco.com" est&aacute; asociado con "Departamento" con valor "Recursos 
+Humanos". Estos atributos pueden referirse tambi&eacute;n a roles. L&oacute;gicamente, los elementos m&aacute;s importantes de este 
+statement son: <strong>Attribute</strong>, <strong>AttributeName</strong>, <strong>AttributeNamespace</strong> y 
+<strong>AttributeValue</strong>.</p>
+<p>
+
+<img alt="Estructura de AttributeStatement" content-width="12cm" src="imagenes/sesion3/atributo.gif" width="600">
+</p>
+<p>Por ejemplo:</p>
+<pre class="code">
+&lt;saml:Assertion ...&gt;  
+ &lt;saml:AttributeStatement&gt;    
+ &lt;saml:Subject&gt;...&lt;/saml:Subject&gt;    
+ &lt;saml:Attribute      
+   AttributeName="EstadoPago"      
+   AttributeNamespace="http://pepitoco.com"&gt;      
+   &lt;saml:AttributeValue&gt;
+          Pagado      
+   &lt;/saml:AttributeValue&gt;    
+ &lt;/saml:Attribute&gt;
+ &lt;saml:Attribute      
+    AttributeName="LimiteCredito"      
+    AttributeNamespace="http://pepitoco.com"&gt;     
+    &lt;saml:AttributeValue&gt;        
+    &lt;my:amount moneda="USD"&gt;500.00&lt;/my:amount&gt;      
+    &lt;/saml:AttributeValue&gt;    
+ &lt;/saml:Attribute&gt;  
+ &lt;/saml:AttributeStatement&gt;
+&lt;/saml:Assertion&gt;
+</pre>
+<p>Finalmente, la <strong>AuthorizationStatement</strong> especifica si la autoridad emisora decide 
+garantizar o no al sujeto S un acceso de tipo A al recurso R (p&aacute;gina o servicio web) dada la evidencia E. La respuesta viene en 
+<strong>Response</strong> y puede ser "Permit", "Deny" o "Indeterminate". Se incluyen usualmente las acciones 
+<strong>Action</strong> y las evidencias <strong>Evidence</strong> en las que la autoridad se ha basado para tomar la 
+decisi&oacute;n</p>
+<p>
+
+<img alt="Estructura de un AuthorizationStatement" content-width="8cm" src="imagenes/sesion3/decision.gif" width="400">
+</p>
+<p>Por ejemplo:</p>
+<pre class="code">
+&lt;saml:Assertion ...&gt;  
+  &lt;saml:AuthorizationStatement
+      Decision="Permit"    
+      Resource="http://juanitoco.com/rpt_12345.htm"&gt;    
+      &lt;saml:Subject&gt;...&lt;/saml:Subject&gt;    
+      &lt;saml:Actions      
+          ActionNamespace="http://...core-25/rwedc"&gt;      
+      &lt;saml:Action&gt;Read&lt;/saml:Action&gt;    
+      &lt;/saml:Actions&gt;  
+  &lt;/saml:AuthorizationStatement&gt;
+&lt;/saml:Assertion&gt;
+</pre>
+<a name="N10307"></a><a name="Protocolo+de+comunicaci%C3%B3n+SAML"></a>
+<h3 class="underlined_5">Protocolo de comunicaci&oacute;n SAML</h3>
+<p>SAML usa un modelo <em>request-reply</em> para implementar la interacci&oacute;n entre la <em>Relying Party</em> que 
+realiza peticiones de asertos y la <em>SAML Authority</em> o (<em>Asserting Party</em>) que emite asertos.</p>
+<p>
+
+<img alt="Protocolo request-reply de SAML" content-width="8cm" src="imagenes/sesion3/protocolo1.gif" width="400">
+</p>
+<p>En SSO, la <em>Asserting Party</em> suele ser el sitio contra el que se autentifica el cliente y la 
+<em>Relying Party</em> suele ser el sitio de destino. Repasemos un poco m&aacute;s en detalle como funciona todo esto:</p>
+<p>
+
+<img alt="Request-reply en SSO" content-width="12cm" src="imagenes/sesion3/logical.gif" width="600">
+</p>
+<p>1. El cliente acaba de autentificarse presentando sus credenciales al sitio fuente y &eacute;ste las ha 
+aceptado despu&eacute;s de consultar con su <em>Authorization Service</em> (posiblemente una consulta al LDAP o a cualquier 
+tabla donde est&eacute;n mapeados los passwords o certificados de cada usuario).</p>
+<p>2. El cliente crea una <em>Application Request</em> a un recurso remoto en el sitio de destino.</p>
+<p>3. El sitio de destino dispone de un <em>SAML Responder</em> que se apoya en un <em>Authentication Module</em>. 
+Un ejemplo de m&oacute;dulo de autentificaci&oacute;n es un m&oacute;dulo JAAS que accede al servidor local de ficheros. En el sitio de 
+destino se intercepta la petici&oacute;n de recurso y es redirigida a un <em>SAML Responder</em> que act&uacute;a como 
+<strong>Policy Enforcement Point</strong>, es decir, se asegura de que clientes no autorizados no puedan acceder 
+a ciertos recursos. SAML no especifica como construirlos pero deben emitir 
+una <strong>Authorization Request</strong> a la autoridad SAML.</p>
+<p>4. El <em>SAML Responder</em> realiza una petici&oacute;n de aserto, en este caso de autentificaci&oacute;n, al sitio fuente.</p>
+<p>5. El <em>SAML Authority</em> procesa la petici&oacute;n de aserto de auntentificaci&oacute;n y responde al sitio de destino. 
+A partir de ese momento el sitio fuente sabe que el cliente ya esta autentificado y no le pide hacer login de nuevo. 
+Despu&eacute;s, el sitio de destino realizar&aacute; peticiones de asertos de atributo y de autorizaci&oacute;n para comprobar si el 
+cliente tiene realmente acceso a los recursos que est&aacute; pidiendo.</p>
+<p>Las peticiones de asertos y las respuestas est&aacute;n envueltas usando el protocolo SOAP (lo estudiareis en el m&oacute;dulo 
+de Servicios Web).</p>
+<p>En el cuerpo de un mensaje de petici&oacute;n (p.e. autentificaci&oacute;n por password) se encapsulan las credenciales del 
+usuario (p.e. el ID y el password si ya se conoce a trav&eacute;s de JAAS, certificados... - para un futuro contraste) 
+en un <em>Security Token</em> junto con una firma digital (usando firma XML - lo veremos m&aacute;s adelante) y el 
+<em>Requested Data</em> (p.e. autentificaci&oacute;n por password). Todo ello se encapsula en un envelope SOAP y se 
+env&iacute;a via HTTPS.</p>
+<p>
+
+<img alt="Detalles SOAP del Protocolo" content-width="12cm" src="imagenes/sesion3/protocolo2.gif" width="600">
+</p>
+<p>A nivel XML En el cuerpo del mensaje de una petici&oacute;n suele ir la propia petici&oacute;n 
+<strong>&lt;samlp:Request&gt;</strong> que suele contener los elementos <strong>AuthenticationQuery</strong>, 
+<strong>AttributeQuery</strong> o <strong>AuthorizationDecisionQuery</strong> seg&uacute;n el caso. 
+Tambi&eacute;n suele generarse una firma digital <strong>&lt;ds:Signature&gt;</strong> y a&ntilde;adirse al mensaje SOAP.</p>
+<p>Veamos la estructura y un ejemplo de <strong>AuthenticationQuery</strong>. Viene a ser algo as&iacute; como 
+<em>Por favor suministre informaci&oacute;n para autentificaci&oacute;n del sujeto S, si tienen alguna.</em> Impl&iacute;citamente se 
+asume que entre el peticionario y el que responde hay una relaci&oacute;n de confianza, hablan del mismo subject y la 
+respuesta (que contendr&aacute; un aserto) es una carta de presentaci&oacute;n para ese sujeto.</p>
+<p>
+
+<img alt="Estructura de una Authentication Query" content-width="8cm" src="imagenes/sesion3/authquery.gif" width="400">
+</p>
+<p>Veamos la estructura de una petici&oacute;n de este tipo.</p>
+<pre class="code">
+&lt;samlp:Request 
+   MajorVersion="1" MinorVersion="0"  
+   RequestID="128.14.234.20.12345678"&gt;  
+   &lt;samlp:AuthenticationQuery&gt;
+       &lt;saml:Subject&gt;      
+       &lt;saml:NameIdentifier 
+           SecurityDomain="pepitoco.com" 
+           Name="juanuser" /&gt;    
+       &lt;/saml:Subject&gt;  
+   &lt;/samlp:AuthenticationQuery&gt;
+ &lt;/samlp:Request&gt;
+</pre>
+<p>La <strong>AttributeQuery</strong> viene a ser algo as&iacute; como <em>por favor, deme informaci&oacute;n sobre los atributos 
+del sujeto S que se listan a continuaci&oacute;n</em>. Si no se lista ninguno se entiende que pides informaci&oacute;n sobre 
+todos los atributos. Si el peticionario no puede acceder a ciertos atributos solo los valores de aquellos a los 
+que puede acceder se proveeran en la respuesta y esto se indica en el codigo de estado de la respuesta.</p>
+<p>
+
+<img alt="Estructura de una Attribute Query" content-width="8cm" src="imagenes/sesion3/attrquery.gif" width="400">
+</p>
+<pre class="code">
+&lt;samlp:Request ...&gt;  
+   &lt;samlp:AttributeQuery&gt;    
+      &lt;saml:Subject&gt;
+            &lt;saml:NameIdentifier 
+               SecurityDomain="pepitoco.com" 
+               Name="juanuser" /&gt;    
+      &lt;/saml:Subject&gt;    
+   &lt;saml:AttributeDesignator      
+               AttributeName="EstadoPago"      
+               AttributeNamespace="http://pepitoco.com"&gt;    
+   &lt;/saml:AttributeDesignator&gt; 
+  &lt;/samlp:AttributeQuery&gt;
+&lt;/samlp:Request&gt;
+</pre>
+<p>Una <strong>AuthorizationDecisionQuery</strong> viene a ser si: <em>Puede este sujeto acceder al recurso especificado 
+de la forma que se especifica y con la pol&iacute;tica que se especifica.</em>Esta es una pregunta si-o-no. Se espera una 
+respuesta concreta a una pregunta muy delimitada.</p>
+<p>
+
+<img alt="Estructura de una Authorization Decision Query" content-width="8cm" src="imagenes/sesion3/adecquery.gif" width="400">
+</p>
+<pre class="code">
+&lt;samlp:Request ...&gt;  
+   &lt;samlp:AuthorizationQuery
+       Resource="http://juanitoco.com/rpt_12345.htm"&gt;    
+       &lt;saml:Subject&gt;      
+          &lt;saml:NameIdentifier        
+              SecurityDomain="smithco.com"
+              Name="juanuser" /&gt;    
+       &lt;/saml:Subject&gt;    
+       &lt;saml:Actions      
+           ActionNamespace="http://core-25/rwedc"&gt;      
+           &lt;saml:Action&gt;Read&lt;/saml:Action&gt;    
+       &lt;/saml:Actions&gt;    
+       &lt;saml:Evidence&gt; 
+          &lt;saml:Assertion&gt;...&lt;/saml:Assertion&gt;    
+       &lt;/saml:Evidence&gt;  
+   &lt;/samlp:AuthorizationQuery&gt;
+&lt;/samlp:Request&gt;
+</pre>
+<p>En cuanto a las respuestas, ya se ha dicho que contienen asertos, y por tanto declaraciones, pero adem&aacute;s contienen 
+un estado o &lt;Status&gt;. Si algo falla no se devuelven asertos sino el estado. Los c&oacute;digos de estado m&aacute;s 
+frecuentes son: <em>Success</em>, <em>VersionMismatch</em>, <em>Receiver</em> y <em>Sender</em>. Se espera que 
+las respuestas est&eacute;n firmadas digitalmente. Su forma general es:</p>
+<p>
+
+<img alt="Estructura general de una Response" content-width="12cm" src="imagenes/sesion3/respuesta.gif" width="600">
+</p>
+<p>Finalmente, un ejemplo de respuesta:</p>
+<pre class="code">
+&lt;samlp:Response 
+   MajorVersion="1" MinorVersion="0"  
+   RequestID="128.14.234.20.90123456"  
+   InResponseTo="128.14.234.20.12345678"  
+   StatusCode="Success"&gt;  
+   &lt;saml:Assertion    
+       MajorVersion="1" MinorVersion="0"    
+       AssertionID="128.9.167.32.12345678"    
+       Issuer="Pepito Corporation"&gt;    
+       &lt;saml:Conditions      
+           NotBefore="2001-12-03T10:00:00Z"
+           NotAfter="2001-12-03T10:05:00Z" /&gt;    
+       &lt;saml:AuthenticationStatement ...&gt; ...&lt;/saml:AuthenticationStatement&gt;  
+   &lt;/saml:Assertion&gt;
+&lt;/samlp:Request&gt;
+</pre>
+<a name="N103ED"></a><a name="Firma+XML+en+SAML"></a>
+<h3 class="underlined_5">Firma XML en SAML</h3>
+<p>La firma digital en XML (<em>XML Signature</em>) proporciona un mecanismo de integridad y no-repudio en transacciones 
+SAML. Esta firma se usa para representar la autoridad que firma el mensaje y puede colocarse en el aserto, la petici&oacute;n o la respuesta. Una 
+de estas firmas contiene un certificado X.509 con una clave p&uacute;blica y tambi&eacute;n la firma generada. Cuando el mensaje firmado es recibido por 
+la <em>relying party</em>, &eacute;sta la verifica con la clave p&uacute;blica de la autoridad. Esta verificaci&oacute;n asegura: que el mensaje no ha sido modificado 
+durante la transmisi&oacute;n, la autenticidad del firmante e identifica el contenido y las porciones del mensaje firmado (p.e. la parte que 
+sensible como el n&uacute;mero de la tarjeta de cr&eacute;dito).</p>
+</div>
+
+<p class="pageBreakAfter"></p>
+
+</div>
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+        Copyright &copy;
+         2006 Depto. CCIA</div>
+</div>
+</body>
+</html>

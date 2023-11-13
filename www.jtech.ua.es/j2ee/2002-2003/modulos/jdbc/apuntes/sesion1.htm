@@ -1,0 +1,324 @@
+<html>
+<head>
+<title>Acceso a bases de datos con JDBC</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="Author" content="Miguel">
+<link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+</head>
+
+<body>
+<h1>Tema 1: Introducci&oacute;n a JDBC</h1>
+<p>JDBC nos permitirá acceder a bases de datos (BD) desde Java. Con JDBC no es 
+  necesario escribir distintos programas para distintas BD, sino que un &uacute;nico 
+  programa sirve para acceder a BD de distinta naturaleza. Incluso, podemos acceder 
+  a m&aacute;s de una BD de distinta fuente (Oracle, Access, MySql, etc.) en la 
+  misma aplicaci&oacute;n. Podemos pensar en JDBC como el puente entre una base 
+  de datos y nuestro programa Java. Un ejemplo sencillo puede ser un applet que 
+  muestra din&aacute;micamente informaci&oacute;n contenida en una base de datos. 
+  El applet utilizar&aacute; JDBC para obtener dichos datos.</p>
+<p>El esquema a seguir en un programa que use JDBC es el siguiente:</p>
+
+<center><img src="figura1.jpg" width="525" height="169"></center>
+<p class="caption">Figura 1. Esquema general de conexión con una base de datos.</p>
+
+<p>Un programa Java que utilice JDBC primero deber&aacute; establecer una conexi&oacute;n 
+  con el SGBD. Para realizar dicha conexi&oacute;n haremos uso de un driver espec&iacute;fico 
+  para cada SGBD que estemos utilizando. Una vez establecida la conexi&oacute;n 
+  ya podemos interrogar la BD con cualquier comando SQL (select, update, create, 
+  etc.). El resultado de un comando <i>select</i> es un objeto de la clase ResultSet, 
+  que contiene los datos que devuelve la consulta. Disponemos de m&eacute;todos 
+  en <i>ResultSet </i>para manejar los datos devueltos. Tambi&eacute;n podemos 
+  realizar cualquier operaci&oacute;n en SQL (creaci&oacute;n de tablas, gesti&oacute;n 
+  de usuarios, etc.).</p>
+<p>&nbsp;</p>
+<center>
+  <img src="figura2.jpg"> 
+</center>
+<p class="caption">Figura 2. Conexi&oacute;n a trav&eacute;s del API y un driver 
+  de JDBC.</p>
+
+<p>Para realizar estas operaciones necesitaremos contar con un SGBD (sistema gestor 
+  de bases de datos) además de un driver específico para poder acceder a este 
+  SGBD.&nbsp;Vamos a utilizar dos SGBD: MySQL (disponible para Windows y Linux, 
+  de libre distribuci&oacute;n) y PostGres (s&oacute;lo para Linux, tambi&eacute;n 
+  de libre distribuci&oacute;n).</p>
+<p>&nbsp;</p>
+<h2>1.1. Instalación de drivers</h2>
+<p>Los drivers para poder acceder a cada SGBD no forman parte de la distribución 
+  de Java por lo que deberemos obtenerlos por separado. Un driver es una capa 
+  intermedia que traduce las llamadas de JDBC a los APIs espec&iacute;ficos del 
+  SGBD. Normalmente un driver es creado por el propio desarrollador del SGBD. 
+</p>
+<p> La distribuci&oacute;n de JDBC incorpora los drivers para el puente JDBC-ODBC 
+  que nos permite acceder a cualquier BD que se gestione con ODBC. Para MySQL, 
+  deberemos descargar e instalar el SGBD y el driver, que puede ser obtenido en 
+  la dirección <a href="http://www.mysql.com/downloads/api-jdbc.html">http://www.mysql.com/downloads/api-jdbc.html</a>. 
+  El driver para PostGres se obtiene en <a href="http://jdbc.postgresql.org">http://jdbc.postgresql.org</a></p>
+<p>Para instalar el driver lo único que deberemos hacer es incluir el fichero 
+  JAR que lo contiene en el CLASSPATH. Por ejemplo, para MySQL:</p>
+
+  
+<pre class="codigo">export CLASSPATH=$CLASSPATH:<b>/directorio-donde-este/mm.mysql-2.0.4-bin.jar</b></pre>
+
+<p>Con el driver instalado, podremos cargarlo desde nuestra aplicación
+simplemente cargando dinámicamente la clase correspondiente al driver:</p>
+
+  <pre class="codigo">Class.forName(&quot;<b>org.gjt.mm.mysql.Driver</b>&quot;);</pre>
+
+<p>El driver JDBC-ODBC se carga como se muestra a continuación:</p>
+
+  <pre class="codigo">Class.forName(&quot;<b>sun.jdbc.odbc.JdbcOdbcDriver</b>&quot;);</pre>
+
+<p>Y de forma similar para PostGres:</p>
+ 
+  <pre class="codigo">Class.forName(&quot;<b>org.postgresql.Driver</b>&quot;);</pre>
+
+<p>La carga del driver se deberá hacer siempre antes de conectar con la BD. </p>
+<p>Pueden existir distintos tipos de drivers para la misma base de datos. Por 
+  ejemplo, a una BD en MySQL podemos acceder mediante ODBC o mediante su propio 
+  driver. Podr&iacute;amos pensar que la soluci&oacute;n m&aacute;s sencilla ser&iacute;a 
+  utilizar ODBC para todos las conexiones a SGBD. Sin embargo, dependiendo de 
+  la complejidad de la aplicaci&oacute;n a desarrollar esto nos podr&iacute;a 
+  dar problemas. Determinados SGBD permiten realizar operaciones (transacciones, 
+  mejora de rendimiento, escabilidad, etc.) que se ven mermadas al realizar su 
+  conexi&oacute;n a trav&eacute;s del driver ODBC. Por ello es preferible hacer 
+  uso de driver espec&iacute;ficos para el SGBD en cuesti&oacute;n. </p>
+<p>El ejemplo m&aacute;s claro de problemas en el uso de drivers es con los <i>Applets</i>. 
+  Cuando utilicemos acceso a bases de datos mediante JDBC desde un <i>Applet</i>, 
+  deberemos tener en cuenta que el <i>Applet</i> se ejecuta en la m&aacute;quina 
+  del cliente, por lo que si la BD est&aacute; alojada en nuestro servidor tendr&aacute; 
+  que establecer una conexi&oacute;n remota.</p>
+<p>Aqu&iacute; encontramos el problema de que si el <i>Applet</i> es visible desde 
+  Internet, es muy posible que el puerto en el que escucha el servidor de base 
+  de datos puede estar cortado por alg&uacute;n <i>firewall</i>, por lo que el 
+  acceso desde el exterior no ser&iacute;a posible.</p>
+<p>El uso del puente JDBC-ODBC tampoco es recomendable en <i>Applets</i>, ya que 
+  requiere que cada cliente tenga configurada la fuente de datos ODBC adecuada 
+  en su m&aacute;quina. Esto podemos controlarlo en el caso de una intranet, pero 
+  en el caso de Internet ser&aacute; mejor utilizar otros m&eacute;todos para 
+  la conexi&oacute;n.</p>
+<p>En cuanto a las excepciones, debemos capturar la excepci&oacute;n <i>SQLException</i> 
+  en casi todas las operaciones en las que se vea involucrado alg&uacute;n objeto 
+  JDBC. </p>
+<p>&nbsp;</p>
+<h2>1.2. Conexión a la BD</h2>
+<p>Una vez cargado el driver apropiado para nuestro SGBD deberemos establecer 
+  la conexión con la BD. Para ello utilizaremos el siguiente método:</p>
+
+  
+<pre class="codigo"><b>Connection</b> con = DriverManager.<b>getConnection</b>(url);
+<b>Connection</b> con = DriverManager.<b>getConnection</b>(url, login, password);</pre>
+
+<p>La conexión a la BD está encapsulada en un objeto <b>Connection</b>. Para su 
+  creaci&oacute;n debemos proporcionar la <i> url</i> de la BD y, si la BD est&aacute; 
+  protegida con contrase&ntilde;a, el <i>login</i> y <i> password</i> para acceder 
+  a ella. El formato de la <i> url</i> variará según el driver que utilicemos. 
+  Sin embargo, todas las <i>url</i> tendr&aacute;n la siguiente forma general: 
+  <i>jdbc</i>:&lt;<font face="Arial, Helvetica, sans-serif"><i>subprotocolo</i></font>&gt;:&lt;<i>nombre</i>&gt;, 
+  con <i>subprotocolo</i> indicando el tipo de SGBD y con <i>nombre</i> indicando 
+  el nombre de la BD y aportando informaci&oacute;n adicional para la conexi&oacute;n. 
+</p>
+
+<p>Para conectar a una fuente ODBC de nombre <i>bd</i>, por ejemplo, utilizaremos 
+  la siguiente URL:</p>
+
+  <pre class="codigo"><span class="codigo">Connection</span><span class="codigo"> con = 
+		DriverManager.getConnection(&quot;<b>jdbc:odbc:bd</b>&quot;);</span></pre>
+
+<p>En el caso de MySQL, si queremos conectarnos a una BD de nombre <i>bd</i> alojada 
+  en la máquina local (<i>localhost</i>) y con usuario <i>miguel</i> y contrase&ntilde;a 
+  <i>m++24</i>, lo haremos de la siguiente forma:</p>
+
+  
+<pre class="codigo">Connection con = DriverManager.getConnection(
+		&quot;<b>jdbc:mysql://localhost/bd</b>&quot;, &quot;miguel&quot;, &quot;m++24&quot;);</pre>
+
+
+<p>En el caso de PostGres (notar que hemos indicado un puerto de conexi&oacute;n, 
+  el 5432):</p>
+
+  
+<pre class="codigo">Connection con = DriverManager.getConnection(
+		&quot;<b>jdbc:postgresql://localhost:5432/bd</b>&quot;, &quot;miguel&quot;, &quot;m++24&quot;);</pre>
+
+<p>Podemos depurar la conexi&oacute;n y determinar qu&eacute; llamadas est&aacute; 
+  realizando JDBC. Para ello haremos uso de un par de m&eacute;todos que incorpora 
+  <b>DriverManager</b>. En el siguiente ejemplo se indica que las operaciones 
+  que realice JDBC se mostrar&aacute;n por la salida est&aacute;ndar:</p>
+
+  <pre class="codigo">DriverManager.<b>setLogWriter</b>(new <b>PrintWriter</b>(System.out, true));</pre>
+
+Una vez realizada esta llamada tambi&eacute;n podemos mostrar mensajes usando:
+
+  
+<pre class="codigo">DriverManager.<b>println</b>(&quot;Esto es un mensaje&quot;);
+</pre>
+  
+
+<p>&nbsp;</p>
+<h1>Tema 2: Consulta a una base de datos con JDBC</h1>
+<h2>2.1. Creación y ejecución de sentencias SQL</h2>
+<p>Una vez obtenida la conexión a la BD, podemos utilizarla para realizar consultas, 
+  inserci&oacute;n y/o borrado de datos de dicha BD. Todas estas operaciones se 
+  realizar&aacute;n mediante lenguaje SQL. La clase <b>Statement</b> es la que 
+  permite realizar todas estas operaciones. La instanciaci&oacute;n de esta clase 
+  se realiza haciendo uso del siguiente m&eacute;todo que proporciona el objeto 
+  <b>Connection</b>:</p>
+
+  <pre class="codigo"><b>Statement</b> stmt = con.<b>createStatement</b>();</pre>
+
+<p>Podemos dividir las sentencias SQL en dos grupos: las que actualizan la BD 
+  y las que &uacute;nicamente la consultan. En las siguientes secciones veremos 
+  c&oacute;mo podemos realizar estas dos acciones.</p>
+<h2>2.2. Sentencias de consulta</h2>
+<p>Para obtener datos almacenados en la BD podemos realizar una consulta SQL (<i>query</i>). 
+  Podemos ejecutar la consulta utilizando el objeto <b>Statement</b>, pero ahora 
+  haciendo uso del método <b>executeQuery </b>al que le pasaremos una cadena con 
+  la consulta SQL. Los datos resultantes nos los devolverá como un objeto <b>ResultSet</b>.</p>
+
+  <pre class="codigo"><b>ResultSet</b> result = stmt.<b>executeQuery</b>(query);</pre>
+
+<p>La consulta SQL nos devolverá una tabla, que tendrá una serie de campos y un 
+  conjunto de registros, cada uno de los cuales consistirá en una tupla de valores 
+  correspondientes a los campos de la tabla.&nbsp; </p>
+<p> Los campos que tenga la tabla resultante dependerán de la consulta que hagamos, 
+  de los datos que solicitemos que nos devuelva. Por ejemplo, podemos solicitar 
+  que una consulta nos devuelva los campos <i>expediente </i>y <i>nombre</i> de 
+  los alumnos o bien que nos devuelva todos los campos de la tabla <i>alumnos</i>. 
+</p>
+<p>Veamos el funcionamiento de las consultas SQL mediante un ejemplo:</p>
+
+  
+<pre class="codigo">String query = &quot;<b>SELECT </b>*<b> FROM </b>ALUMNOS <b>WHERE </b>sexo <b>= '</b>M<b>'</b>&quot;;<b>
+ResultSet</b> result = stmt.<b>executeQuery</b>(query);</pre>
+
+<p>En esta consulta estamos solicitando todos los registros de la tabla ALUMNOS
+en los que el sexo sea <i>mujer </i>(M), pidiendo que nos devuelva todos los
+campos (indicado con *) de dicha tabla. Nos devolverá una tabla como la
+siguiente:</p>
+<table border="1" width="189" height="102">
+  <tr>
+    <td width="28%"><b>exp</b></td>
+    <td width="45%"><b>nombre</b></td>
+    <td width="27%"><b>sexo</b></td>
+  </tr>
+  <tr>
+    <td width="28%">1286</td>
+    <td width="45%">Amparo</td>
+    <td width="27%">M</td>
+  </tr>
+  <tr>
+    <td width="28%">1287</td>
+    <td width="45%">Manuela</td>
+    <td width="27%">M</td>
+  </tr>
+  <tr>
+    <td width="28%">1288</td>
+    <td width="45%">Lucrecia</td>
+    <td width="27%">M</td>
+  </tr>
+</table>
+<p>Estos datos nos los devolverá como un objeto <b>ResultSet</b>. A continuación 
+  veremos c&oacute;mo podemos acceder a los valores de este objeto y c&oacute;mo 
+  podemos movernos por los distintos registros.</p>
+<p>El objeto <b>ResultSet </b>dispone de un <i>cursor</i> que estará situado en 
+  el registro que podemos consultar en cada momento. Este <i>cursor</i> en un 
+  principio estará situado en una posición anterior al primer registro de la tabla. 
+  Podemos mover el cursor al siguiente registro con el método <b>next</b> del 
+  <b>ResultSet</b>. La llamada a este método nos devolverá <b>true</b> mientras 
+  pueda pasar al siguiente registro, y <b>false </b>en el caso de que ya estuviésemos 
+  en el último registro de la tabla. Para la consulta de todos los registros obtenidos 
+  utilizaremos normalmente un bucle como el siguiente:</p>
+
+  <pre class="codigo">while(result.next()) {
+	// Leer registro
+}</pre>
+
+<p>Ahora necesitamos obtener los datos del registro que marca el <i>cursor</i>, 
+  para lo cual podremos acceder a los campos de dicho registro. Esto lo haremos 
+  utilizando los métodos <b>getXXXX(campo)</b> donde <b>XXXX</b> será el tipo 
+  de datos de Java en el que queremos que nos devuelva el valor del campo. Hemos 
+  de tener en cuenta que el tipo del campo en la tabla debe ser convertible al 
+  tipo de datos Java solicitado. Para especificar el campo que queremos leer podremos 
+  utilizar bien su nombre en forma de cadena, o bien su índice que dependerá de 
+  la ordenación de los campos que devuelve la consulta. Tambi&eacute;n debemos 
+  tener en cuenta que no podemos acceder al mismo campo dos veces seguidas en 
+  el mismo registro. Si lo hacemos nos dar&aacute; una excepci&oacute;n.</p>
+<p>Los tipos principales que podemos obtener son los siguientes:</p>
+<table border="1">
+  <tr>
+    <td><b>getInt</b></td>
+    <td>Datos enteros</td>
+  </tr>
+  <tr>
+    <td><b>getDouble</b></td>
+    <td>Datos reales</td>
+  </tr>
+  <tr>
+    <td><b>getBoolean</b></td>
+    <td>Campos booleanos (si/no)</td>
+  </tr>
+  <tr>
+    <td><b>getString</b></td>
+    <td>Campos de texto</td>
+  </tr>
+  <tr>
+    <td><b>getDate</b></td>
+    <td>Tipo fecha</td>
+  </tr>
+</table>
+<p>Si queremos imprimir todos los datos obtenidos de nuestra tabla ALUMNOS del
+ejemplo podremos hacer lo siguiente:</p>
+
+  <pre class="codigo">int exp;
+String nombre;
+String sexo;
+
+while(result.next())
+{
+	exp = result.getInt(&quot;exp&quot;);
+	nombre = result.getString(&quot;nombre&quot;);
+	sexo = result.getString(&quot;sexo&quot;);
+	System.out.println(exp + &quot;\t&quot; + nombre + &quot;\t&quot; + sexo);
+}</pre>
+<p>Cuando un campo de un registro de una tabla no tiene asignado ning&uacute;n 
+  valor, la consulta de ese valor devuelve NULL. Esta situaci&oacute;n puede dar 
+  problemas al intentar manejar ese dato. La clase <b>ResultSet</b> dispone de 
+  un m&eacute;todo <b>wasNull</b> que llamado despu&eacute;s de acceder a un registro 
+  nos dice si el valor devuelto fue NULL. Esto no sucede as&iacute; para los datos 
+  num&eacute;ricos, ya que devuelve el valor 0. Comprobemos qu&eacute; sucede 
+  en el siguiente c&oacute;digo:</p>
+
+  <pre class="codigo">
+String sexo;
+
+while(result.next())
+{
+	exp = result.getInt(&quot;exp&quot;);
+	nombre = result.getString(&quot;nombre&quot;);
+	sexo = result.getString(&quot;sexo&quot;);
+	System.out.println(exp + &quot;\t&quot; + nombre.<b>trim</b>() + &quot;\t&quot; + sexo);
+}</pre>
+
+<p>La llamada al m&eacute;todo <b>trim</b> devolver&aacute; una excepci&oacute;n 
+  si el objeto <b>nombre</b> es NULL. Por ello podemos realizar la siguiente modificaci&oacute;n: 
+</p>
+
+  <pre class="codigo">
+String sexo;
+
+while(result.next())
+{
+	exp = result.getInt(&quot;exp&quot;);
+	System.out.print(exp + &quot;\t&quot;);
+	nombre = result.getString(&quot;nombre&quot;);
+	if (result.<b>wasNull</b>()) {
+		System.out.print(&quot;Sin nombre asignado&quot;);
+	else
+		System.out.print(nombre.trim());
+	sexo = result.getString(&quot;sexo&quot;);
+	System.out.println(&quot;\t&quot; + sexo);
+}</pre>
+
+</body>
+</html>

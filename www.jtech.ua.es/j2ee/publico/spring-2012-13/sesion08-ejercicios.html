@@ -1,0 +1,202 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.7">
+<meta name="Forrest-skin-name" content="pelt">
+<title>Ejercicios de Spring Roo</title>
+<link type="text/css" href="skin/highlight/shCore.css" rel="stylesheet">
+<link type="text/css" href="skin/highlight/shThemeEclipse.css" rel="stylesheet">
+<script src="skin/highlight/shCore.js" type="text/javascript"></script><script src="skin/highlight/shAutoloader.js" type="text/javascript"></script>
+<link type="text/css" href="skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="skin/print.css" rel="stylesheet">
+<link type="text/css" href="skin/profile.css" rel="stylesheet">
+<script src="skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<div class="header">
+<div class="grouplogo">
+<a href="http://web.ua.es/especialistajava"><img class="logoImage" alt="jtech" src="images/baner_j2ee_izq.gif" title="Experto Universitario Java Enterprise"></a>
+</div>
+<div class="projectlogoA1">
+<a href="http://www.dccia.ua.es/"><img class="logoImage" alt="Spring" src="images/baner_j2ee_der.gif" title="Spring"></a>
+</div>
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="javascript:location.href='../index.html'">Home</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../aplic-web.html'">Aplicaciones Web</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../aplic-ent.html'">Aplicaciones Enterprise</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../charlas.html'">Charlas</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../proy-int/index.html'">Proyecto</a>
+</li>
+<li>
+<a class="base-not-selected" href="index.html">Spring</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<div id="level2tabs"></div>
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<div id="menu">
+<div onclick="SwitchMenu('menu_1.1', 'skin/')" id="menu_1.1Title" class="menutitle">Spring</div>
+<div id="menu_1.1" class="menuitemgroup">
+<div class="menuitem">
+<a href="index.html" title="Spring">Indice</a>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<div id="credit2"></div>
+</div>
+<div id="content">
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="sesion08-ejercicios.pdf"><img alt="PDF -icon" src="skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1>Ejercicios de Spring Roo</h1>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#Entidades+%281.5+puntos%29">Entidades (1.5 puntos)</a>
+</li>
+<li>
+<a href="#Capa+web+%281%2C5+puntos%29">Capa web (1,5 puntos)</a>
+</li>
+</ul>
+</div>
+
+
+<p>Vamos a crear una especie de prototipo reducido (pero muy reducido) del proyecto de integraci&oacute;n. Esto nos ayudar&aacute; a tener una idea aproximada de cu&aacute;les son los puntos fuertes de Roo y en qu&eacute; partes de la aplicaci&oacute;n no nos va a servir de ayuda.</p> 
+
+<p>En este modelo del dominio simplificado, solo tendremos tres entidades b&aacute;sicas: Libro, Ejemplar y Usuario (que, como en el proyecto de integraci&oacute;n, ser&aacute; en realidad una clase abstracta de la que deben heredar Profesor y Alumno). Habr&aacute; una relaci&oacute;n uno a muchos entre Usuario y Libro y otra entre Libro y Ejemplar.</p>
+
+<p>Antes que nada, pod&eacute;is crear una base de datos MySQL vac&iacute;a para el proyecto. La llamaremos biblioteca_roo. Podemos hacerlo con mysql desde un terminal:</p>
+
+<pre class="brush:shell;">
+$ mysql -u root -p #(os pedir&aacute; el password)
+mysql&gt; create database biblioteca_roo;
+Query OK, 1 row affected (0.00 sec)
+mysql&gt; quit
+</pre>	
+
+<p>Cread un proyecto Roo desde STS como ya hab&eacute;is hecho en la demo. Dadle de nombre jbib-roo. Como "top level package name" pod&eacute;is darle es.ua.jtech.jbib, al igual que se hace en el proyecto de integraci&oacute;n.</p>
+
+<a name="N1001D"></a><a name="Entidades+%281.5+puntos%29"></a>
+<h2 class="underlined_10">Entidades (1.5 puntos)</h2>
+<div class="section">
+<p>Como ya hemos visto, lo primero en Roo es elegir la tecnolog&iacute;a de persistencia y la base de datos subyacente, en nuestro caso el JPA de Hibernate con MySQL:</p>
+<pre class="brush:shell;">
+roo&gt; jpa setup --provider HIBERNATE --database MYSQL  	
+</pre>
+<p>Edita el fichero src/main/resources/META-INF/database.properties para cambiar la URL de conexi&oacute;n a la base de datos (http://localhost:3306/biblioteca_roo), el usuario (root) y el password (expertojava)</p>
+<p>Ahora ya podemos crear las entidades. Primero vamos a crearlas vac&iacute;as y luego les vamos a ir a&ntilde;adiendo los campos. N&oacute;tese que Usuario es abstracta y que Alumno y Profesor heredan de ella (esto no lo hemos visto en la sesi&oacute;n, pero como ves los comandos son relativamente sencillos)</p>
+<pre class="brush:shell;">
+roo&gt; entity jpa --class es.ua.jtech.jbib.model.Usuario --abstract 
+     --inheritanceType SINGLE_TABLE 
+roo&gt; entity jpa --class es.ua.jtech.jbib.model.Alumno 
+     --extends es.ua.jtech.jbib.model.Usuario 	
+roo&gt; entity jpa --class es.ua.jtech.jbib.model.Profesor 
+     --extends es.ua.jtech.jbib.model.Usuario 
+</pre>
+<p>Ahora podemos crear las dos entidades que nos quedan: Libro y Ejemplar:</p>
+<pre class="brush:shell;">
+roo&gt; entity jpa --class es.ua.jtech.jbib.model.Libro
+roo&gt; entity jpa --class es.ua.jtech.jbib.model.Ejemplar
+</pre>
+<p>Ya "solo" nos queda a&ntilde;adir los campos a las entidades. Esto puedes hacerlo editando directamente el c&oacute;digo Java o bien con comandos de Roo, como hemos hecho en la demo y se ve en los apuntes. Hazlo como prefieras. Eso s&iacute;, no metas todos los campos que has usado en el proyecto de integraci&oacute;n, no merece la pena. Por ejemplo los usuarios basta con que tengan login y password.</p>
+<p>Finalmente, tendr&aacute;s que establecer las relaciones uno a muchos entre Libro y Ejemplar y entre Usuario y Libro: aqu&iacute; te ponemos la primera:</p>
+<pre class="brush:shell;">
+roo&gt; focus --class es.ua.jtech.jbib.model.Libro
+roo&gt; field set --fieldName ejemplares --type Ejemplar --cardinality ONE_TO_MANY 
+     --mappedBy libro
+roo&gt; focus --class Ejemplar
+roo&gt; field reference --fieldName libro --type Libro --cardinality MANY_TO_ONE 
+</pre>
+</div>
+
+<a name="N1004A"></a><a name="Capa+web+%281%2C5+puntos%29"></a>
+<h2 class="underlined_10">Capa web (1,5 puntos)</h2>
+<div class="section">
+<p>Ya estamos casi preparados para crear la capa web. Pero antes tenemos que resolver un problema engorroso que ya ha surgido en la demo de las tareas: la pluralizaci&oacute;n de Roo. Cuando cree las rutas para los controller, usar&aacute; pluralizaci&oacute;n anglosajona: "ejemplars", "libroes",... Una forma de solucionarlo es anotar cada clase del dominio con @RooPlural indicando cu&aacute;l debe ser el plural, por ejemplo:</p>
+<pre class="brush:java;">
+...
+@RooPlural("Libros")
+public class Libro {
+...
+</pre>
+<p>Tendr&aacute;s que anotar las cinco entidades, porque por desgracia, ninguna de ellas se "pluralizar&iacute;a" correctamente con las reglas anglosajonas.</p>
+<p>Ahora ya puedes crear la capa web </p>
+<pre class="brush:shell;">
+roo&gt; web mvc setup
+</pre>
+<p>Es probable que Eclipse muestre un error tras este comando porque introduce nuevas dependencias en Maven. Normalmente podremos solucionarlo con Maven &gt; Update. Ahora podemos hacer scaffolding de todos los controladores:</p>
+<pre class="brush:shell;">
+roo&gt; web mvc all --package es.ua.jtech.jbib.web
+</pre>
+<p>Ya puedes probar el flamante interfaz web generado, como siempre con Run As&gt;Run on server. Es evidente que aunque tenga un aspecto bastante aparente, no es lo que necesitas para implementar los casos de uso de la biblioteca. Las limitaciones de Roo se hacen m&aacute;s evidentes en la capa web cuando la aplicaci&oacute;n no es un CRUD puro y duro.</p>
+<p>Haz alguna prueba dando de alta un par de libros. Para evitar que cada vez que arranques la aplicaci&oacute;n se cree de nuevo la base de datos y se pierdan todos los datos, ve al src/main/resources/META-INF/persistence.xml y cambia la propiedad "hibernate.hbm2ddl.auto", que ahora est&aacute; en "create" a "update".</p>
+<p>Intenta dar de alta tambi&eacute;n alg&uacute;n ejemplar. Si has creado los campos editando el Ejemplar.java manualmente ver&aacute;s que las fechas dan error porque Spring no "sabe" por defecto convertir de cadena a fecha (de hecho es bastante probable que hayas visto en el shell de Roo aparecer la recomendaci&oacute;n de que hagas esto, ahora ya sabes por qu&eacute;).. Puedes solucionarlo anotando los campos de tipo Date de Ejemplar con <span class="codefrag">@DateTimeFormat(style="M-")</span>. Si has creado estos campos con comandos Roo, la anotaci&oacute;n se a&ntilde;ade autom&aacute;ticamente.</p>
+<p>Aunque hacer lo mismo que en el proyecto de integraci&oacute;n real requiere modificar manualmente los JSP y los controller, vamos al menos a ver qu&eacute; podr&iacute;amos hacer para implementar el "ver ejemplares de un libro", ya que el "ver listado de libros" ya lo tenemos implementado.</p>
+<p>Lo primero que necesitamos es crear el finder. Ejecuta el comando Roo adecuado para a&ntilde;adirle a la clase Ejemplar el finder findEjemplaresByLibro (tendr&aacute;s que consultar los apuntes).</p>
+<p>Una vez creado, tenemos que hacerlo accesible desde la capa web (es decir, que el controller de Ejemplar tenga un m&eacute;todo que llame al finder creado). De nuevo tendr&aacute;s que consultar los apuntes para ver c&oacute;mo hacerlo.</p>
+<p>Por desgracia, a partir de aqu&iacute; Roo no nos puede ayudar demasiado. Tendr&iacute;amos que modificar manualmente el listado de libros y en cada libro poner un enlace al finder, para as&iacute; imitar al menos algo de lo que pasa en el proyecto de integraci&oacute;n: al pinchar en un libro se ven los ejemplares. No es necesario que lo hagas, ya que no hemos visto en la sesi&oacute;n cu&aacute;l es la estructura de los JSP creados.</p>
+</div>	
+
+<p class="pageBreakAfter"></p>
+
+</div>
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+        Copyright &copy;
+         2012-2013 Depto. Ciencia de la computaci&oacute;n e IA</div>
+</div>
+<script type="text/javascript">
+     
+         SyntaxHighlighter.defaults['toolbar'] = false;
+         SyntaxHighlighter.autoloader(
+  		     'java                   skin/highlight/shBrushJava.js',
+  		     'xml xhtml xslt html    skin/highlight/shBrushXml.js',
+  		     'js jscript javascript  skin/highlight/shBrushJScript.js',
+  		     'groovy                 skin/highlight/shBrushGroovy.js',
+  		     'bash shell             skin/highlight/shBrushBash.js',
+  		     'php                    skin/highlight/shBrushPhp.js',
+  		     'css                    skin/highlight/shBrushCss.js',
+  		     'sql                    skin/highlight/shBrushSql.js',
+  		     'objc                   skin/highlight/shBrushObjC.js',
+  		     'cpp c                  skin/highlight/shBrushCpp.js',
+  		     'text plain             skin/highlight/shBrushPlain.js'
+         );
+         SyntaxHighlighter.all();
+     </script><a href="skin/highlight/shBrushJava.js"></a><a href="skin/highlight/shBrushXml.js"></a><a href="skin/highlight/shBrushJScript.js"></a><a href="skin/highlight/shBrushGroovy.js"></a><a href="skin/highlight/shBrushBash.js"></a><a href="skin/highlight/shBrushPhp.js"></a><a href="skin/highlight/shBrushCss.js"></a><a href="skin/highlight/shBrushSql.js"></a><a href="skin/highlight/shBrushObjC.js"></a><a href="skin/highlight/shBrushCpp.js"></a><a href="skin/highlight/shBrushPlain.js"></a>
+</body>
+</html>

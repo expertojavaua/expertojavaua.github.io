@@ -1,0 +1,1449 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Seguridad con Spring Security</title>
+
+		<meta name="description" content="Experto en desarrollo de aplicaciones web con JavaEE y Javascript">
+		<meta name="author" content="Francisco José García Rico">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/experto.css" id="theme">
+		
+    	<!-- coloreado de sintaxis con highlight.js -->
+    	<link rel="stylesheet" type="text/css" href="lib/css/github.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+
+	</head>
+
+<body>
+	<div class="reveal">
+	<div class="slides">
+		<!-- todo lo que se ponga aqui (que no sea un <section>) aparecerá
+		en todas las diapositivas -->
+		<div class="header">
+			<div class="logo">
+			 <img src="css/images/logo_small.png">
+			</div>
+			<div class="bar">Experto en desarrollo de aplicaciones web con JavaEE y Javascript</div>
+		</div>
+		<div class="footer">
+			<div class="left">
+				Framework Grails
+			</div>
+			<div class="center">
+				&copy; 2014-15 Dpto. Ciencia de la Computación e I.A.
+			</div>
+			<div class="right">
+				Sesión 7
+			</div>	
+		</div>	
+		<!-- Cada <section> es una slide -->	
+		
+		<section>
+			<!-- al poner el <h1> automáticamente aparece el logo del curso-->
+			<h1>Framework Grails</h1>
+			<h2>Sesión 7: Seguridad con Spring Security</h2>
+		</section>
+		
+		<section>
+			<h2>Índice</h2>
+			<ul>
+				<li>Instalación y configuración</li>
+				<li>Clases de dominio</li>
+				<li>Asegurar peticiones</li>
+				<li>Controladores</li>
+				<li>Librerías adicionales</li>
+				<li>Otros aspectos interesantes</li>
+			</ul>
+		</section>
+
+		<section>			
+			<h2>Instalación</h2>
+			<ul>
+				<li>spring-security-core</li>
+				<li>Mantenido por Spring Source</li>
+				<li>Ampliamente documentado: http://grails-plugins.github.io/grails-spring-security-core/guide/index.html</li>
+				<li>Plugins adicionales: OpenID, LDAP, Kerberos</li>
+				<li>Autor: Burt Beckwith (@burtbeckwith)</li>
+			</ul>		 
+		</section>
+
+		<section>			
+			<h2>Instalación en Grails</h2>
+			<p>BuildConfig.groovy</p>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+plugins {
+	...
+	compile ":spring-security-core:2.0-RC4"	
+}
+				</code>
+			</pre>		
+		</section>
+
+		<section>			
+			<h2>Inicialización</h2>
+			<p>s2-quickstart</p>
+			<ul>
+				<li>paquete</li>
+				<li>clase de dominio para los usuarios</li>
+				<li>clase de dominio para los roles</li>
+				<li>clase de dominio para el mapeo de peticiones</li>
+			</ul>		 
+		</section>				
+
+		<section>			
+			<h2>Inicialización</h2>
+			<pre>
+				<code class="bash" data-trim style="font-size: 18px;">
+grails s2-quickstart es.ua.expertojava.todo Person Role RequestMap
+				</code>
+			</pre>		
+		</section>
+
+		<section>			
+			<h2>Configuración del plugin</h2>
+			<p>Config.groovy</p>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+// Added by the Spring Security Core plugin:
+grails.plugin.springsecurity.userLookup.userDomainClassName = 'es.ua.expertojava.todo.Person'
+grails.plugin.springsecurity.userLookup.authorityJoinClassName = 'es.ua.expertojava.todo.PersonRole'
+grails.plugin.springsecurity.authority.className = 'es.ua.expertojava.todo.Role'
+grails.plugin.springsecurity.requestMap.className = 'es.ua.expertojava.todo.RequestMap'
+grails.plugin.springsecurity.securityConfigType = 'Requestmap'
+grails.plugin.springsecurity.controllerAnnotations.staticRules = [
+	'/':                              ['permitAll'],
+	'/index':                         ['permitAll'],
+	'/index.gsp':                     ['permitAll'],
+	'/assets/**':                     ['permitAll'],
+	'/**/js/**':                      ['permitAll'],
+	'/**/css/**':                     ['permitAll'],
+	'/**/images/**':                  ['permitAll'],
+	'/**/favicon.ico':                ['permitAll'],
+	'/login/**':						['permitAll'],
+	'/logout/**':						['permitAll']
+]
+				</code>
+			</pre>				
+		</section>		
+
+		<section>			
+			<h2>Configuración del plugin</h2>
+			<p>Config.groovy</p>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+grails.plugin.springsecurity.password.algorithm='SHA-512'
+				</code>
+			</pre>				
+		</section>	
+
+		<section>			
+			<h2>Clases de dominio</h2>
+			<ul>
+				<li><em>Person</em></li>
+				<li><em>Role</em></li>
+				<li><em>PersonRole</em></li>
+				<li><em>RequestMap</em></li>
+			</ul>			
+		</section>
+
+		<section>			
+			<h2>Clase de dominio Person</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+package es.ua.expertojava.todo
+
+class Person {
+
+	transient springSecurityService
+
+	String username
+	String password
+	boolean enabled = true
+	boolean accountExpired
+	boolean accountLocked
+	boolean passwordExpired
+
+	static transients = ['springSecurityService']
+
+	static constraints = {
+		username blank: false, unique: true
+		password blank: false
+	}
+
+	static mapping = {
+		password column: '`password`'
+	}
+
+	Set<Role> getAuthorities() {
+		PersonRole.findAllByPerson(this).collect { it.role }
+	}
+
+	def beforeInsert() {
+		encodePassword()
+	}
+
+	def beforeUpdate() {
+		if (isDirty('password')) {
+			encodePassword()
+		}
+	}
+
+	protected void encodePassword() {
+		password = springSecurityService?.passwordEncoder ? springSecurityService.encodePassword(password) : password
+	}
+}
+				</code>
+			</pre>			
+		</section>
+
+		<section>			
+			<h2>Clase de dominio Person</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+package es.ua.expertojava.todo
+     
+class User extends Person{
+	String name
+	String surnames
+	String confirmPassword
+	String email
+	Date dateOfBirth
+	String description
+
+	static hasMany = [todos:Todo]
+	     
+	static constraints = {
+		name(blank:false)
+		surnames(blank:false)
+		confirmPassword(blank:false, password:true)
+		email(blank:false, email:true)
+		dateOfBirth(nullable:true, validator: {
+			if (it?.compareTo(new Date()) < 0)
+				return true
+			return false
+		})
+		description(maxSize:1000,nullable:true)
+	}
+
+	static transients = ["confirmPassword"]
+
+	String toString(){
+		"@${username}"
+	}
+}
+				</code>
+			</pre>			
+		</section>
+
+		<section>			
+			<h2>Clase de dominio Person</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+package es.ua.expertojava.todo
+
+class Todo {
+	...
+
+	User user
+	
+	...
+}
+				</code>
+			</pre>			
+		</section>
+
+		<section>			
+			<h2>Clase de dominio Person</h2>
+			<pre>
+				<code class="bash" data-trim style="font-size: 18px;">
+grails generate-all es.ua.expertojava.todo.User
+				</code>
+			</pre>			
+		</section>
+
+		<section>			
+			<h2>Clase de dominio Role</h2>
+			<ul>
+				<li>Roles en la aplicación</li>
+				<li>Usuarios sin rol: <em>ROLE_NO_ROLES</em></li>
+			</ul>			
+		</section>
+
+		<section>			
+			<h2>Clase de dominio Role</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+package es.ua.expertojava.todo
+
+class Role {
+
+	String authority
+
+	static mapping = {
+		cache true
+	}
+
+	static constraints = {
+		authority blank: false, unique: true
+	}
+}
+				</code>
+			</pre>			
+		</section>
+
+		<section>			
+			<h2>Clase de dominio PersonRole</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+package es.ua.expertojava.todo
+
+import org.apache.commons.lang.builder.HashCodeBuilder
+
+class PersonRole implements Serializable {
+
+	private static final long serialVersionUID = 1
+
+	Person person
+	Role role
+
+	boolean equals(other) {
+		if (!(other instanceof PersonRole)) {
+			return false
+		}
+
+		other.person?.id == person?.id &&
+		other.role?.id == role?.id
+	}
+
+	int hashCode() {
+		def builder = new HashCodeBuilder()
+		if (person) builder.append(person.id)
+		if (role) builder.append(role.id)
+		builder.toHashCode()
+	}
+
+	static PersonRole get(long personId, long roleId) {
+		PersonRole.where {
+			person == Person.load(personId) &&
+			role == Role.load(roleId)
+		}.get()
+	}
+
+	static boolean exists(long personId, long roleId) {
+		PersonRole.where {
+			person == Person.load(personId) &&
+			role == Role.load(roleId)
+		}.count() > 0
+	}
+
+	static PersonRole create(Person person, Role role, boolean flush = false) {
+		def instance = new PersonRole(person: person, role: role)
+		instance.save(flush: flush, insert: true)
+		instance
+	}
+
+	static boolean remove(Person u, Role r, boolean flush = false) {
+		if (u == null || r == null) return false
+
+		int rowCount = PersonRole.where {
+			person == Person.load(u.id) &&
+			role == Role.load(r.id)
+		}.deleteAll()
+
+		if (flush) { PersonRole.withSession { it.flush() } }
+
+		rowCount > 0
+	}
+
+	static void removeAll(Person u, boolean flush = false) {
+		if (u == null) return
+
+		PersonRole.where {
+			person == Person.load(u.id)
+		}.deleteAll()
+
+		if (flush) { PersonRole.withSession { it.flush() } }
+	}
+
+	static void removeAll(Role r, boolean flush = false) {
+		if (r == null) return
+
+		PersonRole.where {
+			role == Role.load(r.id)
+		}.deleteAll()
+
+		if (flush) { PersonRole.withSession { it.flush() } }
+	}
+
+	static constraints = {
+		role validator: { Role r, PersonRole ur ->
+			if (ur.person == null) return
+			boolean existing = false
+			PersonRole.withNewSession {
+				existing = PersonRole.exists(ur.person.id, r.id)
+			}
+			if (existing) {
+				return 'userRole.exists'
+			}
+		}
+	}
+
+	static mapping = {
+		id composite: ['role', 'person']
+		version false
+	}
+}
+				</code>
+			</pre>			
+		</section>
+
+		<section>			
+			<h2>Clase de dominio PersonRole</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+Person user = ...
+Role role = ...
+//Asignación de rol a un usuario
+PersonRole.create user, role
+//Asignación de un rol a un usuario indicándole el atributo flush
+PersonRole.create user, role, true
+
+//Revocación de un rol a un usuario
+Person user = ...
+Role role = ...
+PersonRole.remove user, role
+//Revocación de un rol a un usuario indicándole el atributo flush
+PersonRole.remove user, role, true
+				</code>
+			</pre>			
+		</section>
+
+		<section>			
+			<h2>Clase de dominio RequestMap</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+package es.ua.expertojava.todo
+
+import org.springframework.http.HttpMethod
+
+class RequestMap {
+
+	String url
+	String configAttribute
+	HttpMethod httpMethod
+
+	static mapping = {
+		cache true
+	}
+
+	static constraints = {
+		url blank: false, unique: 'httpMethod'
+		configAttribute blank: false
+		httpMethod nullable: true
+	}
+}
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Asegurar peticiones</h2>
+			<ul>
+				<li>Anotaciones</li>
+				<li>Archivo de configuración Config.groovy</li>
+				<li>Instancias de la clase RequestMap</li>
+				<li>Expresiones específicas</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>A tener en cuenta</h2>
+			<ul>
+				<li>Aplicaciones públicas por defecto</li>
+				<li>Aproximación pesimista con <em>grails.plugin.springsecurity.rejectIfNoRule = true</em></li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Tokens predefinidos</h2>
+			<ul>
+				<li>IS_AUTHENTICATED_ANONYMOUSLY</li>
+				<li>IS_AUTHENTICATED_REMEMBERED</li>
+				<li>IS_AUTHENTICATED_FULLY</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Anotaciones</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+grails.plugin.springsecurity.securityConfigType = "Annotation"
+				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>Anotaciones</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+package com.mycompany.myapp
+import grails.plugin.springsecurity.annotation.Secured
+
+class SecureAnnotatedController {
+
+   @Secured(['ROLE_ADMIN'])
+   def index() {
+      render 'you have ROLE_ADMIN'
+   }
+
+   @Secured(['ROLE_ADMIN', 'ROLE_SUPERUSER'])
+   def adminEither() {
+      render 'you have ROLE_ADMIN or SUPERUSER'
+   }
+
+   def anybody() {
+      render 'anyone can see this'
+   }
+}
+				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>Anotaciones</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+package com.mycompany.myapp
+import grails.plugin.springsecurity.annotation.Secured
+
+@Secured(['ROLE_ADMIN'])
+class SecureClassAnnotatedController {
+
+   def index() {
+      render 'index: you have ROLE_ADMIN'
+   }
+
+   def otherAction() {
+      render 'otherAction: you have ROLE_ADMIN'
+   }
+
+   @Secured(['ROLE_SUPERUSER'])
+   def super() {
+      render 'super: you have ROLE_SUPERUSER'
+   }
+}
+				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>Anotaciones</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+grails.plugin.springsecurity.controllerAnnotations.staticRules = [
+   '/js/admin/**': ['ROLE_ADMIN'],
+   '/images/**': ['ROLE_ADMIN']
+]
+				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>Archivo de configuración Config.groovy</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+grails.plugin.springsecurity.securityConfigType = "InterceptUrlMap"
+				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>Archivo de configuración Config.groovy</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+grails.plugin.springsecurity.interceptUrlMap = [
+   '/':                  ['permitAll'],
+   '/index':             ['permitAll'],
+   '/index.gsp':         ['permitAll'],
+   '/assets/**':         ['permitAll'],
+   '/**/js/**':          ['permitAll'],
+   '/**/css/**':         ['permitAll'],
+   '/**/images/**':      ['permitAll'],
+   '/**/favicon.ico':    ['permitAll'],
+   '/login/**':          ['permitAll'],
+   '/logout/**':         ['permitAll'],
+   '/secure/**':         ['ROLE_ADMIN'],
+   '/finance/**':        ['ROLE_FINANCE', 'isFullyAuthenticated()'],
+]
+				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>Archivo de configuración Config.groovy</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+'/secure/**':              ['ROLE_ADMIN', 'ROLE_SUPERUSER'],
+'/secure/reallysecure/**': ['ROLE_SUPERUSER']
+				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>Archivo de configuración Config.groovy</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+'/secure/reallysecure/**': ['ROLE_SUPERUSER']
+'/secure/**':              ['ROLE_ADMIN', 'ROLE_SUPERUSER']
+				</code>
+			</pre>
+		</section>
+
+
+		<section>
+			<h2>Instancias de la clase RequestMap</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+grails.plugin.springsecurity.securityConfigType = "Requestmap"
+				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>Instancias de la clase RequestMap</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+for (String url in [
+      '/', '/index', '/index.gsp', '/**/favicon.ico',
+      '/assets/**', '/**/js/**', '/**/css/**', '/**/images/**',
+      '/login', '/login.*', '/login/*',
+      '/logout', '/logout.*', '/logout/*']) {
+   new Requestmap(url: url, configAttribute: 'permitAll').save()
+}
+new Requestmap(url: '/profile/**',    configAttribute: 'ROLE_USER').save()
+new Requestmap(url: '/admin/**',      configAttribute: 'ROLE_ADMIN').save()
+new Requestmap(url: '/admin/role/**', configAttribute: 'ROLE_SUPERVISOR').save()
+new Requestmap(url: '/admin/user/**', configAttribute: 'ROLE_ADMIN,ROLE_SUPERVISOR').save()
+new Requestmap(url: '/j_spring_security_switch_user',
+               configAttribute: 'ROLE_SWITCH_USER,isFullyAuthenticated()').save()
+  				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>Instancias de la clase RequestMap</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+class RequestmapController {
+   def springSecurityService
+
+   ...
+
+   def save() {
+      def requestmapInstance = new Requestmap(params)
+      if (!requestmapInstance.save(flush: true)) {
+         render view: 'create', model: [requestmapInstance: requestmapInstance]
+         return
+      }
+
+      springSecurityService.clearCachedRequestmaps()
+
+      flash.message = "${message(code: 'default.created.message', args: [message(code: 'requestmap.label', default: 'Requestmap'), requestmapInstance.id])}"
+      redirect action: 'show', id: requestmapInstance.id
+   }
+}
+  				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>Expresiones específicas</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+package com.yourcompany.yourapp
+import grails.plugin.springsecurity.annotation.Secured
+
+class SecureController {
+
+   @Secured(["hasRole('ROLE_ADMIN')"])
+   def someAction() {
+      ...
+   }
+
+   @Secured(["authentication.name == 'ralph'"])
+   def someOtherAction() {
+      ...
+   }
+}
+  				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>Expresiones específicas</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+new Requestmap(url: "/secure/someAction",
+               configAttribute: "hasRole('ROLE_ADMIN')").save()
+new Requestmap(url: "/secure/someOtherAction",
+               configAttribute: "authentication.name == 'ralph'").save()
+  				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>Expresiones específicas</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+grails.plugin.springsecurity.interceptUrlMap = [
+   '/secure/someAction':      ["hasRole('ROLE_ADMIN')"],
+   '/secure/someOtherAction': ["authentication.name == 'ralph'"]
+]
+  				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>Expresiones específicas</h2>
+			<ul>
+				<li>hasRole(role)</li>
+				<li>hasAnyRole([role1,role2])</li>
+				<li>principal</li>
+				<li>authentication</li>
+				<li>permitAll</li>
+				<li>denyAll</li>
+				<li>isAnonymous()</li>
+				<li>isRememberMe()</li>
+				<li>isAuthenticated()</li>
+				<li>isFullyAuthenticated()</li>
+				<li>request</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Equivalencias con SpEL</h2>
+			<ul>
+				<li><em>ROLE_ADMIN</em>, hasRole('ROLE_ADMIN')</li>
+				<li><em>ROLE_USER, ROLE_ADMIN</em>, hasAnyRole('ROLE_USER','ROLE_ADMIN')</li>
+				<li><em>ROLE_ADMIN, IS_AUTHENTICATED_FULLY</em>, hasRole('ROLE_ADMIN') and isFullyAuthenticated()</li>
+				<li><em>IS_AUTHENTICATED_ANONYMOUSLY</em>, permitAll</li>
+				<li><em>IS_AUTHENTICATED_REMEMBERED</em>, isAnonymous() or isRememberMe()</li>
+				<li><em>IS_AUTHENTICATED_FULLY</em>, isFullyAuthenticated()</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>A tener en cuenta</h2>
+			<ul>
+				<li>Controlador Login</li>
+				<li>Controlador Logout</li>
+				<li>Acceso a recursos de nuestra aplicación</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Acceso a recursos de nuestra aplicación</h2>
+			<ul>
+				<li>Mediante anotaciones</li>
+				<li>Mediante instancias de la clase de dominio RequestMap</li>
+				<li>Mediante reglas en el archivo Config.groovy con InterceptUrlMap</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Mediante anotaciones</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+grails.plugin.springsecurity.securityConfigType = 'Annotation'
+grails.plugin.springsecurity.controllerAnnotations.staticRules = [
+	'/':                              	['permitAll'],
+	'/index':                         	['permitAll'],
+	'/index.gsp':                     	['permitAll'],
+	'/assets/**':                     	['permitAll'],
+	'/**/js/**':                      	['permitAll'],
+	'/**/css/**':                     	['permitAll'],
+	'/**/images/**':                  	['permitAll'],
+	'/**/favicon.ico':                	['permitAll'],
+	'/login/**':						['permitAll'],
+	'/logout/**':                		['permitAll'],
+	'/dbconsole/**':               		['permitAll']
+]
+  				</code>
+			</pre>
+		</section>		
+
+		<section>
+			<h2>Mediante instancias de la clase de dominio RequestMap</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+grails.plugin.springsecurity.securityConfigType = 'Requestmap'
+
+/* Esto debe ir en el archivo BootStrap.groovy */
+for (String url in [
+      '/', '/index', '/index.gsp', '/assets/**',
+      '/**/js/**', '/**/css/**', '/**/images/**',
+      '/**/favicon.ico', '/login/**', '/logout/**', '/dbconsole/**']) {
+   new RequestMap(url: url, configAttribute: 'permitAll').save()
+}
+  				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>Mediante reglas en el archivo Config.groovy con InterceptUrlMap</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+grails.plugin.springsecurity.securityConfigType = 'InterceptUrlMap'
+grails.plugin.springsecurity.interceptUrlMap = [
+   '/':                  ['permitAll'],
+   '/index':             ['permitAll'],
+   '/index.gsp':         ['permitAll'],
+   '/assets/**':         ['permitAll'],
+   '/**/js/**':          ['permitAll'],
+   '/**/css/**':         ['permitAll'],
+   '/**/images/**':      ['permitAll'],
+   '/**/favicon.ico':    ['permitAll'],
+   '/login/**':          ['permitAll'],
+   '/logout/**':         ['permitAll'],
+   '/dbconsole/**':      ['permitAll']
+]
+  				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>Controladores</h2>
+			<ul>
+				<li>LoginController</li>
+				<li>LogoutController</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>LoginController</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+package grails.plugin.springsecurity
+
+import grails.converters.JSON
+
+import javax.servlet.http.HttpServletResponse
+
+import org.springframework.security.access.annotation.Secured
+import org.springframework.security.authentication.AccountExpiredException
+import org.springframework.security.authentication.CredentialsExpiredException
+import org.springframework.security.authentication.DisabledException
+import org.springframework.security.authentication.LockedException
+import org.springframework.security.core.context.SecurityContextHolder as SCH
+import org.springframework.security.web.WebAttributes
+
+@Secured('permitAll')
+class LoginController {
+
+	/**
+	 * Dependency injection for the authenticationTrustResolver.
+	 */
+	def authenticationTrustResolver
+
+	/**
+	 * Dependency injection for the springSecurityService.
+	 */
+	def springSecurityService
+
+	/**
+	 * Default action; redirects to 'defaultTargetUrl' if logged in, /login/auth otherwise.
+	 */
+	def index() {
+		if (springSecurityService.isLoggedIn()) {
+			redirect uri: SpringSecurityUtils.securityConfig.successHandler.defaultTargetUrl
+		}
+		else {
+			redirect action: 'auth', params: params
+		}
+	}
+
+	/**
+	 * Show the login page.
+	 */
+	def auth() {
+
+		def config = SpringSecurityUtils.securityConfig
+
+		if (springSecurityService.isLoggedIn()) {
+			redirect uri: config.successHandler.defaultTargetUrl
+			return
+		}
+
+		String view = 'auth'
+		String postUrl = "${request.contextPath}${config.apf.filterProcessesUrl}"
+		render view: view, model: [postUrl: postUrl,
+		                           rememberMeParameter: config.rememberMe.parameter]
+	}
+
+	/**
+	 * The redirect action for Ajax requests.
+	 */
+	def authAjax() {
+		response.setHeader 'Location', SpringSecurityUtils.securityConfig.auth.ajaxLoginFormUrl
+		response.sendError HttpServletResponse.SC_UNAUTHORIZED
+	}
+
+	/**
+	 * Show denied page.
+	 */
+	def denied() {
+		if (springSecurityService.isLoggedIn() &&
+				authenticationTrustResolver.isRememberMe(SCH.context?.authentication)) {
+			// have cookie but the page is guarded with IS_AUTHENTICATED_FULLY
+			redirect action: 'full', params: params
+		}
+	}
+
+	/**
+	 * Login page for users with a remember-me cookie but accessing a IS_AUTHENTICATED_FULLY page.
+	 */
+	def full() {
+		def config = SpringSecurityUtils.securityConfig
+		render view: 'auth', params: params,
+			model: [hasCookie: authenticationTrustResolver.isRememberMe(SCH.context?.authentication),
+			        postUrl: "${request.contextPath}${config.apf.filterProcessesUrl}"]
+	}
+
+	/**
+	 * Callback after a failed login. Redirects to the auth page with a warning message.
+	 */
+	def authfail() {
+
+		String msg = ''
+		def exception = session[WebAttributes.AUTHENTICATION_EXCEPTION]
+		if (exception) {
+			if (exception instanceof AccountExpiredException) {
+				msg = g.message(code: "springSecurity.errors.login.expired")
+			}
+			else if (exception instanceof CredentialsExpiredException) {
+				msg = g.message(code: "springSecurity.errors.login.passwordExpired")
+			}
+			else if (exception instanceof DisabledException) {
+				msg = g.message(code: "springSecurity.errors.login.disabled")
+			}
+			else if (exception instanceof LockedException) {
+				msg = g.message(code: "springSecurity.errors.login.locked")
+			}
+			else {
+				msg = g.message(code: "springSecurity.errors.login.fail")
+			}
+		}
+
+		if (springSecurityService.isAjax(request)) {
+			render([error: msg] as JSON)
+		}
+		else {
+			flash.message = msg
+			redirect action: 'auth', params: params
+		}
+	}
+
+	/**
+	 * The Ajax success redirect url.
+	 */
+	def ajaxSuccess() {
+		render([success: true, username: springSecurityService.authentication.name] as JSON)
+	}
+
+	/**
+	 * The Ajax denied redirect url.
+	 */
+	def ajaxDenied() {
+		render([error: 'access denied'] as JSON)
+	}
+}
+  				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>LogoutController</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+package grails.plugin.springsecurity
+
+import javax.servlet.http.HttpServletResponse
+
+import org.springframework.security.access.annotation.Secured
+
+@Secured('permitAll')
+class LogoutController {
+
+	/**
+	 * Index action. Redirects to the Spring security logout uri.
+	 */
+	def index() {
+
+		if (!request.post && SpringSecurityUtils.getSecurityConfig().logout.postOnly) {
+			response.sendError HttpServletResponse.SC_METHOD_NOT_ALLOWED // 405
+			return
+		}
+
+		// TODO put any pre-logout code here
+		redirect uri: SpringSecurityUtils.securityConfig.logout.filterProcessesUrl // '/j_spring_security_logout'
+	}
+}
+  				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>Librerías adicionales</h2>
+			<ul>
+				<li>Librería de etiquetas: SecurityTagLib</li>
+				<li>Servicio: springSecurityService</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Librería de etiquetas: SecurityTagLib</h2>
+			<ul>
+				<li>ifLoggedIn</li>
+				<li>ifNotLoggedIn</li>
+				<li>ifAllGranted</li>
+				<li>ifAnyGranted</li>
+				<li>ifNotGranted</li>
+				<li>loggedInUserInfo</li>
+				<li>username</li>
+				<li>access</li>
+				<li>noAccess</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>ifLoggedIn</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+&lt;sec:ifLoggedIn&gt;
+	Welcome Back!
+&lt;/sec:ifLoggedIn&gt;
+  				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>ifNotLoggedIn</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+&lt;sec:ifNotLoggedIn&gt;
+	&lt;g:link controller='login' action='auth'&gt;
+		Login
+	&lt;/g:link&gt;
+&lt;/sec:ifNotLoggedIn&gt;
+  				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>ifAllGranted</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+&lt;sec:ifAllGranted roles=&quot;ROLE_ADMIN,ROLE_SUPERVISOR&quot;&gt;secure stuff here&lt;/sec:ifAllGranted&gt;
+  				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>ifAnyGranted</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+&lt;sec:ifAnyGranted roles=&quot;ROLE_ADMIN,ROLE_SUPERVISOR&quot;&gt;secure stuff here&lt;/sec:ifAnyGranted&gt;
+  				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>ifNotGranted</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+&lt;sec:ifNotGranted roles=&quot;ROLE_USER&quot;&gt;non-user stuff here&lt;/sec:ifNotGranted&gt;
+  				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>loggedInUserInfo</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+&lt;sec:loggedInUserInfo field=&quot;username&quot;/&gt;
+  				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>username</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+&lt;sec:ifLoggedIn&gt;
+	Welcome Back &lt;sec:username/&gt;!
+&lt;/sec:ifLoggedIn&gt;
+&lt;sec:ifNotLoggedIn&gt;
+	&lt;g:link controller='login' action='auth'&gt;Login&lt;/g:link&gt;
+&lt;/sec:ifNotLoggedIn&gt;
+  				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>access</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+&lt;sec:access expression=&quot;hasRole('ROLE_USER')&quot;&gt;
+	You're a user
+&lt;/sec:access&gt;
+
+&lt;sec:access url=&quot;/admin/user&quot;&gt;
+	&lt;g:link controller='admin' action='user'&gt;Manage Users&lt;/g:link&gt;
+&lt;/sec:access&gt;
+
+&lt;sec:access controller='admin' action='user'&gt;
+	&lt;g:link controller='admin' action='user'&gt;
+		Manage Users
+	&lt;/g:link&gt;
+&lt;/sec:access&gt;
+  				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>noAccess</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+&lt;sec:noAccess expression=&quot;hasRole('ROLE_USER')&quot;&gt;
+	You're not a user
+&lt;/sec:noAccess&gt;
+  				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>Servicio: springSecurityService</h2>
+			<ul>
+				<li>getCurrentUser()</li>
+				<li>isLoggedIn()</li>
+				<li>getAuthentication()</li>
+				<li>getPrincipal()</li>
+				<li>encodePassword()</li>
+				<li>updateRole()</li>
+				<li>deleteRole()</li>
+				<li>clearCachedRequestmaps()</li>
+				<li>reauthenticate()</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>getCurrentUser()</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+class SomeController {
+   def springSecurityService
+
+   def someAction() {
+      def user = springSecurityService.currentUser
+      ...
+   }
+}
+  				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>isLoggedIn()</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+class SomeController {
+   def springSecurityService
+
+   def someAction() {
+      if (springSecurityService.isLoggedIn()) {
+         ...
+      }
+      else {
+         ...
+      }
+   }
+}
+  				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>getAuthentication()</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+class SomeController {
+   def springSecurityService
+
+   def someAction() {
+      def auth = springSecurityService.authentication
+      String username = auth.username
+      def authorities = auth.authorities // a Collection of GrantedAuthority
+      boolean authenticated = auth.authenticated
+      ...
+   }
+}
+  				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>getPrincipal()</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+class SomeController {
+   def springSecurityService
+
+   def someAction() {
+      def principal = springSecurityService.principal
+      String username = principal.username
+      def authorities = principal.authorities // a Collection of GrantedAuthority
+      boolean enabled = principal.enabled
+      …
+   }
+}
+  				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>encodePassword()</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+class PersonController {
+   def springSecurityService
+
+   def updateAction() {
+      def person = Person.get(params.id)
+
+      params.salt = person.salt
+      if (person.password != params.password) {
+         params.password = springSecurityService.encodePassword(password, salt)
+         def salt = … // e.g. randomly generated using some utility method
+         params.salt = salt
+      }
+      person.properties = params
+      if (!person.save(flush: true)) {
+         render view: 'edit', model: [person: person]
+         return
+      }
+      redirect action: 'show', id: person.id
+   }
+}
+  				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>updateRole()</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+class RoleController {
+   def springSecurityService
+
+   def update() {
+      def roleInstance = Role.get(params.id)
+      if (!springSecurityService.updateRole(roleInstance, params)) {
+         render view: 'edit', model: [roleInstance: roleInstance]
+         return
+      }
+
+      flash.message = "The role was updated"
+      redirect action: show, id: roleInstance.id
+   }
+}
+  				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>deleteRole()</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+class RoleController {
+   def springSecurityService
+
+   def delete() {
+      def roleInstance = Role.get(params.id)
+      try {
+         springSecurityService.deleteRole (roleInstance
+         flash.message = "The role was deleted"
+         redirect action: list
+      }
+      catch (DataIntegrityViolationException e) {
+         flash.message = "Unable to delete the role"
+         redirect action: show, id: params.id
+      }
+   }
+}
+  				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>clearCachedRequestmaps()</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+class RequestmapController {
+   def springSecurityService
+
+   def save() {
+      def requestmapInstance = new Requestmap(params)
+      if (!requestmapInstance.save(flush: true)) {
+         render view: 'create', model: [requestmapInstance: requestmapInstance]
+         return
+      }
+
+      springSecurityService.clearCachedRequestmaps()
+      flash.message = "Requestmap created"
+      redirect action: show, id: requestmapInstance.id
+   }
+}
+  				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>reauthenticate()</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+class UserController {
+   def springSecurityService
+
+   def update() {
+      def userInstance = User.get(params.id)
+
+      params.salt = person.salt
+      if (params.password) {
+         params.password = springSecurityService.encodePassword(params.password, salt)
+         def salt = … // e.g. randomly generated using some utility method
+         params.salt = salt
+      }
+      userInstance.properties = params
+      if (!userInstance.save(flush: true)) {
+         render view: 'edit', model: [userInstance: userInstance]
+         return
+      }
+
+      if (springSecurityService.loggedIn &&
+             springSecurityService.principal.username == userInstance.username) {
+         springSecurityService.reauthenticate userInstance.username
+      }
+
+      flash.message = "The user was updated"
+      redirect action: show, id: userInstance.id
+   }
+}
+  				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>Otros aspectos importantes de Spring Security</h2>
+			<ul>
+				<li>Restricciones por IP</li>
+				<li>Internacionalización</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Restricciones por IP</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+grails.plugin.springsecurity.ipRestrictions = [
+   '/pattern1/**': '123.234.345.456',
+   '/pattern2/**': '10.0.0.0/8',
+   '/pattern3/**': ['10.10.200.42', '10.10.200.63']
+]
+  				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Internacionalización</h2>
+			<ul>
+				<li>springSecurity.errors.login.expired</li>
+				<li>springSecurity.errors.login.passwordExpired</li>
+				<li>springSecurity.errors.login.disabled</li>
+				<li>springSecurity.errors.login.locked</li>
+				<li>springSecurity.errors.login.fail</li>
+				<li>springSecurity.login.title</li>
+				<li>springSecurity.login.header</li>
+				<li>springSecurity.login.button</li>
+				<li>springSecurity.login.username.label</li>
+				<li>springSecurity.login.password.label</li>
+				<li>springSecurity.login.remember.me.label</li>
+				<li>springSecurity.denied.title</li>
+				<li>springSecurity.denied.message</li>
+			</ul>
+		</section>
+
+		<section>
+			<h1>¿Preguntas...?</h1>
+		</section>
+
+		<section>
+			<h1>Ejercicios</h1>
+		</section>
+	</div>
+</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+				slideNumber: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Parallax scrolling
+				// parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+				// parallaxBackgroundSize: '2100px 900px',
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+
+				]
+			});
+
+		</script>
+
+	</body>
+</html>

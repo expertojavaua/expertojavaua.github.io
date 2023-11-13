@@ -1,0 +1,587 @@
+<html>
+<head>
+<title>Servidores de aplicaciones</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="Author" content="Miguel">
+<link rel="stylesheet" href="../apuntes.css" type="text/css">
+</head>
+
+<body>
+<h1>Tema 1: Introducci&oacute;n a los servidores de aplicaciones</h1>
+<p>En este tema veremos una peque&ntilde;a introducci&oacute;n a los servidores 
+  de aplicaciones. Comentaremos los t&eacute;rminos m&aacute;s utilizados y los 
+  conceptos que usaremos m&aacute;s adelante.</p>
+<h2>1.1. Aplicaciones de empresa</h2>
+<p>El concepto de servidor de aplicaciones est&aacute; relacionado con el concepto 
+  de sistema distribuido. Un sistema distribuido, en oposici&oacute;n a un sistema 
+  monol&iacute;tico, permite mejorar tres aspectos fundamentales en una aplicaci&oacute;n: 
+  la alta disponibilidad, la escalabilidad y el mantenimiento. En un sistema monol&iacute;tico 
+  un cambio en las necesidades del sistema (aumento considerable del n&uacute;mero 
+  de visitas, aumento del n&uacute;mero de aplicaciones, etc.) provoca un colapso 
+  y la adaptaci&oacute;n a dicho cambio puede resultar catastr&oacute;fica. Vamos 
+  a ver estas caracter&iacute;sticas con ejemplos. </p>
+<ul>
+  <li>La <b>alta disponibilidad</b> hace referencia a que un sistema debe estar 
+    funcionando las 24 horas del d&iacute;a los 365 d&iacute;as al a&ntilde;o. 
+    Para poder alcanzar esta caracter&iacute;stica es necesario el uso de t&eacute;cnicas 
+    de balanceo de carga y de recuperaci&oacute;n ante fallos (<i>failover</i>). 
+  </li>
+  <li>La <b>escalabilidad</b> es la capacidad de hacer crecer un sistema cuando 
+    se incrementa la carga de trabajo (el n&uacute;mero de peticiones). Cada m&aacute;quina 
+    tiene una capacidad finita de recursos y por lo tanto s&oacute;lo puede servir 
+    un n&uacute;mero limitado de peticiones. Si, por ejemplo, tenemos una tienda 
+    que incrementa la demanda de servicio, debemos ser capaces de incorporar nuevas 
+    m&aacute;quinas para dar servicio.</li>
+  <li>El <b>mantenimiento</b> tiene que ver con la versatilidad a la hora de actualizar, 
+    depurar fallos y mantener un sistema. La soluci&oacute;n al mantenimiento 
+    es la construcci&oacute;n de la l&oacute;gica de negocio en unidades reusables 
+    y modulares.</li>
+</ul>
+<h2>1.2. &iquest;Qu&eacute; es un servidor de aplicaciones?</h2>
+<p>El est&aacute;ndar J2EE permite el desarrollo de aplicaciones de empresa de 
+  una manera sencilla y eficiente. Una aplicaci&oacute;n desarrollada con las 
+  tecnolog&iacute;as J2EE permite ser desplegada en cualquier servidor de aplicaciones 
+  o servidor web que cumpla con el est&aacute;ndar. Un servidor de aplicaciones 
+  es una implementaci&oacute;n de la especificaci&oacute;n J2EE. La arquitectura 
+  J2EE es la siguiente:</p>
+<center><img src="primera.jpg"></center>
+<p class="caption">Figura 1. Arquitectura J2EE.</p>
+<p>Definimos a continuaci&oacute;n algunos de los conceptos que aparecen en la 
+  figura 1:</p>
+<ul>
+  <li><b>Cliente web (contenedor de applets)</b>: Es usualmente un navegador e 
+    interact&uacute;a con el contenedor web haciendo uso de HTTP. Recibe p&aacute;ginas 
+    HTML o XML y puede ejecutar applets y c&oacute;digo JavaScript. </li>
+  <li><b>Aplicaci&oacute;n cliente</b>: Son clientes que no se ejecutan dentro 
+    de un navegador y pueden utilizar cualquier tecnolog&iacute;a para comunicarse 
+    con el contenedor web o directamente con la base de datos.</li>
+  <li><b>Contenedor web</b>: Es lo que com&uacute;nmente denominamos servidor 
+    web. Es la parte <i>visible</i> del servidor de aplicaciones. Utiliza los 
+    protocolos HTTP y SSL (seguro) para comunicarse.</li>
+  <li><b>Servidor de aplicaciones</b>: Proporciona servicios que soportan la ejecuci&oacute;n 
+    y disponibilidad de las aplicaciones desplegadas. Es el coraz&oacute;n de 
+    un gran sistema distribuido. </li>
+</ul>
+<p>Frente a la tradicional estructura en dos capas de un servidor web (ver Figura 
+  2) un servidor de aplicaciones proporciona una estructura en tres capas que 
+  permite estructurar nuestro sistema de forma m&aacute;s eficiente. Un concepto 
+  que debe quedar claro desde el principio es que no todas las aplicaciones de 
+  empresa necesitan un servidor de aplicaciones para funcionar. Una peque&ntilde;a 
+  aplicaci&oacute;n que acceda a una base de datos no muy compleja y que no sea 
+  distribuida probablemente no necesitar&aacute; un servidor de aplicaciones, 
+  tan solo con un servidor web (usando servlets y jsp) sea suficiente. </p>
+<center><img src="septima.jpg"></center>
+<p class="caption">Figura 2. Arquitectura en dos capas frente a tres capas utilizando el servidor de aplicaciones.</p>
+<p>Como hemos comentado, un servidor de aplicaciones es una implementaci&oacute;n 
+  de la especificaci&oacute;n J2EE. Existen diversas implementaciones, cada una 
+  con sus propias caracter&iacute;sticas que la pueden hacer m&aacute;s atractiva 
+  en el desarrollo de un determinado sistema. Algunas de las implementaciones 
+  m&aacute;s utilizadas son las siguientes:</p>
+<ul>
+  <li>BEA WebLogic</li>
+  <li>IBM WebSphere</li>
+  <li>Sun-Netscape IPlanet</li>
+  <li>Sun One</li>
+  <li>Oracle IAS</li>
+  <li>Borland AppServer</li>
+  <li>HP Bluestone</li>
+</ul>
+<p>Los dos primeros son los m&aacute;s utilizados en el mercado. Nosotros vamos 
+  a utilizar el servidor BEA WebLogic. La principal ventaja de WebLogic es que 
+  podemos crear un sistema con varias m&aacute;quinas con distintos sistemas operativos: 
+  Linux, Unix, Windows NT, etc. El sistema funciona sin importarle en qu&eacute; 
+  m&aacute;quina est&aacute; corriendo el servidor. </p>
+<p>Otros conceptos que aparecer&aacute;n a lo largo de este m&oacute;dulo:</p>
+<ul>
+  <li><b>Servidor proxy</b>: Centraliza peticiones de los clientes y las reenv&iacute;a 
+    hacia otras m&aacute;quinas. Puede servir como nivel de indirecci&oacute;n 
+    y seguridad. Tambi&eacute;n puede ser usado para realizar balanceo de carga.</li>
+  <li><b>Cortafuegos</b> (<i><b>firewall</b></i>): Proporciona servicios de filtrado, 
+    autorizaci&oacute;n y autentificaci&oacute;n. Puede actuar como proxy y ayuda 
+    a manejar los ataques de los <i>hackers.</i></li>
+  <li><b>M&aacute;quina</b>: Representa una unidad f&iacute;sica donde reside 
+    un servidor. Una m&aacute;quina se define como tipo Unix o no Unix (Windows 
+    NT, etc.). </li>
+  <li><b>Servidor</b>: Un servidor es una instancia de la clase <i>weblogic.Server</i> 
+    ejecut&aacute;ndose dentro de una m&aacute;quina virtual de Java. Un servidor 
+    est&aacute; alojado en una m&aacute;quina, pero una m&aacute;quina puede contener 
+    varios servidores. Si un servidor no lo declaramos en ninguna m&aacute;quina 
+    WLS asume que est&aacute; en una creada por defecto.</li>
+  <li><b>Dominio</b>: Un dominio es una unidad administrativa. Sirve para declarar 
+    varios servidores, aplicaciones, etc. y que todos ellos est&eacute;n asociados 
+    mediante el nombre del dominio.</li>
+  <li><b><i>Clustering</i></b> (<b>asociaci&oacute;n</b>): Los <i>clusters</i> 
+    permiten asociar maquinas y servidores para que act&uacute;en de forma conjunta 
+    como una &uacute;nica instancia. La creaci&oacute;n de un cluster va a permitir 
+    el balanceo de carga y la recuperaci&oacute;n frente a fallos.</li>
+  <li><b>Balanceo de carga</b>: Es una t&eacute;cnica utilizada para distribuir 
+    las peticiones entre varios servidores de tal forma que todos los servidores 
+    respondan al mismo n&uacute;mero de peticiones.</li>
+  <li><b>Recuperaci&oacute;n ante fallos</b> (<b><i>failover</i></b>): Permite 
+    evitar la ca&iacute;da de un sistema cuando una m&aacute;quina deja de funcionar 
+    o funciona incorrectamente. </li>
+  <li><b>Puerto de escucha</b>: Un servidor tiene varios puertos por los que puede 
+    &quot;escuchar&quot; las peticiones. Existen puertos ya asignados a aplicaciones 
+    concretas, como por ejemplo el puerto de http que suele ser el 80. Los puertos 
+    permiten que varias aplicaciones puedan atender distintas peticiones en la 
+    misma m&aacute;quina. Un puerto en una direcci&oacute;n se especifica de la 
+    siguiente manera: <i>http://localhost:7001/direc</i> . Con :7001 indicamos 
+    el puerto que estamos <i>atacando</i>. Los puertos del 0 al 1023 son reservados 
+    por el sistema. Podemos disponer de los puertos del 1024 al 65536. Hay que 
+    tener en cuenta que dos servicios no pueden estar escuchando en el mismo puerto.</li>
+  <li><b>Modo producci&oacute;n y modo desarrollo</b>. Hablaremos muy a menudo 
+    de modo desarrollo y modo producci&oacute;n. El modo desarrollo es cuando 
+    nos encontramos desarrollando nuestra aplicaci&oacute;n y no est&aacute; disponible 
+    exteriormente. El modo producci&oacute;n es cuando est&aacute; funcionando 
+    a pleno rendimiento y tenemos clientes que se encuentran utiliz&aacute;ndola. 
+    Por defecto, un dominio se arranca en modo desarrollo.</li>
+</ul>
+<center>
+  <p><img src="segunda.jpg"><br>
+</p>
+</center>
+<div align="left"> 
+  <h1>Tema 2: Instalaci&oacute;n del servidor Bea WebLogic 8.1</h1>
+  <p>Los pasos a seguir en la instalaci&oacute;n de un servidor de aplicaciones 
+    es la siguiente:</p>
+  <ol>
+    <li>Instalaci&oacute;n del software. Esta acci&oacute;n copia los ficheros 
+      necesarios y crea la estructura inicial de directorios.</li>
+    <li>Configuraci&oacute;n de dominios. Debemos configurar el o los dominios 
+      necesarios y todos los componentes dentro de cada dominio (servidores, cluster, 
+      m&aacute;quinas, etc.).</li>
+  </ol>
+  <h2>2.1. Instalaci&oacute;n del servidor de aplicaciones</h2>
+  <p>Vamos a instalar el servidor de aplicaciones Bea WebLogic. La instalaci&oacute;n 
+    descrita aqu&iacute; es para la versi&oacute;n 8.1 SP1 y bajo el sistema operativo 
+    Linux. Los requerimientos del sistema para la instalaci&oacute;n de esta versi&oacute;n 
+    son:</p>
+  <ul>
+    <li>Memoria: 256Mb m&iacute;nimo (512Mb aconsejable)</li>
+    <li>Espacio en disco: 400Mb</li>
+    <li>Versi&oacute;n de Java JDK 1.4.1 (se instala junto con el servidor) o 
+      superior. Podemos utilizar otra versi&oacute;n de Java, pero es aconsejable 
+      consultar la informaci&oacute;n que Bea muestra en http://e-docs.bea.com/wls/certifications/certifications/index.html 
+      para comprobar la compatibilidad entre versiones.</li>
+  </ul>
+  <p>Ejecutamos el fichero <em>server811_linux32.bin</em><i> </i>(no es necesario 
+    ser superusuario para instalar el servidor de aplicaciones). Esperamos hasta 
+    que nos aparezca la siguiente pantalla.</p>
+  <center>
+    <p><img src="instalacion/1-2004.png" width="600" height="434"></p>
+    <p>Nos aparecer&aacute; una ventana de licencia a la que decimos que s&iacute; 
+      y pasamos a la siguiente pantalla.</p>
+  </center>
+  <p><img src="instalacion/2-2004.png" width="600" height="434"></p>
+  <p>Si ya disponemos de un directorio creado lo podemos elegir de la lista. Si 
+    no, podemos dejar el mostrado por defecto, o definir uno distinto.</p>
+  <p><img src="instalacion/3-2004.png" width="600" height="434"></p>
+  <p>Ahora nos permite elegir entre realizar la instalaci&oacute;n completa o 
+    bien elegir los elementos a instalar. Nosotros vamos a elegir la instalaci&oacute;n 
+    completa. </p>
+  <p><img src="instalacion/4-2004.png" width="600" height="434"></p>
+  <p>Nos queda elegir el directorio donde queremos que se instale el servidor 
+    de aplicaciones. Por defecto lo hace en el directorio <em>weblogic81</em>. 
+  </p>
+  <p><img src="instalacion/5-2004.png" width="600" height="434"></p>
+  <p>Despu&eacute;s de los pasos anteriores empezar&aacute; la instalaci&oacute;n, 
+    que durar&aacute; unos minutos. Cuando finalice nos aparecer&aacute; la ventana 
+    siguiente. Deseleccionamos la opci&oacute;n <i>Run QuickStart </i>y pinchamos 
+    en <i>Done.</i> Hemos finalizado la instalaci&oacute;n del servidor.</p>
+  <center>
+    <img src="instalacion/7-2004.png" width="600" height="434" > 
+  </center>
+  <p>La estructura de directorios creada en la instalaci&oacute;n es la siguiente:</p>
+  <center>
+    <p><img src="instalacion/8-2004.png" width="662" height="227"></p>
+  </center>
+  <p>El directorio <i>jdk141_03</i> contiene la distribuci&oacute;n 1.4.1 de J2SE 
+    de Sun. Si tenemos una versi&oacute;n actualizada de Java simplemente la a&ntilde;adiremos 
+    al CLASSPATH. En este punto debemos tener un cuidado especial y comprobar 
+    si la versi&oacute;n de Java es soportada por la versi&oacute;n del servidor 
+    de aplicaciones. Para comprobarlo visitar la p&aacute;gina de Bea. El directorio 
+    de <i>logs </i>contiene el fichero log de instalaci&oacute;n. El directorio 
+    <i>utils</i> contiene algunas utilidades que iremos viendo conforme las utilicemos. 
+    El siguiente directorio, <i>weblogic81</i>, es el que contiene todas las librer&iacute;as, 
+    clases y herramientas adicionales para el funcionamiento de nuestro servidor. 
+    El fichero <i>license.bea</i> contiene la informaci&oacute;n de nuestra licencia 
+    en formato XML. Contendr&aacute; informaci&oacute;n de la fecha de expiraci&oacute;n 
+    de la licencia, de qu&eacute; caracter&iacute;sticas disponemos (n&uacute;mero 
+    de puestos, n&uacute;mero de IPs, etc.), y toda la informaci&oacute;n necesaria 
+    para la ejecuci&oacute;n del servidor. El ejecutable <em>UpdateLicense.sh</em> 
+    nos va a permitir actualizar una nueva licencia.</p>
+  <p>A su vez, el directorio <i>weblogic81</i> contiene los siguientes subdirectorios:</p>
+  <center>
+    <p><img src="instalacion/9-2004.png" width="663" height="220"></p>
+  </center>
+  <p>Nos interesan, de momento, el directorio <i>common</i> y el <i>server</i>. 
+    <i>Common</i> contiene los subdirectorios mostrados en la siguiente figura. 
+    En el directorio <i>bin</i> tenemos una herramienta para crear dominios. El 
+    directorio <i>nodemanager</i> contiene ficheros de configuraci&oacute;n para 
+    el Node Manager.</p>
+  <center>
+    <p><img src="instalacion/10-2004.png" width="649" height="334"></p>
+  </center>
+  <p>El directorio <i>server</i> contiene datos y utilidades relacionadas con 
+    el servidor de aplicaciones. En el directorio <i>bin</i> tenemos varias aplicaciones 
+    y los <i>scripts</i> para arrancar el servidor de aplicaciones y el Node Manager. 
+    El ejecutable para arrancar un servidor que se crea en nuestro dominio llama 
+    a estos ejecutables. En otro directorio dentro de <i>server</i>, el subdirectorio 
+    <i>lib</i>, tenemos el fichero <i>weblogic.jar</i> que tendremos que incluir 
+    en el <i>classpath</i> cuando queramos realizar una aplicaci&oacute;n que 
+    utilice los recursos de WebLogic. Tambi&eacute;n disponemos en este directorio 
+    de los ficheros que gestionan las pol&iacute;ticas de seguridad.</p>
+  <center>
+    <p><img src="instalacion/11-2004.png" width="655" height="332"></p>
+  </center>
+  <h2>2.2. Arranque del dominio y consola de administraci&oacute;n</h2>
+  <p>Antes de empezar a definir los elementos que soportan la ejecuci&oacute;n 
+    del servidor de aplicaciones vamos a comentar algunos conceptos sobre los 
+    distintos tipos de servidores. </p>
+  <p>Como ya hemos comentado, nuestra principal unidad de trabajo es el dominio. 
+    El dominio no es m&aacute;s que una agrupaci&oacute;n de todos los componentes 
+    que utilizamos para nuestro trabajo (servidores, m&aacute;quinas, aplicaciones, 
+    etc.). Un ejemplo de uso de dominios es el siguiente. Cuando se desarrolla 
+    una aplicaci&oacute;n se suele separar la fase de desarrollo de una aplicaci&oacute;n 
+    con la fase de producci&oacute;n (cuando la aplicaci&oacute;n ya est&aacute; 
+    funcionando hacia el usuario y dando servicio). Para manejar esta situaci&oacute;n 
+    podemos tener creados dos dominios, uno para desarrollo y otro para producci&oacute;n. 
+    A pesar de contener exactamente los mismos componentes funcionan de forma 
+    independiente. </p>
+  <p>Dentro de un dominio vamos a tener m&aacute;quinas y servidores. Al menos 
+    debemos tener un servidor en nuestro dominio, que llamaremos de <i>administraci&oacute;n</i>. 
+    El servidor de administraci&oacute;n es &uacute;nico en el dominio y va a 
+    realizar, como su nombre indica, tareas administrativas. Podemos tener m&aacute;s 
+    servidores, que llamaremos <i>administrados</i> (<i>managed</i>). De este 
+    tipo de servidor podemos tener tantos como queramos. </p>
+  <p>Vamos a empezar a crear nuestro primer dominio. Vamos a llamarlo <i>MiDominio</i> 
+    y contendr&aacute; dos servidores alojados en la misma m&aacute;quina: <i>Servidor1</i> 
+    y <i>Servidor2</i>. El servidor 1 ser&aacute; el de administraci&oacute;n. 
+    Utilizaremos un asistente que incorpora Weblogic para crear el dominio y los 
+    servidores. Nos situamos en $HOME_BEA/weblogic81/common/bin ($HOME_BEA es 
+    el directorio donde hemos instalado Weblogic, en mi m&aacute;quina /home/miguel/bea) 
+    y ejecutamos ./config.sh Tambi&eacute;n existe una herramienta llamada <em>QuickStart</em>, 
+    pero hemos notado que en Linux no funciona de forma correcta. En Windows aparece 
+    en el men&uacute; de WebLogic dentro del men&uacute; de programas.</p>
+  <p>Nos aparecer&aacute; la ventana que se muestra en la siguiente figura, en 
+    la que podemos optar por crear una nueva configuraci&oacute;n o extender (a&ntilde;adir 
+    nuevas caracter&iacute;sticas) a una existente. Vamos a seleccionar crear 
+    una nueva configuraci&oacute;n. Pulsamos en el bot&oacute;n <i>Next.</i></p>
+  <center>
+    <img src="instalacion/12-2004.png" width="780" height="563"> 
+  </center>
+  <p>Ahora debemos seleccionar si queremos instalar un dominio con servidores, 
+    un dominio Workshop o un dominio con ejemplos. Nos interesa la opci&oacute;n 
+    seleccionada.</p>
+  <center>
+    <img src="instalacion/13-2004.png" width="780" height="563"> 
+  </center>
+  <p>Pulsamos <i>Next</i> y nos deja elegir entre utilizar las opciones por defecto 
+    (no deja crear servidores adicionales) o definir nuestra configuraci&oacute;n. 
+    Elegimos <em>Custom</em> para poder definir los servidores como queramos. 
+    Pulsamos <i>Next</i>.</p>
+  <center>
+    <img src="instalacion/14-2004.png" width="780" height="563"> 
+  </center>
+  <p>En la siguiente pantalla se nos pide que definamos el servidor de administraci&oacute;n. 
+    Tenemos que definir el nombre del servidor (debe ser &uacute;nico en el dominio), 
+    en qu&eacute; direcci&oacute;n (IP &oacute; DNS) estar&aacute; escuchando 
+    el servidor y los puertos de escucha (por defecto se suele dar el 7001 y el 
+    7002 para el puerto seguro).</p>
+  <center>
+  </center>
+  <center>
+  </center>
+  <center>
+    <img src="instalacion/16-2004.png" width="780" height="563"> 
+  </center>
+  <p>La siguiente pantalla nos da la opci&oacute;n de poder configurar servidores 
+    adicionales. Vamos a decirle que s&iacute;, para poder definir el otro servidor 
+    en nuestro sistema. </p>
+  <center>
+    <img src="instalacion/17-2004.png" width="780" height="563"> 
+  </center>
+  <p>Al pinchar en <i>Next</i> nos aparece la ventana mostrada a continuaci&oacute;n 
+    donde podemos definir nuevos servidores. Los botones <em>Add </em>y <em>Delete</em> 
+    sirven para a&ntilde;adir nuevos servidores o eliminarlos. Para cada nuevo 
+    servidor debemos definir las mismas opciones que dimos al servidor de administraci&oacute;n. 
+    Un punto importante es que el puerto de escucha debe ser distinto para cada 
+    servidor que se ejecute en la misma m&aacute;quina.</p>
+  <center>
+    <img src="instalacion/18-2004.png" width="780" height="563"> 
+  </center>
+  <p>La siguiente pantalla nos permite definir un cluster. Veremos esta opci&oacute;n 
+    m&aacute;s adelante, de momento pasamos de pantalla.</p>
+  <center>
+    <p><img src="instalacion/19-2004.png" width="780" height="563"></p>
+    <p>En esta se nos permite definir una m&aacute;quina. Tambi&eacute;n lo dejamos 
+      para m&aacute;s adelante.</p>
+  </center>
+  <center>
+    <p><img src="instalacion/20-2004.png" width="780" height="563"></p>
+    <p>Ahora se nos da la opci&oacute;n de configurar componentes JDBC. Decimos 
+      que no, pues veremos estas opciones m&aacute;s adelante.</p>
+    <p><img src="instalacion/21-2004.png" width="780" height="563"></p>
+    <p>De la misma forma se nos permite configurar componentes JMS (mensajer&iacute;a). 
+      Seleccionamos no.</p>
+    <p><img src="instalacion/22-2004.png" width="780" height="563"> </p>
+  </center>
+  <p>Al menos debemos configurar un usuario de administraci&oacute;n. Vamos a 
+    darle como nombre <em>system</em> y como contrase&ntilde;a <em>weblogic</em>. 
+    En la parte inferior de la pantalla se nos da la opci&oacute;n de definir 
+    usuarios adicionales.</p>
+  <p><img src="instalacion/23-2004.png" width="780" height="563"></p>
+  <p>Como ya comentamos, existen dos modos principales de trabajo: modo desarrollo 
+    y modo producci&oacute;n. Para cada modo existen una serie de caracter&iacute;sticas 
+    que est&aacute;n habilitadas o no. Nosotros vamos a trabajar siempre en modo 
+    desarrollo. Podemos seleccionar la versi&oacute;n de Java que m&aacute;s nos 
+    convenga. Por defecto vamos a utilizar siempre la versi&oacute;n de Java que 
+    incorpora WebLogic.</p>
+  <p><img src="instalacion/24-2004.png" width="780" height="563"></p>
+  <p>Esta ventana nos muestra la informaci&oacute;n introducida (servidores, m&aacute;quinas, 
+    etc.) previamente y nos pide que demos el nombre del dominio. Se va a llamar 
+    <em>MiDominio.</em> </p>
+  <p><img src="instalacion/25-2004.png" width="780" height="563"></p>
+  <p>Iniciamos la creaci&oacute;n del dominio y cuando finalice nos tiene que 
+    aparecer una ventana como la siguiente. Pinchamos en <em>Done</em> y hemos 
+    terminado de definir el dominio.</p>
+  <p><img src="instalacion/26-2004.png" width="780" height="563"></p>
+  <p>Una vez creado el dominio la estructura de directorios creada es la siguiente:</p>
+  <center>
+    <img src="instalacion/27-2004.png" width="652" height="388"> 
+  </center>
+  <p>Tenemos un directorio por cada servidor creado, donde se guardan datos espec&iacute;ficos 
+    del servidor (por ejemplo el fichero log). Estos directorios se crean cuando 
+    se pongan en marcha los servidores. El fichero <i>config.xml</i> contiene 
+    los datos del dominio (nombre de los servidores, m&aacute;quinas, dominio, 
+    etc., nombre de las aplicaciones y su configuraci&oacute;n, etc.). Los ficheros 
+    <i>startWebLogic.sh </i>y <i>startManagedWebLogic.sh</i> sirven para arrancar 
+    el servidor de administraci&oacute;n y los administrados, respectivamente.</p>
+  <h2>2.3. Arranque y configuraci&oacute;n</h2>
+  <p>Para poner en marcha los servidores debemos utilizar unos ejecutables que 
+    se encuentran en $HOME_BEA/user_projects/MiDominio. Primero debemos arrancar 
+    el servidor de administraci&oacute;n. Para ello ejecutamos desde l&iacute;nea 
+    de comandos: ./<i>startWebLogic.sh</i> Cuando nos aparezca el siguiente mensaje 
+    ya est&aacute; arrancado el servidor:</p>
+  <p><i>&lt;Server started in RUNNING mode&gt;</i></p>
+  <p>En este momento podemos arrancar los servidores administrados. Para ponerlos 
+    en marcha debemos utilizar el siguiente comando con los par&aacute;metros 
+    indicados: </p>
+  <p><i>./startManagedServer.sh nombre_servidor direcci&oacute;n_servidor_administraci&oacute;n</i></p>
+  <p>Por ejemplo, para arrancar el servidor administrado creado anteriormente 
+    debemos ejecutar el siguiente comando:</p>
+  <p><i>./startManagedServer.sh servidor2 http://localhost:7001</i></p>
+  <p>El servidor de administraci&oacute;n nos facilita una aplicaci&oacute;n que 
+    permite administrar nuestro dominio. Es la consola de administraci&oacute;n 
+    (<em>Console</em>). Con la consola podemos configurar los atributos de los 
+    distintos recursos, hacer despliegues de aplicaciones, monitorizar el uso 
+    de recursos, ver mensajes de log y poner en marcha o parar los distintos servidores 
+    de nuestro dominio. La consola se gestiona con un navegador en la siguiente 
+    direcci&oacute;n: <i>http://direcci&oacute;n-de-escucha:7001/console</i>. 
+    Nos aparecer&aacute; una p&aacute;gina donde se nos solicita el usuario y 
+    la contrase&ntilde;a. Una vez introducida nos aparecer&aacute; la siguiente 
+    p&aacute;gina.</p>
+  <center>
+    <img src="instalacion/28-2004.png" width="852" height="566"> 
+  </center>
+  <p>&nbsp;</p>
+  <p>La parte de la izquierda es una applet en forma de &aacute;rbol jer&aacute;rquico 
+    que nos muestra todas las opciones que podemos configurar en el dominio. En 
+    la parte superior del &aacute;rbol tenemos el nombre del dominio. Dentro del 
+    dominio, las primeras opciones nos permiten configurar los elementos del dominio 
+    (servidores, m&aacute;quinas, cluster, etc.). A continuaci&oacute;n podemos 
+    realizar despliegues de aplicaciones, aplicaciones web, EJBs, etc. La &uacute;ltima 
+    opci&oacute;n contiene los servicios configurables (JDBC, JMS, Virtual Hosts, 
+    etc.). Los elementos de la parte izquierda disponen de un men&uacute; adicional 
+    que se obtiene pinchando con el bot&oacute;n derecho sobre un elemento del 
+    &aacute;rbol, como el mostrado en la siguiente figura:</p>
+  <center>
+    <img src="instalacion/29-2004.png" width="283" height="317"> 
+  </center>
+  <p>Las opciones var&iacute;an dependiendo del elemento seleccionado. </p>
+  <p>En la parte derecha tenemos las mismas opciones a las que podemos acceder 
+    mediante el applet. Tambi&eacute;n nos ir&aacute;n apareciendo las detalles 
+    de configuraci&oacute;n para un servicio o caracter&iacute;stica concreta 
+    elegida en la parte izquierda. </p>
+  <p>Vamos a ver las opciones m&aacute;s generales. Si pinchamos en el elemento 
+    <i>console</i> nos permite configurar opciones generales a todos los dominios. 
+    Nos aparecer&aacute; una p&aacute;gina como la mostrada a continuaci&oacute;n 
+    donde podemos:</p>
+  <ul>
+    <li>Seleccionar el idioma (ingl&eacute;s o japon&eacute;s)</li>
+    <li>Indicar el tiempo de refresco de las p&aacute;ginas.</li>
+    <li>Indicar el tiempo de refresco de los datos gr&aacute;ficos (vistos un 
+      poco m&aacute;s adelante</li>
+    <li>La opci&oacute;n de mostrar opciones avanzadas por defecto nos permite 
+      visualizar dichas opciones, que por defecto est&aacute;n ocultas.</li>
+    <li>Si marcamos la opci&oacute;n <i>Remember Last Tab</i>, cuando pasemos 
+      de una opci&oacute;n a otra se acordar&aacute; de la &uacute;ltima solapa 
+      visitada en dicha opci&oacute;n.</li>
+    <li>La opci&oacute;n <em>Display Help Text</em> muestra el texto que nos aparece 
+      debajo de cada opci&oacute;n. </li>
+    <li>Al marcar la &uacute;ltima opci&oacute;n nos permite disponer del &aacute;rbol 
+      de navegaci&oacute;n.</li>
+  </ul>
+  <center>
+    <img src="instalacion/30-2004.png" width="681" height="614"> 
+  </center>
+  <p>En la otra solapa simplemente nos da informaci&oacute;n de versi&oacute;n. 
+  </p>
+  <center>
+    <img src="instalacion/31-2004.png" width="475" height="400"> 
+  </center>
+  <p>Pasamos a las opciones para el dominio. Pinchamos en el nombre de nuestro 
+    dominio y nos aparece una ventana como la mostrada en la ventana siguiente. 
+    El s&iacute;mbolo <img src="instalacion/int.png"> que aparece a la izquierda 
+    de algunas opciones nos indica que es necesario reiniciar uno o varios servidores 
+    si cambiamos esa opción. En la configuraci&oacute;n general (la solapa actual) 
+    podemos configurar las siguientes opciones:</p>
+  <ul>
+    <li>La habilitaci&oacute;n del puerto de administraci&oacute;n, si marcada, 
+      permite que todos los elementos del dominio se comuniquen con el servidor 
+      de administraci&oacute;n mediante una conexi&oacute;n segura. Adem&aacute;s 
+      podemos configurar un puerto adicional (no puede ser el seguro del servidor 
+      de administraci&oacute;n) para dichas comunicaciones. Esta opci&oacute;n 
+      permite que podamos arrancar un servidor en modo <i>standby</i> en el cual 
+      el servidor no escucha las peticiones que le llegan a su puerto, pero se 
+      permite una comunicaci&oacute;n con el servidor de administraci&oacute;n. 
+      Tambi&eacute;n permite separar las peticiones de aplicaci&oacute;n (llegan 
+      de las aplicaciones que usan el sistema) de las peticiones de administraci&oacute;n 
+      (generadas por o hacia el servidor de administraci&oacute;n). De esta manera 
+      una petici&oacute;n del servidor de administraci&oacute;n puede ser atendida 
+      sin tener que esperar su turno dentro de las peticiones de aplicaci&oacute;n. 
+      Si activamos esta opci&oacute;n debemos asignarle un puerto de comunicaci&oacute;n. 
+      Al activar la opci&oacute;n, la consola s&oacute;lo responde por https://direcci&oacute;n:puerto-asignado/console</li>
+    <li>La opci&oacute;n siguiente nos permite especificar si trabajamos en modo 
+      producci&oacute;n. La activaci&oacute;n de esta opci&oacute;n implica que 
+      ciertas caracter&iacute;sticas est&aacute;n activas y otras no.</li>
+    <li>Si activamos la &uacute;ltima opci&oacute;n para que un cluster responda 
+      a una aplicaci&oacute;n todos sus servidores tienen que estar funcionando 
+      a la vez.</li>
+  </ul>
+  <center>
+    <p><img src="instalacion/32-2004.png" width="665" height="563"></p>
+    <p>Si pinchamos en <em>Show</em> se nos mostrar&aacute;n las opciones avanzadas. 
+      Son las siguientes:</p>
+    <ul>
+      <li>Habilitar la consola. En modo producci&oacute;n suele ser habitual deshabilitar 
+        la consola, para que no pueda ser accedida desde el exterior. </li>
+      <li>La siguiente opci&oacute;n nos permite dar un nombre distinto a la aplicaci&oacute;n 
+        de la consola. Si, por ejemplo, damos el nombre <i>miconsola</i>, para 
+        acceder a la consola tendr&iacute;amos que teclear http://direcci&oacute;n:puerto/miconsola. 
+      </li>
+      <li>Por &uacute;ltimo podemos especificar cu&aacute;ntos versiones del fichero 
+        de configuraci&oacute;n se guardar&aacute;n.</li>
+    </ul>
+  </center>
+  <center>
+    <p><img src="instalacion/33-2004.png" width="656" height="331"></p>
+  </center>
+  <p>En la solapa de <i>Logging</i> (las opciones JTA y SNMP las veremos m&aacute;s 
+    adelante) podemos configurar el fichero log del dominio. El fichero log almacena 
+    toda la informaci&oacute;n y mensajes del dominio. Las opciones son las siguientes:</p>
+  <ul>
+    <li>Podemos cambiar el nombre del fichero log. </li>
+    <li>La siguiente opci&oacute;n permite especificar el tipo de rotaci&oacute;n. 
+      Las opciones a elegir son por tama&ntilde;o o por tiempo. La rotaci&oacute;n 
+      permite que el fichero log no vaya creciendo indefinidamente. Si elegimos 
+      por tama&ntilde;o, se coger&aacute; el valor del par&aacute;metro <i>Minimum 
+      File Size</i> y, cuando el fichero de log alcance ese tama&ntilde;o, crear&aacute; 
+      un nuevo fichero de log, renombrando el anterior. Si, por ejemplo, el nombre 
+      del fichero de log es <i>midominio.log</i> y hemos seleccionado una rotaci&oacute;n 
+      por tama&ntilde;o y 500k de tama&ntilde;o m&iacute;nimo, cuando el fichero 
+      alcance ese tama&ntilde;o el sistema cambiar&aacute; el nombre del fichero 
+      por <i>midominio.0</i> y crear&aacute; uno nuevo, <i>midominio.log</i>, 
+      donde se seguir&aacute; almacenando la salida del sistema. Cuando se vuelva 
+      a superar ese l&iacute;mite se le dar&aacute; el nombre <i>midominio.1</i> 
+      y as&iacute; sucesivamente. El otro tipo de rotaci&oacute;n, de tiempo, 
+      act&uacute;a de manera similar, pero especificando un tiempo de rotaci&oacute;n. 
+      Cuando el reloj del sistema llega a esa hora se produce el cambio de fichero. 
+      En esta opci&oacute;n, podemos especificar cada cuantas horas se produce 
+      el cambio, cambiando el valor de <i>File Time Span</i>. </li>
+    <li>La pen&uacute;ltima opci&oacute;n permite limitar el n&uacute;mero de 
+      ficheros a almacenar. Si la activamos toma el valor de la siguiente opci&oacute;n 
+      <i>Log Files to Retain </i>y, cuando el contador de fichero alcance ese 
+      valor, empieza desde cero sobreescribiendo el primero.</li>
+    <li>Si pinchamos en la opci&oacute;n <i>View Domain Log</i> se nos permite 
+      ver el fichero log (ver siguientes figuras).</li>
+  </ul>
+  <center>
+    <img src="instalacion/34-2004.png" width="595" height="597"> 
+  </center>
+  <p>Visualizaci&oacute;n del fichero de log. </p>
+  <center>
+    <img src="instalacion/35-2004.png" width="580" height="392"> 
+  </center>
+  <p>Si pinchamos en <i>Customize this view </i>se nos permite configurar los 
+    mensajes, mostrando las opciones que queremos que se vean en el fichero de 
+    log.</p>
+  <center>
+    <img src="instalacion/36-2004.png" width="430" height="536"> 
+  </center>
+  <p>En la siguiente figura, la opci&oacute;n <i>Auto Update Interval</i> indica 
+    al sistema cada cu&aacute;nto tiempo debe comprobar si existen aplicaciones 
+    nuevas. En modo producci&oacute;n se deshabilita esta comprobaci&oacute;n. 
+  </p>
+  <center>
+    <img src="instalacion/37-2004.png" width="470" height="303"> 
+  </center>
+  <p>Cuando seleccionamos la solapa <i>Monitoring</i> nos aparece un enlace que 
+    nos permite monitorizar los servidores de nuestro dominio. Tenemos los servidores 
+    creados en nuestro dominio y se nos indica la direcci&oacute;n de escucha, 
+    los puertos de escucha y el estado del servidor. </p>
+  <center>
+    <p><img src="instalacion/38-2004.png" width="543" height="327"> </p>
+    <p>La solapa de control permite controlar (parar, poner en marcha, etc.) los 
+      servidores del dominio. </p>
+    <p><img src="instalacion/44-2004.PNG" width="576" height="421"></p>
+  </center>
+  <p>La &uacute;ltima solapa, <i>Notes</i>, nos permite introducir notas asociadas 
+    a la configuraci&oacute;n actual. Esto es com&uacute;n en la mayor&iacute;a 
+    de opciones de configuraci&oacute;n. Tienen un car&aacute;cter informativo.</p>
+  <center>
+    <p><img src="instalacion/39-2004.png" width="435" height="288"></p>
+    <p>Si pinchamos en el enlace <em>View Domain-wide Security Settings </em>nos 
+      visualiza opciones de seguridad. Todo lo referente a <i>realm </i>lo explicaremos 
+      m&aacute;s adelante. </p>
+    <center>
+      <p><img src="instalacion/40-2004.png" width="554" height="340"></p>
+      <p>Si activamos la opci&oacute;n <i>Guest Disabled</i> no permitiremos que 
+        entre el usuario invitado. </p>
+    </center>
+    <p><img src="instalacion/41-2004.png" width="483" height="392"></p>
+    <p>En el apartado de <i>File Realm</i> podemos configurar opciones espec&iacute;ficas 
+      de seguridad como: n&uacute;mero m&aacute;ximo de usuarios, grupos y ACL.</p>
+    <p><img src="instalacion/42-2004.png" width="584" height="439"></p>
+    <p>La siguiente solapa tiene que ver con caracter&iacute;sticas de la contrase&ntilde;a 
+      de acceso y el bloqueo de una cuenta por haber intentado acceder con una 
+      contrase&ntilde;a incorrecta. Si un usuario intenta acceder al sistema e 
+      introduce una contrase&ntilde;a incorrecta, cuando realice un determinado 
+      n&uacute;mero de intentos la cuenta ser&aacute; deshabilitada. Las opciones 
+      son:</p>
+    <ul>
+      <li>Longitud m&iacute;nima de contrase&ntilde;a. Indica el n&uacute;mero 
+        de caracteres m&iacute;nimo que debe tener la contrase&ntilde;a.</li>
+      <li>La siguiente opci&oacute;n, si marcada, permite el bloqueo de una cuenta 
+        al intentar acceder con una contrase&ntilde;a err&oacute;nea.</li>
+      <li>La opci&oacute;n <i>Lockout Threshold</i> especifica el n&uacute;mero 
+        de intentos err&oacute;neos que provocan el bloqueo de la cuenta.</li>
+      <li>La siguiente es el n&uacute;mero de minutos que se bloquea la cuenta.</li>
+      <li>La opci&oacute;n <i>Lockout Reset Duration </i>indica el n&uacute;mero 
+        de minutos durante los cuales se cuenta el n&uacute;mero de intentos fallidos. 
+        Si marcamos cinco, si durante cinco minutos se han realizado cinco (el 
+        n&uacute;mero indicado por <i>Lockout Threshold</i>) intentos fallidos, 
+        se produce el bloqueo.</li>
+      <li>La &uacute;ltima opci&oacute;n es el tama&ntilde;o de la cache de intentos 
+        fallidos de cualquier usuario que el sistema almacenar&aacute;.</li>
+    </ul>
+    <p><img src="instalacion/43-2004.png" width="644" height="561"></p>
+    <p>El resto de opciones de seguridad se detallar&aacute;n en el apartado de 
+      seguridad.</p>
+    <p></p>
+  </center>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
+</div>
+</body>
+</html>

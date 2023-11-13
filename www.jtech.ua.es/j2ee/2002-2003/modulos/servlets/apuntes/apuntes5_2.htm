@@ -1,0 +1,265 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+  <title>Tema 5: Filtros</title>
+ 
+  <meta content="text/html; charset=iso-8859-1"
+ http-equiv="Content-Type">
+  <link href="../../../apuntes.css" rel="stylesheet" type="text/css">
+ 
+  <meta content="Microsoft FrontPage 4.0" name="GENERATOR">
+</head>
+ <body bgcolor="#ffffff" text="#000000">
+ 
+<h2>5.8 Wrappers</h2>
+ 
+<p>Hasta ahora hemos visto como interceptar la petici&oacute;n que se realiza
+   a un determinado recurso de nuestra web mediante filtros, pero, &iquest;y
+si    queremos interceptar la respuesta que nos devuelve el servidor para
+analizarla    o modificarla?</p>
+ 
+<p>Cuando desde nuestro filtro pasemos el procesamiento de la petici&oacute;n
+   al siguiente elemento de la cadena (<b>doFilter</b>), delegaremos en este
+siguiente    elemento el procesamiento de la petici&oacute;n y la generaci&oacute;n
+de la    respuesta. Supongamos que este elemento es el recurso final que
+se hab&iacute;a    solicitado. En este caso el contenido de este recurso
+ser&aacute; escrito en    el objeto respuesta, lo cual producir&aacute; que
+dicho contenido sea devuelto    al cliente.</p>
+ 
+<p>Sin embargo, nosotros no queremos que sea devuelto directamente al cliente,
+   sino que queremos procesarla previamente en nuestro filtro antes de devolverla.
+   Con este objeto <b>ServletResponse</b> (<b>HttpServletResponse</b>) no
+podremos hacer esto,    ya que cuando se escribe en &eacute;l lo que se hace
+es devolver la respuesta    al cliente, y una vez escrita no podemos acceder
+nuevamente a ella ni modificarla.</p>
+ 
+<p>La soluci&oacute;n a nuestro problema es sustituir el objeto respuesta
+que    proporcionamos al siguiente elemento de la cadena por un objeto de
+respuesta    creado por nosotros.</p>
+ 
+<h3>5.8.1 &iquest;Qu&eacute; es un wrapper?</h3>
+ 
+<p>Un <i>wrapper</i> es un objeto que envuelve al objeto original, de forma
+que no se    acceda directamente al objeto original sino al <i>wrapper</i>.
+El <i>wrapper</i> implementar&aacute;    la misma interfaz del objeto al
+que envuelve, de forma que externamente se trabajar&aacute;    con &eacute;l
+de la misma forma, por lo que podemos sustituir el original por    el <i>wrapper</i>
+siendo esto transparente a los sucesivos elementos que vayan a manipular
+   este objeto.</p>
+ 
+<p>Cuando se llame a un m&eacute;todo del <i>wrapper</i> podr&aacute;, o
+bien redirigir    la llamada al correspondiente m&eacute;todo del objeto
+original al que envuelve,    o bien tratar por si mismo la llamada a dicho
+m&eacute;todo. De esta forma,    podremos redefinir el comportamiento que
+tendr&aacute;n determinadas operaciones.</p>
+ 
+<p>Encontramos para nuestro fin <i>wrappers</i> para la petici&oacute;n y la respuesta: 
+  <b>ServletRequestWrapper</b> (<b>HttpServletRequestWrapper</b>) y <b>ServletResponseWrapper</b> 
+  (<b>HttpServletResponseWrapper</b>). Con ellos podremos crear implementaciones 
+  propias del objeto petici&oacute;n y respuesta que envuelvan a los originales, 
+  pudiendo de esta forma redefinir el comportamiento de determinadas operaciones.</p>
+ 
+<p>Nos centraremos en el <i>wrapper </i>de la respuesta. Con &eacute;l podemos
+evitar    que la respuesta se envie directamente al cliente. En lugar de
+esto, cuando    se escriba la salida en este objeto <i>wrapper</i> de la
+respuesta podemos hacer que    guarde dicha salida en un buffer interno.
+Una vez procesados todos los elementos    de la cadena que est&aacute;n despu&eacute;s
+de nuestro filtro (tras llamar    a <b>doFilter</b>), se habr&aacute; escrito
+la salida generada en el <i>buffer </i>del <i>wrapper</i>.    En este momento
+podemos analizar esta salida, modificarla si es necesario, y    enviarla
+a trav&eacute;s del objeto respuesta original.</p>
+ 
+<h3>5.8.2 Implementaci&oacute;n de un wrapper</h3>
+ 
+<p>Para implementar un wrapper deberemos crearnos una subclase de la clase del 
+  <i>wrapper</i> adecuado para nuestro caso (petici&oacute;n o respuesta), y redefinir 
+  en esta subclase las operaciones cuyo comportamiento queramos cambiar. El funcionamiento 
+  por defecto de las operaciones que no redefinamos ser&aacute; redirigir la petici&oacute;n 
+  al m&eacute;todo correspondiente del objeto (petici&oacute;n o respuesta) original.</p>
+ 
+<p>Vamos a ver esto con un ejemplo de implementaci&oacute;n de un wrapper
+de la    respuesta que guarda en un buffer la respuesta generada por el servidor,
+para    poder ser procesada por nuestro filtro.</p>
+ 
+<p>Puesto que queremos envolver la respuesta, tendremos que crearnos una
+subclase    de <b>ServletResponseWrapper</b>:</p>
+ 
+<pre class="codigo">public class GenericResponseWrapper extends <b>HttpServletResponseWrapper</b> {</pre>
+ 
+<p>Dentro de esta clase deberemos tener el buffer donde vayamos a escribir
+la    salida. Dado que en la salida se puede escribir tanto como flujo de
+bytes como    de caract&eacute;res, para que sea m&aacute;s gen&eacute;rico
+convendr&aacute;    crear el buffer como array de bytes, de forma que se
+pueda escribir en &eacute;l    de las dos formas:</p>
+ 
+<pre class="codigo">	private ByteArrayOutputStream output;<br></pre>
+ En el constructor de la clase simplemente deberemos proporcionar el objeto
+respuesta  original (al cual estaremos envolviendo). Lo que hacemos aqu&iacute;
+es utilizar  el constructor de la superclase proporcion&aacute;ndole la respuesta
+original,  de forma que se encargue de redirigir a &eacute;l las operaciones
+predeterminadas.  Adem&aacute;s deberemos crear nuestro buffer de bytes donde
+se escribir&aacute;  la respuesta:  
+<pre class="codigo">	public GenericResponseWrapper(<b>HttpServletResponse</b> response) { <br>   		super(response); <br>   		output = new ByteArrayOutputStream(); <br>   	} </pre>
+ Proporcionaremos adem&aacute;s un m&eacute;todo para obtener los datos escritos
+ en el buffer:  
+<pre class="codigo">	public byte[] getData() { <br>   		return output.toByteArray(); <br>   	} </pre>
+ 
+<p>Cuando alguien quiera devolver una respuesta al cliente lo que har&aacute;
+   ser&aacute; obtener el flujo de salida del objeto respuesta y escribir
+en &eacute;l.    Por defecto este flujo envia los datos al cliente. Sin embargo
+podemos evitar    que esto ocurra haciendo que los flujos que devuelva sirvan
+para escribir en    el buffer, y no para enviar la respuesta al cliente.
+Se puede enviar la respuesta    de dos formas: mediante un flujo de bytes
+(<b>getOutputStream</b>), o mediante un flujo    de car&aacute;cteres (<b>getWriter</b>),
+por lo que deberemos redefinir ambos m&eacute;todos.</p>
+ 
+<pre class="codigo">	public ServletOutputStream getOutputStream() { <br>   		return new FilterServletOutputStream(output); <br>   	} <br>   <br>   	public PrintWriter getWriter() { <br>   		return new PrintWriter(getOutputStream(), true); <br>   	} <br>}</pre>
+ 
+<p>En el caso del flujo de bytes, deberemos devolverlo como un <b>ServletOutputStream</b>.
+   Por lo tanto tendremos que crearnos un tipo propio de <b>ServletOutputStream</b>
+que    escriba en nuestro buffer:</p>
+ 
+<pre class="codigo">public class FilterServletOutputStream extends <b>ServletOutputStream</b> { <br>	private DataOutputStream stream;<br><br><br>	public FilterServletOutputStream(OutputStream output) {<br>   		stream = new DataOutputStream(output);<br>   	}<br><br><br>	public void write(int b) throws IOException {<br>   		stream.write(b);<br>   	}<br><br><br>	public void write(byte[] b) throws IOException {<br>   		stream.write(b);<br>   	}<br><br><br>	public void write(byte[] b, int off, int len) throws IOException {<br>   		stream.write(b, off, len);<br>   	}<br>}</pre>
+ 
+<p>Este ser&aacute; el flujo que utilicemos para escribir la respuesta en
+forma    de bytes en nuestro buffer interno. </p>
+ 
+<p>Aunque a primera vista parezca compleja la creaci&oacute;n de dicho <i>wrapper</i>,
+   tiene la ventaja de ser reutilizable para cualquier aplicaci&oacute;n
+en la    que necesitemos interceptar la respuesta generada por el servidor.</p>
+ 
+<h3>5.8.3 Utilizaci&oacute;n de un wrapper</h3>
+ 
+<p>Para utilizar el <i>wrapper</i> que hemos creado, deberemos instanciarlo
+a partir    del objeto de respuesta original que le ha sido proporcionado
+a nuestro filtro.    Esto lo haremos antes de que se haya generado el contenido
+del recurso solicitado,    es decir, antes de llamar a <b>doFilter</b>. </p>
+ 
+<pre class="codigo">public void <b>doFilter</b>(ServletRequest request,<br>			ServletResponse response, FilterChain chain) <br>{<br><br>	...<br><br>	GenericResponseWrapper wrapper = new GenericReponseWrapper(response);</pre>
+ 
+<p>Una vez hemos creado nuestro propio objeto respuesta que envuelve a la
+respuesta    original, podemos utilizarlo para que el servidor escriba el
+contenido del recurso    solicitado en &eacute;l. Para esto realizaremos
+la llamada a <b>doFilter</b> proporcionando    como respuesta este <i>wrapper</i>
+que hemos creado:</p>
+ 
+<pre class="codigo">	chain.<b>doFilter</b>(request, <b>wrapper</b>);</pre>
+ 
+<p>Una vez ejecutado este m&eacute;todo se habr&aacute; generado la respuesta
+   en el objeto de respuesta proporcionado, en este caso habr&aacute; sido
+en nuestro    <i>wrapper</i>. Por lo tanto podemos obtener y procesar la
+respuesta seg&uacute;n la    funci&oacute;n de nuestro filtro:</p>
+ 
+<pre class="codigo">	byte [] datos = wrapper.getData();<br><br><br>	... // Procesar datos segun la funcion del filtro</pre>
+ 
+<p>Por &uacute;ltimo, para que el cliente pueda ver esta respuesta, deberemos
+   escribirla en el objeto respuesta original:</p>
+ 
+<pre class="codigo">	OutputStream out = response.<b>getOutputStream</b>();<br>	out.write(datos);<br>	out.close();<br><br>}</pre>
+ 
+<p>Con esto vemos que habremos podido procesar la salida generada en nuestro
+filtro,    y enviarla al cliente para que pueda ser visualizada correctamente.</p>
+ 
+<h2>5.9 Ejemplos de filtros</h2>
+ 
+<p>Vamos a ver a continuaci&oacute;n una serie de ejemplos de usos comunes
+de    los filtros, y c&oacute;mo implementar&iacute;amos dichos filtros,
+utilizando    distintos elementos que hemos visto durante el curso.</p>
+ 
+<h3>5.9.1 Acceso restringido</h3>
+ 
+<p>Una primera aplicaci&oacute;n sencilla de los filtros es prohibir el acceso
+   a cierta parte de nuestra web. Cuando un usuario intente acceder a dicha
+parte,    se comprobar&aacute; si este usuario est&aacute; registrado. Si
+lo est&aacute;    se le dejar&aacute; pasar normalmente, pero si no se prohibir&aacute;
+el acceso,    redireccionando a la p&aacute;gina de login de usuarios.</p>
+ 
+<pre class="codigo">public class RestringirAcceso implements <b>Filter</b> {<br></pre>
+<p>Cuando se invoca el filtro querr&aacute; decir que un usuario intenta
+acceder    a la zona restringida.</p>
+ 
+<pre class="codigo">    public void <b>doFilter</b>(ServletRequest request,<br>			ServletResponse response, FilterChain chain) <br>    {<br>        // Se intenta acceder a la zona restringida<br></pre>
+<p>Comprobamos si el usuario est&aacute; registrado en el servidor. Para
+ello    utilizamos la informaci&oacute;n de sesi&oacute;n, donde almacenaremos
+el login    del usuario en caso de estar registrado.<br>
+</p>
+<pre class="codigo">        // Solo podemos comprobar la sesi&oacute;n en el caso de tener una petici&oacute;n HTTP<br>        if(request instanceof <b>HttpServletRequest</b> &amp;&amp; <br>            response instanceof <b>HttpServletResponse</b>) <br>        {<br><br><b>            HttpServletRequest</b> http_request = (<b>HttpServletRequest</b>)request;<br><b>            HttpServletResponse</b> http_response = (<b>HttpServletResponse</b>)response;<br><br>            // *********** Comprobamos si el usuario se ha registrado ***********<br>            // En nuestra aplicaci&oacute;n si el usuario se ha registrado habremos establecido<br>            // el atributo usuario de la sesion al nombre del usuario, si no ser&aacute; null.<br><br>            if(http_request.getSession().getAttribute("usuario") != null)<br>&nbsp;</pre>
+ 
+<p>Si hay un login almacenado, procesamos la petici&oacute;n de forma normal.<br>
+</p>
+<pre class="codigo">            {<br>                // Continuamos de forma normal con la petici&oacute;n<br>                chain.<b>doFilter</b>(request, response);<br>            }<br></pre>
+ 
+<p>Si no, redireccionamos a la p&aacute;gina de login, para que el usuario
+se    registre.<br>
+</p>
+<pre class="codigo">            else <br>            {<br>                // Redireccionamos a la p&aacute;gina de login<br>                response.<b>sendRedirect</b>("/ejemplo/login.jsp");<br>            }<br><br>        } else {<br>            // Si no es una petici&oacute;n HTTP simplemente procesamos la petici&oacute;n<br>            chain.<b>doFilter</b>(request, response);<br>        }<br>    }<br>}<br></pre>
+ 
+<h3>5.9.2 Ranking de p&aacute;ginas m&aacute;s visitadas</h3>
+ 
+<p>Otra posible aplicaci&oacute;n es registrar el n&uacute;mero de visitas
+que    se hacen a cada p&aacute;gina, de forma que podremos obtener un listado
+de las    p&aacute;ginas favoritas de los usuarios dentro de nuestro sitio
+web. Para ello    instalaremos un filtro que intercepte las peticiones a
+cualquier p&aacute;gina.    Cada vez que el filtro se invoque, querr&aacute;
+decir que se ha visitado una    p&aacute;gina. Lo que deberemos hacer en
+este momento es:</p>
+ 
+<p>Determinar la direcci&oacute;n de la p&aacute;gina que se ha solicitado<br>
+</p>
+<pre class="codigo">public class Ranking implements <b>Filter</b> {<br><br>    // Objeto que encapsula la conexi&oacute;n a la BD de p&aacute;ginas<br>    BDPaginas bdPaginas = null;<br><br>    public void <b>doFilter</b>(ServletRequest request,<br>			ServletResponse response, FilterChain chain) <br>    {<br>        // Solo podemos ver el recurso solititado en el caso de tener una petici&oacute;n HTTP<br>        if(request instanceof <b>HttpServletRequest</b>) <br>        {<br><br><b>            HttpServletRequest</b> http_request = (<b>HttpServletRequest</b>)request;<br><br>            // Miramos que recurso est&aacute; siendo solicitado<br>            String uri = http_request.<b>getRequestURI</b>();<br>	<br></pre>
+ 
+<p>Tendremos una base de datos con una entrada para cada p&aacute;gina, donde
+   se contabilizan el n&uacute;mero de visitas. Si no existe entrada para
+la p&aacute;gina    visitada, la crearemos con una visita.<br>
+</p>
+<pre class="codigo">            if(bdPaginas.existePagina(uri)<br>            {<br>                // La p&aacute;gina ya esta registrada en la BD <br>                // y solo tenemos que incrementar su contador<br>                bdPaginas.incrementaContador(uri);<br>            } <br></pre>
+ 
+<p>Si ya existe entrada para esta p&aacute;gina en la BD, incrementaremos
+el n&uacute;mero    de visitas.<br>
+</p>
+<pre class="codigo">            else <br>            {<br>                // La p&aacute;gina se est&aacute; visitando por primera vez<br>                // Debemos registrarla en la BD con contador a 1 (1 visita)<br>                bdPaginas.insertaPagina(uri);<br>            }<br>        }   </pre>
+  
+<p>Procesamos la petici&oacute;n de forma normal.</p>
+<pre class="codigo">        chain.<b>doFilter</b>(request, response);<br>    }<br></pre>
+<p>En los m&eacute;todos <strong>init</strong> y <strong>destroy</strong> abriremos 
+  y cerraremos respectivamente la conexi&oacute;n con nuestra base de datos. De 
+  este forma evitamos tener que estar abriendo y cerrando una conexi&oacute;n 
+  para cada petici&oacute;n.<br>
+</p>
+<pre class="codigo">    public void <b>init</b>(FilterConfig config) {<br>        bdPaginas = new BDPaginas();<br>        bdPaginas.conectar();<br>    }<br><br>    public void <b>destroy</b>() {<br>        bdPaginas.cerrar();<br>    }<br>}   </pre>
+  
+<h3>5.9.3 Extracci&oacute;n autom&aacute;tica de informaci&oacute;n</h3>
+ 
+<p>Imaginemos que en el ranking queremos, adem&aacute;s de la direcci&oacute;n,
+   registrar el t&iacute;tulo de la p&aacute;gina. A partir de la informaci&oacute;n
+   de la petici&oacute;n y la respuesta ordinaria no podemos obtener dicha
+informaci&oacute;n,    ya que se refiere al contenido de la p&aacute;gina.
+Para ello tendremos que    utilizar un wrapper, que obtenga la respuesta
+generada por el servidor, de manera    que podamos analizarla y extraer de
+ella el t&iacute;tulo de la p&aacute;gina.<br>
+</p>
+<pre class="codigo">public class RankingTitulo implements <b>Filter</b> {<br><br>    // Objeto que encapsula la conexi&oacute;n a la BD de p&aacute;ginas<br>    BDPaginas bdPaginas = null;<br><br>    public void <b>doFilter</b>(ServletRequest request,<br>			ServletResponse response, FilterChain chain) <br>    {<br>        // Solo podemos ver el recurso solititado en el caso de tener una petici&oacute;n HTTP<br>        if(request instanceof <b>HttpServletRequest</b> &amp;&amp; <br>            response instanceof <b>HttpServletResponse</b>) <br>        {<br><br><b>            HttpServletRequest</b> http_request = (<b>HttpServletRequest</b>)request;<br><b>            HttpServletResponse</b> http_response = (<b>HttpServletResponse</b>)response;<br><br>            // Miramos que recurso est&aacute; siendo solicitado<br>            String uri = http_request.<b>getRequestURI</b>();<br><br>            if(bdPaginas.existePagina(uri)<br>            {<br>                // La p&aacute;gina ya esta registrada en la BD <br>                // y solo tenemos que incrementar su contador<br>                bdPaginas.incrementaContador(uri);<br>            } <br></pre>
+ 
+<p>Cuando se visite una p&aacute;gina por primera vez, para registrarla en
+la    base de datos tendremos que obtener la informaci&oacute;n del t&iacute;tulo.
+Creamos un wrapper, y procesamos la petici&oacute;n utilizando dicho wrapper
+   como objeto respuesta.</p>
+<pre class="codigo">            else <br>            {<br>                // La p&aacute;gina se est&aacute; visitando por primera vez<br>                // Debemos obtener su titulo para registrarla en la BD<br><br>                // Envolvemos la respuesta con nuestro wrapper generico<br>                GenericResponseWrapper wrapper = new GenericResponseWrapper(http_response);<br><br>                // Procesamos la petici&oacute;n<br>                chain.doFilter(http_request, wrapper); </pre>
+  
+<p>Una vez hecho esto, tendremos en el wrapper el contenido de la p&aacute;gina 
+  generado. Podemos obtenerlo y analizarlo, buscando en &eacute;l la etiqueta 
+  <em>&lt;title&gt;</em>.</p>
+<pre class="codigo">                // En este momento ya diponemos de la respuesta en el wrapper<br>                // La analizamos para obtener el valor de su etiqueta &lt;title&gt;<br>                byte [] datos = wrapper.getData();<br>                HtmlParser parser = new HtmlParser(datos);<br>                String titulo = parser.getTitle();</pre>
+ 
+<p>Una vez obtenido el t&iacute;tulo, podremos registrar en la base de datos
+la    entrada de la p&aacute;gina.<br>
+</p>
+<pre class="codigo">                // Ahora podemos registrar ya la p&aacute;gina con sus datos<br>                bdPaginas.insertaPagina(uri, titulo); </pre>
+ 
+<p>Por &uacute;ltimo, tendremos que hacer que la respuesta del wrapper pase
+al    cliente, envi&aacute;ndola al objeto respuesta original.</p>
+ 
+<pre class="codigo"><br>                // Por &uacute;ltimo, debemos devolver la respuesta al cliente de forma<br>                // que pueda visualizar el recurso solicitado<br>                OutputStream out = response.<b>getOutputStream</b>();<br>                out.write(datos);<br>                out.close();<br>            }<br>        } else {<br>            // Si no es HTTP procesamos la petici&oacute;n de forma ordinaria<br>            chain.doFilter(request, response);<br>        }<br>    }<br><br>    public void <b>init</b>(FilterConfig config) {<br>        bdPaginas = new BDPaginas();<br>        bdPaginas.conectar();<br>    }<br><br>    public void <b>destroy</b>() {<br>        bdPaginas.cerrar();<br>    }<br>}    </pre>
+<br>
+</body>
+</html>

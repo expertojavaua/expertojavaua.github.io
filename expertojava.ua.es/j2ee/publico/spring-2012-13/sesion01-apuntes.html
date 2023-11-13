@@ -1,0 +1,781 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.7">
+<meta name="Forrest-skin-name" content="pelt">
+<title>Introducci&oacute;n a Spring</title>
+<link type="text/css" href="skin/highlight/shCore.css" rel="stylesheet">
+<link type="text/css" href="skin/highlight/shThemeEclipse.css" rel="stylesheet">
+<script src="skin/highlight/shCore.js" type="text/javascript"></script><script src="skin/highlight/shAutoloader.js" type="text/javascript"></script>
+<link type="text/css" href="skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="skin/print.css" rel="stylesheet">
+<link type="text/css" href="skin/profile.css" rel="stylesheet">
+<script src="skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<div class="header">
+<div class="grouplogo">
+<a href="http://web.ua.es/especialistajava"><img class="logoImage" alt="jtech" src="images/baner_j2ee_izq.gif" title="Experto Universitario Java Enterprise"></a>
+</div>
+<div class="projectlogoA1">
+<a href="http://www.dccia.ua.es/"><img class="logoImage" alt="Spring" src="images/baner_j2ee_der.gif" title="Spring"></a>
+</div>
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="javascript:location.href='../index.html'">Home</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../aplic-web.html'">Aplicaciones Web</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../aplic-ent.html'">Aplicaciones Enterprise</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../charlas.html'">Charlas</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../proy-int/index.html'">Proyecto</a>
+</li>
+<li>
+<a class="base-not-selected" href="index.html">Spring</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<div id="level2tabs"></div>
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<div id="menu">
+<div onclick="SwitchMenu('menu_1.1', 'skin/')" id="menu_1.1Title" class="menutitle">Spring</div>
+<div id="menu_1.1" class="menuitemgroup">
+<div class="menuitem">
+<a href="index.html" title="Spring">Indice</a>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<div id="credit2"></div>
+</div>
+<div id="content">
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="sesion01-apuntes.pdf"><img alt="PDF -icon" src="skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1>Introducci&oacute;n a Spring</h1>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#%C2%BFQu%C3%A9+es+Spring%3F">&iquest;Qu&eacute; es Spring?</a>
+</li>
+<li>
+<a href="#Estereotipos+configurables">Estereotipos configurables</a>
+<ul class="minitoc">
+<li>
+<a href="#Solicitarle+beans+al+contenedor">Solicitarle beans al contenedor</a>
+</li>
+<li>
+<a href="#%C3%81mbito+de+los+beans">&Aacute;mbito de los beans</a>
+</li>
+<li>
+<a href="#Configurar+el+estereotipo">Configurar el estereotipo</a>
+</li>
+<li>
+<a href="#Control+del+ciclo+de+vida">Control del ciclo de vida</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Inyecci%C3%B3n+de+dependencias">Inyecci&oacute;n de dependencias</a>
+<ul class="minitoc">
+<li>
+<a href="#Uso+de+anotaciones+est%C3%A1ndar">Uso de anotaciones est&aacute;ndar</a>
+</li>
+<li>
+<a href="#Uso+de+anotaciones+Spring">Uso de anotaciones Spring</a>
+</li>
+<li>
+<a href="#Inyectando+expresiones">Inyectando expresiones</a>
+</li>
+<li>
+<a href="#Dependencias+de+recursos+externos">Dependencias de recursos externos</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Alternativas+a+las+anotaciones+para+la+configuraci%C3%B3n">Alternativas a las anotaciones para la configuraci&oacute;n</a>
+<ul class="minitoc">
+<li>
+<a href="#Configuraci%C3%B3n+en+XML">Configuraci&oacute;n en XML</a>
+</li>
+<li>
+<a href="#Configuraci%C3%B3n+Java">Configuraci&oacute;n Java</a>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+<a name="N1000C"></a><a name="%C2%BFQu%C3%A9+es+Spring%3F"></a>
+<h2 class="underlined_10">&iquest;Qu&eacute; es Spring?</h2>
+<div class="section">
+<p>Spring es un <em>framework</em> alternativo al <em>stack</em> de tecnolog&iacute;as est&aacute;ndar en aplicaciones JavaEE. Naci&oacute; en una &eacute;poca en la que las tecnolog&iacute;as est&aacute;ndar JavaEE y la visi&oacute;n "oficial" de lo que deb&iacute;a ser una aplicaci&oacute;n Java Enterprise ten&iacute;an todav&iacute;a muchas aristas por pulir. Los servidores de aplicaciones eran monstruosos devoradores de recursos y los EJB eran pesados, inflexibles y era demasiado complejo trabajar con ellos. En ese contexto, Spring populariz&oacute; ideas como la inyecci&oacute;n de dependencias o el uso de objetos convencionales (POJOs) como objetos de negocio, que supon&iacute;an un soplo de aire fresco. Estas ideas permit&iacute;an un desarrollo m&aacute;s sencillo y r&aacute;pido y unas aplicaciones m&aacute;s ligeras. Eso posibilit&oacute; que de ser un <em>framework</em> inicialmente dise&ntilde;ado para la capa de negocio pasara a ser un completo <em>stack</em> de tecnolog&iacute;as para todas las capas de la aplicaci&oacute;n.</p>
+<p>Las ideas "innovadoras" que en su d&iacute;a populariz&oacute; Spring se han incorporado en la actualidad a las tecnolog&iacute;as y herramientas est&aacute;ndar. As&iacute;, ahora mismo no hay una gran diferencia entre el desarrollo con Spring y el desarrollo JavaEE "est&aacute;ndar", o al menos no tanta como hubo en su d&iacute;a. No obstante, Spring ha logrado aglutinar una importante comunidad de desarrolladores en torno a sus tecnolog&iacute;as y hoy por hoy sigue constituyendo una importante alternativa al est&aacute;ndar que merece la pena conocer. En la actualidad, las aportaciones m&aacute;s novedosas de Spring se centran en los campos de Big Data/NoSQL, HTML5/m&oacute;viles y aplicaciones sociales.</p>
+<p>B&aacute;sicamente, la mayor diferencia pr&aacute;ctica que podemos encontrar hoy en d&iacute;a entre desarrollar con Spring y con JavaEE est&aacute;ndar es la posibilidad de usar un servidor web convencional al estilo Tomcat para desplegar la aplicaci&oacute;n. Las tecnolog&iacute;as JavaEE m&aacute;s sofisticadas requieren del uso de un servidor de aplicaciones, ya que los APIs los implementa el propio servidor, mientras que Spring no es m&aacute;s que un conjunto de librer&iacute;as portables entre servidores. En otras palabras, usando JavaEE est&aacute;ndar, nos atamos al servidor de aplicaciones y usando Spring nos atamos a sus APIs. Eso s&iacute;, los desarrolladores de Spring se han preocupado bastante de armonizar con el est&aacute;ndar en la medida de lo posible, por ejemplo dando la posibilidad de usar anotaciones est&aacute;ndar aun con implementaciones propias por debajo. La idea es obstaculizar lo menos posible una posible portabilidad a JavaEE, idea que es de agradecer en un mundo en que todos los fabricantes intentan de una forma u otra mantener un p&uacute;blico cautivo.</p>
+<p>Hay una abundante bibliograf&iacute;a sobre Spring, aunque la <a href="http://static.springsource.org/spring-framework/docs/">documentaci&oacute;n del propio proyecto</a> es excelente y bastante exhaustiva, pudi&eacute;ndose utilizar perfectamente no solo como manual de referencia sino como tutorial detallado. La hemos tomado como referencia b&aacute;sica para la elaboraci&oacute;n de estos apuntes.</p>
+<p>Desde un punto de vista gen&eacute;rico, Spring se puede ver como un soporte que nos proporciona tres elementos b&aacute;sicos:</p>
+<ul>
+
+<li>
+<strong>Servicios <em>enterprise</em>:</strong> podemos hacer de manera sencilla que un objeto sea transaccional, o que su acceso est&eacute; restringido a ciertos roles, o que sea accesible de manera remota y transparente para el desarrollador, o acceder a otros muchos servicios m&aacute;s, sin tener que escribir el c&oacute;digo de manera manual. En la mayor&iacute;a de los casos solo es necesario anotar el objeto.</li>
+
+<li>
+<strong>Estereotipos configurables</strong> para los objetos de nuestra aplicaci&oacute;n: podemos anotar nuestras clases indicando por ejemplo que pertenecen a la capa de negocio o de acceso a datos. Se dice que son configurables porque podemos definir nuestros propios estereotipos "a medida": por ejemplo podr&iacute;amos definir un nuevo estereotipo que indicara un objeto de negocio que adem&aacute;s ser&iacute;a cacheable autom&aacute;ticamente y con acceso restringido a usuarios con determinado rol.</li>
+
+<li>
+<strong>Inyeccion de dependencias:</strong>: ya hemos visto este concepto cuando se hablaba de CDI de JavaEE. La inyecci&oacute;n de dependencias nos permite solucionar de forma sencilla y elegante c&oacute;mo proporcionar a un objeto cliente acceso a un objeto que da un servicio que este necesita. Por ejemplo, que un objeto de la capa de presentaci&oacute;n se pueda comunicar con uno de negocio. En Spring las dependencias se pueden definir con anotaciones o con XML.</li>
+
+</ul>
+</div>
+
+
+<a name="N10047"></a><a name="Estereotipos+configurables"></a>
+<h2 class="underlined_10">Estereotipos configurables</h2>
+<div class="section">
+<p>Spring puede gestionar el ciclo de vida de los objetos que queramos. Los objetos gestionados por el framework se denominan gen&eacute;ricamente  <em>beans</em> de Spring (no confundir con el concepto est&aacute;ndar de bean en Java). Esto no es nada extra&ntilde;o, es lo que sucede por ejemplo con los servlets, normalmente no los instancia el desarrollador sino que lo hace el contenedor web cuando es necesario. Spring extiende esta idea permiti&eacute;ndonos gestionar el ciclo de vida de cualquier objeto. Para ello tendremos que anotarlo (o crear un fichero de configuraci&oacute;n XML, aunque esta opci&oacute;n tiende a estar en desuso).</p>
+<p>Spring ofrece una serie de anotaciones est&aacute;ndar para los objetos de nuestra aplicaci&oacute;n: por ejemplo, <strong>@Service</strong>
+indica que la clase es un bean de la capa de negocio, mientras que <strong>@Repository</strong> indica que es un DAO. Si simplemente queremos especificar que algo es un bean sin decir de qu&eacute; tipo es podemos
+usar la anotaci&oacute;n <strong>@Component</strong>. Por ejemplo:</p>
+<pre class="brush:java;highlight:[5]">
+package es.ua.jtech.spring.negocio;
+
+import org.springframework.stereotype.Service;
+
+@Service("usuariosBO")
+public class UsuariosBOSimple implements IUsuariosBO {
+   public UsuarioTO login(String login, String password) {
+     ...
+   }
+   public bool logout() {
+     ...
+   }
+   ...
+}
+</pre>
+<p>El par&aacute;metro "usuariosBO" de la anotaci&oacute;n sirve para darle un nombre o identificador al bean, que deber&aacute; ser &uacute;nico. Veremos ejemplos de su uso en el apartado siguiente. Si no le di&eacute;ramos uno, el identificador por defecto ser&iacute;a el nombre de la clase pero con la inicial en min&uacute;scula.</p>
+<div class="frame note">
+<div class="label">@Service vs. @Repository vs. @Component</div>
+<div class="content">N&oacute;tese que en la versi&oacute;n actual de Spring la anotaci&oacute;n @Service no tiene una sem&aacute;ntica 
+definida distinta a la de @Component. Es decir, simplemente le ayuda al que lee el c&oacute;digo
+a saber que el bean pertenece a la capa de negocio y por lo dem&aacute;s es indiferente usar una u otra. La anotaci&oacute;n @Repository s&iacute; tiene efecto sobre 
+la transaccionalidad autom&aacute;tica, como veremos en la siguiente sesi&oacute;n. No obstante, el equipo de desarrollo de Spring se reserva la posibilidad de a&ntilde;adir sem&aacute;ntica a estas anotaciones en 
+futuras versiones del <em>framework</em>.</div>
+</div>
+<p>Para que nuestro bean funcione, falta un peque&ntilde;o detalle. Spring necesita de un fichero XML de configuraci&oacute;n m&iacute;nimo. Cuando los beans no se definen con anotaciones sino con XML, aqu&iacute; es donde se configuran, en lugar de en el fuente Java. Pero aunque usemos anotaciones en el fuente, como en nuestro caso, el XML de configuraci&oacute;n m&iacute;nimo sigue siendo necesario. En &eacute;l debemos decirle a Spring que vamos a usar anotaciones para definir los beans.</p>
+<pre class="brush:xml;">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+         http://www.springframework.org/schema/beans/spring-beans.xsd
+         http://www.springframework.org/schema/context
+         http://www.springframework.org/schema/context/spring-context.xsd"&gt;
+               
+     &lt;context:component-scan base-package="es.ua.jtech.spring"/&gt;
+&lt;/beans&gt;
+</pre>
+<p>La etiqueta <strong>&lt;context:component-scan&gt;</strong> es la que especifica que usaremos anotaciones para
+la definici&oacute;n de los beans, y que las clases que los definen van a estar en una serie de paquetes (todos van a ser
+subpaquetes de <strong>base-package</strong>). Por ejemplo, el propio <span class="codefrag">es.ua.jtech.spring</span> o paquetes como
+<span class="codefrag">es.ua.jtech.spring.negocio</span> o <span class="codefrag">es.ua.jtech.spring.base.to</span>
+</p>
+<div class="frame warning">
+<div class="label">&iexcl;Cuidado!</div>
+<div class="content">Las anotaciones puestas en clases que no est&eacute;n definidas en el paquete "base-package" o en alguno de sus subpaquetes
+no tendr&aacute;n ning&uacute;n efecto. Es un error muy t&iacute;pico olvidarse de esto y desesperarse ante el hecho de que Spring "ignora" las
+anotaciones.</div>
+</div>
+<a name="N1008C"></a><a name="Solicitarle+beans+al+contenedor"></a>
+<h3 class="underlined_5">Solicitarle beans al contenedor</h3>
+<p>Evidentemente, para que la gesti&oacute;n del ciclo de vida funcione, tiene que haber "alguien" que se encargue de realizarla. En el caso de los servlets el encargado es el contenedor web (por ejemplo Tomcat). En Spring existe un concepto equivalente: el contenedor de beans, que hay que configurar e instanciar en nuestra aplicaci&oacute;n (el contenedor web es algo est&aacute;ndar de JavaEE y por tanto su arranque es "autom&aacute;tico", pero Spring no es m&aacute;s que una librer&iacute;a Java y por tanto no goza de ese privilegio). El contenedor implementa la interfaz <span class="codefrag">ApplicationContext</span>. Spring ofrece diferentes implementaciones de este interfaz, algunas apropiadas para aplicaciones de escritorio y otras para aplicaciones web.</p>
+<p>En <strong>aplicaciones de escritorio</strong> es com&uacute;n usar la clase <span class="codefrag">ClassPathXmlApplicationContext</span>, a la que hay que pasarle el nombre del fichero de configuraci&oacute;n que vimos en el apartado anterior. Como su propio nombre indica, esta clase buscar&aacute; el archivo en cualquier directorio del <em>classpath</em>.</p>
+<pre class="brush:java;">
+ApplicationContext contenedor =
+    new ClassPathXmlApplicationContext("configuracion.xml");
+</pre>
+<p>El application context act&uacute;a como si fuera una factor&iacute;a de beans, de modo que podemos obtener de &eacute;l el objeto deseado:</p>
+<pre class="brush:java;highlight:[3]">
+ApplicationContext contenedor =
+    new ClassPathXmlApplicationContext("configuracion.xml");
+IUsuariosBO iub = contenedor.getBean(IUsuariosBO.class); 
+UsuarioTO uto = igu.login("javaee", "javaee");   
+</pre>
+<p>El context nos permite recuperar los beans por clase (o interfaz, como en el ejemplo), pero tambi&eacute;n podr&iacute;amos recuperarlos por su identificador (recordar que hab&iacute;amos asignado un identificador en la anotaci&oacute;n <span class="codefrag">@Service</span>).</p>
+<pre class="brush:java;">
+...
+IUsuariosBO iub = contenedor.getBean("usuariosBO", IUsuariosBO.class);
+...
+</pre>
+<p>El acceso por identificador nos ser&aacute; &uacute;til si hemos definido distintos beans de la misma clase, con distintas propiedades cada uno (aunque esto no se puede hacer &uacute;nicamente con anotaciones, necesitar&iacute;amos usar la configuraci&oacute;n XML o Java).</p>
+<p>A primera vista parece que no hemos obtenido nada con Spring que no hubi&eacute;ramos podido conseguir de manera mucho m&aacute;s sencilla con un modesto <span class="codefrag">new UsuariosBOSimple()</span>, pero esta forma de hacer las cosas presenta ciertas ventajas:</p>
+<ul>
+
+<li>El <em>application context</em> se puede ver como una implementaci&oacute;n del patr&oacute;n <em>factory</em>. Este patr&oacute;n nos independiza de la clase concreta que use nuestra implementaci&oacute;n. El c&oacute;digo que hace uso del application context para obtener el gestor de usuarios no necesita saber qu&eacute; clase concreta se est&aacute; usando ni debe cambiar si cambia &eacute;sta. Todo esto, como ya se ha visto, a costa de introducir complejidad adicional en el proyecto (&iexcl;nada es gratis!).</li>
+
+<li>Podemos cambiar ciertos aspectos del ciclo de vida del bean de manera declarativa. Por ejemplo, el &aacute;mbito: es muy posible que un solo objeto pueda hacer el trabajo de todos los clientes que necesiten un <span class="codefrag">IGestorUSuarios</span> (un <em>singleton</em>, en argot de patrones). O al contrario, podr&iacute;a ser que cada vez hiciera falta un objeto nuevo. O tambi&eacute;n podr&iacute;a ser que si estuvi&eacute;ramos en una aplicaci&oacute;n web, cada usuario que va a hacer login necesitara su propia instancia de <span class="codefrag">IGestorUSuarios</span>. Todo esto lo podemos configurar en Spring de manera declarativa, sin necesidad de programarlo, y que sea el contenedor el que se ocupe de estas cuestiones del ciclo de vida.</li>
+
+</ul>
+<p>En <strong>aplicaciones web</strong> la configuraci&oacute;n del contenedor se hace con la clase <span class="codefrag">WebApplicationContext</span>, defini&eacute;ndola como un 
+<em>listener</em> en el fichero descriptor de despliegue, web.xml.</p>
+<pre class="brush:xml;">
+
+&lt;?xml version="1.0" encoding="ISO-8859-1"?&gt;
+&lt;web-app ...&gt;
+  &lt;context-param&gt;
+    &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;
+    &lt;param-value&gt;/WEB-INF/misBeans.xml&lt;/param-value&gt;
+  &lt;/context-param&gt;
+  
+  &lt;listener&gt;
+     &lt;listener-class&gt;
+        org.springframework.web.context.ContextLoaderListener
+     &lt;/listener-class&gt;
+  &lt;/listener&gt;
+  
+  &lt;!--  resto de etiquetas del web.xml --&gt;
+  ...
+&lt;/web-app&gt;
+
+</pre>
+<p>La clase <span class="codefrag">ContextLoaderListener</span> carga el fichero o ficheros XML especificados en el <span class="codefrag">&lt;context-param&gt;</span>
+llamado <span class="codefrag">contextConfigLocation</span> (suponemos que el fichero <span class="codefrag">misBeans.xml</span> est&aacute; en el directorio 
+<span class="codefrag">WEB-INF</span>). Como <span class="codefrag">&lt;param-value&gt;</span> se puede poner el nombre de varios ficheros XML, separados por espacios o comas. </p>
+<p>Una vez arrancado el contenedor, podemos acceder a un bean a trav&eacute;s de la clase
+<span class="codefrag">WebApplicationContext</span>, que funciona de manera pr&aacute;cticamente igual que la ya vista <span class="codefrag">ClassPathXmlApplicationContext</span>. 
+El <span class="codefrag">WebApplicationContext</span>
+es accesible a su vez a trav&eacute;s del contexto del servlet, por lo que en un JSP podr&iacute;amos hacer algo como:</p>
+<pre class="brush:java;highlight:[13]">
+
+&lt;%@ page import ="org.springframework.web.context.*" %&gt; 
+&lt;%@ page import ="org.springframework.web.context.support.*" %&gt;
+&lt;%@ page import ="es.ua.jtech.spring.negocio.*" %&gt;    
+&lt;html&gt;
+&lt;head&gt;
+   &lt;title&gt;Acceso a beans de spring desde un JSP&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;%
+  ServletContext sc = getServletContext();
+  WebApplicationContext wac = 
+          WebApplicationContextUtils.getWebApplicationContext(sc);
+  IUsuariosBO iub = wac.getBean(IUsuariosBO.class);
+  UsuarioTO uto = iub.login("javaee", "javaee");
+%&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+</pre>
+<div class="frame note">
+<div class="label">Pero esto es demasiado complicado, &iquest;no?...</div>
+<div class="content">Toda esta parafernalia para obtener objetos parece excesiva. &iquest;No ser&iacute;a mejor que los objetos se obtuvieran autom&aacute;ticamente cuando los necesit&aacute;ramos?. De ese modo, en una aplicaci&oacute;n web, cuando se recibiera una determinada petici&oacute;n HTTP se obtendr&iacute;a autom&aacute;ticamente un bean de la capa de presentaci&oacute;n, que a su vez podr&iacute;a acceder autom&aacute;ticamente al/los que necesitara de negocio, y &eacute;stos a su vez a otros de acceso a datos, y... Efectivamente, esa es la forma habitual de trabajar en aplicaciones web con Spring: el web application context est&aacute; presente pero no es necesario acudir a &eacute;l de manera expl&iacute;cita. Lo que ocurre es que para poder hacer esto necesitamos dos elementos que todav&iacute;a no hemos visto: la inyecci&oacute;n de dependencias y el framework para la capa web, Spring MVC. El primero de ellos lo abordaremos en breve, y el segundo en la sesi&oacute;n 3.</div>
+</div>
+<a name="N1011B"></a><a name="%C3%81mbito+de+los+beans"></a>
+<h3 class="underlined_5">&Aacute;mbito de los beans</h3>
+<p>Por defecto, los beans en Spring son <em>singletons</em>. Esto significa que el contenedor solo instancia un objeto de 
+la clase, y cada vez que se pide una instancia del bean en realidad se obtiene una referencia al mismo objeto. Recordemos
+que se solicita una  instancia de un bean cuando se llama a <span class="codefrag">getBean()</span> o bien cuando
+se "inyecta" una dependencia del bean en otro. </p>
+<p>El &aacute;mbito <em>singleton</em> es el indicado en muchos casos. Probablemente una &uacute;nica instancia de la clase <span class="codefrag">GestorPedidos</span> 
+pueda encargarse de todas las tareas de negocio relacionadas con pedidos, si la clase no tiene "estado" (entendiendo por esto que no tiene variables miembro y que por tanto varios hilos independientes que accedan concurrentemente al mismo objeto no van a causar problemas). Los DAO son otro ejemplo t&iacute;pico de objetos apropiados que se suelen definir en Spring como singletons, ya que no suelen guardar estado.
+</p>
+<p>
+Podemos asignar otros &aacute;mbitos para el bean usando la anotaci&oacute;n <span class="codefrag">@Scope</span>. Por ejemplo, para especificar que queremos una nueva instancia cada
+vez que se solicite el bean, se usa el valor <span class="codefrag">prototype</span>
+
+</p>
+<pre class="brush:java;highlight:[7]">
+package es.ua.jtech.spring.negocio;
+
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
+...
+
+@Scope("prototype")
+@Service
+public class UsuariosBOSimple implements IUsuariosBO {
+   ...
+}   
+</pre>
+<p>En <strong>aplicaciones web</strong>, se pueden usar adem&aacute;s los &aacute;mbitos de <span class="codefrag">request</span> y <span class="codefrag">session</span>
+(hay un tercer &aacute;mbito llamado <span class="codefrag">globalSession</span> para uso exclusivo en portlets). Para que el contenedor pueda gestionar estos &aacute;mbitos, es necesario usar
+un <span class="codefrag">listener</span> especial cuya implementaci&oacute;n proporciona Spring. Habr&aacute; que definirlo por tanto
+en el <span class="codefrag">web.xml</span>
+</p>
+<pre class="brush:xml;">
+...
+&lt;web-app&gt;
+  ...
+  &lt;listener&gt;
+    &lt;listener-class&gt;
+       org.springframework.web.context.request.RequestContextListener
+     &lt;/listener-class&gt;
+  &lt;/listener&gt;
+  ...
+&lt;/web-app&gt;
+</pre>
+<p>Ahora ya podemos usar los &aacute;mbitos especiales para aplicaciones web. Por ejemplo para definir un bean
+que tenga como &aacute;mbito la sesi&oacute;n HTTP simplemente usaremos "session" como valor de la anotaci&oacute;n <span class="codefrag">@Scope</span>.</p>
+<a name="N10162"></a><a name="Configurar+el+estereotipo"></a>
+<h3 class="underlined_5">Configurar el estereotipo</h3>
+<p>Podemos aprovechar la posibilidad de definir anotaciones Java a medida para definir nuestros propios estereotipos, combinando anotaciones de Spring. Por ejemplo para un objeto de negocio con &aacute;mbito de sesi&oacute;n y con transaccionalidad autom&aacute;tica podr&iacute;amos definir la siguiente anotaci&oacute;n:</p>
+<pre class="brush:java;">
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
+
+@Service
+@Scope("session")
+@Transactional
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ServicioTransaccional {
+}
+</pre>
+<p>Una vez hecho esto, el compilador reconocer&aacute; la anotaci&oacute;n <span class="codefrag">@ServicioTransaccional</span> como propia, por ejemplo:</p>
+<pre class="brush:java;">
+@ServicioTransaccional
+public class UsuariosDAO implements IUsuariosDAO {
+   public void UsuarioTO leer(String login) {
+      ...
+   }
+   ...
+}
+</pre>
+<a name="N1017C"></a><a name="Control+del+ciclo+de+vida"></a>
+<h3 class="underlined_5">Control del ciclo de vida</h3>
+<p>En algunos casos puede ser interesante llamar a un m&eacute;todo del bean cuando &eacute;ste se inicializa o destruye. Para
+ello se  usan respectivamente las anotaciones <span class="codefrag">@PostConstruct</span> y <span class="codefrag">@PreDestroy</span>. Por ejemplo:
+</p>
+<pre class="brush:java;">
+@Component  
+public class MiBean {
+   @PostConstruct
+   public void inicializa() {
+   
+   }
+
+   @PreDestroy
+   public void libera() {
+   }
+
+}
+</pre>
+<p>Ambos deben ser m&eacute;todos sin par&aacute;metros. El m&eacute;todo de inicializaci&oacute;n se llama justo despu&eacute;s de que Spring resuelva
+las dependencias e inicialice las propiedades del bean.</p>
+</div>  
+
+
+<a name="N10195"></a><a name="Inyecci%C3%B3n+de+dependencias"></a>
+<h2 class="underlined_10">Inyecci&oacute;n de dependencias</h2>
+<div class="section">
+<p>La inyecci&oacute;n de dependencias es uno de los pilares fundamentales en que se basa Spring. Aunque no fue el primer <em>framework</em> que usaba este concepto, s&iacute; fue el que lo populariz&oacute; en el mundo Java enterprise. Durante mucho tiempo era una de las diferencias m&aacute;s destacadas entre el "enfoque Spring" y el JavaEE est&aacute;ndar. En este &uacute;ltimo, cuando un objeto necesitaba de otro o de un recurso deb&iacute;a localizarlo &eacute;l mismo mediante el API JNDI. No obstante, en la actualidad, como ya se ha visto en otros m&oacute;dulos, el est&aacute;ndar ha ido incorporando la inyecci&oacute;n de dependencias en m&uacute;ltiples tecnolog&iacute;as (JPA, JSF, web,...).</p>
+<a name="N101A1"></a><a name="Uso+de+anotaciones+est%C3%A1ndar"></a>
+<h3 class="underlined_5">Uso de anotaciones est&aacute;ndar</h3>
+<p>Spring permite el uso de anotaciones de JSR330, para reducir el acoplamiento con los APIs de Spring y mejorar la portabilidad. Veremos en primer lugar el uso de estas anotaciones con Spring y luego las propias del <em>framework</em>.</p>
+<p>Para anotar componentes, en el est&aacute;ndar se usa <span class="codefrag">@Named</span>, que ser&iacute;a la equivalente a la <span class="codefrag">@Component</span> de Spring (un bean, sin especificar si es de presentaci&oacute;n, negocio o acceso a datos).</p>
+<p>Para las dependencias ya se vio en otros m&oacute;dulos, por ejemplo en el de componentes web, el uso de <span class="codefrag">@Inject</span>. En Spring es id&eacute;ntico. Continuando con los ejemplos ya vistos, supongamos que nuestro <span class="codefrag">IUsuariosBO</span> necesita de la colaboraci&oacute;n de un bean auxiliar <span class="codefrag">IUsuariosDAO</span> para hacer su trabajo:</p>
+<pre class="brush:java;highlight:[1,3]">
+@Named("usuariosBO")
+public class UsuariosBOSimple implements IUsuariosBO {
+  @Inject
+  IUsuariosDAO udao;
+
+  public UsuarioTO login(String login, String password) {
+    UsuarioTO uto = udao.recuperar(login);
+    if (uto.getPassword().equals(password)) {
+       ...
+    }
+  }
+  
+  ...
+}
+</pre>
+<p>Evidentemente, para que esto funcione tiene que existir alguna clase que implemente el interfaz <span class="codefrag">IUsuariosDAO</span> y que est&eacute; anotada como un bean de Spring</p>
+<p>Hay que destacar que la inyecci&oacute;n se puede hacer en las variables miembro pero tambi&eacute;n en m&eacute;todos o constructores. Esto posibilita resolver las dependencias "manualmente" sin el concurso de Spring. Por ejemplo:</p>
+<pre class="brush:java;">
+@Named("usuariosBO")
+public class UsuariosBOSimple implements IUsuariosBO {
+  IUsuariosDAO udao;
+
+  @Inject
+  public setUsuariosDAO(UsuariosDAO udao) {
+    this.udao = udao;
+  }
+
+  public UsuarioTO login(String login, String password) {
+    UsuarioTO uto = udao.recuperar(login);
+    if (uto.getPassword().equals(password)) {
+       ...
+    }
+  }
+  
+  ...
+}
+</pre>
+<p>As&iacute;, si no pudi&eacute;ramos o quisi&eacute;ramos usar Spring (por ejemplo, para pruebas), podr&iacute;amos hacer:</p>
+<pre class="brush:java;">
+IUsuariosBO ubo = new UsuariosBOSimple();
+ubo.setUsuariosDAO(new UsuariosDAOJPA());
+</pre>
+<p>Mientras que "dentro" de Spring la dependencia se seguir&iacute;a resolviendo e instanciando autom&aacute;ticamente.</p>
+<p>Por defecto, la creaci&oacute;n de todos los beans y la inyecci&oacute;n de dependencias se efect&uacute;a cuando se arranca el contenedor (el Application Context). Se crea un bean de cada clase (ya que el &aacute;mbito por defecto es <span class="codefrag">singleton</span>) y se "enlazan" de modo apropiado. Si no fuera posible resolver alguna dependencia el arranque de la aplicaci&oacute;n fallar&iacute;a. Si queremos que alg&uacute;n bean no se inicialice cuando arranca el contenedor, sino en el momento que se solicite con <span class="codefrag">getBean</span>, podemos anotarlo con <span class="codefrag">@Lazy</span>.</p>
+<p>No es necesario a&ntilde;adir Weld al proyecto ni ninguna otra implementaci&oacute;n externa de JSR330 porque en realidad se est&aacute; usando la implementaci&oacute;n propia de Spring, por lo que basta con a&ntilde;adir la dependencia del artefacto que define las anotaciones en s&iacute;:</p>
+<pre class="brush:xml;">
+&lt;dependency&gt;
+    &lt;groupId&gt;javax.inject&lt;/groupId&gt;
+    &lt;artifactId&gt;javax.inject&lt;/artifactId&gt;
+    &lt;version&gt;1&lt;/version&gt;
+&lt;/dependency&gt;
+</pre>
+<div class="frame warning">
+<div class="label">JSR330 vs. JSR299</div>
+<div class="content">Spring no permite el uso de anotaciones JSR299, <em>Contexts and Dependency Injection</em>. Estas &uacute;ltimas son, de hecho, m&aacute;s sofisticadas en ciertos aspectos que las que ofrece actualmente Spring de manera nativa.</div>
+</div>
+<a name="N101FD"></a><a name="Uso+de+anotaciones+Spring"></a>
+<h3 class="underlined_5">Uso de anotaciones Spring</h3>
+<p>Usando las anotaciones propias de Spring para la inyecci&oacute;n de dependencias perdemos portabilidad pero podemos aprovechar todas las posibilidades del framework.</p>
+<p>El equivalente Spring a <span class="codefrag">@Inject</span> ser&iacute;a <span class="codefrag">@Autowired</span>. La anotaci&oacute;n de Spring es algo m&aacute;s flexible, ya que nos permite especificar dependencias opcionales. En ese caso la aplicaci&oacute;n no fallar&aacute; si no es posible resolver la dependencia. </p>
+<pre class="brush:java;">
+@Service("usuariosBO")
+public class UsuariosBOSimple implements IUsuariosBO {
+  @Autowired(required=false)
+  IUsuariosDAO udao;
+
+  public UsuarioTO login(String login, String password) {
+    if (udao==null) {
+      throw new Exception("No es posible realizar la operaci&oacute;n");
+    }
+    else {
+      ...
+    }
+  }
+  ...
+}
+</pre>
+<p>En el ejemplo anterior la aplicaci&oacute;n arrancar&iacute;a correctamente, aunque no fuera posible resolver la dependencia. Lo que ocurrir&iacute;a es que el valor miembro <span class="codefrag">udao</span> quedar&iacute;a a <span class="codefrag">null</span>.</p>
+<p>El problema contrario a no ser capaz de resolver una dependencia es <strong>encontrar varios beans candidatos a resolverla</strong>,  ya que hay que elegir uno de ellos. Por ejemplo, supongamos que tuvi&eacute;ramos dos implementaciones distintas de <span class="codefrag">IUsuariosDAO</span>: <span class="codefrag">UsuariosDAOJPA</span> y <span class="codefrag">UsuariosDAOJDBC</span>. &iquest;Cu&aacute;l deber&iacute;amos seleccionar para inyectarle al <span class="codefrag">UsuariosBOSimple</span>?. La opci&oacute;n es la misma que se usa en el est&aacute;ndar: la anotaci&oacute;n <span class="codefrag">@Qualifier</span>. Con ella marcaremos el bean al definirlo y al inyectarlo, por ejemplo:</p>
+<pre class="brush:java;">
+@Repository
+@Qualifier("JDBC")
+public class UsuariosDAOJDBC implements IUsuariosDAO {
+    ...
+}
+</pre>
+<pre class="brush:java;">
+@Service
+public class UsuariosBOSimple implements IUsuariosBO {
+  @Autowired
+  @Qualifier("JDBC")
+  IUsuariosDAO udao;
+  ...
+}
+</pre>
+<p>Al igual que vimos en el m&oacute;dulo de componentes web, podr&iacute;amos crearnos nuestras propias anotaciones <span class="codefrag">@Qualifier</span> personalizadas, por ejemplo una <span class="codefrag">@JDBCDAO</span>.</p>
+<a name="N10246"></a><a name="Inyectando+expresiones"></a>
+<h3 class="underlined_5">Inyectando expresiones</h3>
+<p>Con la anotaci&oacute;n <span class="codefrag">@Value</span>, podemos inyectar valores en variables miembro o par&aacute;metros de m&eacute;todos. En su variante m&aacute;s simple este ser&iacute;a un valor constante, por ejemplo: </p>
+<pre class="brush:java;">
+@Component MiBean {
+  @Value(100)
+  private creditoInicial;
+
+}  
+</pre>
+<p>Evidentemente inyectar un valor constante no es muy &uacute;til, es m&aacute;s sencillo hacer la inicializaci&oacute;n directamente con c&oacute;digo Java. Lo interesante de <span class="codefrag">@Value</span> es que podemos usar expresiones en <strong>SpEL</strong> (<em>Spring Expression Language</em>), un lenguaje de expresiones similar en concepto al JSP o JSF EL pero propio de Spring, y que nos permite, entre otras cosas:</p>
+<ul>
+
+<li>Realizar operaciones aritm&eacute;ticas y l&oacute;gicas</li>
+
+<li>Llamar a m&eacute;todos y acceder a propiedades de objetos. Podemos acceder a beans referenci&aacute;ndolos por su id.</li>
+
+<li>Hacer <em>matching</em> con expresiones regulares</li>
+
+<li>Acceso a las propiedades del sistema y a variables de entorno</li>
+
+</ul>
+<p>A continuaci&oacute;n se muestran algunos ejemplos de uso.</p>
+<pre class="brush:java;">
+//acceso al bean con id "miConfig" y llamada al m&eacute;todo "getLocale" 
+//(supuestamente este m&eacute;todo devuelve el objeto Locale que aqu&iacute; inyectamos)
+@Value("#{miConfig.defaultLocale}")
+private Locale locale;
+
+//otro acceso a un getter de un bean, ahora usando tambi&eacute;n operadores l&oacute;gicos
+@Value("#{almacen.stock&gt;0")
+private boolean hayStock
+
+//acceso a las propiedades del sistema. 
+//Las variables de entorno son accesibles con "systemEnvironment"
+@Value("#{systemProperties['user.name']}")
+private String userName;
+</pre>
+<p>El uso detallado de SpEL queda fuera del &aacute;mbito de estos apuntes introductorios. Se recomienda consultar la documentaci&oacute;n de Spring para obtener m&aacute;s informaci&oacute;n sobre el lenguaje.</p>
+<a name="N10281"></a><a name="Dependencias+de+recursos+externos"></a>
+<h3 class="underlined_5">Dependencias de recursos externos</h3>
+<p>El API est&aacute;ndar de JavaEE para el acceso a recursos externos (conexiones con bases de datos, colas de mensajes, etc) es JNDI. Este API no se basa en inyecci&oacute;n de dependencias, todo lo contrario: el objeto cliente del servicio es el que debe "hacer el esfuerzo" para localizar por &eacute;l mismo los objetos de los que depende. La "solicitud" o b&uacute;squeda de dichos objetos se le pide a un servicio de directorio que tiene un registro de servicios por nombre. Spring hace lo posible por integrar su mecanismo est&aacute;ndar de dependencias con este modo de funcionamiento y nos permite un acceso relativamente sencillo a recursos JNDI</p>
+<p>Primero hay que asociar el recurso con su nombre JNDI en el .xml de configuraci&oacute;n. Lo m&aacute;s sencillo es usar el espacio de nombres <span class="codefrag">jee</span>. Para usar este espacio de
+nombres hay que definir el siguiente pre&aacute;mbulo en el XML de configuraci&oacute;n (en negrita aparece la definici&oacute;n
+del espacio de nombres propiamente dicho)</p>
+<pre class="brush:xml;highlight:[4,7,8]">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:jee="http://www.springframework.org/schema/jee"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/jee
+      http://www.springframework.org/schema/jee/spring-jee.xsd"&gt;
+   ...
+&lt;/beans&gt;
+</pre>
+<p>Hacer que un DataSource cuyo nombre JNDI es <span class="codefrag">jdbc/MiDataSource</span> se "convierta" en un bean de Spring (y por tanto sea inyectable en otros) es muy sencillo con la etiqueta <span class="codefrag">jee:jndi-lookup</span>
+</p>
+<pre class="brush:xml;">
+&lt;jee:jndi-lookup id="miBean" jndi-name="jdbc/MiDataSource"
+       resource-ref="true"/&gt;
+</pre>
+<p>N&oacute;tese que el atributo identificador (id) del nuevo bean es un valor requerido en la etiqueta XML, aunque es arbitrario. Simplemente debemos asegurarnos de que sea &uacute;nico.</p>
+<p>Donde el atributo <span class="codefrag">resource-ref="true"</span> indica que el DataSource lo gestiona un servidor de
+aplicaciones y que por tanto al nombre JNDI del objeto hace falta precederlo de <span class="codefrag">java:comp/env/</span>
+</p>
+<p>Podemos mejorar un poco el ejemplo: cuando se introducen valores en el XML de configuraci&oacute;n susceptibles de cambios, como los nombres JNDI, es mejor externalizarlos, ya que el XML es bastante cr&iacute;tico y no conviene andar edit&aacute;ndolo sin necesidad. Por ello, Spring prev&eacute; la posibilidad de usar constantes, con la sintaxis <span class="codefrag">${nombre.constante}</span>, y tomar sus valores de ficheros <span class="codefrag">.properties</span> est&aacute;ndar.  Por ejemplo:</p>
+<pre class="brush:xml;">
+&lt;jee:jndi-lookup id="miBean" jndi-name="${datasource}" 
+        resource-ref="true"/&gt;
+&lt;context:property-placeholder 
+        location="classpath:es/ua/jtech/ds.properties"/&gt;
+</pre>
+<p>donde la etiqueta <span class="codefrag">property-placeholder</span> especifica la localizaci&oacute;n f&iacute;sica del fichero<span class="codefrag">.properties</span>, en este caso, en el classpath en un fichero llamado <span class="codefrag">ds.properties</span> dentro de las carpetas <span class="codefrag">es/ua/jtech</span>.</p>
+<p>Finalmente, podemos inyectar nuestro DataSource, ahora convertido en un bean de Spring y por tanto inyectable, usando <span class="codefrag">@Autowired</span> como de costumbre:</p>
+<pre class="brush:java;">
+@Repository
+public class UsuariosDAOJDBC implements IUsuariosDAO {
+  @Autowired
+  DataSource ds;
+  ...
+}  
+</pre>
+<p>Spring es lo suficientemente "h&aacute;bil" para deducir el tipo de un objeto a partir de su nombre JNDI, y por tanto sabr&aacute; que el recurso JNDI llamado  jdbc/MiDataSource es un candidato v&aacute;lido para ser inyectado en esta variable.</p>
+</div>  
+
+
+<a name="N102DB"></a><a name="Alternativas+a+las+anotaciones+para+la+configuraci%C3%B3n"></a>
+<h2 class="underlined_10">Alternativas a las anotaciones para la configuraci&oacute;n</h2>
+<div class="section">
+<p>Aunque es el tipo de configuraci&oacute;n m&aacute;s usado actualmente, las anotaciones no son el &uacute;nico m&eacute;todo de configuraci&oacute;n en Spring. Se pueden definir beans con XML y tambi&eacute;n con c&oacute;digo Java. Vamos a ver muy brevemente las ventajas de estas alternativas y su forma de uso.</p>
+<a name="N102E4"></a><a name="Configuraci%C3%B3n+en+XML"></a>
+<h3 class="underlined_5">Configuraci&oacute;n en XML</h3>
+<p>En lugar de anotaciones, se puede hacer uso del XML de configuraci&oacute;n para definir los beans. Esto tiene dos ventajas b&aacute;sicas: eliminar toda referencia a Spring de nuestro c&oacute;digo, lo que mejora la portabilidad, y permitir la definici&oacute;n de m&aacute;s de un bean de la misma clase con distintas propiedades. No obstante, el XML resultante es bastante farragoso, por ejemplo, el caso del GestorUsuarios, un BO que depende del DAO UsuariosDAO se har&iacute;a en notaci&oacute;n XML:
+</p>
+<pre class="brush:xml;">
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd"&gt;
+    
+    &lt;!-- definimos un bean de la clase UsuariosDAO 
+         y le damos nombre --&gt;
+    &lt;bean id="miUsuariosDAO" 
+        class="es.ua.jtech.spring.datos.UsuariosDAO"&gt;        
+    &lt;/bean&gt;
+    
+    &lt;!-- definimos otro bean de la clase UsuariosDAO 
+         pero con &aacute;mbito "prototype", 
+         solo para que veas que se pueden definir varios beans
+         de la misma clase con propiedades distintas --&gt;
+    &lt;bean id="otroUsuariosDAO"
+          class="es.ua.jtech.spring.datos.UsuariosDAO"
+                scope="prototype"&gt;        
+    &lt;/bean&gt;
+    
+    &lt;bean id ="miGestorUsuarios" 
+      class="es.ua.jtech.spring.negocio.GestorUsuarios"&gt;
+        &lt;!-- la propiedad "udao" referencia al bean antes definido --&gt;
+        &lt;!-- Cuidado, la propiedad debe llamarse igual que en el fuente Java --&gt; 
+        &lt;property name="udao" ref="miUsuariosDAO"/&gt;
+    &lt;/bean&gt;               
+&lt;/beans&gt;
+</pre>
+<p>Hay varias cosas a notar de este c&oacute;digo: la m&aacute;s evidente es que la etiqueta <span class="codefrag">bean</span> es la que se usa para definir cada uno de los beans gestionados por el contenedor. Adem&aacute;s, para especificar que una variable de un bean es otro bean que Spring debe instanciar se usa la etiqueta <span class="codefrag">property</span> con el atributo <span class="codefrag">ref</span> referenciando al bean.</p>
+<p>Aunque por supuesto todo lo que hemos hecho con anotaciones se puede hacer con XML (y m&aacute;s cosas, adem&aacute;s) 
+no vamos a ver la sintaxis, salvo para ver c&oacute;mo definir propiedades de los beans. Se recomienda consultar la documentaci&oacute;n de Spring, en concreto el cap&iacute;tulo 3, <em>The IoC Container</em>.</p>
+<p>
+<strong>Podemos especificar valores iniciales para las propiedades de un bean</strong>. As&iacute; podremos cambiarlos sin
+  necesidad de recompilar el c&oacute;digo. L&oacute;gicamente esto no se puede hacer con anotaciones sino que se hace en
+  el XML. Las propiedades del bean se definen con la etiqueta <span class="codefrag">&lt;property&gt;</span>. Pueden ser 
+  Strings, valores booleanos o num&eacute;ricos y Spring los convertir&aacute; al tipo adecuado, siempre que la clase tenga un m&eacute;todo
+  <span class="codefrag">setXXX</span> para la propiedad. Podemos convertir otros tipos de datos (fechas, expresiones regulares, URLs, ...)
+  usando lo que en Spring se denomina un <span class="codefrag">PropertyEditor</span>. Spring incorpora varios predefinidos y tambi&eacute;n podemos definir los nuestros.</p>
+<p> Por ejemplo, supongamos que tenemos un buscador de documentos <span class="codefrag">DocsDAO</span> y queremos almacenar en alg&uacute;n sitio las preferencias para mostrar los resultados.
+  La clase Java para almacenar las preferencias ser&iacute;a un   <em>JavaBean</em> com&uacute;n: </p>
+<pre class="brush:java;">
+package es.ua.jtech.spring.datos;
+
+
+public class PrefsBusqueda {
+    private int maxResults;
+    private boolean ascendente;
+    private String idioma;
+    
+    //Aqu&iacute; faltar&iacute;an los getters y setters
+    ...
+}
+  </pre>
+<p>No se muestra c&oacute;mo se define la relaci&oacute;n entre <span class="codefrag">DocsDAO</span> y <span class="codefrag">PrefsBusqueda</span>. Ya conocemos
+c&oacute;mo hacerlo a partir de los apartados anteriores.</p>
+<p>Los valores iniciales para las propiedades pueden configurarse en el XML dentro de la etiqueta
+<span class="codefrag">bean</span>
+</p>
+<pre class="brush:xml;">
+
+...
+   &lt;bean id="prefsBusqueda" class="es.ua.jtech.spring.datos.PrefsBusqueda"&gt;
+      &lt;property name="maxResults" value="100"/&gt;
+      &lt;property name="ascendente" value="true"/&gt;
+      &lt;property name="idioma" value="es"/&gt;      
+   &lt;/bean&gt;
+...    
+    
+</pre>
+<p>A partir de la versi&oacute;n 2 de Spring se a&ntilde;adi&oacute; una forma alternativa de especificar propiedades
+que usa una sintaxis mucho m&aacute;s corta. Se emplea el espacio de nombres <span class="codefrag">http://www.springframework.org/schema/p</span>,
+que permite especificar las propiedades del bean como atributos de la etiqueta <span class="codefrag">bean</span>
+ 
+</p>
+<pre class="brush:xml;highlight:[4,8]">
+ 
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+       			http://www.springframework.org/schema/beans/spring-beans.xsd"&gt;
+   &lt;bean id="misPrefs" class="es.ua.jtech.spring.datos.PrefsBusqueda"
+       p:maxResults="100" p:ascendente="true"&gt;
+   &lt;/bean&gt;
+&lt;/beans&gt;
+ 
+ </pre>
+<p>Las propiedades tambi&eacute;n pueden ser colecciones: <span class="codefrag">Lists</span>, <span class="codefrag">Maps</span>, <span class="codefrag">Sets</span>
+o <span class="codefrag">Properties</span>. Supongamos que en el ejemplo anterior queremos una lista de idiomas preferidos:</p>
+<pre class="brush:xml;highlight:[7,8,9,10,11,12]">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+       			http://www.springframework.org/schema/beans/spring-beans.xsd"&gt;
+   &lt;bean id="prefsBusqueda" class="es.ua.jtech.spring.datos.PrefsBusqueda"&gt;
+    &lt;property name="listaIdiomas"&gt;
+      &lt;list&gt;
+       &lt;value&gt;es&lt;/value&gt;
+       &lt;value&gt;en&lt;/value&gt;
+      &lt;/list&gt;
+    &lt;/property&gt;
+    &lt;!-- resto de propiedades --&gt;
+    ...  
+   &lt;/bean&gt;
+&lt;/beans&gt;    
+</pre>
+<p>Para ver c&oacute;mo se especifican los otros tipos de colecciones, acudir a la documentaci&oacute;n de referencia de Spring.</p>
+<a name="N1035B"></a><a name="Configuraci%C3%B3n+Java"></a>
+<h3 class="underlined_5">Configuraci&oacute;n Java</h3>
+<p>El &uacute;ltimo "formato" que podemos usar para configurar los beans es el propio lenguaje Java. La idea b&aacute;sica es definir un m&eacute;todo por cada bean y que &eacute;ste devuelva el objeto instanciado con las propiedades y dependencias que deseemos. Aqu&iacute; tenemos el ejemplo del <span class="codefrag">IUsuariosBO</span> y el <span class="codefrag">IUsuariosDAO</span> con configuraci&oacute;n Java:</p>
+<pre class="brush:java;">
+@Configuration
+public class SampleConfig {
+  @Bean
+  public IUsuariosDAO udao() {
+    return new UsuariosDAOJPA();
+  }
+  
+  @Bean
+  public IUsuariosBO ubo() {
+    IUsuariosBO ubo = new UsuariosBOSimple();
+    ubo.setCredito(100);
+    ubo.setIUsuariosDAO(udao());
+    return ubo;
+  }
+}
+</pre>
+<p>Como se ve, cada bean se define mediante un m&eacute;todo anotado con <span class="codefrag">@Bean</span> y que devuelve una instancia del objeto deseado (simplemente usando <span class="codefrag">new()</span>). La clase que agrupa estos m&eacute;todos se anota con <span class="codefrag">@Configuration</span>. N&oacute;tese adem&aacute;s que:</p>
+<ul>
+
+<li>Spring toma como identificador del bean el nombre del m&eacute;todo que lo genera. Por ejemplo, el identificador del bean de tipo <span class="codefrag">IUsuariosDAO</span> ser&aacute; "udao".</li>
+
+<li>Si queremos asignarle una propiedad al bean simplemente lo hacemos con c&oacute;digo Java. En el ejemplo anterior, hemos supuesto que el <span class="codefrag">IUsuariosBO</span> tiene un <em>setter</em> para una propiedad llamada "credito".</li>
+
+<li>Igualmente, para establecer una dependencia entre beans lo hacemos con c&oacute;digo Java convencional. Esto nos obliga a pasar el bean "colaborador" como un par&aacute;metro en el constructor o en un setter del bean "dependiente". Esto es lo que hemos hecho al construir el <span class="codefrag">IUsuariosBO</span>.</li>
+
+</ul>
+<p>En el c&oacute;digo de la configuraci&oacute;n Java hay m&aacute;s cosas de las que se aprecian a simple vista. La m&aacute;s destacable es que Spring no ejecuta "textualmente" el c&oacute;digo cada vez que se solicita un bean. Si lo hiciera, cada vez que le pidi&eacute;ramos al contenedor un bean <span class="codefrag">IUsuariosDAO</span>, nos estar&iacute;a dando una nueva instancia, mientras que ya hemos visto que en Spring por defecto los beans son <em>singletons</em>. &iquest;Qu&eacute; sucede entonces?: lo que ocurre es que Spring intercepta la llamada al m&eacute;todo <span class="codefrag">udao</span> y si ya se ha creado una instancia del bean devuelve la misma. Esto lo hace usando una t&eacute;cnica denominada programaci&oacute;n orientada a aspectos o AOP.</p>
+<div class="frame note">
+<div class="label">La AOP y Spring</div>
+<div class="content">La AOP o Programaci&oacute;n Orientada a Aspectos es una tecnolog&iacute;a b&aacute;sica en Spring y que explica c&oacute;mo funcionan internamente casi todas las capacidades que ofrece el <em>framework</em>. La AOP permite interceptar la ejecuci&oacute;n en ciertos puntos del c&oacute;digo para ejecutar en ellos nuestras propias tareas antes o despu&eacute;s del c&oacute;digo original. En el caso de la configuraci&oacute;n Java, antes de crear el bean se comprueba si existe ya otra instancia creada. Como se ha dicho, la AOP se usa de manera extensiva en Spring. Es la que permite que se gestionen de manera autom&aacute;tica las transacciones, la seguridad, la cache, y otros muchos aspectos. Para saber algo m&aacute;s de qu&eacute; es la AOP y c&oacute;mo funciona en Spring puedes consultar el ap&eacute;ndice de estos apuntes.</div>
+</div>
+<p>&iquest;Por qu&eacute; puede interesarnos usar la configuraci&oacute;n Java en nuestros proyectos?: frente a la basada en anotaciones tiene la ventaja de que la configuraci&oacute;n est&aacute; centralizada y por tanto es m&aacute;s f&aacute;cil de entender y modificar. Frente al XML ofrece la ventaja de que al ser c&oacute;digo Java podemos usar las capacidades de chequeo de c&oacute;digo de nuestro IDE y del compilador para verificar que todo es correcto. Por ejemplo, en el XML no podemos saber si nos hemos equivocado en el identificador de un bean "colaborador" o en el nombre de la clase del bean. Si esto pasa en la configuraci&oacute;n Java nos daremos cuenta porque el c&oacute;digo no compilar&aacute;.</p>
+<p>Por supuesto esta es una introducci&oacute;n muy b&aacute;sica a la configuraci&oacute;n Java, podemos hacer muchas m&aacute;s cosas como configurar distintos grupos de beans en distintas clases <span class="codefrag">@Configuration</span> e importar en cada <span class="codefrag">@Configuration</span> las configuraciones que necesitemos que sean visibles. Para m&aacute;s informaci&oacute;n,como siempre, consultar la documentaci&oacute;n del framework.</p>
+</div>
+
+ 
+<p class="pageBreakAfter"> 
+</p>
+
+</div>
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+        Copyright &copy;
+         2012-2013 Depto. Ciencia de la computaci&oacute;n e IA</div>
+</div>
+<script type="text/javascript">
+     
+         SyntaxHighlighter.defaults['toolbar'] = false;
+         SyntaxHighlighter.autoloader(
+  		     'java                   skin/highlight/shBrushJava.js',
+  		     'xml xhtml xslt html    skin/highlight/shBrushXml.js',
+  		     'js jscript javascript  skin/highlight/shBrushJScript.js',
+  		     'groovy                 skin/highlight/shBrushGroovy.js',
+  		     'bash shell             skin/highlight/shBrushBash.js',
+  		     'php                    skin/highlight/shBrushPhp.js',
+  		     'css                    skin/highlight/shBrushCss.js',
+  		     'sql                    skin/highlight/shBrushSql.js',
+  		     'objc                   skin/highlight/shBrushObjC.js',
+  		     'cpp c                  skin/highlight/shBrushCpp.js',
+  		     'text plain             skin/highlight/shBrushPlain.js'
+         );
+         SyntaxHighlighter.all();
+     </script><a href="skin/highlight/shBrushJava.js"></a><a href="skin/highlight/shBrushXml.js"></a><a href="skin/highlight/shBrushJScript.js"></a><a href="skin/highlight/shBrushGroovy.js"></a><a href="skin/highlight/shBrushBash.js"></a><a href="skin/highlight/shBrushPhp.js"></a><a href="skin/highlight/shBrushCss.js"></a><a href="skin/highlight/shBrushSql.js"></a><a href="skin/highlight/shBrushObjC.js"></a><a href="skin/highlight/shBrushCpp.js"></a><a href="skin/highlight/shBrushPlain.js"></a>
+</body>
+</html>

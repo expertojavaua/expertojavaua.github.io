@@ -1,0 +1,148 @@
+<html>
+<head>
+<title>Servidores de aplicaciones</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="Author" content="Miguel">
+<link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+</head>
+
+<body>
+<h1>Tema 5: JNDI</h1>
+<p>JNDI (Java Naming and Directory Interface) es un API para el acceso a diferentes 
+  servicios de nombres y directorios de una manera uniforme. Proporciona un mecanismo 
+  para enlazar programas Java con, por ejemplo, sistemas de ficheros, recursos 
+  de red, recursos de bases de datos o servicios de directorios (LDAP). El API 
+  de JNDI permite encontrar objetos y datos registrados en estos servicios y as&iacute; 
+  mismo registrar sus propios objetos y datos para que sean usados por otros usuarios.</p>
+<p>JNDI suele ser utilizado para lo siguiente:</p>
+<ul>
+  <li>Servicio de nombres: asocia nombres l&oacute;gicos a recursos. Se detalla 
+    en la siguiente secci&oacute;n. Este servicio es muy similar al servicio DNS 
+    de la web. Cuando solicitamos una direcci&oacute;n web, el DNS se encarga 
+    de buscar la direcci&oacute;n IP asociada y la devuelve.</li>
+  <li>Servicio de directorio: haciendo uso de otro servicio (LDAP, sistema de 
+    ficheros, etc.) JNDI proporciona todas las funcionalidades que permiten estos 
+    servicios. JNDI puede ser visto como un driver JDBC en el sentido de que se 
+    encarga de &quot;traducir&quot; las llamadas. En el momento de que un EJB, 
+    por ejemplo, pide un recurso a JNDI, &eacute;ste pasa la petici&oacute;n al 
+    servicio correspondiente (LDAP, por ejemplo) y devuelve el recurso. El servicio 
+    de directorio es muy parecido al servicio X.500.</li>
+</ul>
+<p>&nbsp;</p>
+<h2>5.1. JNDI: b&uacute;squeda de objetos mediante su nombre l&oacute;gico</h2>
+<p>Un servicio de nombres proporciona un m&eacute;todo para mapear nombres l&oacute;gicos 
+  (por ejemplo, <i>databd</i>) con entidades u objetos (un recurso DataSource, 
+  un EJB, JMS, etc.). De esta manera, no tenemos que buscar un determinado objeto, 
+  sino que buscaremos su nombre l&oacute;gico. Pensad cuando trabaj&aacute;bamos 
+  con las bases de datos. Obten&iacute;amos una conexi&oacute;n a partir de un 
+  driver y nos conect&aacute;bamos a una base de datos en concreto, que estaba 
+  alojada en una determinada direcci&oacute;n. Si la base de datos cambiaba de 
+  nombre o cambiaba su direcci&oacute;n deb&iacute;amos reflejar dichos cambios 
+  en nuestro c&oacute;digo. Si utilizamos JNDI y asociamos un nombre l&oacute;gico, 
+  por ejemplo <i>databd</i>, a un objeto DataSource el objeto DataSource es el 
+  que manejar&aacute; los datos de la conexi&oacute;n con la base de datos. Nuestro 
+  c&oacute;digo Java accede a JNDI y obtiene una referencia al objeto DataSource 
+  asociado con el nombre l&oacute;gico. Si cambian los par&aacute;metros de conexi&oacute;n, 
+  debemos cambiar el objeto DataSource, pero no nuestro c&oacute;digo Java, puesto 
+  que el nombre l&oacute;gico no ha cambiado. </p>
+<p>Vamos a definir un par de conceptos:</p>
+<ul>
+  <li><b>Contexto</b>: un contexto es similar a una conexi&oacute;n en JDBC. Cuando 
+    obtenemos un contexto de JNDI tenemos un flujo de informaci&oacute;n entre 
+    nuestra aplicaci&oacute;n y el servicio deseado (de nombres o directorios). 
+    Podemos entender un contexto como un directorio del sistema operativo. Dentro 
+    de ese directorio podremos tener m&aacute;s contextos u objetos, de la misma 
+    forma que en un directorio podemos tener m&aacute;s directorios u objetos 
+    (ficheros, enlaces, etc.) Cuando creemos un contexto en nuestro c&oacute;digo 
+    primero deberemos especificar una serie de propiedades. </li>
+  <li><b>Enlace</b>: un enlace es una asociaci&oacute;n entre un nombre at&oacute;mico 
+    y un objeto. </li>
+</ul>
+<p>JNDI suele tener asociado un &aacute;rbol. En la siguiente figura se muestra 
+  un posible &aacute;rbol JNDI. Todo &aacute;rbol tiene un contexto ra&iacute;z, 
+  sin embargo el que se utiliza para trabajar es el contexto inicial. A partir 
+  de este contexto podemos acceder a los objetos enlazados con este contexto (representados 
+  con un tri&aacute;ngulo) o descender a subcontextos (los contextos se representan 
+  mediante c&iacute;rculos). De esta forma podemos agrupar objetos y organizarlos 
+  a nuestra manera. Dentro de JNDI podemos hacer referencia a subcontextos utilizando 
+  el &quot;.&quot; como delimitador. </p>
+<center>
+  <img src="novena.jpg"> 
+</center>
+<h2>5.2. Programar con JNDI</h2>
+<p>Para acceder al contexto inicial debemos utilizar un c&oacute;digo similar 
+  al mostrado a continuaci&oacute;n:</p>
+
+    <pre class="codigo"><b>Context</b> miContexto = null;<b>
+Hashtable</b> ht = new <b>Hashtable </b>();
+ht.put(Context.<b>INITIAL_CONTEXT_FACTORY</b>,
+		&quot;<b>weblogic.jndi.WLInitialContextFactory</b>&quot;);
+ht.put(Context.<b>PROVIDER_URL</b>,
+		&quot;<b>t3://localhost:7001</b>&quot;);
+miContexto = new <b>InitialContext</b> (ht);</pre>
+<p>En la primera l&iacute;nea hemos creado un contexto. La tabla <i>Hash</i> creada 
+  sirve para pasar unos cuantos par&aacute;metros iniciales. El primer par&aacute;metro 
+  es qui&eacute;n nos va a proporcionar el &aacute;rbol JNDI, en este caso Weblogic. 
+  El segundo par&aacute;metro es la URL del servidor que nos proporcionar&aacute; 
+  el &aacute;rbol. Una vez asignados los par&aacute;metros iniciales creamos un 
+  contexto inicial. En todo c&oacute;digo JNDI debemos capturar la excepci&oacute;n 
+  <i>NamingException</i>.</p>
+<p>Cuando terminemos de utilizar el contexto debemos cerrarlo llamando al m&eacute;todo 
+  <b>close</b> de Context.</p>
+<p>Para asociar un objeto en el &aacute;rbol utilizaremos el siguiente c&oacute;digo:</p>
+<pre class="codigo">Persona persona = new Persona();
+miContexto.<b>bind</b> (&quot;objeto persona&quot;, persona);
+// miContexto.<b>rebind</b> (&quot;objeto persona&quot;, persona);</pre>
+<p>Hemos creado un objeto cualquiera, en este caso el objeto <i>persona</i>. Utilizamos 
+  el contexto para asociar (<i>bind</i>) el nombre <i>&quot;objeto persona&quot; 
+  </i>al objeto. Si utilizamos el m&eacute;todo <i>bind</i> y ya existe una asociaci&oacute;n 
+  con este nombre en el &aacute;rbol, se producir&aacute; una excepci&oacute;n. 
+  Por ello se puede utilizar la llamada al m&eacute;todo <i>rebind</i> que, caso 
+  de existir, reemplaza la asociaci&oacute;n anterior. </p>
+<p>Tambi&eacute;n podemos crear subcontextos para organizar mejor nuestra informaci&oacute;n. 
+  Para crear un subcontexto podemos utilizar el siguiente c&oacute;digo:</p>
+<pre class="codigo">Context subcontexto = miContexto.<b>createSubContext</b> (&quot;empleados&quot;);
+Persona persona = new Persona();
+subcontexto.<b>bind</b> (&quot;contable&quot;, persona);
+</pre>
+<p>Hemos creado un subcontexto enlazado con el contexto inicial y dentro de ese 
+  subcontexto hemos asociado un objeto.</p>
+<p>Por &uacute;ltimo, queda recuperar un objeto dentro de un contexto. El siguiente 
+  c&oacute;digo devuelve el objeto introducido en el ejemplo anterior. Observad 
+  que es necesario realizar una conversi&oacute;n al objeto que esperamos que 
+  se devuelva. </p>
+<pre class="codigo"><b>Persona</b> pers = (<b>Persona</b>) miContexto.lookup (&quot;<b>empleados/contable</b>&quot;);</pre>
+<h2>5.3. Weblogic y JNDI</h2>
+<p>Weblogic gestiona un &aacute;rbol JNDI propio, donde las aplicaciones pueden 
+  asociar objetos para que puedan ser utilizados por otras aplicaciones. Podemos 
+  ver el &aacute;rbol JNDI de un determinado servidor. Para ello pinchamos con 
+  el bot&oacute;n derecho sobre el servidor seleccionado y pinchamos en el opci&oacute;n 
+  <i>View JNDI tree</i>. </p>
+<center>
+  <img src="JNDI/jndi1.jpg"> 
+</center>
+<p>Se nos abrir&aacute; una nueva ventana que nos mostrar&aacute; el &aacute;rbol 
+  JNDI. Esta ventana es muy similar a la consola, puesto que est&aacute; dividida 
+  en dos y tiene un applet en la parte izquierda. El applet muestra el &aacute;rbol 
+  y podemos movernos por &eacute;l para ver los objetos presentes. En la figura 
+  se muestra dos objetos, DSJ2EEBD y J2EEDSTX, que son dos fuentes de datos a 
+  las que tendremos acceso mediante JNDI.</p>
+<center>
+  <img src="JNDI/jndi2.jpg"> 
+</center>
+<h2>&nbsp;</h2>
+<h2>5.4. Clases de arranque y parada</h2>
+<p>Algunas veces se hace necesario el uso de clases para realizar ciertas tareas 
+  tanto en el arranque como en la parada de los servidores. Un posible ejemplo 
+  son las asociaciones que se han creado en el &aacute;rbol JNDI dentro de WebLogic. 
+  Una vez que paremos los servidores estas asociaciones no persisten. Podemos 
+  hacer uso de clases que carguen estas asociaciones y que las almacenen cuando 
+  paremos los servidores. Para utilizar una clase de arranque o parada pinchamos 
+  en el icono <i>Startup &amp; Shutdown</i> y creamos una clase nueva. Debemos 
+  especificar el identificador de la clase (elegido de forma arbitraria) y el 
+  nombre de la clase. Tened en cuenta que la clase debe estar incluida en el classpath</p>
+<center>
+  <img src="JNDI/jndi3.jpg"> 
+</center>
+</body>
+</html>

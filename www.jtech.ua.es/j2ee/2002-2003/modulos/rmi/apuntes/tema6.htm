@@ -1,0 +1,436 @@
+<html>
+<head>
+<title>Tema 6: Otros tipos de servidores</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<h1><span class="section">6. </span>Otros tipos de servidores</h1>
+<p>En el tema 4 hemos visto un servidor &quot;<i>unicast</i>&quot;, que constituye 
+  la forma m&aacute;s sencilla de servidor RMI, basado en la clase <code>UnicastRemoteObject</code>, 
+  o exportados por su m&eacute;todo est&aacute;tico <code>exportObject</code>. 
+  Una referencia remota desde un cliente a dicho servidor RMI es v&aacute;lida 
+  mientras el servidor est&aacute; en ejecuci&oacute;n. Una vez que el servidor 
+  termina, o deja de ser exportado, la referencia ya no es v&aacute;lida y no 
+  puede usarse. Por lo tanto se producir&aacute; una excepci&oacute;n si el cliente 
+  usa dicha referencia para invocar a un m&eacute;todo remoto. Un cliente para 
+  dicho servidor debe obtener la referencia remota (stub) cada vez que se ejecuta, 
+  comenzando por una b&uacute;squeda del registro. Para evitar esta situaci&oacute;n 
+  se utilizan los denominados <b>servidores activables</b>. </p>
+<p>Otro tipo de servidores son los denominados <b>servidores IOOP</b>. IOOP es 
+  el protocolo de transporte adoptado por el <i>Object Management Group (OMG) 
+  </i> para CORBA (<i>Common Object Request Architecture)</i>, proporcionando 
+  interoperatividad con las implementaciones de objetos CORBA en varios lenguajes. 
+  RMI sobre IOOP permite a los programadores Java programar las interfaces RMI 
+  pero utilizar IOOP como capa de transporte subyacente. De esta forma, los programadores 
+  Java pueden participar de los servicios de red de CORBA con servicios y clientes 
+  implementados en cualquier lenguaje soportado por CORBA. </p>
+
+<h2 class="subsection">6.1. Servicio de activación de objetos</h2>
+<p>La activaci&oacute;n autom&aacute;tica de objetos remotos es un servicio de 
+  RMI que proporciona dos caracter&iacute;siticas b&aacute;sicas: la capacidad 
+  de instanciar (activar) objetos remotos bajo demanda de las peticiones de los 
+  clientes, y la capacidad de las referencias a objetos remotos de permanecer 
+  v&aacute;lidas aunque el servidor falle (<i>crashes</i>), haciendo las referencias 
+  persistentes. Estas caracter&iacute;siticas pueden ser bastante &uacute;tiles 
+  en ciertas circunstancias, como por ejemplo:</p>
+<ul>
+  <li>cuando se usan servidores bajo demanda</li>
+  <li>cuando se necesitan servidores tolerantes a fallos</li>
+  <li>cuando se necesitan servidores disponibles durante un periodo de 24x7 (24 
+    horas por d&iacute;a, 7 d&iacute;as a la semana)</li>
+</ul>
+<p>La Figura 6.1 muestra el esquema de un sistema RMI que incluye el servicio 
+  de activaci&oacute;n. Se puede observar que en un sistema RMI puede tambi&eacute;n 
+  estar presente un servidor web proporcionando un servicio <i>codebase</i> (localizaci&oacute;n 
+  global para ficheros .class y archivos .jar, accesibles desde los clientes y 
+  servidores RMI).</p>
+<center>
+  <img border="0" src="Fig6-1.gif"> 
+</center>
+<p class="caption">Figura 6.1. Sistema RMI con servicio de activación.</p>  
+<p>Si un objeto remoto se convierte en activable, puede ser registrado en el registro 
+  RMI sin ser instanciado realmente (a diferencia de los objetos remotos no activables). 
+  Para definir un servidor activable (puede crearse bajo demanda) los pasos a 
+  seguir son:</p>
+<ul>
+  <li>Implementar una interfaz remota</li>
+  <li>Registrar el objeto y sus m&eacute;todo de activaci&oacute;n en el servicio 
+    de activaci&oacute;n</li>
+  <li>Hacer que el objeto remoto herede de la clase <code>Activatable</code> del 
+    paquete <code>java.rmi.activation</code> </li>
+  <li>Proporcionar constructores de activaci&oacute;n en la implementaci&oacute;n 
+    del servidor</li>
+  <li>Exportarse a s&iacute; mismo cuando se est&aacute; construyendo el servidor, 
+    bien llamando al constructor adecuado de <code>Activatable</code> (si la clase 
+    se deriva de <code>Activatable</code>), o llamando a <code>Activatable.exportObject</code>.</li>
+</ul>
+<p>Un servidor activable se registra mediante una llamada a <code>Activatable.register</code>. 
+  Cuando se ha registrado, se le asocia con un grupo de activaci&oacute;n, un 
+  <i>codebase</i>, y un (posiblemente nulo) argumento inicial. </p>
+<p>Un <b>grupo de activaci&oacute;n</b> es un grupo de cero o m&aacute;s servidores 
+  activables. Cada grupo de activaci&oacute;n se ejecuta en una m&aacute;quina 
+  virtual Java separada. Un grupo de activaci&oacute;n se registra con el sistema 
+  de activaci&oacute;n. Cuando se requiera, ser&aacute; creado por el sistema 
+  de activaci&oacute;n en una de sus propias JVM. En esencia, los grupos de activaci&oacute;n 
+  son una forma de definir colecciones de objetos remotos activables que prodr&iacute;an 
+  compartir el mismo espacio f&iacute;sico de direcciones. Cada grupo de activaci&oacute;n, 
+  adem&aacute;s, es responsable de monitorizar, activar y reactivar los objetos 
+  que contiene.</p>
+<p>El sistema de activaci&oacute;n RMI es una instancia de la interfaz <code>ActivationSystem</code> 
+  proporcionada por la implementaci&oacute;n de Java. La implementaci&oacute;n 
+  de Sun JDK tiene la forma del programa <code>rmid</code>. Una referencia al 
+  sistema de activaci&oacute;n se obtiene a trav&eacute;s del m&eacute;todo est&aacute;tico 
+  <code>ActivationGroup.getSystem</code>. </p>
+<p>El <i><b>codebase</b></i> de un servidor activable es la URL en la que sus 
+  ficheros .class pueden encontrarse. Es el mismo concepto que el <i>codebase</i> 
+  normal de RMI.</p>
+<p>El <b>argumento de inicializaci&oacute;n</b> de un servidor activable es un 
+  objeto <code>MarshalledObject</code>, proporcionado por el constructor invocado 
+  por el sistmea de activaci&oacute;n durante la activaci&oacute;n del objeto. 
+  Este <code>MarshalledObject</code> se construye inicialmente por el programa 
+  que registra al servidor. Puede contener cualquier cosa que se quiera con tal 
+  de que sea <code>Serializable</code>; puede no contener nada, o puede ser <code>null</code>.</p>
+<p>Cuando un cliente recibe un <i>stub</i> desde un servidor activable, dicho 
+  <i>stub</i> contiene una forma especial de objeto <code>RemoteRef</code>, que 
+  incialmente contiene un valor <code>null</code>, y un <code>ActivationID</code> 
+  para el objeto remoto. Cuando el <i>stub</i> se usa por primera vez en una invocaci&oacute;n 
+  remota tiene lugar un protocolo de interacci&oacute;n con el demonio del sistema 
+  de activaci&oacute;n <code>rmid</code> en el host remoto. El resultado de esta 
+  interacci&oacute;n es un <code>RemoteRef</code> &quot;vivo&quot; que el <i>stub 
+  </i>puede usar par invocar el m&eacute;todo remoto. En definitiva, el sistema 
+  de activaci&oacute;n realiza los siguientes pasos (ver Figura 6.1):</p>
+<ul>
+  <li>búsqueda del correspondiente <code>ActivationID</code></li>
+  <li>encontrar el <code>ActivationGroup</code> asociado con &eacute;l</li>
+  <li>activaci&oacute;n del grupo si es necesario</li>
+  <li>indicar al grupo que active el servidor activable si es necesario</li>
+  <li>obtener la <code>RemoteRef</code> asociada al servidor activable desde el 
+    grupo, y devolver el control al <i>stub</i> cliente</li>
+</ul>
+<center>
+  <img border="0" src="Fig6-2.gif"> 
+</center>
+<p class="caption">Figura 6.2. Diagrama de bloques del proceso de activación.</p>  
+<p>Adem&aacute;s de extender la clase <code>Activatable</code> (aunque tambi&eacute;n 
+  puede no hacerlo), se requieren los siguientes pasos extra para definir un servidor 
+  activable:</p>
+<ul>
+  <li>definir un constructor con una cierta forma en la clase servidor<br>
+    <pre class="codigo">//Sintaxis del constructor
+ActivatableXXX(ActivationID id, MarshalledObject data)
+ 
+//ActivatableXXX se sustituye por el nombre de la clase</pre>
+  </li>
+  <li>exportar el objeto en el constructor, mediante una llamada al constructor 
+    de la clase base adecuada o m&eacute;todo <code>exportObject</code></li>
+  <li>registrar un grupo de activaci&oacute;n, o reusar alguno ya registrado</li>
+  <li>registrar el servidor activable</li>
+  <li>compilar el servidor activable</li>
+</ul>
+<p>Si el servidor activable se deriva de <code>Activatable</code>, el constructor 
+  anterior debe realizar una llamada a uno de los siguientes constructores de 
+  su clase base <code>Activatable</code>: </p>
+<pre class="codigo">Activatable(ActivationID id, int port) //o bien,
+ 
+Activatable(ActivationID id, int port,
+            RMIClientSocketFactory csf, RMIServerSocketFactory ssf)</pre>  
+<p>dependiendo de si se quiere o no especificar <i>socket factories </i> cliente 
+  o servidor. La llamada tendr&aacute; lugar via una de las formas: </p>
+<pre class="codigo">super(id,port); //o bien,
+ 
+super(id,port,csf,ssf);
+</pre>  
+<p>Estos constructores son usados por el sistema de activaci&oacute;n para activar 
+  un objeto que ha recibido una llamada a un m&eacute;todo remoto, pero no est&aacute; 
+  realmente activo. Son constructores de <i>(re)activaci&oacute;n</i>.</p>
+<p>La clase Activatable tiene otros dos constructores de <i>incializaci&oacute;n</i>, 
+  utilizados cuando decidimos crear de forma proactiva uno de los m&eacute;todos 
+  remotos y registrarlos con el servicio de activaci&oacute;n de RMI.</p>
+<pre class="codigo">Activatable(String src, MarshalledObject data,
+            boolean restar, int port) //o bien,
+ 
+Activatable(String src, MarshalledObject data,
+            boolean restar, int port,
+            RMIClientSocketFactory csf, RMIServerSocketFactory ssf)</pre>  
+<p>Si el servidor activable no se deriva de <code>Activatable</code>, el constructor 
+  debe realizar una llamada directamente (o indirectamente) a uno de los siguientes 
+  m&eacute;todos: </p>
+<pre class="codigo">Activatable.exportObject(Remote remote,ActivationID id, int port) //o bien,
+ 
+Activatable.exportObject(Remote remote, ActivationID id, int port,
+            RMIClientSocketFactory csf, RMIServerSocketFactory ssf)</pre>  
+<p>Estos m&eacute;todos son p&uacute;blicos y est&aacute;ticos por lo que pueden 
+  ser accedidos por cualquier clase. </p>
+<p>El proceso de registrar un servidor activable consiste en hacer que &eacute;ste 
+  sea conocido por el sistema de activaci&oacute;n como una entidad que puede 
+  ser creada y activada bajo demanda.</p>
+<p>El <b>proceso de realizar el registro</b> es bastante complejo debido principalmente 
+  a la complicaci&oacute;n a&ntilde;adida de la activaci&oacute;n de los grupos 
+  e inicializaci&oacute;n de los argumentos. Los pasos b&aacute;sicos a realizar 
+  para <u>registrar un grupo de activaci&oacute;n</u> se muestran en el c&oacute;digo 
+  siguiente:</p>
+<pre class="codigo">String file =...;  //URL del fichero de pol&iacute;tica de seguridad
+String location=...;  //URL de <i>codebase</i>
+MarshalledObject data=...;   //argumento de inicializaci&oacute;n 
+Properties props = new Properties();
+props.put(&quot;java.security.policy&quot;,file);
+ActivationGroupDesc.CommandEnvironment ace = null;
+ActivationGroupDesc groupDesc = new ActivationGroupDesc(props,ace);
+ActivationGroupID gid =
+   ActivationGroup.getSystem().registerGroup(groupDesc);
+ActivationDesc desc= new ActivationDesc
+                      (gid,MyActivatable.getName(),location,data);
+MyRemote rx= (MyRemote)Activatable.register(desc);</pre>  
+<p>En este ejemplo:</p>
+<ul>
+  <li><code>MyRemote</code> es el nombre de un interfaz remoto </li>
+  <li><code>MyActivable</code> es el nombre de una clase activable que implementa 
+    la interfaz remota</li>
+  <li>la inicialización de las variables <code>file</code>,<code> location</code>, 
+    y <code>data</code> se deja a la conveniencia de la aplicación </li>
+  <li> <code>data</code> puede ser <code>null</code> </li>
+</ul>
+<p>Se construye una instancia de <code>Properties</code>, en la que se debe especificar 
+  los par&aacute;metros del <i>security manager</i>, incluyendo la localizaci&oacute;n 
+  absoluta del fichero de pol&iacute;tica de seguridad para el grupo.</p>
+<p>Se construye una instancia de <code>ActivationGroupDesc.CommandEnvironment</code>, 
+  normalmente con valor null, a menos que se quiera unsar un <i>path</i> u opciones 
+  no est&aacute;ndar para el comando java ejecutado cuando se activa el grupo.</p>
+<p>Se construye un <code>ActivationGroupDesc</code>, y se registra este grupo 
+  obteniendo su ID de grupo. El <code>ActivationGroupID</code> obtenido se puede 
+  usar posteriormente para registrar objetos dentro del grupo y para des-registrar 
+  el grupo. </p>
+<p>El m&eacute;todo <code>Activatable.register()</code> devuelve un <i>stub</i> 
+  remoto del objeto activable. Puesto que dicho <i>stub</i> se utilizar&aacute; 
+  para un objeto que implemente la interfaz <code>MyRemote</code>, podemos hacer 
+  un <i>cast</i> de dicho <i>stub</i> a <code>MyRemote</code>.</p>
+<p>El proceso para <u>registrar un servidor activable</u> es el mismo aunque el 
+  objeto se derive o no de <code>Activable</code>.</p>
+<p>Para registrar un servidor activable se necesita un descriptor de activaci&oacute;n 
+  (<code>ActivationDesc</code>), la clase <code>ActivationDesc</code> contiene 
+  la informaci&oacute;n que el sistema de activaci&oacute;n necesita para activar 
+  un objeto; para crear un <code>ActivationDesc</code> se necesita un identificador 
+  de grupo (<code>ActivationGroupID</code>) obtenido en el paso anterior, y la 
+  clase del servidor activable y los datos iniciales si los hay.</p>
+<p>En ambos casos, tanto para el registro de un grupo de activaci&oacute;n como 
+  de un servidor activable se debe guardar el identificador de grupo o la referencia 
+  remota obtenida, t&iacute;picamente en un fichero, via serializaci&oacute;n.</p>
+<p>La principal diferencia entre un objeto remoto activable y otro que no lo es 
+  es que una referencia remota no necesita tener un objeto &quot;vivo&quot; asociado 
+  a ella. Si un objeto activable no est&aacute; en ejecuci&oacute;n (por ejemplo 
+  no ha sido construido todav&iacute;a, o ha terminado, o ha sido recogido por 
+  el recolector de basuras), una referencia remota de dicho objeto puede exportarse 
+  al cliente. El cliente recib el el <i>stub </i>correspondiente, y puede realizar 
+  invocaciones remotas a trav&eacute;s de &eacute;l. Cuando el primer m&eacute;todo 
+  es invocado, el servicio de activaci&oacute;n en ejecuci&oacute;n constatar&aacute; 
+  que el objeto no est&aacute; activo y activar&aacute; el objeto para el cliente. 
+  Si el objeto no tiene una m&aacute;quina virtual en ejecuci&oacute;n, se inciar&aacute; 
+  una. El objeto entonces es activado usando informaci&oacute;n que ha sido registrada 
+  por el sistema de activaci&oacute;n. Dicha informaci&oacute;n incluye el nombre 
+  de clase del objeto, una URL desde donde puede cargar el <i>bytecode</i> de 
+  la clase si &eacute;sta no se encuentra en la variable <code>CLASSPATH</code> 
+  local, y datos que se pasan al constructor de activaci&oacute;n del objeto. 
+  Una vez que el objeto ha sido activado tiene lugar la invocaci&oacute;n del 
+  m&eacute;todo, y los resultados son <i>marshaled</i> y enviados de vuelta al 
+  cliente.</p>
+<p>Una vez que el objeto remotoe est&aacute; en funcionamiento, las siguientes 
+  peticiones de ejecuci&oacute;n se manejan de la forma usual. Si el objeto deja 
+  de funcionar por alguna raz&oacute;n, la siguiente petici&oacute;n provocar&aacute; 
+  el inicio del servicio de activaci&oacute;n de nuevo. As&iacute;, las referencias 
+  remotas a objetos activables pueden persistir a lo largo de de muchas &quot;vidas&quot; 
+  del servidor real del objeto.</p>
+<h2 class="subsection">6.2. RMI/IIOP</h2>
+<p>IIOP (<i>Internet Inter-ORB protocol)</i> es el protocolo de transporte adoptado 
+  por OMG para CORBA. Proporciona ineroperatividad con las implementaciones de 
+  objetos CORBA en varios lenguajes.</p>
+<p>La clase <code>javax.rmi.PortableRemoteObject</code> se utiliza para definir 
+  los denominados &quot;objetos remotos portables&quot; (servidores RMI que se 
+  comunican mediante RMI/IIOP). Dicha clase es an&aacute;loga a <code>java.rmi.server.UnicastRemoteObject</code>, 
+  proporcionando un constructor, un m&eacute;todo <code>exportObject</code>, y 
+  un m&eacute;todo <code>unexportObject</code>. Las diferencias entre objetos 
+  remotos portables y objetos remotos <i>unicast</i> o activables son:</p>
+<ul>
+  <li>los objetos remotos portables se comunican via IIOP en lugar de JRMP (<i>Java 
+    Remote Method Protocol</i>)</li>
+  <li>los objetos remotos portables no participan en el DGC (<i>Distributed Garbage 
+    Collection) </i></li>
+  <li>los objetos remotos portables deben compilarse con <code>rmic</code> con 
+    el flag <code>-iiop</code></li>
+  <li>los objetos remotos portables no soportan de forma expl&iacute;cita n&uacute;meros 
+    de puerto o <i>socket factories</i>.</li>
+</ul>
+<p>La Figura 6.3 muestra el esquema de un sistema RMI sobre IIOP. En RMI/IIOP 
+  se utiliza el <i>COS Naming service</i>, en lugar del registro RMI. En RMI sobre 
+  IIOP no se puede utilizar el servicio de activaci&oacute;n, ya que solamente 
+  est&aacute; soportado con el protocolo JRMP. </p>
+<center>
+  <img border="0" src="Fig6-3.gif"> 
+</center>
+<p class="caption">Figura 6.3. RMI sobre IIOP.</p>    
+<p><u>SERVIDOR REMOTO IIOP</u></p>
+<p>Para escribir un objeto remoto portable se tienen tres opciones:</p>
+<ul>
+  <li>heredando de un <code>PortableRemoteObject</code></li>
+  <li>heredando de <code>RemoteObject</code></li>
+  <li>heredando de otra clase</li>
+</ul>
+<p>Un objeto remoto portable puede escribirse heredando de <code>PortableRemoteObject</code> 
+  de la siguiente forma:</p>
+<pre class="codigo">import javax.rmi.PortableRemoteObject;
+ 
+public class MyIIOPServer() extend PortableRemoteObject
+                            implements MyRemote 
+{  public MyIOOPServer() throws RemoteException {}
+     //implementaci&oacute;n de los m&eacute;todos remotos
+}</pre>
+<p>Un objeto remoto portable puede escribirse heredando de <code>PortableRemoteObject</code> 
+  de la siguiente forma:</p>
+<pre class="codigo">import javax.rmi.PortableRemoteObject;
+ 
+public class MyIIOPServer() extend RemoteObject
+                            implements MyRemote 
+{  public MyIOOPServer() throws RemoteException {
+      PortableRemoteObject.exportObject(this);
+   }
+     //implementaci&oacute;n de los m&eacute;todos remotos
+}
+</pre>
+<p>Un objeto remoto portable puede escribirse heredando de cualquier otra clase 
+  excepto de <code>UnicastRemoteObject</code> y <code>Activatable</code>. Dicho 
+  servidor debe exportarse &eacute;l mismo o ser exportado por alguien. Normalmente 
+  el servidor puede exportarse a s&iacute; mismo en la construcci&oacute;n llamando 
+  a <code>PortableRemoteObject.exportObject</code>.</p>
+<pre class="codigo">import javax.rmi.PortableRemoteObject;
+ 
+public class MyIIOPServer() extend PortableRemoteObject
+                            implements MyRemote 
+{  public MyIOOPServer() throws RemoteException {}
+     //implementaci&oacute;n de los m&eacute;todos remotos
+}
+</pre>
+<p>Para construir el servidor se ejecuta <code>rmic</code> con la clase servidor 
+  utilizando, como ya se ha comentado anteriormente el flag <code>-iiop</code>. 
+  Como resultado se generan las clases CORBA <i>stub </i>y <i>tie</i> (en lugar 
+  de las clases JRMP <i>stub </i>y <i>skeleton</i>. CORBA utiliza clases <i>tie</i> 
+  en la parte del servidor para procesar las llamadas entrantes y dirigirlas a 
+  la implementaci&oacute;n de la clase adecuada. Cada implementaci&oacute;n de 
+  clase requiere una clase <i>tie.</i></p>
+<p>Si es necesario generar IDL, se debe ejecutar <code>rmic</code> con el flag 
+  <code>-idl</code>. Solamente ser&aacute; necesario IDL si se utilizan clientes 
+  no Java.</p>
+<p>Java proporciona la herramienta <code>idlj</code> para permitir utilizar Java 
+  desde las definiciones IDL de CORBA. La herramienta idlj opera en la direcci&oacute;n 
+  IDL-Java, mientras que <code>rmil -idl</code> opera el la direcci&oacute;n Java-IDL.</p>
+<p>Es importante tener en cuenta que RMI/IIOP est&aacute; dise&ntilde;ado como 
+  la intersecci&oacute;n de RMI y CORBA, no como la uni&oacute;n de las caracter&iacute;sticas 
+  de ambas. As&iacute; por ejemplo, los objetos remotos portables no pueden ser 
+  activables, y las definiciones de constantes en las interfaces remotas solo 
+  pueden ser tipos primitivos o <code>Strings</code>, y deben ser evaluados en 
+  tiempo de compilaci&oacute;n. </p>
+<p>En teor&iacute;a, una vez que hemos producido el IDL correspondiente para el 
+  servicio remoto, se puede implementar dicho servicio en otro lenguaje. En la 
+  pr&aacute;ctica esto depende de si el sumnistrador de ORB soporta la caracter&iacute;sitca 
+  <i>Objects By Value</i> de CORBA 2.3 para el lenbuaje requerido. Actualmente 
+  <i>Objects By Value</i> solamente est&aacute; definido para Java y C++. </p>
+
+<p><u>SERVIDOR REMOTO DUAL (JRMP/IIOP)</u></p>
+<p>Es posible escribir un objeto remoto portable de forma que sorporte clientes 
+  IIOP y JRMP. Para ello se necesita lo siguiente:</p>
+<ul>
+  <li>No se debe heredar de <code>UnicastRemoteObject</code> ni de <code>PortableRemoteObject</code>.</li>
+  <li>Dicho objeto no debe exportarse a s&iacute; mismo durante la construcci&oacute;n. 
+    Se debe exportar mediante una llamada a <code>UnicastRemoteObject.exportObject</code> 
+    o <code>PortableRemoteObject.exportObject</code>, dependiendo del protocolo 
+    que se quiera soportar. En este caso, como se quiere soportar ambos protocolos, 
+    se debe llamar a ambos m&eacute;todos.</li>
+  <li>Usar JNDI tanto con el registro RMI como con el nombrado COS: crear dos 
+    <code>InitialContexts</code>, uno para permitir el enlace con el registro 
+    RMI, y otro con el servicio de nombres COS, y enlazar el servidor en ambos.</li>
+  <li>No utilizar el servicio de nombres desde l&iacute;nea de comandos utilizando 
+    la opci&oacute;n <code>-D</code>.</li>
+</ul>
+<p>Como ejemplo de servidor que soporta ambos servicios, ilustramos el siguiente:</p>
+<pre class="codigo">import java.rmi.*;
+import java.rmi.server.*;
+import java.util.Properties;
+import javax.naming.InitialContext;
+importa javax.rmi;
+ 
+public class MyDualServer() implements MyRemote 
+{  public MyDualServer() throws RemoteException {
+     UnicastRemoteObject.exportObject(this); //exporta e JRMP
+     PortableRemoteObject.exportObject(this); //exporta a IIOP
+   }
+     //implementaci&oacute;n de los m&eacute;todos remotos
+
+   public static void main(String[] args) throws Exception
+   {  System.setSecurityManager(new RMISecurityManager());
+      MyDualServer server = new MyDualServer();
+
+      //enlace al registro RMI
+      Properties jrmpProps = new Properties();
+      jmpProps.put(&quot;java.naming.factory.initial&quot;,
+            &quot;com.sun.jndi.rmi.registry.RegistryContextFactory&quot;);
+      initialContextjrmpCtx = new InitialContext(jrmpProps);
+      hrmpCtx.rebind(&quot;MyRemote&quot;,server);
+
+      //enlace al nombrado COS
+      Properties iiopProps = new Properties();
+      iiopProps.put(&quot;java.naming.factory.initial&quot;,
+            &quot;com.sun.jndi.rmi.cosnaming.CNCtxFactory&quot;);
+      initialContextiiopProps = new InitialContext(iiopProps);
+      iiopProps.rebind(&quot;MyRemote&quot;,server);
+   }
+}
+</pre>
+<p><u>CLIENTE IIOP</u></p>
+<p>Con respecto al cliente, tal y como ya se ha visto, un cliente RMI es muy parecido 
+  a un cliente de un objeto local. Las &uacute;nicas diferencias reales son la 
+  fuente del objeto y el uso de una interfaz intermedia para acceder al objeto 
+  as&iacute; obtenido.</p>
+<p>De igual forma, un cliente RMI/IIOP es muy parecido a un cliente RMI/JRMP. 
+  De nuevo las &uacute;nicas diferencias reales son la fuente del objeto y el 
+  uso de una interfaz intermedia para acceder al objeto as&iacute; obtenido.</p>
+<p>Cuando se obtiene un objeto remoto, debe hacerse un <i>cast</i> al tipo de 
+  la interfaz remota esperada. Como hemos visto, con RMI/JRMP, &eacute;sto se 
+  realiza con un simple <i>cast</i> de Java:</p>
+<pre class="codigo">MyRemote myRemote = (MyRemote) object; </pre>
+<p>En RMI/IIOP, se requiere una operaci&oacute;n de red CORBA para comprobar e 
+  implementar el <i>cast</i>. </p>
+<pre class="codigo">MyRemote myRemote = (MyRemote) PortableRemoteObject.narrow
+                               (object,MyRemote.class); </pre>
+<p>A continuac&oacute;n se ilustra un ejemplo de cliente RMI/IIOP para el servidor 
+  dual anterior.</p>
+<pre class="codigo">import java.rmi.*;
+
+import java.util.Properties;
+import javax.naming.InitialContext;
+
+ 
+public class MyRemoteClient() 
+{  
+
+   public static void main(String[] args) throws Exception
+   {  System.setSecurityManager(new RMISecurityManager());
+      
+      //búsqueda de nombrado COS via JNDI
+      Properties props = new Properties();
+      props.put(&quot;java.naming.factory.initial&quot;,
+            &quot;com.sun.jndi.cosnaming.CNCtxFactory&quot;);
+      InitialContext ctx = new InitialContext(props);
+      Object obj = ctx.lookup(&quot;MyRemote&quot;);
+
+      //obtenci&oacute;n del objeto: realizaci&oacute;n del <i>cast</i> CORBA
+      MyRemote mr = (MyRemote)PortableRemoteObject.narrow
+                              (obj,MyRemote.class);
+      
+      //ahora se pueden invocar a los m&eacute;todos sobe mr
+   }
+}
+</pre>
+<p>Se puede escribir un cliente no Java para un servidor RMI/IIOP. C&oacute;mo 
+  hacerlo depende del ORB utilizado.</p>
+</body>
+</html>

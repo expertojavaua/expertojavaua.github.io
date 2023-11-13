@@ -1,0 +1,54 @@
+import java.io.*;
+import java.net.*;
+import java.security.*;
+
+import javax.net.ssl.SSLServerSocketFactory;
+
+import com.sun.net.ssl.*;
+
+/**
+ *      ServidorSSLSocketsSun	
+ *
+ *      Servidor SSL con sockets usando com.sun.net.ssl.
+ */
+public class ServidorSSLSocketsSun {
+
+	private static final int PORT = 8080;
+
+	public static void main (String[] args) throws Exception {
+
+                // Cargar el keystore
+		char[] password = "scosco".toCharArray();
+		KeyStore keystore = KeyStore.getInstance("JKS");
+		keystore.load(new FileInputStream(".keystore"), password);
+
+                // Inicializamos la KeyManagerFactory con el KeyStore
+		KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
+		kmf.init(keystore, password);
+
+                // Creamos un contexto SSL y lo inicializamos con los 
+                // KeyManagers de la KeyManagerFactory
+		SSLContext contexto = SSLContext.getInstance("TLS");
+		KeyManager[] keyManagers = kmf.getKeyManagers();
+
+		contexto.init(keyManagers, null, null);
+
+                // Definimos una SocketFactory para crear los sockets.
+		SSLServerSocketFactory ssf = contexto.getServerSocketFactory();
+		ServerSocket ss = ssf.createServerSocket(PORT);
+
+                // Esperar una conexión del cliente.
+		Socket s = ss.accept();
+
+                // Coger el stream de entrada. Será encriptado transparentementr. 
+		BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+                
+                // Leer la entrada del cliente y mostrar en pantalla.
+		String linea = null;
+		while (((linea = in.readLine())!= null)) {
+			System.out.println(linea);
+		}
+		in.close();
+		s.close();
+	}
+}

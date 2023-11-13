@@ -1,0 +1,651 @@
+<html>
+<head>
+<title>Tema 3: DOM</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<h1><span class="section">3. DOM</span> </h1>
+<p>DOM (<i>Document Object Model</i>) es una especificaci&oacute;n de un API, 
+  independiente del lenguaje, para acceder y modificar documentos XML (y tambi&eacute;n 
+  HTML). Dicho API representa documentos XML y HTML como objetos que pueden ser 
+  accedidos por aplicaciones tales como navegadores Web, buscadores de documentos, 
+  y lenguajes de <i>scripts</i>. Mediante el uso de DOM, dichos programas pueden 
+  crear, navegar, manipular, y modificar los documentos XML (y HTML).</p>
+<h2 class="subsection">3.1. Motivaci&oacute;n y or&iacute;genes de DOM</h2>
+<p>Como hemos visto, SAX permite realizar programas (analizadores) que reaccionen 
+  ante los datos contenidos en un documento XML. Sin embargo si queremos acceder 
+  a esta informaci&oacute;n de forma no-secuencial (no siguiendo el orden marcado 
+  por el analizador) o queremos alterar o manipular esta informaci&oacute;n (por 
+  ejemplo mover una secci&oacute;n o parte del documento) entonces necesitamos 
+  algo m&aacute;s flexible.</p>
+<p>La idea es proporcionar alg&uacute;n mecanismo para crear un modelo de un documento 
+  XML como un conjunto de objetos. A partir de este modelo ya podemos navegar 
+  por la estructura del documento y a&ntilde;adir, quitar o modificar elementos 
+  y su contenido. Dicho modelo se llama DOM (<i>Document Object Model</i>).</p>
+<p>Otro objetivo importante de DOM es el proporcionar una interfaz de programaci&oacute;n 
+  est&aacute;ndar de forma que pueda usarse en una amplia variedad de entornos 
+  y aplicaciones. DOM se ha dise&ntilde;ado para poder ser usado con cualquier 
+  lenguaje de programaci&oacute;n. </p>
+<p>DOM est&aacute; siendo definido por el W3C (<i>World Wide Web Consortium</i>) 
+  en varias etapas o &quot;niveles&quot; (<i>levels</i>). Las especificaciones 
+  de DOM se pueden consultar en <a href="http://www.w3c.org/tr">http://www.w3c.org</a>. 
+</p>
+<p>La especificaci&oacute;n DOM Level 1 comenz&oacute; a finales del a&ntilde;o 
+  1997 (http://www.w3.org/TR/REC-DOM-LEVEL-1) siendo la actualizaci&oacute;n m&aacute;s 
+  reciente de 2000. Este primer nivel se limita a aquellos m&eacute;todos necesarios 
+  para representar y manipular la estructura del documento y su contenido. DOM 
+  Level 2 incluye facilidades relacionadas con eventos, as&iacute; como para la 
+  manipulaci&oacute;n de hojas de estilo. La actualizaci&oacute;n m&aacute;s reciente 
+  de DOM Level 2 es de Noviembre de 2000 (http://www.w3.org/TR/REC-DOM-Level-2-Core). 
+  Actualmente se dispone de un borrador de la especificaci&oacute;n del nivel 
+  3 (de Octubre de 2002, (http://www.w3.org/TR/REC-DOM-Level-3-Val), que proporciona 
+  facilidades para mover nodos entre documentos, ordenaci&oacute;n de nodos, as&iacute; 
+  como un API para cargar ficheros XML y convertirlos a una representaci&oacute;n 
+  DOM y al rev&eacute;s. </p>
+<p>Las aplicaciones que utilizan DOM t&iacute;picamente comienzan analizando alg&uacute;n 
+  documento XML y obteniendo la representaci&oacute;n DOM asociada (objeto <code>Document</code> 
+  que representa al documento). C&oacute;mo se realiza esto no est&aacute; especificado 
+  en el nivel 1, y el nivel 2 proporciona solamente mejoras limitadas: existe 
+  una clase que proporciona acceso a los m&eacute;todos para crear objetos <code>Document</code>, 
+  pero no hay forma de acceder a un constructor de lectura/an&aacute;lisis de 
+  un documento XML de forma independiente de la implementaci&oacute;n.</p>
+<p>Una vez que se tiene el modelo proporcionado por DOM, se puede acceder a las 
+  distintas partes del documento XML asociado a trav&eacute;s de las propiedades 
+  y m&eacute;todos del objeto <span class="codigo"><code>Document</code></span> 
+  correspondiente. Dichas propiedades y m&eacute;todos se definen en la especificaci&oacute;n 
+  DOM. La especificaci&oacute;n proporcionada por el W3C define el API de DOM 
+  para Java, ECMAScript, y OMG IDL.</p>
+<h2 class="subsection">3.2. Representaci&oacute;n DOM de un documento XML</h2>
+<p>DOM especifica un conjunto de interfaces para manejar documentos XML o HTML. 
+  El objetivo es obtener un modelo del documento en el que se represente su estructura. 
+</p>
+<p>Tanto los documentos XML, como HTML, tienen una estructura jer&aacute;rquica, 
+  por eso el modelo l&oacute;gico resultante obtenido por DOM de dichos documentos 
+  se asemeja a un &aacute;rbol (o bosque). Sin embargo, es importante tener en 
+  cuenta que la especificaci&oacute;n de DOM no indica que los docuementos obtenidos 
+  deben implementarse como un &aacute;rbol (o bosque), ni especifica las relaciones 
+  entre los objetos a implementar. DOM es un modelo l&oacute;gico, que puede implementarse 
+  de la manera que se crea m&aacute;s conveniente. Otra propiedad importante de 
+  los modelos obtenidos por DOM es su isomorfismo estructural: si se usa dos implementaciones 
+  distintas de DOM para obtener una representaci&oacute;n del mismo documento, 
+  se crear&aacute; el mismo modelo de estructura, con los mismos objetos y relaciones 
+  entre ellos.<br>
+</p>
+<p>Supongamos el siguiente texto, extra&iacute;do de un documento XML: </p>
+<pre class="codigo">&lt;zoo&gt;
+   &lt;mamiferos&gt;
+      &lt;animal&gt; Gato &lt;/animal&gt;
+      &lt;animal&gt; Perro &lt;/animal&gt;
+   &lt;/mamiferos&gt;
+   &lt;reptiles&gt;
+      &lt;animal&gt; Boa &lt;/animal&gt;
+      &lt;animal&gt; Lagarto &lt;/animal&gt;
+   &lt;/reptiles&gt;
+&lt;/zoo&gt;</pre>
+<p>una implementaci&oacute;n de DOM obtendr&iacute;a el siguiente modelo (ver 
+  Figura 3.1):</p>
+<center>
+  <img border="0" src="arbol.gif"> 
+</center>
+<p class="caption">Figura 3.1. Modelo DOM asociado a un documento XML.</p>
+
+<p>Los documentos se modelan usando objetos, y el modelo obtenido incluye no s&oacute;lo 
+  la estructura de un documento, sino tambi&eacute;n el comportamiento de los 
+  objetos por los que est&aacute; formado dicho documento. En otras palabras, 
+  los nodos en el diagrama anterior no representan una estructura de datos, sino 
+  objetos, los cuales tienen unas propiedades y un comportamiento. DOM identifica: 
+</p>
+<ul>
+  <li> Las interfaces y los objetos usados para representar y manipular el documento, 
+  </li>
+  <li>La sem&aacute;ntica de dichas interfaces y objetos, y </li>
+  <li>Las relaciones y colaboraciones entre las interfaces y objetos. </li>
+</ul>
+<p>Las interfaces que pueden usarse para gestionar documentos XML (y HTML) son 
+  abstracciones (similares a las clases abstractas de Java), es decir, constituyen 
+  la manera de especificar la forma de acceder y manipular una representaci&oacute;n 
+  de un documento de una aplicaci&oacute;n. Las interfaces no implican una implementaci&oacute;n 
+  concreta particular. Cada aplicaci&oacute;n DOM es libre de mantener cualquier 
+  representaci&oacute;n para los documentos que considere conveniente. </p>
+<p></p>
+<p>DOM est&aacute; formado por dos partes: DOM Core (conjunto de interfaces para 
+  acceder a documentos XML) y el DOM HTML (extensi&oacute;n con interfaces espec&iacute;ficas 
+  para acceder a documentos HTML). </p>
+<h2 class="subsection">3.3. DOM (Core) Level 1</h2>
+<p>DOM presenta los documentos como una jerarqu&iacute;a de objetos <b><code>Node</code></b>, 
+  que tambi&eacute;n implementan otras interfaces m&aacute;s especializadas. La 
+  interfaz Node es el tipo de datos primario de un documento DOM, representando 
+  un nodo del &aacute;rbol. Algunos tipos de nodos pueden tener nodos hijo de 
+  varios tipos, y otros son nodos hoja, que representan el nivel m&aacute;s inferior 
+  en la estructura del documento. Los tipos de nodo, y qu&eacute; tipos de nodos 
+  pueden tener como hijos son los siguientes:</p>
+  
+<div align="center">
+  <table width="690" border="1">
+    <tr> 
+      <td width="158"><b><font size="-1">Tipos Node</font></b></td>
+      <td width="179"><b><font size="-1">Qu&eacute; representa</font></b></td>
+      <td width="168"><b><font size="-1">Posibles nodos hijo</font></b></td>
+      <td width="157"><b><font size="-1">Atributos - valor </font></b></td>
+    </tr>
+    <tr> 
+      <td width="158"><font size="-1">Document</font></td>
+      <td width="179"><font size="-1">Representa todo el documento XML o HTML 
+        </font></td>
+      <td width="168"><font size="-1">Element (&lt;=1), ProcessingInstruction, 
+        Comment, DocumentType</font></td>
+      <td width="157"> 
+        <p><font size="-1">name - #document</font></p>
+        <p><font size="-1">value - null</font></p>
+      </td>
+    </tr>
+    <tr> 
+      <td width="158"><font size="-1">DocumentFragment</font></td>
+      <td width="179"><font size="-1">Representa una porci&oacute;n de un documento</font></td>
+      <td width="168"><font size="-1">Element, ProcessingInstruction, Comment, 
+        Text, CDATASection, EntityReference</font></td>
+      <td width="157"> 
+        <p><font size="-1">name - <br> #document fragment</font></p>
+        <p><font size="-1">value - null</font></p>
+      </td>
+    </tr>
+    <tr> 
+      <td width="158"><font size="-1">DocumentType</font></td>
+      <td width="179"><font size="-1">Cada documento tiene un atributo &quot;doctype&quot; 
+        cuyo valor es nulo o bien un objeto DocumentType</font></td>
+      <td width="168"> 
+        <div align="center"><font size="-1">--</font></div>
+      </td>
+      <td width="157"> 
+        <div align="center">
+          <p><font size="-1">name - nombre del tipo de documento</font></p>
+          <p><font size="-1">value - null</font></p>
+      </div>
+      </td>
+    </tr>
+    <tr> 
+      <td width="158"><font size="-1">EntityReference</font></td>
+      <td width="179"><font size="-1">Referencias a entidades </font></td>
+      <td width="168"><font size="-1">Element, ProcessingInstruction, Comment, 
+        Text, CDATASection, EntityReference</font></td>
+      <td width="157"> 
+        <p><font size="-1">name - nombre de la entidad referenciada</font></p>
+        <p><font size="-1">value - null</font></p>
+      </td>
+    </tr>
+    <tr> 
+      <td width="158"><font size="-1">Element</font></td>
+      <td width="179"><font size="-1">Representa un elemento</font></td>
+      <td width="168"><font size="-1">Element, Text, Comment, ProcessingInstruction, 
+        CDATASection, EntityReference</font></td>
+      <td width="157"> 
+        <p><font size="-1">name - nombre <br>etiqueta</font></p>
+        <p><font size="-1">value - null</font></p>
+      </td>
+    </tr>
+    <tr> 
+      <td width="158"><font size="-1">Attr</font></td>
+      <td width="179"><font size="-1">Atributo de un objeto Element</font></td>
+      <td width="168"><font size="-1">Text, EntityReference</font></td>
+      <td width="157"> 
+        <p><font size="-1">name - nombre del atributo</font></p>
+        <p><font size="-1">value - valor atributo</font></p>
+      </td>
+    </tr>
+    <tr> 
+      <td width="158"><font size="-1">ProcessingInstruction</font></td>
+      <td width="179"><font size="-1">Instrucci&oacute;n de procesamiento</font></td>
+      <td width="168"> 
+        <div align="center"><font size="-1">--</font></div>
+      </td>
+      <td width="157"> 
+        <div align="center">
+          <p><font size="-1">name - destino</font></p>
+          <p><font size="-1">value - contenido <br>instrucci&oacute;n</font></p>
+      </div>
+      </td>
+    </tr>
+    <tr> 
+      <td width="158"><font size="-1">Comment</font></td>
+      <td width="179"><font size="-1">Comentarios</font></td>
+      <td width="168"> 
+        <div align="center"><font size="-1">--</font></div>
+      </td>
+      <td width="157"> 
+        <div align="center">
+          <p><font size="-1">name - #comment</font></p>
+          <p><font size="-1">value - contenido del comentario</font></p>
+      </div>
+      </td>
+    </tr>
+    <tr> 
+      <td width="158"><font size="-1">Text</font></td>
+      <td width="179"><font size="-1">Texto</font></td>
+      <td width="168"> 
+        <div align="center"><font size="-1">--</font></div>
+      </td>
+      <td width="157"> 
+        <div align="center">
+          <p><font size="-1">name - #text</font></p>
+          <p><font size="-1">value - texto del nodo</font></p>
+      </div>
+      </td>
+    </tr>
+    <tr> 
+      <td width="158"><font size="-1">CDATASection</font></td>
+      <td width="179"><font size="-1">Secciones de datos</font></td>
+      <td width="168"> 
+        <div align="center"><font size="-1">--</font></div>
+      </td>
+      <td width="157"> 
+        <div align="center">
+          <p><font size="-1">name - <br>#cdata-section</font></p>
+          <p><font size="-1">value - texto secci&oacute;n</font></p>
+        </div>
+      </td>
+    </tr>
+    <tr> 
+      <td width="158"><font size="-1">Entity</font></td>
+      <td width="179"><font size="-1">Entidad de un documento XML o HTML</font></td>
+      <td width="168"><font size="-1">Element, ProcessingInstruction, Comment, 
+        Text, CDATASection, EntityReference</font></td>
+      <td width="157"> 
+        <p><font size="-1">name - <br>nombre entidad</font></p>
+        <p><font size="-1">value - null</font></p>
+      </td>
+    </tr>
+    <tr> 
+      <td width="158"><font size="-1">Notation</font></td>
+      <td width="179"><font size="-1">Notaci&oacute;n declarada en el DTD</font></td>
+      <td width="168"> 
+        <div align="center"><font size="-1">--</font></div>
+      </td>
+      <td width="157"> 
+        <div align="center">
+          <p><font size="-1">name-</font><font size="-1"><br>nombre notaci&oacute;n</font></p>
+          <p><font size="-1">value - null</font></p>
+      </div>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<p>&nbsp;</p>
+
+<p>DOM especifica una interfaz <b><code>NodeList</code></b> para manejar listas 
+  ordenadas de elementos Node (como por ejemplo hijos de un objeto <code>Node</code>, 
+  o los elementos devueltos por el m&eacute;todo <code>Element.getElementsByTagName</code>). 
+</p>
+<p>Otra interfaz importante es <code><b>NamedNodeMap</b></code>, utilizada para 
+  manejar conjuntos de nodos no ordenados, referenciados por su atributo <code>name</code> 
+  (como por ejemplo los atributos de un objeto <code>Element</code>). </p>
+<p>Tanto <code>NodeList</code> como <code>NamedNodeMap</code> 
+  reflejan los cambios en la estructura del documento subyacente, de forma que 
+  si un usuario utiliza un objeto <code>NodeList</code> que contiene 
+  el hijo de un objeto <code>Element</code>, y posteriormente 
+  el usuario a&ntilde;ade m&aacute;s hijos a dicho elemento (o los elimina o modifica), 
+  dichos cambios se reflejan autom&aacute;ticamente en el objeto <code>NodeList</code>, 
+  sin que el usuario tenga que hacerlo expl&iacute;citamente. De igual forma, 
+  los cambios en un elemento <code>Node</code> de un &aacute;rbol 
+  se reflejan en todas las referencias a ese <code>Node</code> 
+  en las <code>NodeLists</code> y <code>NamedNodeMaps</code>.</p>
+<p>Otras interfaces consideradas fundamentales (y por lo tanto deben ser implementadas 
+  en cualquier implementaci&oacute;n de DOM), son las siguientes:</p>
+  
+<ul>
+  <li> <font color="#000000"><code>DOMException</code></font>, para manejar situaciones 
+    excepcionales,</li>
+  <li><code>DOMImplementation</code>, proporciona 
+    m&eacute;todos para crear objetos <code>Document</code> y 
+    <code>DocumentType</code>, as&iacute; como el m&eacute;todo 
+    <code>hasFeature()</code> para averiguar qu&eacute; caracter&iacute;sticas 
+    soporta una determinada implementaci&oacute;n.</li>
+</ul>
+
+<h2 class="subsection">3.4. DOM (Core) Level 2</h2>
+<p>DOM Level 2 (DOM2) est&aacute; dividido en catorce m&oacute;dulos distribu&iacute;dos 
+  en ocho paquetes diferentes (DOM1 se corresponde con los módulos Core y XML): 
+</p>
+<ul>
+  <li>Core (<font color="#000000"><code>org.w3c.dom</code></font>): interfaces 
+    básicas para representar un documento</li>
+  <li>XML (<code>org.w3c.dom</code>): interfaces para manipular documentos XML 
+  </li>
+  <li>HTML (<code>org.w3c.dom.html</code>): interfaces para manipular documentos 
+    HTML </li>
+  <li>Views (<code>org.w3c.dom.views</code>): interfaces para manejar vistas un 
+    documento </li>
+  <li>StyleSheets (<code>org.w3c.dom.stylesheets</code>): interfaces para representar 
+    hojas de estilo</li>
+  <li>CSS (<code>org.w3c.dom.css</code>): interfaces representar hojas de estilo 
+    CSS </li>
+  <li>CSS2 (<code>org.w3c.dom.css</code>): clase que proporciona métodos para 
+    fijar propiedades de las hojas de estilo</li>
+  <li>Events (<code>org.w3c.dom.events</code>): interfaces para asociar manejadores 
+    de eventos a nodos</li>  
+  <li>UIEvents (<code>org.w3c.dom.events</code>): interfaces para manejar señales 
+    para nodos que representan alguna forma de interfaz gráfica de usuario(GUI)</li>
+  <li>MouseEvents (<code>org.w3c.dom.events</code>): interfaces manejar señales 
+    provocadas por el uso del ratón </li>  
+  <li>MutationEvents (<code>org.w3c.dom.events</code>): interfaces manejar la 
+    adición, modificación o borrado de nodos</li>
+  <li>HTMLEvents (<code>org.w3c.dom.events</code>): Usa la interfaz DOMEvent para 
+    informar de eventos específicos de los navegadores web </li>
+  <li>Traversal (<code>org.w3c.dom.traversal</code>): Clases con utilidades para 
+    realizar operaciones para "navegar" por la estructura de árbol </li>
+  <li>Range (<code>org.w3c.dom.ranges</code>): Módulo opcional que extiende DOM 
+    para cubrir secciones de documentos que no se corresponden exactamente con 
+    elementos definidos. Por ejemplo, podría ser interesante indicar la sección 
+    de texto que el usuario ha seleccionado con el ratón. </li>
+</ul>
+
+  <h2 class="subsection">3.5. Analizadores (<i>parsers</i>) DOM para Java</h2>
+<p>DOM est&aacute; definido casi en su totalidad por interfaces, en lugar de clases. 
+  Diferentes analizadores proporcionan su propia implementaci&oacute;n de las 
+  interfaces est&aacute;ndar. DOM no est&aacute; tan ampliamente soportado como 
+  SAX, pero la mayor&iacute;a de los analizadores Java lo proporcionan, incluyendo 
+  Crimson, Serces, XML for Java, Oracle XML Parser for Java, y GNU JAXP.</p>
+<p>DOM no est&aacute; completo en s&iacute; mismo. Casi todos los programas DOM 
+  necesitan usar algunas clases espec&iacute;ficas del analizador. No resulta 
+  demasiado dif&iacute;cil cambiar un analizador por otro, pero normalmente se 
+  requiere recompilar el programa. DOM2 no especifica como analizar un documento, 
+  crear un nuevo documento, o serializarlo en un fichero o flujo de datos. Estas 
+  importantes funciones son realizadas por clases espec&iacute;ficas del analizador 
+  correspondiente.</p>
+<p>JAXP, el API de Java para procesamiento de XML, pal&iacute;a algo esta deficiencia 
+  de DOM proporcionando formas est&aacute;ndar (independientes del analizador) 
+  para analizar documentos existentes, crear nuevos documentos y serializar &aacute;rboles 
+  DOM (en memoria) en ficheros XML. </p>
+<p>Si el analizador utilizado implementa JAXP, entonces en lugar de usar clases 
+  espec&iacute;ficas del analizador, se pueden usar las clases <code>DocumentBuilderFactory</code> 
+  y <code>DocumentBuilder</code>, del paquete <code>javax.xml.parsers</code>, 
+  para analizar los documentos. Los pasos a seguir son:</p>
+<ul>
+  <li> Usar el método estático <code>DocumentBuilderFactory.newInstance()</code> 
+    que devuelve un objeto <code>DocumentBuilderFactory</code>. </li>
+  <li> Usar el método <code>newDocumentBuilder()</code> de dicho objeto para devolver 
+    una instancia específica del analizador de la clase abstracta <code>DocumentBuilder</code>. 
+    <br>
+    JAXP es razonablemente independiente del analizador. Por defecto utiliza la 
+    clase indicada por la propiedad del sistema <code>javax.xml.parsers.DocumentBuilderFactory</code>. 
+    Si dicha propiedad no tiene ningún valor asignado, entonces JAXP busca en 
+    el fichero de propiedades <code>lib/jaxp.properties</code> en el directorio 
+    <code>jre</code> para determinar un valor por defecto para la propiedad del 
+    sistema <code>javax.xml.parsers.DocumentBuilderFactory</code>. Si se quiere 
+    utilizar un cierto analizador DOM, por ejemplo <code>gnu.xml.dom.JAXPFactory</code>, 
+    se debe añadir la siguiente línea en ese fichero: 
+    <pre class="codigo">javax.xml.parsers.DocumentBuilderFactory=gnu.xml.dom.JAXPFactory </pre>
+  </li>
+  <li> Usar uno de los cinco métodos <code>parse()</code> de <code>DocumentBuilder</code> 
+    para leer el documento XML y devolver un objeto <code>org.w3c.dom.Document</code>. 
+  </li>
+</ul>
+<p>El proceso anterior se ilustra en la Figura 3.2: </p>
+<center>
+  <img border="0" src="dom1.gif"> 
+</center>
+<p class="caption">Figura 3.2. Esquema del proceso de análisis de un documento XML.</p>
+
+<p><u>Ejemplo 1</u>. Lectura de un documento XML y obtenci&oacute;n de un documento 
+  DOM</p>
+<pre class="codigo">public class DomEcho
+{  static Document document;
+   
+   public static void main(String argv[])
+   {
+     if (argv.length != 1) {
+       ... 
+     DocumentBuilderFactory factory= DocumentBuilderFactory.newInstance();
+     }
+     try {
+       DocumentBuilder builder = factory.newDocumentBuilder();
+       document = builder.parse( new File(argv[0]));
+     } catch (...) { 
+       ... //captura de excepciones
+     }
+
+  }
+}</pre>
+
+ 
+<p><u>Ejemplo 2</u>. Manipulaci&oacute;n de un documento DOM</p>
+
+<p>Una vez que el documento ha sido analizado (mediante el m&eacute;todo <code>parse</code>) 
+  podemos olvidar las diferencias existentes entre los distintos analizadores 
+  y trabajar con las interfaces est&aacute;ndar DOM.</p>
+<p>Para navegar por la estructura del &aacute;rbol, la interfaz <code>org.w3c.dom.Node</code> 
+  define varios m&eacute;todos para navegar por la estructura de un documento 
+  DOM. Las operaciones <code>getFirstChild</code>, <code>getLastChild</code>, 
+  <code>getNextSibling</code>, <code>getPreviousSibling</code>, y <code>getParentNode</code> 
+  son suficientes para recorrer cualquier elemento del &aacute;rbol.</p>
+<p>La clase <code>Restructurer</code> reordena los nodos de un &aacute;rbol de 
+  forma que los que representan instrucciones de procesamiento queden por encima 
+  del nodo raiz, y los comentarios aparezcan debajo del nodo raiz</p>
+<pre class="codigo">public class Restructurer {
+
+   
+   public static void processNode(Node current) throws DOMException
+   {
+     Node nextSibling = current.getNextSibling();
+     int nodeType = current.getNodeType();
+
+
+     if (nodeType == Node.COMMENT_NODE ||
+         nodeType == Node.PROCESSING_INSTRUCTION_NODE) {
+        
+       Node document = current.getOwnerDocument();
+       Node root = document.getFirstChild();
+       while (!(root.getNodeType() == Node.ELEMENT_NODE)) {
+         root = root.getNextSibling();
+       }
+       Node parent = current.getParentNode();
+       parent.removeChild(current);
+       if (nodeType == Node.COMMENT_NODE) {
+          document.appendChild(current);
+       }
+       else if (nodetype == Node.PROCESSING_INSTRUCTION_NODE) {
+          document.insertBefore(current,root);
+       }
+     }
+     else if (current.hasChildNodes()) {
+        Node firstChild = current.getFirstChild();
+        processNode(firstChild);
+     }
+
+     if (nextSibling != null) {
+        processNode(nextSibling);
+     }
+
+  }
+}</pre>
+
+<p>La clase RestructureDriver construye un documento DOM a partir de un documento 
+  XML desde una URL, lo modifica y muestra el documento a trav&eacute;s de <code>System.out</code></p>
+<pre class="codigo">public class RestructureDriver {
+
+   
+   public static void main(String[] args) {
+     
+     if (args.lenght &lt;=0) {
+       System.out.println(&quot;Usage: java RestructureDriver URL&quot;);
+       return;
+     }
+     String url = args[0];
+     try {
+       DocumentBuilderFactory factory =
+          DocumentBuilderFactory.newInstance();
+       factory.setNamespaceAware(true);
+       DocumentBuilder parser = factory.newDocumentBuilder();
+       //lectura del documento
+       Document document = parser.parse(url);
+       //modificaci&oacute;n del documento
+       <b>Restructurer.processNode</b>(document);
+       //escritura del documento resultante
+       TransformerFactory xformFactory =
+            TransformerFactory.newInstance();
+       Transformer idTransform = xformFactory.newTransformer();
+       Source input = new DOMSource(document);
+       Result output = new StreamResult(System.out);
+       idTransform.transform(input,output);
+     }
+     catch (...) {
+        //captura de excepciones
+     }
+
+  }
+}</pre>
+
+<p>El paquete <code>javax.xml.transform</code> permite serializar un documento 
+  DOM. Los pasos a seguir son:</p>
+<ul>
+  <li>Usar el m&eacute;todo <code>TransformerFactory.newInstance()</code> para obtener 
+  un objeto <code>javax.xml.transform.TransformerFactory</code></li>
+  <li>Usar el m&eacute;todo <code>newTransformer()</code> de dicho objeto obtenido 
+  para obtener una instancia espec&iacute;fica de la implementaci&oacute;n de 
+  la clase abstracta <code>javax.xml.transform.Transformer</code></li>
+ <li>Construir un nuevo objeto <code>javax.xml.transform.dom.DOMsource</code> a 
+  partir del objeto DOM <code>Document</code> </li>
+  <li>Construir un nuevo objeto <code>javax.xml.transform.stream.StreamResult</code> 
+    conectado al <code>OutputStream</code> en el que se quiere escribir el documento</li> <li>Utilizar el m&eacute;todo <code>transform()</code> del objeto <code>Transformer</code> 
+    anteriormente creado sobre los objetos original y resultante</li>
+</ul>
+<p><u>Ejemplo 3</u>. Creaci&oacute;n de un documento DOM</p>
+<p>Podemos crear un documento DOM vac&iacute;o, en lugar de analizar un documento 
+  XML existente, al que a&ntilde;adimos un nodo raiz y varios nodos hijo.</p>
+<p>La interfaz abstracta que crea nuevos objetos <code>Document</code> se llama 
+  <code>DomImplementation</code>, dichos objetos, una vez creados, pueden ser 
+  serializados en un <code>stream</code> o un fichero. Para crear un documento 
+  se utiliza el m&eacute;todo:</p>
+<pre class="codigo">public Document <b>createDocument</b> (String rootElementNamespaceURI, 
+                                String rootElementQualifiedName, 
+								DocumentType doctype);</pre>
+<p>Si el documento simplemente es un documento bien formado, puede utilizarse 
+  <code>null</code> como argumento <code>doctype</code>. Si el elemento ra&iacute;z 
+  del documento no est&aacute; registrado en un espacio de nombres, tambi&eacute;n 
+  puede utilizarse el valor null como primer argumento. Los objetos <code>Document</code> 
+  creados carecen de elementos por debajo del nodo ra&iacute;z, de forma que deben 
+  usarse los m&eacute;todos de la interfaz <code>Document</code> para crear nuevos 
+  nodos, y m&eacute;todos de la interfaz <code>Node</code> para a&ntilde;adir 
+  dichos nodos al &aacute;rbol.</p>
+<p>La mayor&iacute;a de programas que crean nuevos documentos siguen la siguiente 
+  estructura:</p>
+<ul>
+  <li>Localizar una clase DOMImplementation local</li>
+  <li>Crear un nuevo objeto Document</li>
+  <li>A&ntilde;adir varios tipos de nodos al objeto Document</li>
+  <li>Serializar el objeto Document en un Stream</li>
+</ul>
+<pre class="codigo">
+public class FibonacciDOM 
+{
+
+  public static void main(String[] args) {
+
+    try {
+      DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+      factory.setNamespaceAware(true);
+      DocumentBuilder builder = factory.newDocumentBuilder();
+      DOMImplementation impl = <b>builder.getDOMImplementation()</b>;
+      
+      Document doc = impl.<b>createDocument(null, "Fibonacci_Numbers", null)</b>;
+       
+      BigInteger low  = BigInteger.ONE;
+      BigInteger high = BigInteger.ONE;
+
+      Element root = doc.getDocumentElement();
+
+      for (int i = 0; i < 10; i++) {
+        Text space = doc.createTextNode(&quot;\n  &quot;);<br>        root.appendChild(space);
+        Element number = doc.createElement("fibonacci");
+        Text text = doc.createTextNode(low.toString());
+        number.appendChild(text);
+        root.appendChild(number);
+        BigInteger temp = high;
+        high = high.add(low);
+        low = temp;
+      }
+      Text lineBreak = doc.createTextNode(&quot;\n&quot;);<br>      root.appendChild(lineBreak);
+
+      <b>// Serializaci&oacute;n del documento</b>
+      TransformerFactory xformFactory = TransformerFactory.newInstance();  
+      Transformer idTransform = xformFactory.newTransformer();
+      Source input = new DOMSource(doc);
+      Result output = new StreamResult(System.out);
+      idTransform.transform(input, output);
+    }
+    catch (...) { 
+      //captura de excepciones 
+    }
+  }
+}</pre>
+Este programa produce documentos como el siguiente:
+<pre class="codigo">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;&lt;Fibonacci_Numbers&gt;<br>&lt;fibonacci&gt;1&lt;/fibonacci&gt;
+&lt;fibonacci&gt;1&lt;/fibonacci&gt;
+&lt;fibonacci&gt;2&lt;/fibonacci&gt;
+&lt;fibonacci&gt;3&lt;/fibonacci&gt;
+&lt;fibonacci&gt;5&lt;/fibonacci&gt;<br>&lt;fibonacci&gt;8&lt;/fibonacci&gt;
+&lt;fibonacci&gt;13&lt;/fibonacci&gt;
+&lt;fibonacci&gt;21&lt;/fibonacci&gt;
+&lt;fibonacci&gt;34&lt;/fibonacci&gt;
+&lt;fibonacci&gt;55&lt;/fibonacci&gt;<br>&lt;/Fibonacci_Numbers&gt;
+</pre>
+
+<p><u>Ejemplo 4</u>. B&uacute;squeda de un nodo</p>
+<p>Los m&eacute;todos <code>getFirstChild</code>, <code>getLastChild</code>, <code>getNextSibling</code>, 
+  <code>getPreviousSibling</code>, y <code>getParentNode</code> son suficientes 
+  para recorrer cualquier elemento del &aacute;rbol.</p>
+<pre class="codigo">
+public Node findSubNode(String name, Node node) 
+{
+  if (node.getNodeType() != Node.ELEMENT_NODE) {
+    System.err.println("Error: El nodo buscado no es de ese tipo");
+    System.exit(22);
+  }
+
+  if (! node.hasChildNodes()) return null;
+
+  NodeList list = node.getChildNodes();
+  for (int i=0; i < list.getLength(); i++) {
+    Node subnode = list.item(i);
+    if (subnode.getNodeType() == Node.ELEMENT_NODE) {
+      if (subnode.getNodeName() == name) return subnode;
+    }
+  }
+  return null;
+}
+</pre>
+
+<p><u>Ejemplo 5</u>. Obtenci&oacute;n del contenido de un nodo</p>
+<p>Cuando se quiere obtener el texto que contiene un nodo, es conveniente navegar 
+  por la lista de nodos hijo, ignorando aquellos nodos que no contienen texto.</p>
+
+<pre class="codigo">
+public String getText(Node node) 
+{
+  StringBuffer result = new StringBuffer();
+  if (! node.hasChildNodes()) return "";
+
+  NodeList list = node.getChildNodes();
+  for (int i=0; i < list.getLength(); i++) {
+    Node subnode = list.item(i);
+    if (subnode.getNodeType() == Node.TEXT_NODE) {
+      result.append(subnode.getNodeValue());
+    }
+    else if (subnode.getNodeType() ==
+        Node.CDATA_SECTION_NODE) 
+    {
+      result.append(subnode.getNodeValue());
+    }
+    else if (subnode.getNodeType() ==
+        Node.ENTITY_REFERENCE_NODE) 
+    {
+      result.append(getText(subnode));
+    }
+  }
+  return result.toString();
+}
+</pre>
+</body>
+</html>

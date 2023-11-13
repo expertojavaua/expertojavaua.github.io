@@ -1,0 +1,159 @@
+package examples.security.sslclient;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.FileInputStream;
+import java.util.Hashtable;
+
+import java.security.KeyStore;
+import java.security.PrivateKey;
+import java.security.cert.Certificate;
+
+import weblogic.security.SSL.HostnameVerifierJSSE;
+import weblogic.security.SSL.SSLContext;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSession;
+import weblogic.security.SSL.SSLSocketFactory;
+import weblogic.security.SSL.TrustManagerJSSE;
+
+  /**
+  * A Java client demonstrates connecting to a JSP served by WebLogic Server
+  * using the secure port and displays the results of the connection.
+  *
+  * @author Copyright (c) 1999-2002 by BEA Systems, Inc. All Rights Reserved.
+  */
+
+public class SSLSocketClient {
+
+  public void SSLSocketClient() {}
+
+  public static void main (String [] argv)
+    throws IOException {
+    if ((argv.length < 2) || (argv.length > 3)) {
+      System.out.println("usage:   java SSLSocketClient host sslport <HostnameVerifierJSSE>");
+      System.out.println("example: java SSLSocketClient server2.weblogic.com 443 MyHVClassName");
+      System.exit(-1);
+    }
+
+    /////////////////////////////////
+
+    try {
+      System.out.println("\nhttps://" + argv[0] + ":" + argv[1]);
+      System.out.println(" Creating the SSLContext");
+      SSLContext sslCtx = SSLContext.getInstance("https");
+
+      File KeyStoreFile  = new File ("mykeystore");
+      if (!KeyStoreFile.exists())
+	{
+	   System.out.println("Keystore Error : mykeystore is not present in this directory.");
+	   System.out.println("To create it run - ant createmykeystore.");
+	   System.exit(0);
+	}
+
+      System.out.println(" Initializing the SSLContext with client\n" +
+                         "  identity (certificates and private key),\n" +
+                         "  HostnameVerifierJSSE, AND NulledTrustManager");
+
+
+     // Open the keystore, retrieve the private key, and certificate chain
+      KeyStore ks = KeyStore.getInstance("jks");
+      ks.load(new FileInputStream("mykeystore"), null);
+      PrivateKey key = (PrivateKey)ks.getKey("mykey", "testkey".toCharArray());
+      Certificate [] certChain = ks.getCertificateChain("mykey");
+      sslCtx.loadLocalIdentity(certChain, key);
+
+      HostnameVerifierJSSE hVerifier = null;
+      if (argv.length < 3)
+        hVerifier = new NulledHostnameVerifier();
+      else
+        hVerifier = (HostnameVerifierJSSE) Class.forName(argv[2]).newInstance();
+
+      sslCtx.setHostnameVerifierJSSE(hVerifier);
+
+      TrustManagerJSSE tManager = new NulledTrustManager();
+
+      sslCtx.setTrustManagerJSSE(tManager);
+
+      System.out.println(" Creating new SSLSocketFactory with SSLContext");
+      SSLSocketFactory sslSF = (SSLSocketFactory) sslCtx.getSocketFactoryJSSE();
+
+      System.out.println(" Creating and opening new SSLSocket with SSLSocketFactory");
+      // using createSocket(String hostname, int port)
+      SSLSocket sslSock = (SSLSocket) sslSF.createSocket(argv[0],
+                                                         new Integer(argv[1]).intValue());
+      System.out.println(" SSLSocket created");
+
+      sslSock.addHandshakeCompletedListener(new MyListener());
+
+      OutputStream out = sslSock.getOutputStream();
+
+      // Send a simple HTTP request
+      String req = "GET /examplesWebApp/ShowDate.jsp HTTP/1.0\r\n\r\n";
+      out.write(req.getBytes());
+
+      // Retrieve the InputStream and read the HTTP result, displaying
+      // it on the console
+      InputStream    in = sslSock.getInputStream();
+      byte buf[] = new byte[1024];
+
+      try
+      {
+        while (true)
+        {
+          int amt = in.read(buf);
+          if (amt == -1) break;
+          System.out.write(buf, 0, amt);
+        }
+      }
+      catch (IOException e)
+      {
+        return;
+      }
+
+      sslSock.close();
+      System.out.println(" SSLSocket closed");
+
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+/**
+ * MyListener implements  the interface <code>javax.net.ssl.HandshakeCompletedListener</code>
+ * and shows the user how to receive
+ * notifications about the completion of an SSL protocol handshake
+ * on a given SSL connection.
+ *
+ * It also shows the user the number of times an SSL handshake takes
+ * place on a given SSL connection.
+ *
+ */
+  static class MyListener implements javax.net.ssl.HandshakeCompletedListener
+  {
+    public void handshakeCompleted(javax.net.ssl.HandshakeCompletedEvent event)
+    {
+      SSLSession session = event.getSession();
+      System.out.println("Handshake Completed with peer " + session.getPeerHost());
+      System.out.println("   cipher: " + session.getCipherSuite());
+      javax.security.cert.X509Certificate[] certs = null;
+      try
+      {
+        certs = session.getPeerCertificateChain();
+      }
+      catch (javax.net.ssl.SSLPeerUnverifiedException puv)
+      {
+        certs = null;
+      }
+      if  (certs != null)
+      {
+        System.out.println("   peer certificates:");
+        for (int z=0; z<certs.length; z++) System.out.println("      certs["+z+"]: " + certs[z]);
+      }
+      else
+      {
+        System.out.println("No peer certificates presented");
+      }
+    }
+  }
+}

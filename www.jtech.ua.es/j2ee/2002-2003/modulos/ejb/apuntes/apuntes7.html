@@ -1,0 +1,839 @@
+<head>
+<title>Sesion 7 Enterprise Java Beans</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../../ejercicios.css" type="text/css">
+</head>
+<body>
+<h1> Tema 6: Relaciones entre beans de entidad (cont.)</h1>
+<P>En la sesi&oacute;n pasada realizamos una introducci&oacute;n a las relaciones 
+  entre beans de entidad. En esta sesi&oacute;n vamos a detallar m&aacute;s c&oacute;mo 
+  definir los distintos posibles tipos de relaciones, especificando para cada 
+  una de las siete posibles relaciones los distintos elementos que hay que definir 
+  para cada EJB que interviene en la relaci&oacute;n:</P>
+<ul>
+  <li>los ficheros Java de los beans implicados en la relaci&oacute;n (modelo 
+    abstracto de programaci&oacute;n)</li>
+  <li>los elementos del fichero XML de configuraci&oacute;n del despliegue (esquema 
+    abstracto de persistencia)</li>
+  <li>las tablas de las bases de datos incluidas en la relaci&oacute;n</li>
+</ul>
+<P>Recordemos que los siete posibles tipos de relaci&oacute;n son:</P>
+<ul>
+  <li>Uno-a-uno, unidireccional</li>
+  <li>Uno-a-uno, bidireccional</li>
+  <li>Uno-a-muchos, unidireccional</li>
+  <li>Uno-a-muchos, bidireccional</li>
+  <li>Muchos-a-uno, unidireccional</li>
+  <li>Muchos-a-muchos, unidireccional</li>
+  <li>Muchos-a-muchos, bidireccional</li>
+</ul>
+<p>En esta sesi&oacute;n vamos a completar el ejemplo que comenzamos en la sesi&oacute;n 
+  anterior, la relaci&oacute;n uno-a-uno unidireccional, a&ntilde;adiendo el esquema 
+  abstracto de persistencia, y vamos a definir los elementos necesarios para una 
+  relaci&oacute;n uno-a-muchos unidireccional. De esta forma habremos revisado 
+  dos de los siete posibles tipos de relaci&oacute;n. </p>
+<h2>6.4 El modelo abstracto de programaci&oacute;n</h2>
+<p>EL modelo abstracto de programaci&oacute;n define los m&eacute;todos de negocio 
+  que est&aacute;n asociados a una relaci&oacute;n entre EJBs. Por ejemplo, supongamos 
+  una relaci&oacute;n uno-a-uno unidireccional entre Cliente y Direccion. Cada 
+  cliente tiene una direcci&oacute;n asoaciada. Para poder usar esta relaci&oacute;n 
+  necesitaremos dos m&eacute;todos de negocio: uno para definir el bean Direccion 
+  asociado a un Cliente y otro para obtenerlo. O supongamos una relaci&oacute;n 
+  uno-a-muchos unidreccional entre Cliente y NumeroTelefono. Necesitaremos tambi&eacute;n 
+  una pareja de m&eacute;todos de negocio para, dado un cliente, obtener o a&ntilde;adir 
+  n&uacute;meros de tel&eacute;fono asociados. La signatura de los m&eacute;todos 
+  de negocio va a depender del tipo de relaci&oacute;n que se haya definido.</p>
+<p>Debido a la necesiadad de que las relaciones se implementen de forma eficiente, 
+  los m&eacute;todos de negocio van a usar siempre interfaces locales de los EJB 
+  asociados. Es necesario por ello que todos los EJB que participan en una relaci&oacute;n 
+  residan en el mismo contenedor EJB.</p>
+<p>Los m&eacute;todos de negocio deben definirse en la interfaz remota (y/o local) 
+  del EJB origen de la relaci&oacute;n, adem&aacute;s de en el fichero de implementaci&oacute;n 
+  del EJB, donde deben declararse como abstractos.</p>
+<h2>6.5 El esquema abstracto de persistencia</h2>
+
+<p>Adem&aacute;s de declarar m&eacute;todos de acceso abstractos, el desarrollador 
+  del bean debe describir la cardinalidad y la direcci&oacute;n de las relaciones 
+  entre beans en el fichero de descripci&oacute;n del despliegue. Llamaremos <em>esquema 
+  abstracto de persistencia </em>a los elementos XML del fichero de descripci&oacute;n 
+  del despliegue que describen la relaci&oacute;n.</p>
+<p>Un esquema abstracto de persistencia de un bean se define en la secci&oacute;n 
+  &lt;relationships&gt; del descriptor XML del despliegue del bean. Dentro del 
+  elemento &lt;relationships&gt;, cada relaci&oacute;n entidad-a-entidad se define 
+  en un elemento separado &lt;ejb-relation&gt;:</p>
+<pre class="codigo">
+&lt;ejb-jar&gt;
+    &lt;enterprise-beans&gt;
+    ...
+    &lt;/enterprise-beans&gt;
+    &lt;relationships&gt;
+        &lt;ejb-relation&gt;
+        ...
+        &lt;/ejb-relation&gt;
+        &lt;ejb-relation&gt;
+        ...
+        &lt;/ejb-relation&gt;
+    &lt;/relationships&gt;
+    &lt;assembly-descriptor&gt;
+    ...
+    &lt;/assembly-descriptor&gt;
+&lt;/ejb-jar&gt;
+</pre>
+
+<p>Los elementos &lt;ejb-relation&gt; complementan el modelo abstracto de programaci&oacute;n. 
+  Para cada par de m&eacute;todos de acceso abstractos que definen un compo de 
+  relaci&oacute;n, hay un elemento &lt;ejb-relation&gt; en el descriptor del despliegue. 
+  Adem&aacute;s, todos los beans de entidad que participan en una relaci&oacute;n 
+  se deben definir en el mismo descriptor de despliegue XML.</p>
+<p>A continuaci&oacute;n se lista parcialmente el descriptor de delspliegue de 
+  los EJBs Customer y Addres, haciendo &eacute;nfasis en los elementos que definen 
+  la relaci&oacute;n:</p>
+<pre class="codigo">
+&lt;ejb-jar&gt;
+    ...
+    &lt;enterprise-beans&gt;
+        &lt;entity&gt;
+            &lt;ejb-name&gt;CustomerEJB&lt;/ejb-name&gt;
+            &lt;local-home&gt;.CusomterHomeLocal&lt;/local-home&gt;
+            &lt;local&gt;CustomerLocal&lt;/local&gt;
+            ...
+        &lt;/entity&gt;
+        &lt;entity&gt;
+            &lt;ejb-name&gt;AddressEJB&lt;/ejb-name&gt;
+            &lt;local-home&gt;AddressHomeLocal&lt;/local-home&gt;
+            &lt;local&gt;AddressLocal&lt;/local&gt;
+            ...
+        &lt;/entity&gt;
+        ...
+    &lt;/enterprise-beans&gt;
+
+    &lt;relationships&gt;
+        &lt;ejb-relation&gt;
+            &lt;ejb-relation-name&gt;Customer-Address&lt;/ejb-relation-name&gt;
+            &lt;ejb-relationship-role&gt;
+                &lt;ejb-relationship-role-name&gt;
+                    Customer-has-an-Address
+                &lt;/ejb-relationship-role-name&gt;
+                &lt;multiplicity&gt;One&lt;/multiplicity&gt;
+                &lt;relationship-role-source&gt;
+                    &lt;ejb-name&gt;CustomerEJB&lt;/ejb-name&gt;
+                &lt;/relationship-role-source&gt;
+                &lt;cmr-field&gt;
+                    &lt;cmr-field-name&gt;homeAddress&lt;/cmr-field-name&gt;
+                &lt;/cmr-field&gt;
+            &lt;/ejb-relationship-role&gt;
+            &lt;ejb-relationship-role&gt;
+                &lt;ejb-relationship-role-name&gt;
+                    Address-belongs-to-Customer
+                &lt;/ejb-relationship-role-name&gt;
+                &lt;multiplicity&gt;One&lt;/multiplicity&gt;
+                &lt;relationship-role-source&gt;
+                    &lt;ejb-name&gt;AddressEJB&lt;/ejb-name&gt;
+                &lt;/relationship-role-source&gt;
+            &lt;/ejb-relationship-role&gt;
+        &lt;/ejb-relation&gt;
+    &lt;/relationships&gt;
+&lt;/ejb-jar&gt;
+</pre>
+
+<p> Todas las relaciones entre el EJB Customer y otros beans, como CreditCard, 
+  Address y Phone, requieren que definamos un elemento &lt;ejb-relationZ para 
+  complementar los m&eacute;todos abstractos de acceso.</p>
+<p>Cada relaci&oacute;n puede tener un nombre, que se declara en el elemento &lt;ejb-relation-name&gt;. 
+  Esto sirve para identificar la relaci&oacute;n para las herramientas de despliegue, 
+  pero no es obligatorio.</p>
+<p>Cada elemento &lt;ejb-relacion&gt; tiene exactamente dos elementos &lt;ejb-relationship-role&gt;, 
+  uno por cada participante en la relaci&oacute;n. En el ejemplo anterior, el 
+  primer &lt;ejb-relationship-role&gt; declara el papel del EJB Customer en la 
+  relaci&oacute;n. Sabemos esto porque el elemento &lt;relationship-role-source&gt; 
+  especifica el nombre del bean &lt;ejb-name&gt; como CustomerEJB, el nombre del 
+  bean Customer tal y como aparece en la secci&oacute;n &lt;enterprise-beans&gt;. 
+</p>
+<p>El elemento &lt;ejb-relationship-role&gt; tambi&eacute;n declara la cardinalidad 
+  del papel. El elemento &lt;multiplicity&gt; puede ser o bien One o Many. En 
+  este caso, el elemento &lt;multiplicity&gt; del EJB Customer tiene un valor 
+  de One, lo que quiere decir que cada EJB Address tiene una relaci&oacute;n con 
+  exactamente un EJB Customer. El elemento &lt;multiplicity&gt; del EJB Address 
+  tambi&eacute;n se&ntilde;ala One, lo que significa que cada EJB Customer tiene 
+  una relaci&oacute;n con exactamente un EJB Address. Si el EJB Customer tuviera 
+  una relaci&oacute;n con muchos EJBs Address, el elemento &lt;multiplicity&gt; 
+  del EJB Adress deber&iacute;a definirse como Many.</p>
+<p>En la sesi&oacute;n anterior definimos m&eacute;todos abstractos de acceso 
+  en el EJB Customer para obtener y definir el EJB Address en el campo address, 
+  pero el EJB Address no ten&iacute;a m&eacute;todos abstractos de acceso para 
+  el EJB Customer. En este caso estamos definiendo una relaci&oacute;n unidireccional, 
+  lo que significa que s&oacute;lo uno de los beans de la relaci&oacute;n mantiene 
+  un campo de relaci&oacute;n gestionado por el contenedor.</p>
+<p>Si el bean descrito por la relaci&oacute;n &lt;ejb-relationship-role&gt; mantiene 
+  una referencia a otro bean en la relaci&oacute;n, esa referencia debe decalararse 
+  como un campo de relaci&oacute;n gestionado por el contenedor en el elemento 
+  &lt;cmr-field&gt;. Este elementon se declara bajo el elemento &lt;ejb-relationship-role&gt;: 
+</p>
+<pre class="codigo">
+&lt;ejb-relationship-role&gt;
+    &lt;ejb-relationship-role-name&gt;
+        Customer-has-an-Address
+    &lt;/ejb-relationship-role-name&gt;
+    &lt;multiplicity&gt;One&lt;/multiplicity&gt;
+    &lt;relationship-role-source&gt;
+        &lt;ejb-name&gt;CustomerEJB&lt;/ejb-name&gt;
+    &lt;/relationship-role-source&gt;
+    &lt;cmr-field&gt;
+        &lt;cmr-field-name&gt;address&lt;/cmr-field-name&gt;
+    &lt;/cmr-field&gt;
+&lt;/ejb-relationship-role&gt;
+</pre>
+
+<p> La especificaci&oacute;n EJB 2.0 requiere que el &lt;cmr-field-name&gt; comience 
+  con una letra min&uacute;scula. Para cada campo de relaci&oacute;n definido 
+  debe haber una pareja de m&eacute;todos de acceso en la clase bean. Un m&eacute;todo 
+  de la pareja debe definirse con el nombre set&lt;cmr-field-name&gt;(), con la 
+  primera letra del &lt;cmr-field-name&gt; cambiada a may&uacute;scula. El otro 
+  m&eacute;todo se define como get&lt;cmr-field-name&gt;(), tambi&eacute;n con 
+  la primera letra del &lt;cmr-field-name&gt; cambiada a may&uacute;sculas.</p>
+<p>En el ejemplo previo, el campo &lt;cmr-field-name&gt; es addres, con lo que 
+  se deben definir los m&eacute;todos abstractos getAddress() y setAddress:</p>
+<pre class="codigo">
+// bean class code
+public abstract void setAddress(AddressLocal address);
+public abstract AddressLocal getAddress();
+
+// XML deployment descriptor declaration
+&lt;cmr-field&gt;
+    &lt;cmr-field-name&gt;address&lt;/cmr-field-name&gt;
+&lt;/cmr-field&gt;
+</pre>
+
+
+<p>El tipo devuelto pr el m&eacute;todo get&lt;cmr-field-name() y el tipo del 
+  par&aacute;metro del m&eacute;todo set&lt;cmr-field-name&gt;() deben ser el 
+  mismo. El tipo debe ser la interfaz local de bean de entidad al que se hace 
+  referencia o uno de los dos tipos java.util.Collection. En el caso del campo 
+  de relaci&oacute;n address, usamos la interfaz local del EJB Address, AddressLocal. 
+  Los tipos Collection se usan cuando aparece la cardinalidad Many en la relaci&oacute;n. 
+  Los veremos m&aacute;s adelante.</p>
+<p>Es importante hacer notar de nuevo que aunque los beans de entidad pueden tener 
+  tanto interfaces locales como remotas, una relaci&oacute;n gestionada por el 
+  contenedor puede usar s&oacute;lo las interfaces locales del bean cuando hace 
+  persistente una relaci&oacute;n. Por ello, por ejemplo, es ilegal definir un 
+  m&eacute;todo abstracto de acceso que tenga un argumento de tipo javax.ejb.EJBObject 
+  (un tipo de interfaz remoto). Todas las relaciones gestionadas por el contenedor 
+  se basan en tipos javax.ejb.EJBLocalObject (interfaz local).</p>
+<h2> 6.6 Modelado de la base de datos</h2>
+
+<p> A lo largo de este tema se muestran distintos esquemas de tablas de bases 
+  de datos. La intenci&oacute;n de estos esquemas es s&oacute;lo demostrar posibles 
+  relaciones entre entidades en la base de datos; no son obligatorios. Por ejemplo, 
+  la relaci&oacute;n Direcci&oacute;n-Cliente se pone de manifiesto introduciendo 
+  en la tabla CUSTOMER una clave for&aacute;nea a la tabla ADDRESS. Esta no es 
+  la forma habitual de organizaci&oacute;n de la mayor&iacute;a de bases de datos. 
+  En lugar de esto, probablemente usan una tabla de enlace o hacen que la tabla 
+  ADDRESS mantenga una relaci&oacute;n for&aacute;nea a CUSTOMER. Sin embargo, 
+  este esquema muestra c&oacute;mo la persistencia gestionada por el contenedor 
+  puede soportar diferentes organizaciones de la base de datos.</p>
+<p>A lo largo de este tema, suponemos que las tablas de las bases de datos se 
+  crean antes de la aplicaci&oacute;n EJB. Algunos fabricantes ofrecen herramientas 
+  que generan las tablas autom&aacute;ticamente a paritr de las relaciones definidas 
+  entre los bean de entidad. Estas herramientas pueden crear esquemas que son 
+  muy distintos de los que se muestran aqu&iacute;. En otros casos, los fabricantes 
+  que soportan esquemas de bases de datos ya establecidos pueden no tener la flexibilidad 
+  necesaria para soportar los esquemas ilustrados en este tema. Como un desarrollador 
+  EJB, debes ser lo suficientemente flexible para adaptarte a las facilidades 
+  proporcionadas por tu fabricante de EJB.</p>
+<h2>6.7 Relaci&oacute;n Uno-a-Uno Unidireccional</h2>
+
+<p> Un ejemplo de una relaci&oacute;n uno-a-uno es la relaci&oacute;n entre el 
+  EJB Customer y el EJB Address que vimos en el tema pasado. En este caso, cada 
+  Customer tiene exactamente un Address y cada Address tiene exactamente un Customer. 
+  Qu&eacute; bean referencia a qu&eacute; otro determina la direcci&oacute;n de 
+  la relaci&oacute;n. En este caso el Customer tiene una referencia al Address, 
+  pero no al contrario. Es una relaci&oacute;n unidireccional porque s&oacute;lo 
+  puedes ir del Customer al Address, y no en la otra direcci&oacute;n. En otras 
+  palabras, un EJB Address no tiene idea de a qui&eacute;n pertenece. </p>
+<h3>6.7.1 Esquema de base de datos relacional</h3>
+
+<p> La relaci&oacute;n uno-a-uno unidireccional usa un esquema de base de datos 
+  t&iacute;pico en el que una tabla contiene una clave for&aacute;nea a otra tabla. 
+  En este caso, la tabla CUSTOMER contiene una clave for&aacute;nea a la tabla 
+  ADDRESS, pero no al contrario. Esto permite que los registros de la tabla ADDRESS 
+  sean compartido por otras tablas. el hecho de que el esquema de base de datos 
+  no sea el mismo que el esquema abstracto de persistencia muestra que son independientes 
+  hasta cierto punto.</p>
+<h3>6.7.2 Modelo abstracto de programaci&oacute;n</h3>
+
+<p> Como hemos visto en el tema pasado, los m&eacute;todos abstractos de acceso 
+  se usan para definir campos de relaci&oacute;n en la clase del bean. Cuando 
+  un bean de entidad mantiene una referencia a otro bean, define un par de m&eacute;todos 
+  abstractos de acceso para modelar esa referencia. En relaciones unidireccionales, 
+  que pueden navegarse s&oacute;lo en una direcci&oacute;n, s&oacute;lo uno de 
+  los enterprise beans define estos m&eacute;todos abstractos de acceso. En este 
+  caso, en la clase CustomerBean se definen los m&eacute;todos getAddress()/setAddress() 
+  para acceder a los EJBs Address, pero no se define ning&uacute;n m&eacute;todo 
+  de este tipo en la clase AddressBean para acceder el EJB Customer.</p>
+<p>Un EJB Address puede ser compartido entre campos de relaci&oacute;n del mismo 
+  enterprise bean, pero no puede ser compartido entre distintos EJBs Customer. 
+  Si, por ejemplo, el EJB Customer definiera dos campos de relaci&oacute;n, billingAddress 
+  and homeAddress, como relaciones uno-a-uno unidireccionales con el EJB Address, 
+  estos dos campos podr&iacute;a referenciar al mismo EJB Address: </p>
+<pre class="codigo">
+public class CustomerBean implements javax.ejb.EntityBean {
+    ...
+    public void setAddress(String street,String city,String state,String zip) {
+        ...
+       
+        address = addressHome.createAddress(street, city, state, zip);
+
+        this.setHomeAddress(address);
+        this.setBillingAddress(address);
+
+        AddressLocal billAddr = this.getBillingAddress();
+        AddressLocal homeAddr = this.getHomeAddress();
+
+        if(billAddr.isIdentical(homeAddr))
+        // always true
+
+        ... 
+    }    
+    ...
+}
+</pre>
+
+
+<p> Si en cualquier momento quisi&eacute;remos distingur el billingAddress del 
+  homAdderss, simplemente tendr&iacute;amos que llamar al m&eacute;todo set con 
+  un EJB distinto. Para poder implementar estas relaciones, habr&iacute;a que 
+  modificar la tabla CUSTOMER:</p>
+<pre class="codigo">
+CREATE TABLE CUSTOMER 
+(
+    ID INT PRIMARY KEY, 
+    LAST_NAME CHAR(20), 
+    FIRST_NAME CHAR(20),
+    ADDRESS_ID INT,
+    BILLING_ADDRESS_ID INT
+}
+</pre>
+
+
+<p>Tal y como se ha mencionado, no es posible compartir un mismo EJB Address entre 
+  dos EJBs distintos Customer. Si, por ejemplo, el EJB Address que est&aacute; 
+  asignado al Customer A se asignara al Customer B, el Address se mover&iacute;a 
+  de un Customer a otro y el Customer A dejar&iacute;a de estar relacionado con 
+  ning&uacute;n EJB Address. Este efecto, en apariencia extra&ntilde;o, es sencillamente 
+  un resultado natural de la definici&oacute;n uno-a-uno de la relaci&oacute;n.</p>
+<p>Si el EJB Customer no tienen un EJB Address asociado, el m&eacute;todo getAddress() 
+  devolver&aacute; null.</p>
+<h3>6.7.3 El esquema abstracto de persistencia</h3>
+
+<p> Hemos definido ya los elementos XML de la relaci&oacute;n Customer-Address 
+  We defined the XML elements for the Customer-Address. El elemento &lt;ejb-relation&gt; 
+  que us&aacute;bamos declaraba una relaci&oacute;n uno-a-uno unidireccional. 
+  Si necesit&aacute;ramos usar dos campos de relaci&oacute;n con el EJB Address, 
+  los campos homeAddress y billingAddress, cada una de estas relaciones tendr&iacute;a 
+  que ser descrita en su propio elemento &lt;ejb-relation&gt;:</p>
+<pre class="codigo">
+&lt;relationships&gt;
+    &lt;ejb-relation&gt;
+        &lt;ejb-relation-name&gt;Customer-HomeAddress&lt;/ejb-relation-name&gt;
+        &lt;ejb-relationship-role&gt;
+            ...
+            &lt;cmr-field&gt;
+                &lt;cmr-field-name&gt;homeAddress&lt;/cmr-field-name&gt;
+            &lt;/cmr-field&gt;
+        &lt;/ejb-relationship-role&gt;
+        &lt;ejb-relationship-role&gt;
+            ...
+        &lt;/ejb-relationship-role&gt;
+    &lt;/ejb-relation&gt;
+    &lt;ejb-relation&gt;
+        &lt;ejb-relation-name&gt;Customer-BillingAddress&lt;/ejb-relation-name&gt;
+        &lt;ejb-relationship-role&gt;
+            ...
+            &lt;cmr-field&gt;
+                &lt;cmr-field-name&gt;billingAddress&lt;/cmr-field-name&gt;
+            &lt;/cmr-field&gt;
+        &lt;/ejb-relationship-role&gt;
+        &lt;ejb-relationship-role&gt;
+            ...
+        &lt;/ejb-relationship-role&gt;
+    &lt;/ejb-relation&gt;
+&lt;/relationships&gt;
+</pre>
+
+
+<h2>6.8 Relaci&oacute;n Uno-a-Uno Bidireccional</h2>
+
+<p> Podemos ahora ampliar nuestro EJB Customer para incluir una referencia a un 
+  EJB CreditCard. Adem&aacute;s, queremos que el EJB CreditCard mantenga tambi&eacute;n 
+  la referencia con el Customer que lo tiene asociado. Esto parece una buena decisi&oacute;n 
+  de dise&ntilde;o, ya que habr&aacute; bastantes aplicaciones en las que necesitaremos, 
+  a partir de una instancia del EJB CreditCard, conocer cu&aacute;l es el Customer 
+  que la posee. Debido a que las referencias se realizan en ambos sentidos, tendremos 
+  una relaci&oacute;n uno-a-uno bidimensional</p>
+<h3>6.8.1 Esquema de base de datos relacional</h3>
+
+<p> El EJB CreditCard tiene una tabla correspondiente en la base de datos, que 
+  se llama CREDIT_CARD. Necesitaremos, evidentemente, la clave for&aacute;nea 
+  que liga los Customer con los CreditCard. Adem&aacute;s, al ser una relaci&oacute;n 
+  bidireccional, necesitarems tambi&eacute;n a&ntilde;adir una clave for&aacute;nea 
+  en la tabla CREDIT_CARD hacia la tabla CUSTOMER:: </p>
+
+<pre class="codigo">
+CREATE TABLE CREDIT_CARD 
+(
+    ID INT PRIMARY KEY NOT NULL, 
+    EXP_DATE DATE, 
+    NUMBER CHAR(20),
+    NAME CHAR(40),
+    ORGANIZATION CHAR(20),
+    CUSTOMER_ID INT
+}
+
+CREATE TABLE CUSTOMER 
+(
+    ID INT PRIMARY KEY, 
+    LAST_NAME CHAR(20), 
+    FIRST_NAME CHAR(20),
+    ADDRESS_ID INT,
+    CREDIT_CARD_ID INT
+)
+</pre>
+
+
+<p>Tambi&eacute;n es posible establecer una relaci&oacute;n bidireccional uno-a-uno 
+  a trav&eacute;s de una tabla de enlace, en la que que cada columna de clave 
+  for&aacute;nea debe ser &uacute;nica. Esto es conveniente cuando no quieres 
+  imponer relaciones sobre las tablas originales. Las tablas de enlace se usan 
+  tambi&eacute;n el las relaciones una-a-muchos y muchos-a-muchos, pero es importante 
+  recordar que el esquema de base de datos usado en estos ejemplos es puramente 
+  ilustrativo. El esquema abstracto de persistencia de un bean de entidad se puede 
+  corresponder con una diversidad de esquemas de bases de datos; los esquemas 
+  de base de datos usado en estos ejemplos son s&oacute;lo una posibilidad.</p>
+<h3>6.8.2 Modelo abstracto de programaci&oacute;n</h3>
+<p> Para modelar la relaci&oacute;n entre los EJB Customer y CreditCard, tendremos 
+  que declarar un campo de relaci&oacute;n llamado customer en la clase CreditCardBean:</p>
+<pre class="codigo">
+public abstract class CreditCardBean extends javax.ejb.EntityBean {
+    
+    ...
+
+    // relationship fields
+<strong>    public abstract CustomerLocal getCustomer();
+    public abstract void setCustomer(CustomerLocal local);
+</strong>
+    // persistence fields
+    public abstract Integer getId();
+    public abstract void setId(Integer id);
+    public abstract Date getExpirationDate();
+    public abstract void setExpirationDate(Date date);
+    public abstract String getNumber();
+    public abstract void setNumber(String number);
+    public abstract String getNameOnCard();
+    public abstract void setNameOnCard(String name);
+    public abstract String getCreditOrganization();
+    public abstract void setCreditOrganization(String org);
+    
+    // standard callback methods
+    ...
+
+}
+</pre>
+
+
+<p> En este caso, usamos la interfaz local del EJB Customer (asumiendo que se 
+  ha creado) debido a que los campos de relaci&oacute;n requieren tipos de interfaces 
+  locales. La limitaci&oacute;n de usar interfaces locales en lugar de interfaces 
+  remotas es que perdemos la trasparencia de la ubicaci&oacute;n. Todos los beans 
+  de entidad deben estar ubicados en el mismo proceso o la misma M&aacute;quina 
+  Virtual Java (JVM). </p>
+<p>Tambi&eacute;n podemos a&ntilde;adir un conjunto de m&eacute;todos abstractos 
+  de acceso en la clase CustomerBean para el campo de relaci&oacute;n creditCard:</p>
+<pre class="codigo">
+public class CustomerBean implements javax.ejb.EntityBean {
+    ...
+    public abstract void setCreditCard(CreditCardLocal card);
+    public abstract CreditCardLocal getCreditCard();
+    ...
+}
+</pre>
+
+
+<p> Aunque est&aacute; disponible el m&eacute;todo setCustomer() en el CreditCardBean, 
+  no tenemos que establecer expl&iacute;citamente la referencia al Customer en 
+  el EJB CreditCard. Cuando una referencia a un EJB CreditCard se pasa en el m&eacute;todo 
+  setCreditCard() en la clase CustomerBean, el contenedor EJB establecer&aacute; 
+  autom&aacute;ticamente la relaci&oacute;n customer en el EJB CreditCard para 
+  que apunte al EJB Customer:</p>
+<pre class="codigo">
+public class CustomerBean implements javax.ejb.EntityBean {
+    ...
+    public void setCreditCard(Date exp, String numb, String name, String org) 
+        throws CreateException {
+        ...
+       
+        card = creditCardHome.create(exp,numb,name,org);
+
+        // el campo customer del EJB CreditCard se establece automaticamente
+        this.setCreditCard(card);
+        Customer customer = card.getCustomer();
+
+        if(customer.isIdentical(ejbContext.getEJBLocalObject())
+        // always true
+
+        ... 
+    }
+    ...
+}
+</pre>
+
+
+<p> Las reglas para compartir un bean individual en una relaci&oacute;n una-a-una 
+  bidireccional son las mismas que las de una relaci&oacute;n uno-a-uno unidireccional. 
+  Mientras que un EJB CreditCard puede compartirse entre campos de relaci&oacute;n 
+  en el mismo EJB Customer, no puede compartirse entre diferentes EJBs Customer. 
+  La asignaci&oacute;n del CreditCard del Customer A al Customer B elimina la 
+  asociaci&oacute;n entre el CreditCard y el Customer A y la mueve al Customer 
+  B. </p>
+<h3>6.8.3 Esquem abstracto de persistencia</h3>
+
+<p> El elemento &lt;ejb-relation&gt; que define la relaci&oacute;n Customer-a-CreditCard 
+  es similar al usado para la relaci&oacute;n Customer-a-Address, con una diferencia 
+  impoertante: los dos elementos &lt;ejb-relationship-role&gt; tienen un &lt;cmr-field&gt;: 
+</p>
+
+<pre class="codigo">
+&lt;relationships&gt;
+    &lt;ejb-relation&gt;
+        &lt;ejb-relation-name&gt;Customer-CreditCard&lt;/ejb-relation-name&gt;
+        &lt;ejb-relationship-role&gt;
+            &lt;ejb-relationship-role-name&gt;
+                Customer-has-a-CreditCard
+            &lt;/ejb-relationship-role-name&gt;
+            &lt;multiplicity&gt;One&lt;/multiplicity&gt;
+            &lt;relationship-role-source&gt;
+                &lt;ejb-name&gt;CustomerEJB&lt;/ejb-name&gt;
+            &lt;/relationship-role-source&gt;
+            &lt;cmr-field&gt;
+                &lt;cmr-field-name&gt;creditCard&lt;/cmr-field-name&gt;
+            &lt;/cmr-field&gt;
+        &lt;/ejb-relationship-role&gt;
+        &lt;ejb-relationship-role&gt;
+            &lt;ejb-relationship-role-name&gt;
+                CreditCard-belongs-to-Customer
+            &lt;/ejb-relationship-role-name&gt;
+            &lt;multiplicity&gt;One&lt;/multiplicity&gt;
+            &lt;relationship-role-source&gt;
+                &lt;ejb-name&gt;CreditCardEJB&lt;/ejb-name&gt;
+            &lt;/relationship-role-source&gt;
+            &lt;cmr-field&gt;
+                &lt;cmr-field-name&gt;customer&lt;/cmr-field-name&gt;
+            &lt;/cmr-field&gt;
+        &lt;/ejb-relationship-role&gt;
+    &lt;/ejb-relation&gt;
+&lt;/relationships&gt;
+</pre>
+
+
+<p> El hecho de que ambos participantes en la relaci&oacute;n definan elementos 
+  &lt;cmr-field&gt; (campos de relaci&oacute;n) nos indica que la relaci&oacute;n 
+  es bidireccional.</p>
+
+<h2>6.9 Relaci&oacute;n Uno-a-Muchos unidireccional</h2>
+<p> Los beans de entidad tambi&eacute;n pueden mantener relaciones de cardinalidad 
+  mayor de uno. Esto significa que un bean de entidad puede contener muchos otros 
+  beans de entidad. Por ejemplo, el EJB Customer puede estar relacionado con muchos 
+  EJBs Phone, cada uno de los cuales representa un n&uacute;mero de tel&eacute;fono. 
+  Esto es bastante distinto de las relaciones sencillas uno-a-uno. Las relaciones 
+  uno-a-muchos y muchos-a-muchos requieren que el desarrollador trabaje con una 
+  colecci&oacute;n de referencias cuando accede al campo de relaci&oacute;n.</p>
+<h3>6.9.1 Esquema de base de datos relacional</h3>
+
+<p> Para ilustrar la relaci&oacute;n una-a-muchos unidireccional, usaremos un 
+  nuevo bean de entidad, el EJB Phone, para el que deberemos definir una tabla, 
+  la tabla PHONE:
+<pre class="codigo">
+CREATE TABLE PHONE 
+(
+    ID INT PRIMARY KEY NOT NULL, 
+    NUMBER CHAR(20), 
+    TYPE INT,
+    CUSTOMER_ID INT
+}
+</pre>
+
+<p> Las relaciones uno-a-muchos entre las tablas CUSTOMER y PHONE podr&iacute;an 
+  realizarse de distintas formas en una base de datos relacional. Para este ejemplo 
+  hemos decidido incluir en la tabla PHONE una clave for&aacute;nea a la tabla 
+  CUSTOMER. </p>
+<p>La tabla con los datos a&ntilde;adidos puede mantener una columna de claves 
+  for&aacute;neas no &uacute;nicas. En el caso de los EJBs Customer y Phone, la 
+  tabla PHONE mantiene una clave for&aacute;nea a la tabla CUSTOMER, y uno o m&aacute;s 
+  registros PHONE pueden contener claves for&aacute;neas hacia el mismo registro 
+  CUSTOMER. En otras palabras, en la base de datos los registros PHONE apunto 
+  a los registros CUSTOMER. En el modelo abstracto de programaci&oacute;n, sin 
+  embargo, es el EJB Customer el que apunta a los EJBs Phone. &iquest;C&oacute;mo 
+  funciona esto? El sistema contenedor esconde el puntero reverso de forma que 
+  parece que es el Customer el que conoce los EJB Phone asociados y no al rev&eacute;s. 
+  Cuando le pedimos al contenedor que devuelva una Collection de EJBs Phone (mediante 
+  la invocaci&oacute;n del m&eacute;todo getPhoneNumbers()), preguntar&aacute; 
+  a la tabla PHONE por todos los registros con una clave for&aacute;nea que se 
+  corresponda con la clave primaria del EJB Customer. </p>
+<p>Una implementaci&oacute;n m&aacute;s sencilla de la relaci&oacute;n Customer-Phone 
+  podr&iacute;a usar una tabla de enlace que mantenga dos columnas con claves 
+  for&aacute;neas apuntando tanto a los registros CUSTOMER y PHONE. Podr&iacute;amos 
+  entonces colocar una restricci&oacute;n de unicidad en la columna de clave for&aacute;nea 
+  PHONE para asegurarnos de que s&oacute;lo contiene entradas &uacute;nicas (esto 
+  es, de que cada tel&eacute;fono s&oacute;lo pertenece a un cliente), mientras 
+  que podr&iacute;amos permitir que la columna de clave for&aacute;nea CUSTOMER 
+  tuviera duplicados. La ventaja de la tabla de enlace es que no se modifica ninguna 
+  de las dos tablas originales CUSTOMER y PHONE.</p>
+<h3>6.9.2 Modelo abstracto de programaci&oacute;n</h3>
+
+<p>En el modelo abstracto de programaci&oacute;n representamos una relaci&oacute;n 
+  a muchos definiendo un campo de relaci&oacute;n que pueda apuntar a muchos beans 
+  de entidad. Para conseguir esto, empleamos los mismos m&eacute;todos abstractos 
+  de acceso que ya hemos usado en las relaciones uno-a-uno, pero esta vez definimos 
+  el tipo del campo como java.util.Collection o java.util.Set. La colecci&oacute;n 
+  mantiene un gr&uacute;po homg&eacute;neo de referencias a interfaces locales 
+  del objeto EJB. </p>
+<p>Por ejemplo, un EJB Customer puede estar relacionado con muchos n&uacute;meros 
+  de tel&eacute;fono, cada uno de ellos representado por un EJB Phone. En lugar 
+  de tener distintos campos de relaci&oacute;n para cada uno de ellos, el EJB 
+  Customer mantiene todos los EJBs Phone en un campo de relaci&oacute;n basado 
+  en colleciones, al que se puede acceder a trav&eacute;s de los m&eacute;todos 
+  abstractos de acceso:</p>
+<pre class="codigo">
+public abstract class CustomerBean implements javax.ejb.EntityBean {
+    ...
+    // relationship fields
+    public java.util.Collection getPhoneNumbers();
+    public void setPhoneNumbers(java.util.Collection phones);
+  
+    public AddressLocal getHomeAddress();()
+    public void setHomeAddress(AddressLocal local);
+    ...
+</pre>
+
+<p> El EJB Phone debe definirse como un bean de entidad con una interfaz local. 
+  Al ser la relaci&oacute;n unidireccional, no es necesario definir los campos 
+  de relaci&oacute;n en la clase bean:</p>
+<pre class="codigo">
+// the local interface for the Phone EJB
+public interface PhoneLocal extends javax.ejb.EJBLocalObject {
+    public String getNumber();
+    public void setNumber(String number);
+    public byte getType();
+    public void setType(byte type);
+}
+
+// the bean class for the Phone EJB
+public class PhoneBean implements javax.ejb.EntityBean {
+
+    public Integer ejbCreate(String number, byte type) {
+        setNumber(number); 
+        setType(type);
+        return null;
+    }
+    public void ejbPostCreate(String number,byte type) {
+    }
+   
+    // persistence fields
+    public abstract Integer getId();
+    public abstract void setId(Integer id);
+    public abstract String getNumber();
+    public abstract void setNumber(String number);
+    public abstract byte getType();
+    public abstract void setType(byte type);
+   
+    // standard callback methods
+    ...
+}
+</pre>
+
+
+<p>Para ilustrar c&oacute;mo un bean de entidad usa un campo de relaci&oacute;n 
+  basado en una colecci&oacute;n, definiremos un m&eacute;todo en la clase CustomerBean 
+  que permita a los clientes remotos a&ntilde;adir nuevos n&uacute;meros de tel&eacute;fono. 
+  El m&eacute;todo, addPhoneNumber(), usa los argumentos para crear un nuevo EJB 
+  Phone y luego a&ntilde;ade ese EJB Phone a un campo de relaci&oacute;n basado 
+  en una colecci&oacute;n llamado phoneNumbers:</p>
+<pre class="codigo">
+public abstract class CustomerBean implements javax.ejb.EntityBean {
+       
+    // business methods
+    public void addPhoneNumber(String number, String type) {
+
+        InitialContext jndiEnc = new InitialContext();
+        PhoneHomeLocal phoneHome = jndiEnc.lookup("PhoneHomeLocal");
+        PhoneLocal phone = phoneHome.create(number,type);
+        
+        Collection phoneNumbers = this.getPhoneNumbers();
+        phoneNumbers.add(phone);
+
+    }
+    ...
+    // relationship fields
+    public java.util.Collection getPhoneNumbers();
+    public void setPhoneNumbers(java.util.Collection phones);
+
+    ...
+</pre>
+
+
+<p> Hemos creado primero el EJB Phone y luego lo hemos a&ntilde;adido a la relaci&oacute;n 
+  a&ntilde;adi&eacute;ndolo a la colecci&oacute;n que define esta relaci&oacute;n. 
+  La colecci&oacute;n phoneNumbers la obtenemos a partir del m&eacute;todo de 
+  acceso getPhoneNumbers(). Al a&ntilde;adir el EJB Phone a la Collection hace 
+  que el contenedor establezca la clave for&aacute;nea en el nuevo registro PHONE 
+  de forma que apunte al registro CUSTOMER del EJB Customer. Si hubi&eacute;ramos 
+  usado una tabla de enlace, se habr&iacute;a creado un nuevo registro. A partir 
+  de este momento, el nuevo EJB Phone estar&aacute; disponible en la relaci&oacute;n 
+  basada en la colecci&oacute;n phoneNumbers.</p>
+<p>Tambi&eacute;n es posible actualizar o borrar referencias en una relaci&oacute;n 
+  basada en una colecci&oacute;n usando el m&eacute;todo de aceso de la relaci&oacute;n. 
+  Por ejemplo, el siguiente c&oacute;digo define dos m&eacute;todos en la clase 
+  CustomerBean que permiten a los clientes borrar o actualizar n&uacute;meros 
+  de tel&eacute;fono en el campo de relaci&oacute;n del bean phoneNumbers:</p>
+<pre class="codigo">
+public abstract class CustomerBean implements javax.ejb.EntityBean {
+       
+    // business methods
+    public void removePhoneNumber(byte typeToRemove) {
+
+        Collection phoneNumbers = this.getPhoneNumbers();
+        Iterator iterator = phoneNumbers.iterator();
+        while(iterator.hasNext()) {
+            PhoneLocal phone = (PhoneLocal)iterator.next();
+            if(phone.getType() = typeToRemove) {
+                iterator.remove(phone);
+                break;
+            }
+        }
+    }
+    public void updatePhoneNumber(String number,byte typeToUpdate) {
+        Collection phoneNumbers = this.getPhoneNumbers();
+        Iterator iterator = phoneNumbers.iterator();
+        while(iterator.hasNext()) {
+            PhoneLocal phone = (PhoneLocal)iterator.next();
+            if(phone.getType() = typeToUpdate) {
+                phone.setNumber(number);
+                break;
+            }
+        }
+    }
+    ...
+    // relationship fields
+    public java.util.Collection getPhoneNumbers();
+    public void setPhoneNumbers(java.util.Collection phones);
+</pre>
+
+
+<p> En el m&eacute;todo de negocio removePhoneNumber(), se encuentra un EJB Phone 
+  con el mismo tipo y se borra de la relaci&oacute;n basada en una colecci&oacute;n. 
+  El EJB no se borra de la base de datos, sino que se elimina su asociaci&oacute;n 
+  con el EJB Customer.</p>
+<p>El m&eacute;todo updatePhoneNumber() realmente modifica un EJB Phone existente, 
+  cambiando su estado en la base de datos. El EJB Phone sigue siendo referenciado 
+  por la relaci&oacute;n basada en una colecci&oacute;n, pero sus datos han cambiado.</p>
+<p>Los m&eacute;todos removePhoneNumber() y updatePhoneNumber() ilustran que una 
+  relaci&oacute;n basada en una colecci&oacute;n puede accederse y actualizarse 
+  exactamente igual que cualquier otro objeto Collection. Adem&aacute;s, es posible 
+  obtener un java.util.Iterator a partir del objeto Collection y realizar iteraciones 
+  con &eacute;l. Sin embargo, es necesaria cierta precauci&oacute;n cuando se 
+  usa un iterador sobre una relaci&oacute;n basada en una coleci&oacute;n. No 
+  se deben a&ntilde;adir o eliminar elementos del objeto Collection mientras que 
+  se est&aacute; usando el iterador. La &uacute;nica excepci&oacute;n a esta regla 
+  es que el m&eacute;todo Iterator.remove() puede usarse para eliminar una entrada. 
+  Aunque los m&eacute;todos Collection.add() y Collection.remove() pueden usarse 
+  en otras circustancias, si se llaman mientras que el iterador est&aacute; en 
+  uso se generar&aacute; una excepci&oacute;n java.util.IllegalStateException.</p>
+<p>Si no se ha a&ntilde;adido ning&uacute;n bean al campo de relaci&oacute;n phoneNumbers, 
+  el m&eacute;todo getPhoneNumbers() devolver&aacute; un objeto Colletion vac&iacute;on. 
+  Los campos de relaci&oacute;n de tipo &lt;multiplicity&gt; nunca devuelve null. 
+  El objeto Collection usado con el campo de relaci&oacute;n est&aacute; implementado 
+  por el sistema contenedor y est&aacute; estrechamente acoplado al funcionamiento 
+  interno del contenedor. Esto permite al contenedor EJB implementar mejoras en 
+  la eficiencia, como la concurrencia optimista, sin exponer estos mecanismos 
+  propietarios al desarrollador del bean (un objeto Collection obtenido a partir 
+  de una relaci&oacute;n basada en una colecci&oacute;n que se materializa en 
+  una transacci&oacute;n no puede modificarse fuera del alcance de esas transacci&oacute;n). 
+  Los objetos Collection definidos en la aplicaci&oacute;n pueden usarse con campos 
+  de relaci&oacute;n gestionados por el contenedor s&oacute;lo si los elementos 
+  son del tipo apropiado. Por ejemplo, es legar crear un nuevo objeto Collection 
+  y luego a&ntilde;adir ese objeto Collection al EJB Customer usando el m&eacute;todo 
+  setPhoneNumbers():</p>
+<pre class="codigo">
+public void addPhoneNumber(String number, String type) {
+
+    ...
+    PhoneLocal phone = phoneHome.create(number,type);
+        
+    Collection phoneNumbers = java.util.Vector();
+    phoneNumbers.add(phone);    
+
+    // This is allowed 
+    this.setPhoneNumbers(phoneNumbers);
+
+}
+
+// relationship fields
+public java.util.Collection getPhoneNumbers();
+
+public void setPhoneNumbers(java.util.Collection phones);
+</pre>
+
+
+<p>Si el EJB Customer tuviera una colecci&oacute;n de EJB Phone previamente asociados, 
+  dejar&iacute;an de estarlo.</p>
+<h3>6.9.3 Es esquema abstracto de persistencia</h3>
+<p> El esquema abstracto de persistencia para las relaciones unidireccionales 
+  uno-a-muchos tiene unas cuantas diferencias significativas con respecto a los 
+  elementos &lt;ejb-relation&gt; vistos hasta el momento:</p>
+
+<pre class="codigo">
+&lt;relationships&gt;
+    &lt;ejb-relation&gt;
+        &lt;ejb-relation-name&gt;Customer-Phones&lt;/ejb-relation-name&gt;
+        &lt;ejb-relationship-role&gt;
+            &lt;ejb-relationship-role-name&gt;
+                Customer-has-many-Phone-numbers
+            &lt;/ejb-relationship-role-name&gt;
+            &lt;multiplicity&gt;One&lt;/multiplicity&gt;
+            &lt;relationship-role-source&gt;
+                &lt;ejb-name&gt;CustomerEJB&lt;/ejb-name&gt;
+            &lt;/relationship-role-source&gt;
+            &lt;cmr-field&gt;
+                &lt;cmr-field-name&gt;phoneNumbers&lt;/cmr-field-name&gt;
+                &lt;cmr-field-type&gt;java.util.Collection&lt;/cmr-field-type&gt;
+            &lt;/cmr-field&gt;
+        &lt;/ejb-relationship-role&gt;
+        &lt;ejb-relationship-role&gt;
+            &lt;ejb-relationship-role-name&gt;
+                Phone-belongs-to-Customer
+            &lt;/ejb-relationship-role-name&gt;
+            &lt;multiplicity&gt;Many&lt;/multiplicity&gt;
+            &lt;relationship-role-source&gt;
+                &lt;ejb-name&gt;PhoneEJB&lt;/ejb-name&gt;
+            &lt;/relationship-role-source&gt;
+        &lt;/ejb-relationship-role&gt;
+    &lt;/ejb-relation&gt;
+&lt;/relationships&gt;
+</pre>
+
+
+
+<p> En el elemento &lt;ejb-relation&gt;, la multiplicidad del EJB Customer se 
+  declara como One, mientras que la multiplicidad del &lt;ejb-relationship-role&gt; 
+  del EJB Phone es Many. Esto establece obviamente la relaci&oacute;n como uno-a-muchos. 
+  El hecho de que el &lt;ejb-relationship-role&gt; del EJB Phone no especifique 
+  un elemento &lt;cmr-field&gt; indica que la relaci&oacute;n uno-a-muchos es 
+  unidireccional.</p>
+<p>El cambio m&aacute;s interesante es el a&ntilde;adido del elemento &lt;cmr-field-type&gt; 
+  en la declaraci&oacute;n del &lt;cmr-field&gt; del EJB Customer. El &lt;cmr-field-type&gt; 
+  debe especificarse para un bean que tiene un campo de relaci&oacute;n basado 
+  en una coleci&oacute;n (en este caso, el campo phoneNumbers mantendio por el 
+  EJB Customer). El campo &lt;cmr-field-type&gt; s&oacute;lo puede tener dos valores, 
+  java.util.Collection o java.util.Set, que son los tipos permitidos en relaciones 
+  basadas en colecciones.</p>
+<p>&nbsp;</p>
+</body>

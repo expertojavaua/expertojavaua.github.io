@@ -1,0 +1,173 @@
+package examples.jms.xml;
+
+import java.io.*;
+import java.util.*;
+import java.net.*;
+import javax.xml.parsers.*;
+import org.xml.sax.*;
+
+/**
+ * This class extends <tt>HandlerBase</tt> and is used to handle events
+ * created as an XML document is parsed by a SAX compliant
+ * parser.
+ *
+ * @author Copyright (c) 2002 by BEA Systems, Inc. All Rights Reserved.  
+ */
+public class RequestHandler extends HandlerBase {
+
+  /** stocktrade document model */
+  private Vector trade;
+  private Item actual;
+  boolean INID=false, INNAME=false, INPRICE=false; 
+
+  /** Default constructor. */
+  public RequestHandler() {}
+
+
+  //==========================================================================
+  // DocumentHandler methods
+  //==========================================================================
+
+    // Amount to indent
+    private String indentString = "    ";
+    private int indentLevel = 0;
+
+   /**
+   * Receives notification of the beginning of the XML document.
+   * Starts printing information to the shell from which you started the
+   * WebLogic server and starts a new trade hashtable to store trade information.
+   *
+   * @exception SAXException If an error occurred starting to parse the XML doc
+   */
+  public void startDocument() throws SAXException {
+    nl();
+    nl();
+    trade = new Vector();
+    System.out.println("START DOCUMENT");
+    nl();
+    System.out.println("<?xml version='1.0' encoding='UTF-8'?>");
+  }
+
+  /**
+   * Receives notification of the end of the XML document.  Prints a
+   * final message to the shell from which you started the WebLogic server.
+   *
+   * @exception SAXException If an error occurred while parsing the XML doc
+   */
+  public void endDocument() throws SAXException {
+    nl();
+    System.out.println("END DOCUMENT");
+    try {
+          nl();
+        } catch (Exception e) {
+          throw new SAXException ("I/O error", e);
+        }
+
+  }
+
+  /**
+   * Receives notification of the start of an element.   Prints out the
+   * name and value of the element, properly indented, to the shell from
+   * which you started the WebLogic server.  Updates the trade hashtable
+   * with the trade information.
+   *
+   * @param name   the string name of the element
+   * @param attrs  the list of attributes of the element
+   * @exception    SAXException if an error occurred while parsing the XML doc
+   */
+  public void startElement(String name, AttributeList attrs) throws SAXException {
+    indentLevel++;
+    nl();
+    System.out.println("ELEMENT: " +name);
+    if (name.equals("item"))
+     actual = new Item(); 
+    if (name.equals("id")) 
+       INID = true; 
+    if (name.equals("name")) 
+       INNAME = true; 
+    if (name.equals("price")) 
+       INPRICE = true; 
+   }
+
+   /**
+    * Receives notification of the end of an element.   Prints
+    * notice to the shell from which you started the WebLogic server.
+    *
+    * @param name the string name of the element
+    * @exception SAXException If an error occurred while parsing the XML doc
+    */
+   public void endElement(String name) throws SAXException {
+     nl();
+     System.out.println ("END_ELM: " + name);
+     indentLevel--;
+    if (name.equals("item"))
+       trade.add(actual);
+    if (name.equals("id")) 
+       INID = false; 
+    if (name.equals("name")) 
+       INNAME = false; 
+    if (name.equals("price")) 
+       INPRICE = false; 
+   }
+
+  /**
+   * Receives notification of character data inside an element. Prints out
+   * characters to the shell from which you started the WebLogic server.
+   *
+   * @param buf     array of characters
+   * @param offset  the start position in the character array
+   * @param len     the number of characters to use from the array
+   * @exception     SAXException if an error occurred while parsing the XML doc
+   */
+   public void characters (char buf [], int offset, int len) throws SAXException {
+     nl();
+     String s = new String(buf, offset, len);
+       if (!s.trim().equals("")) System.out.println ("CHARS:   " + s);
+       if (INID) 
+         actual.id = s; 
+       if (INNAME) 
+         actual.name = s; 
+       if (INPRICE) 
+         actual.price = s; 
+   }
+
+   //===========================================================
+   // Helpers ...
+   //===========================================================
+
+   /**
+    * Starts a new line and indents the next line appropriately.
+    *
+    * @exception SAXException If an error occurred while parsing the XML doc
+    */
+   private void nl () throws SAXException {
+     String lineEnd =  System.getProperty("line.separator");
+       try {
+            System.out.print(lineEnd);
+            for (int i=0; i < indentLevel; i++) System.out.print(indentString);
+           } catch (Exception e) {
+             throw new SAXException ("I/O error", e);
+       }
+   }
+
+  //=============================================================
+  // ErrorHandler methods
+  //=============================================================
+
+   /**
+    * Receives notification of a recoverable parser error.
+    *
+    * @param x   the parser exception that occurred
+    * @exception SAXException if an error occurred while receiving the original error
+    */
+   public void error (SAXParseException x) throws SAXException {
+     throw x;
+   }
+
+  /** Returns parsed data as a hashtable. */
+  public Vector getData() {
+    return trade;
+  }
+
+
+}

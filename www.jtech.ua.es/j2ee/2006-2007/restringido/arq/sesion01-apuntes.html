@@ -1,0 +1,784 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.7">
+<meta name="Forrest-skin-name" content="pelt">
+<title>Arquitectura de Aplicaciones</title>
+<link type="text/css" href="skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="skin/print.css" rel="stylesheet">
+<link type="text/css" href="skin/profile.css" rel="stylesheet">
+<script src="skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<div class="header">
+<div class="grouplogo">
+<a href="http://www.jtech.ua.es/j2ee"><img class="logoImage" alt="J2EE" src="images/baner_j2ee_izq.gif" title="Curso Especialista Universitario en Java Enterprise"></a>
+</div>
+<div class="projectlogoA1">
+<a href="http://www.dccia.ua.es/"><img class="logoImage" alt="Desarrollo de Proyectos J2EE" src="images/baner_j2ee_der.gif" title="Desarrollo de Proyectos J2EE"></a>
+</div>
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="../index.html">M&oacute;dulos</a>
+</li>
+<li class="current">
+<a class="base-selected" href="index.html">Arquitectura de Aplicaciones</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<div id="level2tabs"></div>
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<div id="menu">
+<div onclick="SwitchMenu('menu_selected_1.1', 'skin/')" id="menu_selected_1.1Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Arquitectura de Aplicaciones</div>
+<div id="menu_selected_1.1" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="index.html" title="Arquitectura de Aplicaciones">&Iacute;ndice</a>
+</div>
+<div onclick="SwitchMenu('menu_selected_1.1.2', 'skin/')" id="menu_selected_1.1.2Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Teor&iacute;a</div>
+<div id="menu_selected_1.1.2" class="selectedmenuitemgroup" style="display: block;">
+<div class="menupage">
+<div class="menupagetitle">Sesi&oacute;n 1</div>
+</div>
+<div class="menuitem">
+<a href="sesion02-apuntes.html" title="Sesi&oacute;n 2: Arquitecturas Web. Cach&eacute;">Sesi&oacute;n 2</a>
+</div>
+<div class="menuitem">
+<a href="sesion03-apuntes.html" title="Sesi&oacute;n 3: Arquitecturas Distribuidas. MDA">Sesi&oacute;n 3</a>
+</div>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<div id="credit2"></div>
+</div>
+<div id="content">
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="sesion01-apuntes.pdf"><img alt="PDF -icon" src="skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1>Arquitectura de Aplicaciones</h1>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#Arquitectura+del+Software">Arquitectura del Software</a>
+<ul class="minitoc">
+<li>
+<a href="#Crear+una+Arquitectura">Crear una Arquitectura</a>
+<ul class="minitoc">
+<li>
+<a href="#%C2%BFQu%C3%A9+significa+crear+una+arquitectura%3F">&iquest;Qu&eacute; significa crear una arquitectura?</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Arquitectura+vs+Dise%C3%B1o">Arquitectura vs Dise&ntilde;o</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Rol+del+Arquitecto">Rol del Arquitecto</a>
+</li>
+<li>
+<a href="#T%C3%A9rminos+Arquitect%C3%B3nicos">T&eacute;rminos Arquitect&oacute;nicos</a>
+<ul class="minitoc">
+<li>
+<a href="#Abstracci%C3%B3n">Abstracci&oacute;n</a>
+</li>
+<li>
+<a href="#%C3%81rea+de+Superficie">&Aacute;rea de Superficie</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Principios+Arquitect%C3%B3nicos">Principios Arquitect&oacute;nicos</a>
+<ul class="minitoc">
+<li>
+<a href="#Arquitectura+de+3+Capas">Arquitectura de 3 Capas</a>
+</li>
+<li>
+<a href="#Capas+%28Layers%29">Capas (Layers)</a>
+</li>
+<li>
+<a href="#Niveles+%28Tiers%29">Niveles (Tiers)</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Requisitos+No+Funcionales">Requisitos No Funcionales</a>
+<ul class="minitoc">
+<li>
+<a href="#Rendimiento">Rendimiento</a>
+</li>
+<li>
+<a href="#Escalabilidad">Escalabilidad</a>
+</li>
+<li>
+<a href="#Confiabilidad">Confiabilidad</a>
+</li>
+<li>
+<a href="#Disponibilidad">Disponibilidad</a>
+</li>
+<li>
+<a href="#Extensibilidad">Extensibilidad</a>
+</li>
+<li>
+<a href="#Mantenibilidad">Mantenibilidad</a>
+</li>
+<li>
+<a href="#Gestionabilidad">Gestionabilidad</a>
+</li>
+<li>
+<a href="#Seguridad">Seguridad</a>
+</li>
+<li>
+<a href="#Oportunidad">Oportunidad</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Arquitectura+%C3%81gil">Arquitectura &Aacute;gil</a>
+<ul class="minitoc">
+<li>
+<a href="#Virtudes+del+Equipo">Virtudes del Equipo</a>
+</li>
+<li>
+<a href="#Utilizar+los+Mejores+Frameworks">Utilizar los Mejores Frameworks</a>
+</li>
+<li>
+<a href="#Ser+Previsor">Ser Previsor</a>
+</li>
+<li>
+<a href="#Aplicar+un+Dise%C3%B1o+Ortogonal">Aplicar un Dise&ntilde;o Ortogonal</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Roadmap">Roadmap</a>
+<ul class="minitoc">
+<li>
+<a href="#Puntos+Destacados">Puntos Destacados</a>
+</li>
+<li>
+<a href="#Certificaci%C3%B3n+Sun">Certificaci&oacute;n Sun</a>
+</li>
+<li>
+<a href="#Para+Saber+M%C3%A1s">Para Saber M&aacute;s</a>
+<ul class="minitoc">
+<li>
+<a href="#Bibliograf%C3%ADa">Bibliograf&iacute;a</a>
+</li>
+<li>
+<a href="#Enlaces">Enlaces</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+          
+
+<p>S&iacute;, una profesi&oacute;n muy respetable. Profesionales que estudian el problema antes de resolverlo. &iquest;Hab&eacute;is visto a alg&uacute;n arquitecto levantar una pared antes de estudiar cual es la mejor orientaci&oacute;n de una vivienda, estudiar si el suelo va a soportar 3 pisos en altura, estudiar si la calidad de los materiales a emplear es inferior a la deseada por el comprador, etc... ? </p>
+  
+
+<p>As&iacute; pues, tenemos una similitud con el mundo "del ladrillo". Antes de construir cualquier casa, se necesita un proyecto de arquitectura donde se estudian y reflejan todos los elementos de la futura edificaci&oacute;n. &iquest;Por qu&eacute; cuando vamos a realizar una aplicaci&oacute;n no realizamos primero un plano de la arquitectura del software?</p>
+
+
+<a name="N10014"></a><a name="Arquitectura+del+Software"></a>
+<h2 class="underlined_10">Arquitectura del Software</h2>
+<div class="section">
+<p>Existen muchas y diferentes definiciones de la palabra arquitectura. La Real Academia Espa&ntilde;ola de la Lengua la define como el "<em>Arte de proyectar y construir edificios</em>". Tambi&eacute;n ofrece otra entrada relacionada con la inform&aacute;tica como la "<em>Estructura l&oacute;gica y f&iacute;sica de los componentes de un computador</em>".</p>
+<p>El concepto de <em>Arquitectura del Software</em> (AS) nace a finales de los a&ntilde;os 60, cuando Edsger Dijkstra propuso que se estableciera una estructuraci&oacute;n correcta de los sistemas de software antes de lanzarse a programar, escribiendo c&oacute;digo de cualquiera manera.</p>
+<p>Durante esta sesi&oacute;n y a lo largo del presente curso presentamos una variaci&oacute;n de estas definiciones m&aacute;s orientada al software.</p>
+<p>La <strong>Arquitectura del Software</strong> se refiere a la representaci&oacute;n abstracta de los componentes y comportamientos de un sistema. Idealmente, la arquitectura no contiene detalles de la implementaci&oacute;n (se deja para los desarrolladores). El arquitecto trata con la informaci&oacute;n del problema y dise&ntilde;a una soluci&oacute;n, la cual satisface los requerimientos funcionales y no funcionales del cliente, siendo una soluci&oacute;n flexible que evoluciona cuando los requerimientos cambian.</p>
+<p>Es muy &uacute;til pensar en el concepto de arquitectura como el esqueleto para construir un sistema. De este modo, la arquitectura compone un conjunto de principios, est&aacute;ndares, protocolos, frameworks y directivas que dirigen los diversos elementos del dise&ntilde;o de toda aplicaci&oacute;n.</p>
+<div class="frame note">
+<div class="label">Pregunta</div>
+<div class="content">
+&iquest;Por qu&eacute; es tan importante ahora el concepto de arquitectura, si en el pasado no exist&iacute;a?
+</div>
+</div>
+<p>Antes de la entrada de Internet, la creaci&oacute;n de la arquitectura de un sistema  era 10 veces m&aacute;s f&aacute;cil que el d&iacute;a de hoy. Antes de la explosi&oacute;n de Internet, un arquitecto creaba una arquitectura para gestionar los usuarios internos de una compa&ntilde;&iacute;a (alrededor de 100). Sin embargo, Internet ha abierto los recursos de la compa&ntilde;&iacute;a a sus clientes, lo que significa que el arquitecto ahora debe crear una arquitectura de sistema que pueda gestionar a miles de usuarios con patrones de uso y comportamiento impredecibles.</p>
+<p>Por lo tanto, la respuesta esta en la escalabilidad y la distribuci&oacute;n de las aplicaciones. La siguiente figura muestra un ejemplo de un sistema altamente distribuido.</p>
+<p>
+    
+<img alt="Sistema Altamente Distribuido" content-width="15cm" src="imagenes/apps/sistemaDistribuido75.jpg" width="644">
+</p>
+<a name="N10048"></a><a name="Crear+una+Arquitectura"></a>
+<h3 class="underlined_5">Crear una Arquitectura</h3>
+<p>Definir la arquitectura es un proceso creativo. Uno de los retos del arquitecto es equilibrar la creatividad con el pragmatismo mediante las tecnolog&iacute;as disponibles en forma de modelos, frameworks y patrones. La arquitectura puede hacer referencia a un producto (la arquitectura de un edificio), o hacer referencia a un m&eacute;todo o estilo (la arquitectura de un rascacielos). Adem&aacute;s, la arquitectura debe ser reconfigurable para responder tanto a un entorno din&aacute;mico como a las peticiones por parte del cliente.
+</p>
+<p>Cuando creamos una arquitectura describimos la estructura del sistema a construir, y como dicha estructura ofrece soporte a los requisitos de negocio y a los no funcionales. Se puede definir la estructura del sistema como el mecanismo que el sistema utiliza para resolver problemas comunes del sistema. Un mecanismo es una capacidad que ofrece soporte a los requisitos de negocio de un modo consistente y uniforme. Por ejemplo, la persistencia es una mecanismo que deber&iacute;a utilizarse consistentemente a lo largo del sistema. Esto significa que cada vez que el sistema utiliza la persistencia, se realiza del mismo modo. Al definir la persistencia como un mecanismo arquitect&oacute;nico, se ofrece un m&eacute;todo por defecto de gestionar la persistencia que todos los dise&ntilde;adores deben seguir e implementar de un modo consistente. Los mecanismos arquitect&oacute;nicos, tales como persistencia, distribuci&oacute;n, comunicaci&oacute;n, gesti&oacute;n de transacciones, y seguridad son las infraestructuras sobre las cuales se construir&aacute; el sistema y se deben definir en la arquitectura.</p>
+<a name="N10054"></a><a name="%C2%BFQu%C3%A9+significa+crear+una+arquitectura%3F"></a>
+<h4>&iquest;Qu&eacute; significa crear una arquitectura?</h4>
+<p>Significa transformar los problemas de negocio en soluciones t&eacute;cnicas, lo que implica responsabilidades tanto tecnol&oacute;gicas como de gesti&oacute;n.</p>
+<ul>
+
+<li>Responsabilidades Tecnol&oacute;gicas
+    <ul>
+    
+<li>identificar los casos de uso significantes para la arquitectura</li>
+    
+<li>guiar el desarrollo de prototipos</li>
+    
+</ul>
+
+</li>
+
+<li>Responsabilidades de Gesti&oacute;n
+    <ul>
+    
+<li>ofrecer informaci&oacute;n y ayuda para la gesti&oacute;n de costes</li>
+    
+<li>gestionar las comunicaciones con el equipo de desarrollo para
+        <ul>
+            
+<li>refinar y clarificar los requisitos</li>
+            
+<li>generar confianza en los clientes/accionistas</li>
+            
+<li>formar a los miembros del equipo</li>
+        
+</ul>
+    
+</li>
+    
+</ul>
+
+</li>
+
+</ul>
+<p>Significa crear una infraestructura de software que encare los requisitos no funcionales identificados en el sistema. Por ejemplo, si el sistema tiene requisitos que fijan que los tiempos de respuesta deben ser inferiores a 3 segundos, entonces &eacute;sta infraestructura debe asegurar que el sistema cumplir&aacute; dicho requisito.</p>
+<p>Significa ofrecer a los desarrolladores la infraestructura que les permita dise&ntilde;ar y codificar el sistema sin preocuparse en comprometer los requisitos no funcionales.</p>
+<a name="N1008C"></a><a name="Arquitectura+vs+Dise%C3%B1o"></a>
+<h3 class="underlined_5">Arquitectura vs Dise&ntilde;o</h3>
+<p>Uno de los temas cr&iacute;ticos alrededor de la arquitectura es <em>&iquest;Cuando se acaba la creaci&oacute;n de la arquitectura y cuando comienza el proceso de dise&ntilde;o?</em> No existe una respuesta definitiva para cada sistema. Este hecho se puede acotar en t&eacute;rminos de necesidad y control.</p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+<th colspan="1" rowspan="1"></th><th colspan="1" rowspan="1">Arquitectura</th><th colspan="1" rowspan="1">Dise&ntilde;o</th>
+</tr>
+
+<tr>
+<th colspan="1" rowspan="1">Nivel de Abstracci&oacute;n</th><td colspan="1" rowspan="1">Visi&oacute;n amplia y alta en pocos aspectos</td><td colspan="1" rowspan="1">Atenci&oacute;n detallada en muchos aspectos bajos y espec&iacute;ficos</td>
+</tr>
+
+<tr>
+<th colspan="1" rowspan="1">Entregables</th><td colspan="1" rowspan="1">Planos de sistema y subsistemas, y prototipos arquitect&oacute;nicos</td><td colspan="1" rowspan="1">Dise&ntilde;o de componentes, especificaciones de c&oacute;digo</td>
+</tr>
+
+<tr>
+<th colspan="1" rowspan="1">&Aacute;rea de Atenci&oacute;n</th><td colspan="1" rowspan="1">Requisitos no funcionales</td><td colspan="1" rowspan="1">Requisitos funcionales</td>
+</tr>
+
+</table>
+<p>La arquitectura define qu&eacute; es lo que se va a construir, y el dise&ntilde;o perfila c&oacute;mo se va a hacer. La arquitectura se controla por una o pocas personas que se centran en la visi&oacute;n global y en cambio, el dise&ntilde;o por muchas personas que se centran en los detalles de c&oacute;mo lograr la visi&oacute;n global. Un arquitecto crea una arquitectura hasta el punto que el equipo de dise&ntilde;o la puede utilizar para hacer que el sistema logre todos sus objetivos. Por lo tanto, si hemos de crear una arquitectura para desarrolladores expertos, quiz&aacute;s no entraremos tan en detalle como si tuvieses a desarrolladores con menos experiencia.</p>
+<p>Conforme se crea una arquitectura para satisfacer los requisitos de negocio y no funcionales de un sistema, el <strong>presupuesto</strong> para adquirir hardware, software y recursos de desarrollo son limitados, de modo que el sistema debe desarrollarse bajo estas premisas. Por ejemplo, &iquest;c&oacute;mo podemos hacer que el sistema escale para lograr la demanda del cliente cuando solo tenemos un &uacute;nico ordenador para todos los servicios? &iquest;c&oacute;mo crear una arquitectura sin dinero para comprar productos software? Tarde o temprano, las dificultades aparecen, y se deben estudiar los pros y los contra para solventar este tipo de problemas.</p>
+<p>Conforme se superan las dificultades evaluando el correcto equilibrio, es importante que cada decisi&oacute;n tomada respecto a la arquitectura quede registrada. Si tomamos una decisi&oacute;n sobre instalar una base de datos Oracle para persistir la informaci&oacute;n de la aplicaci&oacute;n, debemos documentar esta decisi&oacute;n justificando porqu&eacute; hemos elegido Oracle respecto a otros proveedores. Esto permite que el resto del equipo de desarrollo o integrantes que entran en fases tard&iacute;as comprendan porqu&eacute; se tomaron ciertas decisiones y previene el tener que justificar continuamente las decisiones tomadas.</p>
+<p>La mayor&iacute;a de las decisiones tomadas al crear la arquitectura se centran en los requisitos no funcionales o mecanismos asociados a estos requisitos. La mayor&iacute;a de los sistemas no disponen de un presupuesto inicial que permita adquirir los elementos necesarios para cumplir los requisitos. Si un sistema hardware de alta disponibilidad 24x7 emplea todo nuestro presupuesto, no dispondremos de suficiente dinero para comprar un servidor de aplicaciones que nos ayude a cumplir el resto de requisitos en el lado del software. Debemos ajustar la arquitectura para ce&ntilde;irse al presupuesto, y estos ajustes dependen tanto del sistema que estamos creando como de la relaci&oacute;n que mantengamos con nuestro cliente.</p>
+</div>
+
+
+
+<a name="N100E3"></a><a name="Rol+del+Arquitecto"></a>
+<h2 class="underlined_10">Rol del Arquitecto</h2>
+<div class="section">
+<div class="frame note">
+<div class="label">Vitruvio, 25 AC</div>
+<div class="content">El arquitecto id&oacute;neo es aquella persona de letras, matem&aacute;tico, con estudios de historia, buen estudiante de filosof&iacute;a, con gustos musicales, que no ignora la medicina, aprendiz de leyes, familiarizado con la astronom&iacute;a y c&aacute;lculos astron&oacute;micos.</div>
+</div>
+<p>Claramente Vitruvio no se refer&iacute;a a un arquitecto de software, pero la idea yace sobre las mismas caracter&iacute;sticas. Un arquitecto es una persona polifac&eacute;tico, madura, con experiencia, educada, que aprende de forma r&aacute;pida, un l&iacute;der con dotes de mando y buena comunicaci&oacute;n, pudiendo tomar decisiones en los momentos dif&iacute;ciles.</p>
+<p>Para que un arquitecto sea polifac&eacute;tico, debe tener conocimiento del negocio o del dominio del problema. Puede obtener este conocimiento mediante la experiencia o la formaci&oacute;n. Adem&aacute;s, los arquitectos deben tener un dominio alto de las tecnolog&iacute;as. Un arquitecto puede ser un experto es una tecnolog&iacute;a particular, pero al menos debe tener conocimientos general de todas las tecnolog&iacute;as competentes respecto a qu&eacute; tecnolog&iacute;a es mejor para tomar decisiones sobre una base s&oacute;lida. Un buen arquitecto eval&uacute;a todas las posibles soluciones de un problema independientemente de la tecnolog&iacute;a a utilizar.</p>
+<p>Realmente, &iquest;Qu&eacute; hace el arquitecto? &iquest;Cual es la diferencia entre un arquitecto y un desarrollador senior? Las tareas de un dise&ntilde;ador est&aacute;n relacionadas con lo que ocurre cuando un usuario pulsa un bot&oacute;n de una aplicaci&oacute;n. En cambio, un arquitecto se tiene que preocupar de lo que ocurre cuando ese mismo bot&oacute;n lo pulsan 10.000 usuarios. As&iacute; pues, un arquitecto reduce los riesgos t&eacute;cnicos (elementos desconocidos, sin probar, ...)  asociados con un sistema.</p>
+<p>Los riesgos se asocian con los requerimientos a nivel de servicios, y de modo ocasional, se asocian a requisitos de negocio. Independientemente del tipo de riesgo, es m&aacute;s f&aacute;cil identificar los riesgos del proyecto mientras creamos la arquitectura que hacerlo durante la fase de construcci&oacute;n, cuando ya existe una base de c&oacute;digo implementada que potencialmente tenga alg&uacute;n riesgo que solventar.</p>
+<p>El arquitecto debe liderar al equipo de desarrollo asegur&aacute;ndose que los desarrolladores y dise&ntilde;adores construyen el sistema acorde a la arquitectura. Como l&iacute;der, debe tomar decisiones sobre las dificultades del sistema. Para liderar, debe tener destreza en la escritura y ser un buen orador. Es responsabilidad del arquitecto transmitir el conocimiento del sistema (ya sea mediante modelos visuales o reuniones en grupo) a los desarrolladores, los cuales lo van a implementar. Si el arquitecto no se comunica de un modo efectivo, casi seguro que los desarrolladores no construir&aacute;n el sistema correctamente.</p>
+</div>
+
+
+
+<a name="N100FD"></a><a name="T%C3%A9rminos+Arquitect%C3%B3nicos"></a>
+<h2 class="underlined_10">T&eacute;rminos Arquitect&oacute;nicos</h2>
+<div class="section">
+<p>Tal como hemos definido anteriormente, el t&eacute;rmino arquitectura se refiere a la representaci&oacute;n abstracta de los componentes y comportamientos de un sistema. Una buena arquitectura de sistema reutiliza componentes, ya que cada componente se compone de partes que pueden estar repetidas, y por lo tanto, reutilizadas. La abstracci&oacute;n naturalmente forma capas que representan diferentes niveles de complejidad. Cada capa describe unas soluciones. Estas capas se integran unas con otras de modo que las abstracciones de alto nivel se ven afectadas por las abstracciones de bajo nivel.
+</p>
+<p>
+Los siguientes t&eacute;rminos arquitect&oacute;nicos son importantes para el examen de certificaci&oacute;n y como grupo ofrece la visi&oacute;n que tiene Sun de una arquitectura de sistema.
+</p>
+<a name="N10109"></a><a name="Abstracci%C3%B3n"></a>
+<h3 class="underlined_5">Abstracci&oacute;n</h3>
+<p>El t&eacute;rmino <strong>abstracci&oacute;n</strong> implica el uso de una notaci&oacute;n para algo titulizado de forma repetida en un dise&ntilde;o; es un componente que oculta los detalles utilizando una representaci&oacute;n clara. 
+</p>
+<p>Nosotros utilizamos las abstracciones cada d&iacute;a cuando discutimos sobre modelos y diagramas que utilizan cajas con l&iacute;neas que interconectan a otras cajas, representando componentes que funcionan de un modo unido.
+</p>
+<p>
+    
+<img alt="Ejemplos de Abstracciones" content-width="10cm" src="imagenes/apps/abstracciones.jpg" width="358">
+</p>
+<p>La abstracci&oacute;n es el primer paso del proceso de dise&ntilde;o, realizando un proceso top-down para dividir el sistema de un modo jer&aacute;rquico, examinando cada nivel de la jerarqu&iacute;a en t&eacute;rminos de funciones e intenciones del dise&ntilde;o. Esta divisi&oacute;n la realiza el arquitecto, el cual se convierte en el actor principal del sistema. En cambio, el cliente, el cual posee ciertos requisitos para la estructura del sistema, transfiere sus objetivos y restricciones al arquitecto, el cual utiliza estos materiales y gu&iacute;a a la gente del equipo de desarrollo a producir una estructura de dise&ntilde;o que haga feliz al cliente.
+</p>
+<p>
+Adem&aacute;s de identificar los objetivos del sistema, la jerarqu&iacute;a de abstracci&oacute;n tambi&eacute;n nos muestra que el sistema implica una gran cantidad de comunicaciones. El cliente se comunica con el arquitecto para ofrecer los requisitos iniciales del dise&ntilde;o y retroalimentar en los dise&ntilde;os ya existentes. A su vez, el arquitecto se comunica con los desarrolladores para determinar las restricciones del dise&ntilde;o en t&eacute;rminos de limitaciones f&iacute;sicas, limitaciones impuestas por la disponibilidad, o las propias limitaciones de la arquitectura.
+</p>
+<a name="N10128"></a><a name="%C3%81rea+de+Superficie"></a>
+<h3 class="underlined_5">&Aacute;rea de Superficie</h3>
+<p>El <strong>&aacute;rea de superficie</strong> es un t&eacute;rmino utilizado para describir el modo en el cual los componentes interact&uacute;an unos con otros de un modo definido. Es importante destacar que cuanto mayor sea esta &aacute;rea, m&aacute;s componentes se ver&aacute;n afectados por el cambio de un componente del &aacute;rea.</p>
+<p>
+    
+<img alt="Area de Superficie : Interaccion entre Componentes" content-width="14cm" src="imagenes/apps/surfaceArea75.jpg" width="583">
+</p>
+<p>
+Si nos fijamos en la figura, la clase <span class="codefrag">Employee</span> contiene los m&eacute;todos <span class="codefrag">+GetName()</span>, <span class="codefrag">+GetCurrentAge()</span>, <span class="codefrag">+GetSalary()</span>, <span class="codefrag">+GetAddress()</span>, y <span class="codefrag">+GetSkill()</span>. Esta es un area de superficie grande que puede llegar a ser dificil de mantener. En el area de superficie revisada, las clases contienen todos los metodos contenidos en la clase <span class="codefrag">Employee</span> original. As&iacute; pues, <span class="codefrag">EmployeeDemographics</span> incluye s&oacute;lo aquellos metodos perteciente a los datos personales personales del empleado: <span class="codefrag">+GetName()</span>, <span class="codefrag">+GetCurrentAge()</span>, and <span class="codefrag">+GetAddress()</span>. La otra clase, <span class="codefrag">EmployeeJob</span>, incluye los metodos pertenecientes al trabajo del empleado: <span class="codefrag">+GetSalary()</span> y <span class="codefrag">+GetSkill</span>.
+</p>
+</div>
+
+
+<a name="N1016C"></a><a name="Principios+Arquitect%C3%B3nicos"></a>
+<h2 class="underlined_10">Principios Arquitect&oacute;nicos</h2>
+<div class="section">
+<p>Para esta facilitar la descomposici&oacute;n de una arquitectura, utilizaremos los conceptos de capa (capa l&oacute;gica o <em>layer</em>) y nivel (capa f&iacute;sica o <em>tier</em>).</p>
+<a name="N1017B"></a><a name="Arquitectura+de+3+Capas"></a>
+<h3 class="underlined_5">Arquitectura de 3 Capas</h3>
+<p>Cuando trabajamos con la arquitectura de una aplicaci&oacute;n, el est&aacute;ndar de facto es utilizar una arquitectura de 3 capas que separe claramente las l&oacute;gicas de presentaci&oacute;n, negocio y datos.</p>
+<p>En un principio, la separaci&oacute;n de estas 3 capas es conceptual, sin necesidad de que cada una de las capas se separe en un nivel. Es decir, las 3 capas pueden residir sobre la misma m&aacute;quina, pero a nivel l&oacute;gico, estar&aacute;n separadas.</p>
+<p>La capa de <strong>presentaci&oacute;n</strong> es responsable de presentar la informaci&oacute;n e interactuar con las capas inferiores, as&iacute; pues, es lo que ve el usuario. Muestra el sistema al usuario, le comunica la informaci&oacute;n y captura la informaci&oacute;n del usuario dando un m&iacute;nimo de proceso (realiza un filtrado previo para comprobar que no hay errores de formato). Esta capa se comunica &uacute;nicamente con la capa de negocio.
+</p>
+<p>&iquest;Quien trabaja en el interfaz de la aplicaci&oacute;n? Dise&ntilde;adores y programadores de interfaces de usuario. Los programadores que programan la interfaz por regla general, no son los mismos que programan las capas de negocio y datos. Adem&aacute;s, utilizan diferentes aplicaciones para hacer su trabajo. De modo que es una buena idea dejar que la gente de presentaci&oacute;n tenga sus archivos de presentaci&oacute;n (p&aacute;ginas html, hojas de estilo, im&aacute;genes, etc...) , mientras que la gente de negocio tenga sus ficheros (fichero java, ant, etc...).</p>
+<p>La capa de <strong>negocio</strong> es la responsable de implementar las operaciones solicitadas por los clientes a trav&eacute;s de la capa de presentaci&oacute;n. Se denomina capa de negocio (e incluso de l&oacute;gica del negocio) porque es aqu&iacute; donde se establecen todas las reglas que deben cumplirse. Esta capa se comunica con la capa de presentaci&oacute;n, para recibir las solicitudes y presentar los resultados, y con la capa de datos, para almacenar o recuperar datos del SGBD.</p>
+<p>La capa de <strong>datos</strong> es la responsable de gestionar todos los elementos de informaci&oacute;n del sistema: ficheros planos, XML, SGBD, etc... En algunas arquitecturas se considera como parte de esta capa aquellos sistemas externos que proporcionan informaci&oacute;n: servidores de mensajes, servicios web, etc...</p>
+<p>El principal motivo para separar los datos, y en concreto la base de datos, es que como las pilas, se venden por separado. Es obvio que la base de datos es una parte muy importante de la aplicaci&oacute;n, ya que si te falla la base de datos, la aplicaci&oacute;n se cae. Adem&aacute;s, queremos que esta informaci&oacute;n este lo m&aacute;s segura posible, lo que hace que sea candidata ideal a separarla de la aplicaci&oacute;n y de los clientes, con un gran cortafuegos impidiendo el acceso a extra&ntilde;os.</p>
+<p>
+    
+<img alt="Arquitectura de 3 Capas" content-width="6cm" src="imagenes/apps/3capas.jpg" width="232">
+</p>
+<p>A la hora de dise&ntilde;ar una aplicaci&oacute;n mediante esta arquitectura, podemos seguir 2 planteamientos: de arriba a abajo (<em>top-down</em>) o de abajo a arriba (<em>bottom-up</em>).</p>
+<p>En el dise&ntilde;o <em><strong>top-down</strong></em> se define la funcionalidad del sistema desde el punto de vista del cliente. Cada una de estas necesidades se propaga por las capas seg&uacute;n las necesidades identificadas en las capas anteriores.</p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+<th colspan="1" rowspan="1">Ventajas</th><th colspan="1" rowspan="1">Inconvenientes</th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1">Desde el principio se tienen claras las funcionalidades, y &eacute;stas dirigen el desarrollo del sistema</td><td colspan="1" rowspan="1">S&oacute;lo es posible aplicarlo a sistemas desarrollados desde cero.<br>Los componentes acaban fuertemente acoplados pues se utilizan en entornos homog&eacute;neos</td>
+</tr>
+
+</table>
+<p>En cambio, el dise&ntilde;o <em><strong>bottom-up</strong></em> suele surgir m&aacute;s por necesidad que por elecci&oacute;n, ya que muchos de los sistemas de hoy en d&iacute;a se basan en la integraci&oacute;n de productos existentes (<em>legacy</em> o heredados, entendiendo por heredado aquel sistema que es utilizado en un contexto distinto del que en principio fue concebido). Si tenemos que integrar sistemas heredados no podemos seguir un enfoque top-down.</p>
+<p>Por ello, el cliente definir&aacute; las funcionalidades, y dependiendo de los recursos existentes y las funcionalidades que ofrecen, se encapsular&aacute; aquella funcionalidad existente, adaptando las salidas de la aplicaci&oacute;n a las necesidades del cliente.</p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+<th colspan="1" rowspan="1">Ventajas</th><th colspan="1" rowspan="1">Inconvenientes</th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1">Los componentes estan poco acoplados y pueden ser reutilizados</td><td colspan="1" rowspan="1">Viene impuesto por las necesidades del cliente</td>
+</tr>
+
+</table>
+<a name="N101F6"></a><a name="Capas+%28Layers%29"></a>
+<h3 class="underlined_5">Capas (Layers)</h3>
+<p>Las capas son sistemas por si mismos, y hacen lo mismo que todos los sistemas: interactuar con el entorno para obtener entradas y producir salidas.</p>
+<p>Los sistemas con capas bidireccionales ofrecen servicios a sus capas superiores e inferiores. En cambio, los sistemas de capa unidireccionales ofrecen servicios a las capas superiores mientras que utilizan los servicios de las capas inferiores (por ejemplo, dentro del mundo de las redes, el modelo ISO de 7 capas de la OSI).</p>
+<p>En la mayor&iacute;a de las disciplinas ingenieriles, especialmente dentro del software, existe un esfuerzo por construir sistemas basados en capas unidireccionales. Cada capa ofrece servicios a la capa inmediatamente superior mediante una serie de interfaces bien definidos, permitiendo a esa capa superior trabajar con abstracciones de los servicios inferiores. Cada capa s&oacute;lo debe apoyarse en los servicios que le ofrece la capa inferior, de modo que tenemos un dise&ntilde;o jer&aacute;rquico donde las capas superiores quedan aisladas de las inferiores.</p>
+<p>Dentro de un uso estricto de las capas, las clases y objetos de una capa deber&iacute;an depender, para la compilaci&oacute;n y enlazado, de clases u objetos dentro de la misma capa o inferior. Construir una capa y sus objetos de esta manera hace posible construir las capas inferiores antes que las superiores.</p>
+<p>Al mismo tiempo, las clases u objetos de un paquete dentro de una capa no deber&iacute;a tener dependencias c&iacute;clicas con objetos de otros paquetes, tanto dentro como fuera de la capa. Esto elimina las dependencias f&iacute;sicas tipo spaghetti, evitando que los peque&ntilde;os cambios se propaguen a lo largo de numerosos lugares. </p>
+<a name="N1020C"></a><a name="Niveles+%28Tiers%29"></a>
+<h3 class="underlined_5">Niveles (Tiers)</h3>
+<p>En un entorno de m&uacute;ltiples niveles (tambi&eacute;n conocidos como capas f&iacute;sicas), las capas l&oacute;gicas se reparten en uno o m&aacute;s niveles. Por ejemplo, el cliente implementa la l&oacute;gica de presentaci&oacute;n (cliente ligero), la l&oacute;gica de negocio se implementa sobre el servidor de aplicaciones (1 o varios), y los datos residen en el servidor de base de datos (1 o varios). Los siguientes 3 componentes definen una arquitectura multinivel:</p>
+<ul>
+
+<li>El componente de <strong>front-end</strong>, responsable de ofrecer portabilidad en la l&oacute;gica de presentaci&oacute;n, como puede ser un servidor web.</li>
+
+<li>El componente de <strong>back-end</strong>, responsable de ofrecer acceso a servicios dedicados, como un servidor de base de datos.</li>
+
+<li>Uno o m&aacute;s componentes de <strong>middle-tier</strong>, que permite a los usuarios compartir y controlar la l&oacute;gica de negocio, aisl&aacute;ndola de la aplicaci&oacute;n real, como un servidor de aplicaciones.</li>
+
+</ul>
+<p>La siguiente figura muestra una representaci&oacute;n de una arquitectura de 3 niveles:</p>
+<p>
+    
+<img alt="Capas f&iacute;sicas de la arquitectura" content-width="14cm" src="imagenes/apps/capasFisicas.jpg" width="544">
+</p>
+<p>Las ventajas de utilizar una arquitectura multinivel son:</p>
+<ul>
+
+<li>Los cambios en el interfaz de usuario o en la l&oacute;gica de la aplicaci&oacute;n son independientes unos de otros, lo que permite a la aplicaci&oacute;n evolucionar f&aacute;cilmente para cumplir nuevos requisitos</li>
+
+
+<li>Se minimizan los cuellos de botellas debido a problemas de red, ya que la capa de la aplicaci&oacute;n no transmite informaci&oacute;n extra al cliente; de hecho, &uacute;nicamente transmite aquella informaci&oacute;n que realmente es necesaria para realizar una tarea</li>
+
+
+<li>Cuando son necesarios cambios en la l&oacute;gica de negocio, solo debemos actualizar el servidor. En una arquitectura de 2 niveles, debemos modificar cada cliente cuando tenemos un cambio en negocio.</li>
+
+
+<li>Se a&iacute;sla al cliente de la base de datos y las operaciones de red. El cliente puede acceder a los datos f&aacute;cilmente sin necesidad de saber donde est&aacute;n los datos o cuantos servidores hay en el sistema.</li>
+
+
+<li>Las conexiones de base de datos se pueden reutilizar (mediante un <em>pool de conexiones</em>), de modo que se comparten entre varios usuarios, lo que reduce dr&aacute;sticamente los costes asociados a las licencias por usuarios.</li>
+
+
+<li>Se consigue independencia de la organizaci&oacute;n respecto a los datos, ya que la capa de datos utiliza SQL est&aacute;ndar, el cual es independiente de la plataforma. De este modo, la empresa no se ata a procedimientos almacenados espec&iacute;ficos de un determinado gestor.</li>
+
+</ul>
+</div>
+
+
+
+<a name="N10253"></a><a name="Requisitos+No+Funcionales"></a>
+<h2 class="underlined_10">Requisitos No Funcionales</h2>
+<div class="section">
+<p>Adem&aacute;s de los requisitos de negocio del sistema, debemos satisfacer los requisitos no funcionales, tambi&eacute;n conocidos como requisitos a nivel de servicio o requisitos de servicios de calidad (<em>QoS</em>). Como arquitecto, se debe trabajar junto al cliente durante las fases de inicio (<em>inception</em>) y elaboraci&oacute;n (si seguimos la metodolog&iacute;a <em>RUP</em>) para definir las m&eacute;tricas de calidad para cada uno de los requisitos no funcionales.</p>
+<p>La arquitectura que creamos debe tratar los siguientes requisitos no funcionales: rendimiento, escalabilidad, confiabilidad, disponibilidad, extensibilidad, mantenibilidad, gestionabilidad y seguridad.
+</p>
+<p>Como arquitecto, hay que buscar el equilibrio entre estos requisitos. Por ejemplo, si el requisito m&aacute;s importante es el rendimiento de un sistema, quiz&aacute;s haya que sacrificar la mantenibilidad y extensibilidad del sistema para asegurar los m&iacute;nimos de calidad esperados respecto al rendimiento.</p>
+<a name="N1026D"></a><a name="Rendimiento"></a>
+<h3 class="underlined_5">Rendimiento</h3>
+<p>Por supuesto, sin&oacute;nimo de velocidad. El <strong>rendimiento</strong> se mide en t&eacute;rminos de tiempos de respuesta por transacci&oacute;n de usuario. Otra medida es la <strong>productividad</strong>, que es el n&uacute;mero de transacciones que se realizan en un periodo de tiempo determinado, normalmente un segundo. Otra forma de medir el rendimiento es en t&eacute;rminos de cuanto usuarios simult&aacute;neos soporta un sistema dentro de unos tiempos de respuesta razonables, es decir, se especifican los requisitos para X usuarios simult&aacute;neos en un tiempo m&aacute;ximo de respuesta Y.</p>
+<p>Por ejemplo, un medida de rendimiento podr&iacute;a ser que no se emplearan m&aacute;s de tres segundos en cada formulario de pantalla, o que el sistema soportara 100 transacciones en un segundo.</p>
+<p>A pasar de las m&eacute;tricas, es necesario crear una arquitectura que permita a los dise&ntilde;adores y desarrolladores completar el sistema sin necesidad de considerar estas m&eacute;tricas de rendimiento.</p>
+<p>Para conseguir un buen rendimiento, se necesita un buen dise&ntilde;o y una buena codificaci&oacute;n &iquest;Algo m&aacute;s? Casi todo afecta al rendimiento. Otros factores claves son la memoria y la velocidad del procesador de la CPU.</p>
+<a name="N10286"></a><a name="Escalabilidad"></a>
+<h3 class="underlined_5">Escalabilidad</h3>
+<p>La <strong>escalabilidad</strong> es la habilidad de soportar los servicios de calidad conforme la carga del sistema crece sin que el sistema se vea perjudicado y sin necesidad de modificar el mismo. Un sistema se considera escalable si, conforme se incrementa la carga, el sistema sigue respondiendo dentro de unos limites aceptables. Si no responde dentro de los limites, que sea escalable no significa que tengamos que modificar el c&oacute;digo. Si es escalable, con s&oacute;lo instalar m&aacute;s hardware o instancias de los servidores, el sistema debe recuperar los tiempos de respuesta esperados.</p>
+<p>Por ejemplo, puede ser que tengamos una medida de rendimiento de un tiempo de respuesta entre 2 y 5 segundos. Si la carga del sistema crece y el sistema puede mantener los niveles de calidad respecto al rendimiento en tiempos de respuesta inferiores a 5 segundos, entonces el sistema es escalable.</p>
+<p>Para comprender la escalabilidad, antes se debe comprender la <strong>capacidad</strong> del sistema, definida como el n&uacute;mero m&aacute;ximo de procesos o usuarios que un sistema puede manejar manteniendo la calidad de los servicios ofrecidos. Un sistema se ejecuta a su capacidad m&aacute;xima cuando ya no puede responder a m&aacute;s peticiones dentro de unos tiempos de respuesta aceptables.</p>
+<p>Para escalar un sistema que ha llegado a su capacidad, se debe a&ntilde;adir hardware adicional, ya sea vertical u horizontalmente. El <strong>escalado vertical</strong> implica a&ntilde;adir procesadores, memoria, o discos adicionales a la/s m&aacute;quina/s actual/es. El <strong>escalado horizontal</strong> implica a&ntilde;adir m&aacute;s m&aacute;quinas al entorno, de este modo se incrementa la capacidad general del sistema.</p>
+<div class="frame note">
+<div class="label">Importante</div>
+<div class="content">
+La arquitectura que creemos debe manejar el escalado vertical y horizontal del hardware</div>
+</div>
+<p>Cabe destacar que el escalado vertical es m&aacute;s f&aacute;cil de realizar que el horizontal. &iquest;Por qu&eacute;? A&ntilde;adir m&aacute;s procesadores o memoria normalmente no tiene un impacto en la arquitectura, pero el hecho de que la arquitectura deba ejecutarse sobre m&uacute;ltiples m&aacute;quina pero que parezca que s&oacute;lo se ejecuta como un sistema compacto es m&aacute;s dif&iacute;cil.</p>
+<a name="N102AC"></a><a name="Confiabilidad"></a>
+<h3 class="underlined_5">Confiabilidad</h3>
+<p>La confiabilidad (<em>reliability</em>) asegura la integridad y consistencia de la aplicaci&oacute;n y de todas sus transacciones. Conforme crece la carga del sistema, &eacute;ste debe continuar procesando las peticiones y manejando las transacciones con la misma precisi&oacute;n que lo hacia antes de incrementarse la carga.</p>
+<p>
+Un sistema es m&aacute;s confiable si es tolerante a fallos. La tolerancia a fallos es la capacidad de un sistema para seguir funcionando cuando se produce un error en parte del sistema. Para conseguir tolerancia a fallos hay que dise&ntilde;ar el sistema con un alto grado de redundancia de hardware. Si se produce un error en un &uacute;nico componente, el componente redundante asumir&aacute; su funci&oacute;n sin que se produzca un tiempo de inactividad apreciable.</p>
+<p>La confiabilidad puede tener un impacto negativo en la escalabilidad, ya que si el sistema no puede mantener la confiabilidad conforme la carga se incrementa, entonces el sistema no es realmente escalable. De modo que para que un sistema escale, &eacute;ste debe ser confiable.</p>
+<a name="N102BF"></a><a name="Disponibilidad"></a>
+<h3 class="underlined_5">Disponibilidad</h3>
+<p>La disponibilidad asegura que un servicio/recurso esta siempre accesible, o parece que lo est&aacute;. La confiabilidad puede contribuir a la disponibilidad, pero la disponibilidad se puede alcanzar incluso si algunos componentes fallan.</p>
+<p>Montando un entorno de componentes redundantes en cluster y tolerantes a fallos, un componente puede caerse y tener un impacto negativo en la confiabilidad, pero el servicio sigue en pie gracias a la redundancia. En cuanto un componente se cae, el componente redundante suplanta al componente ca&iacute;do.</p>
+<a name="N102CC"></a><a name="Extensibilidad"></a>
+<h3 class="underlined_5">Extensibilidad</h3>
+<p>La extensibilidad es la habilidad para a&ntilde;adir funcionalidad adicional o modificar funcionalidad existente sin tener un impacto directo en la funcionalidad del sistema.</p>
+<p>La extensibilidad no se puede medir cuando el sistema est&aacute; desplegado, sino cuando se debe extender por primera vez. Por lo tanto, a la hora de crear la arquitectura se deben tener en cuenta conceptos tan importantes como el bajo acoplamiento, el uso de interfaces, la encapsulaci&oacute;n y el dise&ntilde;o basado en patrones.</p>
+<p>Para conseguir que la aplicaci&oacute;n sea extensible hemos de vigilar muy de cerca el c&oacute;digo de la aplicaci&oacute;n, de modo que sea siempre homog&eacute;neo y de calidad. Para esto, el equipo de desarrollo debe ser un equipo y no un conjunto de individualidades, donde la calidad del c&oacute;digo sea un objetivo com&uacute;n.</p>
+<a name="N102DC"></a><a name="Mantenibilidad"></a>
+<h3 class="underlined_5">Mantenibilidad</h3>
+<p>La mantenibilidad es la habilidad de corregir defectos en la funcionalidad existente sin tener impacto en otros componentes del sistema.</p>
+<p>Esta es otra de las cualidades del sistema que no se pueden medir a la hora del despliegue. Del mismo modo que en la extensibilidad, cuando creamos la arquitectura, para mejorar la mantenibilidad debemos tener en cuenta conceptos como bajo acoplamiento, alta cohesi&oacute;n, modularidad y documentaci&oacute;n.</p>
+<p>La escalabilidad es uno de los enemigos de la mantenibilidad, ya que la complejidad asociada con los componentes distribuidos reduce la mantenibilidad.</p>
+<a name="N102EC"></a><a name="Gestionabilidad"></a>
+<h3 class="underlined_5">Gestionabilidad</h3>
+<p>La gestionabilidad es la habilidad del sistema de asegurar la salud continua del sistema respecto a la escalabilidad, confiabilidad, disponibilidad, rendimiento y seguridad.</p>
+<p>La gestionabilidad se ocupa de la <strong>monitorizaci&oacute;n</strong> del sistema para mejorar los QoS din&aacute;micamente sin modificar el sistema. La arquitectura debe tener la habilidad de monitorizar el sistema y permitir los cambios de configuraci&oacute;n del sistema en caliente.</p>
+<a name="N102FC"></a><a name="Seguridad"></a>
+<h3 class="underlined_5">Seguridad</h3>
+<p>La seguridad es la habilidad de asegurar que el sistema no se vulnera, es decir, que todos hacen lo que deber&iacute;an hacer y nadie hace lo que no deber&iacute;a</p>
+<p>De lejos, la seguridad es la cualidad m&aacute;s dif&iacute;cil de conseguir. La seguridad no solo trata temas como la confidencialidad o la integridad, sino tambi&eacute;n los ataques de denegaci&oacute;n de servicio (DoS).</p>
+<p>Crear una arquitectura cuyos componentes est&aacute;n separados seg&uacute;n funcionalidades es m&aacute;s f&aacute;cil de proteger ya que se pueden construir zonas protegidas alrededor de dichos componentes, ya sea mediante el uso de ACLs o cortafuegos. Adem&aacute;s, si se ataca a un componente, entonces es m&aacute;s f&aacute;cil contener la amenaza de violaci&oacute;n a ese &uacute;nico componente, evitando que se propague el ataque.</p>
+<a name="N1030C"></a><a name="Oportunidad"></a>
+<h3 class="underlined_5">Oportunidad</h3>
+<p>La soluci&oacute;n a entregar debe estar disponible dentro de un margen de tiempo que siga manteniendo el principio de oportunidad. El principio de oportunidad normalmente rige los plazos de entrega del aplicativo, pero no por ello debe condicionar la calidad del proyecto. En cambio, el exceso de ingenier&iacute;a puede penalizar la oportunidad del proyecto, entregando el proyecto tan tarde que ya no tenga ning&uacute;n valor para el negocio del cliente.</p>
+<p>Aunque el arquitecto debe considerar todo los requisitos del cliente, tambi&eacute;n tiene la responsabilidad de avisar al cliente de las posibles implicaciones en el sistema que pueda tener el comprometer la arquitectura para llegar a una fecha de entrega muy cercana.</p>
+</div>
+
+
+<a name="N1031A"></a><a name="Arquitectura+%C3%81gil"></a>
+<h2 class="underlined_10">Arquitectura &Aacute;gil</h2>
+<div class="section">
+<p>Una arquitectura &aacute;gil es aquella que conserva el
+principio de oportunidad, apropiada para los intereses del cliente
+y acelera la entrega del sistema. Dicho de otro modo, es una
+arquitectura que se implementa f&aacute;cil y eficientemente por el
+equipo de desarrollo, y de hecho, completada en un periodo de
+tiempo aceptable para el cliente.</p>
+<p>En los siguientes apartados se detallan algunas opciones para
+conseguir este objetivo.</p>
+<a name="N10326"></a><a name="Virtudes+del+Equipo"></a>
+<h3 class="underlined_5">Virtudes del Equipo</h3>
+<p>Hay que tener en cuenta que los miembros de un equipo de
+desarrollo han adquirido un rango diverso y variado de habilidades
+y conocimientos durante su experiencia en la industria del
+desarrollo del software. El conocer las virtudes del equipo es una
+consideraci&oacute;n muy importante a la hora de dise&ntilde;ar un
+sistema: la arquitectura debe
+sacar partido de esas virtudes.</p>
+<p>Existen detractores que piensan que la arquitectura debe basarse
+en la tecnolog&iacute;a que mejor afronte los requisitos del
+sistema. Es un argumento muy valido, ya que si las
+tecnolog&iacute;as se hubiesen basado siempre en los conocimientos
+del equipo, la mayor&iacute;a de las aplicaciones
+continuar&iacute;an implement&aacute;ndose en COBOL. Sin embargo,
+la experiencia t&eacute;cnica colectiva se debe tener en cuenta
+cuando el tiempo es un factor cr&iacute;tico en el proyecto.</p>
+<p>La misma regla debe aplicarse al buscar perfiles de desarrollo
+con unos ciertos conocimientos para el proyecto. Si los miembros
+del equipo abandonan, o se debe formar un nuevo equipo, el
+completar dichas vacantes puede llegar a ser muy
+problem&aacute;tico si se requieren conocimientos en una
+tecnolog&iacute;a desconocida.</p>
+<p class="pageBreakAfter"></p>
+<a name="N10339"></a><a name="Utilizar+los+Mejores+Frameworks"></a>
+<h3 class="underlined_5">Utilizar los Mejores Frameworks</h3>
+<p>JavaEE esta lleno de frameworks, tanto como la plataforma J2EE es
+de extensa.</p>
+<p>Un framework de software apropiado puede reducir de forma
+significativa la cantidad de c&oacute;digo que necesitas escribir y
+mejorar la calidad del dise&ntilde;o. Existen multitud de frameworks
+de c&oacute;digo abierto para cada
+aspecto de una aplicaci&oacute;n, incluyendo:</p>
+<ul>
+	
+<li>
+<strong>Desarrollo web</strong>: Struts, JSF, Tapestry</li>
+	
+<li>
+<strong>Persistencia</strong>: Hibernate, OJB</li>
+	
+<li>
+<strong>Entornos de construcci&oacute;n</strong>: Ant,
+	CruiseControl, Maven</li>
+	
+<li>
+<strong>Entornos de pruebas</strong>: JUnit, Cactus</li>
+
+</ul>
+<p>La elecci&oacute;n de un framework es una decisi&oacute;n muy importante, ya que condiciona en gran parte la arquitectura y el dise&ntilde;o de la aplicaci&oacute;n. A la hora de seleccionar un framework, se deben tener en cuenta las siguientes pautas:</p>
+<ul>
+	
+<li>
+	
+<strong>Conocimiento del equipo</strong>: elegir productos que han sido
+	probados con &eacute;xito en otros proyectos, as&iacute; como
+	aquellos en los que el equipo de desarrollo ya tenga
+	experiencia.
+	</li>
+	
+<li>
+<strong>Madurez</strong>: &iquest;cuanto tiempo lleva utiliz&aacute;ndose
+	en el desarrollo de software comercial? &iquest;Es un proyecto de
+	c&oacute;digo abierto mantenido por Apache, o el resultado de la
+	tesis de un doctor? Un producto maduro ya est&aacute; limado, y
+	casi sin incidencias.
+	</li>
+	
+<li>
+<strong>Apto para el prop&oacute;sito</strong>: elegir un framework apropiado para las necesidades espec&iacute;ficas del sistema. Cuando no 	se encuentra una elecci&oacute;n acertada, el desarrollo de una soluci&oacute;n propia para un &aacute;rea de negocio determinada puede obtener beneficios a largo plazo.
+	</li>
+	
+<li>
+<strong>Herramientas de soporte</strong>: la combinaci&oacute;n del
+	framework junto a las herramientas de desarrollo pueden ofrecer
+	ganancias de productividad significativas.
+	</li>
+	
+<li>
+<strong>Longevidad</strong>: seleccionar aquellos framework que
+	tendr&aacute;n soporte durante el tiempo de vida prevista para el
+	proyecto. Un framework que desaparece del horizonte una vez el
+	sistema alcanza la producci&oacute;n presenta graves problemas de
+	soporte y mantenimiento.
+	</li>
+
+</ul>
+<p>La elecci&oacute;n del mejor framework para el proyecto reduce
+los tiempos de entrega y deber&iacute;a contribuir a la calidad
+final del aplicativo. Por ello, para comprobar la madurez y
+longevidad de un determinado framework pueden ser &uacute;tiles las
+siguientes m&eacute;tricas:</p>
+<ul>
+	
+<li>Disponibilidad de listas de correo y foros de	discusi&oacute;n</li>
+	
+<li>Nivel de actividad en los foros</li>
+	
+<li>Tiempos de respuesta a los usuario que plantean preguntas y calidad de las mismas</li>
+	
+<li>Frecuencia de nuevas entregas del framework</li>
+	
+<li>Retroalimentaci&oacute;n de la comunidad relativa a la calidad y usabilidad</li>
+	
+<li>N&uacute;mero de incidencias abiertas</li>
+	
+<li>Calidad de la documentaci&oacute;n, libros publicados, etc...</li>
+
+</ul>
+<a name="N10398"></a><a name="Ser+Previsor"></a>
+<h3 class="underlined_5">Ser Previsor</h3>
+<p>El hecho de ser previsor durante el proceso de dise&ntilde;o facilita en gran medida la vida de los desarrollador y probadores. La necesidad de prevenir es especialmente relevante en el &aacute;rea de pruebas.</p>
+<p>Cualquier acci&oacute;n que tome el arquitecto para facilitar las pruebas del sistema no solo reportar&aacute;n calidad al sistema, sino reducir&aacute;n los esfuerzos totales en este aspecto. El modo de hacerlo depende de la aplicaci&oacute;n, pero algunos puntos a tomar en consideraci&oacute;n pueden ser:</p>
+<ul>
+	
+<li>
+<em>incluir esqueletos de pruebas y pruebas unitarias como parte del	dise&ntilde;o</em>: a la hora de codificar y seguir una t&eacute;cnica de desarrollo dirigido por las pruebas, se utiliza mucho tiempo codificando las pruebas. Por lo tanto, si el arquitecto es previsor y dise&ntilde;a/implementa los esqueletos de las pruebas, los desarrolladores s&oacute;lo deben complementarlas con la casu&iacute;stica de &eacute;stas.</li>
+	
+<li>
+<em>evitar el uso de interfaces d&eacute;bilmente definidos</em>: cuando un m&eacute;todo recibe como par&aacute;metro un <span class="codefrag">String</span>, el cual hay que parsear para obtener la	informaci&oacute;n, o un objeto muy grande, del cual m&aacute;s de la mitad de los atributos 	no son necesarios dentro del m&eacute;todo, provoca que el m&eacute;todo sea excesivamente ambiguo, sin saber que datos tiene de entrada y cuales no</li>
+
+</ul>
+<p>Es importante destacar el cuidado que hay que tener a la hora de ser previsor en exceso, ya que un dise&ntilde;o pensado para una reutilizaci&oacute;n es mucho m&aacute;s complejo que un dise&ntilde;o simple. Cuando el tiempo premia, se debe evitar la sobreingenier&iacute;a y limitarse a lo necesario.</p>
+<a name="N103B8"></a><a name="Aplicar+un+Dise%C3%B1o+Ortogonal"></a>
+<h3 class="underlined_5">Aplicar un Dise&ntilde;o Ortogonal</h3>
+<p>Ortogonalidad es sin&oacute;nimo de software bien construido, con bajo acoplamiento y alta cohesi&oacute;n. Los componentes ortogonales son independientes, autocontenidos, y tienen una responsabilidad claramente definida. Los cambios en el interior de un componente no tienen repercusiones en el resto de componentes del sistema
+</p>
+<p>
+Esta independencia entre los componentes es vital para una arquitectura &aacute;gil, ya que los cambios en un componente/capa de la aplicaci&oacute;n no tiene por que propagarse por el sistema. Adem&aacute;s, los componentes ortogonales son f&aacute;ciles de codificar, probar, y mantener gracias a su dise&ntilde;o
+</p>
+<p>Uno de los elementos principales dentro de la OO para alcanzar un dise&ntilde;o ortogonal es el uso de interfaces. Si dise&ntilde;amos nuestros componentes mediante interfaces, podemos utilizarlos como escudos contra los cambios de implementaci&oacute;n de los m&eacute;todos.</p>
+</div> 
+
+
+<a name="N103CB"></a><a name="Roadmap"></a>
+<h2 class="underlined_10">Roadmap</h2>
+<div class="section">
+<a name="N103D1"></a><a name="Puntos+Destacados"></a>
+<h3 class="underlined_5">Puntos Destacados</h3>
+<ul>
+
+<li>La <em>arquitectura</em> es una representaci&oacute;n abstracta del comportamiento y componentes del sistema. Una buena arquitectura tiende a reutilizar componentes porque cada componente se divide en partes que pueden repetirse, y por tanto, reutilizar. La abstracci&oacute;n forma capas que representan diferentes niveles de complejidad.</li>
+ 
+
+<li>La principal diferencia entre los t&eacute;rminos <em>arquitectura y dise&ntilde;o</em> es el nivel de detalle. La arquitectura opera a un nivel de abstracci&oacute;n alto con pocos detalles. El dise&ntilde;o opera a bajo nivel de abstracci&oacute;n, pero con m&aacute;s atenci&oacute;n en los detalles de la implementaci&oacute;n.</li>
+
+
+<li>Las <em>capas</em> de una arquitectura son sistemas por si mismos. Obtienen entradas de su entorno y ofrecen salidas al mismo.</li>
+
+
+<li>Los requisitos no funcionales o capacidades de una arquitectura incluye:  
+<ul>
+    
+<li>
+<em>Rendimiento</em>: habilidad de ofrecer la funcionalidad dentro de unos periodos de tiempo asumibles por los objetivos especificados.</li>
+    
+<li>
+<em>Disponibilidad</em>: grado de accesibilidad de un sistema. El t&eacute;rmino 24&times;7 describe la disponibilidad total. Este aspecto del sistema esta frecuentemente acoplado con el rendimiento.</li> 
+    
+<li>
+<em>Escalabilidad</em>: habilidad de soportar el rendimiento y la disponibilidad requerida conforme crece la carga de transacciones.</li>
+    
+<li>
+<em>Confiabilidad</em>: habilidad de asegurar la integridad y consistencia de la aplicaci&oacute;n y sus transacciones.</li>
+    
+<li>
+<em>Extensibilidad</em>: habilidad de extender la funcionalidad del sistema.</li>
+    
+<li>
+<em>Gestionabilidad</em>: habilidad de administrar y gestionar los recursos del sistema para asegurar la disponibilidad y rendimiento respecto a otra capacidades.</li>
+    
+<li>
+<em>Flexibilidad</em>: habilidad de manejar cambios en las configuraciones hardware y arquitect&oacute;nicas sin un gran impacto en los sistema dependientes.</li>
+    
+<li>
+<em>Capacidad</em>: habilidad del sistema de ejecutar m&uacute;ltiples tareas por unidad de tiempo.</li>
+    
+<li>
+<em>Validez</em>: habilidad de predecir y confirmar los resultados basados en una entrada especificado o un gesto de un usuario.</li>
+    
+<li>
+<em>Reusabilidad</em>: habilidad de utilizar un componente en m&aacute;s de un contexto sin necesidad de cambios internos.</li>
+    
+<li>
+<em>Seguridad</em>: habilidad de asegurar que no se accede ni modifica la informaci&oacute;n a no ser que se cumplan las pol&iacute;ticas de empresa.</li>
+
+</ul>
+
+</li>
+
+</ul>
+<a name="N1042A"></a><a name="Certificaci%C3%B3n+Sun"></a>
+<h3 class="underlined_5">Certificaci&oacute;n Sun</h3>
+<p>Respecto a los contenidos estudiados, SCEA cita 2 objetivos encontrados en la secci&oacute;n 2 (Arquitecturas Comunes):</p>
+<ul>
+    
+<li>Reconocer el efecto de cada una de las caracter&iacute;sticas de una arquitectura de 2, 3 o N niveles: escalabilidad, mantenibilidad, confiabilidad, disponibilidad, extensibilidad, rendimiento, manejabilidad y seguridad</li>
+    
+<li>Dada una arquitectura definida en t&eacute;rminos de organizaci&oacute;n de red, listar los beneficios y posibles debilidades asociadas.</li>
+
+</ul>
+<p>Para finalizar con los conceptos relacionados con la arquitectura J2EE, nos falta por explicar la arquitectura Java EE y los requerimientos de cada tecnolog&iacute;a, as&iacute; como el uso de los patrones de dise&ntilde;o dentro del marco empresarial, ubicando cada patr&oacute;n en su correspondiente capa/nivel. Tanto la arquitectura Java EE como los patrones de dise&ntilde;o los estudiaremos a lo largo del curso.
+</p>
+<a name="N10440"></a><a name="Para+Saber+M%C3%A1s"></a>
+<h3 class="underlined_5">Para Saber M&aacute;s</h3>
+<a name="N10446"></a><a name="Bibliograf%C3%ADa"></a>
+<h4>Bibliograf&iacute;a</h4>
+<p>El libro por excelencia que trata estos temas es:</p>
+<ul>
+<li>
+<em>Software Architecture in Practice</em>, 2nd Edition, Addison-Wesley, de <em>Len Bass y otros</em>
+</li>
+</ul>
+<p>En castellano, no existe ning&uacute;n libro especifico que trate estos temas, a parte de las biblias de Ingenier&iacute;a del Software:</p>
+<ul>
+    
+<li>
+<em>Ingenier&iacute;a del Software</em>, 7&ordf; Edici&oacute;n, Addison-Wesley, de <em>Ian Sommerville</em>
+</li>
+    
+<li>
+<em>Ingenier&iacute;a del Software</em>, 6&ordf; Edici&oacute;n, McGraw-Hill, de <em>Roger S. Pressman</em>
+</li>
+
+</ul>
+<p>Para reducir los contenidos y enfocar los conceptos, para escribir estos apuntes nos hemos centrado en los 2 libros existentes para la preparaci&oacute;n del examen SCEA:</p>
+<ul>
+    
+<li>
+<em>Sun Certified Enterprise Architect for J2EE Study Guide (Exam 310-051)</em>, McGraw-Hill, de <em>Paul Allen y Joseph Bambara</em>
+</li>
+    
+<li>
+<em>Sun Certified Enterprise Architect for J2EE Technology Study Guide</em>, Prentice-Hall, de <em>Mark Cade y Simon Roberts</em>
+</li>
+
+</ul>
+<a name="N10480"></a><a name="Enlaces"></a>
+<h4>Enlaces</h4>
+<ul>
+
+<li>Certificaci&oacute;n Arquitecto Sun : <a class="external" href="http://www.sun.com/training/certification/java/scea.xml">http://www.sun.com/training/certification/java/scea.xml</a>
+</li> 
+
+<li>Articulos sobre Arquitectura del Software en Espa&ntilde;ol realizados por MSDN <a class="external" href="http://www.microsoft.com/spanish/msdn/arquitectura/roadmap_arq/arquitectura_soft.as">http://www.microsoft.com/spanish/msdn/arquitectura/roadmap_arq/arquitectura_soft.as</a>p</li>
+
+</ul>
+</div>
+
+
+<p class="pageBreakAfter"></p>
+
+</div>
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+        Copyright &copy;
+         2006-2007 Depto. CCIA</div>
+</div>
+</body>
+</html>

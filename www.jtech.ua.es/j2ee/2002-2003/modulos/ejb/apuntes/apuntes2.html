@@ -1,0 +1,818 @@
+<head>
+<title>Sesion 2 Enterprise Java Beans</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../../ejercicios.css" type="text/css">
+</head>
+<body>
+
+<h1>Tema 2. Introducci&oacute;n a los Enteprise Beans</h1>
+<p>Un enterprise bean es un componente (objeto) distribuido gestionado por un 
+  servidor, escrito en el lenguaje Java y que implementa la l&oacute;gica de negocio 
+  de una aplicaci&oacute;n. Por ejemplo, en una aplicaci&oacute;n de control de 
+  inventario, un enterprise bean podr&iacute;a implementar la l&oacute;gica de 
+  negocio mediante m&eacute;todos llamados <code>checkInventoryLevel</code> y 
+  <code>orderProduct</code>. Mediante la invocaci&oacute;n de estos productos, 
+  los clientes remotos podr&iacute;an acceder a los servicios de inventario proporcionados 
+  por la aplicaci&oacute;n.</p>
+<p>Los enterprise beans simplifican el desarrollo de aplicaciones distribuidas 
+  de gran tama&ntilde;o por varias razones:</p>
+<UL>
+  <li>Debido a que el contenedor EJB proporciona servicios de nivel de sistema 
+    a los enterprise beans, el desarrollador de los beans puede concentrarse en 
+    la resoluci&oacute;n de los problemas de negocio. El contenedor EJB se responsabiliza 
+    de servicios de nivel de sistema como gesti&oacute;n de transacciones o seguridad. 
+  <li class="sep">Debido a que los beans, y no el cliente, contienen la l&oacute;gica 
+    de negocio de la aplicaci&oacute;n, el desarrollador de la aplicaci&oacute;n 
+    cliente puede concentrarse en la presentaci&oacute;n del cliente y no se debe 
+    preocupar de acceder a bases de datos ni de reglas de negocio. Como resultado, 
+    los clientes son m&aacute;s ligeros, un beneficio que es particularmente importante 
+    en clientes que corren en dispositivos peque&ntilde;os (palm computers o tel&eacute;fonos 
+    Java). 
+  <li class="sep">Debido a que los enterprise beans son componentes portables, 
+    el ensamblador de aplicaciones puede construir nuevas aplicaciones a partir 
+    de los beans existentes. Estas aplicaciones pueden ejecutarse en cualquier 
+    servidor J2EE compatible. 
+</UL>
+<p>Es recomendable usar enterprise beans cuando la aplicaci&oacute;n que deseamos 
+  desarrollar cumple alguno de los siguientes requisitos:</p>
+<UL>
+  <li>La aplicaci&oacute;n debe escalable. Si se hace necesario mejorar la eficiencia 
+    de la aplicaci&oacute;n para cubrir las necesidades de un n&uacute;mero creciente 
+    de clientes, es muy &uacute;til poder distribuir la aplicaci&oacute;n entre 
+    m&uacute;ltiples m&aacute;quinas. La arquitectura EJB est&aacute; especialmente 
+    indicada para esto, ya que los enterprise beans pueden moverse de una m&aacute;quina 
+    a otra y replicarse, todo ello de forma totalmente transparente a los clientes 
+    finales.
+  <li class="sep">Se requieren transacciones para asegurar la integridad de los datos. Los 
+    enterprise beans soportan transacciones para gestionar el acceso concurrente 
+    a objetos compartidos.
+  <li class="sep">La aplicaci&oacute;n tendr&aacute; una variedad de clientes. Con s&oacute;lo 
+    unas pocas l&iacute;neas de c&oacute;digo, los clientes remotos pueden localizar 
+    f&aacute;cilmente enterprise beans en el contenedor. Estos clientes pueden 
+    ser ligeros, variados y numerosos.
+</UL>
+<p>Existen tres tipos de enterprise beans:</p>
+<UL>
+  <li><b>Beans de sesi&oacute;n</b>: ejecutan una tarea para un cliente.<BR>
+  <li><b>Beans de entidad</b>: representan un objeto entidad de negocio que existe 
+    en un almacenamiento persistente.<BR>
+  <li><b>Beans dirigidos por mensajes</b>: act&uacute;an c&oacute;mo escuchadores 
+    (listeners) del API Java Message Service, procesando mensajes as&iacute;ncronamente.<BR>
+</UL>
+<h2>2.1 Tipos de enterprise beans</h2>
+ 
+  
+<h3>2.1.1 Beans de sesi&oacute;n</h3>
+  
+  
+<p>Los beans de sesi&oacute;n representan sesiones interactivas con uno o m&aacute;s 
+  clientes. Los bean de sesi&oacute;n pueden mantener un estado, pero s&oacute;lo 
+  durante el tiempo que el cliente interactua con el bean. Esto significa que 
+  los beans de sesi&oacute;n no almacenan sus datos en una base de datos despu&eacute;s 
+  de que el cliente termine el proceso. Por ello se suele decir que los beans 
+  de sesi&oacute;n no son persistentes.</p>
+<p>A diferencia de los bean de entidad, los beans de sesi&oacute;n no se comparten 
+  entre m&aacute;s de un cliente, sino que existe una correspondencia uno-uno 
+  entre beans de sesi&oacute;n y clientes. Por esto, el contenedor EJB no necesita 
+  implementar mecanismos de manejo de concurrencia en el acceso a estos beans.</p>
+<p>Existen dos tipos de beans de sesi&oacute;n: con estado y sin &eacute;l. </p>
+<p>
+<h4>Beans de sesi&oacute;n sin estado</h4>
+  
+<p>Los beans de sesi&oacute;n sin estado no se modifican con las llamadas de los 
+  clientes. Los m&eacute;todos que ponen a disposici&oacute;n de las aplicaciones 
+  clientes son llamadas procedurales que reciben datos y devuelven resultados, 
+  pero que no modifican internamente el estado del bean. Esta propiedad permite 
+  que el contenedor EJB pueda crear un almac&eacute;n (<i>pool</i>) de instancias, 
+  todas ellas del mismo bean de sesi&oacute;n sin estado y asignar cualquier instancia 
+  a cualquier cliente. Incluso un &uacute;nico bean puede estar asignado a m&uacute;ltiples 
+  clientes, ya que la asignaci&oacute;n s&oacute;lo dura el tiempo de invocaci&oacute;n 
+  del m&eacute;todo solicitado por el cliente.</p>
+<p>Cuando un cliente invoca un m&eacute;todo de un bean de sesi&oacute;n sin estado, 
+  el contenedor EJB obtiene una instancia del almac&eacute;n. Cualquier instancia 
+  servir&aacute;, ya que el bean no puede guardar ninguna informaci&oacute;n referida 
+  al cliente. Tan pronto como el m&eacute;todo termina su ejecuci&oacute;n, la 
+  instancia del bean est&aacute; disponible para otros clientes. Esta propiedad 
+  hace que los beans de sesi&oacute;n sin estado sean muy escalables para un gran 
+  n&uacute;mero de clientes. El contenedor EJB no tiene que mover sesiones de 
+  la memoria a un almacenamiento secundario para liberar recursos, simplemente 
+  puede obtener recursos y memoria destruyendo las instancias.</p>
+<p>Es apropiado usar beans de sesi&oacute;n sin estado cuando una tarea no est&aacute; 
+  ligada a un cliente espec&iacute;fico:<BR>
+</p>
+<UL>
+  <li>Para enviar una confirmaci&oacute;n por correo electr&oacute;nico o calcular 
+    unas cuotas de un pr&eacute;stamo.<BR>
+  <li class="sep">Como un puente de acceso a una base de datos o a un bean de 
+    entidad. En una arquitectura cliente-servidor, el bean de sesi&oacute;n podr&iacute;a 
+    proporcionar al interfaz de usuario del cliente los datos necesarios, as&iacute; 
+    como modificar objetos de negocio (base de datos o bean de entidad) a petici&oacute;n 
+    de la interfaz.
+</UL>
+<p>Algunos ejemplos de bean de sesi&oacute;n sin estado podr&iacute;an ser:<BR>
+</p>
+<UL>
+  <li>Un enterprise bean que comprueba si un s&iacute;mbolo de compa&ntilde;&iacute;a 
+    est&aacute; disponible en el mercado de valores y devuelve la &uacute;ltima 
+    cotizaci&oacute;n registrada.
+  <li class="sep">Un enterprise bean que calcula la cuota del seguro de un cliente, bas&aacute;ndose 
+    en los datos que se le pasa del cliente.
+</UL>
+<h4>Beans de sesi&oacute;n con estado</h4>
+<p>En un bean de sesi&oacute;n con estado, las <i>variables de instancia</i> del 
+  bean almacenan datos espec&iacute;ficos obtenidos durante la conexi&oacute;n 
+  con el cliente. Cada bean de sesi&oacute;n con estado, por tanto, almacena el 
+  estado conversacional de un cliente que interactua con el bean. Este estado 
+  conversacional se modifica conforme el cliente va realizando llamadas a los 
+  m&eacute;todos de negocio del bean. El estado conversacional no se guarda cuando 
+  el cliente termina la sesi&oacute;n. </p>
+<p>Algunos ejemplos de beans de sesi&oacute;n con estado podr&iacute;an ser:<BR>
+</p>
+<UL>
+<li>Un ejemplo t&iacute;pico es un carrito de la compra, en donde el cliente va guardando uno a uno los items que va comprando.<BR>
+<li class="sep">Un enterprise bean que reserva un vuelo y alquila un coche en un sitio Web de una agencia de viajes.<BR>
+</UL>
+<p>Debido a que el bean guarda el estado conversacional con un cliente determinado, 
+  no le es posible al contenedor crear un almacen de instancias y compartirlo 
+  entre muchos clientes. Por ello, el manejo de beans de sesi&oacute;n con estado 
+  es m&aacute;s pesado que el de beans de sesi&oacute;n sin estado.</p>
+<h4>Uso de beans de sesi&oacute;n</h4>
+En general, se deber&iacute;a usar un bean de sesi&oacute;n con estado si se cumplen 
+las siguientes circunstancias:
+<UL>
+  <li>El estado del bean representa la interacci&oacute;n entre el bean y un cliente 
+    espec&iacute;fico.
+  <li>El bean necesita mantener informaci&oacute;n del cliente a lo largo de un 
+    conjunto de invocaciones de m&eacute;todos.
+  <li>El bean hace de intermediario entre el cliente y otros componentes de la 
+    aplicaci&oacute;n, presentando una vista simplificada al cliente.<BR>
+</UL>
+<p>Para mejorar la eficiencia de la aplicaci&oacute;n, se deber&iacute;a usar 
+  beans de sesi&oacute;n sin estado si se cumple alguna de las siguientes condiciones:</p>
+<UL>
+  <li>El estado del bean no tiene ning&uacute;n dato para un cliente espec&iacute;fico.
+  <li class="sep">En una &uacute;nica invocaci&oacute;n de un m&eacute;todo, el bean realiza 
+    una tarea gen&eacute;rica que puede ser solicitada por cualquier cliente. 
+    Por ejemplo, se podr&iacute;a usar un bean sin estado para enviar un e-mail 
+    que confirme un pedido on-line.
+  <li class="sep">El bean obtiene de una base de datos un conjuntos de datos de s&oacute;lo 
+    lectura que se usan a menudo por los clientes. Un bean de este tipo, por ejemplo, 
+    podr&iacute;a obtener las filas de tabla que representan los productos que 
+    est&aacute;n a la venta esta semana.
+</UL>
+<h3>2.1.2 Beans de entidad</h3>
+<p>Los beans de entidad modelan conceptos de negocio que puede expresarse como 
+  nombres. Esto es una regla sencilla m&aacute;s que un requisito formal, pero 
+  ayuda a determinar cu&aacute;ndo un concepto de negocio puede ser implementado 
+  como un bean de entidad. Los beans de entidad representan &#147;cosas&#148;: 
+  objetos del mundo real como hoteles, habitaciones, expedientes, estudiantes, 
+  y dem&aacute;s. Un bean de entidad puede representar incluso cosas abstractas 
+  como una reserva. Los beans de entidad describen tanto el estado como la conducta 
+  de objetos del mundo real y permiten a los desarrolladores encapsular las reglas 
+  de datos y de negocio asociadas con un concepto espec&iacute;fico. Por ejemplo 
+  un EJB Estudiante encapsula los datos y reglas de negocio asociadas a un estudiante. 
+  Esto hace posible manejar de forma consistente y segura los datos asociados 
+  a un concepto.</p>
+<p>Los beans de entidad se corresponden con datos en un almacenamiento persistente 
+  (base de datos, sistema de ficheros, etc.). Las variables de instancia del bean 
+  representan los datos en las columnas de la base de datos. El contenedor debe 
+  sincronizar las variables de instancia del bean con la base de datos. Los beans 
+  de entidad se diferencian de los beans de sesi&oacute;n en que las variables 
+  de instancia se almacenan de forma persistente. </p>
+<p>Son muchas las ventajas de usar beans de entidad en lugar de acceder a la base 
+  de datos directamente. El uso de beans de entidad para transformar en objetos 
+  los datos proporciona a los programadores un mecanismo m&aacute;s simple para 
+  acceder y modificar los datos. Es mucho m&aacute;s f&aacute;cil, por ejemplo, 
+  cambiar el nombre de un estudiante llamando a <code>student.setName()</code> 
+  que ejecutando un comando SQL contra la base de datos. Adem&aacute;s, el uso 
+  de objetos favorece la reutilizaci&oacute;n del software. Una vez que un bean 
+  de entidad se ha definido, su definici&oacute;n puede usares a lo largo de todo 
+  el sistema de forma consistente. Un EJB Estudiante proporciona un forma completa 
+  de acceder a la informaci&oacute;n del estudiante y eso asegura que el acceso 
+  a la informaci&oacute;n es consistente y simple.</p>
+<p>La representaci&oacute;n de los datos como beans de entidad puede hacer que 
+  el desarrollo sea m&aacute;s sencillo y menos costoso.</p>
+
+<h4>Diferencias con los beans de sesi&oacute;n</h4>
+  
+<p>Los beans de entidad se diferencian de los beans de sesi&oacute;n, principalmente, 
+  en que son persistentes, permiten el acceso compartido, tienen clave primaria 
+  y pueden participar en relaciones con otros beans de entidad:</p>
+<p><BR>
+  <B>Persistencia</B></p>
+<BLOCKQUOTE>
+  <p>Debido a que un bean de entidad se guarda en un mecanismo de almacenamiento 
+    se dice que es persistente. Persistente significa que el estado del bean de 
+    entidad existe m&aacute;s tiempo que la duraci&oacute;n de la aplicaci&oacute;n 
+    o del proceso del servidor J2EE. Un ejemplo de datos persistentes son los 
+    datos que se almacenan en una base de datos. </p>
+  <p>Los beans de entidad tienen dos tipos de persistencia: <b>Persistencia Gestionada 
+    por el Bean</b> (BMP, <i>Bean-Managed Persistence</i>) y <b>Persistencia Gestionada 
+    por el Contenedor</b> (CMP, <i>Container-Managed Persistence</i>). En el primer 
+    caso (BMP) el bean de entidad contiene el c&oacute;digo que accede a la base 
+    de datos. En el segundo caso (CMP) la relaci&oacute;n entre las columnas de 
+    la base de datos y el bean se describe en el fichero de propiedades del bean, 
+    y el contenedor EJB se ocupa de la implementaci&oacute;n.</p>
+</BLOCKQUOTE>
+<B>Acceso compartido</B><BR>
+<BLOCKQUOTE>
+  <p>Los clientes pueden compartir beans de entidad, con lo que el contenedor 
+    EJB debe gestionar el acceso concurrente a los mismos y por ello debe usar 
+    transacciones. La forma de hacerlo depender&aacute; de la pol&iacute;tica 
+    que se especifique en los descriptores del bean.</p>
+  </BLOCKQUOTE>
+<B>Clave primaria</B><BR>
+<BLOCKQUOTE>
+  <p>Cada bean de entidad tiene un identificador &uacute;nico. Un bean de entidadad 
+    alumno, por ejemplo, puede identificarse por su n&uacute;mero de expediente. 
+    Este identificador &uacute;nico, o <I>clave primaria</I>, permite al cliente 
+    localizar a un bean de entidad particular. </p>
+</BLOCKQUOTE>
+<B>Relaciones</B><BR>
+<BLOCKQUOTE>
+  <p>De la misma forma que una tabla en una base de datos relacional, un bean 
+    de entidad puede estar relacionado con otros EJB. Por ejemplo, en una aplicaci&oacute;n 
+    de gesti&oacute;n administrativa de una universidad, el bean <code>alumnoEJB</code> 
+    y el bean <code>actaEBJ</code> estar&iacute;an relacionados porque un alumno 
+    aparece en un acta con una calificaci&oacute;n determinada. </p>
+  <p>Las relaciones se implementan de forma distinta seg&uacute;n se est&eacute; 
+    usando la persistencia manejada por el bean o por el contenedor. En el primer 
+    caso, al igual que la persistencia, el desarrollador debe programar y gestionar 
+    las relaciones. En el segundo caso es el contenedor el que se hace cargo de 
+    la gesti&oacute;n de las relaciones. Por ello, estas &uacute;ltimas se denominan 
+    a veces relaciones gestionadas por el contenedor.</p>
+</BLOCKQUOTE>
+<h4> Persistencia manejada por el contenedor</h4>
+
+<p>El t&eacute;rmino persistencia manejadad por el contenedor significa que el 
+  contenedor EJB maneja todos los accesos a bases de datos requeridos por el bean. 
+  El c&oacute;digo del bean no contiene ninguna llamada SQL. Como resultado, el 
+  c&oacute;digo del bean no est&aacute; atado a un tipo espec&iacute;fico de almacenamiento 
+  persistente. A causa de esta flexibilidad, incluso si se vuelve a desplegar 
+  el bean en un servidor distinto de J2EE que use una base de datos distinta, 
+  no har&aacute; falta recompilar el c&oacute;digo del bean. En breve, los beans 
+  son m&aacute;s portables.</p>
+<p>Para poder generar las llamadas de acceso a los datos, el contenedor necesita 
+  informaci&oacute;n que se proporciona en el esquema abstracto del bean de entidad</p>
+<h4>Esquema abstracto</h4>
+  
+<p>El esquema abstracto es una parte del descriptor de despliegue de un bean de 
+  entidad. El t&eacute;rmino abstracto distingue este esquema del esquema f&iacute;sico 
+  del sistema de almacenamiento de datos subyacente. En una base de datos relacional, 
+  por ejemplo, el esquema f&iacute;sico est&aacute; formado por estructuras como 
+  tablas y columnas.</p>
+<p>En el esquema abstracto se define un nombre del enterprise bean. Este nombre 
+  puede ser usado luego como referencia en preguntas escritas en el lenguaje EJB 
+  QL (<i>Enterprise JavaBeans Query Language</i>). Es necesario definir una consulta 
+  EJB QL para cada m&eacute;todo de b&uacute;squeda del bean (excepto<code> findByPrimaryKey</code>). 
+  Esta consulta EJB QL es ejecutada por el contenedor EJB cada vez que se invoca 
+  el m&eacute;todo de b&uacute;squeda.</p>
+<p>La siguiente figura muestra un esquema abstracto sencillo que describe las 
+  relaciones entre cuatro beans de entidad.</p>
+
+<div align="center">
+<IMG SRC="imagenes/sesion21.png">
+</div>
+
+<h4>Campos persistentes</h4>
+<p>Los campos persistentes de un bean de entidad se almacenan en el almac&eacute;n 
+  de datos subyacente. El conjunto de campos persistentes representa el estado 
+  del bean. En tiempo de ejecuci&oacute;n, el contenedor EJB sincroniza autom&aacute;ticamente 
+  este estado con la base de datos. Durante el despliegue, el contenedor suele 
+  hacer corresponder el bean de entidad con una tabla de la base de datos y hacer 
+  corresponder los campos persistentes con las columnas de la tabla.</p>
+<p>Por ejemplo, el bean<code> ClienteEJB</code> podr&iacute;a tener campos persistentes 
+  como nombre, apellidos, direcci&oacute;nCorreo y telefono. En persistencia gestionada 
+  por el contenedor estos campos son virtuales. Se declaran en el esquema abstracto, 
+  pero no se codifican como variables de instancia en el bean. En su lugar, los 
+  campos persistentes se identifican en el c&oacute;digo con m&eacute;todos de 
+  acceso (de tipo <i>get</i> y <i>set</i>).</p>
+<h4>Campos de relaci&oacute;n</h4>
+  
+<p>Un campo de relaci&oacute;n es como una clave externa en una base de datos: 
+  identifica a un bean relacionado. Al igual que un campo persistente, un campo 
+  de relaci&oacute;n es virtual y se define en el enterprise bean con un m&eacute;todo 
+  de acceso. Pero a diferencia de los campos persistentes, un campo de relaci&oacute;n 
+  no representa el estado del bean.</p>
+<h3>2.1.3 Beans dirigidos por mensajes</h3>
+  
+<p>Son el tercer tipo de beans propuestos por la &uacute;ltima especificaci&oacute;n 
+  de EJB. Estos beans permiten que las aplicaciones J2EE reciban mensajes JMS 
+  de forma as&iacute;ncrona. As&iacute;, el hilo de ejecuci&oacute;n de un cliente 
+  no se bloquea cuando est&aacute; esperando que se complete alg&uacute;n m&eacute;todo 
+  de negocio de otro enterprise bean. Los mensajes pueden enviarse desde cualquier 
+  componente J2EE (una aplicaci&oacute;n cliente, otro enterprise bean, o un componente 
+  Web) o por una aplicaci&oacute;n o sistema JMS que no use la tecnolog&iacute;a 
+  J2EE.</p>
+<h4>Diferencias con los beans de sesi&oacute;n y de entidad</h4>
+  
+<p>La diferencia m&aacute;s visible es que los clientes no acceden a los beans 
+  dirigidos por mensajes mediante interfaces (explicaremos esto con m&aacute;s 
+  detalle m&aacute;s adelante), sino que un bean dirigido por mensajes s&oacute;lo 
+  tienen una clase bean.</p>
+<p>En muchos aspectos, un bean dirigido por mensajes es parecido a un bean de 
+  sesi&oacute;n sin estado.</p>
+<UL>
+<li>Las instancias de un bean dirigido por mensajes no almacenan ning&uacute;n estado conversacional ni datos de clientes.<BR>
+<li class="sep">Todas las instancias de los beans dirigidos por mensajes son equivalentes, lo que permite al contenedor EJB asignar un mensaje a cualquier instancia. El contenedor puede almacenar estas instancias para permitir que los streams de mensajes sean procesados de forma concurrente.<BR>
+<li class="sep">Un &uacute;nico bean dirigido por mensajes puede procesar mensajes de m&uacute;ltiples clientes.<BR>
+</UL>
+<p>Las variables de instancia de estos beans pueden contener alg&uacute;n estado 
+  referido al manejo de los mensajes de los clientes. Por ejemplo, pueden contener 
+  una conexi&oacute;n JMS, una conexi&oacute;n de base de datos o una referencia 
+  a un objeto enterprise bean.</p>
+<p>Cuando llega un mensaje, el contenedor llama al m&eacute;todo onMessage del 
+  bean. El m&eacute;todo onMessage suele realizar un casting del mensaje a uno 
+  de los cinco tipos de mensajes de JMS y manejarlo de forma acorde con la l&oacute;gica 
+  de negocio de la aplicaci&oacute;n. El m&eacute;todo onMessage puede llamar 
+  a m&eacute;todos auxiliares, o puede invocar a un bean de sesi&oacute;n o de 
+  entidad para procesar la informaci&oacute;n del mensaje o para almacenarlo en 
+  una base de datos. </p>
+<p>Un mensaje puede enviarse a un bean dirigido por mensajes dentro de un contexto 
+  de transacci&oacute;n, por lo que todas las operaciones dentro del m&eacute;todo 
+  onMessage son parten de un &uacute;nica transacci&oacute;n. </p>
+<h2>2.2 Implementaci&oacute;n de un enterprise bean</h2>
+  
+<p>Para implementar un enterprise bean, el desarrollador debe proporcionar cuatro 
+  elementos: una interfaz remota del bean, una interfaz home, una clase enterprise 
+  bean y un fichero de descripci&oacute;n del despliegue. La interfaz home declara 
+  m&eacute;todos de f&aacute;bricaci&oacute;n (factory methods) que usan los clientes 
+  Java para crear nuevos enterprise beans, localizar enterprise beans existentes 
+  y destruir los beans. La interfaz remota declara los m&eacute;todos de negocio 
+  del enterprise bean, que usan los clientes Java en tiempo de ejecuci&oacute;n. 
+  La clase enterprise bean encapsula la l&oacute;gica del bean e implementa los 
+  m&eacute;todos de negocio definidios en la interfaz remota. El descriptor de 
+  despliegue es un fichero de configuraci&oacute;n XML que describe al servidor 
+  EJB el enterprise bean y sus atributos de tiempo de ejecuci&oacute;n. Es responsabilidad 
+  del desarrollador del bean crear estos cuatro elementos y empaquetarlos en un 
+  fichero JAR listo para el despliegue.</p>
+
+<div align="center">
+<IMG SRC="imagenes/sesion22.png">
+</div>
+
+<p>Cuando se despliega un enterprise bean, el desplegador usa las herramientas 
+  proporcionadas por el servidor EJB para abrir el fichero JAR y leer el ficher 
+  XML descriptor del despliegue. La informaci&oacute;n de este fichero se usa 
+  para configurar la conducta en tiempo de ejecuci&oacute;n del enterprise bean 
+  y distintos elementos relacionados con el servidor. El enterprise bean se despliega 
+  en un contenedor, que es el nombre que recibe la parte del servidor de aplicaciones 
+  que almacena instancias de enterprise beans. El contenedor se responsabiliza 
+  de gestionar las transacciones, seguridad, concurrencia, persistencia y recursos 
+  que usa el enterprise bean en tiempo de ejecuci&oacute;n. Adem&aacute;s, el 
+  contenedor genera los proxies EJBHome y EJBObject que implementan las interfaces 
+  home y remota del bean (los stub, usando la terminolog&iacute;a de RMI). Estos 
+  proxies proporcionan a los clientes Java distribuidos que se encuentran en la 
+  capa de presentaci&oacute;n un acceso a los enterprise beans de la capa intermedia. 
+</p>
+
+<div align="center">
+<IMG SRC="imagenes/sesion23.png">
+</div>
+
+<p>Los clientes Java usan JNDI para obtener una referencia remota al EJBHome de 
+  un enterprise bean. Despu&eacute;s usa el EJBHome para crear o encontrar enterprise 
+  beans espec&iacute;ficos en el contenedor EJB. Cuando lo consigue, recibe una 
+  referencia remota a un EJBObject. El EJBObject implementa la interfaz remota 
+  del enterprise bean.</p>
+<p>Los clientes Java acceden al enterprise bean a trav&eacute;s de sus proxies 
+  remotos EJBHome y EJBObject, en lugar de directamente. El contenedor EJB intercepta 
+  las invocaciones de los m&eacute;todos realizadas sobre los proxies remotos, 
+  de forma que pueda manejar el entorno de ejecuci&oacute;n del bean asociado 
+  con la invocaci&oacute;n. Las invocaciones de m&eacute;todos sobre el EJBHome 
+  hacen que el contenedor localice o cree una instancia del bean y proporcione 
+  una referencia remota EJBObject del mismo al cliente. Las invocaciones de m&eacute;todos 
+  sobre el EJBObject se delegan a una instancia del enterprise bean, que contiene 
+  la l&oacute;gica de negocio necesaria para dar servicio a la petici&oacute;n. 
+  El contenedor EJB puede usar muchas instancias de la clase enterprise bean para 
+  dar soporte a los clientes, lo cual permite que sobrellevar incrementos puntuales 
+  de carga de clientes aumentando el n&uacute;mero de instancias gestionandas 
+  e incluso construyendo clusters de contenedores y distribuyendo las instancias.</p>
+<p>A continuaci&oacute;n explicamos un poco m&aacute;s cada uno de los componentes 
+  del bean, dando tambi&eacute;n indicaciones de nomenclatura de los nombres de 
+  ficheros. Usaremos como ejemplo el bean HelloWorldEJB. </p>
+<h3> Interfaz remota o local </h3>
+
+<p>La <b>interfaz remota</b> (<code>HelloWorld.java</code>) o <B>local</B> (<code>HelloWorldLocal.java</code>) 
+  del bean son las interfaces que definen los m&eacute;todos de acceso que un 
+  enterprise bean ofrece a sus clientes. Estas interfaces pueden definir un acceso 
+  remoto al bean, usando la interfaz Remote de RMI, o pueden definir un acceso 
+  local al bean para aquellos casos en que el bean va a ser usado por clientes 
+  en la misma m&aacute;quina virtual Java. Esta interfaz ser&aacute; implementada 
+  por los m&eacute;todos de negocio que se definen en el fichero de definici&oacute;n 
+  de la clase del bean y por el contenedor EJB, que a&ntilde;ade los aspectos 
+  del nivel de sistema. 
+<pre class="codigo">
+<b>HelloWorld.java</B>
+
+  package HelloWorldSLBean;
+
+  import java.rmi.*;
+  import javax.ejb.*;
+
+  public interface HelloWorld extends EJBObject {
+     public String sayHello() throws RemoteException;
+}
+
+<b> HelloWorldLocal.java</b>
+
+   package HelloWorldSLBean;
+
+   import java.rmi.*;
+   import javax.ejb.*;
+
+   public interface HelloWorldLocal extends EJBLocalObject {
+      public String hi() throws EJBException;
+}
+</pre>
+
+<h3> Interfaz Home </h3> 
+<p>La <B>interfaz home</b> (<code>HelloWorldHome.java</code>) o la <b>interfaz 
+  home local</b> (<code>HelloWorldHomeLocal.java</code>) son las interfaces que 
+  definen los m&eacute;todos de gesti&oacute;n del ciclo de vida de las instancias 
+  del bean. Si recordamos el m&oacute;dulo de RMI, esta interfaz es lo que en 
+  RMI se denomina una <i>clase factor&iacute;a</i>. Algunos ejemplos de m&eacute;todos 
+  de esta interfaz son los m&eacute;todos <code>create</code>, <code>remove</code> 
+  o <code>findByPrimaryKey</code> que crean, eliminan o buscan una instancia de 
+  bean. Esta interfaz es implementada por el contenedor EJB. La interfaz home 
+  tambi&eacute;n puede ser remota o local, dependiendo si el acceso al bean va 
+  a ser desde otra m&aacute;quina virtual Java o desde la misma.</p>
+<p>
+<pre class="codigo">
+<B>HelloWorldHome.java</B>
+
+  package HelloWorldSLBean;
+
+  import java.rmi.*;
+  import javax.ejb.*;
+ 
+  public interface HelloWorldHome extends EJBHome {
+     public HelloWorldRemote create() throws RemoteException, CreateException;
+  }
+
+<b>HelloWorldHomeLocal.java</b>
+
+  package HelloWorldSLBean;
+
+  import java.rmi.*;
+  import javax.ejb.*;
+
+  public interface HelloWorldHomeLocal extends EJBLocalHome {
+    public HelloWorld create() throws CreateException, EJBException;
+  }
+</pre>
+  
+<h3>Clase enterprise bean </h3>
+<p> La clase <b>enterprise bean</b> (<code>HelloWorld.java</code>) implementa 
+  los m&eacute;todos de negocio del bean. El fichero es el mismo, independientemente 
+  de que la implementaci&oacute;n del bean sea local o remota.</p>
+
+<pre class="codigo">
+<B>HelloWorldBean.java</B>
+
+  package HelloWorldSLBean;
+
+  import javax.ejb.*;
+ 
+  public class HelloWorldBean implements SessionBean {
+     public String sayHello() {
+        String ret = new String(&quot;Hola; soy Domingo&quot;);
+        return ret;
+     }
+   
+     public void ejbCreate(){}
+     public void ejbActivate(){}
+     public void ejbPassivate(){}
+     public void ejbRemove(){}
+     public void setSessionContext(SessionContext cntx) {}
+  }
+</pre>
+
+<h3> Fichero XML descriptor del despliegue </h3>
+  
+<p>El <b>fichero de descripci&oacute;n del despliegue</b> (<code>ejb-jar.xml</code>) 
+  es el fichero XML que especifica informaci&oacute;n declarativa sobre el enterprise 
+  bean que ser&aacute; usada por el contenedor EJB para manejar los aspectos de 
+  nivel de sistema (seguridad, transacciones, persistencia, etc.).</p>
+<p>
+<pre class="codigo">
+<B>ejb-jar.xml</B>
+
+  &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+  &lt;!DOCTYPE ejb-jar PUBLIC
+  '-//Sun Microsystems, Inc.//DTD Enterprise JavaBeans 1.1//EN'
+  'http://java.sun.com/j2ee/dtds/ejb-jar_1_1.dtd'&gt;
+ 
+  &lt;ejb-jar&gt;
+  &lt;display-name&gt;Hello World&lt;/display-name&gt;
+  &lt;enterprise-beans&gt;
+  &lt;session&gt;
+  &lt;description&gt;Hello World EJB&lt;/description&gt;
+  &lt;display-name&gt;HelloWorld&lt;/display-name&gt;
+  &lt;ejb-name&gt;HelloWorldEJB&lt;/ejb-name&gt;
+  &lt;home&gt;HelloWorldSLBean.HelloWorldHome&lt;/home&gt;
+  &lt;remote&gt;HelloWorldSLBean.HelloWorld&lt;/remote&gt;
+  &lt;ejb-class&gt;HelloWorldSLBean.HelloWorldBean&lt;/ejb-class&gt;
+  &lt;session-type&gt;Stateless&lt;/session-type&gt;
+  &lt;transaction-type&gt;Container&lt;/transaction-type&gt;
+  &lt;/session&gt;
+  &lt;/enterprise-beans&gt;
+  &lt;/ejb-jar&gt;
+</pre>
+<h3>Fichero EJB JAR que empaqueta el bean</h3>
+  
+<p>Como hemos visto en el tema anterior, todos los ficheros que constituyen el 
+  bean se empaquetan en un &uacute;nico fichero con la utilidad JAR. La estructura 
+  del fichero JAR es:</p>
+<pre class="codigo">/META-INF/ejb-jar.xml
+/META-INF/weblogic-ejb-jar.xml
+/HelloWorldSLBean/HelloWorld.class
+/HelloWorldSLBean/HelloWorldHome.class
+/HelloWorldSLBean/HelloWorldBean.class</pre>
+<p>En el directorio META-INF se incluyen los ficheros de descripci&oacute;n del 
+  despliegue: el fichero est&aacute;ndar (ejb-jar.xml) y el personalizado para 
+  el servidor de aplicaciones (weblogic-ejb-jar.xml). La mayor&iacute;a de servidores 
+  EJB proporcionan herramientas gr&aacute;ficas que crean el fichero de descripci&oacute;n 
+  y empaquetan el bean de forma autom&aacute;tica. El resto de directorio comprende 
+  los paquetes que definen beans.</p>
+<h2>2.3 Aplicaciones clientes</h2>
+  
+<h3>2.3.1 Cliente Java</h3>
+<p>Un cliente puede acceder a un bean de sesi&oacute;n o bean de entidad a trav&eacute;s 
+  de los m&eacute;todos definidos en las interfaces del bean. Estas interfaces 
+  definen la vista que el cliente tiene del bean. El resto de aspectos del bean, 
+  como implementaciones de los m&eacute;todos, caracter&iacute;sticas definidas 
+  por los descriptores de despliegue, esquemas abstractos o llamadas de acceso 
+  a las bases de datos, se esconden de los clientes.</p>
+<p>Los clientes que acceden a los enterprise beans pueden ser aplicaciones Java 
+  usando JNDI y Java RMI-IIOP, componentes Web (p&aacute;ginas JSP o servlets) 
+  o tambi&eacute;n otros beans. En todos los casos el funcionamiento es el mismo:</p>
+<UL>
+  <li>En primer lugar se obtiene un contexto JNDI del contenedor EJB.
+  <li class="sep">Despu&eacute;s se debe localizar en este contexto la interfaz 
+    Home del bean, que implementa los m&eacute;todos de b&uacute;squeda y creaci&oacute;n 
+    de beans. 
+  <li class="sep">Una vez obtenido el objeto de la interfaz <code>home</code> 
+    del bean, se invoca el m&eacute;todo <code>create</code> (para obtener una 
+    instancia nueva del bean) o <code>findByPrimaryKey</code> (para obtener una 
+    instancia concreta, en el caso de un bean de entidad). Estos m&eacute;todos 
+    devuelven un objeto que implementa la clase <code>Remote</code> de Java RMI. 
+  <li class="sep">Una vez obtenido el objeto remoto que hace referencia al bean, ya se puede 
+    invocar cualquier operaci&oacute;n definida en su interfaz remota.<BR>
+</UL>
+<p>Es fundamental esforzarse en realizar un buen dise&ntilde;o de las interfaces. 
+  El desarrollo y el mantenimiento de las aplicaciones J2EE dependen de ello. 
+  Unos interfaces limpios y claros permitir&aacute;n ocultar a las aplicaciones 
+  clientes las complejidades internas de la capa EJB y tambi&eacute;n permitir&aacute;n 
+  internamente cambiar la implementaci&oacute;n de los beans sin afectar a esas 
+  aplicaciones. Por ejemplo, si se cambia el m&eacute;todo de persistencia de 
+  persistencia gestionada por el bean a persistencia gestionada por el contenedor, 
+  no ser&aacute; necesario modificar el c&oacute;digo de las aplicaciones clientes. 
+  Pero si se cambia la definici&oacute;n de los m&eacute;todos de las interfaces, 
+  entonces ser&aacute; necesario modificar tambi&eacute;n el c&oacute;digo de 
+  las aplicaciones clientes. Por ello, para aislar las aplicaciones clientes de 
+  posibles cambios en los beans, es importante que se dise&ntilde;en las interfaces 
+  de forma cuidadosa.</p>
+<pre class="codigo">
+<B>HelloWorldClient.java</B>
+
+  mport java.io.*;
+  import java.text.*;
+  import java.util.*;
+  import javax.servlet.*;
+  import javax.servlet.http.*;
+  import javax.naming.*;
+  import javax.rmi.*;
+ 
+  public class HelloWorldClient {
+ 
+     public static void main(String [] args) {
+        try {
+           Context jndiContext = getInitialContext();
+           Object ref = jndiContext.lookup(&quot;HelloWorldEJB&quot;);
+           HelloWorldRemoteHome home = (HelloWorldRemoteHome)
+           PortableRemoteObject.narrow(ref, HelloWorldRemoteHome.class);
+           HelloWorldRemote hw = home.create();
+           System.out.println(&quot;Voy a llamar al bean&quot;);
+           System.out.println(hw.sayHello());
+           System.out.println(&quot;Ya he llamado al bean&quot;);
+        } catch (Exception e) {e.printStackTrace();}
+  }
+
+  public static Context getInitialContext()
+  throws javax.naming.NamingException {
+     Properties p = new Properties();
+     p.put(Context.INITIAL_CONTEXT_FACTORY, &quot;weblogic.jndi.WLInitialContextFactory&quot;);
+     p.put(Context.PROVIDER_URL, &quot;t3://localhost:7001&quot;);
+     return new javax.naming.InitialContext(p);
+  }
+}
+</pre>
+<h3>2.3.2 Clientes Web: Servlet y JSP</h3>
+<p>La diferencia fundamental entre un cliente Web (Servlet y JSP) y un cliente 
+  Java es que, en general, los clientes web se ejecutan en el mismo servidor de 
+  aplicaciones en donde reside en el EJB. Por ello, cambia la forma de localizar 
+  el bean: en lugar de usar el contexto gen&eacute;rico JNDI, se usa un contexto 
+  espec&iacute;fico llamado JNDI ENC (Environment Naming Context). Para colocar 
+  una referencia al bean en este contexto se usa la entrada &lt;ejb-ref&gt; en 
+  el fichero de descripci&oacute;n de despliegue de la aplicaci&oacute;n web.</p>
+<pre class="codigo">
+<b>HelloWorldServlet.java</b>
+
+import java.io.*;
+import java.text.*;
+import java.util.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
+import javax.naming.*;
+import javax.rmi.*;
+import HelloWorldSLBean.*;
+
+public class HelloWorldServlet extends HttpServlet {
+private HelloWorld hw = null;
+public HelloWorldServlet() throws NamingException {
+  try {
+     Context jndiContext = getInitialContext();
+     <b>Object ref = jndiContext.lookup(&quot;java:comp/env/ejb/HelloWorldEJB&quot;);</b>
+     HelloWorldHome home = (HelloWorldHome) 
+     PortableRemoteObject.narrow(ref, HelloWorldHome.class);
+     this.hw = home.create();
+  } catch (java.rmi.RemoteException re){re.printStackTrace();}
+    catch (javax.naming.NamingException ne){ne.printStackTrace();}
+    catch (javax.ejb.CreateException ce){ce.printStackTrace();}
+  }
+
+public void doGet(HttpServletRequest request, HttpServletResponse response)
+  throws IOException, ServletException {
+  response.setContentType(&quot;text/html&quot;);
+  PrintWriter out = response.getWriter();
+  out.println(&quot;&lt;html&gt;&quot;);
+  out.println(&quot;&lt;head&gt;&quot;);
+  out.println(&quot;&lt;title&gt;Hola&lt;/title&gt;&quot;);
+  out.println(&quot;&lt;/head&gt;&quot;);
+  out.println(&quot;&lt;body bgcolor=\&quot;white\&quot;&gt;&quot;);
+  out.println(&quot;&lt;h1&gt; HelloWorldEJB dice: &quot;);
+  out.println(this.hw.hi());
+  out.println(&quot;&lt;/h1&gt;&quot;);
+  out.println(&quot;&lt;/body&gt;&quot;);
+  out.println(&quot;&lt;/html&gt;&quot;);
+  }
+
+public static Context getInitialContext()
+  throws javax.naming.NamingException {
+  Properties p = new Properties();
+  return new javax.naming.InitialContext(p);
+  }
+}
+
+<b>HelloWorld.jsp </b>
+
+&lt;%@ page import=&quot;HelloWorldSLBean.*, javax.naming.*,
+javax.rmi.PortableRemoteObject,java.rmi.RemoteException,
+javax.ejb.CreateException&quot; %&gt;
+&lt;% response.addHeader(&quot;Cache-Control&quot;, &quot;no-cache, must-revalidate&quot;); %&gt;
+&lt;%@ include file=&quot;CommonFunctions.jsp&quot; %&gt;
+
+&lt;%!
+  HelloWorld helloWorld = null;
+%&gt;
+
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;HelloWorld&gt;&lt;/title&gt;
+&lt;/head&gt;
+&lt;body bgcolor=&quot;#ffffff&quot; LEFTMARGIN=&quot;10&quot; RIGHTMARGIN=&quot;10&quot;
+  link=&quot;#3366cc&quot; vlink=&quot;#9999cc&quot; alink=&quot;#0000cc&quot;&gt;
+
+&lt;%
+  try {
+     Context jndiContext = getInitialContext();
+     Object ref = jndiContext.lookup(&quot;java:comp/env/ejb/HelloWorldEJB&quot;);
+     HelloWorldHome home = (HelloWorldHome)
+     PortableRemoteObject.narrow(ref,HelloWorldHome.class);
+     helloWorld = home.create();
+  } catch (Throwable t) {
+  t.printStackTrace();
+  out.print(t.getMessage()+&quot;&lt;br&gt;Stacktrace:&lt;br&gt;&quot;);
+  t.printStackTrace(new PrintWriter(out,true));
+  }
+%&gt;
+
+&lt;h1&gt; HelloWorld bean dice: &lt;%= helloWorld.hi()%&gt; &lt;/h1&gt;<br>
+&lt;/body&gt;
+&lt;/html&gt;
+
+<b>web.xml</b>
+
+&lt;web-app&gt;
+&lt;display-name&gt;Hello World&lt;/display-name&gt;
+  &lt;description&gt;Hello World&lt;/description&gt;
+
+&lt;servlet&gt;
+  &lt;servlet-name&gt;HelloWorldJSP&lt;/servlet-name&gt;
+  &lt;jsp-file&gt;HelloWorld.jsp&lt;/jsp-file&gt;
+&lt;/servlet&gt; 
+
+&lt;servlet&gt;
+   &lt;servlet-name&gt;HelloWorldServlet&lt;/servlet-name&gt;
+   &lt;servlet-class&gt;HelloWorldServlet&lt;/servlet-class&gt;
+&lt;/servlet&gt;
+ 
+&lt;servlet-mapping&gt;
+   &lt;servlet-name&gt;HelloWorldServlet&lt;/servlet-name&gt;
+   &lt;url-pattern&gt;/HolaMundo&lt;/url-pattern&gt;
+&lt;/servlet-mapping&gt;
+ 
+&lt;servlet-mapping&gt;
+   &lt;servlet-name&gt;HelloWorldJSP&lt;/servlet-name&gt;
+   &lt;url-pattern&gt;/HolaMundo.jsp&lt;/url-pattern&gt;
+&lt;/servlet-mapping&gt;
+...
+ 
+&lt;ejb-ref&gt;
+  &lt;ejb-ref-name&gt;ejb/HelloWorldEJB&lt;/ejb-ref-name&gt;
+  &lt;ejb-ref-type&gt;Session&lt;/ejb-ref-type&gt;
+  &lt;home&gt;HelloWorldSLBean.HelloWorldHome&lt;/home&gt;
+  &lt;remote&gt;HelloWorldSLBean.HelloWorld&lt;/remote&gt;
+&lt;/ejb-ref&gt;
+&lt;/web-app&gt;
+
+<b>weblogic.xml</b>
+
+&lt;weblogic-web-app&gt;
+  &lt;reference-descriptor&gt;
+   &lt;ejb-reference-description&gt;
+    &lt;ejb-ref-name&gt;ejb/HelloWorldEJB&lt;/ejb-ref-name&gt;
+     &lt;jndi-name&gt;HelloWorldEJB&lt;/jndi-name&gt;
+   &lt;/ejb-reference-description&gt;
+  &lt;/reference-descriptor&gt;
+&lt;/weblogic-web-app&gt;
+ </pre>
+
+<h2>2.4 Acceso remoto y local a los beans</h2>
+<p>Al dise&ntilde;ar aplicaciones J2EE, una de las primeras decisiones que hay 
+  que tomar es el tipo de acceso que van a utilizar en los beans: remoto o local.</p>
+
+<h3>2.4.1. Acceso remoto</h3>
+  
+<p>Un cliente remoto de un enterprise bean tiene las siguientes caracter&iacute;sticas</p>
+<UL>
+  <li>Puede correr en una m&aacute;quina f&iacute;sica distinta o en una m&aacute;quina 
+    virtual Java (JVM) distinta de aquella en la que se encuentra el bean al que 
+    est&aacute; accediendo.
+  <li class="sep">Puede ser un componente Web, una aplicaci&oacute;n cliente J2EE o tambi&eacute;n 
+    otro enterprise bean.<BR>
+</UL>
+<p>Para crear un enterprise bean con un acceso remoto es necesario codificar una 
+  interfaz remota y una interfaz home. La <I>interfaz remota</I> define los m&eacute;todos 
+  de negocio que podr&aacute;n ser respondidos por las instancias del bean. Por 
+  ejemplo, la interfaz remota de un bean llamado CuentaBancariaEJB podr&iacute;a 
+  tener m&eacute;todos de negocio como transferir o credito. La <I>interfaz home</I> 
+  proporciona los m&eacute;todos necesarios para gestionar el ciclo de vida de 
+  las instancias del bean, como create y remove. Para los beans de entidad, la 
+  interfaz home tambi&eacute;n define m&eacute;todos de b&uacute;squeda y m&eacute;todos 
+  home (equivalentes a los m&eacute;todos de clase en Java). Los m&eacute;todos 
+  de b&uacute;squeda se usan para localizar instancias de beans de entidad a partir 
+  de su clave primaria. Los m&eacute;todos home son m&eacute;todos de negocio 
+  cuya invocaci&oacute;n afecta a todas las instancias de un bean.</p>
+<h3>2.4.2 Acceso local</h3>
+  
+<p>Un cliente local tiene estas caracter&iacute;sticas:<BR>
+</p>
+<UL>
+  <li>Debe correr en la misma JVM que el bean al que est&aacute; accediendo.
+  <li class="sep">Puede ser un componente Web o tambi&eacute;n otro enterprise bean.
+  <li class="sep">Para el cliente local, la localizaci&oacute;n del enterprise bean al que 
+    est&aacute; accediendo no es transparente.
+  <li class="sep">A menudo el cliente local es otro bean de entidad que tienen una relaci&oacute;n 
+    gestionada por el contenedor con otro bean de entidad.<BR>
+</UL>
+<p>Al igual que en el acceso remoto, para construir un enterprise bean que permita 
+  acceso local se debe codificar la interfaz local y la interfaz home local. La 
+  interfaz local define los m&eacute;todos de negocio del bean y la interfaz home 
+  local los m&eacute;todos que gestionan el ciclo de vida de las instancias del 
+  bean.</p>
+<h3>2.4.3. Interfaces locales y relaciones gestionadas por el contenedor</h3>
+  
+  
+<p>Si un bean de entidad es el objetivo de una relaci&oacute;n gestionada por 
+  el contenedor, entonces debe tener una interfaz local. La direcci&oacute;n de 
+  la relaci&oacute;n determina si un bean es un objetivo o no lo es. En la figura 
+  2.1, por ejemplo, <code>ProductoEJB</code> es el objetivo de una relaci&oacute;n 
+  unidireccional con <code>LineaPedidoEJB</code>. Debido a que <code>LineaPedidoEJB</code> 
+  accede a <code>ProductoEJB</code> localmente, <code>ProductoEJB</code> debe 
+  tener una interfaz local. El bean <code>LineaPedidoEJB</code> tambi&eacute;n 
+  necesita una interfaz local ya que es el objetivo de una relaci&oacute;n con 
+  <code>PedidoEJB</code>. Y como la relaci&oacute;n entre <code>LineaPedidoEJB</code> 
+  y <code>PedidoEJB</code> es bidireccional ambos beans deben tener interfaces 
+  locales.</p>
+<p>Todos los beans que participan en un grupo de relaciones manejadas por el contenedor 
+  deben residir en el mismo fichero JAR, ya que todos requieren interfaces locales. 
+</p>
+<p>El beneficio principal de las interfaces locales es una mejora en la eficiencia 
+  de las invocaciones entre beans, debido a que los par&aacute;metros no tienen 
+  que serializarse.</p>
+<p>&nbsp;</p>
+</BODY>
+</HTML>
+

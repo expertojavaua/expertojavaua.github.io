@@ -1,0 +1,500 @@
+<head>
+<title>Sesion 8 Enterprise Java Beans</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../../ejercicios.css" type="text/css">
+</head>
+<body>
+<h1> Tema 9: Buenas pr&aacute;cticas con EJBs</h1>
+<h2>9.1 Dise&ntilde;o</h2>
+<p>El dise&ntilde;o de la aplicaci&oacute;n es clave en el desarrollo de la misma. 
+  Un error de implementaci&oacute;n es sencillo de reparar, pero un error de dise&ntilde;o 
+  obliga a replantear completamente el proyecto. A continuaci&oacute;n se enumeran 
+  unas recomendaciones sobre el dise&ntilde;o de aplicaciones con EJBs.</p>
+<h3>9.1.1 Asegurarse de que los EJBs son necesarios</h3>
+<p>El uso de EJBs obliga a ciertos compromisos de eficiencia, implementaci&oacute;n 
+  o costes de desarrollo. Tenemos que asegurarnos de que la aplicaci&oacute;n 
+  realmente necesita estos componentes distribuidos. Algunas condiciones necesarias 
+  para que la aplicaci&oacute;n use EJBs son las siguientes.</p>
+<p><i>Condiciones de dise&ntilde;o</i></p>
+<blockquote>
+  <p>La aplicaci&oacute;n debe separarse de forma natural en capas est&aacute;ndar 
+    de persistencia, objetos de dominio, l&oacute;gica de negocio y presentaci&oacute;n. 
+    La aplicaci&oacute;n debe tener componentes de intranet y de extranet.</p>
+</blockquote>
+<p><i>Condiciones de implementaci&oacute;n</i></p>
+<blockquote>
+  <p>La implementaci&oacute;n de los EJBs es algo costosa. Un EJB t&iacute;pico 
+    consta de cuatro ficheros (interfaz home, remota, implementaci&oacute;n y 
+    fichero descriptor del despliegue). Debemos tener cierto tiempo para poder 
+    acometer esa implementaci&oacute;n. Si necesitamos hacer un prototipo r&aacute;pido 
+    es posible usar JSPs y servlets o JavaBeans y despu&eacute;s reescribir el 
+    c&oacute;digo para incluir los EJBs.</p>
+</blockquote>
+<p><i>Condiciones de eficiencia</i></p>
+<blockquote>
+  <p>Los servidores de aplicaciones est&aacute;n dise&ntilde;ados para proprocionar 
+    escalabilidad. Los servicios que proporcionan (manejo de transacciones, pooling 
+    de objetos, seguridad) son muy &uacute;tiles para implementar aplicaciones 
+    escalables, pero tambi&eacute;n usan una gran cantidad de recursos. Si la 
+    aplicaci&oacute;n no necesita de estos servicios y de esta escalabilidad, 
+    el uso de EJBs puede ralentizar la aplicaci&oacute;n.</p>
+</blockquote>
+<h3>9.1.2 Usar arquitecturas de dise&ntilde;o est&aacute;ndar</h3>
+<p>La importancia de la realizaci&oacute;n de un dise&ntilde;o previo de la aplicaci&oacute;n, 
+  antes de proceder a su implementaci&oacute;n, es aun mayor en la arquitectura 
+  J2EE. La gran cantidad de distintos componentes que es posible usar en este 
+  tipo de aplicaciones obliga a pensar detenidamente c&oacute;mo dividir la aplicaci&oacute;n 
+  y d&oacute;nde usar cada tipo de componente.</p>
+<p>El primer principio de dise&ntilde;o J2EE es el de usar una estructura en capas, 
+  con los siguientes componentes:</p>
+<p><i>Capa de presentaci&oacute;n</i></p>
+<blockquote>
+  <p>Consiste en la interfaz de usuario de la aplicaci&oacute;n. Normalmente contiene 
+    ficheros JSP, applets y alguna l&oacute;gica de presentaci&oacute;n que se 
+    puede resolver con etiquetas JSP o con alguna soluci&oacute;n propia que incluya 
+    XML para garantizar la portabilidad de esta capa. Esta capa se considera un 
+    cliente de la capa de negocio, porque usa exclusivamente esta capa para completar 
+    sus operaciones.</p>
+</blockquote>
+<p><i>Capa de l&oacute;gica de negocio</i></p>
+<blockquote>
+  <p>Esta es la capa m&aacute;s importante de la aplicaci&oacute;n, al menos desde 
+    el punto de vista del programador de EJBs. Esta capa contiene el flujo de 
+    trabajo del negocio y servicios varios usados por el cliente. Se basa en la 
+    capa de persistencia para el almacenamiento y recuperaci&oacute;n de los datos.</p>
+</blockquote>
+<p><i>Capa de persistencia</i></p>
+<blockquote>
+  <p>La capa de persistencia se ocupa del almacenamiento y la recuperaci&oacute;n 
+    de los datos en la base de datos del sistema inform&aacute;tico. La mayor&iacute;a 
+    del c&oacute;digo de esta capa se implementa con EJBs de entidad, y posiblemente 
+    algunos tipos de datos relacionados con estos beans de entidad, como son los 
+    objetos de datos de acceso (data access objets).</p>
+</blockquote>
+<p>El segundo principio de dise&ntilde;o tiene que ver con el orden en el se desarrollan 
+  las capas de la aplicaci&oacute;n. El orden m&aacute;s com&uacute;n es el que 
+  sigue:</p>
+<blockquote>
+  <p>1. Definir los requirimientos y los casos de uso. Esto ayuda a entender qu&eacute; 
+    es lo que la aplicaci&oacute;n tiene que hacer y c&oacute;mo de flexible debe 
+    ser, as&iacute; como puede ayudar a decidir qu&eacute; tecnolog&iacute;as 
+    usar.</p>
+  <p>2. Definir claramente los objetos del dominio y las interfaces de negocio 
+    que ser&aacute;n expuestas a los clientes.</p>
+  <p>3. Escribir los stubs de algunos componentes, para poder comenzar el desarrollo.</p>
+  <p>4. Implementar la capa de persistencia.</p>
+  <p>5. Definir y escribir <i>servicios</i>, que son componentes independientes 
+    del sistema que se usan en la implementaci&oacute;n.</p>
+  <p>6. Implementar la capa de l&oacute;gica de negocio.</p>
+  <p>7. Implementar la capa de presentaci&oacute;n.</p>
+</blockquote>
+<h3>9.1.3 Usar Beans de entidad CMP</h3>
+<p>Siempre que sea posible hay que intentar usar persistencia gestionada por el 
+  contenedor (CMP) para los beans de entidad. La mayor&iacute;a de servidores 
+  de aplicaciones tienen mecanismos optimizados para el manejo de este tipo de 
+  beans. Entre los beneficios del uso de la CMP se encuentran:</p>
+<ul>
+  <li>Gesti&oacute;n optimizada de las transacciones</li>
+  <li>No uso de SQL ni de l&oacute;gica de persistencia en el c&oacute;digo fuente</li>
+  <li>Relaciones gestionadas por el contenedor entre los beans de entidad</li>
+</ul>
+<h3>9.1.4 Usar patrones de dise&ntilde;o</h3>
+<p>Los patrones de dise&ntilde;o son imprescindibles; hay que aprender y usar 
+  tantos patrones de dise&ntilde;o de EJBs como sea posible. La mayor&iacute;a 
+  de los patrones ahorrar&aacute;n tiempo de desarrollo, mejorar&aacute;n la eficiencia 
+  de la aplicaci&oacute;n y la har&aacute;n m&aacute;s mantenible. Casi es posible 
+  asegurar que sin patrones de dise&ntilde;o ser&iacute;a casi imposible escribir 
+  buenas aplicaciones J2EE.</p>
+<p>Como ejemplo, veamos r&aacute;pidamente dos patrones muy comunes: session fa&ccedil;ade 
+  y value objects. </p>
+<h3><em>Session fa&ccedil;ade</em></h3>
+<p>El patr&oacute;n <em>session fa&ccedil;ade</em> es el patr&oacute;n de dise&ntilde;o 
+  EJB que se usa m&aacute;s frecuentemente. Representa una forma de encapsular 
+  la l&oacute;gica de negocio para obtener mejor eficiencia y un c&oacute;digo 
+  m&aacute;s mantenible. La idea b&aacute;sica es muy simple: poner toda la l&oacute;gica 
+  de negocio en beans de sesi&oacute;n sin estado y hacer que los clientes llamen 
+  a estos beans, en lugar de a los distintos componentes de la aplicaci&oacute;n. 
+  Las figuras siguientes explican este concepto.</p>
+<p>Antes de aplicar el patr&oacute;n:</p>
+<p><img src="imagenes/session-facade1.png" width="600" height="280"></p>
+<p>Despu&eacute;s de aplicar el patr&oacute;n:</p>
+<p><img src="imagenes/session-facade2.png" width="660" height="280"></p>
+<p>Este patr&oacute;n tiene muchas ventajas. La m&aacute;s significativa es que 
+  al mover toda la l&oacute;gica de negocio a una capa adicional obtenemos c&oacute;digo 
+  mucho m&aacute;s limpio y manejable. Debido a que cada operaci&oacute;n de flujo 
+  de trabajo se corresponde con un m&eacute;todo de negocio en el bean de sesi&oacute;n, 
+  la ejecuci&oacute;n de dicha operaci&oacute;n se realiza bajo una transacci&oacute;n. 
+  Adem&aacute;s, al definir el bean de sesi&oacute;n, podemos usar interfaces 
+  locales para todas las operaciones entre &eacute;ste y los beans de entidad 
+  y s&oacute;lo mostrar las interfaces rem&oacute;tas del bean de sesi&oacute;n.</p>
+<h3><em>Value objects</em></h3>
+<p>El patr&oacute;n <em>value objects</em> (objetos de valor) o data transfer 
+  objects (objetos de transferencia de datos), representa una forma de transferir 
+  datos entre los componentes remotos. Por ejemplo, supongamos que definimos un 
+  bean de entidad <code>User</code>. Para obtener el nombre del usuario, su apellido, 
+  su tel&eacute;fono, su direcci&oacute;n, y otros datos, deber&iacute;amos usar 
+  al m&eacute;todo <code>get</code> del bean para cada dato que queramos obtener. 
+  Si hacemos esto a trav&eacute;s de la interfaz remota, la sobrecarga en la red 
+  ser&aacute; muy grande. La soluci&oacute;n natural para este problema es crear 
+  un objeto que pueda mantener todos los datos que necesitamos, y usar ese objeto 
+  para transferir los datos. Esto es exactamente lo que hace un <i>value object</i>.</p>
+<p>Antes de aplicar el patr&oacute;n:</p>
+<p><img src="imagenes/value-object1.png" width="400" height="300"></p>
+<p>Despu&eacute;s de aplicar el patr&oacute;n:</p>
+<p><img src="imagenes/value-object2.png" width="370" height="200"></p>
+<p>Una pr&aacute;ctica com&uacute;n es usar el<i> value object</i> en el bean 
+  de entidad, en lugar de construirlo cada vez que el cliente lo pide. Otra pr&aacute;ctica 
+  com&uacute;n es exponer distintos <i>value objects </i>de un simple bean de 
+  entidad, de forma que los clientes s&oacute;lo obtengan los datos en que est&aacute;n 
+  interesados. </p>
+<p>Cuando tenemos un n&uacute;mero grande de value objects y su manejo se vuelve 
+  tedioso, podr&iacute;a ser interesante implementar un value object gen&eacute;rico 
+  <code>HashMap</code> que pueda transmitir datos arbitrarios. Sin embargo, un 
+  value object gen&eacute;rico tendr&iacute;a s&oacute;lo una pareja de m&eacute;todos 
+  <code>getField</code>/<code>setField</code>, y ser&iacute;a complicado de implementar 
+  alg&uacute;n tipo de validaci&oacute;n que nos asegurara que se est&aacute;n 
+  definiendo los campos correctos en cada momento. Por el contrario, un value 
+  object normal tiene una pareja de m&eacute;todos <code>getXXX</code>/<code>setXXX</code> 
+  para cada campo, lo que hace m&aacute;s dif&iacute;cil cometer errores. Un compromiso 
+  es implementar todos los <i>value objects</i> como interfaces y luego usar un 
+  <i>DynamicProxy</i> con un <code>HashMap</code> para almacenar los campos de 
+  los value objects. El ejemplo siguiente muestra una implementaci&oacute;n de 
+  un proxy din&aacute;mico y c&oacute;mo se usa en un bean de entidad.</p>
+<p>&nbsp;</p>
+<pre class="codigo">
+
+
+public class ValueObjectProxy implements InvocationHandler, Serializable
+{
+   protected HashMap fieldMap;
+   protected Class valueObjectClass;
+   
+   protected ValueObjectProxy (Class valueObjectClass) {
+          this.valueObjectClass = valueObjectClass;
+          fieldMap = new HashMap(  );
+   }
+   
+   public static Object createValueObject (Class valueObjectClass) {
+          return Proxy.newProxyInstance (
+                 valueObjectClass.getClassLoader(  ),
+                 new Class[  ] {valueObjectClass},
+                 new ValueObjectProxy(valueObjectClass));
+   }
+   
+   public Object invoke (Object proxy, Method method, Object[  ] args)
+   throws Exception {
+          String methodName = method.getName(  );
+   
+          if (methodName.startsWith ("get")) {
+                 // Remove "get" to get the field name.
+                 String fieldName = methodName.substring(3);
+   
+                 // It's a get, so return the value.
+                 if (!fieldMap.containsKey ("fieldName"))
+                        throw new ValueObjectException ("Field " + fieldName
+                                                        + " does not exist");
+                 return fieldMap.get(fieldName);
+   
+          } else if (methodName.startsWith ("set")) {
+                 // Remove "set" to get the field name.
+                 String fieldName = methodName.substring(3);
+   
+                 // Put it into the hashmap.
+                 // Assume we received one argument in the set method.
+                 fieldMap.put (fieldName, args[0]);
+   
+          // It's neither a get nor a set.
+          } else {
+                 throw ValueObjectException ("Invalid method");
+          }
+   }
+}
+   
+public SomeBean implements EntityBean
+{
+   // Skipping irrelevant methods . . . 
+   
+   public SomeValueObject getValueObject(  )
+   {
+          // Create the value object.
+          SomeValueObject vo = (SomeValueObject)
+                 ValueObjectProxy.createValueObject (SomeValueObject.class);
+   
+          // Set its values.
+          vo.setName ("John Smith");
+          vo.setAddress ("140 Maple Drive");
+   
+          return vo;
+   }
+}
+</pre>
+
+<h2>9.2 Implementaci&oacute;n</h2>
+<p>Algunas reglas importantes que conviene seguir cuando estamos implementando 
+  EJBs son las siguientes.</p>
+<h3>9.2.1 Usar interfaces locales para los Beans de Entidad</h3>
+<p>Tal y como hemos comentado en el patr&oacute;n session fa&ccedil;ade, es una 
+  buena idea usar beans de sesi&oacute;n para que hagan de interfaz de negocio 
+  de los beans de entidad. De esta forma, dado que todos los beans de entidad 
+  van a comunicarse entre ellos o ser usados por beans de sesion, es conveniente 
+  usar interfaces locales en todos los beans de entidad. </p>
+<h4>9.2.2 Usar interfaces de negocio</h4>
+<p>Ya hemos comentado que la implementaci&oacute;n de un EJB es compleja: consta 
+  de cuatro ficheros. Es muy usual cometer errores cuando se escribe el fichero 
+  de implementaci&oacute;n y el fichero remoto (o local, en el caso de los EJBs 
+  de entidad) y llamar a los m&eacute;todos de forma distinta o usar distintos 
+  tipos de par&aacute;metros. Este error s&oacute;lo se va a hacer evidente en 
+  tiempo de despliegue. &iquest;C&oacute;mo consegur que estos errores aparezcan 
+  en tiempo de compilaci&oacute;n? Una idea es la de usar las denominadas interfaces 
+  de negocio.</p>
+<p>En una interfaz de negocio definimos los perfiles de los m&eacute;todos de 
+  negocio, que se deben corresponder tambi&eacute;n con los m&eacute;todos de 
+  la clase de implementaci&oacute;n. Despu&eacute;s hacemos que la interfaz remota 
+  o local extienda la interfaz de negocio y que la clase bean implemente esta 
+  interfaz de negocio. Debido a que las interfaces remotas arrojan una RemoteException, 
+  la interfaz de negocio tambi&eacute;n debe hacerlo. Tambi&eacute;n, todos los 
+  par&aacute;metros de los m&eacute;todos deben ser serializables.</p>
+<pre class="codigo">// Interfaz de negocio
+   
+public interface Order
+{
+   public int getQuantity(  ) throws RemoteException;
+   public void setQuantity (int quantity) throws RemoteException;
+   public double getPricePerItem(  ) throws RemoteException;
+   public void setPricePerItem (double price) throws RemoteException;
+   
+   public double getTotalPrice(  ) throws RemoteException;
+}
+   
+// Interfaz remota
+   
+public interface OrderRemote extends Order, EJBObject
+{
+   // Todos los metodos se heredan de Order y EJBObject.
+}
+   
+// Implementacion
+   
+public class OrderBean extends EntityBean implements Order
+{
+   private int quantity;
+   private double pricePerItem;
+   
+   // Business interface implementation
+   
+   public int getQuantity(  ) {
+          return quantity;
+   }
+   public void setQuantity (int quantity) {
+          this.quantity = quantity;
+   }
+   public double getPricePerItem(  ) {
+          return pricePerItem;
+   }
+   public void setPricePerItem (double price) {
+          this.pricePerItem = pricePerItem;
+   }
+   public double getTotalPrice(  ) {
+          return quantity*pricePerItem;
+   }
+   
+   // Other EntityBean methods go here . . . 
+}
+</pre>
+<p>Es importante tener cuidado en no usar las interfaces de negocio en el lado 
+  del cliente. All&iacute; debemos seguir usando la interfaz OrderRemote y la 
+  clase OrderBean. S&oacute;lo debemos usar esta t&eacute;cnica si queremos asegurarnos 
+  de detectar los errores en tiempo de compilaci&oacute;n.</p>
+<h3>9.2.3 Manejar las excepciones correctamente</h3>
+<p>El manejo de las excepciones en un entorno distribuido J2EE puede ser confuso 
+  y complicado. Debido a que la mayor&iacute;a de las excepciones nunca se disparan 
+  en tiempo de producci&oacute;n, se suele tender a ignorarlas o, sencillamente, 
+  a imprimirlas. Sin embargo, si queremos escribir aplicaciones robustas, debemos 
+  realizar un control estricto de las condiciones en las que pueden aparecer estas 
+  excepciones.</p>
+<p>Es &uacute;til separar las distintas excepciones de los EJB en tres tipos b&aacute;sicos.</p>
+<h3><code>RemoteException</code></h3>
+<p>Esta excepci&oacute;n se declara en todos los interfaces remotos expuestos 
+  por un EJB. Debe ser capturada por los clientes de los EJBs y normalmente se 
+  originan por un problema de conexi&oacute;n a la red. Las clases que implementan 
+  EJBs no pueden arrojar este tipo de excepci&oacute;n. Si se usa una conexi&oacute;n 
+  remota entre EJBs y sucede esta excepci&oacute;n, se deber&iacute;a propagar 
+  la excepci&oacute;n al cliente envolvi&eacute;ndola en una excepci&oacute;n 
+  <code>EJBException</code>.</p>
+<h3><code>EJBException</code> y sus subclases</h3>
+<p>Esta excepci&oacute;n se lanza por el desarrollador en la implementaci&oacute;n 
+  del EJB y es capturada por el contenedor. Normalmente, lanzaremos una excepci&oacute;n 
+  de este tipo cuando se ha producido un error importante, en cuyo caso el contenedor 
+  siempre har&aacute; un rollback de la transacci&oacute;n actual. Esta excepci&oacute;n 
+  se deber&iacute;a tratar como una <code>NullPointerException</code>: es una 
+  excepci&oacute;n generada en tiempo de ejecuci&oacute;n y en general no debe 
+  ser capturada por el desarrollador. </p>
+<h3>Excepciones definidas en la aplicaci&oacute;n</h3>
+<p>A diferencia de las excepciones previas, las excepciones definidas por la aplicaci&oacute;n 
+  deben ser consideradas como normales desde el punto de vista del contenedor. 
+  Un EJB puede declarar y lanzar estas excepciones, y los clientes las capturar&aacute;n 
+  como si fueran una excepci&oacute;n Java normal. Debido a que las excepciones 
+  se deben mover por la red (desde el EJB hasta el cliente) deben implementar 
+  la interfaz <code>Serializable</code>. Ejemplos de este tipo de excepciones 
+  son las que ya vienen predefinidas en la arquitectura EJB, como <code>CreateException</code> 
+  o <code>FinderException</code>.</p>
+<h3>9.2.4 Cachear los objetos JNDI Lookup</h3>
+<p>Para obtener un <code>DataSource</code> o un interfaz home de un EJB, es necesario 
+  crear un <code>InitialContext</code>, y despu&eacute;s buscar (lookup) en &eacute;l 
+  recurso que necesitemos. Estas operaciones son normalmente muy costosas, considerando 
+  el hecho de que se deben repetir frecuentemente. Una forma de optimizar estas 
+  peticiones es realizar la b&uacute;squeda s&oacute;lo una vez y guardar en una 
+  cach&eacute; el resultado. El siguiente c&oacute;digo hace esto.</p>
+<pre class="codigo">
+public class EJBHomeCache
+{
+   private static EHBHomeCache instance;
+   
+   protected Context ctx = null;
+   protected FirstEJBHome firstHome = null;
+   protected SecondEJBHome secondHome = null;
+   
+   private EJBHomeCache(  )
+   {
+          try {
+                 ctx = new InitialContext(  );
+                 firstHome = (FirstEJBHome)PortableRemoteObject.narrow (
+                        ctx.lookup ("java:comp/env/FirstEJBHome"),
+                        FirstEJBHome.class);
+                 secondHome = (SecondEJBHome)PortableRemoteObject.narrow (
+                        ctx.lookup ("java:comp/env/SecondEJBHome"),
+                        FirstEJBHome.class);
+   
+          } catch (Exception e) {
+                 // Handle JNDI exceptions here, and maybe throw
+                 // application-level exception.
+          }
+   }
+   public static synchronized EJBHomeCache getInstance(  )
+   {
+          if (instance == null) instance = new EJBHomeCache(  );
+          return instance;
+   }
+   public FirstEJBHome getFirstEJBHome(  )
+   {
+          return firstHome;
+   }
+   
+   public SecondEJBHome getSecondEJBHome(  )
+   {
+          return secondHome;
+   }
+}
+</pre>
+<h3>9.2.5 Usar Business Delegates como clientes</h3>
+<p>Un <i>business delegate</i> es una simple clase Java que delega todas las llamadas 
+  a un EJB. Podr&iacute;a parecer demasiado simple para ser &uacute;til, pero 
+  sin embargo es un patr&oacute;n de dise&ntilde;o muy usado. La principal raz&oacute;n 
+  para usar un business delegate es separar la l&oacute;gica de manejo del EJB 
+  (por ejemplo, la obtenci&oacute;n de la interfaz remota, el manejo de las excepciones 
+  remotas, etc.) de los clientes de forma que los desarrollodares que trabajan 
+  en el lado del cliente no tengan que conocer y preocuparse de los EJBs. </p>
+<p>Otro beneficio del patr&oacute;n de dise&ntilde;o es la posibilidad de realizar 
+  prototipado r&aacute;pido de la aplicaci&oacute;n, escribiendo en los m&eacute;todos 
+  c&oacute;digo de prueba, o incluso llamadas a JDBC. Incluso en una aplicaci&oacute;n 
+  completa J2EE, el uso de este patr&oacute;n puede ser &uacute;til para encapsular 
+  o usar almacenar en cach&eacute;s los resultados de las llamadas a los EJBs.</p>
+<p>En el siguiente ejemplo, se usa un business delegate para implementar una pol&iacute;tica 
+  de reintento de conexi&oacute;n en caso de problemas de red.</p>
+<pre class="codigo">
+public class BeanDelegate
+{
+   private static final int NETWORK_RETRIES = 3;
+   private BeanRemote bean;
+   
+   public void create(  ) throws ApplicationError
+   {
+           // Here you get a bean instance.
+           try {
+                  InitialContext ctx = new InitialContext(  );
+                  BeanHome home = (BeanHome) PortableRemoteObject.narrow (
+                                 ctx.lookup ("ejb/BeanExample"),
+                                 BeanHome.class);
+   
+                  // Retry in case of network problems.
+                  for (int i=0; i&lt;NETWORK_RETRIES; i++)
+                         try {
+                                bean = home.create(  );
+                                break;
+                         } catch (RemoteException e) {
+                                if (i+1 < NETWORK_RETRIES) continue;
+                                throw new ApplicationError ("Network problem "
+                                       + e.toString(  ));
+                         }
+                 }
+          } catch (NamingException e) {
+                 throw new ApplicationError ("Error with bean");
+          }
+   }
+   
+   public void remove(  ) throws ApplicationError
+   {
+          // Release the session bean here.
+   
+          // Retry in case of network problems
+          for (int i=0; i&lt;NETWORK_RETRIES; i++)
+                 try {
+                        bean.remove(  );
+                        break;
+                 } catch (RemoteException e) {
+                        if (i+1 &lt; NETWORK_RETRIES) continue;
+                        throw new ApplicationError ("Network problem "
+                               + e.toString(  ));
+                 }
+          }
+   }
+   
+   public int doBusinessMethod (String param) throws ApplicationError
+   {
+          // Call a bean method here.
+          for (int i=0; i&lt;NETWORK_RETRIES; i++)
+                 try {
+                        return bean.doBusinessMethod (param);
+                 } catch (RemoteException e) {
+                        if (i+1 &lt; NETWORK_RETRIES) continue;
+                        throw new ApplicationError ("Network problem "
+                               + e.toString(  ));
+                 }
+          }
+   }
+}
+</pre>
+<p>&nbsp;</p>
+<h2>9.3 Despliegue</h2>
+<p>Por &uacute;ltimo veamos algunas recomendaciones sobre despliegue de una aplicaci&oacute;n 
+  J2EE. </p>
+<h3>9.3.1 Crear un entorno de construcci&oacute;n</h3>
+<p>Es muy importante definir un entorno de construcci&oacute;n de las aplicaciones 
+  que desarrollemos. Entendemos por entorno de construcci&oacute;n un conjunto 
+  de comandos que simplifiquen la compilaci&oacute;n, empaquetamiento y despliegue 
+  de las aplicaciones. Incluso si estamos usando un entorno integrado de desarrollo 
+  (IDE) para crear los ficheros EJB JARs y WARs, es conveniente desarrollar este 
+  tipo de entornos. </p>
+<p>El principal beneficio es el de tener el control total sobre la estructura 
+  de los ficheros producidos, sin depeneder de las caracter&iacute;sticas particulares 
+  de una herramienta de desarrollo concreta.</p>
+<p>Una herramienta de c&oacute;digo abierto que cada vez se usa m&aacute;s es 
+  Ant. Est&aacute; escrita en Java y es f&aacute;cilmente personalizable para 
+  cualquier tarea, ya sea compilar aplicaciones, empaquetarlas, desplegarlas, 
+  etc. Es muy recomendable estudiar su uso.</p>
+<h3>9.3.2 Escribir c&oacute;digo de prueba</h3>
+<p>Esta es una de las reglas principales que se suelen ignorar cuando se desarrollan 
+  aplicaciones con EJBs. La raz&oacute;n es muy simple: las aplicaciones J2EE 
+  son grandes y normalmente son m&aacute;s dif&iacute;ciles de depurar que las 
+  aplicaciones normales. </p>
+<p>Por ello es muy &uacute;til usar un framework de casos de prueba como JUnit 
+  (<a href="http://www.junit.org">http://www.juinit.org</a>) para probar las distintas 
+  capas de la aplicaci&oacute;n de forma separada. Al probar las capas de forma 
+  independiente es posible aislar mejor los errores.</p>
+<p>Es tambi&eacute;n una buena pr&aacute;ctica el incluir c&oacute;digo de diagn&oacute;stico 
+  en tiempo de ejecuci&oacute;n en la versi&oacute;n final de la aplicaci&oacute;n. 
+  Para que la aplicaci&oacute;n funcione correctamente se deben desplegar muchos 
+  componentes y sistemas, y es &uacute;til generar un log en el que se registren 
+  los problemas que se detectan. De esta forma, por ejemplo, se podr&iacute;an 
+  chequear f&aacute;cilmente problemas ocasionados por la no conexi&oacute;n de 
+  los recursos necesarios para que la aplicaci&oacute;n funcione.</p>

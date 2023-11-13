@@ -1,0 +1,532 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.7">
+<meta name="Forrest-skin-name" content="pelt">
+<title>Charla 3: Patrones para aplicaciones distribu&iacute;das</title>
+<link type="text/css" href="skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="skin/print.css" rel="stylesheet">
+<link type="text/css" href="skin/profile.css" rel="stylesheet">
+<script src="skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<div class="header">
+<div class="grouplogo">
+<a href="http://www.jtech.ua.es/j2ee"><img class="logoImage" alt="J2EE" src="images/baner_j2ee_izq.gif" title="Curso Especialista Universitario J2EE"></a>
+</div>
+<div class="projectlogoA1">
+<a href="http://www.dccia.ua.es/"><img class="logoImage" alt="Patrones de dise&ntilde;o" src="images/baner_j2ee_der.gif" title="Patrones de dise&ntilde;o"></a>
+</div>
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="../index.html">M&oacute;dulos</a>
+</li>
+<li>
+<a class="base-not-selected" href="index.html">Patrones de dise&ntilde;o Java Enterprise</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<div id="level2tabs"></div>
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<div id="menu">
+<div onclick="SwitchMenu('menu_1.1', 'skin/')" id="menu_1.1Title" class="menutitle">Patrones de dise&ntilde;o</div>
+<div id="menu_1.1" class="menuitemgroup">
+<div class="menuitem">
+<a href="index.html" title="RMI">&Iacute;ndice</a>
+</div>
+<div onclick="SwitchMenu('menu_1.1.2', 'skin/')" id="menu_1.1.2Title" class="menutitle">Teor&iacute;a</div>
+<div id="menu_1.1.2" class="menuitemgroup">
+<div class="menuitem">
+<a href="sesion01-apuntes.html">Sesion 1</a>
+</div>
+</div>
+<div class="menuitem">
+<a href="">Ejercicios</a>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<div id="credit2"></div>
+</div>
+<div id="content">
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="sesion03-apuntes.pdf"><img alt="PDF -icon" src="skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1>Charla 3: Patrones para aplicaciones distribu&iacute;das</h1>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#Patrones+para+aplicaciones+distribuidas+vs.+aplicaciones+%22locales%22">Patrones para aplicaciones distribuidas vs. aplicaciones "locales"</a>
+</li>
+<li>
+<a href="#Arquitecturas+para+aplicaciones+enterprise">Arquitecturas para aplicaciones enterprise</a>
+<ul class="minitoc">
+<li>
+<a href="#Aplicaciones+convencionales">Aplicaciones convencionales</a>
+</li>
+<li>
+<a href="#%C2%BFPor+qu%C3%A9+EJBs%3F">&iquest;Por qu&eacute; EJBs?</a>
+</li>
+<li>
+<a href="#Aplicaciones+con+EJBs+locales">Aplicaciones con EJBs locales</a>
+</li>
+<li>
+<a href="#Aplicaciones+distribuidas+con+EJBs+remotos">Aplicaciones distribuidas con EJBs remotos</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Minimizando+las+llamadas+remotas%3A+Session+Facade">Minimizando las llamadas remotas: Session Facade</a>
+<ul class="minitoc">
+<li>
+<a href="#Problema">Problema</a>
+</li>
+<li>
+<a href="#Soluci%C3%B3n">Soluci&oacute;n</a>
+</li>
+<li>
+<a href="#Consecuencias">Consecuencias</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Transfiriendo+datos+a+los+clientes%3A+Transfer+Object">Transfiriendo datos a los clientes: Transfer Object</a>
+<ul class="minitoc">
+<li>
+<a href="#Problema-N10173">Problema</a>
+</li>
+<li>
+<a href="#Soluci%C3%B3n-N10180">Soluci&oacute;n</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Localizando+servicios%3A+Service+Locator">Localizando servicios: Service Locator</a>
+<ul class="minitoc">
+<li>
+<a href="#Problema-N10197">Problema</a>
+</li>
+<li>
+<a href="#Soluci%C3%B3n-N101B0">Soluci&oacute;n</a>
+</li>
+<li>
+<a href="#Consecuencias-N101C6">Consecuencias</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Haciendo+transparentes+los+EJBs+de+negocio%3ABusiness+Delegate">Haciendo transparentes los EJBs de negocio:Business Delegate</a>
+</li>
+</ul>
+</div>
+
+<p>El segundo
+bloque del curso de especialista trata sobre aplicaciones <em>enterprise</em>, que pasan de usar
+un servidor web a un servidor de aplicaciones y de ser locales a poder distribuirse en varias m&aacute;quinas gracias
+a tecnolog&iacute;as como los EJB. La experiencia de muchos desarrolladores con este tipo de aplicaciones
+ ha demostrado que junto a la enorme potencialidad que ofrecen, tambi&eacute;n pueden presentar problemas
+ de desarrollo y funcionamiento que se pueden evitar siguiendo un conjunto de "buenas pr&aacute;cticas".
+ En esta charla veremos patrones de dise&ntilde;o espec&iacute;ficos para aplicaciones <em>enterprise</em>,
+ que sintetizan y codifican estas "buenas pr&aacute;cticas".</p>
+
+<a name="N10015"></a><a name="Patrones+para+aplicaciones+distribuidas+vs.+aplicaciones+%22locales%22"></a>
+<h2 class="underlined_10">Patrones para aplicaciones distribuidas vs. aplicaciones "locales"</h2>
+<div class="section">
+<p>Como ya se ha comentado, dos son las caracter&iacute;sticas fundamentales de una aplicaci&oacute;n <em>enterprise</em>
+frente a una aplicaci&oacute;n web "convencional"</p>
+<ul>
+
+<li>La posibilidad de distribuir la aplicaci&oacute;n en varias m&aacute;quinas f&iacute;sicas y/o l&oacute;gicas</li>
+
+<li>El uso de los servicios proporcionados por un servidor de aplicaciones</li>
+
+</ul>
+<p>De las dos, la que tiene un impacto mayor sobre el rendimiento de la aplicaci&oacute;n es la primera: estar ejecutando
+llamadas remotas entre objetos a trav&eacute;s de la red incurre en costes que, si bien tomados de modo individual
+son peque&ntilde;os (del orden de milisegundos) si no se gestionan eficientemente pueden dar lugar a enormes "cuellos de botella".
+Algunos de los patrones que veremos van destinados precisamente a solucionar este problema: organizar la aplicaci&oacute;n
+de un modo eficiente para que el coste extra de las llamadas remotas tenga el menor impacto posible
+sobre el rendimiento. El caso protot&iacute;pico es el del patr&oacute;n <em>session fa&ccedil;ade</em>
+</p>
+<p>Por otro lado, la "herramienta" est&aacute;ndar para el desarrollo de aplicaciones distribuidas en Java EE
+ son los EJBs. Al menos hasta la versi&oacute;n 2, los EJBs han exigido del desarrollador el uso de determinados APIs, como
+ JNDI para poder instanciar los objetos, y una forma espec&iacute;fica de programar que permea tambi&eacute;n el c&oacute;digo del 
+ cliente que accede a los EJBs. Algunos patrones van dirigidos a imponer buenas pr&aacute;cticas en estos contextos: una forma
+ 	 centralizada de acceder a objetos mediante JNDI (patr&oacute;n <em>service locator</em>) y de ocultar al cliente
+ que est&aacute; accediendo a un EJB (patr&oacute;n <em>business delegate</em>).</p>
+</div> 
+
+<a name="N10039"></a><a name="Arquitecturas+para+aplicaciones+enterprise"></a>
+<h2 class="underlined_10">Arquitecturas para aplicaciones enterprise</h2>
+<div class="section">
+<p>Antes de ver los patrones,
+repasaremos de manera muy breve algunas de las caracter&iacute;sticas de
+la arquitectura de aplicaciones enterprise, ya que hay distintas opciones. Comenzaremos
+como punto de partida por una aplicaci&oacute;n no-enterprise, para ver las diferencias.</p>
+<a name="N10042"></a><a name="Aplicaciones+convencionales"></a>
+<h3 class="underlined_5">Aplicaciones convencionales</h3>
+<p>Llamamos aqu&iacute; as&iacute; a las que no est&aacute;n distribu&iacute;das ni necesitan de un servidor de aplicaciones
+para ejecutarse, pudiendo funcionar en un servidor web java convencional que implemente el API
+de servlets.</p>
+<p>
+<img alt="Arquitectura de una aplicaci&oacute;n convencional" content-width="12cm" src="imagenes/arq1.gif"></p>
+<p>Este, que es el modelo que hemos estado usando impl&iacute;citamente en todos los desarrollos que
+hemos hecho hasta ahora, representa la opci&oacute;n m&aacute;s sencilla para la arquitectura de una aplicaci&oacute;n
+Java EE, pero tiene una serie de limitaciones:</p>
+<ul>
+
+<li>El acceso de clientes no-web implica el tener que programar "a mano" usando APIs como RMI</li>
+
+<li></li>
+
+</ul>
+<a name="N1005D"></a><a name="%C2%BFPor+qu%C3%A9+EJBs%3F"></a>
+<h3 class="underlined_5">&iquest;Por qu&eacute; EJBs?</h3>
+<p>Antes de empezar a discutir diferentes arquitecturas, conviene clarificar de forma breve
+algunos conceptos sobre EJBs que todav&iacute;a no se han visto en profundidad en el curso. B&aacute;sicamente, un EJB
+aporta un valor a&ntilde;adido al programador en el sentido de que el contenedor EJB (el servidor de aplicaciones)
+gestiona autom&aacute;ticamente el ciclo de vida de los objetos (creaci&oacute;n y destrucci&oacute;n), el acceso remoto, la transaccionalidad,
+la seguridad y el <em>multithreading</em>. El programador no tiene que controlar estos aspectos en su c&oacute;digo,
+ya que se configuran de forma declarativa.</p>
+<p>Como ver&eacute;is en el m&oacute;dulo correspondiente, los dos tipos m&aacute;s usados de EJBs son:</p>
+<ul>
+
+<li>De <strong>sesi&oacute;n</strong>: b&aacute;sicamente se usan para modelar los objetos de la capa de negocio. Donde en 
+una aplicaci&oacute;n convencional usar&iacute;amos clases java convencionales (POJOs) en una aplicaci&oacute;n <em>enterprise</em>
+usar&iacute;amos EJBs, que exigen un API y una forma de programar determinadas, aunque el modelo de programaci&oacute;n se ha simplificado
+mucho con la aparici&oacute;n de la versi&oacute;n 3 del est&aacute;ndar.</li>
+
+<li>De <strong>entidad</strong>: son objetos persistentes. En una aplicaci&oacute;n <em>enterprise</em> desempe&ntilde;ar&iacute;an
+un papel similar al que se le otorga a frameworks de persistencia como hibernate en aplicaciones convencionales.</li>
+
+</ul>
+<div class="frame note">
+<div class="label">Nota</div>
+<div class="content">Probablemente, un <em>fan</em> de Hibernate se habr&aacute; escandalizado con la comparaci&oacute;n anterior. Hibernate y otros
+frameworks de persistencia (como incluso el est&aacute;ndar JDO) son mucho m&aacute;s potentes y flexibles que los EJBs de entidad, lo que no impide
+que en origen sus pretensiones fueran similares. Sin embargo los EJBs de entidad se quedaron (para muchos) en un intento fallido.</div>
+</div>
+<p>Un aspecto muy importante de los EJBs es que posibilitan el <strong>acceso remoto</strong> a objetos, de modo que 
+el c&oacute;digo se puede distribuir entre varias m&aacute;quinas, llamando unos objetos a otros. Esta capacidad abre la puerta a que podamos
+elegir si deseamos o no una arquitectura distribu&iacute;da, con un coste de desarrollo asumible y que 
+probablemente no lo ser&iacute;a si tuvi&eacute;ramos que programar
+las llamadas remotas de manera "manual", usando APIs como RMI.</p>
+<a name="N1008E"></a><a name="Aplicaciones+con+EJBs+locales"></a>
+<h3 class="underlined_5">Aplicaciones con EJBs locales</h3>
+<p>En esta arquitectura todos los EJBs siguen en la misma
+m&aacute;quina virtual. A esto se le denomina en el est&aacute;ndar <strong> EJBs locales</strong> (posibles a
+partir de la versi&oacute;n 2.0 de la especificaci&oacute;n). El uso de EJBs frente a POJOs en
+este caso se justifica por los servicios de gesti&oacute;n autom&aacute;tica de
+transacciones, seguridad y <em>multithreading</em>.</p>
+<p>
+<img alt="Arquitectura de una aplicaci&oacute;n con EJBs locales" content-width="12cm" src="imagenes/arq2.gif"></p>
+<p>Como se ve, la diferencia fundamental con respecto a las arquitecturas de aplicaciones que
+estamos empleando hasta ahora en el curso es que la capa de negocio est&aacute; basada en EJBs, necesitando
+por tanto estar alojada en un contenedor de EJBs (en la pr&aacute;ctica, en un servidor de aplicaciones). El patr&oacute;n
+<em>business delegate</em>, como veremos posteriormente con m&aacute;s detalle, se emplea para aislar a la capa web
+de la de negocio, permitiendo que aquella permanezca sin cambios se pase a usar o no EJBs.</p>
+<p>Como ventajas de esta
+arquitectura tenemos:</p>
+<ul>
+
+<li>El uso de EJBs locales hace la aplicaci&oacute;n mucho m&aacute;s eficiente
+que con comunicaciones remotas.</li>
+
+<li>El desarrollador aprovecha los servicios del contenedor EJB
+para gesti&oacute;n de transacciones y otros.</li>
+
+<li>Se pueden usar EJBs de entidad con CMP, lo que simplifica el
+manejo de la persistencia.</li>
+
+</ul>
+<p>Sus limitaciones son:</p>
+<ul>
+
+<li>&Uacute;nicamente se sigue pudiendo acceder a trav&eacute;s de clientes
+web</li>
+
+<li>El despliegue y prueba de la aplicaci&oacute;n es m&aacute;s complejo que con
+POJOs. Los EJBs no se pueden probar fuera del contenedor EJB y es
+necesario desplegarlos cada vez que se recompilan.</li>
+
+<li>Todos los componentes deben estar dentro de la misma
+m&aacute;quina.</li>
+
+</ul>
+<a name="N100C8"></a><a name="Aplicaciones+distribuidas+con+EJBs+remotos"></a>
+<h3 class="underlined_5">Aplicaciones distribuidas con EJBs remotos</h3>
+<p> Esta se puede considerar la arquitectura J2EE "prototipo", cuyo
+esquema siempre figura en las introducciones a J2EE. Hay un
+contenedor web en el que reside la capa web y en otra m&aacute;quina
+virtual Java est&aacute; el contenedor EJB, donde se coloca la capa de
+negocio. El acceso desde la capa web a la de negocio se realiza
+mediante EJBs remotos. La capa de negocio ser&aacute; accesible tambi&eacute;n
+desde clientes no web a trav&eacute;s de dichos EJBs.</p>
+<p>
+<img alt="Arquitectura distribuida con EJBs remotos" content-width="12cm" src="imagenes/arq3.gif"></p>
+<p> Las ventajas de este modelo son:</p>
+<ul>
+
+<li>Se permite el acceso de clientes de distintos tipos que
+comparten la misma capa de negocio, ya que a los EJBs remotos se
+puede acceder desde el contenedor web, desde una aplicaci&oacute;n Swing,
+etc...</li>
+
+<li>Se pueden distribuir los componentes en varias m&aacute;quinas. Esto
+incrementa la escalabilidad potencial de la aplicaci&oacute;n.</li>
+
+</ul>
+<p>Por supuesto, esto es a cambio de ciertas contrapartidas:</p>
+<ul>
+
+<li>Es la arquitectura m&aacute;s compleja y la que requiere m&aacute;s recursos
+y tiempo de desarrollo. Por ello, salvo que los requerimientos
+exijan las capacidades &uacute;nicas de esta arquitectura deber&iacute;a tenderse
+a modelos m&aacute;s simples.</li>
+
+<li>Las comunicaciones remotas entre la capa cliente y la de
+negocio comportan un coste considerable, ya que se hace un uso
+interno de RMI.</li>
+
+<li>Las aplicaciones distribuidas son las m&aacute;s complejas de
+desplegar y probar.</li>
+
+</ul>
+</div>
+
+
+
+
+<a name="N100F4"></a><a name="Minimizando+las+llamadas+remotas%3A+Session+Facade"></a>
+<h2 class="underlined_10">Minimizando las llamadas remotas: Session Facade</h2>
+<div class="section">
+<a name="N100FA"></a><a name="Problema"></a>
+<h3 class="underlined_5">Problema</h3>
+<p>Supongamos que tenemos un modelo de dominio creado a base de beans
+de entidad, como el de la siguiente figura, en el que
+un cliente (en nuestro caso una acci&oacute;n de Struts) accede de manera directa a los objetos del 
+modelo del dominio.</p>
+<p>
+<img alt="Acceso directo a los objetos del dominio" content-width="10cm" src="imagenes/sinsessionfacade.gif"></p>
+<p> Esta forma de trabajar es problem&aacute;tica por varias razones:</p>
+<ul>
+
+<li>Desde el punto de vista <em>l&oacute;gico</em>: ya hemos visto en m&oacute;dulos anteriores que
+una acci&oacute;n de Struts, o cualquier otro tipo de cliente de la capa de presentaci&oacute;n
+no debe implementar nada de l&oacute;gica de negocio, ya que no es su trabajo.</li>
+
+<li>Desde el punto de vista de <em>costes</em>: un caso de uso implica
+normalmente a m&aacute;s de un bean de entidad. Si el
+cliente tiene que acceder de manera remota a cada uno de estos
+beans de entidad, debe hacer m&uacute;ltiples llamadas a trav&eacute;s de RMI con
+el alto coste que esto conlleva.</li>
+
+<li>Desde el punto de vista de la <em>integridad transaccional</em>: los beans de
+entidad son transaccionales por naturaleza, pero cada operaci&oacute;n con
+un bean distinto se ejecutar&iacute;a en una transacci&oacute;n separada.
+Podr&iacute;amos usar JTA para agruparlo todo de manera manual, pero
+entonces se perder&iacute;a parte del beneficio de los EJBs: el manejo
+autom&aacute;tico y declarativo de transacciones.</li>
+
+</ul>
+<p> Por tanto necesitamos alg&uacute;n mecanismo que nos permita: <strong>reducir la comunicaci&oacute;n por la red, colocar la
+l&oacute;gica de negocio de forma coherente y agrupar las operaciones en
+una &uacute;nica transacci&oacute;n</strong> declarativa.</p>
+<a name="N10128"></a><a name="Soluci%C3%B3n"></a>
+<h3 class="underlined_5">Soluci&oacute;n</h3>
+<p> Utilizar el patr&oacute;n <em>Session
+Facade</em>. En este, los EJBs de sesi&oacute;n forman el
+"frontal" de la capa de negocio, ofreciendo un API de m&eacute;todos al
+que pueden acceder los clientes. Para realizar sus operaciones, los
+EJBs de sesi&oacute;n llaman a los de entidad a trav&eacute;s de su interfaz
+local, pasando a la situaci&oacute;n de la siguiente figura,
+ en la que se
+reduce el n&uacute;mero de operaciones remotas. Los EJBs de entidad no son
+directamente accesibles por los clientes para evitar los problemas
+descritos anteriormente.</p>
+<p>
+<img alt="Uso de session fa&ccedil;ade" content-width="10cm" src="imagenes/consessionfacade.gif"></p>
+<p>El session fa&ccedil;ade es un EJB de sesi&oacute;n para poder aprovechar los beneficios que nos dan los EJBs:
+acceso remoto transparente,  transaccionalidad y seguridad declarativas
+y gesti&oacute;n autom&aacute;tica del ciclo de vida.</p>
+<p>Independientemente de la mejora de eficiencia, puede verse que este
+patr&oacute;n es una implementaci&oacute;n mediante un EJB de sesi&oacute;n del
+<em>Facade</em> del GoF, que se usa
+tambi&eacute;n en aplicaciones sin EJBs para centralizar la l&oacute;gica de
+negocio.La &uacute;nica diferencia de implementaci&oacute;n es que en aplicaciones convencionales 
+la fachada es un POJO local y aqu&iacute;, como hemos visto, es un EJB de sesi&oacute;n remoto.</p>
+<p>Un problema pr&aacute;ctico es cu&aacute;ntos Session Fa&ccedil;ades hay que definir en una
+aplicaci&oacute;n. Lo m&aacute;s sencillo es definir uno solo, que contendr&iacute;a
+todo el API de la capa de negocio, pero este enfoque lleva a clases
+con demasiado c&oacute;digo no relacionado entre s&iacute;. La pr&aacute;ctica com&uacute;n es
+agrupar los casos de uso relacionados (que act&uacute;an sobre las mismas
+entidades) en un Session Facade propio.</p>
+<a name="N10147"></a><a name="Consecuencias"></a>
+<h3 class="underlined_5">Consecuencias</h3>
+<p> Entre las positivas:</p>
+<ul>
+
+<li>Reduce el n&uacute;mero de comunicaciones por la red (en aplicaciones
+distribuidas)</li>
+
+<li>Promueve la separaci&oacute;n entre l&oacute;gica de negocio y de
+presentaci&oacute;n, ya que el cliente se limita a delegar en el Session
+Facade para que &eacute;l haga las operaciones.</li>
+
+<li>Asegura la integridad transaccional.</li>
+
+</ul>
+<p>Como consecuencias negativas, un uso inadecuado del patr&oacute;n puede
+llevar a:</p>
+<ul>
+
+<li>Crear beans de sesi&oacute;n con mucho c&oacute;digo y dif&iacute;ciles de gestionar
+si no se tiene una disciplina clara para separar casos de uso.</li>
+
+<li>Dar demasiadas competencias al Session Facade, coloc&aacute;ndole la
+l&oacute;gica interna de objetos del dominio, que &eacute;stos deber&iacute;an manejar
+por s&iacute; mismos.</li>
+
+<li>Duplicaci&oacute;n de c&oacute;digo com&uacute;n a varios casos de uso. Cuando se
+detecte este c&oacute;digo debe sacarse fuera del Session Facade y
+colocarse en POJOs en la capa de negocio, formando un  patr&oacute;n Application
+Service, es decir, una capa auxiliar que contiene l&oacute;gica de negocio.</li>
+
+</ul>
+</div>
+
+
+<a name="N1016D"></a><a name="Transfiriendo+datos+a+los+clientes%3A+Transfer+Object"></a>
+<h2 class="underlined_10">Transfiriendo datos a los clientes: Transfer Object</h2>
+<div class="section">
+<a name="N10173"></a><a name="Problema-N10173"></a>
+<h3 class="underlined_5">Problema</h3>
+<p>Como ya hemos visto, una de las fuerzas fundamentales en una
+aplicaci&oacute;n distribuida es reducir al m&iacute;nimo las llamadas remotas.
+No obstante en una aplicaci&oacute;n distribuida en alg&uacute;n momento habr&aacute;
+que transferir datos de una capa a otra. Buscamos <strong>la manera menos costosa de transferir
+informaci&oacute;n entre capas</strong>.</p>
+<a name="N10180"></a><a name="Soluci%C3%B3n-N10180"></a>
+<h3 class="underlined_5">Soluci&oacute;n</h3>
+<p>Realizar la transferencia de informaci&oacute;n entre capas empaquetada en
+objetos del tipo TO, <em>Transfer Objects</em>, que en su versi&oacute;n m&aacute;s sencilla son
+simplemente JavaBeans. Las operaciones ser&aacute;n mucho m&aacute;s eficientes
+con una &uacute;nica llamada que transfiera un paquete de informaci&oacute;n en
+lugar de con m&uacute;ltiples llamadas con datos individuales. Por supuesto, los TOs tambi&eacute;n se usan
+ en aplicaciones no distribuidas, pero
+en este caso su uso est&aacute; m&aacute;s justificado por cuestiones de organizaci&oacute;n de c&oacute;digo (1 par&aacute;metro
+en lugar de varios) que por la
+eficiencia.</p>
+<p>Aqu&iacute; es donde podemos ver la justificaci&oacute;n de por qu&eacute; los TOs deben ser serializables: si la
+aplicaci&oacute;n pasa de ser local a distribuida, los TOs van a viajar entre distintas JVMs . Aunque esta condici&oacute;n no ser&iacute;a estrictamente necesaria para 
+una aplicaci&oacute;n local, es muy f&aacute;cil de seguir desde el principio y nos protege ante posibles cambios
+en la arquitectura.</p>
+</div>
+
+<a name="N10191"></a><a name="Localizando+servicios%3A+Service+Locator"></a>
+<h2 class="underlined_10">Localizando servicios: Service Locator</h2>
+<div class="section">
+<a name="N10197"></a><a name="Problema-N10197"></a>
+<h3 class="underlined_5">Problema</h3>
+<p>En cualquier aplicaci&oacute;n J2EE habr&aacute; componentes que necesiten acceder a recursos o servicios como DataSources de JDBC o  colas JMS. Para usar estos recursos normalmente es necesario localizarlos primero a trav&eacute;s de JNDI. Como los componentes que acceden a dichos recursos est&aacute;n dispersos por la aplicaci&oacute;n, el c&oacute;digo de localizaci&oacute;n tambi&eacute;n lo estar&aacute;, lo que conlleva problemas de mantenimiento y legibilidad. Nuestro objetivo es proporcionar un "responsable centralizado" para localizaci&oacute;n de recursos JNDI.</p>
+<p>Aplicabilidad</p>
+<ul>
+    
+<li> Se necesita usar JNDI para acceder a recursos como EJBs, componentes JMS o DataSources JDBC.</li>
+    
+<li> Se necesita encapsular las posibles dependencias de la implementaci&oacute;n concreta de JNDI de que disponemos.</li>
+    
+<li> Se quiere evitar una sobrecarga de trabajo innecesaria en la creaci&oacute;n del contexto inicial JNDI y las llamadas de b&uacute;squeda de recursos.</li>
+
+</ul>
+<a name="N101B0"></a><a name="Soluci%C3%B3n-N101B0"></a>
+<h3 class="underlined_5">Soluci&oacute;n</h3>
+<p>
+
+Utilizar el patr&oacute;n service locator para implementar y encapsular la b&uacute;squeda de recursos. El service locator esconde al cliente las posibles complejidades de la b&uacute;squeda, proporciona un API uniforme y puede mantener una cache para evitar llamadas innecesarias a JNDI. Normalmente no har&aacute; falta m&aacute;s de un service locator para toda la aplicaci&oacute;n, por lo que se puede utilizar para su implementaci&oacute;n el patr&oacute;n singleton del GoF.
+</p>
+<p>La siguiente figura muestra el diagrama de clases del patr&oacute;n.</p>
+<p>
+<img alt="Service Locator" content-width="12cm" src="imagenes/servicelocator.jpg"></p>
+<p>Como se ve, el Service Locator (que es un singleton) 
+recibe solicitudes de los clientes para localizar recursos JNDI. Al inicializarse,el 
+Service Locator crea un contexto inicial JNDI. Cada vez que recibe una solicitud de un recurso
+JNDI hace uso de dicho contexto. Mantiene adem&aacute;s una Cache con los recursos ya solicitados para evitar peticiones JNDI innecesarias.</p>
+<a name="N101C6"></a><a name="Consecuencias-N101C6"></a>
+<h3 class="underlined_5">Consecuencias</h3>
+<p>Las consecuencias positivas son:</p>
+<ul>
+    
+<li> Abstrae la complejidad: se encapsula el mecanismo de localizaci&oacute;n de servicios de modo que el cliente no necesita conocer los detalles.</li>
+    
+<li> Proporciona un interfaz uniforme de acceso a recursos: que pueden usar todos los clientes y que abstrae de las posibles caracter&iacute;sticas propias de la implementaci&oacute;n JNDI empleada.</li>
+    
+<li> Mejora el funcionamiento de la aplicaci&oacute;n: mediante la cache se evitan llamadas innecesarias a JNDI</li>
+
+</ul>
+<p>Patrones relacionados</p>
+<ul>
+    
+<li> Singleton (GoF): normalmente en una aplicaci&oacute;n bastar&aacute; con tener un &uacute;nico Service Locator, por lo que este patr&oacute;n se suele implementar como un singleton.</li>
+    
+<li> Data Access Object:  un DAO normalmente utiliza un Service Locator para acceder a fuentes de datos JDBC.</li>
+    
+<li> Business Delegate: en aplicaciones con componentes remotos utiliza un Service Locator para localizar servicios.</li>
+
+</ul>
+</div>
+
+<a name="N101EC"></a><a name="Haciendo+transparentes+los+EJBs+de+negocio%3ABusiness+Delegate"></a>
+<h2 class="underlined_10">Haciendo transparentes los EJBs de negocio:Business Delegate</h2>
+<div class="section">
+<p> La principal raz&oacute;n de uso del <em>Business Delegate</em> es exactamente la
+misma que en aplicaciones sin EJB: ocultar la implementaci&oacute;n de la
+capa de negocio. Esta idealmente no deber&iacute;a cambiar haya POJOs o
+EJBs en la capa de negocio.</p>
+<p> En aplicaciones distribuidas hay que considerar adem&aacute;s d&oacute;nde reside
+f&iacute;sicamente el <em>Business Delegate</em>. Aunque desde el punto de vista l&oacute;gico pertenece a
+la capa de negocio (y como tal deben ocuparse de &eacute;l los
+desarrolladores de esta capa), desde el punto de vista f&iacute;sico se
+debe colocar en la capa de presentaci&oacute;n para que las comunicaciones
+con los objetos de esta &uacute;ltima sean locales. Los clientes que
+solicitan sus servicios no tienen por qu&eacute; saber que estos son
+accedidos en realidad de forma remota. Esto abre una posible
+consecuencia negativa para el mal uso del patr&oacute;n: que los
+desarrolladores de la capa de presentaci&oacute;n olviden que los m&eacute;todos
+de negocio son en realidad remotos y acaben haciendo un uso
+ineficiente y poco optimizado de las llamadas.</p>
+</div>
+
+</div>
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+        Copyright &copy;
+         2006-2007 Depto. CCIA</div>
+</div>
+</body>
+</html>

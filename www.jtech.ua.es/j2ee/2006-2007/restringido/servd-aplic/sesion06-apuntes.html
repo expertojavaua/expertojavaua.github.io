@@ -1,0 +1,480 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.7">
+<meta name="Forrest-skin-name" content="pelt">
+<title>JNDI y acceso a bases de datos con el servidor de aplicaciones</title>
+<link type="text/css" href="skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="skin/print.css" rel="stylesheet">
+<link type="text/css" href="skin/profile.css" rel="stylesheet">
+<script src="skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<div class="header">
+<div class="grouplogo">
+<a href="http://www.jtech.ua.es/j2ee"><img class="logoImage" alt="J2EE" src="images/baner_j2ee_izq.gif" title="Curso Especialista Universitario J2EE"></a>
+</div>
+<div class="projectlogoA1">
+<a href="http://www.dccia.ua.es/"><img class="logoImage" alt="Servidores de aplicaciones" src="images/baner_j2ee_der.gif" title="Servidores de aplicaciones"></a>
+</div>
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="../index.html">M&oacute;dulos</a>
+</li>
+<li class="current">
+<a class="base-selected" href="index.html">Servidores de aplicaciones</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<div id="level2tabs"></div>
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<div id="menu">
+<div onclick="SwitchMenu('menu_selected_1.1', 'skin/')" id="menu_selected_1.1Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Servidores de Aplicaciones</div>
+<div id="menu_selected_1.1" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="index.html" title="Java y Herramientas de Desarrollo">&Iacute;ndice</a>
+</div>
+<div onclick="SwitchMenu('menu_selected_1.1.2', 'skin/')" id="menu_selected_1.1.2Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Teor&iacute;a</div>
+<div id="menu_selected_1.1.2" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="sesion01-apuntes.html">Sesion 1</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-apuntes.html">Sesion 2</a>
+</div>
+<div class="menuitem">
+<a href="sesion03-apuntes.html">Sesion 3</a>
+</div>
+<div class="menuitem">
+<a href="sesion04-apuntes.html">Sesion 4</a>
+</div>
+<div class="menuitem">
+<a href="sesion05-apuntes.html">Sesion 5</a>
+</div>
+<div class="menupage">
+<div class="menupagetitle">Sesion 6</div>
+</div>
+<div class="menuitem">
+<a href="sesion07-apuntes.html">Apendice</a>
+</div>
+<div class="menuitem">
+<a href="roadmap-apuntes.html">Roadmap</a>
+</div>
+</div>
+<div onclick="SwitchMenu('menu_1.1.3', 'skin/')" id="menu_1.1.3Title" class="menutitle">Ejercicios</div>
+<div id="menu_1.1.3" class="menuitemgroup">
+<div class="menuitem">
+<a href="sesion01-ejercicios.html">Sesion 1</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-ejercicios.html">Sesion 2</a>
+</div>
+<div class="menuitem">
+<a href="sesion03-ejercicios.html">Sesion 3</a>
+</div>
+<div class="menuitem">
+<a href="sesion04-ejercicios.html">Sesion 4</a>
+</div>
+<div class="menuitem">
+<a href="sesion05-ejercicios.html">Sesion 5</a>
+</div>
+<div class="menuitem">
+<a href="sesion06-ejercicios.html">Sesion 6</a>
+</div>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<div id="credit2"></div>
+</div>
+<div id="content">
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="sesion06-apuntes.pdf"><img alt="PDF -icon" src="skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1>JNDI y acceso a bases de datos con el servidor de aplicaciones</h1>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#Introducci%C3%B3n">Introducci&oacute;n</a>
+</li>
+<li>
+<a href="#JNDI%3A+b%C3%BAsqueda+de+objetos+mediante+su+nombre+l%C3%B3gico">JNDI: b&uacute;squeda de objetos mediante su nombre l&oacute;gico</a>
+<ul class="minitoc">
+<li>
+<a href="#Programar+con+JNDI">Programar con JNDI</a>
+</li>
+<li>
+<a href="#Weblogic+y+JNDI">Weblogic y JNDI</a>
+</li>
+<li>
+<a href="#Clases+de+arranque+y+parada">Clases de arranque y parada</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Configuraci%C3%B3n+de+las+fuentes+de+datos+y+el+pool+%0A++++de+conexiones">Configuraci&oacute;n de las fuentes de datos y el pool 
+    de conexiones</a>
+<ul class="minitoc">
+<li>
+<a href="#Fuentes+de+datos">Fuentes de datos</a>
+</li>
+<li>
+<a href="#Uso+de+una+fuente+de+datos+en+una+aplicaci%C3%B3n">Uso de una fuente de datos en una aplicaci&oacute;n</a>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+<a name="N1000C"></a><a name="Introducci%C3%B3n"></a>
+<h2 class="underlined_10">Introducci&oacute;n</h2>
+<div class="section">
+<p>En este tema veremos c&oacute;mo una aplicaci&oacute;n que corre en un servidor 
+  de aplicaciones se puede conectar a una base de datos. Para ello, primero explicaremos 
+  JNDI que nos va permitir acceder a recursos (una conexi&oacute;n a BD es un 
+  recurso) para m&aacute;s tarde detallar las opciones dentro de WebLogic para 
+  la configuraci&oacute;n de un acceso a BD.</p>
+</div>
+
+<a name="N10016"></a><a name="JNDI%3A+b%C3%BAsqueda+de+objetos+mediante+su+nombre+l%C3%B3gico"></a>
+<h2 class="underlined_10">JNDI: b&uacute;squeda de objetos mediante su nombre l&oacute;gico</h2>
+<div class="section">
+<p>JNDI (<em>Java Naming and Directory Interface</em>) es un API para el acceso a diferentes 
+  servicios de nombres y directorios de una manera uniforme. Proporciona un mecanismo 
+  para enlazar programas Java con, por ejemplo, sistemas de ficheros, recursos 
+  de red, recursos de bases de datos o servicios de directorios (LDAP). El API 
+  de JNDI permite encontrar objetos y datos registrados en estos servicios y as&iacute; 
+  mismo registrar sus propios objetos y datos para que sean usados por otros usuarios.</p>
+<p>JNDI suele ser utilizado para lo siguiente:</p>
+<ul>
+  
+<li>Servicio de nombres: asocia nombres l&oacute;gicos a recursos. Se detalla 
+    en la siguiente secci&oacute;n. Este servicio es muy similar al servicio DNS 
+    de la web. Cuando solicitamos una direcci&oacute;n web, el DNS se encarga 
+    de buscar la direcci&oacute;n IP asociada y la devuelve.</li>
+  
+<li>Servicio de directorio: haciendo uso de otro servicio (LDAP, sistema de 
+    ficheros, etc.) JNDI proporciona todas las funcionalidades que permiten estos 
+    servicios. JNDI puede ser visto como un driver JDBC en el sentido de que se 
+    encarga de "traducir" las llamadas. En el momento de que un EJB, 
+    por ejemplo, pide un recurso a JNDI, &eacute;ste pasa la petici&oacute;n al 
+    servicio correspondiente (LDAP, por ejemplo) y devuelve el recurso. El servicio 
+    de directorio es muy parecido al servicio X.500.</li>
+
+</ul>
+<p>Un servicio de nombres proporciona un m&eacute;todo para mapear nombres l&oacute;gicos 
+  (por ejemplo, <em>databd</em>) con entidades u objetos (un recurso DataSource, 
+  un EJB, JMS, etc.). De esta manera, no tenemos que buscar un determinado objeto, 
+  sino que buscaremos su nombre l&oacute;gico. Pensad cuando trabaj&aacute;bamos 
+  con las bases de datos. Obten&iacute;amos una conexi&oacute;n a partir de un 
+  driver y nos conect&aacute;bamos a una base de datos en concreto, que estaba 
+  alojada en una determinada direcci&oacute;n. Si la base de datos cambiaba de 
+  nombre o cambiaba su direcci&oacute;n deb&iacute;amos reflejar dichos cambios 
+  en nuestro c&oacute;digo. Si utilizamos JNDI y asociamos un nombre l&oacute;gico, 
+  por ejemplo <em>databd</em>, a un objeto DataSource, el objeto DataSource es el 
+  que manejar&aacute; los datos de la conexi&oacute;n con la base de datos. Nuestro 
+  c&oacute;digo Java accede a JNDI y obtiene una referencia al objeto DataSource 
+  asociado con el nombre l&oacute;gico. Si cambian los par&aacute;metros de conexi&oacute;n, 
+  debemos cambiar el objeto DataSource, pero no nuestro c&oacute;digo Java, puesto 
+  que el nombre l&oacute;gico no ha cambiado. </p>
+<p>Vamos a definir un par de conceptos:</p>
+<ul>
+  
+<li>
+<strong>Contexto</strong>: un contexto es similar a una conexi&oacute;n en JDBC. Cuando 
+    obtenemos un contexto de JNDI tenemos un flujo de informaci&oacute;n entre 
+    nuestra aplicaci&oacute;n y el servicio deseado (de nombres o directorios). 
+    Podemos entender un contexto como un directorio del sistema operativo. Dentro 
+    de ese directorio podremos tener m&aacute;s contextos u objetos, de la misma 
+    forma que en un directorio podemos tener m&aacute;s directorios u objetos 
+    (ficheros, enlaces, etc.) Cuando creemos un contexto en nuestro c&oacute;digo 
+    primero deberemos especificar una serie de propiedades. </li>
+  
+<li>
+<strong>Enlace</strong>: un enlace es una asociaci&oacute;n entre un nombre at&oacute;mico 
+    y un objeto. </li>
+
+</ul>
+<p>JNDI suele tener asociado un &aacute;rbol. En la siguiente figura se muestra 
+  un posible &aacute;rbol JNDI. Todo &aacute;rbol tiene un contexto ra&iacute;z, 
+  sin embargo el que se utiliza para trabajar es el contexto inicial. A partir 
+  de este contexto podemos acceder a los objetos enlazados con este contexto (representados 
+  con un tri&aacute;ngulo) o descender a subcontextos (los contextos se representan 
+  mediante c&iacute;rculos). De esta forma podemos agrupar objetos y organizarlos 
+  a nuestra manera. Dentro de JNDI podemos hacer referencia a subcontextos utilizando 
+  el "." como delimitador. </p>
+<p>
+<img alt="" content-width="10cm" src="imagenes/novena.jpg"> </p>
+<a name="N10051"></a><a name="Programar+con+JNDI"></a>
+<h3 class="underlined_5">Programar con JNDI</h3>
+<p>Para acceder al contexto inicial debemos utilizar un c&oacute;digo similar 
+  al mostrado a continuaci&oacute;n:</p>
+<pre class="code">
+<strong>Context</strong> miContexto = null;<strong>
+Hashtable</strong> ht = new <strong>Hashtable </strong>();
+ht.put(Context.<strong>INITIAL_CONTEXT_FACTORY</strong>,
+		"<strong>weblogic.jndi.WLInitialContextFactory</strong>");
+ht.put(Context.<strong>PROVIDER_URL</strong>,
+		"<strong>t3://localhost:7001</strong>");
+miContexto = new <strong>InitialContext</strong> (ht);</pre>
+<p>En la primera l&iacute;nea hemos creado un objeto de la clase <em>Context</em> que nos va a gestionar el contexto. La tabla <em>Hash</em> creada 
+  sirve para pasar unos cuantos par&aacute;metros iniciales. El primer par&aacute;metro 
+  es qui&eacute;n nos va a proporcionar el &aacute;rbol JNDI, en este caso Weblogic. 
+  El segundo par&aacute;metro es la URL del servidor que nos proporcionar&aacute; 
+  el &aacute;rbol. Una vez asignados los par&aacute;metros iniciales creamos un 
+  contexto inicial. En todo c&oacute;digo JNDI debemos capturar la excepci&oacute;n 
+  <em>NamingException</em>.</p>
+<p>Cuando terminemos de utilizar el contexto debemos cerrarlo llamando al m&eacute;todo 
+  <strong>close</strong> de Context.</p>
+<p>Para asociar un objeto en el &aacute;rbol utilizaremos el siguiente c&oacute;digo:</p>
+<pre class="code">Persona persona = new Persona();
+miContexto.<strong>bind</strong> ("objeto persona", persona);
+// miContexto.<strong>rebind</strong> ("objeto persona", persona);</pre>
+<p>Hemos creado un objeto cualquiera, en este caso el objeto <em>persona</em>. Utilizamos 
+  el contexto para asociar (<em>bind</em>) el nombre <em>"objeto persona" 
+  </em>al objeto. Si utilizamos el m&eacute;todo <em>bind</em> y ya existe una asociaci&oacute;n 
+  con este nombre en el &aacute;rbol, se producir&aacute; una excepci&oacute;n. 
+  Por ello se puede utilizar la llamada al m&eacute;todo <em>rebind</em> que, caso 
+  de existir, reemplaza la asociaci&oacute;n anterior. </p>
+<p>Tambi&eacute;n podemos crear subcontextos para organizar mejor nuestra informaci&oacute;n. 
+  Para crear un subcontexto podemos utilizar el siguiente c&oacute;digo:</p>
+<pre class="code">Context subcontexto = miContexto.<strong>createSubContext</strong> ("empleados");
+Persona persona = new Persona();
+subcontexto.<strong>bind</strong> ("contable", persona);
+</pre>
+<p>Hemos creado un subcontexto enlazado con el contexto inicial y dentro de ese 
+  subcontexto hemos asociado un objeto.</p>
+<p>Por &uacute;ltimo, queda recuperar un objeto dentro de un contexto. El siguiente 
+  c&oacute;digo devuelve el objeto introducido en el ejemplo anterior. Observad 
+  que es necesario realizar una conversi&oacute;n al objeto que esperamos que 
+  se devuelva. </p>
+<pre class="code">
+<strong>Persona</strong> pers = (<strong>Persona</strong>) miContexto.lookup ("<strong>empleados/contable</strong>");</pre>
+<a name="N100C6"></a><a name="Weblogic+y+JNDI"></a>
+<h3 class="underlined_5">Weblogic y JNDI</h3>
+<p>Weblogic gestiona un &aacute;rbol JNDI propio, donde las aplicaciones pueden 
+  asociar objetos para que puedan ser utilizados por otras aplicaciones. Podemos 
+  ver el &aacute;rbol JNDI de un determinado servidor. Para ello pinchamos sobre el servidor que queramos consultar y nos aparece un enlace (<em>View JNDI tree</em> que nos mostrar&aacute; una nueva ventana con el &aacute;rbol.</p>
+<p>
+<img alt="" content-width="12cm" src="imagenes/jndi/116-2005.jpg"> </p>
+<p>Se nos abrir&aacute; una nueva ventana que nos mostrar&aacute; el &aacute;rbol 
+  JNDI. Esta ventana es muy similar a la consola, puesto que est&aacute; dividida 
+  en dos y tiene un elemento de navegaci&oacute;n en la parte izquierda.  En la figura 
+  se muestra los tres objetos que posteriormente adjuntaremos al &aacute;rbol. Podemos definir la seguridad para cada elemento del &aacute;rbol, tal como lo hemos hecho hasta ahora.</p>
+<p>
+<img alt="" content-width="14cm" src="imagenes/jndi/117-2005.jpg"> </p>
+<a name="N100E4"></a><a name="Clases+de+arranque+y+parada"></a>
+<h3 class="underlined_5">Clases de arranque y parada</h3>
+<p>Algunas veces se hace necesario el uso de clases para realizar ciertas tareas 
+  tanto en el arranque como en la parada de los servidores. Un posible ejemplo 
+  son las asociaciones que se han creado en el &aacute;rbol JNDI dentro de WebLogic. 
+  Una vez que paremos los servidores estas asociaciones no persisten. Podemos 
+  hacer uso de clases que carguen estas asociaciones y que las almacenen cuando 
+  paremos los servidores. Para utilizar una clase de arranque o parada pinchamos 
+  en <em>Environment -&gt;Startup &amp; Shutdown Classes</em> y creamos una clase nueva (ver siguiente imagen). </p>
+<p>
+<img alt="" content-width="14cm" src="imagenes/jndi/118-2005.jpg"></p>
+<p>Lo primero es definir si se trata de una clase de arranque o de parada.</p>
+<p>
+<img alt="" content-width="14cm" src="imagenes/jndi/119-2005.jpg"></p>
+<p>Debemos especificar el identificador de la clase (elegido de forma arbitraria) y el 
+nombre de la clase. Tened en cuenta que la clase debe estar incluida en el CLASSPATH. 
+Para ello debemos a&ntilde;adir el camino hasta nuestras clases a los ejecutables 
+<em>startWebLogic.cmd</em> y <em>startManagedWebLogic.cmd</em>.</p>
+<p>
+<img alt="" content-width="14cm" src="imagenes/jndi/120-2005.jpg"></p>
+<p>Como siempre, debemos seleccionar los servidores en los que se desplegar&aacute; 
+	  las clases.</p>
+<p>
+<img alt="" content-width="14cm" src="imagenes/jndi/121-2005.jpg"></p>
+<p>Debemos activar los cambios en el <em>Change Center</em>. Una vez realizado el despliegue de las clases debemos reiniciar los servidores 
+    que se vean afectados. A partir de este momento, desde cualquier aplicaci&oacute;n 
+    podremos acceder a estos objetos, haciendo uso de JNDI. 
+    Este ejemplo (<a href="servd-aplic-arranque.zip">servd-aplic-arranque.zip</a>) 
+    contiene varias clases de arranque. Extraed el proyecto y desplegad el 
+    fichero <em>arranque.jar</em>.</p>
+<p>Si listamos las clases de arranque y parada en nuestro sistema y pinchamos sobre una de ellas, nos permite configurar el comportamiento de estas clases (ver siguiente figura). En concreto tenemos el orden de despliegue, que nos permite desplegar algunas clases antes que otras (es posible que una clase necesite objetos que despliega otra); posibles argumentos a la clase; y configurar el comportamiento de despliegue: si existe alg&uacute;n fallo en el despliegue de la clase que provoque un fallo en el arranque del servidor, y que se ejecute antes o despu&eacute;s del despliegue de las aplicaciones.</p>
+<p>
+<img alt="" content-width="14cm" src="imagenes/jndi/122-2005.jpg"></p>
+</div>
+
+<a name="N1012F"></a><a name="Configuraci%C3%B3n+de+las+fuentes+de+datos+y+el+pool+%0A++++de+conexiones"></a>
+<h2 class="underlined_10">Configuraci&oacute;n de las fuentes de datos y el pool 
+    de conexiones</h2>
+<div class="section">
+<p>Hasta ahora la conexi&oacute;n a una base de datos se realizaba mediante 
+    un c&oacute;digo JDBC que utilizaba un driver y obten&iacute;a una conexi&oacute;n. 
+    Una aplicaci&oacute;n que utilice este c&oacute;digo puede seguir haci&eacute;ndolo 
+    dentro de WebLogic, es decir, si desplegamos esa aplicaci&oacute;n en WebLogic 
+    la aplicaci&oacute;n funcionar&aacute; correctamente. En esta secci&oacute;n vamos a 
+    configurar el servidor de aplicaciones para que nos permita trabajar con JDBC, 
+    aprovechando las caracter&iacute;sticas de pool de conexiones y fuentes de 
+    datos. Tambi&eacute;n veremos c&oacute;mo podemos conseguir una conexi&oacute;n 
+    controlada por el servidor. Un esquema general de c&oacute;mo maneja WebLogic 
+    las bases de datos es el siguiente:</p>
+<p>
+<img alt="" content-width="12cm" src="imagenes/octava.jpg"> </p>
+<p>Tanto los clientes externos como los internos obtienen un objeto DataSource 
+    mediante el &aacute;rbol JNDI gestionado por el servidor. Una 
+    vez obtenido este objeto, se solicita una conexi&oacute;n a trav&eacute;s 
+    de &eacute;l, que a su vez la obtiene de un Connection Pool gestionado por 
+    el servidor. El paso del Connection Pool es transparente para el que lo va a usar. En versiones anteriores a la 9.0, WebLogic permit&iacute;a definir el pool de conexiones por un lado y las fuentes de datos por otro. A partir de esta versi&oacute;n, WebLogic gestiona el pool, aunque deja una opci&oacute;n (<em>deprecated</em>) para compatibilidad con c&oacute;digos desarrollados para versiones anteriores (<em>Data Sources Factories</em>).</p>
+<a name="N10148"></a><a name="Fuentes+de+datos"></a>
+<h3 class="underlined_5">Fuentes de datos</h3>
+<p>Pasamos ahora a definir una fuente de datos. Pinchamos en <em>Services</em> 
+	-&gt; <em>DataSources</em>. Pinchamos en configurar una nueva fuente de datos y nos aparecer&aacute; una figura como la siguiente. Damos nombre a esta nueva fuente de datos. El nombre JNDI es el identificador 
+que nos servir&aacute; para obtener el objeto DataSource usando JNDI. Debemos elegir el SGDB a usar. Ya hay algunos definidos y se nos mostrar&aacute; el driver a usar. Seleccionamos MySQL y el driver correspondiente. Previamente tenemos que a&ntilde;adir al CLASSPATH el fichero que contiene el driver.</p>
+<p>
+<img alt="" content-width="14cm" src="imagenes/jdbc/98-2005.jpg"> </p>
+<p>Aqu&iacute; debemos definir las opciones de transacciones que vamos a necesitar.</p>
+<p>
+<img alt="" content-width="14cm" src="imagenes/jdbc/99-2005.jpg"> </p>
+<p>Lo siguiente son las propiedades de la conexi&oacute;n. Aqu&iacute; especificaremos el nombre de la BD, el nombre y el puerto de la m&aacute;quina que hace de servidor de la BD y el usuario y contrase&ntilde;a con la que entraremos.</p>
+<p>
+<img alt="" content-width="14cm" src="imagenes/jdbc/100-2005.jpg"> </p>
+<p>La siguiente opci&oacute;n nos permite comprobar el funcionamiento de la conexi&oacute;n. Si pinchamos en <em>Test Configuration</em>, WebLogic intentar&aacute; probar la conexi&oacute;n para comprobar si todo es correcto, avis&aacute;ndonos con el resultado.</p>
+<p>
+<img alt="" content-width="14cm" src="imagenes/jdbc/101-2005.jpg"> </p>
+<p>Por &uacute;ltimo, debemos seleccionar en qu&eacute; servidores desplegamos la aplicaci&oacute;n y pinchar en <em>Finish</em>.</p>
+<p>
+<img alt="" content-width="14cm" src="imagenes/jdbc/102-2005.jpg">  </p>
+<p>A pesar de que la propia fuente de datos gestione el pool de conexiones, se pueden definir algunas propiedades de este pool. Nos vamos a la lista de fuentes de datos (<em>Services-&gt;JDBC-&gt;Data Sources</em>) y pinchamos sobre el nombre de la fuente de datos a modificar. Nos vamos a la solapa <em>Configuration-&gt;Connection Pool</em> y nos aparece una ventana como la siguiente.</p>
+<p>
+<img alt="" content-width="14cm" src="imagenes/jdbc/103-2005.jpg">  </p>
+<p>
+<img alt="" content-width="14cm" src="imagenes/jdbc/104-2005.jpg">  </p>
+<p>Adem&aacute;s de los campos como la URL, usuario, etc. tenemos los siguientes:</p>
+<ul>
+    
+<li>La capacidad inicial indica el n&uacute;mero de conexiones que se crear&aacute;n 
+      en el instante inicial.</li>
+    
+<li>La capacidad m&aacute;xima es el n&uacute;mero m&aacute;ximo de conexiones 
+      que se abrir&aacute;n en este pool, independientemente de las solicitadas.</li>
+    
+<li>El incremento de capacidad maneja el n&uacute;mero de conexiones que se 
+      abrir&aacute;n cuando llega una nueva solicitud de conexi&oacute;n y todas 
+      est&aacute;n ocupadas. Es recomendable crear varias conexiones a la vez, 
+      pues es un recurso cr&iacute;tico. </li>
+    
+<li>El <em>statement cache</em> es un mecanismo proporcionado por WebLogic 
+      para realizar una cache de las llamadas y m&eacute;todos preparados (<em>prepareStatement</em>). 
+      Cuanto alguna aplicaci&oacute;n llama a <em>Connection.prepareStatement()</em> 
+      el servidor se encarga de crear y meter en la cach&eacute; este procedimiento, 
+      para que pueda ser utilizado por sucesivas llamadas. Podemos especificar 
+      el tama&ntilde;o de esta cach&eacute;. Se pueden utilizar dos tipos de cach&eacute;: 
+      <ul>
+        
+<li>LRU (<em>Least Recently Used</em>): va incorporando a la cach&eacute; 
+          nuevos procedimientos hasta que se alcanza el m&aacute;ximo, momento 
+          que elimina el menos usado.</li>
+        
+<li>
+<em>Fixed</em>: en este caso s&oacute;lo almacena en la cache el n&uacute;mero 
+          de procedimientos indicado, no haciendo nada con los sucesivos.</li>
+      
+</ul>
+    
+</li>
+  
+</ul>
+<p>Existe otra opci&oacute;n dentro de JDBC: los <em>Multi Data Sources</em>. Simplemente son un conjunto de fuentes de datos, agrupados para dar soporte de balanceo de carga y recuperaci&oacute;n ante fallos. La creaci&oacute;n de un elemento de este tipo se tiene que realizar despu&eacute;s de haber creado el resto de fuentes de datos. Creamos un nuevo multi DS. Le damos nombre, nombre en el &aacute;rbol JNDI, y el tipo de algoritmo a usar. Existen dos algoritmos: <em>failover</em>: cuando una aplicaci&oacute;n pide una fuente de datos, el multiDS le pide la conexi&oacute;n a la primera fuente de datos, si falla se la pide a la segunda y as&iacute; sucesivamente; <em>load balancing</em>: la primera petici&oacute;n va a la primera fuente de datos, la segunda a la segunda, etc.</p>
+<p>
+<img alt="" content-width="14cm" src="imagenes/jdbc/105-2005.jpg">  </p>
+<p>Seleccionamos si el driver es de tipo transaccional o no.</p>
+<p>
+<img alt="" content-width="14cm" src="imagenes/jdbc/106-2005.jpg">  </p>
+<p>Por &uacute;ltimo, debemos decir qu&eacute; fuentes de datos (anteriormente creadas) se deben adjuntar a este multiDS.</p>
+<p>
+<img alt="" content-width="14cm" src="imagenes/jdbc/107-2005.jpg">  </p>
+<a name="N101F4"></a><a name="Uso+de+una+fuente+de+datos+en+una+aplicaci%C3%B3n"></a>
+<h3 class="underlined_5">Uso de una fuente de datos en una aplicaci&oacute;n</h3>
+<p>Para hacer uso de una fuente de datos definida por el servidor de aplicaciones 
+    debemos obtener una conexi&oacute;n haciendo uso de un objeto <strong>DataSource. 
+    </strong>Este objeto se obtendr&aacute; haciendo uso de JNDI. Dentro de un programa 
+    JDBC los pasos a seguir para obtener una conexi&oacute;n son los siguientes:</p>
+<ul>
+    
+<li>Debemos importar las clases para el manejo de las fuentes de datos y JNDI. 
+      <pre class="code">import <strong>javax.sql.DataSource</strong>;
+import <strong>javax.naming.*</strong>;
+import <strong>java.util.Hashtable</strong>;</pre>
+    
+</li>
+    
+<li>Definimos un contexto inicial (JNDI). Si estamos realizando una aplicaci&oacute;n
+    que se ejecutar&aacute; dentro del propio servidor que gestiona el &aacute;rbol JNDI podemos
+    obtener directamente el contexto inicial. Si la aplicaci&oacute;n se ejecuta desde
+    fuera del servidor, tenemos que usar el siguiente c&oacute;digo: La tabla <em>Hash</em> sirve para 
+      definir algunas variables de JNDI. En este caso le decimos que el contexto 
+      inicial se debe obtener de WebLogic y que la URL se obtiene del servidor 
+      de aplicaciones. En esta URL debemos especificar la direcci&oacute;n del 
+      servidor que tenga asignado el recurso. 
+      <pre class="code">
+<strong>Context</strong> miContexto = null;<strong>
+Hashtable</strong> ht = new <strong>Hashtable </strong>();
+ht.put(Context.<strong>INITIAL_CONTEXT_FACTORY</strong>,
+		"<strong>weblogic.jndi.WLInitialContextFactory</strong>");
+ht.put(Context.<strong>PROVIDER_URL</strong>,
+		"<strong>t3://localhost:7001</strong>");
+miContexto = new <strong>InitialContext</strong> (ht);</pre>
+    
+</li>
+    
+<li>Obtenemos la fuente de datos buscando por el nombre l&oacute;gico asociado 
+      al pool de conexiones antes creado. Recordad que es el nombre l&oacute;gico 
+      para JNDI, no el nombre de la fuente de datos. 
+      <pre class="code">
+<strong>DataSource</strong> ds = (<strong>DataSource</strong>) miContexto.lookup ("<strong>MySQLDataSource</strong>");</pre>
+    
+</li>
+    
+<li>El &uacute;ltimo paso es obtener una conexi&oacute;n a la base de datos 
+      a partir de la fuente de datos. 
+      <pre class="code">Connection con = ds.<strong>getConnection</strong> ();</pre>
+    
+</li>
+  
+</ul>
+<p>Para poder ejecutar debemos tener en el CLASSPATH el siguiente fichero:</p>
+<p>$HOME_BEA/weblogic90/server/lib/weblogic.jar</p>
+<p>donde $HOME_BEA es el directorio donde est&aacute; instalado Bea. Tambi&eacute;n, 
+    por supuesto, debe estar funcionando el servidor de aplicaciones y el de la 
+    base de datos.</p>
+</div>
+
+<p class="pageBreakAfter"></p>
+
+</div>
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+        Copyright &copy;
+         2006-2007 Depto. CCIA</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,1185 @@
+<!-- saved from url=(0022)http://internet.e-mail -->
+<!-- saved from url=(0022)http://internet.e-mail -->
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+                                                            
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+                                                            
+  <meta name="Author" content="Nacho">
+                                                            
+  <meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+                                                        
+  <link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+  <title>Tema 3: Librer&iacute;as de Tags</title>
+</head>
+  <body>
+           
+      <b>      
+<h2>3.5. JSTL</h2>
+      </b><p><b>JSTL</b> (<i>JavaServer Pages Standard Tag Library</i>) es una
+      librería de tags estándar que encapsula, en forma de tags, muchas
+      funcionalidades comunes en aplicaciones JSP, de forma que, en lugar que
+      tener que recurrir a varias librerías de tags de distintos
+      distribuidores, sólo necesitaremos tener presente esta librería que,
+      además, por el hecho de ser estándar, funciona de la misma forma en
+      cualquier parte, y los contenedores pueden reconocerla y optimizar sus
+      implementaciones. </p>
+           
+      <p>JSTL permite realizar tareas como iteraciones, estructuras
+      condicionales, tags de manipulación de documentos XML, tags SQL, etc.
+      También introduce un lenguaje de expresiones que simplifica el desarrollo
+      de las páginas, y proporciona un API para simplificar la configuración
+      de los tags JSTL y el desarrollo de tags personalizados que sean conformes
+      a las convenciones de JSTL. </p>
+           
+      <p>Se puede emplear JSTL a partir de la versión 2.3 de servlets, y 1.2 de
+      JSP. Podéis encontrar más información sobre JSTL en: </p>
+           
+      <p align="center"><a href="http://java.sun.com/products/jsp/jstl">http://java.sun.com/products/jsp/jstl</a></p>
+      <h4>3.5.1. Uso de JSTL</h4>
+           
+      <p>JSTL contiene una gran variedad de tags que permiten hacer distintos
+      tipos de tareas, subdivididas en áreas. Así, JSTL proporciona varios
+      ficheros TLD, para describir cada una de las áreas que abarca, y dar así
+      a cada área su propio espacio de nombres.&nbsp; </p>
+           
+      <p>En la siguientes tablas se muestran las áreas cubiertas por JSTL (cada
+      una con una librería): </p>
+           
+      <p><b>Librería EL:</b> </p>
+           
+      <table border="1" width="83%">
+        <tr>
+          <td width="30%" align="center"><b>AREA</b></td>
+          <td width="35%" align="center"><b>URI</b></td>
+          <td width="35%" align="center"><b>PREFIJO</b></td>
+        </tr>
+        <tr>
+          <td width="30%"><b>Core</b></td>
+          <td width="35%" align="center"> <i>http://java.sun.com/jstl/ea/core</i></td>
+          <td width="35%" align="center">c</td>
+        </tr>
+        <tr>
+          <td width="30%"><b>XML</b></td>
+          <td width="35%" align="center"><i>http://java.sun.com/jstl/ea/xml</i></td>
+          <td width="35%" align="center">x</td>
+        </tr>
+        <tr>
+          <td width="30%"><b>Internacionalización (I18N)</b></td>
+          <td width="35%" align="center"><i>http://java.sun.com/jstl/ea/fmt</i></td>
+          <td width="35%" align="center">fmt</td>
+        </tr>
+        <tr>
+          <td width="30%"><b>SQL</b></td>
+          <td width="35%" align="center"><i>http://java.sun.com/jstl/ea/sql</i></td>
+          <td width="35%" align="center">sql</td>
+        </tr>
+      </table>
+      <p><b>Librería RT:</b></p>
+      <table border="1" width="83%">
+        <tr>
+          <td width="31%" align="center"><b>AREA</b></td>
+          <td width="40%" align="center"><b>URI</b></td>
+          <td width="33%" align="center"><b>PREFIJO</b></td>
+        </tr>
+        <tr>
+          <td width="31%"><b>Core</b></td>
+          <td width="40%" align="center"> <i>http://java.sun.com/jstl/ea/core_rt</i></td>
+          <td width="33%" align="center">c_rt</td>
+        </tr>
+        <tr>
+          <td width="31%"><b>XML</b></td>
+          <td width="40%" align="center"><i>http://java.sun.com/jstl/ea/xml_rt</i></td>
+          <td width="33%" align="center">x_rt</td>
+        </tr>
+        <tr>
+          <td width="31%"><b>Internacionalización (I18N)</b></td>
+          <td width="40%" align="center"><i>http://java.sun.com/jstl/ea/fmt_rt</i></td>
+          <td width="33%" align="center">fmt_rt</td>
+        </tr>
+        <tr>
+          <td width="31%"><b>SQL</b></td>
+          <td width="40%" align="center"><i>http://java.sun.com/jstl/ea/sql_rt</i></td>
+          <td width="33%" align="center">sql_rt</td>
+        </tr>
+      </table>
+      <p>Se tienen dos versiones de JSTL (la razón de ello se explica más
+      adelante), aunque la utilidad de las librerías es la misma para las dos:</p>
+           
+      <ul>
+        <li><b>Core</b> se utiliza para funciones de propósito general (manejo
+          de expresiones, sentencias de control de flujo, etc).&nbsp;</li>
+        <li><b>XML</b> se emplea para procesamiento de ficheros XML.</li>
+        <li>La librería de <b>i</b><b>nternationalización</b> se usa para dar
+          soporte a páginas multilenguaje, y a multiformatos de números,
+          monedas, etc, en función de la región en que se tenga la
+          aplicación.&nbsp;</li>
+        <li><b>SQL</b> sirve para acceder y manipular bases de datos
+          relacionales.&nbsp;</li>
+      </ul>
+      <p align="left">Las URIs y prefijos que se indican en la tabla pueden
+      emplearse (aunque no es obligatorio) para utilizar las librerías en
+      nuestras aplicaciones.</p>
+           
+      <p align="left"><b>EJEMPLO</b></p>
+           
+      <p align="left">Para utilizar, por ejemplo, los tags del área <i>core</i>
+      en una página JSP, seguimos pasos similares a los realizados para
+      utilizar las librerías de tags vistas anteriormente:</p>
+           
+      <ul>
+        <li>
+          <p align="left">Colocar al principio de cada página JSP donde vayamos
+          a utilizar la librería <i>core</i> la línea:</li>
+      </ul>
+      <blockquote>
+           
+      <pre class="codigo">&lt;%@ taglib uri=&quot;/jstl-core&quot; prefix=&quot;c&quot; %&gt;</pre>
+           
+        <p align="left">donde la <i>uri</i> y el <i>prefix</i> tendrán los
+        valores que queramos darles.</p>
+           
+      </blockquote>
+      <ul>
+        <li>
+          <p align="left">Las librerías JSTL vienen en dos versiones: los ficheros TLD para la librería
+          JSTL-EL vienen nombrados
+          como <i>prefix.tld</i> (siendo <i>prefix </i>el prefijo para la
+          librería), y los de la librería JSTL-RT vienen nombrados como <i>prefix-rt.tld</i>.
+          Así, por ejemplo, para indicar en el descriptor de despliegue (<i>web.xml</i>)
+          que vamos a utilizar la librería de <i>core</i>, pondríamos algo
+          como:</li>
+      </ul>
+      <blockquote>
+           
+      <pre class="codigo">&lt;taglib&gt; 
+	&lt;taglib-uri&gt;/jstl-c&lt;/taglib-uri&gt; 
+	&lt;taglib-location&gt;
+	/WEB-INF/c.tld
+	&lt;/taglib-location&gt; 
+&lt;/taglib&gt;</pre>
+           
+        <p align="left">Si utilizamos las <i>uris</i> absolutas que se han
+        indicado anteriormente, no tenemos que añadir este elemento <i>&lt;taglib&gt;<b>
+        </b></i>en el descriptor de despliegue. El contenedor JSP localiza
+        automáticamente el TLD.</p>
+           
+      </blockquote>
+      <ul>
+        <li>
+          <p align="left">Finalmente, tenemos que tener accesible una
+          implementación de la librería que vamos a utilizar. Hay que copiar
+          los ficheros JAR correspondientes en el directorio <i>WEB-INF/lib</i>
+          de nuestra aplicación.</li>
+      </ul>
+           
+      <h4>3.5.2. Lenguaje de expresiones</h4>
+           
+        <p>Una característica muy importante de JSTL es el soporte que ofrece
+        para un lenguaje de expresiones propio. Hasta ahora, en una página JSP
+        teníamos que utilizar bloques del tipo <i>&lt;%= valor %&gt; </i>para
+        acceder al valor de un determinado componente. Con el lenguaje de expresiones podemos acceder a estos elementos de
+        forma más sencilla. Por ejemplo:&nbsp; </p>
+           
+        <pre class="codigo">&lt;c:if test=&quot;${persona.edad} &gt; 18&quot;&gt;
+	...
+&lt;/c:if&gt;</pre>
+           
+        <p>Comprobamos si en los datos de una persona consta que es mayor de
+        edad.&nbsp; </p>
+           
+        <h4>3.5.2.1. Versiones de JSTL</h4>
+           
+      <blockquote>
+           
+        <p>Por motivos de compatibilidad con JSP 1.2, las librerías de JSTL vienen en dos versiones, que se diferencian en
+        la forma en que dan soporte a expresiones en tiempo de ejecución para
+        valores de atributos: </p>
+           
+        <ul>
+          <li>En <b>JSTL-RT</b> las expresiones se especifican en el lenguaje
+            script de la página, igual que como funcionan en las librerías
+            actuales. Así, se evalúan en tiempo de ejecución.</li>
+          <li>En <b>JSTL-EL</b> las expresiones se especifican en un lenguaje de
+            expresiones (EL) de JSTL. Así, una expresión será una cadena (<i>String</i>)
+            con la sintaxis del lenguaje en cuestión. Es responsabilidad del
+            lenguaje definir metacaracteres para distinguir expresiones de
+            simples cadenas de caracteres (por ejemplo, comenzar las expresiones
+            con un '$'). Con esta versión de JSTL no podemos utilizar lenguaje
+            script para obtener valores de atributos, y el hecho de definir
+            expresiones permite evaluar su sintaxis en tiempo de traducción.</li>
+        </ul>
+        <p>Podemos utilizar las dos librerías conjuntamente, como en este
+        ejemplo, que utiliza las dos librerías de internacionalización
+        (prefijo <i>fmt</i>):</p>
+        <pre class="codigo">&lt;fmt:message key=&quot;clave&quot;&gt;
+	&lt;fmt:param value=&quot;${miParametro}&quot;/&gt;
+	&lt;fmt_rt:param value=&quot;&lt;%= miParametro %&gt;&quot;/&gt;
+&lt;/fmt:message&gt;</pre>
+           
+      </blockquote>
+           
+        <h4>3.5.2.2. Definición del lenguaje</h4>
+           
+      <blockquote>
+           
+        <p>Se describe a continuación, y a grandes rasgos, el lenguaje de
+        expresiones incluido en JSTL 1.0. Se espera que dicho lenguaje, salvo
+        algunas modificaciones que puedan surgir, sea completamente compatible
+        con JSP 1.3, cuando salga dicha versión.</p>
+        <p>El lenguaje está inspirado en los lenguajes ECMAScript y XPath, y
+        está basado en espacios de nombres (atributos <i>PageContext</i>),&nbsp;<i>
+        </i>propiedades de elementos, operadores relacionales, lógicos y
+        aritméticos, y un conjunto de objetos implícitos.&nbsp;</p>
+        <h4>3.5.2.2.1. Atributos y expresiones</h4>
+           
+          <p>En JSTL, podremos utilizar este lenguaje de expresiones sólo en
+          atributos de etiquetas (en JSP 1.3 también se puede utilizar fuera de
+          ellas). Se invoca a este lenguaje mediante el elemento <b>${...}</b>:</p>
+          <pre class="codigo">${expresion}</pre>
+           
+          <p>Hay 3 formas de utilizar expresiones en atributos:</p>
+          <ul>
+            <li>Cuando el atributo contiene una sola expresión:</li>
+          </ul>
+          <blockquote>
+            <pre class="codigo">&lt;pref:etiq value=&quot;${expresion}&quot;/&gt;</pre>
+           
+            <p>En este caso, se evalúa la expresión y el resultado se
+            convierte al tipo de dato del atributo, siguiendo las reglas de
+            conversión internas del lenguaje.</p>
+          </blockquote>
+          <ul>
+            <li>Cuando el atributo contiene varias expresiones, separadas (o no)
+              por texto:</li>
+          </ul>
+          <blockquote>
+            <pre class="codigo">&lt;pref:etiq 
+ value=&quot;texto${e1}y ${e2}texto&quot;/&gt;</pre>
+           
+            <p>Aquí, las expresiones se evalúan de izquierda a derecha, y se
+            intercalan entre el texto, convirtiéndolas a <i>String</i>
+            (siguiendo reglas de conversión internas). Luego, la cadena
+            resultante se convierte al tipo del atributo.</p>
+          </blockquote>
+          <ul>
+            <li>Cuando el atributo contiene sólo texto:</li>
+          </ul>
+          <blockquote>
+            <pre class="codigo">&lt;pref:etiq value=&quot;Un texto&quot;/&gt;</pre>
+           
+            <p>En este caso, la cadena se convierte al tipo de dato del
+            atributo.</p>
+          </blockquote>
+          <p>Para cadenas que contengan la secuencia '${' sin que sea
+          propiamente una expresión, se encapsula esa secuencia así: <b>${'${'}</b>.
+          Por ejemplo:</p>
+          <pre class="codigo">&lt;pref:etiq value=&quot;Cadena con <b>${'${'}</b>expr}&quot;/&gt;</pre>
+           
+        <p>Mostraría: &quot;<i>Cadena con ${expr}</i>&quot;</p>
+          <p><b>EJEMPLOS</b></p>
+          <pre class="codigo">&lt;c:if test=&quot;${bean1.a &gt; 10}&quot;/&gt;
+	...
+&lt;/c:if&gt;</pre>
+           
+          <p>Comprueba si una propiedad <i>a</i> de un bean es menor que 10.</p>
+          <pre class="codigo">&lt;c:if test=&quot;true&quot;/&gt;
+	...
+&lt;/c:if&gt;</pre>
+           
+          <p>Asigna directamente el valor <i>verdadero</i> a la condición.</p>
+          <h4>3.5.2.2.2. Operadores</h4>
+           
+          <ul>
+            <li><b>Operadores '[ ]' y '.'</b>: se unifican los operadores [ ] y
+              . de forma que son equivalentes:</li>
+          </ul>
+          <blockquote>
+            <pre class="codigo">expr.campo
+expr[&quot;campo&quot;]</pre>
+           
+          </blockquote>
+          <ul>
+            <li><b>Operadores aritméticos</b>:
+              <ul>
+                <li><b>+, -, *, /</b>: suma, resta, multiplicación y división</li>
+                <li><b>div</b>: división entera</li>
+                <li><b>%, mod</b>: resto (se mantienen los dos por
+                  compatibilidad con XPath y ECMAScript)</li>
+                <li><b>-</b>: cambio de signo</li>
+              </ul>
+            </li>
+            <li><b>Operadores relacionales</b>:&nbsp;
+              <ul>
+                <li><b>&gt;, gt</b>: mayor que</li>
+                <li><b>&lt;, lt</b>: menor que</li>
+                <li><b>&gt;=, ge</b>: mayor o igual que</li>
+                <li><b>&lt;=, le</b>: menor o igual que</li>
+                <li><b>==, eq</b>: igual que</li>
+                <li><b>!=, ne</b>: distinto que</li>
+              </ul>
+            </li>
+            <li><b>Operadores lógicos</b>:
+              <ul>
+                <li><b>&amp;&amp;, and</b>: Y lógica</li>
+                <li><b>||, or</b>: O lógica</li>
+                <li><b>!, not</b>: NO lógica</li>
+              </ul>
+            </li>
+            <li><b>Operador empty</b>: utilizado delante de un elemento, para
+              indicar si el elemento es nulo o vacío (devolvería <i>true</i>)
+              o no (devolvería <i>false</i>). Por ejemplo:</li>
+          </ul>
+          <blockquote>
+            <pre class="codigo">${empty A}</pre>
+           
+          </blockquote>
+          <p><b>PRECEDENCIA</b></p>
+          <ul>
+            <li><b>[ ], .</b></li>
+            <li><b>( )</b></li>
+            <li><b>- </b>(cambio de signo), <b>not, !, empty</b></li>
+            <li><b>*, /, div, %, mod</b></li>
+            <li><b>+, -</b></li>
+            <li><b>&lt;, &gt;, &lt;=, &gt;=, lt, gt, le, ge</b></li>
+            <li><b>==, !=, eq, ne</b></li>
+            <li><b>&amp;&amp;, and</b></li>
+            <li><b>||, or</b></li>
+          </ul>
+          <h4>3.5.2.2.3. Nombres de variables</h4>
+           
+          <p>El lenguaje de expresiones evalúa un identificador o nombre de
+          elemento mirando su valor como un atributo, según el comportamiento
+          del método <i>PageContext.findAttribute(String)</i>. Por ejemplo, si
+          ponemos:</p>
+          <pre class="codigo">${valor}</pre>
+           
+          <p>Se buscará el atributo <i>valor</i> en los ámbitos de página (<i>page</i>),
+          petición (<i>request</i>), sesión (<i>session</i>) y aplicación (<i>application</i>),
+          y si lo encuentra devuelve su valor. Si no, se devuelve <i>null</i>.</p>
+          <p><b>Objetos implícitos</b></p>
+          <p>Cuando como nombre de atributo se utiliza alguno de los que el
+          lenguaje de expresiones considera como implícitos, se devolverá el
+          objeto asociado. Dichos objetos implícitos son:</p>
+          <ul>
+            <li><b>pageContext</b>: el objeto <i>PageContext</i> actual</li>
+            <li><b>pageScope, requestScope, sessionScope, applicationScope</b>:
+              para obtener valores de atributos de página / petición / sesión
+              / aplicación, respectivamente.</li>
+            <li><b>param</b>: para obtener el valor de un parámetro de
+              petición. Se obtiene un tipo <i>String</i> (utilizando el método
+              <i>ServletRequest.getParameter(String)</i>)</li>
+            <li><b>paramValues</b>: para obtener los valores de un parámetro de
+              petición. Se obtiene un tipo <i>String[ ] </i>(utilizando el
+              método <i>ServletRequest.getParameterValues(String)</i>).</li>
+            <li><b>header</b>: para obtener el valor de un parámetro de
+              cabecera. Se obtiene un tipo <i>String</i> (utilizando el método <i>ServletRequest.getHeader(String)</i>)</li>
+            <li><b>headerValues</b>: para obtener los valores de un parámetro
+              de cabecera. Se obtiene un tipo <i>String[ ] </i>(utilizando el
+              método <i>ServletRequest.getHeaderValues(String)</i>).</li>
+            <li><b>cookie</b>: para obtener el valor de una cookie. Se obtiene
+              un objeto <i>Cookie</i>. Las cookies se buscan con <i>HttpServletRequest.getCookies()</i></li>
+            <li><b>initParam</b>: para obtener el valor de un parámetro de
+              inicialización. Se obtiene un tipo <i>String </i>(utilizando el
+              método <i>ServletContext.getInitParameter(String)</i>)</li>
+          </ul>
+          <blockquote>
+            <p><b>EJEMPLOS</b></p>
+            <pre class="codigo">${sessionScope.profile}</pre>
+           
+            <p>Se obtiene el atributo <i>profile</i> de la sesión</p>
+            <pre class="codigo">${param.id}</pre>
+           
+            <p>Se obtiene el valor del parámetro <i>id</i>, o <i>null</i> si no
+            se encuentra.</p>
+          </blockquote>
+          <p><b>Palabras reservadas</b></p>
+          <p>Se tienen algunos identificadores que no podemos utilizar como
+          nombres de atributos, como son <i>and, eq, gt, true, instanceof, or,
+          ne, le, false, empty, not, lt, ge, null, div</i> y <i>mod</i>.</p>
+      </blockquote>
+           
+      <h4>3.5.3. La librería Core</h4>
+           
+      <p>Los tags <i>core</i> incluyen tags de propósito general. En esta
+      librería se tienen etiquetas para: </p>
+           
+      <ul>
+        <li>Funciones de propósito general: evaluar expresiones, establecer
+          valores de parámetros, etc.</li>
+        <li>Funciones de control de flujo: condiciones para ejecutar unos
+          bloques de código u otro, iteradores, etc.</li>
+        <li>Funciones de acceso a URLs: para importar URLS en la página actual,
+          etc.</li>
+      </ul>
+      <p>Los tags de esta librería se presentan con el prefijo &quot;<b>c</b>&quot;. </p>
+           
+        <p><b>1. Tags de propósito general</b> </p>
+           
+        <blockquote>
+        <p><b>out</b> </p>
+           
+          <blockquote>
+            El tag <b>out</b> evalúa el resultado de una expresión y lo pone en el objeto
+            <i>JspWriter </i>actual. Es equivalente a la sintaxis <i>&lt;%= ...
+            %&gt; </i>de JSP.
+            <p><b>SINTAXIS:</b></p>
+              <p>Dar el valor por defecto mediante un atributo <i>default</i>:</p>
+          <pre class="codigo">&lt;c:out value=&quot;valor&quot; 
+ [escapeXML=&quot;true|false&quot;] 
+ [default=&quot;valor&quot;]/&gt;</pre>
+           
+              <p>Dar el valor por defecto mediante el cuerpo del tag:</p>
+              <pre class="codigo">&lt;c:out value=&quot;valor&quot; 
+ [escapeXML=&quot;true|false&quot;]&gt;
+	Valor por defecto
+&lt;/c:out&gt;</pre>
+           
+            <b>ATRIBUTOS:</b>
+            <ul>
+              <li><b>value</b>: expresión que se tiene que evaluar.</li>
+              <li><b>escapeXML</b>: a <i>true</i> (valor por defecto) indica que
+                los caracteres &lt;, &gt;, &amp;, ', &quot; que haya en la
+                cadena resultado se deben convertir a sus códigos
+                correspondientes (&amp;lt;, &amp;gt;, &amp;amp;, &amp;#039;,
+                &amp;#034;, respectivamente).</li>
+              <li><b>default</b>: valor por defecto si el resultado es <i>null</i>.
+                Se puede indicar por el atributo o por el cuerpo del tag.</li>
+            </ul>
+            <p><b>EJEMPLO:</b></p>
+              <pre class="codigo">&lt;c:out value=&quot;${datos.ciudad}&quot; 
+ default=&quot;desconocida&quot;/&gt;</pre>
+           
+              <p>Sacaría el valor del campo <i>ciudad</i> del objeto <i>datos</i>,
+              o mostraría &quot;<i>desconocida</i>&quot; si dicho valor es
+              nulo.</p>
+          </blockquote>
+          <p><b>set</b></p>
+          <blockquote>
+            <p>El tag <b>set </b>establece el valor de un atributo en cualquier campo JSP (<i>page, request, session, application</i>).
+            Si el atributo no existe, se crea.&nbsp;</p>
+            <p><b>SINTAXIS:</b></p>
+              <p>Dar valor a una variable utilizando el atributo <i>value</i>:</p>
+              <pre class="codigo">&lt;c:set value=&quot;valor&quot; var=&quot;variable&quot; 
+ [scope=&quot;page|request|session|application&quot;]/&gt;</pre>
+           
+              <p>Dar valor a una variable utilizando el cuerpo del tag:</p>
+              <pre class="codigo">&lt;c:set var=&quot;variable&quot; 
+ [scope=&quot;page|request|session|application&quot;]&gt;
+	Valor
+&lt;/c:set&gt;</pre>
+           
+              <p>Dar valor a una propiedad de un objeto utilizando el atributo <i>value</i>:</p>
+              <pre class="codigo">&lt;c:set value=&quot;valor&quot; target=&quot;objeto&quot; 
+ property=&quot;propiedad&quot;/&gt;</pre>
+           
+              <p>Dar valor a una propiedad de un objeto utilizando el cuerpo del
+              tag:</p>
+              <pre class="codigo">&lt;c:set target=&quot;objeto&quot; property=&quot;propiedad&quot;&gt;
+	Valor
+&lt;/c:set&gt;</pre>
+           
+            <p><b>ATRIBUTOS:</b></p>
+            <ul>
+              <li><b>value</b>: valor que se asigna. Podemos dar el valor con
+                este atributo o con el cuerpo del tag.</li>
+              <li><b>var</b>: variable a la que se asigna el valor.</li>
+              <li><b>scope</b>: ámbito de la variable a la que se asigna el valor.</li>
+              <li><b>target</b>: objeto al que se le modifica una propiedad.
+                Debe ser un objeto JavaBeans con una propiedad <i>propiedad</i>
+                que pueda establecerse, o un objeto <i>java.util.Map</i>.</li>
+              <li><b>property</b>: propiedad a la que se le asigna valor en el
+                objeto <i>target</i>.</li>
+            </ul>
+            <p><b>EJEMPLO:</b></p>
+              <pre class="codigo">&lt;c:set var=&quot;foo&quot; value=&quot;2&quot;/&gt;</pre>
+           
+              <p>Asignaría a la variable <i>foo</i> el valor &quot;2&quot;.</p>
+          </blockquote>
+          <p><b>Otras Etiquetas</b></p>
+          <blockquote>
+            <p>Existen otras etiquetas, como <b>remove</b> o <b>catch</b>, que
+            no se comentan aquí.</p>
+          </blockquote>
+        </blockquote>
+           
+        <p><b>2. Tags de control de flujo</b> </p>
+           
+        <blockquote>
+          <p><b>if</b></p>
+          <blockquote>
+            <p>El tag <b>if </b>permite ejecutar su código si se cumple la
+            condición que contiene su atributo <i>test.</i></p>
+            <p><b>SINTAXIS:</b></p>
+              <p>Sin cuerpo:</p>
+              <pre class="codigo">&lt;c:if test=&quot;condicion&quot; var=&quot;variable&quot; 
+ [scope=&quot;page|request|session|application&quot;]/&gt;</pre>
+           
+              <p>Con cuerpo:</p>
+              <pre class="codigo">&lt;c:if test=&quot;condicion&quot; [var=&quot;variable&quot;] 
+ [scope=&quot;page|request|session|application&quot;]&gt;
+	Cuerpo
+&lt;/c:if&gt;</pre>
+           
+            <p><b>ATRIBUTOS:</b></p>
+            <ul>
+              <li><b>test</b>: condicion que debe cumplirse para ejecutar el <i>if</i>.</li>
+              <li><b>var</b>: variable donde se guarda el resultado de evaluar
+                la expresión. El tipo de esta variable debe ser <i>Boolean</i>.</li>
+              <li><b>scope</b>: ámbito de la variable a la que se asigna el valor
+                de la condición.</li>
+            </ul>
+            <p><b>EJEMPLO:</b></p>
+            <pre class="codigo">&lt;c:if test=&quot;${visitas} &gt; 1000&quot;&gt;
+&lt;h1&gt;¡Mas de 1000 visitas!&lt;/h1&gt;
+&lt;/c:if&gt;</pre>
+           
+              <p>Sacaría el mensaje &quot;<i>¡Mas de 1000 visitas!</i>&quot;
+              si el contador <i>visitas</i> fuese mayor que 1000.</p>
+          </blockquote>
+        </blockquote>
+           
+        <blockquote>
+          <p><b>choose</b></p>
+          <blockquote>
+            <p align="left">El tag <b>choose </b>permite definir varios bloques
+            de código y ejecutar uno de ellos en función de una condición<i>.
+            </i>Dentro del <i>choose</i> puede haber espacios en blanco, una o
+            varias etiquetas <b>when</b> y cero o una etiquetas <b>otherwise</b>.</p>
+            <p align="left">El funcionamiento es el siguiente: se ejecutará el
+            código de la primera etiqueta <b>when </b>que cumpla la condición
+            de su atributo <b>test</b>. Si ninguna etiqueta <i>when</i> cumple
+            su condición, se ejecutará el código de la etiqueta <b>otherwise</b>
+            (esta etiqueta, si aparece, debe ser la última hija de <i>choose</i>).</p>
+            <p><b>SINTAXIS:</b></p>
+              <pre class="codigo">&lt;c:choose&gt;
+	&lt;c:when test=&quot;condicion1&quot;&gt;
+		codigo1
+	&lt;/c:when&gt;
+	&lt;c:when test=&quot;condicion2&quot;&gt;
+		codigo2
+	&lt;/c:when&gt;
+	...
+	&lt;c:when test=&quot;condicionN&quot;&gt;
+		codigoN
+	&lt;/c:when&gt;
+	&lt;c:otherwise&gt;
+		codigo
+	&lt;/c:otherwhise&gt;
+&lt;/c:choose&gt;</pre>
+           
+            <p><b>EJEMPLO:</b></p>
+            <pre class="codigo">&lt;c:choose&gt;
+	&lt;c:when test=&quot;${a} &lt; 0&quot;&gt;
+	&lt;h1&gt;a menor que 0&lt;/h1&gt;
+	&lt;/c:when&gt;
+	&lt;c:when test=&quot;${a} &gt; 10&quot;&gt;
+	&lt;h1&gt;a mayor que 10&lt;/h1&gt;
+	&lt;/c:when&gt;
+	&lt;c:otherwise&gt;
+	&lt;h1&gt;a entre 1 y 10&lt;/h1&gt;
+	&lt;/c:otherwhise&gt;
+&lt;/c:choose&gt;</pre>
+           
+              <p>Sacaría el mensaje &quot;<i>a es menor que 0</i>&quot;
+              si la variable a es menor que 0, el mensaje &quot;<i>a es mayor
+              que 10</i>&quot; si es mayor que 10, y el mensaje &quot;<i>a esta
+              entre 1 y 10</i>&quot; si no se cumple ninguna de las dos
+              anteriores.</p>
+          </blockquote>
+        </blockquote>
+           
+        <blockquote>
+          <p><b>forEach</b></p>
+          <blockquote>
+            <p>El tag <b>forEach </b>permite repetir su código recorriendo un
+            conjunto de objetos, o durante un número determinado de iteraciones<i>.</i></p>
+            <p><b>SINTAXIS:</b></p>
+            <p>Para iterar sobre un conjunto de objetos:</p>
+              <pre class="codigo">&lt;c:forEach [var=&quot;variable&quot;] items=&quot;conjunto&quot; 
+[varStatus=&quot;variableEstado&quot;] [begin=&quot;comienzo&quot;] 
+[end=&quot;final&quot;] [step=&quot;incremento&quot;]&gt;
+	codigo
+&lt;/c:forEach&gt;</pre>
+           
+              <p>Para iterar un determinado número de veces:</p>
+              <pre class="codigo">&lt;c:forEach [var=&quot;variable&quot;] 
+ [varStatus=&quot;variableEstado&quot;] begin=&quot;comienzo&quot; 
+ end=&quot;final&quot; [step=&quot;incremento&quot;]&gt;
+	codigo
+&lt;/c:forEach&gt;</pre>
+           
+            <p><b>ATRIBUTOS:</b></p>
+            <ul>
+              <li><b>var</b>: variable donde guardar el elemento actual que se
+                está explorando en la iteración. El tipo de este objeto
+                depende del tipo de conjunto que se esté recorriendo.</li>
+              <li><b>items</b>: conjunto de elementos que recorre la iteración.
+                Pueden recorrerse varios tipos:&nbsp;
+                <ul>
+                  <li><b>Array</b>: tanto de tipos primitivos como de tipos
+                    complejos. Para los tipos primitivos, cada dato se convierte
+                    en su correspondiente <i>wrapper</i> (<i>Integer</i> para <i>int</i>,
+                    <i>Float</i> para <i>float</i>, etc)</li>
+                  <li><b>java.util.Collection</b>: mediante el método <i>iterator()</i>
+                    se obtiene el conjunto, que se procesa en el orden que
+                    devuelve dicho método.</li>
+                  <li><b>java.util.Iterator</b></li>
+                  <li><b>java.util.Enumeration</b></li>
+                  <li><b>java.util.Map</b>:el objeto del atributo <i>var</i> es
+                    entonces de tipo <i>Map.Entry</i>, y se obtiene un <i>Set</i>
+                    con los mapeos. Llamando al método <i>iterator()</i> del
+                    mismo se obtiene el conjunto a recorrer.</li>
+                  <li><b>String</b>: la cadena representa un conjunto de valores
+                    separados por comas, que se van recorriendo en el orden en
+                    que están.</li>
+                </ul>
+              </li>
+              <li><b>varStatus</b>: variable donde guardar el estado actual de
+                la iteración. Es del tipo <i>javax.servlet.jsp.jstl.core.LoopTagStatus</i>.</li>
+              <li><b>begin</b>: indica el valor a partir del cual comenzar la
+                iteración. Si se está recorriendo un conjunto de objetos,
+                indica el índice del primer objeto a explorar (el primero es el
+                0), y si no, indica el valor inicial del contador. Si se indica
+                este atributo, debe ser mayor o igual que 0.</li>
+              <li><b>end</b>: indica el valor donde terminar la iteración. Si
+                se está recorriendo un conjunto de objetos, indica el índice
+                del último objeto a explorar (inclusive), y si no, indica el
+                valor final del contador. Si se indica este atributo, debe ser
+                mayor o igual que <i>begin</i>.</li>
+              <li><b>step</b>: indica cuántas unidades incrementar el contador
+                cada iteración, para ir de <i>begin</i> a <i>end</i>. Por
+                defecto es 1 unidad. Si se indica este atributo, debe ser mayor
+                o igual que 1.</li>
+            </ul>
+            <p><b>EJEMPLO:</b></p>
+              <pre class="codigo">&lt;c:forEach var=&quot;item&quot; 
+ items=&quot;${cart.items}&quot;&gt; 
+	&lt;tr&gt; 
+		&lt;td&gt;
+		&lt;c:out value=&quot;${item.valor}&quot;/&gt;
+		&lt;/td&gt; 
+	&lt;/tr&gt;
+&lt;/c:forEach&gt;</pre>
+           
+              <p>Muestra el valor de todos los <i>items</i>.</p>
+          </blockquote>
+        <p><b>forTokens</b> </p>
+           
+          <blockquote>
+            <p>El tag <b>forTokens</b> es similar al tag <b>foreach</b>, pero
+            permite recorrer una serie de <i>tokens</i> (cadenas de caracteres),
+            separadas por el/los delimitador(es) que se indique(n). </p>
+           
+            <p><b>SINTAXIS</b> </p>
+           
+              <p>La sintaxis es la misma que <i>foreach</i>, salvo que se tiene
+              un atributo <b>delims</b>, obligatorio. </p>
+           
+            <p><b>ATRIBUTOS</b> </p>
+           
+            <ul>
+              <li><b>var</b>: igual que para <i>foreach</i></li>
+              <li><b>items</b>: cadena que contiene los tokens a recorrer&nbsp;
+              </li>
+              <li><b>delims</b>:conjunto de delimitadores que se utilizan
+                  para separar los tokens de la cadena de entrada (colocados
+                igual que los utiliza un <i>StringTokenizer</i>).
+              </li>
+              <li><b>varStatus</b>: igual que para <i>foreach</i></li>
+              <li><b>begin</b>: indica el índice del token a partir del cual
+                comenzar la iteración.</li>
+              <li><b>end</b>: indica el índice del token donde terminar la iteración.</li>
+              <li><b>step</b>: igual que para <i>foreach</i>.</li>
+            </ul>
+            <p><b>EJEMPLO:</b></p>
+              <pre class="codigo">&lt;c:forTokens var=&quot;item&quot;
+ items=&quot;un#token otro#otromas&quot; delims=&quot;# &quot;&gt; 
+	&lt;tr&gt; 
+		&lt;td&gt;
+		&lt;c:out value=&quot;${item}&quot;/&gt;
+		&lt;/td&gt; 
+	&lt;/tr&gt;
+&lt;/c:forEach&gt;</pre>
+           
+              <p>Definimos dos separadores: el '#' y el espacio ' '. Así habrá
+              4 iteraciones, recorriendo los tokens &quot;un&quot;, &quot;token&quot;,
+              &quot;otro&quot; y &quot;otromas&quot;.</p>
+          </blockquote>
+        </blockquote>
+        <p><b>3. Tags de manejo de URLs</b> </p>
+           
+        <blockquote>
+          <p><b>import</b></p>
+          <blockquote>
+            <p>El tag <b>import </b>permite importar el contenido de una URL.</p>
+            <p><b>SINTAXIS:</b></p>
+            <p>Para copiar el contenido de la URL en una cadena:</p>
+            <pre class="codigo">&lt;c:import url=&quot;url&quot; [context=&quot;contexto&quot;] 
+ [var=&quot;variable&quot;] 
+ [scope=&quot;page|request|session|application&quot;] 
+ [charEncoding=&quot;codificacion&quot;]&gt;
+	cuerpo para tags &quot;param&quot; opcionales
+&lt;/c:import&gt;</pre>
+           
+              <p>Para copiar el contenido de la URL en un <i>Reader</i>:</p>
+            <pre class="codigo">&lt;c:import url=&quot;url&quot; [context=&quot;contexto&quot;] 
+ varReader=&quot;variableReader&quot; 
+ [charEncoding=&quot;codificacion&quot;]&gt;
+	codigo para leer del Reader
+&lt;/c:import&gt;</pre>
+           
+            <p><b>ATRIBUTOS:</b></p>
+            <ul>
+              <li><b>url</b>: URL de la que importar datos</li>
+              <li><b>context</b>: contexto para URLs que pertenecen a contextos
+                distintos al actual.&nbsp;
+              </li>
+              <li><b>var</b>: variable (<i>String</i>) donde guardar el
+                contenido de la URL</li>
+              <li><b>varReader</b>: variable (<i>Reader</i>) donde guardar el
+                contenido de la URL</li>
+              <li><b>scope</b>: ámbito para la variable <i>var</i></li>
+              <li><b>charEncoding</b>: codificación de caracteres de la URL</li>
+            </ul>
+            <p><b>EJEMPLO:</b></p>
+              <pre class="codigo">&lt;c:import url=&quot;http://www.ua.es&quot; 
+ var=&quot;universidad&quot;&gt;
+	&lt;c:out value=&quot;${universidad}&quot;/&gt;
+&lt;/c:import&gt;</pre>
+           
+              <p>Obtiene y muestra el contenido de la URL indicada.</p>
+          </blockquote>
+        </blockquote>
+        <blockquote>
+          <p><b>param</b></p>
+          <blockquote>
+            <p>El tag <b>param </b>se utiliza dentro del tag <b>import</b> y de
+            otros tags (<i>redirect, url</i>) para indicar parámetros de la URL
+            solicitada. Dentro del tag <i>import</i> sólo se utiliza si la URL
+            se guarda en una cadena. Para los <i>Readers</i> no se emplean
+            parámetros.</p>
+            <p><b>SINTAXIS:</b></p>
+            <p>Sin cuerpo:</p>
+              <pre class="codigo">&lt;c:param name=&quot;nombre&quot; value=&quot;valor&quot;/&gt;</pre>
+           
+              <p>Con cuerpo:</p>
+              <pre class="codigo">&lt;c:param name=&quot;nombre&quot;&gt;
+	Valor
+&lt;/c:param&gt;</pre>
+           
+            <p><b>ATRIBUTOS:</b></p>
+            <ul>
+              <li><b>name</b>: nombre del parámetro</li>
+              <li><b>value</b>: valor del parámetro. Puede indicarse bien
+                mediante este atributo, bien en el cuerpo del tag.
+              </li>
+            </ul>
+            <p><b>EJEMPLO:</b></p>
+              <pre class="codigo">&lt;c:import url=&quot;http://localhost/mipagina.jsp&quot; 
+ var=&quot;universidad&quot;&gt; 
+	&lt;c:param name=&quot;id&quot; value=&quot;12&quot;/&gt;
+&lt;/c:import&gt;</pre>
+           
+              <p>Obtiene la página <i>mipagina.jsp?id=12 </i>(le pasa como
+              parámetro <i>id</i> el valor 12).</p>
+          </blockquote>
+          <p><b>Otras Etiquetas</b></p>
+          <blockquote>
+            <p>Existen otras etiquetas, como <b>url</b> o <b>redirect</b>, que
+            no se comentan aquí.</p>
+          </blockquote>
+           
+        </blockquote>
+           
+            <p><b>EJEMPLO</b></p>
+      <p>Vemos cómo quedaría el ejemplo visto en la sesión anterior para la
+      librería <i>request</i> adaptado a la librería <i>core</i>. Partiendo
+      del mismo formulario inicial:</p>
+              <pre class="codigo">&lt;html&gt;
+&lt;body&gt;
+	&lt;form action=&quot;request.jsp&quot;&gt;
+		Nombre: 
+		&lt;input type=&quot;text&quot; name=&quot;nombre&quot;&gt;
+		&lt;br&gt;
+		Descripcion: 
+		&lt;input type=&quot;text&quot; name=&quot;descripcion&quot;&gt;
+		&lt;br&gt;
+		&lt;input type=&quot;submit&quot; value=&quot;Enviar&quot;&gt;
+	&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+           
+      <p>Para obtener los parámetros podríamos tener una página como esta:</p>
+              <pre class="codigo">&lt;%@ taglib uri=&quot;core&quot; prefix=&quot;c&quot; %&gt;
+&lt;%@ taglib uri=&quot;corert&quot; prefix=&quot;c_rt&quot; %&gt;
+
+&lt;html&gt;
+&lt;body&gt;
+	Nombre: &lt;c:out value=&quot;${param.nombre}&quot;/&gt;
+	&lt;br&gt;
+	&lt;% String descr = request.getParameter(&quot;descripcion&quot;); %&gt;
+	Descripcion: &lt;c_rt:out value=&quot;&lt;%= descr %&gt;&quot;/&gt;
+	&lt;br&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+           
+      <p>Hemos utilizado en este caso, como ejemplo, tanto los tags de la
+      librería EL como los de la librería RT, para ver que se pueden emplear
+      juntos. Para probar el ejemplo, copiad este fichero <a href="ejemplos/taglibs/ejemplojstlcore.war.zip">WAR</a>
+      en el directorio <i>webapps</i> de Tomcat, reiniciar el servidor y
+      ejecutad:</p>
+      <pre class="codigo">http://localhost:8080/ejemplojstlcore/index.html </pre>
+           
+      <h4>3.5.4. La librería SQL</h4>
+           
+      <p>Los tags de la librería SQL permiten acceder y manipular información
+      de bases de datos relacionales. Vienen definidos con el prefijo &quot;<b>sql</b>&quot;. </p>
+           
+      <p>Con esta librería podremos: </p>
+           
+      <ul>
+        <li>Establecer la base de datos a la que acceder</li>
+        <li>Realizar consultas a bases de datos (<i>select</i>)</li>
+        <li>Acceder a los resultados de las consultas realizadas</li>
+        <li>Realizar actualizaciones sobre la base de datos (<i>insert, update,
+          delete</i>)</li>
+        <li>Agrupar operaciones en una sola transacción</li>
+      </ul>
+      <p>Estas acciones se realizan sobre objetos de tipo <i>javax.sql.DataSource</i>,
+      que proporciona conexiones a la fuente de datos que representa. Así, se
+      obtiene un objeto <i>Connection</i> de dicho <i>DataSource</i>, y con él
+      podremos ejecutar sentencias y obtener resultados. Podemos definir el <i>DataSource</i>
+      mediante la etiqueta <i>setDataSource </i>y luego acceder a ese <i>DataSource
+      </i>con los atributos <i>dataSource</i> de las etiquetas de la librería.</p>
+      <p><b>setDataSource</b></p>
+          <blockquote>
+            <p>El tag <b>setDataSource </b>permite definir el objeto <i>DataSource</i>
+            con el que trabajar, y dejarlo asignado en una variable.</p>
+            <p><b>SINTAXIS:</b></p>
+            <pre class="codigo">&lt;sql:setDataSource {dataSource=&quot;DataSource&quot; | 
+ url=&quot;url&quot; [driver=&quot;driver&quot;] [user=&quot;usuario&quot;] 
+ [password=&quot;password&quot;]} [var=&quot;variable&quot;]
+ [scope=&quot;page|request|session|application&quot;]/&gt;</pre>
+           
+            <p><b>ATRIBUTOS:</b></p>
+            <ul>
+              <li><b>dataSource</b>: objeto <i>DataSource</i> al que queremos
+                enlazar (en caso de que esté creado de antemano).
+              </li>
+              <li><b>url</b>: URL de la base de datos a acceder
+              </li>
+              <li><b>driver</b>: driver con que conectar con la base de datos
+              </li>
+              <li><b>user</b>: nombre de usuario con que conectar a la base de
+                datos
+              </li>
+              <li><b>password</b>: password con que conectar a la base de datos
+              </li>
+              <li><b>var</b>: variable donde guardar el <i>DataSource</i> que se
+                obtenga
+              </li>
+              <li><b>scope</b>: ámbito de la variable <i>var</i>
+              </li>
+            </ul>
+            <blockquote>
+              <p>Notar que se puede obtener el <i>DataSource</i> tanto
+              indicándolo directamente en el atributo <i>dataSource</i> como
+              indicando <i>url</i>, <i>driver</i>, <i>user</i> y <i>password</i>
+              (los tres últimos opcionales).</p>
+            </blockquote>
+          </blockquote>
+      <p><b>query</b></p>
+          <blockquote>
+            <p>El tag <b>query </b>permite definir una consulta (<i>select</i>)
+            en una base de datos.</p>
+            <p><b>SINTAXIS:</b></p>
+            <p>Sin cuerpo:</p>
+            <pre class="codigo">&lt;sql:query sql=&quot;consulta&quot; var=&quot;variable&quot; 
+ [scope=&quot;page|request|session|application&quot;] 
+ [dataSource=&quot;DataSource&quot;] [maxRows=&quot;max&quot;] 
+ [startRow=&quot;inicio&quot;]/&gt;</pre>
+           
+            <p>Con cuerpo donde indicar parámetros de la consulta:</p>
+            <pre class="codigo">&lt;sql:query sql=&quot;consulta&quot; var=&quot;variable&quot; 
+ [scope=&quot;page|request|session|application&quot;] 
+ [dataSource=&quot;DataSource&quot;] [maxRows=&quot;max&quot;] 
+ [startRow=&quot;inicio&quot;]&gt;
+	Campos &lt;sql:param&gt;
+&lt;/sql:query&gt;</pre>
+           
+            <p>Con cuerpo donde indicar la propia consulta y los parámetros de
+            la consulta:</p>
+            <pre class="codigo">&lt;sql:query var=&quot;variable&quot; 
+ [scope=&quot;page|request|session|application&quot;] 
+ [dataSource=&quot;DataSource&quot;] [maxRows=&quot;max&quot;] 
+ [startRow=&quot;inicio&quot;]&gt;
+	Consulta
+	Campos &lt;sql:param&gt;
+&lt;/sql:query&gt;</pre>
+           
+            <p><b>ATRIBUTOS:</b></p>
+            <ul>
+              <li><b>sql</b>: consulta a realizar (en formato SQL). Puede
+                indicarse la consulta tanto en este atributo como en el cuerpo
+                de la etiqueta.</li>
+              <li><b>dataSource</b>: objeto <i>DataSource</i> asociado a la base
+                de datos a la que se accede. Si especificamos este campo, no
+                podemos incluir esta etiqueta dentro de una transacción
+                (etiqueta <i>transaction</i>).
+              </li>
+              <li><b>maxRows</b>: máximo número de filas que se devuelven como
+                resultado
+              </li>
+              <li><b>startRow</b>: fila a partir de la cual devolver resultados.
+                Por defecto es la 0.
+              </li>
+              <li><b>var</b>: variable donde guardar el resultado. Es de tipo <i>javax.servlet.jsp.jstl.sql.Result</i>.
+              </li>
+              <li><b>scope</b>: ámbito de la variable <i>var</i>.
+              </li>
+            </ul>
+          </blockquote>
+      <p><b>update</b></p>
+          <blockquote>
+            <p>El tag <b>update </b>permite definir una actualización (<i>insert,
+            update, delete</i>) en una base de datos.</p>
+            <p><b>SINTAXIS:</b></p>
+            <p>Sin cuerpo:</p>
+            <pre class="codigo">&lt;sql:update sql=&quot;actualizacion&quot; 
+ [dataSource=&quot;DataSource&quot;] [var=&quot;variable&quot;] 
+ [scope=&quot;page|request|session|application&quot;]/&gt;</pre>
+           
+            <p>Con cuerpo donde indicar parámetros de la actualización:</p>
+            <pre class="codigo">&lt;sql:update sql=&quot;actualizacion&quot; 
+ [dataSource=&quot;DataSource&quot;] [var=&quot;variable&quot;] 
+ [scope=&quot;page|request|session|application&quot;]&gt;
+	Campos &lt;sql:param&gt;
+&lt;/sql:update&gt;</pre>
+           
+            <p>Con cuerpo donde indicar la propia actualización y los
+            parámetros de la misma:</p>
+            <pre class="codigo">&lt;sql:update [dataSource=&quot;DataSource&quot;] [var=&quot;variable&quot;] 
+ [scope=&quot;page|request|session|application&quot;]&gt;
+	Actualización
+	Campos &lt;sql:param&gt;
+&lt;/sql:update&gt;</pre>
+           
+            <p><b>ATRIBUTOS:</b></p>
+            <ul>
+              <li><b>sql</b>: actualización a realizar (en formato SQL). Puede
+                indicarse tanto en este atributo como en el cuerpo de la
+                etiqueta.</li>
+              <li><b>dataSource</b>: objeto <i>DataSource</i> asociado a la base
+                de datos a la que se accede. Si especificamos este campo, no
+                podemos incluir esta etiqueta dentro de una transacción
+                (etiqueta <i>transaction</i>).
+              </li>
+              <li><b>var</b>: variable donde guardar el resultado. Es de tipo <i>Integer</i>
+                (se devuelve el número de filas afectadas por la
+                actualización).
+              </li>
+              <li><b>scope</b>: ámbito de la variable <i>var</i>.
+              </li>
+            </ul>
+          </blockquote>
+      <p><b>transaction</b></p>
+          <blockquote>
+            <p>El tag <b>transaction </b>permite agrupar dentro de él varios
+            tags <b>query</b> y/o <b>update</b>, de forma que se define una
+            transacción con ellos.</p>
+            <p><b>SINTAXIS:</b></p>
+            <pre class="codigo">&lt;sql:transaction [dataSource=&quot;DataSource&quot;] 
+ [isolation=&quot;nivel&quot;]&gt;
+	Conjunto de etiquetas <i>query</i> y/o <i>update
+</i>&lt;/sql:transaction&gt;</pre>
+           
+            <p><b>ATRIBUTOS:</b></p>
+            <ul>
+              <li><b>dataSource</b>: objeto <i>DataSource</i> asociado a la base
+                de datos a la que se accede. Se utiliza este <i>DataSource</i>
+                por todas las operaciones <i>query</i> y <i>update</i> que se
+                definan dentro.
+              </li>
+              <li><b>isolation</b>: nivel de aislamiento de la transacción, que
+                puede ser <i>&quot;read_committed&quot;</i>, <i>&quot;read_uncommitted&quot;</i>,
+                <i>&quot;repeatable_read&quot;</i><b> </b>o <i>&quot;serializable&quot;</i>.
+              </li>
+            </ul>
+          </blockquote>
+      <p><b>param</b></p>
+          <blockquote>
+            <p>El tag <b>param </b>permite definir parámetros a la hora de
+            ejecutar consultas (<i>query</i>) o actualizaciones (<i>update</i>).
+            Así, se sustituyen las marcas &quot;?&quot; que pueda haber en
+            consultas o actualizaciones, por los valores de los parámetros que
+            se indiquen.</p>
+            <p><b>SINTAXIS:</b></p>
+              <p>Sin cuerpo:</p>
+              <pre class="codigo">&lt;sql:param value=&quot;valor&quot;/&gt;</pre>
+           
+              <p>Con cuerpo:</p>
+              <pre class="codigo">&lt;sql:param&gt;
+	Valor
+&lt;/sql:param&gt;</pre>
+           
+            <p><b>ATRIBUTOS:</b></p>
+            <ul>
+              <li><b>value</b>: valor del parámetro. Puede indicarse mediante
+                este atributo o como cuerpo del tag.
+              </li>
+            </ul>
+            <p>Los valores de los parámetros se sustituyen en las etiquetas en
+            el orden en que se van definiendo. Veremos un ejemplo más adelante.</p>
+          </blockquote>
+      <p><b>Otras Etiquetas</b></p>
+      <blockquote>
+        <p>Se tienen otras etiquetas, como <b>dateParam</b>, que es igual que <i>param</i>
+        pero para parámetros de tipo <i>Date</i> (fechas). No la veremos con
+        más detalle aquí.</p>
+      </blockquote>
+      <p><b>EJEMPLO</b></p>
+        <p>Vemos un ejemplo de uso de las etiquetas explicadas.</p>
+        <ul>
+          <li>Creamos un <i>DataSource</i> mediante una etiqueta <i>setDataSource,
+            </i>que se conecta a la base de datos <i>miBD</i>, de MySQL.
+            Guardamos el <i>DataSource</i> en la variable <i>miDataSource</i>:</li>
+        </ul>
+        <blockquote>
+          <pre class="codigo">&lt;sql:setDataSource 
+	url=&quot;jdbc:mysql//localhost/miBD&quot; 
+	driver=&quot;org.gjt.mm.mysql.Driver&quot;
+	user=&quot;root&quot; password=&quot;mysql&quot;
+	var=&quot;miDataSource&quot;
+/&gt;</pre>
+           
+        </blockquote>
+        <ul>
+          <li>Ejecutamos una consulta (<i>query</i>)<i> </i>que muestra todos
+            los nombres de la tabla <i>nombres</i>. Guardamos el resultado en la
+            variable <i>miConsulta</i>:</li>
+        </ul>
+        <blockquote>
+          <pre class="codigo">&lt;sql:query var=&quot;miConsulta&quot; 
+ dataSource=&quot;${miDataSource}&quot;&gt;
+	SELECT nombre FROM nombres
+&lt;/sql:query&gt;
+
+&lt;c:foreach var=&quot;fila&quot; items=&quot;${miConsulta.rows}&quot;&gt;
+	&lt;c:out value=&quot;${fila.nombre}&quot;/&gt;&lt;br&gt;
+&lt;/c:foreach&gt;</pre>
+           
+        </blockquote>
+        <ul>
+          <li>Ejecutamos una actualización que actualice el nombre que tenga id
+            = 1 o id = 2:</li>
+        </ul>
+        <blockquote>
+          <pre class="codigo">&lt;sql:update dataSource=&quot;${miDataSource}&quot;&gt;
+	UPDATE nombres SET nombre='pepe' 
+	WHERE id=1 OR id=2
+&lt;/sql:update&gt;</pre>
+           
+        </blockquote>
+        <ul>
+          <li>Utilizamos dos etiquetas <i>param</i> para pasar como parámetros
+            los <i>id</i> de los nombres que se tienen que actualizar:</li>
+        </ul>
+        <blockquote>
+          <pre class="codigo">&lt;sql:update dataSource=&quot;${miDataSource}&quot;&gt;
+	UPDATE nombres SET nombre='pepe' 
+	WHERE id=? OR id=?
+	&lt;sql:param value=&quot;${param.id1}&quot;/&gt;
+	&lt;sql:param value=&quot;${param.id2}&quot;/&gt;
+&lt;/sql:update&gt;</pre>
+           
+          <p>Se sustituiría la primera ? por el primer <i>param</i> y la
+          segunda ? por el segundo <i>param</i>. Los dos parámetros se toman en
+          este ejemplo de la petición <i>request</i>. Pueden tomarse de
+          cualquier otro sitio (constantes, variables, etc).</p>
+        </blockquote>
+        <ul>
+          <li>Vemos cómo quedarían las dos operaciones anteriores en una
+            transacción (<i>transaction</i>):</li>
+        </ul>
+        <blockquote>
+          <pre class="codigo">&lt;sql:transaction dataSource=&quot;${miDataSource}&quot;&gt;
+
+	&lt;sql:query var=&quot;miConsulta&quot;&gt;
+		SELECT nombre FROM nombres
+	&lt;/sql:query&gt;
+
+	&lt;c:foreach var=&quot;fila&quot; 
+	 items=&quot;${miConsulta.rows}&quot;&gt;
+		&lt;c:out value=&quot;${fila.nombre}&quot;/&gt;&lt;br&gt;
+	&lt;/c:foreach&gt;
+
+	&lt;sql:update dataSource=&quot;${miDataSource}&quot;&gt;
+		UPDATE nombres SET nombre='pepe' 
+		WHERE id=? OR id=?
+		&lt;sql:param value=&quot;${param.id1}&quot;/&gt;
+		&lt;sql:param value=&quot;${param.id2}&quot;/&gt;
+	&lt;/sql:update&gt;
+<i>
+</i>&lt;/sql:transaction&gt;</pre>
+           
+        </blockquote>
+           
+            <p><b>EJEMPLO</b></p>
+      <p>Vemos cómo quedaría el ejemplo visto en la sesión anterior para la
+      librería <i>dbtags</i> adaptado a la librería <i>sql</i>.&nbsp;</p>
+      <pre class="codigo">&lt;%@ taglib uri=&quot;sql&quot; prefix=&quot;sql&quot; %&gt;
+&lt;%@ taglib uri=&quot;core&quot; prefix=&quot;c&quot; %&gt;
+
+&lt;html&gt;
+&lt;body&gt;
+	&lt;sql:setDataSource url=&quot;jdbc:mysql://localhost/prueba&quot; 
+	 driver=&quot;org.gjt.mm.mysql.Driver&quot; 
+	 user=&quot;root&quot; password=&quot;mysql&quot; var=&quot;miDataSource&quot;/&gt;
+
+	&lt;sql:query var=&quot;miConsulta&quot; dataSource=&quot;${miDataSource}&quot;&gt;
+		SELECT * FROM datos
+	&lt;/sql:query&gt;
+
+	&lt;c:forEach var=&quot;fila&quot; items=&quot;${miConsulta.rows}&quot;&gt;
+	Nombre: &lt;c:out value=&quot;${fila.nombre}&quot;/&gt;&lt;br&gt;
+	Descripcion: &lt;c:out value=&quot;${fila.descripcion}&quot;/&gt;&lt;br&gt;
+	&lt;/c:forEach&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+           
+      <p>Utilizamos la librería <i>sql </i>y la <i>core</i> para recorrer todos
+      los registros encontrados. Para probar el ejemplo, copiad este fichero <a href="ejemplos/taglibs/ejemplojstlsql.war.zip">WAR</a>
+      en el directorio <i>webapps</i> de Tomcat, reiniciar el servidor y
+      ejecutad:</p>
+      <pre class="codigo">http://localhost:8080/ejemplojstlsql/dbtags.jsp </pre>
+           
+      <h4>3.5.5. La librería XML</h4>
+           
+      <p>Los tags de la librería de <b> XML</b> permiten tener acceso y procesar el
+      contenido de documentos XML, utilizando la recomendación XPath del W3C
+      como un lenguaje de expresiones local. Esta librería se utiliza con el
+      prefijo &quot;<b>x</b>&quot;. </p>
+           
+      <p>Dentro de la librería, distinguimos entre los tags <b>principales</b>
+      (que nos permiten explorar el contenido de un fichero XML), tags de <b>control
+      de flujo</b> (para realizar código en función de dicho contenido), y
+      tags de <b>transformación</b> (que permite transformar ficheros XML
+      aplicando hojas de estilo XSLT). </p>
+           
+      <h4>3.5.6. La librería de internacionalización</h4>
+           
+      <p>Los tags de la librería de <b> internacionalización</b><b> </b>(o <i>I18n</i>)&nbsp;
+      permiten adaptar
+      aplicaciones Web a las convenciones de idioma y formato de los clientes
+      para un determinado origen (<i>locale</i>). Los tags de esta librería se
+      presentan con el prefijo &quot;<b>fmt</b>&quot;. </p>
+           
+      <p>En la librería tenemos tags para la <b>internacionalización</b>
+      propiamente dicha, y para el <b>formato</b> de determinados elementos
+      según la región (podremos formatear números, fechas, monedas, etc,
+      dependiendo del idioma o región que se trate). </p>
+           
+        </body>
+        </html>

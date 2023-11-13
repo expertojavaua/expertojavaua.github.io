@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Servidores de aplicaciones</title>
+                                                   
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=iso-8859-1">
+                             
+  <meta name="Author" content="Miguel">
+                             
+  <link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+</head>
+  <body>
+               
+<h1>Manejo de clases de arranque y JNDI</h1>
+               
+<p>En este ejercicio vamos a crear una clase de arranque que cargue varios objetos 
+  y los enlace en el &aacute;rbol JNDI del servidor. El objetivo de este ejercicio 
+  es familiarizaros con la configuraci&oacute;n de una clase de arranque y visualizar 
+  el &aacute;rbol JNDI. Deb&eacute;is descargaros en vuestra m&aacute;quina el 
+  fichero <a href="arranque.zip">arranque.zip</a>. Descomprimidlo en el directorio 
+  de vuestro dominio. El directorio consta de dos subdirectorios. El primero, 
+  <i>objetos</i>, define las clases de los objetos a enlazar. El segundo, <i>startup</i>, 
+  contiene la clase que realizar&aacute; el enlace. Para que se ejecute esta clase 
+  deb&eacute;is crear una nueva clase de arranque con los siguientes par&aacute;metros:</p>
+<table width="442" border="0">
+  <tr> 
+    <td><b>Par&aacute;metro</b></td>
+    <td><b>Valor</b></td>
+  </tr>
+  <tr> 
+    <td>Nombre</td>
+    <td>Ejecutivos</td>
+  </tr>
+  <tr> 
+    <td>Nombre de la clase</td>
+    <td>arranque.startup.bindObjects</td>
+  </tr>
+  <tr> 
+    <td>Target</td>
+    <td>adminServer</td>
+  </tr>
+</table>
+<p>Una vez configurado parad el servidor de administraci&oacute;n. Antes de volverlo 
+  a arrancar deb&eacute;is aseguraros que el directorio donde hab&eacute;is dejado 
+  las clases est&aacute; dentro del classpath. Para ello pod&eacute;is editar 
+  el fichero:</p>
+<p><i>$BEA_HOME\weblogic700\server\bin\startWLS.sh</i></p>
+<p>e incluir el path hasta las clases. Hecho esto arrancad de nuevo el servidor 
+  de administraci&oacute;n. Os debe aparecer el mensaje <i>Nombre de la clase 
+  de arranque: bindObjects</i>. Esto indicar&aacute; que se ha realizado correctamente 
+  la carga de la clase.</p>
+<p>Una vez arrancado el servidor, visualizar su &aacute;rbol JNDI y comprobad 
+  que se han realizado los enlaces con los objetos. Los objetos enlazados son:</p>
+<table width="442" border="0">
+  <tr> 
+    <td><b>Contexto</b></td>
+    <td><b>Nombre del objeto enlazado</b></td>
+  </tr>
+  <tr> 
+    <td>com.bea.ejecutivos</td>
+    <td>Jefe</td>
+  </tr>
+  <tr> 
+    <td>com.bea.ejecutivos</td>
+    <td>Presidente</td>
+  </tr>
+  <tr> 
+    <td>com.bea.ejecutivos</td>
+    <td>Propietario</td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+           
+</body>
+</html>

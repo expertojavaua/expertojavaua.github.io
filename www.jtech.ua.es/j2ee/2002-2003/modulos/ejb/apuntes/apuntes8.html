@@ -1,0 +1,476 @@
+<head>
+<title>Sesion 8 Enterprise Java Beans</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../../ejercicios.css" type="text/css">
+</head>
+<body>
+<h1> Tema 7: Gesti&oacute;n de transacciones</h1>
+<h2>7.1 Introducci&oacute;n</h2>
+<h3>7.1.1 Transacciones</h3>
+
+<p>En los negocios, una transacci&oacute;n incluye un intercambio entre dos partes. 
+  Cuando compras un peri&oacute;dico, intercambias dinero por un objeto; cuando 
+  trabajas para una compa&ntilde;&iacute;a, intercambias conocimiento y tiempo 
+  por dinero. Si nos encontramos en uno de estos intercambios, siempre tenemos 
+  cuidado de asegurarnos que no sucede nada extra&ntilde;o. Si le damos al quiosquero 
+  un billete de 5&euro;, esperamos que nos devuelva 4&euro; junto con el peri&oacute;dico, 
+  que vale 1&euro;. Monitorizamos la seguridad de la transacci&oacute;n para asegurarnos 
+  de que cumple todas las restricciones que conlleva.</p>
+<p>En software de negocios, una transacci&oacute;n incluye el concepto de un intercambio 
+  comercial. Una transacci&oacute;n de un sistema de negocios (transacci&oacute;n 
+  para abreviar) es la ejecuci&oacute;n de una unidad-de-trabajo que accede uno 
+  o m&aacute;s recursos compartidos, normalmente bases de datos. Una unidad-de-trabajo 
+  es un conjunto de actividades que se relacionan mutuamente y que deben ser realizadas 
+  completamente. Por ejemplo, una operaci&oacute;n de reserva de un billete de 
+  avi&oacute;n en un sistema inform&aacute;tico puede estar formada por la selecci&oacute;n 
+  del asiento a reservar, el cargo en una tarjeta de cr&eacute;dito y la generaci&oacute;n 
+  de un billete. Todas estas acciones forman una unidad-de-trabajo que no puede 
+  romperse.</p>
+<p>Las transacciones forman parte de distintos tipos de sistemas. En cada transacci&oacute;n 
+  el objetivo es el mismo: ejecutar una unidad-de-trabajo que resulte en un intercambio 
+  fiable. He aqu&iacute; algunos ejemplos de sistemas de negocios que usan transacciones:</p>
+<p> <strong>Cajeros autom&aacute;ticos</strong></p>
+
+
+
+<blockquote>
+  <p> Los cajeros autom&aacute;ticos son un ejemplo t&iacute;pico de sistema en 
+    el que es fundamental el uso de transacciones. Cuando sacas dinero del cajero, 
+    por ejemplo, se debe chequear que tienes dinero suficiente en la cuenta corriente, 
+    despu&eacute;s se debe entregar el dinero y por &uacute;ltimo se debe realizar 
+    un cargo en la cuenta.</p>
+</blockquote>
+<p><strong>Compra on-line</strong></p>
+<blockquote>
+  <p>En una compra on-line tambi&eacute;n se debe hacer un uso intensivo de las 
+    transacciones. Cuando realizas una compra on-line debes de proporcionar el 
+    n&uacute;mero de tarjeta de cr&eacute;dito, &eacute;ste debe validarse y despu&eacute;s 
+    debe cargarse el precio de la compra. Luego se debe emitir un pedido al almac&eacute;n 
+    para que realice el env&iacute;o de la compra. Todas estas acciones deben 
+    ser una unidad-de-trabajo, una transacci&oacute;n que se debe ejecutar de 
+    forma indivisible.</p>
+</blockquote>
+<p> Los sistemas que necesitan usar transacciones normalmente son complejos y 
+  realizan operaciones que conllevan el uso grandes cantidades de datos. Las transacciones 
+  deben por ello preservar la integridad de los datos, lo que significa que todas 
+  las operaciones que forman las transacciones deben funcionar perfectamente o 
+  la que la transacci&oacute;n no se debe ejecutar en absoluto.</p>
+<p>En el campo de la gesti&oacute;n de transacciones se han identificado cuatro 
+  caracter&iacute;sticas que las transacciones deben cumplir para que el sistema 
+  sea considerado seguro. Las transacciones deben ser at&oacute;micas, consistentes, 
+  aisladas y duraderas (ACID, en ingl&eacute;s). A continuaci&oacute;n describimos 
+  estos t&eacute;rminos:</p>
+<p><strong>At&oacute;mica</strong></p>
+<blockquote>
+  <p>Para ser at&oacute;mica, una transacci&oacute;n debe ejecutarse totalmente 
+    o no ejecutarse en absoluto. Esto significa que todas las tareas dentro de 
+    una unidad-de-trabajo deben ejecutarse sin error. Si alguna de estas tareas 
+    falla, la transacci&oacute;n completa se debe abortar y todos los cambios 
+    que se han realizado en los datos deben deshacerse. Si todas las tareas se 
+    ejecutan correctamente, la transacci&oacute;n se comete (commit), lo que significa 
+    que los cambios relizados en los datos se hacen permanentes o duraderos.</p>
+</blockquote>
+<p><strong>Consistente</strong></p>
+<blockquote>
+  <p>La consistencia es una caracter&iacute;stica transaccional que debe ser impuesta 
+    tanto por el sistema transaccional como por el desarrollador de la aplicaci&oacute;n. 
+    La consistencia se refiere a la integridad del almac&eacute;n de datos. El 
+    sistema transaccional cumple su obligaci&oacute;n de consistencia asegurando 
+    que una transacci&oacute;n es at&oacute;mica, aislada y duradera. El desarrollador 
+    de la aplicaci&oacute;n debe asegurarse que la base de datos tiene las restricciones 
+    apropiadas (claves primarias, integridad referencial, y otras) y que la unidad-de-trabajo, 
+    la l&oacute;gica de negocio, no resulta en datos inconsistentes (esto es, 
+    los datos no se corresponden con lo que representan del mundo real). En una 
+    transferencias entre cuentas, por ejemplo, un cargo en una cuenta debe ser 
+    igual a un ingreso en otra.</p>
+</blockquote>
+<p><strong>Aislada</strong></p>
+<blockquote>
+  <p>Una transacci&oacute;n debe poder ejecutarse sin interferencia de otros procesos 
+    o transacciones. En otras palabras, los datos a los que accede una transacci&oacute;n 
+    no pueden ser modificados por ninguna otra parte del sistema hasta que la 
+    transacci&oacute;n se completa.</p>
+</blockquote>
+<p><strong>Duradera</strong></p>
+<blockquote>
+  <p>Durabilidad significa que todos los cambios en los datos realizados durante 
+    el curso de una transacci&oacute;n deben escribirse en alg&uacute;n tipo de 
+    almacenamiento f&iacute;sico antes de que la transacci&oacute;n concluya con 
+    &eacute;xito. Esto asegura que los cambios no se pierden si el sistema se 
+    cae.</p>
+</blockquote>
+<h3>7.1.2 Un ejemplo con EJBs</h3>
+
+<p> Supongamos el siguiente m&eacute;todo de un EJB que llamamos TravelAgent </p>
+
+<pre class="codigo">
+public TicketDO bookPassage(CreditCardDO card, double price)
+    throws IncompleteConversationalState {
+                   
+    if (customer == null || cruise == null || cabin == null) {
+        throw new IncompleteConversationalState();
+    }
+    try {
+        ReservationHomeLocal resHome = (ReservationHomeLocal)
+            jndiContext.lookup("java:comp/env/ejb/ReservationHomeLocal");
+        ReservationLocal reservation =
+            resHome.create(customer, cruise, cabin, price);
+        Object ref = jndiContext.lookup
+            ("java:comp/env/ejb/ProcessPaymentHomeRemote");
+        ProcessPaymentHomeRemote ppHome = (ProcessPaymentHomeRemote)
+            PortableRemoteObject.narrow(ref, ProcessPaymentHomeRemote.class);
+        ProcessPaymentRemote process = ppHome.create();
+        process.Ñ?byCredit(customer, card, price);
+
+        TicketDO ticket = new TicketDO(customer,cruise,cabin,price);
+
+        return ticket;
+    } catch(Exception e) {
+        throw new EJBException(e);
+    }
+}
+</pre>
+
+<p> &iquest;Es fiable el m&eacute;todo? Una primera medida de la fiabilidad del 
+  EJB TravelAgent es su atomicidad: &iquest;asegura que la transacci&oacute;n 
+  se ejecuta completamente o no se ejecuta en absoluto? Para responder debemos 
+  concentrarnos en las tareas cr&iacute;ticas que modifican o crea informaci&oacute;n 
+  nueva. En el m&eacute;todo bookPassage(), se crea un EJB Reservation, el EJB 
+  ProcessPayment realiza un cargo en una tarjeta de cr&eacute;dito, y se crea 
+  un objeto TicketDO. Todas estas tareas deben tener &eacute;xito para que la 
+  transacci&oacute;n completa lo tenga a su vez.</p>
+<p>Para entender la importancia de la caracter&iacute;stica de atomicidad podr&iacute;amos 
+  imaginar qu&eacute; suceder&iacute;a si cualquiera de estas tareas fallara. 
+  Si, por ejemplo, la creaci&oacute;n de un EJB Reservation fallara pero todas 
+  las otras tareas tuvieran &eacute;xito, el cliente terminar&iacute;a probablemente 
+  expulsado del crucero o compartiendo el camarote con un extra&ntilde;o. En lo 
+  que concierne a la agencia de viajes, el m&eacute;todo bookPassage() habr&iacute;a 
+  sido ejecutado con &eacute;xito porque se habr&iacute;a generado un TicketDO. 
+  Si se genera un billete sin la creaci&oacute;n de una reserva, el estado del 
+  sistema de negocio se convierte en inconsistente con la realidad, porque el 
+  cliente ha pagado por un billete pero la reserva no se ha registrado. De la 
+  misma forma, si el EJB ProcessPaymente falla al cargar la tarjeta de cr&eacute;dito 
+  del cliente, el cliente obtiene un crucero gratis. Seguro que &eacute;l se quedar&aacute; 
+  contento, pero gerencia no. Por &uacute;ltimo, si el TicketDO no se crea nunca, 
+  el cliente no tendr&aacute; ning&uacute;n registro de la transacci&oacute;n 
+  y probablemente no podr&aacute; subir al crucero.</p>
+<p>Por ello, la &uacute;nica forma de que pueda completarse la operaci&oacute;n 
+  bookPassage() es si todas sus partes cr&iacute;ticas se ejecutan con &eacute;xito. 
+  Si algo va mal, el proceso completo debe abortarse. Abortar una transacci&oacute;n 
+  requiere m&aacute;s que simplemente no finalizar las tareas; adem&aacute;s, 
+  todas las tareas dentro de la transacci&oacute;n deben deshacerse. Si, por ejemplo, 
+  la creaci&oacute;n de los EJB Reservation y ProcessPayment se realiza con &eacute;xito, 
+  pero la creaci&oacute;n del TicketDO falla, los registros reservation y payment 
+  no deben a&ntilde;adirse a la base de datos.</p>
+<p>Para que la operaci&oacute;n bookPassage() sea completamente segura debe cumplir 
+  los otros requisitos de una transacci&oacute;n: debe ser consistente, aislada 
+  y duradera. </p>
+<p>
+Para mantener la consistencia de las operaciones desde el punto de vista de la l&oacute;gica del negocio, es necesario que se cumplan las otras tres propiedades y adem&aacute;s que el desarrollador de la aplicaci&oacute;n sea estricto a la hora de aplicar las restricciones de integridad en toda la implementaci&oacute;n de la aplicaci&oacute;n. Por ejemplo, de nada servir&iacute;a que el sistema transaccional asegurase la atomicidad de la operaci&oacute;n bookPassage() si el desarrollador no incluyera dentro del m&eacute;todo una llamada a la consulta de la tarjeta de cr&eacute;dito y devolviera directamente el TicketDO. Desde el punto de vista del negocio, la transacci&oacute;n habr&iacute;a fallado, ya que se ha emitido un ticket sin realizar un cobro.
+</p>
+
+
+<p>
+El aislamiento de la operaci&oacute;n tiene que asegurar que otros procesos no van a modificar los datos de los EJBs mientras que la transacci&oacute;n est&aacute; desarroll&aacute;ndose.
+</p>
+
+
+<p>
+Por último, la durabilidad de la transacci&oacute;n obliga a que todas las operaciones hayan sido hechas persistentes antes de dar la transacci&oacute;n por terminada.
+</p>
+
+
+<p> Asegurarnos que las transacciones se adhieren a los principios ACID requiere 
+  un dise&ntilde;o cuidadoso. El sistema tiene que monitorizar el progreso de 
+  una transacci&oacute;n, para asegurarse de que todo funciona correctamente, 
+  de que los datos se modifican de forma correcta, de que las transacciones no 
+  interfieren entre ellas y de que los cambios pueden sobrevivir a una ca&iacute;da 
+  del sistema. Comprobar todas estas condiciones conlleva un mont&oacute;n de 
+  trabajo. Afortunadamente, la arquitectura EJB soporta de forma autom&aacute;tica 
+  el manejo de transacciones.</p>
+<h3>7.1.3 Gesti&oacute;n declarativa de las transacciones</h3>
+
+<p> Una de las ventajas principales de la arquitectura Enterprise JavaBeans es 
+  que permite la gesti&oacute;n declarativa de transacciones. Sin esta caracter&iacute;stica 
+  las transacciones deber&iacute;an controlarse usando una demarcaci&oacute;n 
+  expl&iacute;cita de la transacci&oacute;n. Esto conlleva el uso de APIs bastantes 
+  complejos como el Objecto Transaction Service (OTS) de OMG, o su implementaci&oacute;n 
+  Java, el Java Transaction Service (JTS). La demarcaci&oacute;n expl&iacute;cita 
+  es dif&iacute;cil de usar correctamente para los desarrolladores, sobre todo 
+  si no est&aacute;n habituados a la programaci&oacute;n de sistemas transaccionales. 
+  Adem&aacute;s, la demarcaci&oacute;n expl&iacute;cita requiere que el c&oacute;digo 
+  transaccional se escriba junto con la l&oacute;gica de negocio, lo que reduce 
+  la claridad del c&oacute;digo y, m&aacute;s importante, crea objetos distribuidos 
+  inflexibles. Una vez que la demarcaci&oacute;n de la transacci&oacute;n est&aacute; 
+  grabada en el objeto de negocio, los cambios en la conducta de transacci&oacute;n 
+  obligan a cambios en la misma l&oacute;gica de negocio. </p>
+<p>Con la gesti&oacute;n declarativa de transacciones, la conducta transaccional 
+  de los EJBs puede controlarse usando el descriptor del despliegue, que establece 
+  atributos de transacci&oacute;n para los m&eacute;todos individuales del enterprise 
+  bean. Esto significa que la conducta transaccional de un EJB puede modificarse 
+  sin cambiar la l&oacute;gica de negocio del EJB. Adem&aacute;s, un EJB desplegado 
+  en una apliaci&oacute;n puede definirse con una conducta transaccional distinta 
+  que la del mismo bean desplegado en otra aplicaci&oacute;n. La gesti&oacute;n 
+  declarativa de las transacciones reduce la complejidad del manejo de las transacciones 
+  para los desarrolladores de EJB y de aplicaciones y hace m&aacute;s sencilla 
+  la creaci&oacute;n de aplicaciones transaccionales robustas.</p>
+<p>El resto de este tema examina c&oacute;mo los EJB soportan impl&iacute;citamente 
+  las transacciones a trav&eacute;s de atributos declarativos de transacciones.</p>
+<h2>7.2 Alcance de la transacci&oacute;n</h2>
+
+<p> El alcance de una transacci&oacute;n es un concepto crucial para comprender 
+  las transacciones. En este contexto, el alcance una transacci&oacute;n consiste 
+  en aquellos EJBs de entidad y de sesi&oacute;n que est&aacute;n participando 
+  en una transacci&oacute;n particular.</p>
+<p>En el m&eacute;todo bookPassage() del EJB TravelAgent, todos los EJBs que participan 
+  son parte del mismo alcance de transacci&oacute;n. El alcance de la transacci&oacute;n 
+  comienza cuando el cliente invoca el m&eacute;todo bookPassage() del EJB TravelAgent. 
+  Una vez que el alcance de la transacci&oacute;n ha comenzado, &eacute;ste se 
+  propaga a los dos EJB que se crean: Reservation EJB y ProcessPayment EJB.</p>
+<p>Como ya hemos comentado, una transacci&oacute;n es una unidad-de-trabajo constituida 
+  por una o m&aacute;s tareas. En una transacci&oacute;n, todas las tareas que 
+  forman la unidad-de-trabajo deben ser un &eacute;xito para que la transacci&oacute;n 
+  en su totalidad tenga &eacute;xito; la transacci&oacute;n debe ser at&oacute;mica. 
+  Si alguna tarea falla, las actualizaciones realizadas por las otras tareas deben 
+  desacerse. En EJB, las tareas se expresan como m&eacute;todos de los enterprise 
+  bean, y una unidad-de-trabajo consiste en un conjunto de inv&oacute;caciones 
+  a m&eacute;todos los enterprise bean. El alcance de la transacci&oacute;n incluy 
+  todos los EJB que participan en al unidad de trabajo.</p>
+<p>Es f&aacute;cil trazar el alcance de una transacci&oacute;n siguiendo el hilo 
+  de ejecuci&oacute;n. Si la invocaci&oacute;n del m&eacute;todo bookPassage() 
+  comienza una transacci&oacute;n, entoces de forma l&oacute;gica, la transacci&oacute;n 
+  termina cuando el m&eacute;todo se completa. El alcance de la transacci&oacute;n 
+  bookPassage() incluir&iacute;a los EJB TravelAgent, Reservation y ProcessPayment. 
+</p>
+<p>Una transacci&oacute;n puede terminar si se arroja una excepci&oacute;n mientras 
+  que el m&eacute;todo bookPassage() est&aacute; en ejecuci&oacute;n. La excepci&oacute;n 
+  puede arrojarse desde uno de los otros EJBs o desde el mismo m&eacute;todo bookPassage(). 
+  Una excepci&oacute;n puede causar o no causar rollback (vuelta a los valores 
+  iniciales de los datos) dependiendo de su tipo. Lo veremos m&aacute;s adelante.</p>
+<h2>7.3 Atributos de transacci&oacute;n</h2>
+
+<p> Como desarrolladores de aplicaciones, no es necesario que controlemos expl&iacute;citamente 
+  las transacciones cuando estamos usando un servidor EJB. Los servidores EJB 
+  pueden manejar las transacciones de forma impl&iacute;cita, bas&aacute;ndose 
+  en los atributos transaccionales establecidos para los EJB en el momento del 
+  despliegue. La posibilidad de especificar c&oacute;mo participan en las transacciones 
+  los objetos de negocio mediante programaci&oacute;n basada en atributos es una 
+  caracter&iacute;stica com&uacute;n de los monitores de transacciones, y una 
+  de las caracter&iacute;sticas m&aacute;s importantes del modelo de componentes 
+  EJB.</p>
+<p>Cuando un EJB se despliega, podemos establecer su atributo de transacci&oacute;n 
+  a uno de los siguients valores:</p>
+<ul>
+  <li>NotSupported</li>
+  <li>Supports</li>
+  <li>Required</li>
+  <li>RequiresNew</li>
+  <li>Mandatory</li>
+  <li>Never</li>
+</ul>
+<p>La especificaci&oacute;n EJB 2.0 aconseja fuertemente que los beans de entidad 
+  con persistencia gestionada por el contenedor usen s&oacute;lo los atributos 
+  Required, RequiresNew y Mandatory. Esta restricci&oacute;n asegura que todos 
+  los accesos a bases de datos suceden en el contexto de una transacci&oacute;n, 
+  lo cual es importante cuando el contenedor est&aacute; gestionando autom&aacute;ticamente 
+  la persistencia.</p>
+<p>Podemos establecer un atributo de transacci&oacute;n para el EJB completo (en 
+  cuyo caso se aplica a todos los m&eacute;todos) o establecer distintos atributos 
+  de transacci&oacute;n para los m&eacute;todos individuales. Lo primero es mucho 
+  m&aacute;s sencillo y conlleva menos riesgo de errores, pero lo segundo ofrece 
+  mayor flexibilidad. Los fragmentos de c&oacute;digo de los siguientes apartados 
+  muestran c&oacute;mo establecer los atributos de transacciones de un EJB en 
+  el descriptor del despliegue del EJB.</p>
+<h3>7.3.1 Descriptor del despliegue</h3>
+
+<p> En el descriptor XML del despliegue, un elemento &lt;container-transaction&gt; 
+  especifica los atributos de transacci&oacute;n para los EJBs descritos en el 
+  descriptor de despliegue:</p>
+
+<pre class="codigo">
+&lt;ejb-jar&gt;
+    ...
+    &lt;assembly-descriptor&gt;
+        ...
+        &lt;container-transaction&gt;
+            &lt;method&gt;
+                &lt;ejb-name&gt;TravelAgentEJB&lt;/ejb-name&gt;
+                &lt;method-name&gt; * &lt;/method-name&gt;
+            &lt;/method&gt;
+            &lt;trans-attribute&gt;Required&lt;/trans-attribute&gt;
+        &lt;/container-transaction&gt;
+        &lt;container-transaction&gt;
+            &lt;method&gt;
+                &lt;ejb-name&gt;TravelAgentEJB&lt;/ejb-name&gt;
+                &lt;method-name&gt;listAvailableCabins&lt;/method-name&gt;
+            &lt;/method&gt;
+            &lt;trans-attribute&gt;Supports&lt;/trans-attribute&gt;
+        &lt;/container-transaction&gt;
+        ...
+    &lt;/assembly-descriptor&gt;
+    ...
+&lt;/ejb-jar&gt;
+</pre>
+
+<p> Este descriptor de despliegue especifica los atributos de transacci&oacute;n 
+  para el EJB TravelAgent. Cada elemento &lt;container-transaction&gt; especifica 
+  un m&eacute;todo y el atributo de transacci&oacute;n que deber&iacute;a aplicarse 
+  a ese m&eacute;todo. El primer elemento &lt;container-transaction&gt; especifica 
+  que todos los m&eacute;todos tengan por defecto un atributo de transacci&oacute;n 
+  de Required; el car&aacute;cter * es un comod&iacute;n que indica todos los 
+  m&eacute;todos del EJB TravelAgent. El segundo elemento &lt;container-transaction&gt; 
+  hace caso omiso del atributo por defecto para especificar que el m&eacute;todo 
+  listAvailableCabins() tendr&aacute; un atributo de transacci&oacute;n Supports. 
+  Tenemos que especificar a qu&eacute; EJB nos estamos refiriendo con el elemento 
+  &lt;ejb-name&gt;, ya que un descriptor XML de despliegue puede contener muchos 
+  EJBs.</p>
+<h3>7.3.2 Definici&oacute;n de los atributos de transacci&oacute;n </h3>
+
+<p> Vamos a definir ahora los atributos de transacci&oacute;n que hemos declarado 
+  previamente. Tal y como comentamos arriba, los atributos recomendados por la 
+  especificaci&oacute;n EJB 2.0 son Required, RequiresNew y Mandatory</p>
+<p> <strong>Required </strong></p>
+
+
+<blockquote>
+  <p> Este atributo significa que el m&eacute;todo del enterprise bean debe invocarse 
+    dentro del alcance de una transacci&oacute;n. Si el cliente o el EJB que realiza 
+    la llamada es parte de una transacci&oacute;n el EJB con el atributo Required 
+    autom&aacute;ticamente se incluye en el alcance de esa transacci&oacute;n. 
+    Si, sin embargo, el cliente o EJB que realiza la llamada no est&aacute; inclu&iacute;do 
+    en una transacci&oacute;n, el EJB con el atributo Required comienza su propia 
+    transacci&oacute;n. Esta nueva transacci&oacute;n concluye cuando el EJB termina.</p>
+</blockquote>
+<p><strong>RequiresNew </strong></p>
+<blockquote>
+  <p>Este atributo significa que se debe comenzar siempre una nueva transacci&oacute;n. 
+    Independi&eacute;ntemente de si el cliente o EJB que realiza la llamada es 
+    parte de una transacci&oacute;n, un m&eacute;todo con el atributo RequiresNew 
+    siempre comienza una nueva transacci&oacute;n. Si el cliente que realiza la 
+    llamada ya est&aacute; incluido en una transacci&oacute;n, esa transacci&oacute;n 
+    se suspende hasta que la llamada al m&eacute;todo con el atributo RequiresNew 
+    finaliza. En ese momento la transacci&oacute;n original vuelve a estar activa.</p>
+</blockquote>
+<p><strong>Mandatory </strong></p>
+<blockquote>
+  <p>Este atributo significa que el m&eacute;todo del enterprise bean debe siempre 
+    ser parte del alcance de la transacci&oacute;n del cliente que realiza la 
+    llamada. Si este cliente o EJB no es parte de una transacci&oacute;n, la invocaci&oacute;n 
+    fallar&aacute;, arroj&aacute;ndose una excepci&oacute;n javax.transaction.TransactionRequiredException 
+    a los clientes remotos o una excepci&oacute;n javax.ejb.TransactionRequiredLocalException 
+    a los clientes locales.</p>
+</blockquote>
+<h2>7.4 Propagaci&oacute;n de la transacci&oacute;n</h2>
+
+<p>Para ilustrar el impacto de los atributos de transacci&oacute;n sobre los m&eacute;todos 
+  del enterprise bean, miraremos una vez m&aacute;s al m&eacute;todo bookPassage() 
+  del EJB TravelAgent.</p>
+<p>Para que bookPassage() se ejecute como una transacci&oacute;n con &eacute;xito, 
+  tanto la creaci&oacute;n del EJB Reservation como el cargo a la tarjeta de cr&eacute;dito 
+  deben tambi&eacute;n terminar con &eacute;xito. Esto significa que ambas operaciones 
+  deben incluirse en la misma transacci&oacute;n. Si alguna operaci&oacute;n falla, 
+  la transacci&oacute;n completa falla. Podr&iacute;amos haber especificado un 
+  atributo de transacci&oacute;n Required como el atributo por deefecto para todos 
+  los EJBs incluidos, porque ese atributo refuerza la pol&iacute;tica deseada 
+  de que todos los EJBs deben ejecutarse dentro de una transacci&oacute;n y por 
+  ello asegura la consistencia de los datos.</p>
+<p>Como un monitor de transacciones, el servidor EJB vigila cada llamada a un 
+  m&eacute;todo en la transacci&oacute;n. Si cualquiera de las actualizaciones 
+  falla, todas las actualizaciones a todos los EJBs ser&aacute;n rebobinadas o 
+  recuperadas (rolled back). Una recuperaci&oacute;n (rollback) es como un comando 
+  undo. Si hemos trabajado con bases de datos relacionales, el concepto de una 
+  recuperaci&oacute;n debe sernos familiar. Una vez que se ejecuta una actualizaci&oacute;n 
+  (update), podemos o bien asegurar esa actualizaci&oacute;n (commit) o bien recuperar 
+  los datos iniciales (rollback). El uso de EJBs transaccionales nos proporciona 
+  el mismo tipo de control rollback/commit. Por ejemplo, si el EJB Reservation 
+  no pudiera crearse, el cargo realizado por el EJB ProcessPayment es descontado 
+  (rolled back). </p>
+<p>En los casos en los que el contenedor gestiona implicitamente la transacci&oacute;n, 
+  las decisiones de commit y rollback se manejan de forma autom&aacute;tica. Supongamos 
+  que el EJB TravelAgent se crea y se usa en el cliente como sigue:</p>
+<pre class="codigo">
+TravelAgent agent = agentHome.create(customer);
+agent.setCabinID(cabin_id);
+agent.setCruiseID(cruise_id);
+try {
+    agent.bookPassage(card,price);
+} catch(Exception e) {
+    System.out.println("Transaction failed!");
+}
+</pre>
+
+<p> M&aacute;s a&uacute;n, asumamos que el m&eacute;todo bookPassage() tienen 
+  un atributo de transacci&oacute;n RequiresNew. En este caso, el cliente que 
+  invocal el m&eacute;todo bookPassage() no es parte de la transacci&oacute;n. 
+  Cuando se invoca a bookPassage() en el EJB TravelAgent, se crea una nueva transacci&oacute;n, 
+  tal y como dicta el atributo RequiresNew. Esto significa que el EJB TravelAgent 
+  se registra en el gestor de transacciones del servidor de EJB, el cual gestionar&aacute; 
+  la transacci&oacute;n autom&aacute;ticamente. El gestor dfe transacciones coordina 
+  transacciones, propagando el alcance de la transacci&oacute;n desde un EJB al 
+  siguiente para asegurarse de que todos los EJBs tocados por una transacci&oacute;n 
+  se incluyen en la unidad-de-trabajo de la transacci&oacute;n. De esta forma, 
+  el gestor de transacciones puede monitorizar las actualizaciones realizadas 
+  por cada enterprise bean y decidir, bas&aacute;ndose en el &eacute;xito de estas 
+  actualizaciones, si hacer permanentes los cambios hechos por todos los enterprise 
+  beans en las bases de datos o si echarlos atr&aacute;s y deshacerlos. Si una 
+  excepci&oacute;n del sistema se arroja en el m&eacute;todo bookPassage(), la 
+  transacci&oacute;n es autom&aacute;tica deshecha (rolled back).</p>
+<p>Cuando el m&eacute;todo byCredit() se invoca dentro del m&eacute;todo bookPassage(), 
+  el EJB ProcessPaymet se registra en el gestor de transacciones bajo el contexto 
+  transaccional que se cre&oacute; para el EJB TravelAgent. Cuando se crea el 
+  nuevo EJB Reservation, tambi&eacute;n se registra en el gestor de transacciones 
+  bajo la misma transacci&oacute;n. Cuando se registran todos los EJBs y se realizan 
+  todas las actualizaciones, el gestor de transacciones chequea todo para asegurarse 
+  de que sus actualizaciones funcionar&aacute;n. Si uno de los EJB devuelve un 
+  error o falla, los cambios realizados por los EJB ProcessPayment o Reservation 
+  se deshacen por el gestionador de transacciones.</p>
+<p>Adem&aacute;s de gestionar las transacciones en su mismo entorno, un servidor 
+  EJB puede cooordinarse con otros sistemas transaccionales. Si, por ejemplo, 
+  el EJB ProcessPayment realmenet viniera de un servidor EJB distinto, los dos 
+  servidores EJB cooperar&iacute;an para gestionar la transacci&oacute;no como 
+  una unidad-de-trabajo. Esto se llama una transacci&oacute;n distribu&iacute;da.</p>
+<p>Una transacci&oacute;n distribu&iacute;da es mucho m&aacute;s complicada, y 
+  requiere lo que se llama two-phase commit (2-PC o TPC). 2-PC es un mecanismo 
+  que permite que una transacci&oacute;n sea gestionada a trav&eacute;s de distintos 
+  servidore y recursos (por ejemplo, bases de datos y proporcionadores JMS). Los 
+  detalles de un sistema 2-.PC est&aacute;n m&aacute;s all&aacute; del alcance 
+  de este tema. Si se soportan las transacciones distribuidas, se soportar&aacute; 
+  el mismo protocolo para propagarlas. No nos daremos cuenta, como desarrolladores 
+  de EJBs o de aplicaciones, de las diferencias entre transacciones locales y 
+  distribuidas.</p>
+<h2>7.5 Relaciones basadas en colecciones y transacciones</h2>
+
+<p> En la persistencia gestionada por el contenedor EJB 2.0, las relaciones basadas 
+  en colecciones pueden accederse s&oacute;lo dentro de una &uacute;nica transacci&oacute;n. 
+  En otras palabras, no es legal obtener un objeto Collection de un campo de relaci&oacute;n 
+  basado en colleciones en una transacci&oacute;n y usarlo en otra.</p>
+<p>Por ejemplo, si un enterprise bean accede a otro campo de relaci&oacute;n basado 
+  en una colecci&oacute;n a trav&eacute;s de su interface local, el objeto Collection 
+  devuelto del m&eacute;todo de acceso s&oacute;lo puede usarse dentro de la misma 
+  transacci&oacute;n:</p>
+<pre class="codigo">
+public class HypotheticalBean implements javax.ejb.EntityBean {
+
+    public void methodX(CustomerLocal customer) {
+
+        Collection reservations = customer.getReservations();
+        Iterator iterator = reservations.iterator;
+        while(iterator.hasNext()){
+            ...
+        ...
+   }
+...
+}
+</pre>
+<p>Si se hubiera declarado como RequiresNew el atributo del m&eacute;todo getReservations() 
+  del EJB Customer, cualquier intento de invocar alg&uacute;n m&eacute;todo en 
+  el objeto Collection, incluyendo el m&eacute;todo iterator(), resultar&aacute; 
+  en una java.lang.IllegalStateException. Esta excepci&oacute;n se arroja debido 
+  a que el objeto Collection fue creado dentro del alcance de la transacci&oacute;n 
+  getReservations(), no en el alcance de la transacci&oacute;n del metodoX().</p>
+<p>El objeto Collection de un bean de entidad puede usarse por otro bean co-ubicado 
+  s&oacute;lo si se obtiene y se accede en el mismo contexto de transacci&oacute;n. 
+  En tanto que el m&eacute;todo getReservations() del EJB Customer propage el 
+  contexto de transaccci&oacute;n del metodoX(), el objeto Collection se puede 
+  usar sin problemas. Esto se puede conseguir cambiando el m&eacute;todo getReservations() 
+  para que se declare su atributo de transacci&oacute;n como Required o Mandatory.</p>

@@ -1,0 +1,190 @@
+import java.security.*;
+import javax.crypto.*;
+import javax.crypto.spec.*;
+import java.io.*;
+
+public class Ficheros
+{
+  private static String FICHERO_CLAVE="rijndael.bin";
+  private static int ITERACIONES=1000;
+
+  public static void main (String[] args)
+  throws Exception
+  {
+    if ((args.length < 2) || (args.length > 4))
+    {
+      System.err.println(
+           "Uso: java Ficheros -c|-e|-d password [fich_entrada] [fich_salida]");
+      System.exit(1);
+    }
+
+    // Convertir el password en un array de char
+    char[] password = new char[args[1].length()];
+    args[1].getChars(0, args[1].length(), password, 0);
+
+    if ("-c".equals(args[0])) crearClave(password);
+    else if ("-e".equals(args[0])) encriptar(password, args[2], args[3]);
+    else if ("-d".equals(args[0])) desencriptar(password, args[2], args[3]);
+  }
+
+  // Crear clave Rijndael de 256 bits y guardarla en un fichero 
+  private static void crearClave(char[] password)
+  throws Exception
+  {
+    System.out.println("Generando una clave Rijndael...");
+
+    // Crear la clave 
+    KeyGenerator generador = KeyGenerator.getInstance("Rijndael");
+    generador.init(256);
+    Key clave = generador.generateKey();
+
+    System.out.println("Clave generada.");
+
+    // Crear fichero para la clave y encriptarla con un password (PBE)
+    byte[] salto = new byte[8];
+    SecureRandom aleatorio = new SecureRandom();
+    aleatorio.nextBytes(salto);
+    PBEKeySpec especificacionPBE = new PBEKeySpec(password);
+    SecretKeyFactory factoriaPBE = SecretKeyFactory.getInstance(
+		"PBEWithSHAAndTwofish-CBC");
+	SecretKey clavePBE = factoriaPBE.generateSecret(especificacionPBE);
+	PBEParameterSpec parametrosPBE = 
+                new PBEParameterSpec(salto, ITERACIONES);
+	Cipher cifrador = Cipher.getInstance("PBEWithSHAAndTwofish-CBC");
+	cifrador.init(Cipher.ENCRYPT_MODE, clavePBE, parametrosPBE);
+
+	// Encriptar la clave 
+	byte[] bytesClaveEncriptados = cifrador.doFinal(clave.getEncoded());
+
+        // Escribir el salto seguido de los bytes de la clave encriptados
+	FileOutputStream salida = new FileOutputStream(FICHERO_CLAVE);
+	salida.write(salto);
+	salida.write(bytesClaveEncriptados);
+	salida.close();
+
+  }
+
+  // Cargar la clave del fichero 
+  private static Key cargarClave(char[] password)
+  throws Exception
+  {
+    // Cargar los bytes del fichero 
+    FileInputStream entrada = new FileInputStream(FICHERO_CLAVE);
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    int i = 0;
+    while ((i=entrada.read()) != -1) {
+		baos.write(i);
+	}
+	entrada.close();
+	byte[] bytesSaltoyClave = baos.toByteArray();
+	baos.close();
+
+        // Coger el salto (los primeros 8 bytes)
+	byte[] salto = new byte[8];
+	System.arraycopy(bytesSaltoyClave,0,salto,0,8);
+
+        // Coger los bytes de la clave encriptada 
+	int longitud = bytesSaltoyClave.length - 8;
+	byte[] bytesClaveEncriptados = new byte[longitud];
+	System.arraycopy(bytesSaltoyClave,8,bytesClaveEncriptados,0,longitud);
+
+        // Crear el cifrador PBE
+        PBEKeySpec especificacionClavePBE = new PBEKeySpec(password);
+        SecretKeyFactory factoriaPBE = SecretKeyFactory.getInstance(
+		"PBEWithSHAAndTwofish-CBC");
+	SecretKey clavePBE = factoriaPBE.generateSecret(especificacionClavePBE);
+	PBEParameterSpec parametrosPBE = new 
+                 PBEParameterSpec(salto, ITERACIONES);
+	Cipher cifrador = Cipher.getInstance("PBEWithSHAAndTwofish-CBC");
+	cifrador.init(Cipher.DECRYPT_MODE, clavePBE, parametrosPBE);
+
+	// Desencriptar los bytes de la clave 
+	byte[] bytesClaveDesencriptados = 
+                 cifrador.doFinal(bytesClaveEncriptados);
+
+        // Crear la clave desde los bytes de la clave
+	SecretKeySpec clave = 
+                 new SecretKeySpec(bytesClaveDesencriptados, "Rijndael");
+	return clave;
+
+  }
+
+  // Encriptar un fichero con Rijndael
+  private static void 
+  encriptar(char[] password, String ficheroEntrada, String ficheroSalida)
+  throws Exception
+  {
+    System.out.println("Cargando la clave...");
+    Key clave = cargarClave(password);
+    System.out.println("Clave cargada.");
+
+    // Crear e inicializar un cifrador 
+    Cipher cifrador = Cipher.getInstance("Rijndael/CBC/PKCS5Padding");
+    System.out.println("Inicializar SecureRandom...");
+
+    // Necesitamos un IV. El adecuado en Rijndael debe usar 16 bytes.
+    SecureRandom aleatorio = new SecureRandom();
+    byte[] bytesAleatorios = new byte[16];
+    aleatorio.nextBytes(bytesAleatorios);
+
+    // Escribimos el IV como los primeros 16 bytes del fichero de salida
+    FileOutputStream salida = new FileOutputStream(ficheroSalida);
+    salida.write(bytesAleatorios);
+    IvParameterSpec iv = new IvParameterSpec(bytesAleatorios);
+
+    System.out.println("Inicializando el cifrador.");
+    cifrador.init(Cipher.ENCRYPT_MODE, clave, iv);
+
+    CipherOutputStream salidaCifrador = 
+              new CipherOutputStream(salida, cifrador);
+
+    System.out.println("Leyendo y encriptando el fichero...");
+    FileInputStream entrada = new FileInputStream(ficheroEntrada);
+
+    int b = 0;
+    while ((b = entrada.read()) != -1)
+    {
+      salidaCifrador.write(b);
+    }
+    entrada.close();
+    salidaCifrador.close();
+  }
+
+  // Desencriptar con Rijndael. Cargar la clave dado un password
+  private static void 
+  desencriptar(char[] password, String ficheroEntrada, String ficheroSalida)
+  throws Exception
+  {
+    System.out.println("Cargando la clave...");
+    Key clave = cargarClave(password);
+    System.out.println("Loaded the key.");
+
+    // Crear e inicializar un cifrador
+    Cipher cifrador = Cipher.getInstance("Rijndael/CBC/PKCS5Padding");
+
+
+    // Leer el IV de los primeros 16 bytes del fichero.
+    FileInputStream entrada = new FileInputStream(ficheroEntrada);
+    byte[] bytesAleatorios = new byte[16];
+    entrada.read(bytesAleatorios);
+
+    IvParameterSpec iv = new IvParameterSpec(bytesAleatorios);
+
+    System.out.println("Inicializando el cifrador.");
+    cifrador.init(Cipher.DECRYPT_MODE, clave, iv);
+
+    CipherInputStream entradaCifrador = 
+          new CipherInputStream(entrada, cifrador);
+
+    System.out.println("Desencriptando y escribiendo el fichero...");
+    FileOutputStream salida = new FileOutputStream(ficheroSalida);
+
+    int b = 0;
+    while ((b = entradaCifrador.read()) != -1)
+    {
+      salida.write(b);
+    }
+    entradaCifrador.close();
+    salida.close();
+  }
+}

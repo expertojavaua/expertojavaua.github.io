@@ -1,0 +1,1578 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.7">
+<meta name="Forrest-skin-name" content="pelt">
+<title>Funcionamiento y arquitectura de JSF</title>
+<link type="text/css" href="skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="skin/print.css" rel="stylesheet">
+<link type="text/css" href="skin/profile.css" rel="stylesheet">
+<script src="skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<div class="header">
+<div class="grouplogo">
+<a href="http://www.jtech.ua.es/j2ee"><img class="logoImage" alt="J2EE" src="images/baner_j2ee_izq.gif" title="Curso Especialista Universitario J2EE"></a>
+</div>
+<div class="projectlogoA1">
+<a href="http://www.dccia.ua.es/"><img class="logoImage" alt="Struts y JSF" src="images/baner_j2ee_der.gif" title="Struts y JSF"></a>
+</div>
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="../index.html">M&oacute;dulos</a>
+</li>
+<li class="current">
+<a class="base-selected" href="index.html">Struts y JSF</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<div id="level2tabs"></div>
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<div id="menu">
+<div onclick="SwitchMenu('menu_selected_1.1', 'skin/')" id="menu_selected_1.1Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">JSF y Struts</div>
+<div id="menu_selected_1.1" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="index.html" title="JSF y Struts">&Iacute;ndice</a>
+</div>
+<div onclick="SwitchMenu('menu_selected_1.1.2', 'skin/')" id="menu_selected_1.1.2Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Teor&iacute;a</div>
+<div id="menu_selected_1.1.2" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="sesion01-jsf-apuntes.html">Sesion 1</a>
+</div>
+<div class="menupage">
+<div class="menupagetitle">Sesion 2</div>
+</div>
+<div class="menuitem">
+<a href="roadmap-jsf.html">Roadmap JSF</a>
+</div>
+<div class="menuitem">
+<a href="sesion01-apuntes.html">Sesion 3</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-apuntes.html">Sesion 4</a>
+</div>
+</div>
+<div onclick="SwitchMenu('menu_1.1.3', 'skin/')" id="menu_1.1.3Title" class="menutitle">Ejercicios</div>
+<div id="menu_1.1.3" class="menuitemgroup">
+<div class="menuitem">
+<a href="sesion01-jsf-ejercicios.html">Sesion 1</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-jsf-ejercicios.html">Sesion 2</a>
+</div>
+<div class="menuitem">
+<a href="sesion01-ejercicios.html">Sesion 3</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-ejercicios.html">Sesion 4</a>
+</div>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<div id="credit2"></div>
+</div>
+<div id="content">
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="sesion02-jsf-apuntes.pdf"><img alt="PDF -icon" src="skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1>Funcionamiento y arquitectura de JSF</h1>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#Programando+en+JSF">Programando en JSF</a>
+<ul class="minitoc">
+<li>
+<a href="#Un+programa+de+ejemplo">Un programa de ejemplo</a>
+</li>
+<li>
+<a href="#Validaci%C3%B3n+definida+en+la+aplicaci%C3%B3n">Validaci&oacute;n definida en la aplicaci&oacute;n</a>
+</li>
+<li>
+<a href="#Peticiones+JSF">Peticiones JSF</a>
+</li>
+<li>
+<a href="#Eventos+en+JSF">Eventos en JSF</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Componentes+JSF">Componentes JSF</a>
+<ul class="minitoc">
+<li>
+<a href="#Tipos+de+componentes+est%C3%A1ndar+de+JSF">Tipos de componentes est&aacute;ndar de JSF</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#El+ciclo+de+vida+de+una+petici%C3%B3n+JSF">El ciclo de vida de una petici&oacute;n JSF</a>
+<ul class="minitoc">
+<li>
+<a href="#Restaurar+la+vista+%28Restore+View%29">Restaurar la vista (Restore View)</a>
+</li>
+<li>
+<a href="#Aplicar+los+valores+de+la+petici%C3%B3n+%28Apply+Request+Values%29">Aplicar los valores de la petici&oacute;n (Apply Request Values)</a>
+</li>
+<li>
+<a href="#Procesar+las+validaciones+%28Process+Validations%29">Procesar las validaciones (Process Validations)</a>
+</li>
+<li>
+<a href="#Actualizar+los+valores+del+modelo+%28Update+Model+Values%29">Actualizar los valores del modelo (Update Model Values)</a>
+</li>
+<li>
+<a href="#Invocar+a+la+aplicaci%C3%B3n+%28Invoke+Application%29">Invocar a la aplicaci&oacute;n (Invoke Application)</a>
+</li>
+<li>
+<a href="#Renderizado+de+la+respuesta+%28Render+Response%29">Renderizado de la respuesta (Render Response)</a>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+
+<p>En esta sesi&oacute;n vamos a estudiar en profundidad c&oacute;mo se gestionan
+las peticiones a JavaServer Faces, incluyendo detalles de la
+implementaci&oacute;n de esta arquitectura. Veremos un ejemplo completo de
+una petici&oacute;n JSF, estudiando c&oacute;mo se realiza, cu&aacute;l es su ciclo de
+vida, c&oacute;mo se validan los datos que el usuario introduce en el
+componente, c&oacute;mo obtiene el componente los datos del modelo y c&oacute;mo se
+procesan y definen los eventos asociados.</p>
+
+
+<p>En la sesi&oacute;n anterior tratamos el punto de vista de un
+desarrollador de p&aacute;ginas web que usa JSF. En esta sesi&oacute;n
+consideraremos JSF desde el punto de vista de un programador que desea
+escribir c&oacute;digo Java dentro del <em>framework</em>.</p>
+
+
+<a name="N10015"></a><a name="Programando+en+JSF"></a>
+<h2 class="underlined_10">Programando en JSF</h2>
+<div class="section">
+<p>Tal y como ve&iacute;amos en la sesi&oacute;n anterior, y defini&eacute;ndolo de una
+forma muy simple, JSF es un <em>framework</em> orientado a recoger
+datos del usuario y pasarlos a la capa del modelo de la
+aplicaci&oacute;n. Todo ello en un entorno Web, con peticiones HTTP y p&aacute;ginas
+HTML. Los datos se representan internamente en forma de componentes
+JSF (objetos Java de clases que extienden
+<span class="codefrag">UIComponentBase</span>). Adem&aacute;s, el <em>framework</em> permite
+definir componentes (botones o enlaces) que representan acciones que
+pueden ser disparadas por el usuario y comunicadas a la aplicaci&oacute;n.</p>
+<p>Los datos se introducen y se muestran en forma de texto, y se
+almacenan en un formato dependiente de la aplicaci&oacute;n. Por ejemplo, una
+fecha se puede representar con un formato <span class="codefrag">dd-mm-aaaa</span>
+mientras que su representaci&oacute;n interna puede ser un objeto de la clase
+<span class="codefrag">java.util.Date</span>. Para realizar esta conversi&oacute;n entre el texto y el
+formato interno, se asocian al componente <em>validadores</em> y
+<em>conversores</em>.</p>
+<p>La separaci&oacute;n entre la parte visual del componente (c&oacute;digo HTML en
+la p&aacute;gina web), el modelo de datos (<em>backing beans</em>) y
+las acciones (c&oacute;digo Java que procesa el modelo y controla la vista)
+es un esquema tradicional en todos los <em>framework</em> de gesti&oacute;n
+de interfaces de usuario que se denomina <em>patr&oacute;n
+Modelo/Vista/Controlador (MVC)</em>.</p>
+<p>La aportaci&oacute;n fundamental de la tecnolog&iacute;a JSF es la adaptaci&oacute;n del
+patr&oacute;n MVC al entorno web. Para ello, el c&oacute;digo final en el que se
+define un componente es c&oacute;digo HTML y los eventos disparados por el
+usuario se guardan en peticiones HTTP. Un <em>servlet</em> de la
+clase <span class="codefrag">javax.faces.webapp.FacesServlet</span> es el motor de
+cualquier aplicaci&oacute;n JSF. Este servlet procesa la petici&oacute;n, gestiona
+todos los componentes relacionados y termina generando el c&oacute;digo HTML
+en el que se traducen estos componentes. </p>
+<p>Un concepto muy importante que diferencia JSF de JSP o Struts es
+que los componentes que constituyen la interfaz de usuario son objetos
+que residen en el servidor en forma de &aacute;rbol de objetos. La siguiente
+figura muestra el proceso t&iacute;pico. Una petici&oacute;n del cliente es
+procesada por el servidor y, accediendo a la p&aacute;gina JSP donde se
+define el componente, se construye y procesa un &aacute;rbol de componentes
+que reside en el servidor. Por &uacute;ltimo, se <em>renderiza</em> el &aacute;rbol
+de componentes, generando la respuesta HTML.</p>
+<p>
+
+<img alt="La interfaz de usuario se gestiona en el servidor." content-width="8cm" src="img/sesion4/ui-server.gif" width="400">
+</p>
+<p>Adem&aacute;s del <em>servlet</em> <span class="codefrag">FacesServlet</span>, otros
+elementos fundamentales de JSF son:</p>
+<ul>
+
+<li>Etiquetas y p&aacute;ginas JSP con las que se definen los componentes.</li>
+
+<li>Fichero de configuraci&oacute;n <span class="codefrag">faces-config.xml</span> que
+proporciona una forma declarativa de configurar distintos aspectos de
+la aplicaci&oacute;n JSF, como por ejemplo la relaci&oacute;n entre componentes JSF
+y el modelo de datos en forma de objetos Java de respaldo (<em>backing
+beans</em>).</li>
+
+</ul>
+<p>Las siguientes URLs son muy &uacute;tiles cuando se est&aacute; programando en JSF.</p>
+<ul>
+
+<li>JavaDoc del API de JSF 1.1:
+<a href="http://java.sun.com/j2ee/javaserverfaces/1.1/docs/api/">
+http://java.sun.com/j2ee/javaserverfaces/1.1/docs/api/ </a>
+</li> 
+
+<li>Etiquetas de JSF:
+<a href="http://java.sun.com/j2ee/javaserverfaces/1.1/docs/tlddocs/">
+http://java.sun.com/j2ee/javaserverfaces/1.1/docs/tlddocs/</a>
+</li> 
+
+<li>DTD comentada del fichero <span class="codefrag">faces-config.xml</span>:
+<a href="http://horstmann.com/corejsf/faces-config.html">
+http://horstmann.com/corejsf/faces-config.html</a>
+</li> 
+
+</ul>
+<p>Adem&aacute;s, siempre es recomendable tener a mano la especificaci&oacute;n
+original del framework, disponible en la web de los JSR
+correspondientes.</p>
+<ul>
+
+<li>JSR 252 (JavaServer Faces 1.2): <a href="http://www.jcp.org/en/jsr/detail?id=252">
+http://www.jcp.org/en/jsr/detail?id=252</a>
+</li>
+
+<li>JSR 127 (JavaServer Faces 1.1): <a href="http://www.jcp.org/en/jsr/detail?id=127">
+http://www.jcp.org/en/jsr/detail?id=127</a>
+
+</li>
+
+</ul>
+<a name="N100A0"></a><a name="Un+programa+de+ejemplo"></a>
+<h3 class="underlined_5">Un programa de ejemplo</h3>
+<p>Como en cualquier otro <em>framework</em>, el ciclo de control de
+la aplicaci&oacute;n no est&aacute; dirigido por nosotros, sino que es el
+<em>framework</em> quien lo gestiona. Debido a esto, para programar en
+JSF debemos incluir nuestro c&oacute;digo Java en los manejadores de los
+distintos eventos que soporta el <em>framework</em> y que se disparan
+en distintas fases del ciclo vida de la aplicaci&oacute;n. Otra forma de
+programar en JSF es extender el <em>framework</em> para incorporar
+nuevos componentes definidos por nosotros. En cualquiera de estos
+casos, es necesario conocer algunos conceptos que veremos a
+continuaci&oacute;n.</p>
+<p>Veamos en primer lugar un sencillo programa ejemplo que vamos a
+utilizar a lo largo de la sesi&oacute;n. Se trata de un programa que
+implementa una simple calculadora de n&uacute;meros enteros.</p>
+<p> Definimos dos componentes JSF, uno que recoge los n&uacute;meros y la
+operaci&oacute;n del usuario y otro que muestra el resultado.</p>
+<p> El siguiente fichero <span class="codefrag">calculator.jsp</span> define un
+componente JSF llamado <span class="codefrag">"calcForm"</span> que se implementa como
+un formulario HTML y que contiene un componente <em>panel grid</em>
+que a su vez contiene dos campos de entrada para que el usuario
+introduzca los n&uacute;meros a operar y un <em>list box</em> para que
+seleccione una operaci&oacute;n. Como &uacute;ltimo elemento, se define un enlace
+con la etiqueta <span class="codefrag">&lt;h:commandLink&gt;</span> que define la
+acci&oacute;n que realiza la operaci&oacute;n matem&aacute;tica seleccionada por el
+usuario.</p>
+<p>Se utiliza un &uacute;nico <em>bean</em> de respaldo, llamado
+<span class="codefrag">calcBean</span>, en el que se han definido las propiedades
+<span class="codefrag">firstNumber</span>, <span class="codefrag">secondNumber</span>,
+<span class="codefrag">operation</span> y <span class="codefrag">result</span>.</p>
+<p>Fichero <span class="codefrag">calculator.jsp</span>:</p>
+<pre class="code">
+&lt;html&gt;
+    &lt;head&gt; &lt;title&gt;Calculator&lt;/title&gt; &lt;/head&gt;
+    &lt;%@ taglib uri="http://java.sun.com/jsf/html" prefix="h" %&gt;
+    &lt;%@ taglib uri="http://java.sun.com/jsf/core" prefix="f" %&gt;
+    &lt;link href="app.css" rel="stylesheet" type="text/css"&gt;
+    &lt;h1&gt;Calculadora&lt;/h1&gt;
+    &lt;p&gt;
+    &lt;f:view&gt;
+      &lt;h:form id="calcForm"&gt;
+         &lt;h:panelGrid columns="3"&gt;
+            &lt;h:outputLabel value="Primer n&uacute;mero"/&gt;
+            &lt;h:inputText id="firstNumber" 
+	                 value="#{calcBean.firstNumber}" 
+			 required="true"/&gt;
+            &lt;h:message for="firstNumber"/&gt;
+            
+            &lt;h:outputLabel value="Segundo n&uacute;mero"/&gt;
+            &lt;h:inputText id="secondNumber" 
+	                 value="#{calcBean.secondNumber}" 
+			 required="true"/&gt;
+            &lt;h:message for="secondNumber"/&gt;
+            
+            &lt;h:outputLabel value="Operaci&oacute;n"/&gt;
+            &lt;h:selectOneListbox id="operation" 
+	                        required="true" 
+				value="#{calcBean.operation}"&gt;
+               &lt;f:selectItem itemValue="+" itemLabel="suma"/&gt;
+               &lt;f:selectItem itemValue="-" itemLabel="resta"/&gt;
+               &lt;f:selectItem itemValue="*" itemLabel="multiplicaci&oacute;n"/&gt;
+               &lt;f:selectItem itemValue="/" itemLabel="divisi&oacute;n"/&gt;             
+            &lt;/h:selectOneListbox&gt; 
+            &lt;h:message for="operation"/&gt;            
+         &lt;/h:panelGrid&gt;
+         &lt;h:commandLink action="#{calcBean.doOperation}"&gt;
+	    &lt;h:outputText value="calcular"/&gt; 
+	 &lt;/h:commandLink&gt;
+      &lt;/h:form&gt;
+    &lt;/f:view&gt;
+    &lt;/p&gt;
+    &lt;/body&gt;
+&lt;/html&gt;  
+</pre>
+<p>El aspecto de la p&aacute;gina HTML generada por este componente es el siguiente:</p>
+<p>
+
+<img alt="P&aacute;gina HTML generada por el componente calculator." content-width="10cm" src="img/sesion4/calculator.gif" width="500"> 
+</p>
+<p>Como se puede comprobar en el c&oacute;digo JSF, se han definido en la
+tercera columna del panel de la calculadora los mensajes de error JSF
+asociados a los componentes y que pueden generarse en la conversi&oacute;n o
+validaci&oacute;n de los n&uacute;meros introducidos por el usuario. La siguiente
+figura muestra un ejemplo de p&aacute;gina con estos mensajes de error.</p>
+<p>
+
+<img alt="P&aacute;gina con mensajes de error JSF." content-width="10cm" src="img/sesion4/calculator-errors.gif" width="500"> 
+</p>
+<p>El resultado de la operaci&oacute;n se muestra con el componente
+especificado en la siguiente p&aacute;gina JSF:</p>
+<p>Fichero <span class="codefrag">result.jsp</span>:</p>
+<pre class="code">
+&lt;html&gt;
+    &lt;head&gt; &lt;title&gt;Calculator result&lt;/title&gt; &lt;/head&gt;
+    &lt;%@ taglib uri="http://java.sun.com/jsf/html" prefix="h" %&gt;
+    &lt;%@ taglib uri="http://java.sun.com/jsf/core" prefix="f" %&gt;
+    &lt;link href="app.css" rel="stylesheet" type="text/css"&gt;
+    &lt;h1&gt;Resultado&lt;/h1&gt;
+    &lt;f:view&gt;
+      &lt;h:form id="calcResult"&gt;
+         Primer n&uacute;mero: 
+            &lt;h:outputText id="firstNumber" 
+                          value="#{calcBean.firstNumber}"/&gt; &lt;br /&gt;
+         Segundo n&uacute;mero: 
+            &lt;h:outputText id="secondNumber" 
+	                  value="#{calcBean.secondNumber}"/&gt; &lt;br /&gt;
+         Operaci&oacute;n: 
+	    &lt;h:outputText id="operation" 
+	                  value="#{calcBean.operation}"/&gt; &lt;br /&gt;
+         Resultado: 
+	    &lt;h:outputText id="result" 
+	                  value="#{calcBean.result}"/&gt; &lt;br /&gt;
+         &lt;h:commandLink action="OK"&gt;
+	    &lt;h:outputText value="Volver"/&gt;
+	 &lt;/h:commandLink&gt;
+      &lt;/h:form&gt;
+    &lt;/f:view&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p>Hay que hacer notar que el <span class="codefrag">commandLink</span> "volver" define
+como acci&oacute;n una cadena. En este caso no se llama a ning&uacute;n m&eacute;todo
+de acci&oacute;n, sino que cuando se procesa el evento acci&oacute;n se devuelve
+directamente esa etiqueta y la siguiente p&aacute;gina de la aplicaci&oacute;n se
+define por la regla correspondiene del fichero
+<span class="codefrag">faces-config.xml</span>.</p>
+<p>El aspecto de esta p&aacute;gina se muestra en la siguiente figura:</p>
+<p>
+<img alt="P&aacute;gina HTML con el resultado de la operaci&oacute;n." content-width="10cm" src="img/sesion4/result-calculator.gif" width="500"></p>
+<p>El c&oacute;digo Java que da soporte a estos componentes se implementa en
+las clases <span class="codefrag">calculator.model.Calculator</span> y
+<span class="codefrag">calculator.controller.CalculatorController</span>. El primero
+define la <em>capa de negocio</em> de la aplicaci&oacute;n con los posibles casos de
+uso y su implementaci&oacute;n en c&oacute;digo Java.</p>
+<p>Fichero <span class="codefrag">calculator.model.Calculator</span>:</p>
+<pre class="code">
+package calculator.model;
+
+public class Calculator {
+    public int add (int a, int b) {
+        return a+b;
+    }
+    
+    public int substract (int a, int b) {
+        return a-b;
+    }
+    
+    public int multiply (int a, int b) {
+        return a*b;
+    }
+    
+    public int divide (int a, int b) {
+        return a/b;
+    }
+}
+     </pre>
+<p>La segunda clase,
+<span class="codefrag">calculator.controller.CalculatorController</span> define el
+<em>bean</em> de respaldo y el m&eacute;todo de acci&oacute;n que realiza la
+operaci&oacute;n matem&aacute;tica seleccionada por el usuario.</p>
+<p>Fichero <span class="codefrag">calculator.controller.CalculatorController</span>:</p>
+<pre class="code">
+package calculator.controller;
+import calculator.model.Calculator;
+
+public class CalculatorController {
+    private Calculator calculator = new Calculator();
+    private int firstNumber = 0;
+    private int secondNumber = 0;
+    private String operation = "";
+    private int result = 0;
+    
+    public CalculatorController() {}
+    
+    public void setFirstNumber(int firstNumber) {
+        this.firstNumber = firstNumber;
+    }
+    
+    public int getFirstNumber() {
+        return firstNumber;
+    }
+    
+    public void setSecondNumber(int secondNumber) {
+        this.secondNumber = secondNumber;
+    }
+    
+    public int getSecondNumber() {
+        return secondNumber;
+    }
+    
+    public void setOperation(String operation) {
+        this.operation = operation;
+    }
+    
+    public String getOperation() {
+        return operation;
+    }
+    
+    public int getResult() {
+        return result;
+    }
+    
+    public String doOperation() {
+        if (operation.equals("+"))
+            result = calculator.add(firstNumber, secondNumber);
+        else if (operation.equals("-"))
+            result = calculator.substract(firstNumber, secondNumber);
+        else if (operation.equals("*"))
+            result = calculator.multiply(firstNumber, secondNumber);
+        else if (operation.equals("/"))
+            result = calculator.divide(firstNumber, secondNumber);
+        return "OK";
+    }
+}</pre>
+<p>Por &uacute;ltimo, el fichero de configuraci&oacute;n
+<span class="codefrag">faces-config.xml</span> relaciona el nombre l&oacute;gico del
+<em>bean</em> de respaldo <span class="codefrag">calcBean</span> con la clase
+<span class="codefrag">calculator.Controller.CalculatorController</span> y le asigna un
+alcance de sesi&oacute;n. </p>
+<p>Tambi&eacute;n se definen en este fichero las reglas de navegaci&oacute;n entre
+las p&aacute;ginas JSP. Tras la p&aacute;gina <span class="codefrag">/calculator.jsp</span> se
+muestra (si el resultado de la acci&oacute;n es "<span class="codefrag">OK</span>") la p&aacute;gina
+<span class="codefrag">/result.jsp</span>. Y tras realizar una acci&oacute;n en la p&aacute;gina
+<span class="codefrag">/result.jsp</span> se muestra (si el resultado de la acci&oacute;n es
+la cadena <span class="codefrag">OK</span> la p&aacute;gina <span class="codefrag">/calculator.jsp</span>).</p>
+<p>Fichero <strong><span class="codefrag">faces-config.xml</span></strong>:</p>
+<pre class="code">
+ &lt;?xml version='1.0' encoding='UTF-8'?&gt;
+&lt;!DOCTYPE faces-config PUBLIC
+  "-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.1//EN"
+  "http://java.sun.com/dtd/web-facesconfig_1_1.dtd"&gt;
+
+&lt;faces-config&gt;
+  &lt;managed-bean&gt;
+    &lt;managed-bean-name&gt;calcBean&lt;/managed-bean-name&gt;
+    &lt;managed-bean-class&gt;
+       calculator.controller.CalculatorController
+    &lt;/managed-bean-class&gt;
+    &lt;managed-bean-scope&gt;session&lt;/managed-bean-scope&gt;
+  &lt;/managed-bean&gt;
+  
+  &lt;navigation-rule&gt;
+     &lt;from-view-id&gt;/calculator.jsp&lt;/from-view-id&gt;
+     &lt;navigation-case&gt;
+        &lt;from-outcome&gt;OK&lt;/from-outcome&gt;
+        &lt;to-view-id&gt;/result.jsp&lt;/to-view-id&gt;
+     &lt;/navigation-case&gt;
+  &lt;/navigation-rule&gt;
+  
+  &lt;navigation-rule&gt;
+     &lt;from-view-id&gt;/result.jsp&lt;/from-view-id&gt;
+     &lt;navigation-case&gt;
+        &lt;from-outcome&gt;OK&lt;/from-outcome&gt;
+        &lt;to-view-id&gt;/calculator.jsp&lt;/to-view-id&gt;
+     &lt;/navigation-case&gt;
+  &lt;/navigation-rule&gt;
+&lt;/faces-config&gt;</pre>
+<p>Ya tenemos un sencillo programa ejemplo en JSF. Pero recordemos que
+en esta sesi&oacute;n queremos comprobar c&oacute;mo funciona internamente
+JSF. Necesitamos poder escribir algo de c&oacute;digo que se ejecute en alg&uacute;n
+punto del ciclo de vida del <em>framework</em>. Una soluci&oacute;n es el
+momento de validaci&oacute;n de los datos. JSF nos permite definir
+validadores propios de la aplicaci&oacute;n. Lo veremos en el siguiente
+apartado.</p>
+<a name="N10187"></a><a name="Validaci%C3%B3n+definida+en+la+aplicaci%C3%B3n"></a>
+<h3 class="underlined_5">Validaci&oacute;n definida en la aplicaci&oacute;n</h3>
+<p>En JSF es posible programar validadores adicionales a los ya
+existentes en el <em>framework</em>. Estos nuevos validadores
+definidos deber&iacute;an ser, en lo posible, reusables para m&aacute;s de un
+formulario y m&aacute;s de una aplicaci&oacute;n. Por ejemplo, podr&iacute;amos construir
+un validador que comprobara si una cadena es un c&oacute;digo correcto de
+tarjeta Visa (la implementaci&oacute;n de JSF de Apache <em>MyFaces</em> lo
+hace).</p>
+<p>Como ejemplo de implementaci&oacute;n de nuevos validadores, vamos a
+definir un validador que s&oacute;lo permita introducir n&uacute;meros pares en
+nuestra calculadora. No es un ejemplo realista de validaci&oacute;n, pero nos
+sirve para explicar el funcionamiento del <em>framework</em>.</p>
+<p>Los pasos para definir un validador propio son los siguientes:</p>
+<ol>
+
+<li>Crear una clase que implemente la interfaz
+<span class="codefrag">javax.faces.validator.Validator</span> e implementar en esa
+clase el m&eacute;todo <span class="codefrag">validate</span>.</li> 
+
+<li>Registrar el validor propio en el fichero <span class="codefrag">faces-config.xml</span>.</li>
+
+<li>Usar la etiqueta <span class="codefrag">&lt;f:validator/&gt;</span> en las p&aacute;ginas JSP.</li>
+
+</ol>
+<p>He aqu&iacute; el c&oacute;digo que habr&iacute;a que a&ntilde;adir a la aplicaci&oacute;n
+<span class="codefrag">calculator</span>, paso a paso.</p>
+<ol>
+   
+<li>
+<p>
+<strong>Implementamos la interfaz
+      <span class="codefrag">Validator</span></strong>. </p>
+
+      
+<p>El primer paso es definir una
+      clase que implemente la interfaz <span class="codefrag">Validator.</span> y el
+      m&eacute;todo <span class="codefrag">validate</span>. Para ello creamos el fichero
+      <span class="codefrag">calculator.validator.PairNumberValidator</span>:</p>
+
+
+<pre class="code"> package calculator.validator;
+
+import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.validator.Validator;
+import javax.faces.validator.ValidatorException;
+
+public class PairNumberValidator implements Validator {
+    public void validate(FacesContext arg0, 
+                         UIComponent component, 
+			 Object value)
+            throws ValidatorException {
+        int number = ((Integer) value).intValue();
+        if (number % 2 != 0) {
+            FacesMessage message = new FacesMessage();
+            message.setDetail("No es un numero par");
+            message.setSummary("No es un numero par");
+            message.setSeverity(FacesMessage.SEVERITY_ERROR);
+            throw new ValidatorException(message);
+        }
+    }
+}
+}</pre>
+
+   
+<p>El m&eacute;todo <span class="codefrag">validate()</span> recibe el objeto
+   <span class="codefrag">value</span>, que en este caso ser&aacute; la conversi&oacute;n a <span class="codefrag">Integer</span>
+   del valor que ha introducido el usuario en los componentes de
+   entrada de la calculadora.</p>
+   
+</li>
+   
+   
+<li>
+<p>
+<strong>Registramos el validador propio en el fichero
+   <span class="codefrag">faces-config.xml</span></strong>.</p>
+   
+<p>Se debe usar el elemento <span class="codefrag">validator</span>.</p>
+
+
+<pre class="code">
+&lt;validator&gt;
+    &lt;validator-id&gt;calculator.isPair&lt;/validator-id&gt;
+    &lt;validator-class&gt;
+       calculator.validator.PairNumberValidator
+    &lt;/validator-class&gt;
+&lt;/validator&gt;</pre>
+   
+</li>
+   
+   
+<li>
+<p>
+<strong>Usamos la etiqueta <span class="codefrag">f:validator</span> en los
+   ficheros JSP</strong>.</p>
+   
+<p> A&ntilde;adimos el siguiente c&oacute;digo en los dos
+   <span class="codefrag">inputText</span> del fichero <span class="codefrag">calculator.JSP</span>,
+   asociando el validador definido a los dos componentes de entrada.</p>
+
+
+<pre class="code">
+&lt;h:inputText id="firstNumber" value="#{calcBean.firstNumber}" required="true"&gt;
+    &lt;f:validator validatorId="calculator.isPair"/&gt;
+&lt;/h:inputText&gt; </pre>
+   
+</li>
+
+
+</ol>
+<p>El resultado se puede comprobar en la siguiente p&aacute;gina HTML
+generada cuando se introducen n&uacute;meros impares en la calculadora.</p>
+<p>
+   
+<img alt="P&aacute;gina que muestra el    mensaje generado por el validador propio." content-width="8cm" src="img/sesion4/validator.gif" width="400"> 
+</p>
+<a name="N1021F"></a><a name="Peticiones+JSF"></a>
+<h3 class="underlined_5">Peticiones JSF</h3>
+<p>Uno de los conceptos fundamentales para entender el funcionamiento
+de JSF es el manejo de las peticiones y del contexto asociado a las
+mismas (<span class="codefrag">FacesContext</span>). </p>
+<p>Cada petici&oacute;n procesada por JSF est&aacute; asociada con un &aacute;rbol de
+componentes (llamado tambi&eacute;n una "vista") que se define en la p&aacute;gina
+JSP con el mismo nombre que la petici&oacute;n. Cuando se realiza una
+petici&oacute;n de una vista por primera vez se crea el &aacute;rbol de componentes
+asociado. Las peticiones siguientes que se hagan sobre la misma vista
+recuper&aacute;n el &aacute;rbol de componentes ya creado y asociado a la petici&oacute;n
+anteriormente creada.</p>
+<p>Veamos un ejemplo con la aplicaci&oacute;n anterior
+<span class="codefrag">calculator</span>. Cuando desde el navegador solicitamos la URI
+<span class="codefrag">/calculator</span> se accede a la p&aacute;gina
+<span class="codefrag">index.jsp</span>
+</p>
+<pre class="code">&lt;html&gt;
+&lt;head&gt;&lt;/head&gt;
+   &lt;body&gt;
+      &lt;jsp:forward page="calculator.jsf" /&gt;
+   &lt;/body&gt;
+&lt;/html&gt;</pre>
+<p> Esta p&aacute;gina redirige la petici&oacute;n HTTP al recurso
+<span class="codefrag">calculator.jsf</span>. Esta petici&oacute;n ya es una petici&oacute;n
+JSF. Al terminar con el sufijo <span class="codefrag">.jsf</span> es procesada por el
+servlet <span class="codefrag">javax.faces.webapp.FacesServlet</span>, tal y como est&aacute;
+definido en el fichero <span class="codefrag">web.xml</span>:</p>
+<pre class="code">&lt;!-- Faces Servlet --&gt;
+   &lt;servlet&gt;
+      &lt;servlet-name&gt;Faces Servlet&lt;/servlet-name&gt;
+      &lt;servlet-class&gt;javax.faces.webapp.FacesServlet&lt;/servlet-class&gt;
+      &lt;load-on-startup&gt; 1 &lt;/load-on-startup&gt;
+   &lt;/servlet&gt;
+
+    &lt;!-- Faces Servlet Mapping --&gt;
+   &lt;servlet-mapping&gt;
+      &lt;servlet-name&gt;Faces Servlet&lt;/servlet-name&gt;
+      &lt;url-pattern&gt;*.jsf&lt;/url-pattern&gt;
+   &lt;/servlet-mapping&gt;
+</pre>
+<p>El servlet analiza la URI de la petici&oacute;n
+(<span class="codefrag">/calculator.jsf/SESION-ID</span>), y decodifica el
+nombre de la vista a mostrar eliminando el sufijo "<span class="codefrag">jsf</span>"
+y sustituy&eacute;ndolo por "<span class="codefrag">jsp</span>". El identificador de la sesi&oacute;n
+sirve para recuperar la vista asociada a una petici&oacute;n previa de ese
+mismo recurso y esa misma sesi&oacute;n, en el caso de que ya se hubiera
+solicitado esa vista previamente. En este caso, sin embargo, se trata
+de la primera petici&oacute;n que se realiza en la sesi&oacute;n sobre esta vista.
+JSF construye entonces el &aacute;rbol de componentes definido por el fichero
+<span class="codefrag">calculator.jsp</span> y se guarda en el
+<span class="codefrag">FacesContext</span> asociado a la petici&oacute;n actual.</p>
+<p>Tambi&eacute;n es posible generar una petici&oacute;n desde el cliente cuando se
+pulsa en alg&uacute;n bot&oacute;n generado por una etiqueta
+<span class="codefrag">&lt;h:commandButton&gt;</span> o se pincha en un enlace
+resultante de una etiqueta <span class="codefrag">&lt;h:commandLink</span>. En
+nuestra aplicaci&oacute;n esto sucede, por ejemplo, cuando pulsamos en el
+enlace "calcular" de la p&aacute;gina principal de la aplicaci&oacute;n. En este
+caso la vista asociada a la petici&oacute;n que JSF recupera es la propia vista
+desde la que se realiza la petici&oacute;n, ya que es la que corresponde al
+formulario que debe ser procesado. En la petici&oacute;n se env&iacute;an los
+nuevos valores que el usuario ha modificado y la acci&oacute;n solicitada por
+el usuario ("calcular"). JSF realiza entonces el procesamiento de la
+petici&oacute;n que veremos m&aacute;s adelante.</p>
+<p>Cada petici&oacute;n tiene asociado un contexto, en forma de una instancia
+de <span class="codefrag">FacesContext</span>. Este contexto se usa para almacenar los
+distintos objetos que necesarios para procesar la petici&oacute;n hasta
+generar el <em>render</em> de la interfaz que se est&aacute; construyendo. En
+concreto, gestiona los siguientes aspectos de la petici&oacute;n
+recibida:</p>
+<ul>
+      
+<li>la cola de mensajes</li>
+      
+<li>el &aacute;rbol de componentes</li>
+      
+<li>objetos de configuraci&oacute;n de la aplicaci&oacute;n</li>
+      
+<li>m&eacute;todos de control del flujo del ciclo de vida</li>
+   
+</ul>
+<p>Algunos de los m&eacute;todos definidos en el objeto <span class="codefrag">FacesContext</span> se listan en la siguiente tabla.</p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+<th colspan="1" rowspan="1">M&eacute;todo</th>
+    <th colspan="1" rowspan="1">Descripci&oacute;n</th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><span class="codefrag">addMessage()</span></td> 
+    <td colspan="1" rowspan="1">A&ntilde;ade un mensaje a la cola de mensajes de la petici&oacute;n.</td>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><span class="codefrag">getExternalContext()</span></td> 
+    <td colspan="1" rowspan="1">Obtiene el contexto externo (normalmente el contexto del
+    servlet <span class="codefrag">FacesServlet</span>) en el que se est&aacute; procesando la
+    petici&oacute;n.</td>
+</tr> 
+
+<tr>
+<td colspan="1" rowspan="1"><span class="codefrag">getMessages()</span></td> 
+    <td colspan="1" rowspan="1">Obtiene un <span class="codefrag">Iterator</span> sobre los mensajes que han
+    sido encolados.</td>
+</tr> 
+
+<tr>
+<td colspan="1" rowspan="1"><span class="codefrag">getRenderKit()</span></td> 
+    <td colspan="1" rowspan="1">Obtiene la instancia de <span class="codefrag">RenderKit</span> especificada
+    para el <span class="codefrag">UIViewRoot</span>, si existe.</td>
+</tr> 
+
+<tr>
+<td colspan="1" rowspan="1"><span class="codefrag">getViewRoot()</span></td> 
+    <td colspan="1" rowspan="1">Obtiene el <span class="codefrag">UIViewRoot</span> asociado a la
+    petici&oacute;n.</td>
+</tr> 
+
+<tr>
+<td colspan="1" rowspan="1"><span class="codefrag">renderResponse()</span></td> 
+    <td colspan="1" rowspan="1">Se&ntilde;ala a la implementaci&oacute;n de JSF que, tan pronto como la fase
+    actual del procesamiento de la petici&oacute;n se haya completado, se
+    debe pasar el control a la fase <em>Render Response</em> pasando
+    por alto todas las fases que no se hayan ejecutado
+    todav&iacute;a.</td>
+</tr> 
+
+</table>
+<p>La cola de mensajes de una petici&oacute;n mantiene un conjunto de
+mensajes de error que se pueden producir en las distintas fases del
+ciclo de vida de la misma. El m&eacute;todo <span class="codefrag">addMessage</span> se usa
+para a&ntilde;adir un nuevo mensaje de error en la cola. Es posible usar el
+m&eacute;todo <span class="codefrag">getMessages()</span> sobre el <span class="codefrag">FacesContext</span>
+para obtener una colecci&oacute;n de todos los mensajes de error asociados a
+una petici&oacute;n. Tambi&eacute;n es posible mostrar todos los mensajes del
+<span class="codefrag">FacesContext</span> en el propio componente que se est&aacute;
+construyendo mediante la etiqueta
+<span class="codefrag">&lt;h:messages/&gt;</span>.</p>
+<p>El m&eacute;todo <span class="codefrag">getViewRoot</span> devuelve el componente
+<span class="codefrag">UIViewRoot</span> asociado a la petici&oacute;n. Este componente es un
+tipo especial de componente que representa la ra&iacute;z del &aacute;rbol.</p>
+<p>Vamos a ver un ejemplo de programaci&oacute;n con los distintos elementos
+del <span class="codefrag">FacesContext</span> usando nuestra aplicaci&oacute;n
+<span class="codefrag">calculator</span>. </p>
+<p>En primer lugar, para poder trabajar con el
+<span class="codefrag">FacesContext</span> hay que obtener la instancia asociada a la
+petici&oacute;n actual. Para ello basta con llamar al m&eacute;todo est&aacute;tico
+<span class="codefrag">getCurrentInstance()</span> de la clase
+<span class="codefrag">FacesContext</span>:</p>
+<pre class="code">
+import javax.faces.context.FacesContext;
+...
+FacesContext context = FacesContext.getCurrentInstance();
+...
+</pre>
+<p>Podemos hacer esta llamada en el m&eacute;todo <span class="codefrag">validate()</span> de
+un <span class="codefrag">Validator</span>, en el m&eacute;todo <span class="codefrag">decode()</span> de un
+<span class="codefrag">Renderer</span>, en un manejador de una acci&oacute;n o en cualquier
+otro punto en el que escribamos c&oacute;digo que extiende el
+<em>framework</em>. Una vez obtenido el <span class="codefrag">FacesContext</span>
+asociado a la petici&oacute;n actual es posible acceder a sus elementos. </p>
+<p>Vamos a modificar el m&eacute;todo <span class="codefrag">validate</span> que hemos
+implementado anteriormente para acceder al <span class="codefrag">FacesContext</span> y
+a uno de sus elementos m&aacute;s importantes: el &aacute;rbol de componetes. El
+siguiente c&oacute;digo consigue esto.</p>
+<pre class="code">package calculator.validator;
+...
+import javax.faces.component.UIComponentBase;
+import javax.faces.component.UIViewRoot;
+import javax.faces.context.FacesContext;
+
+public class PairNumberValidator implements Validator {
+    public void validate(FacesContext arg0, 
+                         UIComponent component, 
+			 Object value)
+            throws ValidatorException {
+        FacesContext context = FacesContext.getCurrentInstance();
+        UIViewRoot viewRoot = context.getViewRoot();
+        String ids = getComponentIds(viewRoot);
+        FacesMessage message = new FacesMessage("Componentes: "+ ids);
+        context.addMessage(null,message);
+        ...
+        }
+    }
+
+    // Obtiene los identificadores y tipos de un componente y de sus hijos.
+    // Se llama a si misma de forma recursiva
+    private String getComponentIds(UIComponentBase component) {
+        String ids = "";
+        ids += component.getFamily() + " (" + component.getId() + ") ";
+        Iterator it = component.getFacetsAndChildren();
+        while (it.hasNext()) {
+            UIComponentBase childComponent = (UIComponentBase) it.next();
+            ids += getComponentIds(childComponent);
+        }
+        return ids;
+    }
+}</pre>
+<p>Una vez obtenido el <span class="codefrag">FacesContext</span>, lo usamos para
+conseguir el <span class="codefrag">UIViewRoot</span> de la petici&oacute;n, el componente
+ra&iacute;z del &aacute;rbol de componentes asociado a la petici&oacute;n JSF. Una vez
+obtenido, llamamos al m&eacute;todo <span class="codefrag">getComponentIds()</span>, un m&eacute;todo
+que est&aacute; implementado m&aacute;s adelante que recorre recursivamente el &aacute;rbol
+de componentes y devuelve una cadena con todos los tipos de componente
+y su identificador.</p>
+<p>En el m&eacute;todo <span class="codefrag">getComponentIds()</span> se llama a
+<span class="codefrag">getFacetsAndChildren</span>, un m&eacute;todo del componente que devuelve un
+iterador con los hijos inmediatos y los <span class="codefrag">Facets</span>
+asociados.</p>
+<p>Una vez obtenida la cadena con los tipos e identificadores de los
+componentes, se a&ntilde;ade en la cola de mensajes del contexto de la
+petici&oacute;n con el m&eacute;todo <span class="codefrag">addMessage()</span>. Estos mensajes
+podemos mostrarlos con la etiqueta
+<span class="codefrag">&lt;h:messages/&gt;</span> en la p&aacute;gina
+<span class="codefrag">result.jsp</span>.</p>
+<pre class="code">&lt;html&gt;
+    &lt;head&gt; &lt;title&gt;Calculator result&lt;/title&gt; &lt;/head&gt;
+    &lt;%@ taglib uri="http://java.sun.com/jsf/html" prefix="h" %&gt;
+    &lt;%@ taglib uri="http://java.sun.com/jsf/core" prefix="f" %&gt;
+    &lt;link href="app.css" rel="stylesheet" type="text/css"&gt;
+    &lt;h1&gt;Resultado&lt;/h1&gt;
+    &lt;p&gt;
+    &lt;f:view&gt;
+      &lt;h:form id="calcResult"&gt;
+         ...
+         &lt;h:messages/&gt;
+      &lt;/h:form&gt;
+    &lt;/f:view&gt;
+    &lt;/p&gt;
+    &lt;/body&gt;
+&lt;/html&gt;  </pre>
+<p>La siguiente imagen muestra lo que aparece en pantalla. Hay que
+notar que esta pantalla s&oacute;lo aparece cuando introducimos un error en
+la validaci&oacute;n de uno de los n&uacute;meros. Tambi&eacute;n hay que notar que el
+mensaje con la lista de componentes aparece repetido, al procesarse
+dos veces el m&eacute;todo <span class="codefrag">validate</span>.</p>
+<p>
+   
+<img alt="&Aacute;rbol de componentes" content-width="12cm" src="img/sesion4/componentes.gif" width="600">
+</p>
+<a name="N10382"></a><a name="Eventos+en+JSF"></a>
+<h3 class="underlined_5">Eventos en JSF</h3>
+<p>En JSF se definen dos tipos de eventos que un usuario puede
+realizar: eventos producidos por el cambio de valor de un componente
+con datos introducidos por el usuario y eventos producidos un bot&oacute;n
+(etiqueta <span class="codefrag">&lt;h:commandButton&gt;</span>) o un enlace
+(etiqueta <span class="codefrag">&lt;h:commandLink&gt;</span>). </p>
+<p>El usuario interact&uacute;a con un formulario, cambiando algunos de sus
+valores, y luego pulsa en un bot&oacute;n o un enlace JSF para que se procese
+la petici&oacute;n con la vista actual. Los cambios de los valores en el
+formulario quedan guardados como eventos <span class="codefrag">ValueChangeEvent</span>
+asociados a esos componentes y son procesados en alg&uacute;n momento del
+ciclo de vida de la petici&oacute;n. Si el bot&oacute;n o el enlace pulsado por el
+usuario tienen un atributo <span class="codefrag">action</span>, se guarda en el
+componente un evento de tipo <span class="codefrag">ActionEvent</span>. El valor del
+atributo <span class="codefrag">action</span> representa el m&eacute;todo de la aplicaci&oacute;n que
+responder&aacute; al evento. En una petici&oacute;n habr&aacute; como m&aacute;ximo un evento de
+tipo <span class="codefrag">ActionEvent</span> (aunque puede no haber ninguno) y un
+n&uacute;mero variable de eventos <span class="codefrag">ValueChangeEvent</span>.</p>
+<p>La siguiente figura representa la jerarqu&iacute;a de clases e interfaces
+que define JSF para los eventos. Adem&aacute;s de los eventos
+<span class="codefrag">ValueChangeEvent</span> y <span class="codefrag">ActionEvent</span> existe en JSF
+el evento <span class="codefrag">PhaseEvent</span> que tiene que ver con el ciclo de
+vida del procesamiento de la petici&oacute;n y se genera cuando se cambia de
+fase.</p>
+<p>
+
+<img alt="Jerarqu&iacute;a de clases e interfaces de eventos" content-width="6cm" src="img/sesion4/eventos.gif" width="300">
+</p>
+<p>Es muy sencillo definir un manejador de eventos de cambio de valor
+para un componente. Basta con definir una clase que implemente la
+interfaz <span class="codefrag">ValueChangeListener</span> y asociar esa clase con el
+componente usando la etiqueta JSP <span class="codefrag">&lt;f:valueChangeListener type="nombre
+de la clase"/&gt;</span>.</p>
+<p>El siguiente ejemplo muestra c&oacute;mo modificar el fichero
+<span class="codefrag">calculator.jsp</span> para incluir el manejador del evento de
+cambio de valor en los componentes de tipo entrada.</p>
+<pre class="code">
+&lt;html&gt;
+    &lt;head&gt; &lt;title&gt;Calculator&lt;/title&gt; &lt;/head&gt;
+    &lt;%@ taglib uri="http://java.sun.com/jsf/html" prefix="h" %&gt;
+    &lt;%@ taglib uri="http://java.sun.com/jsf/core" prefix="f" %&gt;
+    &lt;link href="app.css" rel="stylesheet" type="text/css"&gt;
+    &lt;h1&gt;Calculadora&lt;/h1&gt;
+    &lt;p&gt;
+    &lt;f:view&gt;
+      &lt;h:form id="calcForm"&gt;
+            ...
+            &lt;h:inputText id="firstNumber" 
+	                 value="#{calcBean.firstNumber}" 
+			 required="true"&gt;
+               &lt;f:validator validatorId="calculator.isPair"/&gt;
+               &lt;f:valueChangeListener 
+	                 type="calculator.controller.NumberChangeListener"/&gt;
+            &lt;/h:inputText&gt;
+            ...
+      &lt;/h:form&gt;
+    &lt;/f:view&gt;
+    &lt;/p&gt;
+    &lt;/body&gt;
+&lt;/html&gt;</pre>
+<p>Definimos tambi&eacute;n la clase
+<span class="codefrag">calculator.controller.NumberChangeListener</span> con la
+siguiente implementaci&oacute;n.</p>
+<pre class="code">package calculator.controller;
+
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import javax.faces.event.AbortProcessingException;
+import javax.faces.event.ValueChangeEvent;
+import javax.faces.event.ValueChangeListener;
+
+public class NumberChangeListener implements ValueChangeListener {
+    public void processValueChange(ValueChangeEvent arg0)
+            throws AbortProcessingException {
+        FacesContext context = FacesContext.getCurrentInstance();
+        FacesMessage message = 
+	   new FacesMessage("Ha cambiado un numero de la calculadora");
+        context.addMessage(null,message);
+    }
+}</pre>
+<p>Como se puede comprobar en el c&oacute;digo, lo que hace el manejador del
+evento es a&ntilde;adir un mensaje a la cola de mensajes de la petici&oacute;n. De
+la misma forma que hemos hecho antes podemos mostrar el mensaje
+a&ntilde;adiendo la etiqueta <span class="codefrag">h:messages</span> en la vista resultante
+de la petici&oacute;n.</p>
+<p>
+
+<img alt="Mensajes del manejador de eventos ValueChange." content-width="12cm" src="img/sesion4/value-change-listener.gif" width="600">
+</p>
+</div> 
+
+
+
+<a name="N103EB"></a><a name="Componentes+JSF"></a>
+<h2 class="underlined_10">Componentes JSF</h2>
+<div class="section">
+<p>En JSP y Struts no existe el concepto de componente, entendido &eacute;ste
+como un objeto Java, sino que las etiquetas JSP se traducen
+directamente a c&oacute;digo HTML en un proceso que se encarga adem&aacute;s de
+obtener los datos de los beans de respaldo y de incorporarlos al
+c&oacute;digo HTML generado.</p>
+<p>Los componentes JSF, al contrario, son objetos Java que se
+construyen a partir de las etiquetas JSF. El <em>framework</em> JSF
+maneja su ciclo de vida y, como parte final, llama a un m&eacute;todo de
+<em>render</em> que produce el c&oacute;digo de salida del componente. En la
+especificaci&oacute;n actual de JSF (1.1), este c&oacute;digo es HTML, pero el
+<em>framework</em> est&aacute; pensado para soportar otros kits de
+<em>render</em>.</p>
+<p>Todos los componentes JSF extienden la clase abstracta
+<span class="codefrag">javax.faces.component.UIComponentBase</span>, que proporciona la
+implementaci&oacute;n por defecto de los m&eacute;todos soportados por los
+componentes JSF.</p>
+<p>Cada componente JSF contiene:</p>
+<ul>
+
+<li>Una lista de componentes hijos.</li>
+
+<li>Una tabla hash de atributos.</li>
+
+<li>Uno o m&aacute;s validadores.</li>
+
+<li>Uno o m&aacute;s manejadores de eventos.</li>
+
+<li>Un identificador para un <em>renderer</em> opcional.</li>
+
+</ul>
+<p>Todos los componentes JSF son potencialmente contenedores de otros
+componentes. De esta forma es posible construir componentes
+compuestos, una caracter&iacute;stica compartida por la mayor&iacute;a de
+<em>frameworks</em> de interfaces de usuario como Swing o
+Smalltalk.</p>
+<p>Los componentes JSF mantienen una lista de atributos almacenados en
+una tabla hash e indexados por el nombre del atributo. Como valor del
+atributo es posible insertar cualquier objeto, como una direcci&oacute;n URL,
+un entero o una imagen.</p>
+<p>Todos los componentes realizan tres tareas fundamentales:</p>
+<ul>
+
+<li>
+<em>Renderizar</em> el componente, normalmente generando c&oacute;digo HTML.</li>
+
+<li>Manejar los eventos del componente.</li>
+
+<li>Validar los valores del componente.</li>
+
+</ul>
+<p>Los componentes JSF pueden <em>renderizarse</em> ellos mismos o
+delegar el <em>renderizado</em> a un <em>renderer</em>. El m&eacute;todo
+booleano <span class="codefrag">UIComponent.rendersSelf()</span> dice a la
+implementaci&oacute;n JSF si un componente se <em>renderiza</em> a si mismo o
+no. Si no, la implementaci&oacute;n JSF obtiene una referencia al
+<em>renderer</em> del componente con la llamada
+<span class="codefrag">UIComponent.getRendererType()</span> y despu&eacute;s llama al renderer
+para producir el c&oacute;digo HTML del componente.</p>
+<p>La gesti&oacute;n de eventos del componente puede tambi&eacute;n manejarse
+directamente por un componente o se puede delegar en un manejador de
+eventos. Se pueden registrar uno o m&aacute;s manejadores de eventos para un
+componente en la fase <em>Apply Request Values</em> del ciclo de vida
+del componente. Los manejadores son registrados por el
+<em>renderer</em> del componente o por el componente mismo.</p>
+<p>Por &uacute;ltimo, los componentes JSF pueden tener uno o m&aacute;s validadores
+que validan la entrada. Estos validadores, habitualmente creados por
+la implementaci&oacute;n JSF, se almancenan por componentes en un array
+list.</p>
+<p>Otro concepto importante en JSF es el concepto de vista
+(<em>view</em>). Cuando el <em>framework</em> recibe una petici&oacute;n, se
+construye una vista con los componentes relacionados con la
+petici&oacute;n. Una vista es un &aacute;rbol de componentes, cuya ra&iacute;z debe ser una
+instancia de <span class="codefrag">UIViewRoot</span>, una clase que no tiene
+<em>rendering</em> y que s&oacute;lo sirve como ra&iacute;z del &aacute;rbol de
+componentes. Los componentes en el &aacute;rbol pueden ser an&oacute;nimos o pueden
+tener un identificador de componente proporcionado por el usuario del
+<em>framework</em>. Los componentes en el &aacute;rbol pueden ser localizados
+en base a estos identificadores de componentes, que deben ser &uacute;nicos
+en el espacio de nombres definido por los componentes hijos del
+antecesor m&aacute;s cercano que sea un <span class="codefrag">NamingContainer</span>.</p>
+<p>La especificaci&oacute;n de un componente JSF utiliza las siguientes
+interfaces definidas en la especificaci&oacute;n JSF:</p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+<th colspan="1" rowspan="1">Interfaz</th><th colspan="1" rowspan="1"></th><th colspan="1" rowspan="1">Descripci&oacute;n</th><th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+   
+<td colspan="1" rowspan="1"><span class="codefrag">ActionSource</span></td>  
+   <td colspan="3" rowspan="1"><span class="codefrag">ActionSource</span> es una interfaz que debe
+   ser implementada por cualquier <span class="codefrag">UIcomponent</span> que desee
+   ser una fuente de <span class="codefrag">ActionEvents</span>, incluyendo la
+   habilidad de invocar las acciones de la aplicaci&oacute;n mediante el uso
+   del <span class="codefrag">ActionListener</span> por defecto.</td>
+</tr>
+
+<tr>
+   
+<td colspan="1" rowspan="1"><span class="codefrag">EditableValueHolder</span></td>
+   <td colspan="3" rowspan="1">La interfaz <span class="codefrag">EditableValueHolder</span>
+   extiende <span class="codefrag">ValueHolder</span> para describir caracter&iacute;sticas
+   adicionales de los componentes editables, incluyendo
+   <span class="codefrag">ValueChangeEvents</span> y <span class="codefrag">Validators</span>.</td>
+</tr>
+
+<tr>
+   
+<td colspan="1" rowspan="1"><span class="codefrag">NamingContainer</span></td>
+   <td colspan="3" rowspan="1"><span class="codefrag">NamingContainer</span> es una interfaz que
+   debe ser implementada por cualquier <span class="codefrag">UIComponent</span> que
+   quiera definir un espacio de nombres de identificadores.</td>
+</tr>
+
+<tr>
+   
+<td colspan="1" rowspan="1"><span class="codefrag">StateHolder</span></td>
+   <td colspan="3" rowspan="1">Esta interfaz es implementada por componentes que
+   necesitan salvar su estado entre peticiones.</td>
+</tr>
+
+<tr>
+   
+<td colspan="1" rowspan="1"><span class="codefrag">ValueHolder</span></td>
+   <td colspan="3" rowspan="1"><span class="codefrag">ValueHolder</span> es una interfaz que debe
+   ser implementada por cualquier <span class="codefrag">UIComponent</span> que desee
+   soportar un valor local y acceder a los datos en la capa de modelo
+   y soportar la conversi&oacute;n entre <span class="codefrag">String</span> y el tipo de
+   datos nativo del modelo.</td>
+</tr>
+
+</table>
+<a name="N104EF"></a><a name="Tipos+de+componentes+est%C3%A1ndar+de+JSF"></a>
+<h3 class="underlined_5">Tipos de componentes est&aacute;ndar de JSF</h3>
+<p>En JSF se definen un n&uacute;mero de componentes est&aacute;ndar que implementan
+las interfaces definidas en el punto anterior. Cada clase est&aacute;
+asociada normalmente a una etiqueta JSP y se <em>renderiza</em> en
+c&oacute;digo HTML.</p>
+<p>Hay que notar que en JSF los componentes se definen en base a su
+funci&oacute;n, no a su aspecto. El aspecto se modifica mediante el
+<em>render</em> asociado al componente. As&iacute;, por ejemplo, un campo de
+entrada de texto y un campo de entrada de contrase&ntilde;as se representan
+por el mismo tipo de componente JSF pero tienen distintos
+<span class="codefrag">Renders</span> asociados.</p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+<th colspan="1" rowspan="1">Componente</th><th colspan="1" rowspan="1">Descripci&oacute;n</th><th colspan="1" rowspan="1"></th><th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+   
+<td colspan="1" rowspan="1"><span class="codefrag">UIColumn</span></td>
+   <td colspan="3" rowspan="1"><span class="codefrag">UIColumn</span> representa una columna en el
+   componente padre <span class="codefrag">UIData</span>. Los componentes hijos de
+   <span class="codefrag">UIColumn</span> se procesan una vez por cada fila en el
+   componente padre <span class="codefrag">UIData</span></td>
+</tr>
+
+<tr>
+   
+<td colspan="1" rowspan="1"><span class="codefrag">UICommand</span></td>
+   <td colspan="3" rowspan="1"><span class="codefrag">UICommand</span> repesenta componentes de
+   interfaz como botones, enlaces e items de men&uacute; que producen
+   acciones o eventos que ser&aacute;n tratados por la aplicaci&oacute;n. Estos
+   componentes emiten un <span class="codefrag">ActionEvent</span> cuando se disparan
+   que debe ser procesado por un <span class="codefrag">ActionListener</span>
+   registrado.</td>
+</tr>
+
+<tr>
+   
+<td colspan="1" rowspan="1"><span class="codefrag">UIData</span></td>
+   <td colspan="3" rowspan="1"><span class="codefrag">UIData</span> representa una colecci&oacute;n de
+   datos envuelta por una instancia <span class="codefrag">DataModel</span>. Este
+   componente se usa para mostrar tablas, listas y &aacute;rboles.</td>
+</tr>
+
+<tr>
+   
+<td colspan="1" rowspan="1"><span class="codefrag">UIForm</span></td>
+   <td colspan="3" rowspan="1"><span class="codefrag">UIForm</span> representa un <em>input</em>
+   del usuario y se usa como contenedor de otros
+   componentes.</td>
+</tr>
+
+<tr>
+   
+<td colspan="1" rowspan="1"><span class="codefrag">UIGraphic</span></td>
+   <td colspan="3" rowspan="1"><span class="codefrag">UIGraphic</span> muestra una imagen no
+   modificable.</td>
+</tr>
+
+<tr>
+   
+<td colspan="1" rowspan="1"><span class="codefrag">UIInput</span></td>
+   <td colspan="3" rowspan="1"><span class="codefrag">UIInput</span> representa componentes de
+   interfaz como campos de entrada de texto, campos de entrada
+   num&eacute;ricos o campos de entrada de fechas. Un <span class="codefrag">UIInput</span>
+   muestra el valor actual de un campo y acepta cambios del
+   usuario. Cada cambio dispara un evento
+   <span class="codefrag">ValueChangedEvent</span> que debe ser procesado con un
+   <span class="codefrag">ValueChangedListener</span> registrado. Tambi&eacute;n suelen
+   registrarse en este tipo de componente <span class="codefrag">Validators</span> y
+   <span class="codefrag">Converters</span> que validan y convierten el formato de los
+   datos introducidos por el usuario.</td>
+</tr>
+
+<tr>
+   
+<td colspan="1" rowspan="1"><span class="codefrag">UIMessage</span></td>
+   <td colspan="3" rowspan="1"><span class="codefrag">UIMessage</span> muestra mensajes de error
+   asociados a un componente de entrada espec&iacute;fico</td>
+</tr>
+
+<tr>
+   
+<td colspan="1" rowspan="1"><span class="codefrag">UIOutput</span></td>
+   <td colspan="3" rowspan="1"><span class="codefrag">UIOutput</span> se usa para componentes de
+   interfaz como etiquetas, mensajes de error o cualquier otro dato
+   que no es modificable.</td>
+</tr> 
+
+<tr>
+   
+<td colspan="1" rowspan="1"><span class="codefrag">UIPanel</span></td>
+   <td colspan="3" rowspan="1"><span class="codefrag">UIPanel</span> se usa para componentes de
+   interfaz que sirven como contenedores de otros sin requerir el
+   env&iacute;o de <em>forms</em>. Estos componentes se usan principalmente
+   para manegar la disposici&oacute;n de sus componentes hijos.</td>
+</tr>
+
+<tr>
+   
+<td colspan="1" rowspan="1"><span class="codefrag">UIParameter</span></td>
+   <td colspan="3" rowspan="1"><span class="codefrag">UIParameter</span> representa informaci&oacute;n que
+   no requiere ser <em>renderizada</em>. Se usa principalmente para
+   proporcionar informaci&oacute;n adicional a un componente padre. Por
+   ejemplo, se puede usar para declarar un par&aacute;metros de una petici&oacute;n
+   asociada a un enlace (componente <span class="codefrag">UICommand</span>).</td>
+</tr>
+
+<tr>
+   
+<td colspan="1" rowspan="1"><span class="codefrag">UISelectBoolean</span>
+   </td><td colspan="3" rowspan="1"><span class="codefrag">UISelectBoolean</span> representa un
+   campo de datos <span class="codefrag">Boolean</span>. Se suele <em>renderizar</em>
+   como un <em>check box</em>. Este componente extiende a
+   <span class="codefrag">UIInput</span>, por lo que emite un
+   <span class="codefrag">ValueChangedEvent</span> cuando un usuario lo cambia de
+   valor.</td>
+</tr>
+
+<tr>
+   
+<td colspan="1" rowspan="1"><span class="codefrag">UISelectItem</span></td>
+   <td colspan="3" rowspan="1"><span class="codefrag">UISelectItem</span> representa una &uacute;nica
+   selecci&oacute;n en una lista de selecci&oacute;n. Puede usarse para insertar un
+   intem en un <span class="codefrag">UISelectMany</span> o en una lista
+   <span class="codefrag">UISelectOne</span></td>
+</tr>
+
+<tr>
+   
+<td colspan="1" rowspan="1"><span class="codefrag">UISelectItems</span></td>
+   <td colspan="3" rowspan="1"><span class="codefrag">UISelectItems</span> es muy similar a
+   <span class="codefrag">UISelectItem</span> con la excepci&oacute;n de que permite la
+   inserci&oacute;n de m&uacute;ltiples items de una vez.</td>
+</tr>
+
+<tr>
+   
+<td colspan="1" rowspan="1"><span class="codefrag">UISelectMany</span></td>
+   <td colspan="3" rowspan="1"><span class="codefrag">UISelectMany</span> representa componentes de
+   interfaz como <em>combo boxes</em>, <em>list boxes</em>, grupos de
+   <em>check boxes</em> y similares. Este componente permite la
+   selecci&oacute;n de m&uacute;ltiples items. Cada item se especifica por un o m&aacute;s
+   <span class="codefrag">UISelectItem</span> o <span class="codefrag">UISelectItems</span>. Este
+   componente extiende <span class="codefrag">UIInput</span>, por lo que emite un
+   evento <span class="codefrag">ValueChangedEvent</span> cuando un usuario modifica la
+   lista de items seleccionados.</td>
+</tr>
+
+<tr>
+   
+<td colspan="1" rowspan="1"><span class="codefrag">UISelectOne</span></td>
+   <td colspan="3" rowspan="1"><span class="codefrag">UISelectOne</span> es muy similar a
+   <span class="codefrag">UISelectMany</span> con la excepci&oacute;n de que s&oacute;lo permite la
+   selecci&oacute;n de un item.</td>
+</tr>
+
+<tr>
+   
+<td colspan="1" rowspan="1"><span class="codefrag">UIViewRoot</span></td>
+   <td colspan="3" rowspan="1"><span class="codefrag">UIViewRoot</span> representa la ra&iacute;z del
+   &aacute;rbol de componentes e interviene en el proces de guardar el estado
+   de todos los componentes del &aacute;rbol. Este componente no se
+   <em>renderiza</em>.</td>
+</tr>
+
+</table>
+<p>La jerarqu&iacute;a de clases se muestra en la siguiente figura. En ella
+aparecen tambi&eacute;n las interfaces implementadas por cada una de las
+clases.</p>
+<p>
+   
+<img alt="Jerarqu&iacute;a de clases de componentes JSF" content-width="15cm" src="img/sesion3/jerarquia-componentes.gif" width="600">
+</p>
+</div>
+
+
+
+<a name="N10673"></a><a name="El+ciclo+de+vida+de+una+petici%C3%B3n+JSF"></a>
+<h2 class="underlined_10">El ciclo de vida de una petici&oacute;n JSF</h2>
+<div class="section">
+<p>Uno de los aspectos centrales del funcionamiento de JSF es el ciclo
+de vida por el que pasa un componente, desde que se realiza una
+petici&oacute;n hasta que se genera el c&oacute;digo HTML en el que se
+<em>renderiza</em> el componente resultante. Aunque existen otros escenarios
+posibles, vamos a ver el escenario m&aacute;s completo y m&aacute;s usual, en el que
+el servlet controlador de JSF, <span class="codefrag">FacesServlet</span>, recibe una
+petici&oacute;n desde una vista previamente creada. Esta vista
+tiene un identificador que le sirve a JSF para localizar el
+&aacute;rbol de componentes asociado. Una vez localizado, la implementaci&oacute;n de JSF
+aplicar&aacute; las siguientes fases al componente (ver figura):</p>
+<p>
+
+<img alt="Ciclo de vida de una petici&oacute;n JSF" content-width="12cm" src="img/sesion4/ciclo-de-vida.gif" width="600">
+</p>
+<ol>
+
+<li>Restaurar la vista (<em>restore view</em>)</li>
+
+<li>Aplicar los valores de la petici&oacute;n (<em>apply request values</em>)</li>
+
+<li>Procesar las validaciones (<em>process validations</em>)</li>
+
+<li>Actualizar los valores del modelo (<em>update model values</em>)</li>
+
+<li>Invocar a la aplicaci&oacute;n (<em>invoke application)</em>
+</li>
+
+<li>
+<em>Renderizar</em> la respuesta (<em>render response</em>)</li>
+
+</ol>
+<p>Tal y como se ve en la figura, al terminar cada una de las fases se
+procesan los eventos generados en la misma y es posible que se salte
+directamente a la fase de <em>renderizar</em> la respuesta y no se
+realicen el resto de fases o que se termine el procesamiento.</p>
+<p>Es interasante comprobar directamente la evoluci&oacute;n del ciclo de
+vida de una petici&oacute;n. El siguiente ejemplo muestra c&oacute;mo hacerlo.</p>
+<p>JSF emite un evento <span class="codefrag">PhaseListener</span> al comienzo y al
+final de cada fase del ciclo de vida de la petici&oacute;n. La siguiente
+clase para nuestro ejemplo <span class="codefrag">calculator</span> implementa la
+interfaz <span class="codefrag">PhaseListener</span> que declara dos m&eacute;todos para
+procesar esos eventos: <span class="codefrag">beforePhase</span> y
+<span class="codefrag">afterPhase</span>. En el ejemplo se crea un mensaje con el texto
+indicando en qu&eacute; fase se encuentra la aplicaci&oacute;n y se a&ntilde;ade en la cola
+de mensajes.</p>
+<pre class="code">package calculator.controller;
+
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import javax.faces.event.PhaseEvent;
+import javax.faces.event.PhaseId;
+import javax.faces.event.PhaseListener;
+
+public class CalculatorPhaseListener implements PhaseListener {
+
+    public void beforePhase(PhaseEvent pe) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        if (pe.getPhaseId() == PhaseId.RESTORE_VIEW) 
+            context.addMessage(
+	       null,  
+               new FacesMessage("Procesando una nueva peticion!"));
+        context.addMessage(
+	   null, 
+	   new FacesMessage("antes de - " + pe.getPhaseId().toString()));
+    }
+    
+    public void afterPhase(PhaseEvent pe) {      
+        FacesContext context = FacesContext.getCurrentInstance();
+        context.addMessage(
+	   null, 
+	   new FacesMessage("despues de - " + pe.getPhaseId().toString()));
+        if (pe.getPhaseId() == PhaseId.RENDER_RESPONSE)
+           context.addMessage(
+	      null, 
+	      new FacesMessage("Peticion terminada!"));
+    }
+    
+    public PhaseId getPhaseId() {
+        return PhaseId.ANY_PHASE;
+    }
+}</pre>
+<p>Para que el <em>framework</em> llame a este manejador hay que
+a&ntilde;adir en el fichero <span class="codefrag">faces-config.xml</span> la siguiente
+declaraci&oacute;n:</p>
+<pre class="code">&lt;lifecycle&gt;
+   &lt;phase-listener&gt;
+      calculator.controller.CalculatorPhaseListener
+   &lt;/phase-listener&gt;
+&lt;/lifecycle&gt; </pre>
+<p>Se pueden ver los mensajes con la etiqueta <span class="codefrag">h:messages</span>
+en cualquier vista. Por ejemplo, en la vista con el resultado de la
+operaci&oacute;n aparece la siguiente pantalla.</p>
+<p>
+
+<img alt="Manejador de evento de cambio de fase" content-width="12cm" src="img/sesion4/phase-listener.gif" width="600">
+</p>
+<p>Tal y como se muestra en la ilustraci&oacute;n con el ciclo de vida de la petici&oacute;n, es posible en cualquier momento saltarse el restro de fases. En algunos casos incluso es &uacute;til saltarse <em>todas</em> las fases (esto es, salir despu&eacute;s de "Apply Request Values"). Por ejemplo, en la acci&oacute;n de un bot&oacute;n "Cancel" se debe salir inmendiatamente de la p&aacute;gina sin realizar la validaci&oacute;n de componentes. Para conseguir esto basta con poner a "true" el campo "inmediate" del componente <span class="codefrag">h:commandButton</span>: </p>
+<pre class="code">
+&lt;h:commandButton id="cancelButton"
+                 ...
+                 value="Cancel"
+                 inmediate="true"
+		 action="viewInvoices"/&gt;
+</pre>
+<p>Vamos a describir a continuaci&oacute;n cada una de las fases del ciclo de vida de una petici&oacute;n.</p>
+<a name="N106FE"></a><a name="Restaurar+la+vista+%28Restore+View%29"></a>
+<h3 class="underlined_5">Restaurar la vista (Restore View)</h3>
+<p>En la primera fase del ciclo de vida de una petici&oacute;n, &eacute;sta llega al
+controlador <span class="codefrag">FacesServlet</span>. El controlador examina la
+petici&oacute;n y obtiene el identificador de la vista, definido por el
+nombre del recurso (URI) que se solicita. Si existe un &aacute;rbol de
+componentes cuyo identificador se corresponde con el solicitado, JSF
+recupera su estado previo y lo usa como &aacute;rbol actual. Si no existe ese
+&aacute;rbol se construye uno a partir de la p&aacute;gina solicitada, registr&aacute;ndose
+en &eacute;l los manejadores de eventos y los validadores asociados a los
+distintos componentes.</p>
+<p>Al final de la fase, el &aacute;rbol de componentes se pasa al
+<span class="codefrag">FacesContext</span> mediante el m&eacute;todo <span class="codefrag">setViewRoot()</span>,
+que guardar&aacute; el estado previo o el estado por defecto del &aacute;rbol de
+componentes. Si la petici&oacute;n no contiene ning&uacute;n dato <span class="codefrag">POST</span>
+ni par&aacute;metros de petici&oacute;n (la p&aacute;gina se ha cargado accediendo
+directamente a su URL), se llama al m&eacute;todo
+<span class="codefrag">renderResponse()</span> del <span class="codefrag">FacesContext</span> de forma
+que se saltan el resto de fases del ciclo de vida y el &aacute;rbol se
+<em>renderiza</em> en la fase <em>Render Response</em>. En el caso
+contrario, en el que la petici&oacute;n contiene par&aacute;metros y argumentos, se
+trata de una petici&oacute;n originada en un comando (bot&oacute;n o enlace) y hay
+que procesar el &aacute;rbol de componentes y la petici&oacute;n en las siguientes
+fases.</p>
+<p>Como una &uacute;ltima aclaraci&oacute;n, hay que hacer notar que el nombre de la
+fase puede dar lugar a cierta confusi&oacute;n. Cuando se habla de restauar
+la <em>vista</em>, la especificaci&oacute;n de JSF se refiere a recuperar el 
+&aacute;rbol de componentes (objetos Java) asociado a la p&aacute;gina JSP actual
+(que puede ser el formulario que el usuario acaba de rellenar). Al
+contrario de lo que podr&iacute;a parecer por el nombre de la fase, no se
+trabaja todav&iacute;a con la representaci&oacute;n HTML del &aacute;rbol de componentes,
+esto se hace en la &uacute;ltima fase del ciclo.</p>
+<a name="N10729"></a><a name="Aplicar+los+valores+de+la+petici%C3%B3n+%28Apply+Request+Values%29"></a>
+<h3 class="underlined_5">Aplicar los valores de la petici&oacute;n (Apply Request Values)</h3>
+<p>El prop&oacute;sito de esta fase es actualizar todos los componentes del
+&aacute;rbol de componentes con los valores de la petici&oacute;n. La implementaci&oacute;n
+de JSF consigue esto llamando al m&eacute;todo <span class="codefrag">processDecodes()</span>
+del componente ra&iacute;z del &aacute;rbol de componentes (instancia de
+<span class="codefrag">UIViewRoot</span>). Esta llamada resulta en una llamada
+recursiva al mismo m&eacute;todo de cada componente hijo. El m&eacute;todo
+<span class="codefrag">processDecodes()</span> procesa cada uno de los argumentos de la
+petici&oacute;n, convirtiendo el valor <span class="codefrag">String</span> introducido por el
+usuario en los tipos apropiados del bean de respaldo. Adem&aacute;s, se
+realizan las siguientes acciones especiales</p>
+<ul>
+
+
+<li>Si se trata de un componente de tipo <span class="codefrag">UICommand</span>
+(correspondiente a un bot&oacute;n o un enlace) y se comprueba que ha sido
+activado, se encola un <span class="codefrag">ActionEvent</span> que ser&aacute; procesado
+posteriormente en la fase <em>Invoke Application</em>. Si el
+componente tiene una propiedad <span class="codefrag">inmediate</span> definida como
+<span class="codefrag">true</span>, se realiza el procesamiento del evento al final de
+esta fase en lugar de en la fase <em>Invoke Application</em>.</li>
+
+
+<li>Si se trata de un componente que contiene un valor (como
+<span class="codefrag">UIInput</span>), y que tiene una propiedad
+<span class="codefrag">inmediate</span> definida como <span class="codefrag">true</span>, se realiza en
+esta fase la conversi&oacute;n y validaci&oacute;n (incluyendo el eventual disparo
+de eventos <span class="codefrag">ValueChangeEvent</span>) en lugar de en la fase
+<em>Process Validation</em>.</li>
+
+
+</ul>
+<p>Al final de la fase, todos los componentes con valores editables
+habr&aacute;n sido actualizados con los nuevos valores entregados en la
+petici&oacute;n. Adem&aacute;s, se habr&aacute; realizado la conversi&oacute;n y la validaci&oacute;n de
+aquellos componentes con la propiedad <span class="codefrag">inmediate</span> definida
+a <span class="codefrag">true</span>. Las conversiones y validaciones que hayan fallado
+habr&aacute;n encolado mensajes mediante el m&eacute;todo
+<span class="codefrag">addMessage()</span>, y la propiedad <span class="codefrag">valid</span> del
+componente correspondiente se habr&aacute; definido como
+<span class="codefrag">false</span>.</p>
+<p>Si alg&uacute;n manejador o validador llama al m&eacute;todo
+<span class="codefrag">responseComplete()</span> del <span class="codefrag">FacesContext</span>, el
+procesamiento de la petici&oacute;n actual termina inmediatamente. Si se
+llama al m&eacute;todo <span class="codefrag">renderResponse()</span>, el control se
+transfiere a la fase <em>Render Response</em> del ciclo de
+vida. En otro caso el control se transfiere a la siguiente fase.</p>
+<a name="N1078A"></a><a name="Procesar+las+validaciones+%28Process+Validations%29"></a>
+<h3 class="underlined_5">Procesar las validaciones (Process Validations)</h3>
+<p>Durante esta fase del ciclo de vida de la petici&oacute;n, JSF llamar&aacute; al
+m&eacute;todo <span class="codefrag">processValidators()</span> del <span class="codefrag">UIViewRoot</span>
+del &aacute;rbol de componentes. Esto producir&aacute; una llamada recursiva al
+mismo m&eacute;todo de todos los componentes del &aacute;rbol. Es posible que
+algunos componentes ya hayan realizado la validaci&oacute;n en la fase
+anterior.</p>
+<p>Durante el procesamiento de las validaciones en el m&eacute;todo
+<span class="codefrag">processValidators()</span> se encolan todos los posibles eventos
+de cambio de valor asociados a los componentes y al final de la fase
+se emiten (<em>broadcast</em>) a los manejadores registrados.</p>
+<p>Una vez terminada la fase, todas las conversiones y las
+validaciones se habr&aacute;n completado. Las conversiones y validaciones que
+hayan fallado habr&aacute;n encolado mensajes en el <span class="codefrag">FacesContext</span>
+de la petici&oacute;n actual y la propiedad <span class="codefrag">valid</span> en el
+componente correspondiente se habr&aacute; convertido en
+<span class="codefrag">false</span>.</p>
+<p>Al igual que en la fase anterior, los conversores, validadores y
+manejadores de eventos pueden hacer que el ciclo de vida termine
+llamando al m&eacute;todo <span class="codefrag">responseComplete()</span> o que se pase
+directamente a la fase de renderizado de la vista con el m&eacute;todo
+<span class="codefrag">renderResponse()</span>. Si no se llama a ninguno de estos
+m&eacute;todos, el ciclo de vida continua.</p>
+<a name="N107B8"></a><a name="Actualizar+los+valores+del+modelo+%28Update+Model+Values%29"></a>
+<h3 class="underlined_5">Actualizar los valores del modelo (Update Model Values)</h3>
+<p>Si se alcanza la fase de actualizaci&oacute;n de los valores del modelo,
+se supone que la petici&oacute;n recibida es correcta sintactica y
+sem&aacute;nticamente, que todos los valores locales del &aacute;rbol de componentes
+han sido actualizados y que es el momento de actualizar los datos del
+modelo de la aplicaci&oacute;n, en preparaci&oacute;n de la ejecuci&oacute;n de los eventos
+de aplicaci&oacute;n que hayan sido encolados. </p>
+<p>Durante esta fase se llama al m&eacute;todo <span class="codefrag">processUpdates()</span>
+de los componentes del &aacute;rbol de la petici&oacute;n y en estas llamadas se
+realizan las actualizaciones de las propiedades asociadas en los beans
+de respaldo. En estas llamadas se pueden producir nuevos errores y
+nuevos eventos. Los errores producen mensajes que se almacenan en el
+<span class="codefrag">FacesContext</span>. Los eventos se almacenan y se ejecutan al
+final de las actualizaciones.</p>
+<p>Al igual que en las fases anteriores, se puede terminar el
+procesamiento de la petici&oacute;n con una llamada a
+<span class="codefrag">responseComplete()</span> o a la fase de renderizado del &aacute;rbol
+de componentes con una llamada a <span class="codefrag">renderResponse()</span>.</p>
+<p>Al final de la fase, todos los beans de respaldo se habr&aacute;n
+actualizado convenientemente.</p>
+<a name="N107D7"></a><a name="Invocar+a+la+aplicaci%C3%B3n+%28Invoke+Application%29"></a>
+<h3 class="underlined_5">Invocar a la aplicaci&oacute;n (Invoke Application)</h3>
+<p>El prop&oacute;sito de esta fase es procesar cualquier
+<span class="codefrag">ActionEvent</span> que haya sido previamente encolado por alg&uacute;n
+componente <span class="codefrag">UICommand</span>. Para ello, JSF llama al m&eacute;todo
+<span class="codefrag">processApplication()</span> del componente
+<span class="codefrag">UIViewRoot</span>. </p>
+<p>La implementaci&oacute;n JSF define un manejador de eventos
+<span class="codefrag">ActionEvent</span> por defecto. Este manejador de eventos
+implementa la navegaci&oacute;n entre p&aacute;ginas, procesando el
+<span class="codefrag">ActionEvent</span> para obtener el m&eacute;todo de acci&oacute;n e
+invoc&aacute;ndolo. Este m&eacute;todo de acci&oacute;n (el m&eacute;todo
+<span class="codefrag">calcBean.doOperation()</span> en nuestro ejemplo) no debe tener
+argumentos y debe obtener devolver una cadena.</p>
+<p>Una vez invocado el m&eacute;todo de acci&oacute;n, JSF pasa la cadena devuelta
+al <span class="codefrag">NavigationHandler</span>, que busca en el fichero de
+configuraci&oacute;n de JSF (el fichero <span class="codefrag">faces-config.xml</span>) alguna
+regla de navegaci&oacute;n que empareje con la vista actual y la cadena
+devuelta. Si se encuentra esta regla JSF llama a
+<span class="codefrag">setViewRoot()</span> con el nombre de la nueva vista y se
+construye un nuevo &aacute;rbol de componentes. Si no se encuentra ninguna
+regla, se mantiene la vista actual.</p>
+<p>Al final de esta fase se pasa el control a la fase <em>Render
+Response</em> en la que se genera la vista actual.</p>
+<a name="N1080B"></a><a name="Renderizado+de+la+respuesta+%28Render+Response%29"></a>
+<h3 class="underlined_5">Renderizado de la respuesta (Render Response)</h3>
+<p>El prop&oacute;sito de la fase de <em>renderizado</em> de la respuesta es
+construir la interfaz de usuario correspondiente al &aacute;rbol de
+componentes actual que se devuelve como respuesta de la petici&oacute;n. En
+concreto, se obtiene la representaci&oacute;n HTML de los componetes del
+&aacute;rbol y de sus valores.</p>
+<p>Una vez creada la vista, se salva su estado para ser usado por
+futuras peticiones.</p>
+</div>
+
+
+<p class="pageBreakAfter"></p>
+
+</div>
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+        Copyright &copy;
+         2006-2007 Depto. CCIA</div>
+</div>
+</body>
+</html>

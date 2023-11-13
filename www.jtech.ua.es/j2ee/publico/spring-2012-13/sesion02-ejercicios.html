@@ -1,0 +1,357 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.7">
+<meta name="Forrest-skin-name" content="pelt">
+<title>Ejercicios de Acceso a datos en Spring</title>
+<link type="text/css" href="skin/highlight/shCore.css" rel="stylesheet">
+<link type="text/css" href="skin/highlight/shThemeEclipse.css" rel="stylesheet">
+<script src="skin/highlight/shCore.js" type="text/javascript"></script><script src="skin/highlight/shAutoloader.js" type="text/javascript"></script>
+<link type="text/css" href="skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="skin/print.css" rel="stylesheet">
+<link type="text/css" href="skin/profile.css" rel="stylesheet">
+<script src="skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<div class="header">
+<div class="grouplogo">
+<a href="http://web.ua.es/especialistajava"><img class="logoImage" alt="jtech" src="images/baner_j2ee_izq.gif" title="Experto Universitario Java Enterprise"></a>
+</div>
+<div class="projectlogoA1">
+<a href="http://www.dccia.ua.es/"><img class="logoImage" alt="Spring" src="images/baner_j2ee_der.gif" title="Spring"></a>
+</div>
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="javascript:location.href='../index.html'">Home</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../aplic-web.html'">Aplicaciones Web</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../aplic-ent.html'">Aplicaciones Enterprise</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../charlas.html'">Charlas</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../proy-int/index.html'">Proyecto</a>
+</li>
+<li>
+<a class="base-not-selected" href="index.html">Spring</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<div id="level2tabs"></div>
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<div id="menu">
+<div onclick="SwitchMenu('menu_1.1', 'skin/')" id="menu_1.1Title" class="menutitle">Spring</div>
+<div id="menu_1.1" class="menuitemgroup">
+<div class="menuitem">
+<a href="index.html" title="Spring">Indice</a>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<div id="credit2"></div>
+</div>
+<div id="content">
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="sesion02-ejercicios.pdf"><img alt="PDF -icon" src="skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1>Ejercicios de Acceso a datos en Spring</h1>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#Uso+de+JDBC+en+Spring+%281+punto%29">Uso de JDBC en Spring (1 punto)</a>
+</li>
+<li>
+<a href="#Transaccionalidad+declarativa+%281+punto%29">Transaccionalidad declarativa (1 punto)</a>
+</li>
+<li>
+<a href="#Uso+de+JPA+en+Spring+%281+punto%29">Uso de JPA en Spring (1 punto)</a>
+</li>
+</ul>
+</div>
+
+<p>Continuaremos en esta sesi&oacute;n con la aplicaci&oacute;n de pedidos, simplificando el c&oacute;digo del DAO
+gracias a Spring y a&ntilde;adiendo transaccionalidad declarativa.</p>
+
+<a name="N1000F"></a><a name="Uso+de+JDBC+en+Spring+%281+punto%29"></a>
+<h2 class="underlined_10">Uso de JDBC en Spring (1 punto)</h2>
+<div class="section">
+<p>Tendr&aacute;s que a&ntilde;adirle al pom.xml una nueva dependencia con las librer&iacute;as
+de Spring para JDBC:</p>
+<pre class="brush:xml;">
+
+&lt;dependency&gt;
+   &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+   &lt;artifactId&gt;spring-jdbc&lt;/artifactId&gt;
+   &lt;version&gt;3.2.0.RELEASE&lt;/version&gt;
+&lt;/dependency&gt;
+
+</pre>
+<p>Vamos a a&ntilde;adirle al DAO un m&eacute;todo <span class="codefrag">List&lt;Pedido&gt; listarPedidos()</span> que devuelva los pedidos hechos hasta el momento. Usaremos el API de Spring en el c&oacute;digo, en concreto  <span class="codefrag">SimpleJdbcTemplate</span>. Para
+ello sigue estos pasos:</p>
+<ol>
+
+<li>Modifica el interfaz <span class="codefrag">IPedidosDAO</span> para incluir la nueva operaci&oacute;n.</li>
+
+<li>Tienes que definir un nuevo campo en <span class="codefrag">PedidosDAOJDBC</span> con el template:
+<pre class="brush:java;">
+private .JdbcTemplate template;
+</pre>
+Puedes inicializar este campo del mismo modo que en los apuntes, usando el "truco" del m&eacute;todo <span class="codefrag">setDataSource</span>. Por tanto, debes crear el propio m&eacute;todo setDataSource y quitar la anotaci&oacute;n @Autowired del campo "ds" y ponerla en el m&eacute;todo. Este m&eacute;todo debe inicializar la variable ds y el template. Necesitas las dos porque aunque el m&eacute;todo que vas a introducir usa el template, el c&oacute;digo de insertarPedido usa directamente el "ds".</li>
+
+<li>Tendr&aacute;s que crear la clase Pedido en el  paquete <span class="codefrag">es.ua.jtech.spring</span>. Ser&aacute; simplemente un javabean con <em>getters</em> y <em>setters</em>. Ponle los campos correspondientes a las columnas de la BD (id, idProducto, idCliente, unidades).</li>
+
+<li>Necesitar&aacute;s una clase que implemente el interfaz <span class="codefrag">RowMapper&lt;Pedido&gt;</span>, que a partir de un registro de la BD devuelva un objeto Pedido. Puede ser
+la propia <span class="codefrag">PedidosJDBCDAO</span> o una clase adicional.</li>
+
+
+<li>Por &uacute;ltimo tendr&aacute;s que escribir el c&oacute;digo de "listarPedidos". Observa que es mucho m&aacute;s simple de lo que ser&iacute;a si tuvieras que usar
+JDBC "puro".</li>
+    
+</ol>
+<p>Puedes comprobar el funcionamiento con el servlet "ListarPedidos" , disponible en las plantillas de la sesi&oacute;n. C&oacute;pialo en el paquete <span class="codefrag">es.ua.jtech.spring.web</span> y f&iacute;jate que est&aacute; mapeado con la URL "listarPedidos". El c&oacute;digo no es muy "correcto", ya que accede directamente al DAO sin pasar por la capa de negocio, pero as&iacute; no tendr&aacute;s que modificar <span class="codefrag">IPedidosBO</span> y <span class="codefrag">PedidosBOSimple</span>.</p>
+</div>
+
+<a name="N10068"></a><a name="Transaccionalidad+declarativa+%281+punto%29"></a>
+<h2 class="underlined_10">Transaccionalidad declarativa (1 punto)</h2>
+<div class="section">
+<p>Supongamos que cada vez que se hace un pedido se tiene que avisar al proveedor, para que nos sirva
+    los productos. Si el aviso no puede enviarse, el pedido deber&iacute;a anularse y por tanto se deber&iacute;a hacer
+    un <em>rollback</em> de las operaciones realizadas en la base de datos.</p>
+<p>En las plantillas de la sesi&oacute;n hay un interfaz <span class="codefrag">IMensajeria</span> y una clase <span class="codefrag">MensajeriaDummy</span>, que
+    lo implementa. <span class="codefrag">MensajeriaDummy</span> supuestamente se encarga de enviar el aviso (y
+    decimos "supuestamente" porque en realidad lo &uacute;nico que hace es imprimir un mensaje en la salida est&aacute;ndar). La clase
+    permite simular el mal funcionamiento del aviso a trav&eacute;s de una variable static. Sigue estos pasos:</p>
+<ol>
+    
+<li>Copia el interface <span class="codefrag">IMensajeria</span> y la clase <span class="codefrag">MensajeriaDummy</span> en el <em>package</em> <span class="codefrag">es.ua.jtech.spring.negocio</span>
+</li>
+    
+<li>Copia el JSP "mensajeria.jsp" en "src/main/webapp". Este JSP te permite ver el "estado del servicio de avisos" y simular el fallo en el aviso poniendo
+    el estado en "off"</li>
+    
+<li>
+<span class="codefrag">PedidosBOSimple</span> necesitar&aacute; de un bean de tipo <span class="codefrag">IMensajeria</span> para funcionar. Define
+    un campo de ese tipo igual que hiciste con el DAO y an&oacute;talo para que Spring gestione el objeto:
+    <pre class="brush:java;">
+    @Autowired
+    private IMensajeria m;
+    </pre>
+    
+</li>
+    
+<li>Modifica el c&oacute;digo de "insertarPedido" de <span class="codefrag">GestorPedidosSimple</span> para que 
+    <ul>
+    
+<li>Despu&eacute;s de llamar al DAO llame al m&eacute;todo "enviarAvisoPedido" del objeto de tipo <span class="codefrag">IMensajeria</span>
+</li>
+    
+<li>Sea transaccional, de modo que si se produce un <span class="codefrag">PedidosException</span> 
+    se haga un <em>rollback</em>.</li>
+    
+<li>Para que todo funcione, tendr&aacute;s adem&aacute;s que configurarlo en el fichero <span class="codefrag">src/main/webapp/WEB-INF/beans.xml</span>. Consulta apuntes y/o transparencias
+    para ver un ejemplo:
+    <ol>
+    
+<li>Definir un "transaction manager" para JDBC. Cuidado, su propiedad "dataSource" debe referenciar ("ref") al
+    DataSource que definiste en la sesi&oacute;n anterior.</li>
+    
+<li>Usar la etiqueta <span class="codefrag">tx:annotation-driven</span> y referenciar el "transaction-manager" que acabas de definir. Para esta etiqueta necesitas el espacio de nombres "tx" en el XML, as&iacute; que puedes cambiar la cabecera del beans.xml por esta, que ya lo tiene incluido:
+    <pre class="brush:xml;">
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:jee="http://www.springframework.org/schema/jee" 
+  xmlns:p="http://www.springframework.org/schema/p"
+  xmlns:tx="http://www.springframework.org/schema/tx"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
+   http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context 
+    http://www.springframework.org/schema/context/spring-context-3.2.xsd
+    http://www.springframework.org/schema/jee
+     http://www.springframework.org/schema/jee/spring-jee-3.2.xsd
+    http://www.springframework.org/schema/tx 
+    http://www.springframework.org/schema/tx/spring-tx-3.2.xsd"&gt;
+    </pre> 
+
+
+
+  
+</li>
+    
+</ol>
+    
+</li>
+    
+</ul>
+    
+</li>
+    
+<li>Cambia el c&oacute;digo de "insertarPedido" en el DAO para que la conexi&oacute;n con la BD (variable "con") se obtenga y se libere
+    a trav&eacute;s de la clase de Spring <span class="codefrag">DataSourceUtils</span>, ya que si Spring no controla la conexi&oacute;n no ser&aacute; posible
+    hacer el <em>rollback</em>.
+    </li>
+    
+<li>Comprueba que todo funciona, accediendo a "mensajeria.jsp" para poner el estado del "servidor de avisos" a OFF e
+    insertando un pedido como hac&iacute;as hasta ahora. Si todo es correcto, se generar&aacute; un PedidosException y el pedido no deber&iacute;a aparecer en la BD al no hacerse un "commit"
+    de la operaci&oacute;n.</li>
+    
+</ol>
+</div>
+
+<a name="N100DC"></a><a name="Uso+de+JPA+en+Spring+%281+punto%29"></a>
+<h2 class="underlined_10">Uso de JPA en Spring (1 punto)</h2>
+<div class="section">
+<p>Vamos a crear una clase de negocio que se ocupe de los productos usando el API JPA. Para simplificar, nos
+permitir&aacute; &uacute;nicamente mostrar productos sabiendo su c&oacute;digo. Sigue estos pasos:</p>
+<ol>
+
+<li>Introduce en la secci&oacute;n de dependencias del pom.xml las dependencias de Spring ORM,  Hibernate JPA y slf4j:
+<pre class="brush:xml;">
+
+&lt;dependency&gt;
+   &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+   &lt;artifactId&gt;spring-orm&lt;/artifactId&gt;
+   &lt;version&gt;3.2.0.RELEASE&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+   &lt;groupId&gt;org.hibernate&lt;/groupId&gt;
+   &lt;artifactId&gt;hibernate-entitymanager&lt;/artifactId&gt;
+   &lt;version&gt;3.5.6-Final&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+   &lt;groupId&gt;org.slf4j&lt;/groupId&gt;
+   &lt;artifactId&gt;slf4j-log4j12&lt;/artifactId&gt;
+   &lt;version&gt;1.5.8&lt;/version&gt;
+   &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;
+
+</pre>
+
+</li>
+
+<li>Crea la clase <span class="codefrag">ProductoEntity</span> en el package <span class="codefrag">es.ua.jtech.spring</span> con el siguiente c&oacute;digo (cuidado, faltan
+getters y setters)
+<pre class="brush:java;">
+package es.ua.jtech.spring;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="productos")
+public class ProductoEntity {
+    @Id
+    private int id;
+    private String nombre;
+    
+    //&iexcl;&iexcl;Faltan getters y setters, gen&eacute;ralos!!
+}
+</pre>
+
+</li>
+
+<li>Como fichero <span class="codefrag">persistence.xml</span> puedes usar el siguiente. Cr&eacute;alo simplemente
+como un XML, dentro de "src/main/resources". Crea all&iacute; una carpeta "META-INF" y pon
+el "persistence.xml" ah&iacute; dentro. &iexcl;No lo confundas con el "META-INF" de "webapp"!. 
+<pre class="brush:xml;">
+
+&lt;persistence version="1.0" xmlns="http://java.sun.com/xml/ns/persistence"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"&gt;
+
+    &lt;persistence-unit name="pedidosSpringPU" transaction-type="RESOURCE_LOCAL"&gt;
+        &lt;class&gt;es.ua.jtech.spring.ProductoEntity&lt;/class&gt;
+    &lt;/persistence-unit&gt;
+
+&lt;/persistence&gt;
+
+
+</pre>
+
+</li>
+
+<li>Crea el interface <span class="codefrag">IProductosDAO</span> en el package <span class="codefrag">es.ua.jtech.spring.datos</span>
+
+<pre class="brush:java;">
+package es.ua.jtech.spring.datos;
+
+import es.ua.jtech.spring.ProductoEntity;
+
+public interface IProductosDAO {
+    public ProductoEntity buscarProducto(int id);
+}
+</pre>
+
+</li>
+
+<li> Crea una clase  <span class="codefrag">ProductosDAOJPA</span> que implemente el interfaz anterior, en el mismo package. Inyecta en ella
+el EntityManager con la anotaci&oacute;n @PersistenceContext, e implementa el m&eacute;todo "buscarProducto" usando el API JPA. Finalmente, anota la clase con <span class="codefrag">@Repository</span>, para que sea un bean de Spring.</li>
+
+<li>Introduce la configuraci&oacute;n necesaria en el fichero "beans.xml" como se muestra en los apuntes. B&aacute;sicamente tienes que
+definir un bean de la clase <span class="codefrag">org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean</span>. Consulta apuntes o 
+transparencias para ver las propiedades que debe tener. Te valdr&aacute;n las que se muestran all&iacute;, salvo por la propiedad "dataSource",
+cuyo "ref" debe referenciar el identificador del DataSource que definiste en la sesi&oacute;n 1 del m&oacute;dulo.</li>
+
+<li>Para probar la implementaci&oacute;n usa el servlet <span class="codefrag">VerProducto</span>, disponible en las plantillas de la sesi&oacute;n. Tendr&aacute;s que llamarlo pas&aacute;ndole el <span class="codefrag">id</span> del producto que quieres ver como par&aacute;metro. Por ejemplo, verProducto?id=1 para ver los datos del producto 1.</li>
+
+</ol>
+</div>
+
+<p class="pageBreakAfter"></p>
+
+</div>
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+        Copyright &copy;
+         2012-2013 Depto. Ciencia de la computaci&oacute;n e IA</div>
+</div>
+<script type="text/javascript">
+     
+         SyntaxHighlighter.defaults['toolbar'] = false;
+         SyntaxHighlighter.autoloader(
+  		     'java                   skin/highlight/shBrushJava.js',
+  		     'xml xhtml xslt html    skin/highlight/shBrushXml.js',
+  		     'js jscript javascript  skin/highlight/shBrushJScript.js',
+  		     'groovy                 skin/highlight/shBrushGroovy.js',
+  		     'bash shell             skin/highlight/shBrushBash.js',
+  		     'php                    skin/highlight/shBrushPhp.js',
+  		     'css                    skin/highlight/shBrushCss.js',
+  		     'sql                    skin/highlight/shBrushSql.js',
+  		     'objc                   skin/highlight/shBrushObjC.js',
+  		     'cpp c                  skin/highlight/shBrushCpp.js',
+  		     'text plain             skin/highlight/shBrushPlain.js'
+         );
+         SyntaxHighlighter.all();
+     </script><a href="skin/highlight/shBrushJava.js"></a><a href="skin/highlight/shBrushXml.js"></a><a href="skin/highlight/shBrushJScript.js"></a><a href="skin/highlight/shBrushGroovy.js"></a><a href="skin/highlight/shBrushBash.js"></a><a href="skin/highlight/shBrushPhp.js"></a><a href="skin/highlight/shBrushCss.js"></a><a href="skin/highlight/shBrushSql.js"></a><a href="skin/highlight/shBrushObjC.js"></a><a href="skin/highlight/shBrushCpp.js"></a><a href="skin/highlight/shBrushPlain.js"></a>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Servidores de aplicaciones</title>
+                                                   
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=iso-8859-1">
+                             
+  <meta name="Author" content="Miguel">
+                             
+  <link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+</head>
+  <body>
+               
+<h1>Acceso a bases de datos con el servidor de aplicaciones</h1>
+               
+<p>En este ejercicio se trata de configurar un pool de conexiones y una fuente 
+  de datos para despu&eacute;s utilizarlos en una aplicaci&oacute;n web. Utilizad 
+  la aplicaci&oacute;n <i>faqs.war</i> que accede a una base de datos (acordaros 
+  de los ejercicios de JSP). Primero probad a desplegar la aplicaci&oacute;n y 
+  comprobad que el servidor responde a la aplicaci&oacute;n (acordaros de incluir 
+  el driver en el classpath de weblogic).</p>
+<p>Vamos a proceder a crear el pool de conexiones. Deb&eacute;is crear un nuevo 
+  pool de conexiones para acceder a MySQL, a la base de datos <i>faqs</i>. El 
+  pool se llamar&aacute; MysqlPool y deb&eacute;is asignar los par&aacute;metros 
+  URL; nombre de la clase; en <i>Properties</i> indic&aacute;is <i>user=root</i>; 
+  asign&aacute;is la contrase&ntilde;a de la base de datos. Cre&aacute;is el pool 
+  y pas&aacute;is a la solapa <i>Connections</i>. Aqu&iacute; indic&aacute;is 
+  una capacidad inicial de 5, una m&aacute;xima de 10 y un incremento de 2. Por 
+  &uacute;ltimo, el destino del pool ser&aacute; uno de los servidores del dominio. 
+</p>
+<p>A continuaci&oacute;n cread la fuente de datos. El nombre de la fuente de datos 
+  ser&aacute; <i>MysqlDS</i>, el nombre JNDI <i>faqsBD</i> y hac&eacute;is referencia 
+  al pool antes creado. Como destino seleccion&aacute;is el mismo servidor que 
+  para el pool.</p>
+<p>Una vez realizados estos pasos ten&eacute;is que modificar el c&oacute;digo 
+  de la aplicaci&oacute;n <i>faqs</i> para que utilice la fuente de datos definida 
+  previamente. S&oacute;lo ten&eacute;is que modificar un fichero, <i>FAQBD.java</i> 
+  localizado en el directorio WEB-INF/classes/faqs/bd . La conexi&oacute;n en 
+  ese fichero se obtiene a partir de una conexi&oacute;n con el driver de mysql. 
+  Ahora deb&eacute;is utilizar JNDI para obtener una referencia a la fuente de 
+  datos creada y que sea &eacute;sta la que nos devuelva la conexi&oacute;n.</p>
+</body>
+</html>

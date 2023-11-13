@@ -1,0 +1,770 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.7">
+<meta name="Forrest-skin-name" content="pelt">
+<title>Charla 1: Introducci&oacute;n a los patrones de dise&ntilde;o. Algunos patrones b&aacute;sicos</title>
+<link type="text/css" href="skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="skin/print.css" rel="stylesheet">
+<link type="text/css" href="skin/profile.css" rel="stylesheet">
+<script src="skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<div class="header">
+<div class="grouplogo">
+<a href="http://www.jtech.ua.es/j2ee"><img class="logoImage" alt="J2EE" src="images/baner_j2ee_izq.gif" title="Curso Especialista Universitario J2EE"></a>
+</div>
+<div class="projectlogoA1">
+<a href="http://www.dccia.ua.es/"><img class="logoImage" alt="Patrones de dise&ntilde;o" src="images/baner_j2ee_der.gif" title="Patrones de dise&ntilde;o"></a>
+</div>
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="../index.html">M&oacute;dulos</a>
+</li>
+<li class="current">
+<a class="base-selected" href="index.html">Patrones de dise&ntilde;o Java Enterprise</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<div id="level2tabs"></div>
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<div id="menu">
+<div onclick="SwitchMenu('menu_selected_1.1', 'skin/')" id="menu_selected_1.1Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Patrones de dise&ntilde;o</div>
+<div id="menu_selected_1.1" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="index.html" title="RMI">&Iacute;ndice</a>
+</div>
+<div onclick="SwitchMenu('menu_selected_1.1.2', 'skin/')" id="menu_selected_1.1.2Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Teor&iacute;a</div>
+<div id="menu_selected_1.1.2" class="selectedmenuitemgroup" style="display: block;">
+<div class="menupage">
+<div class="menupagetitle">Sesion 1</div>
+</div>
+</div>
+<div class="menuitem">
+<a href="">Ejercicios</a>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<div id="credit2"></div>
+</div>
+<div id="content">
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="sesion01-apuntes.pdf"><img alt="PDF -icon" src="skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1>Charla 1: Introducci&oacute;n a los patrones de dise&ntilde;o. Algunos patrones b&aacute;sicos</h1>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#Por+qu%C3%A9+patrones">Por qu&eacute; patrones</a>
+</li>
+<li>
+<a href="#Patrones+J2EE">Patrones J2EE</a>
+</li>
+<li>
+<a href="#Singleton+%28GoF%29">Singleton (GoF)</a>
+<ul class="minitoc">
+<li>
+<a href="#Problema+a+resolver">Problema a resolver</a>
+</li>
+<li>
+<a href="#Discusi%C3%B3n+y+beneficios">Discusi&oacute;n y beneficios</a>
+</li>
+<li>
+<a href="#Relaci%C3%B3n+con+otros+patrones">Relaci&oacute;n con otros patrones</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Data+Access+Object+%28J2EE%29">Data Access Object (J2EE)</a>
+<ul class="minitoc">
+<li>
+<a href="#Problema+a+resolver-N1010E">Problema a resolver</a>
+</li>
+<li>
+<a href="#Discusi%C3%B3n+y+beneficios-N10135">Discusi&oacute;n y beneficios</a>
+</li>
+<li>
+<a href="#Relaci%C3%B3n+con+otros+patrones-N10192">Relaci&oacute;n con otros patrones</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Transfer+Object%2FValue+Object+%28J2EE%29">Transfer Object/Value Object (J2EE)</a>
+<ul class="minitoc">
+<li>
+<a href="#Problema+a+resolver-N101B3">Problema a resolver</a>
+</li>
+<li>
+<a href="#Discusi%C3%B3n+y+beneficios-N101C3">Discusi&oacute;n y beneficios</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Factory+%28GoF%29">Factory (GoF)</a>
+<ul class="minitoc">
+<li>
+<a href="#Problema+a+resolver-N1020C">Problema a resolver</a>
+</li>
+<li>
+<a href="#Simple+factory">Simple factory</a>
+</li>
+<li>
+<a href="#Factory+method">Factory method</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Facade+%28GoF%29">Facade (GoF)</a>
+<ul class="minitoc">
+<li>
+<a href="#Problema+a+resolver-N1030C">Problema a resolver</a>
+</li>
+<li>
+<a href="#Discusi%C3%B3n+y+beneficios-N10329">Discusi&oacute;n y beneficios</a>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+<p>Aunque cada aplicaci&oacute;n J2EE tiene
+peculiaridades que la hacen &uacute;nica, en el proceso de desarrollo de
+casi todas las aplicaciones es necesario solucionar una y otra vez
+los mismos problemas: autentificaci&oacute;n del cliente, persistencia de
+datos, separaci&oacute;n entre presentaci&oacute;n, l&oacute;gica y control,... En lugar
+de reinventar continuamente la rueda, es mucho m&aacute;s productivo
+aplicar estrategias que ya hayan funcionado con anterioridad. Esta
+idea es la que lleva a la definici&oacute;n de los
+<strong>patrones software.</strong>
+</p>
+
+
+<a name="N10011"></a><a name="Por+qu%C3%A9+patrones"></a>
+<h2 class="underlined_10">Por qu&eacute; patrones</h2>
+<div class="section">
+<p> En ingenier&iacute;a del software, un <strong>patr&oacute;n</strong> (<em>pattern</em>) es una
+soluci&oacute;n ya probada y aplicable a un problema que se presenta una y
+otra vez en el desarrollo de distintas aplicaciones y en distintos
+contextos. Es importante destacar que un patr&oacute;n no es en general
+una soluci&oacute;n en forma de c&oacute;digo directamente "listo para usar",
+sino m&aacute;s bien una descripci&oacute;n de c&oacute;mo resolver el problema y de
+ante qu&eacute; circunstancias es aplicable.</p>
+<p>Los patrones software fueron popularizados en el libro
+<em>Design Patterns: Elements of Reusable Object-Oriented
+Software</em>, que trata de patrones gen&eacute;ricos, aplicables a una
+amplia gama de contextos y a cualquier lenguaje orientado a
+objetos. Este libro populariz&oacute; el "movimiento" de patrones y se ha
+convertido en un cl&aacute;sico, ampliamente referenciado y que muchos han
+tomado como base para a&ntilde;adir patrones nuevos. Los autores de
+<em>Design Patterns...</em>
+son&nbsp; Erich Gamma, Richard Helm, Ralph Johnson y John Vissides,
+aunque de manera jocosa y popular son m&aacute;s conocidos como el
+<em>Gang of Four</em>. De hecho, en
+muchas publicaciones serias los patrones que aparecen en
+<em>Design Patterns</em> se
+referencian con las siglas <em>GoF</em>.</p>
+<p>Ante todo este floreciente movimiento en torno a los patrones
+cabe preguntarse si realmente aportan beneficios. Se suele
+argumentar que los patrones ofrecen tres ventajas
+fundamentales:</p>
+<ul>
+
+<li>Est&aacute;n ya <strong>probados</strong>: son
+soluciones que han sido utilizadas con anterioridad de manera
+repetida y se ha comprobado que funcionan.</li>
+
+<li>Son <strong>reutilizables:</strong>
+corresponden con problemas que no son espec&iacute;ficos de un caso
+concreto, sino que se presentan una y otra vez en distintas
+aplicaciones.</li>
+
+<li>Son <strong>expresivos</strong>: cuando
+un equipo de desarrolladores tiene un vocabulario com&uacute;n de
+patrones, se puede comunicar de manera&nbsp; fluida y precisa las
+ideas fundamentales sobre el dise&ntilde;o de una aplicaci&oacute;n.</li>
+
+</ul>
+<p>Por supuesto, los patrones no
+pueden ser la soluci&oacute;n a todos los problemas de dise&ntilde;o y desarrollo
+de aplicaciones J2EE. Como cualquier herramienta o metodolog&iacute;a son
+susceptibles de malos usos, y de abusos (uso "compulsivo" simplemente
+"porque son buenos"). La experiencia y el sentido com&uacute;n dictar&aacute;n
+cu&aacute;ndo son apropiados y c&oacute;mo utilizarlos.</p>
+</div>
+
+
+
+<a name="N1004E"></a><a name="Patrones+J2EE"></a>
+<h2 class="underlined_10">Patrones J2EE</h2>
+<div class="section">
+<p>Los <strong>patrones J2EE</strong> est&aacute;n orientados
+espec&iacute;ficamente a los problemas comunes a todas las aplicaciones
+J2EE. Algunos est&aacute;n basados en los patrones originales mientras que
+otros son m&aacute;s espec&iacute;ficos del tipo de problemas que surgen
+espec&iacute;ficamente en J2EE, bien sea por los tipos de aplicaciones que
+se suelen desarrollar con la plataforma o por las caracter&iacute;sticas
+(o deficiencias, incluso) de la tecnolog&iacute;a. Los primeros fueron
+publicados en el libro <em>Core J2EE Patterns</em>, convertido
+tambi&eacute;n en un cl&aacute;sico dentro del "mundillo" J2EE. En la actualidad
+son muchos los libros y los sitios web dedicados &iacute;ntegramente a
+patrones para aplicaciones J2EE o con alg&uacute;n apartado sobre
+ellos.</p>
+<p>Una versi&oacute;n resumida del cat&aacute;logo de <em>Core J2EE Patterns</em>  est&aacute; disponible en su sitio web. Siguiendo la idea
+de dividir la arquitectura de una aplicaci&oacute;n en varias capas, los
+patrones se clasifican atendiendo a la capa a la que pertenecen. En
+la figura 5 aparece el esquema general en la que se muestra la
+situaci&oacute;n de cada uno de los 21 patrones en el modelo de capas y
+las relaciones que existen entre ellos. Iremos viendo con detalle
+algunos de estos patrones y sus interrelaciones en las distintas charlas
+del m&oacute;dulo.</p>
+<p>
+
+<img alt="Cat&aacute;logo de patrones de Core J2EE Patterns" content-width="12cm" src="imagenes/CJP2Catalog.gif">
+</p>
+<p>En los patrones que vamos a ver en el m&oacute;dulo mezclaremos por igual patrones J2EE con patrones gen&eacute;ricos. El resultado
+es una lista de patrones bastante <em>ad-hoc</em>, en cuanto al orden de explicaci&oacute;n que seguiremos y en cuanto a los
+patrones que trataremos frente a los que dejaremos de lado. Hay que tener en cuenta que el objetivo no es dar una lista extensiva de los mismos.
+Si a los 21 patrones J2EE se les suman los 23 fundamentales del GoF surge un n&uacute;mero demasiado elevado para las horas disponibles. Por ello se ha optado por describir solo
+algunos. El criterio de inclusi&oacute;n no ha sido su importancia <em>per se</em>, sino
+el hecho de que sea un patr&oacute;n de uso habitual en aplicaciones J2EE. Para una lista de patrones m&aacute;s "est&aacute;ndar" se 
+puede consultar cualquiera de los recursos especificados en la bibliograf&iacute;a.</p>
+<p>Junto al nombre de cada patr&oacute;n especificaremos si se trata de un patr&oacute;n J2EE o procede del GoF.</p>
+</div>
+
+
+<a name="N10078"></a><a name="Singleton+%28GoF%29"></a>
+<h2 class="underlined_10">Singleton (GoF)</h2>
+<div class="section">
+<a name="N1007E"></a><a name="Problema+a+resolver"></a>
+<h3 class="underlined_5">Problema a resolver</h3>
+<p>Hay muchos casos en los que solo
+necesitamos una instancia de una determinada clase. Ejemplos
+t&iacute;picos son clases que representan las preferencias del usuario o
+la configuraci&oacute;n del sistema, o clases que sirven de interfaz con
+dispositivos f&iacute;sicos.</p>
+<p> En estos casos hay que asegurarse de poder obtener una referencia a
+dicha instancia desde cualquier punto del c&oacute;digo, y que solo haya
+una instancia creada, para evitar posibles problemas o
+inconsistencias. Una posible soluci&oacute;n es definir variables globales
+(o sea, <span class="codefrag">static</span>), pero
+esto tiene dos problemas:</p>
+<ul>
+
+<li>Por descuido, se podr&iacute;a instanciar una misma variable en dos
+sitios distintos, lo que "machacar&iacute;a" el valor anterior.</li>
+
+<li>El orden y momento de inicializaci&oacute;n de las variables depende
+del compilador, lo cual puede ser delicado si unas dependen de
+otras y est&aacute;n en lugares distintos.</li>
+
+</ul>
+<a name="N10097"></a><a name="Discusi%C3%B3n+y+beneficios"></a>
+<h3 class="underlined_5">Discusi&oacute;n y beneficios</h3>
+<p>El patr&oacute;n singleton nos permite
+asegurar que de una clase habr&aacute; solo una instancia, y proporciona
+un punto de acceso a ella global a todo el c&oacute;digo. El diagrama de
+clases es muy sencillo, ya que se compone de una &uacute;nica
+clase:</p>
+<p>
+
+<img alt="Patr&oacute;n singleton" content-width="6cm" src="imagenes/singleton.jpg">
+</p>
+<p>El m&eacute;todo <span class="codefrag">getInstance()</span> nos sirve para
+obtener la referencia a la &uacute;nica instancia de la clase. Adem&aacute;s
+dicha instancia est&aacute; almacenada dentro de la propia clase como una
+variable de tipo <span class="codefrag">static</span> (esto &uacute;ltimo puede resultar
+curioso, pero no deja de ser un "truco ingenioso" perfectamente
+legal para el compilador). Por supuesto el singleton tendr&aacute; otros
+m&eacute;todos, los servicios que proporcione la clase.</p>
+<p> La implementaci&oacute;n de un <em>singleton</em> podr&iacute;a hacerse de varias
+formas, pero casi siempre se utiliza el mismo tipo de c&oacute;digo. Vamos
+a resumir las ideas que nos llevar&aacute;n a la implementaci&oacute;n
+final:</p>
+<ul>
+
+<li>Si el constructor de una clase es
+p&uacute;blico, podr&aacute; llamarse desde cualquier otra. Por tanto, si
+queremos asegurar un control de la creaci&oacute;n de instancias, no
+podemos tener un constructor p&uacute;blico, debemos hacerlo privado:
+<pre class="code">
+public class MiSingleton {
+   private MiSingleton() {
+      //aqui va el codigo del constructor
+   }
+}
+</pre>
+</li>
+
+<li>Evidentemente, aunque el c&oacute;digo anterior sea una definici&oacute;n
+legal que compilar&aacute; perfectamente, no parece tener mucho sentido.
+Si el constructor es privado, solo se podr&aacute; llamar desde un objeto
+de la clase <span class="codefrag">MiSingleton.</span> Pero &iexcl;no podemos
+instanciar objetos de esa clase, porque el constructor es privado!.
+La soluci&oacute;n al aparente dilema consiste en utilizar un m&eacute;todo
+est&aacute;tico para llamar al constructor:
+<pre class="code">
+public class MiSingleton {
+   private MiSingleton() {
+      //aqui va el codigo del constructor
+   }
+   public static MiSingleton getInstance() {
+      return new MiSingleton();
+   }
+}
+
+//c&oacute;digo aparte...
+MiSingleton ms = MiSingleton.getInstance();
+</pre>
+
+</li>
+
+<li>Con esto ya conseguimos controlar el acceso al constructor y
+poder llamarlo desde fuera de la clase. Lo &uacute;nico que nos falta es
+asegurarnos de que en todo momento existe una &uacute;nica instancia de
+<span class="codefrag">MiSingleton</span>. El
+"truco" consise en almacenar dicha instancia dentro de la propia
+clase <span class="codefrag">MiSingleton</span> (como una variable <span class="codefrag">static</span>) y en introducir c&oacute;digo en
+<span class="codefrag">getInstance</span> que
+chequee si dicha instancia est&aacute; creada o no, para devolverla o en
+caso contrario devolver un nuevo <span class="codefrag">MiSingleton</span>.
+<pre class="code">
+public class MiSingleton {
+   //la unica instancia que existe de esta clase
+   private static MiSingleton unico = null;
+
+   private MiSingleton() {
+      //aqui va el codigo del constructor
+   }
+   public static MiSingleton getInstance() {
+      //instanciar el singleton si no existe
+      if (unico == null) {
+         unico = new MiSingleton();
+      }
+      //devolver el singleton
+      return unico;
+   }
+}
+//c&oacute;digo aparte...
+MiSingleton ms = MiSingleton.getInstance();
+</pre>
+</li>
+
+</ul>
+<p>Como puede verse, este c&oacute;digo es
+una especie de "idea feliz" que consigue de forma elegante el
+objetivo que nos propon&iacute;amos. Aunque quiz&aacute; esto podr&iacute;a conseguirse
+de otras formas, esta es ampliamente utilizada y conocida, por lo
+que merece la pena usarla en lugar de intentar formas propias de
+hacerlo (despu&eacute;s de todo, esta "reutilizaci&oacute;n de ideas" es
+consustancial a la idea misma de patrones software).</p>
+<div class="frame warning">
+<div class="label">Aviso</div>
+<div class="content">El c&oacute;digo visto no asegura que solo exista una instancia si se permiten
+varios <em>threads</em> (pi&eacute;nsese que pasar&iacute;a si los dos <em>threads</em>
+comprueban "a la vez" que no existe una instancia del objeto y la crean &iexcl;por dos veces!).
+Consultad la bibliograf&iacute;a adicional para ver formas de solucionar este problema (basadas
+en general en el uso de <span class="codefrag">synchronized</span>).</div>
+</div>
+<a name="N100EF"></a><a name="Relaci%C3%B3n+con+otros+patrones"></a>
+<h3 class="underlined_5">Relaci&oacute;n con otros patrones</h3>
+<p>
+<strong>En aplicaciones J2EE</strong>, son m&uacute;ltiples los casos en los
+que solo se necesita una instancia de un objeto para toda la aplicaci&oacute;n (aunque a este
+objeto lo puedan llamar varios <em>threads</em> simult&aacute;neamente). Pi&eacute;nsese por ejemplo en un objeto encargado
+de calcular costes de env&iacute;o de pedidos. Los costes seg&uacute;n m&eacute;todos de env&iacute;o, plazos de recepci&oacute;n, peso
+del paquete, etc. son informaci&oacute;n global para toda la aplicaci&oacute;n, de modo que se puede
+implementar como un singleton.
+</p>
+<p> Un uso t&iacute;pico de este patr&oacute;n en aplicaciones <em>enterprise</em> es para implementar un encargado global de localizar
+recursos JNDI como por ejemplo conexiones JDBC, EJBs, etc. Esto es lo que se
+conoce como <em>Service Locator</em>.</p>
+</div>
+
+
+<a name="N10108"></a><a name="Data+Access+Object+%28J2EE%29"></a>
+<h2 class="underlined_10">Data Access Object (J2EE)</h2>
+<div class="section">
+<a name="N1010E"></a><a name="Problema+a+resolver-N1010E"></a>
+<h3 class="underlined_5">Problema a resolver</h3>
+<p>Supongamos que el c&oacute;digo de acceso a los recursos de datos (normalmente bases de datos relacionales)
+ est&aacute; inclu&iacute;do dentro de clases que tienen adem&aacute;s otras responsabilidades diferentes. Por ejemplo supongamos
+ que en una biblioteca (el ejemplo que usaremos en las sesiones de integraci&oacute;n) tuvi&eacute;ramos una clase 
+ <span class="codefrag">GestorPrestamos</span> que se ocupara de realizar y gestionar los pr&eacute;stamos de libros. En una primera
+ aproximaci&oacute;n podr&iacute;amos hacer que esta clase se encargara tanto de la l&oacute;gica de negocio (por ejemplo comprobar
+ si un usuario es "moroso" antes de prestarle un libro) como del acceso a datos (introducir el pr&eacute;stamo
+ en una hipot&eacute;tica tabla de pr&eacute;stamos). </p>
+<p> Este tipo de enfoque lleva a sistemas poco modulares y dif&iacute;cilmente mantenibles. En nuestro caso, el cambio de
+ las reglas de negocio implicar&iacute;a cambios en <span class="codefrag">GestorPrestamos</span>.
+ El problema es que adem&aacute;s, un cambio en la base de datos tambi&eacute;n implica cambios 
+ en <span class="codefrag">GestorPrestamos</span>.</p>
+<div class="frame note">
+<div class="label">Nota</div>
+<div class="content">
+<strong>Distintas responsabilidades no deben ser delegadas en la misma clase</strong>. Este es un principio b&aacute;sico del
+ desarrollo de software, propuesto originalmente por Dijkstra en los a&ntilde;os 70 (aunque no exactamente en esta forma), que lo llam&oacute; <em>separation of concerns</em> 
+ o separaci&oacute;n de incumbencias.</div>
+</div>
+<p>Claramente la implementaci&oacute;n de <span class="codefrag">GestorPrestamos</span> descrita con anterioridad viola el principio de separaci&oacute;n
+ de incumbencias. Si nos llevamos la persistencia de datos a una clase separada y dejamos <span class="codefrag">GestorPrestamos</span>
+ solo con la l&oacute;gica de negocio conseguimos un sistema mucho m&aacute;s modular y mantenible.</p>
+<a name="N10135"></a><a name="Discusi%C3%B3n+y+beneficios-N10135"></a>
+<h3 class="underlined_5">Discusi&oacute;n y beneficios</h3>
+<p>El <strong>DAO (<em>Data Access Object)</em></strong> es un patr&oacute;n de dise&ntilde;o directamente basado en el <em>separation of concerns</em>,
+ en el que <strong>se separa la persistencia de datos del resto de funcionalidades</strong> del sistema. El siguiente esquema UML muestra
+ una estructura de clases t&iacute;pica para el DAO de pr&eacute;stamos de la biblioteca:</p>
+<p>
+<img alt="Patr&oacute;n DAO. Ejemplo de la biblioteca" content-width="15cm" src="imagenes/daobiblio.jpg"></p>
+<p>Como se observa en la figura, el DAO es el punto de entrada al almac&eacute;n de datos (aqu&iacute; representado por un <span class="codefrag">DataSource</span> JDBC)
+y proporciona operaciones de tipo CRUD (<em>Create-Read-Update-Delete</em>).</p>
+<p>Destacamos algunos puntos importantes:</p>
+<ul>
+  
+<li> Como se ve, el DAO no tiene por qu&eacute; implementar todas las operaciones CRUD (quiz&aacute; en nuestro sistema no se puedan borrar los pr&eacute;stamos, solo devolver el libro quedando
+el registro del pr&eacute;stamo en la base de datos).</li>
+  
+<li> En general (aunque esto es una decisi&oacute;n de dise&ntilde;o), por cada objeto de negocio en nuestro sistema, crearemos un DAO distinto. En nuestro caso adem&aacute;s del <span class="codefrag">PrestamosDAO</span>
+podr&iacute;amos tener tambi&eacute;n un <span class="codefrag">UsuarioDAO</span> y un <span class="codefrag">LibroDAO</span>.</li>
+  
+<li>Aunque aqu&iacute; el almac&eacute;n de datos se representa como una base de datos compatible JDBC no tiene por qu&eacute;
+  ser siempre as&iacute;, como discutiremos a continuaci&oacute;n</li>
+  
+<li>La informaci&oacute;n que devuelve o se le pasa al DAO se encapsula en objetos de tipo <em>transfer object</em> (en nuestro caso
+  la clase <span class="codefrag">Prestamo)</span>, que, simplificando, no son 
+ m&aacute;s que "contenedores de informaci&oacute;n" y que trataremos en la discusi&oacute;n del patr&oacute;n correspondiente.</li>
+
+</ul>
+<p>Hay que tener en cuenta que si el DAO se considera un patr&oacute;n J2EE (o hablando m&aacute;s en general un patr&oacute;n de aplicaciones
+de tipo <em>enterprise</em>) es porque pr&aacute;cticamente todas las aplicaciones J2EE de cierta dimensi&oacute;n hacen
+uso intensivo de almacenes persistentes de datos (normalmente bases de datos relacionales) aunque muchas
+aplicaciones J2SE no lo hagan.</p>
+<p>Otro importante beneficio del DAO es la <strong>independencia del almac&eacute;n de datos</strong>: el cambio de motor de base de datos
+o el paso de usar un peque&ntilde;o archivo XML a usar una base de datos relacional para almacenar datos solo afectar&aacute; al DAO y no a las clases encargadas de
+la l&oacute;gica de negocio o de presentaci&oacute;n. Se suele usar el patr&oacute;n <em>Factory</em>
+para poder instanciar los DAOs reduciendo al m&aacute;ximo la dependencia del DAO concreto a crear (por ejemplo de MySQL, Oracle, XML, fichero <span class="codefrag">.properties,</span> ...) </p>
+<div class="frame note">
+<div class="label">Nota</div>
+<div class="content">Un principio b&aacute;sico de un buen dise&ntilde;o es <strong>identificar los aspectos de la
+aplicaci&oacute;n que cambian o pueden cambiar y separarlos de los que van a permanecer fijos</strong>.
+ Muchos patrones de dise&ntilde;o se basan en encapsular de alguna forma la parte que cambia
+para hacer m&aacute;s f&aacute;cil la extensi&oacute;n del sistema. En este caso, el DAO encapsula la parte que puede
+variar (la interacci&oacute;n con la fuente de datos).</div>
+</div>
+<a name="N10192"></a><a name="Relaci%C3%B3n+con+otros+patrones-N10192"></a>
+<h3 class="underlined_5">Relaci&oacute;n con otros patrones</h3>
+<p>El DAO se relaciona com&uacute;nmente con los siguientes patrones:</p>
+<ul>
+
+<li>
+<strong>Transfer object</strong>: la informaci&oacute;n que se env&iacute;a/recibe del DAO se "empaqueta" en estos objetos.</li>
+
+<li>
+<strong>Factory:</strong> con el objeto de conseguir la independencia del almac&eacute;n de datos, com&uacute;nmente
+se usa este patr&oacute;n para instanciar los DAOs.  </li>
+
+</ul>
+</div>
+
+
+<a name="N101AA"></a><a name="Transfer+Object%2FValue+Object+%28J2EE%29"></a>
+<h2 class="underlined_10">Transfer Object/Value Object (J2EE)</h2>
+<div class="section">
+<div class="frame warning">
+<div class="label">Aviso</div>
+<div class="content">Seg&uacute;n la fuente de referencia que consultemos este patr&oacute;n puede aparecer referenciado como "Transfer object" o como
+"Value object" siendo en realidad el mismo. Aqu&iacute; usaremos la denominaci&oacute;n "Transfer Object" ya que la otra
+suele usarse en contextos no-J2EE para denominar otro patr&oacute;n distinto sin relaci&oacute;n con este.</div>
+</div>
+<a name="N101B3"></a><a name="Problema+a+resolver-N101B3"></a>
+<h3 class="underlined_5">Problema a resolver</h3>
+<p>Cuando se trabaja con arquitecturas de varias capas, un problema t&iacute;pico es c&oacute;mo pasar los datos de una capa a otra.
+En el caso de la biblioteca que ve&iacute;amos anteriormente, cuando por ejemplo queremos ver los datos de un libro, &eacute;stos tienen que
+sacarse de la base de datos, pasando por las capas de datos y negocio hasta la capa de presentaci&oacute;n. Solicitar los datos uno a uno (t&iacute;tulo, autores, ISBN,...)
+no es una opci&oacute;n adecuada ya que en aplicaciones distribuidas incrementa innecesariamente el n&uacute;mero de llamadas remotas. Necesitamos una forma
+<em>compacta</em> y <em>organizada</em> de pasar estos datos de una capa a otra.</p>
+<a name="N101C3"></a><a name="Discusi%C3%B3n+y+beneficios-N101C3"></a>
+<h3 class="underlined_5">Discusi&oacute;n y beneficios</h3>
+<p>Un <strong>transfer object</strong> no es m&aacute;s que un objeto que "empaqueta" datos para que puedan viajar entre las capas. Dicho objeto
+contendr&aacute; todos los datos que nos interesen accesibles mediante <em>getters</em> y <em>setters</em>.  Por ejemplo, como
+ya se vio en el patr&oacute;n <em>DAO</em> la comunicaci&oacute;n entre la capa de negocio (clase <span class="codefrag">GestorPrestamos</span>) y la de
+datos (el propio DAO) se hace en base a transfer objects.</p>
+<p>N&oacute;tese que aunque los <strong>transfer objects</strong> est&aacute;n directamente relacionados con los objetos del modelo de objetos del dominio, 
+<em>no se trata de los mismos objetos</em>. Los objetos del dominio pueden contener l&oacute;gica de negocio mientras que como 
+ya se ha dicho los transfer objects son meros almacenes de datos. Adem&aacute;s no tiene por qu&eacute; haber una relaci&oacute;n uno-a-uno
+entre objetos del dominio y transfer objects, como se discutir&aacute; a continuaci&oacute;n.</p>
+<div class="frame warning">
+<div class="label">Aviso</div>
+<div class="content">Muchos manuales y "gur&uacute;s" de la programaci&oacute;n orientada a objetos desaconsejan la creaci&oacute;n de clases que no tienen
+comportamiento y que son meros almacenes de propiedades.
+N&oacute;tese que este es exactamente el caso de los <em>transfer objects</em>. Por ello, muchos expertos consideran este patr&oacute;n
+como un artefacto de dise&ntilde;o "malo pero necesario por cuestiones de eficiencia".</div>
+</div>
+<p>Destacamos algunos puntos importantes:</p>
+<ul>
+
+<li>
+<strong>Por cada objeto de negocio puede haber m&aacute;s de un transfer object</strong>. De hecho, una estragegia muy com&uacute;n
+es usar un transfer object distinto para cada caso de uso. Por ejemplo, al ver los datos de un solo libro
+vamos a mostrar probablemente mucha m&aacute;s informaci&oacute;n que la que aparece en un listado de varios libros, por lo que podemos
+tener un <span class="codefrag">LibroTO</span> y un <span class="codefrag">LibroListaTO</span>.</li>
+
+<li>Un problema importante es el de la <strong>sincronizaci&oacute;n</strong> entre los valores del transfer object y los del objeto
+del dominio que representa. Hay que asegurarse de que dichos valores est&aacute;n actualizados o que una falta de 
+actualizaci&oacute;n de los mismos no conlleve consecuencias graves (caso t&iacute;pico de las operaciones de solo lectura).
+En caso de usar los TO tanto para mostrar datos como para almacenarlos (TOs <em>actualizables</em>) habr&aacute; que 
+llevar sumo cuidado para sincronizar la informaci&oacute;n de los TOs que hayan cambiado.</li>
+
+</ul>
+</div>
+
+
+
+<a name="N10206"></a><a name="Factory+%28GoF%29"></a>
+<h2 class="underlined_10">Factory (GoF)</h2>
+<div class="section">
+<a name="N1020C"></a><a name="Problema+a+resolver-N1020C"></a>
+<h3 class="underlined_5">Problema a resolver</h3>
+<p>El patr&oacute;n factory pretende proporcionar una buena manera de instanciar objetos
+cuando la clase a la que pertenece el objeto instanciado puede cambiar, bien por 
+modificaciones en el dise&ntilde;o o bien porque en tiempo de compilaci&oacute;n no se conoce la clase exacta.</p>
+<p>Por poner un ejemplo concreto, supongamos que tenemos un sistema de mensajer&iacute;a instant&aacute;nea.
+Los mensajes se pueden enviar a trav&eacute;s de varios canales (TCP/IP, SMS, buz&oacute;n de mensajes,...)
+y hemos implementado una serie de clases que nos permiten hacer el env&iacute;o por ellos:
+<span class="codefrag">EnvioTCP</span>, <span class="codefrag">EnvioSMS</span>, <span class="codefrag">EnvioBuzon</span>,... todas
+estas clases implementan la misma interfaz <span class="codefrag">ICanal</span>, y el usuario
+elige el medio a trav&eacute;s del GUI del programa. El c&oacute;digo que env&iacute;a el mensaje podr&iacute;a
+ser similar al siguiente:</p>
+<pre class="code">
+  Mensaje mensaje;
+  ICanal canal;
+  ...
+  mensaje = GUI.getMensaje();
+  nombreCanal  = GUI.getOpcionEnvio();
+  if (nombreCanal.equals("TCP"))
+     canal = new EnvioTCP();
+  else if (nombreCanal.equals("SMS"))
+     canal = new EnvioSMS();
+  else if (nombreCanal.equals("buzon"))
+     canal = new EnvioBuzon();
+  canal.enviar(mensaje)
+</pre>
+<p>El c&oacute;digo anterior es tedioso de modificar si se cambian los posibles canales
+de env&iacute;o o aparecen canales nuevos (<em>bluetooth</em>, ...).</p>
+<div class="frame note">
+<div class="label">Nota</div>
+<div class="content">Un principio b&aacute;sico de un buen dise&ntilde;o es que <strong>el c&oacute;digo deber&iacute;a estar abierto
+a la extensi&oacute;n pero cerrado a la modificaci&oacute;n.</strong> Es decir, que el dise&ntilde;o deber&iacute;a ser
+tal que nos permitiera extender la funcionalidad donde fuera necesario, pero al mismo tiempo
+consiguiera que esta extensi&oacute;n no suponga cambios en el c&oacute;digo ya existente. Cualquier
+modificaci&oacute;n de c&oacute;digo en funcionamiento podr&iacute;a suponer la introducci&oacute;n de <em>bugs</em>
+en el sistema.</div>
+</div>
+<p>Es evidente que el c&oacute;digo anterior no cumple esta condici&oacute;n, ya que es necesario
+insertar l&iacute;neas de c&oacute;digo y recompilar la clase para extender la funcionalidad.</p>
+<a name="N1023B"></a><a name="Simple+factory"></a>
+<h3 class="underlined_5">Simple factory</h3>
+<p>Recordemos de nuevo ese principio b&aacute;sico del dise&ntilde;o que dice que hay que separar
+lo que var&iacute;a de lo que permanece igual. En nuestro caso hemos visto que al tomar la precauci&oacute;n de usar una interfaz com&uacute;n
+para todas las clases <em>lo que puede cambiar es la instanciaci&oacute;n de la clase concreta
+que necesitamos</em>. Por tanto, vamos a encapsularla y separarla del resto.</p>
+<p>Si tuvi&eacute;ramos una clase auxiliar que nos proporcionara instancias concretas de la clase
+o interfaz deseados (en nuestro caso <span class="codefrag">ICanal</span>) podr&iacute;amos
+hacer algo como:</p>
+<pre class="code">
+  Mensaje mensaje;
+  ICanal canal;
+  ...
+  mensaje = GUI.getMensaje();
+  nombreCanal  = GUI.getOpcionEnvio();
+  <strong>canal = FactoriaCanales.crearCanal(nombreCanal);</strong>
+  canal.enviar(mensaje)
+</pre>
+<p>Que es un c&oacute;digo mucho m&aacute;s limpio que la versi&oacute;n anterior. Ahora trasladamos los detalles
+de la instanciaci&oacute;n a <span class="codefrag">FactoriaCanales</span>, que se ha convertido en una especie
+de <em>factor&iacute;a</em> o <em>f&aacute;brica</em> de objetos:</p>
+<pre class="code">
+public class FactoriaCanales {
+ public static ICanal crearCanal(String nombre) {
+  ICanal canal;
+  
+  if (nombre.equals("TCP"))
+     canal = new CanalTCP();
+  else if (nombre.equals("SMS"))
+     canal = new CanalSMS();
+  else if (nombre.equals("buzon"))
+     canal = new CanalBuzon();
+  return canal;
+ }
+} 
+</pre>
+<p>A primera vista parece que simplemente hemos trasladado el problema a la clase
+<span class="codefrag">FactoriaCanales</span>. Es parcialmente cierto, en el sentido en que todav&iacute;a es
+necesario modificar esta clase si se modifican o crean canales nuevos, pero <em>no ser&aacute; 
+necesario modificar ni recompilar ninguna de las clases que llamen al m&eacute;todo <span class="codefrag">FactoriaCanales.crearCanal</span> </em>(que podr&iacute;an
+ser muchas). Hemos
+acotado los cambios necesarios a una clase &uacute;nicamente. </p>
+<p>Usando la terminolog&iacute;a de patrones, la clase anterior es una "factor&iacute;a simple" (<em>simple factory</em>).
+No es exactamente el patr&oacute;n <em>factory</em> sino una versi&oacute;n simplificada de este. Pod&eacute;is
+compararar el diagrama UML del <em>simple factory</em> con el del <em>factory</em> del apartado siguiente
+para ver las diferencias.</p>
+<p>
+<img alt="Simple factory" content-width="12cm" src="imagenes/simplefactory.jpg"></p>
+<p>En el diagrama anterior, <span class="codefrag">Cliente</span> es cualquier clase que requiera los "servicios" del <em>Simple
+Factory</em> para crear objetos.</p>
+<div class="frame warning">
+<div class="label">Aviso</div>
+<div class="content">En algunas fuentes de referencia se da como patr&oacute;n <em>factory</em> esto que no
+es sino una versi&oacute;n simplificada. Esto no supone un problema siempre que se tenga clarpo
+de qu&eacute; se est&aacute; hablando y la diferencia entre ambas "versiones".</div>
+</div>
+<a name="N10295"></a><a name="Factory+method"></a>
+<h3 class="underlined_5">Factory method</h3>
+<p>Supongamos que el problema anterior se complica: ahora tenemos que distinguir entre
+usuarios <em>lite</em>, que no pagan una cuota y por tanto tienen algunas restricciones (n&uacute;mero
+m&aacute;ximo de SMS, tiempo m&aacute;ximo de conexi&oacute;n, tama&ntilde;o m&aacute;s limitado del buz&oacute;n,..) y usuarios
+<em>pro</em>, que tienen menos restricciones en la mensajer&iacute;a. Necesitamos por tanto crear un canal
+lite y pro de cada tipo (SMS, TCP,...). Para organizar el c&oacute;digo de manera flexible podemos
+usar el patr&oacute;n <em>factory method</em>, a veces llamado simplemente <em>factory</em>.</p>
+<p>Este patr&oacute;n es ligeramente m&aacute;s complicado
+que la versi&oacute;n anterior. Tenemos una factor&iacute;a
+"gen&eacute;rica" que es una clase abstracta y sirve para "fabricar" un producto,
+tambi&eacute;n gen&eacute;rico (un interfaz o bien una clase abstracta). Siguiendo con nuestro ejemplo,
+tendr&iacute;amos una clase abstracta <span class="codefrag">FactoriaCanales</span> cuyo m&eacute;todo <span class="codefrag">crearCanal</span>
+devolver&iacute;a un nuevo <span class="codefrag">ICanal</span>. Las factor&iacute;as "concretas" (clases que heredan de la clase de la
+factor&iacute;a "gen&eacute;rica") sirven para "fabricar" productos concretos. En nuestro caso tendr&iacute;amos
+dos clases que heredar&iacute;an de <span class="codefrag">FactoriaCanales</span>: <span class="codefrag">FactoriaCanalesLite</span> y
+<span class="codefrag">FactoriaCanalesPro</span>, cuyo m&eacute;todo <span class="codefrag">crearCanal(tipo)</span> devolver&iacute;a objetos
+<span class="codefrag">CanalTCP</span>, <span class="codefrag">CanalSMS</span>, de tipo <em>lite</em> y <em>pro</em> respectivamente. La siguiente figura muestra el
+diagrama de clases para el ejemplo.</p>
+<p>
+<img alt="Factory method para objetos ICanal" content-width="12cm" src="imagenes/factory.jpg"></p>
+<p>Esta es una forma del patr&oacute;n que, aunque m&aacute;s compleja que el <em>simple factory</em>
+es m&aacute;s flexible y permite extender el sistema de una manera m&aacute;s elegante. 
+Por ejemplo, la aparici&oacute;n de un
+nuevo tipo de usuarios digamos <em>silver</em>, con privilegios intermedios, conllevar&iacute;a la creaci&oacute;n de
+nuevas clases, como <span class="codefrag">CanalSMSSilver</span> y <span class="codefrag">CanalTCPSilver</span>, cuyas instancias las crear&iacute;a
+una factor&iacute;a <span class="codefrag">FactoriaCanalesSilver</span>. La ventaja de este enfoque es que no requiere
+modificar pr&aacute;cticamente nada del c&oacute;digo ya existente. Las clases que env&iacute;an y reciben
+mensajes simplemente trabajan con objetos <span class="codefrag">ICanal</span> y las clases que necesiten obtener
+nuevas instancias de canales simplemente necesitan una referencia al <span class="codefrag">FactoriaCanales</span>
+del tipo adecuado. Cambiando una simple l&iacute;nea de c&oacute;digo (o un fichero de configuraci&oacute;n)
+podemos convertir a un usuario lite en pro sin m&aacute;s que cambiar su
+<span class="codefrag">FactoriaCanalesLite</span> por una <span class="codefrag">FactoriaCanalesPro</span>.</p>
+<p>La siguiente figura muestra el diagrama de clases gen&eacute;rico del patr&oacute;n.</p>
+<p>
+<img alt="Factory method: diagrama gen&eacute;rico" content-width="12cm" src="imagenes/factorygenerico.jpg"></p>
+<p>N&oacute;tese que no siempre es necesario que un <em>factory</em> concreto cree m&aacute;s de un producto distinto.
+En nuestro ejemplo, cada subclase de <span class="codefrag">FactoriaCanales</span> creaba distintos tipos de canal,
+pero no siempre es as&iacute;. En ese caso el m&eacute;todo que act&uacute;a de factor&iacute;a de objetos no tendr&aacute;
+par&aacute;metros.
+</p>
+</div>
+
+
+<a name="N10306"></a><a name="Facade+%28GoF%29"></a>
+<h2 class="underlined_10">Facade (GoF)</h2>
+<div class="section">
+<a name="N1030C"></a><a name="Problema+a+resolver-N1030C"></a>
+<h3 class="underlined_5">Problema a resolver</h3>
+<p>Supongamos que tenemos un sistema complejo, que agrupa multitud de
+clases, y para realizar una tarea tenemos que llamar a varios
+m&eacute;todos de estas clases en una secuencia precisa. Por ejemplo,
+supongamos un sistema dom&oacute;tico en el que tenemos el siguiente
+diagrama de clases</p>
+<p>
+<img alt="Sistema dom&oacute;tico inicial" content-width="12cm" src="imagenes/sinfacade.jpg"></p>
+<p>Imagin&eacute;monos las operaciones que hay que realizar al entrar en
+casa: hay que desactivar la alarma, poner el aire acondicionado a
+nuestra temperatura preferida, y encender las luces. Esto se podr&iacute;a
+hacer con un c&oacute;digo similar al siguiente:</p>
+<pre class="code">
+...
+//de alguna forma, ya hemos obtenido una referencia a la alarma, configuraci&oacute;n, aire y luces
+//y tenemos tambi&eacute;n el nombre de usuario y el password
+...
+//desactivar la alarma
+alarma.desactivar(password);
+//obtener preferencias de usuario
+Preferencias prefs = configuracion.getPreferencias(usuario);
+//poner el aire acondicionado a la temperatura deseada
+Float temp = (Float) prefs.getPreferencia("temperatura");
+aire.setTemp(temp.floatValue());
+//poner las luces en "auto" si es la preferencia del usuario
+String luces = (String) prefs.getPreferencia("luces");
+if (luces.equals("auto"))
+   luces.setAuto(true);
+...
+</pre>
+<p>Como se ve, una operaci&oacute;n tan sencilla en apariencia implica
+manejar un n&uacute;mero elevado de objetos y m&eacute;todos. <span class="codefrag">salirDeCasa()</span> ser&iacute;a igual de
+tedioso: apagar las luces, el aire, activar la alarma.... Un
+cliente que quiera invocar una de estas operaciones no deber&iacute;a
+necesitar tanto c&oacute;digo.</p>
+<a name="N10329"></a><a name="Discusi%C3%B3n+y+beneficios-N10329"></a>
+<h3 class="underlined_5">Discusi&oacute;n y beneficios</h3>
+<p>
+Parece inmediata la idea de crear una
+clase a la que trasladaremos todo este c&oacute;digo y a la cual puedan
+acceder los clientes que lo necesiten. Esto es ni m&aacute;s ni menos que
+un <em>facade</em>.</p>
+<p>
+<img alt="Patr&oacute;n facade" content-width="12cm" src="imagenes/facade.jpg"></p>
+<p>Un <em>Facade</em> (fachada)
+consiste en <strong>implementar un
+interfaz simplificado para un sistema complejo</strong>. La idea es
+implementar una clase con un interfaz sencillo y que&nbsp;
+encapsule los detalles de la interacci&oacute;n entre todas las clases del
+sistema. Es importante notar que se sigue permitiendo el acceso
+directo a las clases del sistema a los clientes que necesiten
+"acceso a bajo nivel" pero se simplifica la interacci&oacute;n para los
+que no necesiten m&aacute;s que operaciones comunes.</p>
+<p>
+<strong>En aplicaciones
+J2EE</strong>, las fachadas se suelen utilizar para proporcionar un
+"frontal de servicios" de la capa de negocio. De este modo, la
+interacci&oacute;n de los clientes (web, swing, etc...) con esta capa se
+simplifica considerablemente. Como veremos en charlas posteriores, en
+aplicaciones distribuidas las fachadas tambi&eacute;n mejoran la
+eficiencia del sistema, ya que las operaciones "de fachada para
+adentro" ser&aacute;n todas locales y la &uacute;nica llamada remota ser&aacute; la del
+cliente a la fachada.</p>
+</div>
+
+
+
+<p class="pageBreakAfter"></p>
+
+
+</div>
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+        Copyright &copy;
+         2006-2007 Depto. CCIA</div>
+</div>
+</body>
+</html>

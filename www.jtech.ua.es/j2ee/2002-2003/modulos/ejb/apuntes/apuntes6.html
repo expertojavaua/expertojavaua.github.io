@@ -1,0 +1,575 @@
+<head>
+<title>Sesion 6 Enterprise Java Beans</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../../ejercicios.css" type="text/css">
+</head>
+<body>
+<h1> Tema 6: Relaciones entre beans de entidad</h1>
+<P> Una importante caracter&iacute;stica de CMP 2.0 es la posibilidad de definir 
+  campos de relaci&oacute;n entre beans. En este cap&iacute;tulo vamos a ver como 
+  ejemplo una relaci&oacute;n uno-a-uno unidireccional entre los <code>EJBs Customer</code> 
+  y <code>Address</code>. El Customer tendr&aacute; una referencia a el <code>Address</code>, 
+  pero el <code>Address</code> no podr&aacute; referenciar hacia atr&aacute;s 
+  el <code>Customer</code>. Son posibles tambi&eacute;n otras relaciones. Por 
+  ejemplo, cada <code>Address</code> podr&iacute;a referenciar su <code>Customer</code> 
+  con lo que tendr&iacute;amos un ejemplo de una relaci&oacute;n bidireccional 
+  uno-a-uno, en la que ambos EJBs mantienen referencias al otro. Adem&aacute;s 
+  de relaciones uno-a-uno, los beans de entidad pueden tener relaciones uno-a-muchos, 
+  muchos-a-uno y muchos-a-muchos. </P>
+<P> Existen en total siete tipo de relaciones posibles. Por un lado, tenemos cuatro 
+  combinaciones de cardinalidad: uno-a-uno, uno-a-muchos, muchos-a-uno y muchos-a-muchos. 
+  Y por otro lado tenemos dos posibles direcciones de la relaci&oacute;n: unidireccional 
+  y bidireccional. Lo cual nos lleva a ocho posibles relaciones. Pero la relaci&oacute;n 
+  bidireccional uno-a-muchos es obviamente id&eacute;ntica a la relaci&oacute;n 
+  muchos-a-uno, lo que nos deja con siete posibles relaciones. La mejor forma 
+  de entender estas relaciones es mediante alg&uacute;n ejemplo. Ah&iacute; van 
+  algunos sacados del dominio de negocio de las agencias de viajes.</P>
+<h4> Uno-a-uno, unidireccional</h4>
+<P> La relaci&oacute;n entre un cliente y una direcci&oacute;n. Ser&aacute; necesario 
+  localizar una direcci&oacute;n de un cliente, pero probablemente no sea necesario 
+  localizar el alumno de una direcci&oacute;n.</P>
+<h4> Uno-a-uno, bidireccional</h4>
+<P> La relaci&oacute;n entre un cliente y un n&uacute;mero de tarjeta de cr&eacute;dito 
+  de la universidad. Dado un cliente, ser&aacute; necesario buscar su n&uacute;mero 
+  de tarjeta de cr&eacute;dito. Dado un n&uacute;mero de tarjeta de cr&eacute;dito 
+  tambi&eacute;n ser&aacute; necesario buscar el cliente que la tiene.</P>
+<h4> Uno-a-muchos, unidireccional</h4>
+<P> La relaci&oacute;n entre un cliente y un n&uacute;mero de tel&eacute;fono. 
+  Un cliente puede tener muchos n&uacute;meros de tel&eacute;fono. Ser&aacute; 
+  necesario localizar un n&uacute;mero de tel&eacute;fono de un cliente, pero 
+  no ser&aacute; normal usar alguno de esos n&uacute;meros para localizar al cliente.</P>
+<h4> Uno-a-muchos, bidireccional</h4>
+<P> La relaci&oacute;n entre un crucero y una reserva. Dada una reserva, ser&aacute; 
+  necesario localizar el crucero para el que se ha hecho la reserva. Dado un crucero, 
+  ser&aacute; necesario buscar todas las reservas para ese crucero.</P>
+<h4> Muchos-a-uno, unidireccional</h4>
+<P> La relaci&oacute;n entre un crucero y un barco. Ser&aacute; necesario saber 
+  qu&eacute; barco ha sido usado para un crucero en particular. Y muchos cruceros 
+  usar&aacute;n el mismo barco a lo largo del funcionamiento del mismo.</P>
+<h4> Muchos-a-muchos, unidreccional</h4>
+<P> La relaci&oacute;n entre una reserva y un camarote. Es posible hacer una reserva 
+  para m&uacute;ltiples camarotes y va a ser necesario buscar el camarote asignado 
+  a una reserva particular.</P>
+<h4> Muchos-a-muchos, bidireccional</h4>
+<P> La relaci&oacute;n entre un crucero y un cliente. Un cliente puede hacer reservas 
+  en muchos cruceros, y cada crucero tiene muchos clientes. Ser&aacute; necesario 
+  buscar tanto los cruceros en los que ha embarcado un cliente como los clientes 
+  que van en un crucero dado.</P>
+<P> En nuestro caso, la relaci&oacute;n va a ser entre clientes y direcciones. 
+  Va a ser uno-a-uno y ser&aacute; unidreccional.</P>
+<h2> 6.1 Definici&oacute;n del bean dependiente</h2>
+<P>Los beans de entidad pueden formar relaciones con otros beans de entidad. En 
+  la figura siguiente que ya mostramos en el tema anterior, el EJB <code>Customer</code> 
+  tiene una relaci&oacute;n uno-a-uno con el EJB <code>Address</code>. </P>
+<P align="center"><IMG SRC="apuntes61.png"></P>
+<P> El EJB <code>Address</code> es un objeto de negocio de grano fino que deber&iacute;a 
+  usarse en el contexto de otro bean, lo que significa que deber&iacute;a tener 
+  s&oacute;lo interfaces locales. Un bean de entidad puede estar relacionado con 
+  muchos beans de entidad distintos al mismo tiempo. Por ejemplo, podr&iacute;amos 
+  a&ntilde;adir f&aacute;cilmente campos de relaci&oacute;n para <code>Phone</code>, 
+  <code>CreditCard</code>, y otros beans de entidad al EJB <code>Customer</code>. 
+  No lo vamos a hacer, sin embargo, para mantener sencillo el ejemplo.</P>
+<P> Siguiendo lo indicado en la figura anterior, definimos el EJB <code>Address</code> 
+  como sigue:<BR>
+  <BR>
+<pre class="codigo">  
+import javax.ejb.EntityContext;
+  
+public abstract class AddressBean implements javax.ejb.EntityBean {
+
+  public Integer ejbCreateAddress(String street, String city, String state, String zip) {
+     setStreet(street);
+     setCity(city);
+     setState(state);
+     setZip(zip);
+     return null;
+  }
+  public void ejbPostCreateAddress(String street, String city, String state, String zip) {
+  }
+  
+  // campos de persistencia
+  
+  public abstract Integer getId();
+  public abstract void setId(Integer id);
+  public abstract String getStreet();
+  public abstract void setStreet(String street);
+  public abstract String getCity();
+  public abstract void setCity(String city);
+  public abstract String getState();
+  public abstract void setState(String state);
+  public abstract String getZip();
+  public abstract void setZip(String zip);
+  
+  // metodos estandard callback
+  
+  public void setEntityContext(EntityContext ec){}
+  public void unsetEntityContext(){}
+  public void ejbLoad(){}
+  public void ejbStore(){}
+  public void ejbActivate(){}
+  public void ejbPassivate(){}
+  public void ejbRemove(){}
+}
+</pre>
+  
+<p>La clase <code>AddressBean</code> define un m&eacute;todo <code>ejbCreateAddress()</code>, 
+  al que se llama cuando se crea un nuevo EJB <code>Address</code>, as&iacute; 
+  como bastantes campos de persistencia (<code>street</code>, <code>city</code>, 
+  <code>state</code>, and <code>zip</code>). Los campos de persistencia se representan 
+  por m&eacute;todos de acceso abstractos, lo requerido para los campos de persistencia 
+  en todas las clases de bean de entidad. Estos m&eacute;todos de acceso abstractos 
+  se corresponden con un conjunto de elementos XML definidos en el fichero de 
+  descripci&oacute;n del despliegue. En tiempo de despliegue la herramienta de 
+  despliegue del contenedor har&aacute; corresponder los campos de persistencia 
+  del EJB <code>Customer</code> y del EJB <code>Address</code> con la base de 
+  datos. Esto significa que debe haber una tabla en nuestra base de datos relacional 
+  que contenga las columnas que emparejan con los campos de persistencia en el 
+  EJB <code>Address</code>. En este ejemplo, usaremos una tabla <code>ADDRESS</code> 
+  separada para almacenar la informaci&oacute;n sobre direcciones, pero los datos 
+  podr&iacute;an haberse declarado f&aacute;cilmente en la otra tabla:</p>
+<pre class="codigo">CREATE TABLE ADDRESS (
+  ID INT PRIMARY KEY NOT NULL, 
+  STREET CHAR(40), 
+  CITY CHAR(20),
+  STATE CHAR(2),
+  ZIP CHAR(10)
+)
+</pre>
+  
+<p>Los beans de entidad no tienen por qu&eacute; definir todas las columnas de 
+  tablas correspondientes como campos de persistencia. De hecho, un bean de entidad 
+  puede incluso no tener una &uacute;nica tabla correspondiente; puede tener los 
+  campos de persistencia distribuidos entre varias tablas. Es la herramienta de 
+  despliegue del contenedor la que se encargar&aacute; de definir el modo de persistencia 
+  del bean. En este caso, la columna ID es un campo auto-incrementado, creado 
+  autom&aacute;ticamente por el sistema de base de datos o el sistema contenedor. 
+  Es la clave primaria del EJB <code>Address</code>.</p>
+<p> Una vez que se crea el bean, la clave primaria nunca puede ser modificada. 
+  Cuando las claves primarias son valores autogenerados, como la columna <code>ID</code> 
+  en la tabla <code>ADDRESS</code>, el contenedor EJB obtendr&aacute; el valor 
+  de la clave primaria a partir de la base de datos.</p>
+<p> Adem&aacute;s de la clase bean, definiremos el interfaz local para el EJB 
+  <code>Address</code>, lo que nos permitir&aacute; hacerlo accesible desde otros 
+  beans de entidad (esto es, desde el EJB <code>Customer</code>) dentro del mismo 
+  espacio de direcciones o proceso:</p>
+<pre class="codigo">
+// Interfaz local del EJB Address
+public interface AddressLocal extends javax.ejb.EJBLocalObject {
+   public String getStreet();
+   public void setStreet(String street);
+   public String getCity();
+   public void setCity(String city);
+   public String getState();
+   public void setState(String state);
+   public String getZip();
+   public void setZip(String zip);
+}
+  
+// Interfaz local home de Address Address EJB's local home interface
+public interface AddressHomeLocal extends javax.ejb.EJBLocalHome {
+   public AddressLocal createAddress(String street,String city,
+   String state,String zip) throws javax.ejb.CreateException;
+   public AddressLocal findByPrimaryKey(Integer primaryKey)
+   throws javax.ejb.FinderException;
+}
+</pre>
+  
+<p>El m&eacute;todo <code>ejbCreate()</code> de la clase <code>AddressBean</code> 
+  y el m&eacute;todo <code>findByPrimaryKey()</code> de la interfaz home definen 
+  ambos el tipo de la clave primaria como <code>java.lang.Integer</code>. En este 
+  caso la clave primaria es autogenerada. La mayor&iacute;a de fabricantes EJB 
+  2.0 permitar&aacute;n hacer corresponder claves primarias de beans de entidad 
+  con campos autogenerados. En caso de que la herramienta no lo permitiera, tendr&iacute;amos 
+  que definir el valor de la clave primaria en el m&eacute;todo <code>ejbCreate()</code>. 
+</p>
+<h2> 6.2. Definici&oacute;n de la relaci&oacute;n en el bean que realiza la referencia</h2>
+<h3> 6.2.1. Campo de relaci&oacute;n en la clase bean</h3>
+<p> El campo de relaci&oacute;n para el EJB Address se define en la clase <code>CustomerBean</code> 
+  usando un m&eacute;todo de acceso abstracto, de la misma forma que se declaran 
+  los campos de persistencias. En el c&oacute;digo que sigue, la clase <code>CustomerBean</code> 
+  aparece modificada para incluir el EJB <code>Address</code> como un campo de 
+  relaci&oacute;n</p>
+<pre class="codigo">
+import javax.ejb.EntityContext; 
+import javax.ejb.CreateException;
+  
+public abstract class CustomerBean implements javax.ejb.EntityBean { 
+  ...
+  
+  // relaciones de persistencia
+  public abstract AddressLocal getAddress();
+  public abstract void setAddress(AddressLocal address);
+  
+  // campos de persistencia
+  public abstract boolean getHasGoodCredit();
+  public abstract void setHasGoodCredit(boolean creditRating);
+  ...
+</pre>
+  
+<p>Los m&eacute;todos <code>getAddress()</code> y <code>setAddress()</code> son 
+  auto-explicativos; permiten al bean acceder y modificar su relaci&oacute;n address. 
+  Estos m&eacute;etodos de acceso representan un campo de relaci&oacute;n, que 
+  es un campo virtual que referencia a otro bean de entidad. El nombre del m&eacute;todo 
+  de acceso viene determinado por el nombre del campo de relaci&oacute;n, tal 
+  y como est&aacute; definido en el fichero XML de descripci&oacute;n del despliegue. 
+  En este caso hemos llamado a la direcci&oacute;n del cliente address, por lo 
+  que los nombres de los m&eacute;todos de acceso correspondientes ser&aacute;n 
+  <code>getAddress()</code> y <code>setAddress()</code>.</p>
+<h3> 6.2.2 Definici&oacute;n de la relaci&oacute;n en la tabla de la base de datos</h3>
+<p> Para incluir la relaci&oacute;n entre el EJB <code>Customer</code> y el EJB 
+  <code>Address</code>, a&ntilde;adiremos una clave ajena, <code>ADDRESS_ID</code>, 
+  en la tabla <code>CUSTOMER</code>. La clave ajena apuntar&aacute; al registro 
+  <code>ADDRESS</code>. </p>
+<pre class="codigo">CREATE TABLE CUSTOMER (
+  ID INT PRIMARY KEY NOT NULL, 
+  LAST_NAME CHAR(20),
+  FIRST_NAME CHAR(20),
+  ADDRESS_ID INT
+)
+</pre>
+  
+<p>Cuando se crea un nuevo EJB <code>Address</code> y se actualiza en una relaci&oacute;n 
+  <code>address</code> de un EJB <code>Customer</code>, la clave primaria del 
+  EJB <code>Address</code> se colocar&aacute; en la columna <code>ADDRESS_ID</code> 
+  de la tabla <code>CUSTOMER</code>, creando una relaci&oacute;n en la base de 
+  datos:</p>
+<pre class="codigo">
+  // obtener referencia
+  AddressLocal address = ... 
+  
+  // establecer la relacion
+  customer.setAddress(address);
+</pre>
+  
+<h2>6.3 Actualizaci&oacute;n de la relaci&oacute;n desde los clientes</h2>
+<p> Para dar informaci&oacute;n al bean <code>Customer</code> una direcci&oacute;n, 
+  necesitamos proporcionar al bean la informaci&oacute;n sobre la direcci&oacute;n. 
+  Esto podr&iacute;a parecer tan sencillo como declarar en la interfaz remota 
+  del bean <code>Customer</code> una pareja de m&eacute;todos de acceso correspondientes, 
+  tales como <code>setAddress()/getAddress()</code>, pero no es as&iacute;. Mientras 
+  que es sencillo hacer disponible a los clientes remotos campos de persistencia, 
+  no es tan sencillo hacer lo mismo con los campos de relaci&oacute;n.</p>
+<p> La interfaz remota de un bean no puede mostrar sus campos de relaci&oacute;n. 
+  En el caso del campo <code>address</code>, hemos declarado el tipo como <code>AddressLocal</code>, 
+  el cual es una interfaz local, por lo que los m&eacute;todos de acceso <code>setAddress()/getAddress()</code> 
+  no pueden declararse en la interfaz remota del EJB <code>Customer</code>. La 
+  raz&oacute;n de esta restricci&oacute;n sobre interfaces remotas es sencilla: 
+  el <code>EJBLocalObject</code>, que implementa la interfaz local, est&aacute; 
+  optimizado para ser usado dentro del mismo espacio de direcciones que la instancia 
+  del bean y no est&aacute; preparado para ser usado a trav&eacute;s de la red. 
+  En otras palabras, las referencias que implementan la interfaz local de un bean 
+  no pueden pasarse a trav&eacute;s de la red, por lo que una interfaz local no 
+  puede declarse como tipo devuelto o como un par&aacute;metro de una interfaz 
+  remota.</p>
+<p> Las interfaces locales (interfaces que extienden javax.ejb.<code>EJBLocalObject</code>), 
+  por otro lado, pueden mostrar cualquier tipo de campo de relaci&oacute;n. Con 
+  interfaces locales, el cliente y el bean que est&aacute; siendo usado est&aacute;n 
+  localizados en el mismo espacio de direcciones, por lo que pueden pasarse referencias 
+  locales sin problemas. Por ejemplo, si hubi&eacute;ramos defenido un interfaz 
+  local para el EJB <code>Customer</code>, podr&iacute;a incluir un m&eacute;todo 
+  que permita a los clientes locales el acceso directo a su campo de relaci&oacute;n 
+  address:</p>
+<pre class="codigo">public interface CustomerLocal extends javax.ejb.EJBLocalObject {
+  public AddressLocal getAddress();
+  public void setAddress(AddressLocal address);
+}
+</pre>
+  
+<h3>6.3.1 Definici&oacute;n/modificaci&oacute;n de un objeto relacionado</h3>
+<p> En lo que se refiere al EJB <code>Address</code>, es mejor definir una interfaz 
+  local s&oacute;lo debido a que es un bean de grano fino. Para solucionar las 
+  restricciones de las interfaces remotas, los m&eacute;todos de negocio en la 
+  clase bean pueden intercambiarse datos, en lugar de referencias a <code>Address</code>. 
+  Por ejemplo, podemos declarar un m&eacute;todo que permita a un cliente enviar 
+  informaci&oacute;n para crear una direcci&oacute;n para el <code>Customer</code>:</p>
+<pre class="codigo">public abstract class CustomerBean implements javax.ejb.EntityBean {
+  
+  public Integer ejbCreate(Integer id) {
+     setId(id);
+     return null;
+  }
+
+  public void ejbPostCreate(Integer id) {}
+ 
+  // metodos de negocio
+  public void setAddress(String street,String city,String state,String zip) {
+     try {
+        AddressLocal addr = this.getAddress();
+        if (addr == null) {   
+           // Customer no tiene todavia una direccion. Crear una. 
+           InitialContext cntx = new InitialContext();
+            AddressHomeLocal addrHome =
+                (AddressHomeLocal)cntx.lookup(&quot;AddressHomeLocal&quot;);
+            addr = addrHome.createAddress(street,city,state,zip);
+            this.setAddress(addr);
+        } else {
+           // Customer ya tiene una direccion. Cambiar sus campos.
+           addr.setStreet(street);
+           addr.setCity(city);
+           addr.setState(state);
+           addr.setZip(zip);
+        }
+  
+     } catch(Exception e) {
+        throw new EJBException(e);
+     }
+}
+  
+  ...
+</pre>
+  
+<p>El m&eacute;todo de negocio <code>setAddress()</code> en la clase <code>CustomerBean</code> 
+  tambi&eacute;n se declara en la interfaz remota del EJB <code>Customer</code>, 
+  por lo que podr&aacute; ser llamado por los clientes remotos:</p>
+<pre class="codigo">public interface Customer extends javax.ejb.EJBObject {
+  public void setAddress(String street,String city,String state,String zip);
+  public Name getName() throws RemoteException;
+  public void setName(Name name) throws RemoteException;
+
+  public boolean getHasGoodCredit() throws RemoteException;
+  public void setHasGoodCredit(boolean creditRating) throws RemoteException;
+}
+</pre>
+
+ 
+<p>Cuando el m&eacute;todo de negocio <code>CustomerRemote.setAddress()</code> 
+  se invoca en el <code>CustomerBean</code>, se usan los argumentos del m&eacute;todo 
+  para crear un nuevo EJB <code>Address</code> y para definirlo como el campo 
+  de relaci&oacute;n <code>address</code>, en el caso de que no exista ya ninguno. 
+  Si el EJB <code>Customer</code> ya tiene una relaci&oacute;n <code>address</code>, 
+  el EJB <code>Address</code> se modifica para reflejar la nueva informaci&oacute;n.</p>
+<p> Cuando creamos un nuevo EJB <code>Address</code>, el objeto home se obtiene 
+  a trav&eacute;s del JNDI ENC (environment naming context) y se llama a su m&eacute;todo 
+  <code>createAdress()</code>. Esto tiene como resultado la creaci&oacute;n de 
+  un nuevo EJB <code>Address</code> y la inserci&oacute;n de el correspondiente 
+  registro <code>ADDRESS</code> en la base de datos. Despu&eacute;s de haber creado 
+  el EJB <code>Address</code>, se usa en el m&eacute;todo <code>setAddress()</code>. 
+  La clase <code>CustomerBean</code> debe llamar expl&iacute;citamente al m&eacute;todo 
+  <code>setAddress()</code>, o la nueva direcci&oacute;n no se asignar&aacute; 
+  al cliente. De hecho, si creamos simplemente un EJB Address sin asign&aacute;rselo 
+  al cliente con el m&eacute;todo <code>setAddress()</code> estaremos creando 
+  un EJB <code>Address</code> desconectado. Detallando m&aacute;s, tendr&aacute; 
+  como efecto la creaci&oacute;n de un registro <code>ADDRESS</code> de la base 
+  de datos que no ser&aacute; referenciado por ning&uacute;n registro <code>CUSTOMER</code>.</p>
+<p> La viabilidad de entidades desconectadas depende, en parte, de la integridad 
+  referencial de la base de datos. Por ejemplo, si la integridad referencial de 
+  la base de datos permite s&oacute;lo valores no nulos para la columna de clave 
+  ajena, la creaci&oacute;n de una entidad desconectada puede resultar en un error 
+  de la base de datos.</p>
+<p> Cuando se invoca el m&eacute;todo local <code>setAddress()</code>, el contenedor 
+  enlaza autom&aacute;ticamnte el registro <code>ADDRESS</code> y el registro 
+  <code>CUSTOMER</code>. En este caso, coloca la clave primaria <code>ADDRESS</code> 
+  en el campo <code>ADDRESS_ID</code> del registro CUSTOMER y <code>crea</code> 
+  una referencia desde el registro <code>CUSTOMER</code> al registro <code>ADDRESS</code>.</p>
+<p> Si el EJB <code>Customer</code> ya tiene un <code>address</code>, queremos 
+  cambiar sus valores en lugar de crear un nuevo EJB <code>Address</code>. No 
+  necesitamos usar el m&eacute;todo local <code>setAddress()</code> si vamos a 
+  actualizar los valores de un EJB <code>Address</code> ya existente, porque el 
+  EJB <code>Address</code> que modifiquemos ya tiene una relaci&oacute;n con el 
+  bean de entidad.</p>
+<h3> 6.3.2. Obtenci&oacute;n de la informaci&oacute;n del objeto relacionado</h3>
+<p>Tambi&eacute;n queremos proporcionar a los clientes un m&eacute;todo de negocio 
+  para obtener la informaci&oacute;n de la direcci&oacute;n de un EJB <code>Customer</code>. 
+  Ya que no podemos enviar directamente una instancia del EJB <code>Address</code> 
+  (porque es una interfaz local), debemos empaquetar los datos de la direcci&oacute;n 
+  de alguna otra forma para envi&aacute;rselos al cliente. Hay dos soluciones 
+  a este problema: adquirir la interfaz remota del EJB <code>Address</code> y 
+  devolverla o devolver los datos como un objeto valor dependiente (dependent 
+  value object).</p>
+<h4> 6.3.2.1 Devoluci&oacute;n de una interfaz remota</h4>
+<p>Podemos obtener la interfaz remota del EJB <code>Address</code> s&oacute;lo 
+  se ha sido definida. Los beans de entidad pueden tener un conjunto de interfaces 
+  remotas, locales o ambas. En la situaci&oacute;n actual, el EJB <code>Address</code> 
+  tiene un grano demasiado fino para justificar la creaci&oacute;n de una interfaz 
+  remota, pero en muchas otras circunstancias podemos tener realmente una interfaz 
+  remota. Por ejemplo, si el EJB <code>Customer</code> referenciara a un EJB <code>SalesPerson</code>, 
+  el CustomerBean podr&iacute;a convertir la referencia local en una referencia 
+  remota. Esto se har&iacute;a accediendo al objeto EJB local, obteniendo su clave 
+  primaria (EJBLocalObject.getPrimaryKey()), obteniendo el home remoto del EJB 
+  SalesPerson a partir del JNDI ENC, y luego usando la clave primaria y la referencia 
+  home remota paa encontrar una referencia a la interfaz remota:</p>
+<pre class="codigo">public SalesRemote getSalesRep(){
+  SalesLocal local = getSalesPerson();
+  Integer primKey = local.getPrimaryKey();
+  
+  Object ref = jndiEnc.lookup(&quot;SalesHomeRemote&quot;);
+  SalesHomeRemote home = (SalesHomeRemote)
+  PortableRemoteObject.narrow(ref, SalesHomeRemote.class);
+  
+  SalesRemote remote = home.findByPrimaryKey( primKey );
+  return remote;
+}
+</pre>
+  
+<h4>6.3.2.2 Devoluci&oacute;n de un objeto de valor dependiente</h4>
+<p>La otra opci&oacute;n es usar un valor dependiente para pasar los datos del 
+  EJB <code>Address</code> entre el EJB <code>Customer</code> y los clientes remotos. 
+  Este es el enfoque recomendado para los beans de grano fino como el EJB <code>Address</code>. 
+  El siguiente c&oacute;digo muestra como se usa la clase de valor dependiente 
+  <code>AddressDO</code> junto con las componentes locales del EJB Address (el 
+  sufijo &#147;DO&#148; en <code>AddressDO</code> es una convenci&oacute;n que 
+  se suele usar para denominar a las clases que definen valores dependientes; 
+  significa &#147;dependent object&#148;):</p>
+<pre class="codigo">public abstract class CustomerBean implements javax.ejb.EntityBean {
+  
+  public Integer ejbCreate(Integer id) {
+     setId(id);
+     return null;
+  }
+
+  public void ejbPostCreate(Integer id) {
+  }
+
+  // metodos de negocio
+  
+  public AddressDO getAddress() {
+     AddressLocal addrLocal = getHomeAddress();
+     if(addrLocal == null) return null;
+     String street = addrLocal.getStreet();
+     String city = addrLocal.getCity();
+     String state = addrLocal.getState();
+     String zip = addrLocal.getZip();
+     AddressDO addrValue = new AddressDO(street,city,state,zip);
+     return addrValue;
+  }
+  
+  public void setAddress(AddressDO addrValue) 
+     throws EJBException {
+     String street = addrValue.getStreet();
+     String city = addrValue.getCity();
+     String state = addrValue.getState();
+     String zip = addrValue.getZip();
+  
+     AddressLocal addr = getHomeAddress();
+  
+     try {
+  
+     if(addr == null) {
+        // Customer no tiene una direccion. Crear una nuave.
+        InitialContext cntx = new InitialContext();
+        AddressHomeLocal addrHome = (AddressHomeLocal)cntx.lookup
+           (&quot;AddressHomeLocal&quot;);
+        addr = addrHome.createAddress(street, city, state, zip);
+        this.setHomeAddress(addr);
+     } else {
+        // Customer ya tiene una relacion. Modificar sus campos.
+        addr.setStreet(street);
+        addr.setCity(city);
+        addr.setState(state);
+        addr.setZip(zip);
+     }
+  } catch(NamingException ne) {
+  throw new EJBException(ne);
+  } catch(CreateException ce) {
+  throw new EJBException(ce);
+  }
+}
+  ...
+</pre>
+  
+<p>He aqu&iacute; la definici&oacute;n de una clase de valor dependiente <code>AddressDO</code>, 
+  que usa el enterprise bean para enviar informaci&oacute;n de la direcci&oacute;n 
+  al cliente:</p>
+<pre class="codigo">public class AddressDO implements java.io.Serializable {
+  private String street;
+  private String city;
+  private String state;
+  private String zip;
+  
+  public AddressDO(String street, String city, String state, String zip ) {
+     this.street = street;
+     this.city = city;
+     this.state = state;
+     this.zip = zip;
+  }
+
+  public String getStreet() {
+     return street;
+  }
+  
+  public String getCity() {
+     return city;
+  }
+  
+  public String getState() {
+    return state;
+  }
+  
+  public String getZip() {
+    return zip;
+  }
+}
+</pre>
+  
+<p>El valor dependiente <code>AddressDO</code> es inmutable, lo que significa 
+  que no puede ser alterado una vez que ha sido creado. La inmutabilidad ayuda 
+  a reforzar el hecho de que la clase de valor dependiente es una copia, no una 
+  referencia remota.</p>
+<p> Ahora podemos usar una aplicaci&oacute;n cliente para probar la relaci&oacute;n 
+  del EJB <code>Customer</code> con el EJB <code>Address</code>. A continuaci&oacute;n 
+  se encuentra el c&oacute;digo del cliente que crea un nuevo cliente, le proporciona 
+  una direcci&oacute;n y luego le cambia la direcci&oacute;n.</p>
+<pre class="codigo">import javax.naming.InitialContext;
+import javax.rmi.PortableRemoteObject;
+import javax.naming.Context;
+import javax.naming.NamingException;
+import java.util.Properties;
+  
+public class Client {
+  public static void main(String [] args) throws Exception {
+  
+     // obtener CustomerHome
+     Context jndiContext = getInitialContext();
+     Object obj=jndiContext.lookup(&quot;CustomerHomeRemote&quot;);
+     CustomerHome home = (CustomerHomeRemote) 
+        javax.rmi.PortableRemoteObject.narrow(obj, CustomerHomeRemote.class);
+  
+     // crear un Customer
+     Integer primaryKey = new Integer(1);
+     Customer customer = home.create(primaryKey);
+  
+     // crear un AddressDO
+     AddressDO address = new AddressDO(&quot;1010 Colorado&quot;,&quot;Austin&quot;, 
+                                       &quot;TX&quot;, &quot;78701&quot;);
+     
+	 // establecer la direccion 
+     customer.setAddress(address);
+     address = customer.getAddress();
+     System.out.print(primaryKey+&quot; = &quot;);
+     System.out.println(address.getStreet());
+     System.out.println(address.getCity()+&quot;,&quot;+ 
+                        address.getState()+&quot; &quot;+
+                        address.getZip());
+  
+     // crear una nueva direccion
+     address = new AddressDO(&quot;1600 Pennsylvania Avenue NW&quot;, 
+                             &quot;DC&quot;, &quot;WA&quot;, &quot;20500&quot;);
+  
+     // cambiar la direccion del customer
+     customer.setAddress(address);
+  
+     address = customer.getAddress();
+  
+     System.out.print(primaryKey+&quot; = &quot;);
+     System.out.println(address.getStreet());
+     System.out.println(address.getCity()+&quot;,&quot;+
+                        address.getState()+&quot; &quot;+
+                        address.getZip());
+  
+     // borrar Customer
+     customer.remove();
+  } 
+  
+  public static Context getInitialContext() 
+     throws javax.naming.NamingException {
+     Properties p = new Properties();
+     // ... Specify the JNDI properties specific to the vendor.
+     //return new javax.naming.InitialContext(p);
+     return null;
+  }
+}</pre>
+  
+<p>&nbsp;</p>
+</BODY>
+</HTML>
+

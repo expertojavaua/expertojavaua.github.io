@@ -1,0 +1,245 @@
+<html>
+<head>
+<title>Servidores de aplicaciones</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="Author" content="Miguel">
+<link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+</head>
+
+<body>
+<h1>Tema 4: Creaci&oacute;n de un cluster</h1>
+<p>Este tema contiene las instrucciones b&aacute;sicas para obtener las caracter&iacute;sticas 
+  m&aacute;s potentes de un servidor de aplicaciones: la escalabilidad y la recuperaci&oacute;n 
+  ante fallos. Para ello aprenderemos a configurar un cluster y determinadas caracter&iacute;sticas 
+  adicionales como un servidor proxy y la replicaci&oacute;n de memoria.<b> </b></p>
+<p>Un cluster es una asociaci&oacute;n de servidores WebLogic que act&uacute;an 
+  como si fueran uno solo. Una aplicaci&oacute;n desplegada en un cluster es respondida 
+  por cada servidor dentro del cluster. Si nuestro sistema observa un aumento 
+  en el n&uacute;mero de peticiones, podemos incorporar nuevos servidores para 
+  soportar dicho aumento. Otra caracter&iacute;stica, la recuperaci&oacute;n ante 
+  fallos, es muy importante en sistemas de alta disponibilidad. WebLogic nos va 
+  a permitir replicar las sesiones HTTP e incluso los servicios (por ejemplo, 
+  JDBC) para que se permita realizar copias de las sesiones en otros servidores. 
+  De esta forma, si el servidor que est&aacute; sirviendo actualmente tiene alg&uacute;n 
+  problema o no responde, el servidor que contiene la copia de la sesi&oacute;n 
+  puede seguir respondiendo sin necesidad de comenzar una nueva sesi&oacute;n.</p>
+<h2>4.1. Configuraci&oacute;n b&aacute;sica de un cluster</h2>
+<p>Para configurar un cluster pinchamos en el icono de cluster y nos aparecer&aacute; 
+  una figura como la siguiente. Pinchamos en <i>Configure a new Cluster</i>.</p>
+<center>
+  <img src="cluster/instantanea1.png"> 
+</center>
+<p>En la siguiente figura debemos empezar a configurar el cluster. Comentamos 
+  las distintas opciones:</p>
+<ul>
+  <li><b>Name</b>: el nombre que identificar&aacute; el cluster.</li>
+  <li><b>Cluster Address</b>: son las distintas direcciones que participar&aacute;n 
+    en el cluster, separadas por comas.</li>
+  <li><b>Default Load Algorithm</b>: es el algoritmo de carga a utilizar. Este 
+    algoritmo permite el balanceo de la carga (peticiones). Los posibles algoritmos 
+    son: 
+    <ul>
+      <li><i>Round-Robin</i>. La primera petici&oacute;n se asigna al primer servidor, 
+        la segunda al segundo y as&iacute; sucesivamente hasta que se sobrepasa 
+        el &uacute;ltimo y se vuelve a empezar.</li>
+      <li><i>Weight-based</i>. Este algoritmo permite balancear la carga ponderando 
+        el peso de cada servidor. Utilizando el campo <b>Cluster Weight</b> (ver 
+        siguiente figura) podemos asignar un determinado peso al servidor, para 
+        as&iacute; permitir que servidores en m&aacute;quinas m&aacute;s potentes 
+        respondan a m&aacute;s peticiones. Si, por ejemplo, asignamos a un servidor 
+        un peso 1, a otro 2 y a otro 3, el algoritmo asigna una petici&oacute;n 
+        al primer servidor, las dos siguientes al segundo y las tres siguientes 
+        al tercero. </li>
+      <center>
+        <img src="cluster/instantanea1.jpg"> 
+      </center>
+      <li><i>Random</i>. Elige el siguiente servidor de manera aleatoria. <br>
+        <br>
+      </li>
+    </ul>
+  </li>
+  <li><b>Weblogic Plug-In Enabled</b>: no habilitado por defecto. Seguridad.</li>
+  <li><b>Service Age Threshold</b>: el n&uacute;mero de segundos que tienen que 
+    diferir dos servicios para que uno sea considerado m&aacute;s viejo que el 
+    otro.</li>
+  <li><b>Client Cert Proxy Enabled</b>: no habilitado por defecto. Seguridad.</li>
+</ul>
+<center>
+  <img src="cluster/instantanea2.png"> 
+</center>
+<p>En la siguiente solapa debemos chequear la direcci&oacute;n de <i>multicast</i>. 
+  El <i>multicast</i> permite la comunicaci&oacute;n entre los servidores del 
+  cluster. Esta direcci&oacute;n se configura desde el sistema operativo. Por 
+  defecto es la mostrada en la figura (el puerto por defecto es tambi&eacute;n 
+  el 7777). Si queremos chequear si funciona la direcci&oacute;n podemos hacer 
+  uso de una utilidad de WebLogic. Desde dos sesiones distintas del sistema operativo 
+  tecleamos el siguiente comando:</p>
+<pre class="codigo">java -cp $BEA_HOME/weblogic700/server/lib/weblogic.jar utils.MulticastTest 
+-n mensaje -a direcci&oacute;n</pre>
+<p>donde <i>mensaje</i> es el mensaje que se enviar&aacute; a la direcci&oacute;n 
+  de multicast y <i>direcci&oacute;n</i> es la direcci&oacute;n multicast a utilizar. 
+  Ponemos mensajes distintos en cada sesi&oacute;n y debemos recibir los dos mensajes.</p>
+
+  <center>
+  <img src="cluster/instantanea3.png"> 
+</center>
+<p>Pasamos a la solapa <i>Servers</i> donde debemos indicar los servidores que 
+  participar&aacute;n en el cluster. Los servidores deben estar parados para poder 
+  asignarlos al cluster. </p>
+<center>
+  <img src="cluster/instantanea4.png"> 
+</center>
+<p>En la solapa <i>Monitoring</i> podemos saber el n&uacute;mero de servidores 
+  configurados para el cluster y los activos en este momento. Si pinchamos en 
+  <i>Monitor server participation...</i> nos aparece la figura mostrada m&aacute;s 
+  abajo donde se nos muestra informaci&oacute;n de los distintos servidores.</p>
+<center>
+  <img src="cluster/instantanea5.png"> 
+</center>
+<center>
+  <img src="cluster/instantanea6.png"> 
+</center>
+<p>Para desplegar una aplicaci&oacute;n al cluster (y as&iacute; que todos los 
+  servidores del cluster respondan a la aplicaci&oacute;n) debemos asignar la 
+  aplicaci&oacute;n al cluster. Para ello, en la solapa <i>Targets</i> seleccionamos 
+  <i>Clusters</i> en vez de <i>Servers</i>. Es muy importante <b>no</b> desplegar 
+  la misma aplicaci&oacute;n a un cluster y adem&aacute;s a un servidor que forme 
+  parte del cluster.</p>
+  <center>
+  <img src="cluster/cluster.jpg"> 
+</center>
+<p>También podemos arrancar todos los servidores que formen parte de un cluster 
+  a la vez, si tenemos configurado el NodeManager. Pinchamos con el bot&oacute;n 
+  derecho en el icono del cluster y seleccionamos <i>Start this cluster...</i> 
+  </p>
+  <center>
+  <img src="cluster/cluster2.jpg"> 
+</center>
+<p>&nbsp;</p>
+<h2>4.2. Configuraci&oacute;n de un servidor proxy</h2>
+<p>Una vez creado el cluster como se indicaba en el apartado anterior ya lo tenemos 
+  disponible para su utilizaci&oacute;n. Sin embargo, cada servidor tiene su propia 
+  direcci&oacute;n IP, por lo que si tenemos una aplicaci&oacute;n desplegada 
+  en el cluster, &iquest;a qu&eacute; direcci&oacute;n IP debe direccionar el 
+  cliente su petici&oacute;n?. Podemos pedir a un servidor (que pertenezca al 
+  cluster) en concreto y &eacute;ste responder&aacute;, pero perderemos el balanceo 
+  de carga. Para solucionar este problema se suele insertar un servidor proxy 
+  HTTP entre el cluster y el cliente. Este servidor proxy ser&aacute; un servidor 
+  de aplicaciones que tendr&aacute; asociada una aplicaci&oacute;n que se encargar&aacute; 
+  de realizar el balanceo de carga. Tambi&eacute;n se puede utilizar otro servidor 
+  proxy (como Apache) o incluso un proxy hardware. En esta secci&oacute;n vamos 
+  a ver c&oacute;mo podemos configurar un servidor proxy haciendo uso de una utilidad 
+  que incorpora Weblogic. Esta utilidad no es m&aacute;s que una clase que implementa 
+  un servlet para realizar el balanceo de carga.</p>
+<center><img src="cluster/sexta.jpg"></center>
+<p>Lo primero a realizar es la creaci&oacute;n de un servidor de aplicaciones, 
+  al que llamaremos proxy. Vamos a asociar una aplicaci&oacute;n a este servidor 
+  de aplicaciones. Para ello vamos a crear una aplicaci&oacute;n vac&iacute;a, 
+  que contendr&aacute; s&oacute;lo el fichero de descripci&oacute;n de aplicaci&oacute;n 
+  (<i>web.xml</i>) el cual utilizar&aacute; un servlet de Weblogic. Creamos un 
+  fichero web.xml que contendr&aacute; la siguiente informaci&oacute;n:</p>
+<pre class="codigo">&lt;!DOCTYPE web-app PUBLIC &quot;-//Sun Microsystems, Inc. //DTD Web Application 
+    2.2//EN&quot; &quot;http://java.sun.com/j2ee/dtds/web-app_2_2.dtd&quot;&gt; 
+&lt;web-app&gt;
+
+    &lt;servlet&gt; 
+    	&lt;servlet-name&gt;HttpClusterServlet&lt;/servlet-name&gt; 
+    	&lt;servlet-class&gt;
+	    weblogic.servlet.proxy.HttpClusterServlet 
+    	&lt;/servlet-class&gt; 
+    
+    	&lt;init-param&gt; 
+	    &lt;param-name&gt;WebLogicCluster&lt;/param-name&gt; 
+	    &lt;param-value&gt; 
+    	    	miguel.dccia.ua.es:7736:7737|miguel.dccia.ua.es:7736:7737
+	    &lt;/param-value&gt; 
+    	&lt;/init-param&gt;<br>
+    	&lt;init-param&gt; 
+	    &lt;param-name&gt;DebugConfigInfo&lt;/param-name&gt; 
+	    &lt;param-value&gt;ON&lt;/param-value&gt; 
+    	&lt;/init-param&gt;<br>    &lt;/servlet&gt;<br>
+    &lt;servlet-mapping&gt; 
+	&lt;servlet-name&gt;HttpClusterServlet&lt;/servlet-name&gt; 
+    	&lt;url-pattern&gt;/&lt;/url-pattern&gt;
+    &lt;/servlet-mapping&gt;<br>
+    &lt;servlet-mapping&gt; 
+	&lt;servlet-name&gt;HttpClusterServlet&lt;/servlet-name&gt; 
+      	&lt;url-pattern&gt;*.jsp&lt;/url-pattern&gt; 
+    &lt;/servlet-mapping&gt;<br>
+    &lt;servlet-mapping&gt; 
+	&lt;servlet-name&gt;HttpClusterServlet&lt;/servlet-name&gt; 
+    	&lt;url-pattern&gt;*.htm&lt;/url-pattern&gt; 
+    &lt;/servlet-mapping&gt;<br>
+    &lt;servlet-mapping&gt; 
+	&lt;servlet-name&gt;HttpClusterServlet&lt;/servlet-name&gt; 
+    	&lt;url-pattern&gt;*.html&lt;/url-pattern&gt; 
+    &lt;/servlet-mapping&gt;<br>
+&lt;/web-app&gt;</pre>
+<p>Este fichero de descripci&oacute;n consta de las siguientes partes:</p>
+<ul>
+  <li>El nombre del servlet y la clase que lo implementa. Hacemos referencia a 
+    la clase <i>weblogic.servlet.proxy.HttpClusterServlet</i>. </li>
+  <li>El primer par&aacute;metro inicial identifica los servidores que forman 
+    parte del cluster. Debemos indicar cada uno de los servidores que forman parte 
+    del cluster de la siguiente manera: nombre:puerto:puerto_seguro <i>nombre</i> 
+    puede ser la direcci&oacute;n DNS o IP del servidor y a continuaci&oacute;n 
+    ponemos el puerto y el puerto seguro del servidor. Para poner varios servidores 
+    los separamos con el s&iacute;mbolo | . El siguiente par&aacute;metro <i>DebugConfigInfo 
+    </i>es &uacute;til en modo desarrollo y proporciona informaci&oacute;n para 
+    depuraci&oacute;n de errores.</li>
+  <li> Debemos indicar el mapeado del servlet a patrones URL. En este caso hemos 
+    mapeado las extensiones jsp, htm, html, as&iacute; como &quot;/&quot; que 
+    indica que cualquier petici&oacute;n que no pueda resolver el proxy se reenv&iacute;a 
+    hacia los servidores del cluster.</li>
+</ul>
+<p>Una vez creado este fichero creamos un directorio WEB-INF y movemos el fichero 
+  web.xml dentro de este directorio. Para crear la aplicaci&oacute;n web utilizamos 
+  el siguiente comando:</p>
+<pre class="codigo">jar cf proxyApp.war WEB-INF/*</pre>
+<p>donde <i>proxyApp.war</i> es el nombre que le hemos dado a la aplicaci&oacute;n. 
+  Debemos desplegar la aplicaci&oacute;n dentro de nuestro dominio y asociarla 
+  al servidor proxy. El &uacute;ltimo paso es hacer que esta aplicaci&oacute;n 
+  sea la aplicaci&oacute;n por defecto del servidor proxy. Para ello pinchamos 
+  en el servidor proxy y nos posicionamos en la solapa <i>Connections HTTP</i>. 
+  Debemos seleccionar <i>proxyApp</i> en la opci&oacute;n <i>Default Web Application</i>. 
+  A partir de este momento ya podemos disponer de balanceo de carga en el cluster 
+  creado. Ahora podemos atacar cualquier aplicaci&oacute;n desplegada en el cluster 
+  solicitando la direcci&oacute;n del proxy.</p>
+<center>
+  <p><img src="cluster/instantanea8.png"> </p>
+</center>
+<h2>4.3. Configuraci&oacute;n de la replicaci&oacute;n de memoria</h2>
+<p>La &uacute;ltima caracter&iacute;stica por configurar es la recuperaci&oacute;n 
+  ante fallos. Cuando un cliente realiza una petici&oacute;n a un servidor, se 
+  crea una instancia de la sesi&oacute;n. Si un servidor se viene abajo (ya sea 
+  por problemas t&eacute;cnicos o por desconexi&oacute;n por mantenimiento de 
+  la m&aacute;quina) y est&aacute; dando servicio a un determinado cliente, la 
+  sesi&oacute;n HTTP, los servicios EJB y toda la memoria asociada a ese cliente 
+  se pierde. Para solucionar este problema, WebLogic nos permite configurar la 
+  replicaci&oacute;n de memoria. La replicaci&oacute;n de memoria nos permite 
+  especificar d&oacute;nde van a ser almacenadas las copias de las sesiones. Vamos 
+  a trabajar con grupos de replicaci&oacute;n, que son una agrupaci&oacute;n l&oacute;gica 
+  de servidores relacionados en un cluster. Lo recomendable es que los servidores 
+  en la misma m&aacute;quina est&eacute;n en el mismo grupo de replicaci&oacute;n. 
+  Cuando se crea una sesi&oacute;n, WebLogic crea una r&eacute;plica de la sesi&oacute;n 
+  y la env&iacute;a a otro servidor siguiendo este orden de preferencia:</p>
+<ol>
+  <li>Primero trata de encontrar un servidor que no est&eacute; en su misma m&aacute;quina 
+    y que pertenezca a su grupo secundario preferido. </li>
+  <li>Si ning&uacute;n servidor cumple lo anterior, trata de buscar un servidor 
+    que pertenezca a su grupo secundario preferido aunque no est&eacute; en otra 
+    m&aacute;quina.</li>
+  <li>La tercera opci&oacute;n es que el servidor no pertenezca a su grupo secundario 
+    preferido, pero resida en otra m&aacute;quina.</li>
+  <li>La &uacute;ltima opci&oacute;n es que ni pertenezca a su grupo preferido 
+    ni resida en otra m&aacute;quina.</li>
+</ol>
+<p>Para definir los servidores en un grupo de replicaci&oacute;n y en el secundario, 
+  debemos definir, en cada servidor, a qu&eacute; grupo pertenecen. El nombre 
+  de los grupos nos definimos los nosotros. En la siguiente figura podemos observar 
+  los nombres elegidos para un servidor.</p>
+<center>
+  <img src="cluster/instantanea7.png"> 
+</center>
+</body>
+</html>

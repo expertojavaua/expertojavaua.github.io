@@ -1,0 +1,316 @@
+<!-- saved from url=(0022)http://internet.e-mail -->
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+                                                            
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+                                                            
+  <meta name="Author" content="Nacho">
+                                                            
+  <meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+                                                        
+  <link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+  <title>Tema 3: Librer&iacute;as de Tags</title>
+</head>
+  <body>
+      <b>      
+<h1>Creación de librerías de tags</h1>
+      </b><p><b><br>
+      1. (FAQS) </b>Como ejercicio de esta sesión vamos a crear un tag propio
+      dentro de una librería nueva, que llamaremos <b>faqtags</b>. El tag se va
+      a llamar <b>datosfaq</b>, y mostrará los datos de una FAQ concreta. Tendrá la
+      siguiente sintaxis: </p>
+           
+      <pre class="codigo">&lt;datosfaq id=&quot;id&quot; pregunta=&quot;pregunta&quot; respuesta=&quot;respuesta&quot; fecha=&quot;fecha&quot;/&gt;</pre>
+           
+      <p>donde: </p>
+           
+      <ul>
+        <li><b>id</b>: es el identificador de la FAQ</li>
+        <li><b>pregunta</b>: es el texto de la pregunta</li>
+        <li><b>respuesta</b>: es el texto de la respuesta</li>
+        <li><b>fecha</b>: es la fecha de modificación o inserción de la FAQ</li>
+      </ul>
+      <p>Lo que hará el tag internamente es mostrar la información de la FAQ
+      en un formato determinado. Para ello, lo que se pide es: </p>
+           
+      <p><b>a) Escribir la clase que implementa el tag</b> </p>
+           
+      <p>La clase que implementa el tag es <i>FAQTag</i>, que se encuentra
+      dentro del paquete <i>faqs.tags</i> en la plantilla del ejercicio.
+      Deberemos rellenar esta clase para que: </p>
+           
+      <ul>
+        <li>Defina los <b>campos internos</b>: además de los conocidos:</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo">private PageContext contexto; 
+private Tag padre;</pre>
+           
+        <p>Utilizaremos cuatro campos más, uno para cada atributo del tag:</p>
+        <pre class="codigo">int id = -1; 
+String pregunta = null;
+String respuesta = null;
+String fecha = null;</pre>
+           
+      </blockquote>
+      <ul>
+        <li>Defina los <b>métodos para leer / escribir cada campo</b>: para
+          cada uno de los campos de la clase (<i>id, pregunta, respuesta </i>y <i>fecha</i>),
+          deberemos tener un método <i>getCampo()</i> que obtenga su valor, y
+          uno <i>setCampo</i> que lo establezca. Por ejemplo, para <i>pregunta</i>
+          tendremos:</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo">public String getPregunta()
+{
+	return pregunta;
+}
+
+public void setPregunta(String pregunta)
+{
+	this.pregunta = pregunta;
+}</pre>
+           
+      </blockquote>
+      <ul>
+        <li>En el método <b>doStartTag()</b> simplemente devolveremos que salte
+          el cuerpo del tag (al ser un tag sin cuerpo)</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo">return SKIP_BODY;</pre>
+           
+      </blockquote>
+      <ul>
+        <li>En el método <b>doEndTag()</b> haremos que muestre con un
+          determinado formato los datos del tag. Por ejemplo, podemos mostrar un
+          dato por línea, dejando una línea horizontal al final. Si están
+          todos los campos especificados, los mostramos, y si falta alguno,
+          sólo mostramos el <i>id</i> y la pregunta (que sí serán
+          requeridos), poniendo un enlace en la pregunta para ir a la página <i>faqs.jsp</i>
+          y mostrar los datos de la FAQ:</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo">try 
+{ 
+   if (respuesta != null &amp;&amp; fecha != null)
+   {
+	<b>// Se muestran todos los datos de la FAQ</b>
+	contexto.getOut().write(&quot;&lt;b&gt;Id:&lt;/b&gt;&quot; + id + &quot;&lt;br&gt;&quot;);
+	contexto.getOut().write(&quot;&lt;b&gt;Pregunta:&lt;/b&gt;&quot; + pregunta + &quot;&lt;br&gt;&quot;);
+	contexto.getOut().write(&quot;&lt;b&gt;Respuesta:&lt;/b&gt;&quot; + respuesta + &quot;&lt;br&gt;&quot;);
+	contexto.getOut().write(&quot;&lt;b&gt;Fecha:&lt;/b&gt;&quot; + fecha + &quot;&lt;br&gt;&quot;);
+   } else {
+	<b>// Solo se muestran los campos requeridos
+	// En la pregunta ponemos un enlace a faq.jsp para ver todos los datos
+</b>	contexto.getOut().write(&quot;&lt;b&gt;Id:&lt;/b&gt;&quot; + id + &quot;&lt;br&gt;&quot;);
+	contexto.getOut().write(&quot;&lt;b&gt;Pregunta&lt;/b&gt;:&lt;a target=\&quot;_blank\&quot;&quot; + 
+			  &quot; href=\&quot;/faqs/faqs?pagina=faq.jsp&quot; + 
+			  &quot;&amp;id=&lt;jsp:getProperty name=\&quot;faq\&quot; property=\&quot;id\&quot;/&gt;\&quot;&gt;&quot; + 
+			  pregunta + &quot;&lt;/a&gt;&lt;br&gt;&quot;);	
+   }
+} catch(java.io.IOException e) { 
+   throw new JspException(&quot;Error&quot;); 
+} 
+return EVAL_PAGE;</pre>
+           
+      </blockquote>
+      <p><b>b) Escribir el fichero TLD</b> </p>
+           
+      <p>Ya tenemos hecho el tag, ahora necesitamos definir el fichero TLD (que
+      se da vacío como <i>faqtags.tld</i> en la plantilla), que define nuestra
+      nueva librería de tags, con el tag implementado. Dicho fichero
+      contendrá: </p>
+           
+      <ul>
+        <li>La <b>cabecera XML </b>del fichero:</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo">&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot; ?&gt; 
+&lt;!DOCTYPE taglib PUBLIC &quot;-//Sun Microsystems, 
+Inc.//DTD JSP Tag Library 1.1//EN&quot; 
+&quot;http://java.sun.com/j2ee/dtds/web-jsptaglibrary_1_1.dtd&quot;&gt; 
+
+&lt;taglib&gt;
+	... resto de elementos
+&lt;/taglib&gt;</pre>
+           
+      </blockquote>
+      <ul>
+        <li>Dentro de la etiqueta padre <i>taglib</i>, colocamos etiquetas de <b>datos
+          genéricos </b>de la librería</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo">&lt;tlibversion&gt;1.0&lt;/tlibversion&gt; 
+&lt;jspversion&gt;1.1&lt;/jspversion&gt; 
+&lt;shortname&gt;ft&lt;/shortname&gt; 
+&lt;uri&gt;faqtags&lt;/uri&gt; 
+&lt;info&gt;Librería de tags propia para aplicacion de FAQs&lt;/info&gt;</pre>
+           
+        <p>Como hemos dicho, la librería se llamará <i>faqtags</i>, y
+        utilizaremos el prefijo abreviado <b><i>ft</i> </b>para referenciarla en
+        las páginas jsp.</p>
+      </blockquote>
+      <ul>
+        <li>También añadimos dentro de la etiqueta padre <i>taglib </i>una
+          etiqueta <i>tag</i> con los <b>datos del tag </b>implementado:</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo">&lt;tag&gt; 
+	&lt;name&gt;datosfaq&lt;/name&gt; 
+	&lt;tagclass&gt;faqs.tags.FAQTag&lt;/tagclass&gt;
+	&lt;bodycontent&gt;empty&lt;/bodycontent&gt;
+	&lt;info&gt;Muestra los datos de la FAQ&lt;/info&gt;
+	&lt;attribute&gt; 
+		&lt;name&gt;id&lt;/name&gt;
+		&lt;required&gt;true&lt;/required&gt;
+		&lt;rtexprvalue&gt;true&lt;/rtexprvalue&gt;
+	&lt;/attribute&gt; 	
+	&lt;attribute&gt; 
+		&lt;name&gt;pregunta&lt;/name&gt;
+		&lt;required&gt;true&lt;/required&gt;
+		&lt;rtexprvalue&gt;true&lt;/rtexprvalue&gt;
+	&lt;/attribute&gt; 	
+	&lt;attribute&gt; 
+		&lt;name&gt;respuesta&lt;/name&gt;
+		&lt;required&gt;false&lt;/required&gt;
+		&lt;rtexprvalue&gt;true&lt;/rtexprvalue&gt;
+	&lt;/attribute&gt; 	
+	&lt;attribute&gt; 
+		&lt;name&gt;fecha&lt;/name&gt;
+		&lt;required&gt;false&lt;/required&gt;
+		&lt;rtexprvalue&gt;true&lt;/rtexprvalue&gt;
+	&lt;/attribute&gt; 	
+&lt;/tag&gt;</pre>
+        <p>El tag se llama <i>faq</i>, y no tiene cuerpo (<i>bodycontent=empty</i>).
+        Se definen los cuatro atributos: <i>id</i>, <i>pregunta, respuesta</i> y
+        <i>fecha</i>. De ellos, sólo los dos primeros son obligatorios (en
+        algunos casos sólo mostraremos la pregunta, y en otros toda la
+        información).</p>
+      </blockquote>
+      <p><b>c) Incorporar la librería a la aplicación de FAQs</b></p>
+      <p>Para incorporar esta nueva librería a nuestra aplicación de FAQs,
+      hacemos lo siguiente:</p>
+      <ul>
+        <li>Copiar el fichero TLD dentro del directorio <i>WEB-INF</i> de la
+          aplicación.</li>
+        <li>Copiar la clase que implementa el tag (<i>FAQTag.class</i>) dentro
+          del directorio <i>WEB-INF/classes/faqs/tags</i> (tendremos que crear
+          los directorios <i>faqs</i> y <i>tags</i>, para respetar la estructura
+          de paquetes de la clase).</li>
+        <li>Modificar el fichero descriptor de la aplicación (<i>web.xml</i>)
+          para que dé soporte a la librería de tags. Para ello se añade una
+          marca <i>taglib</i> con los datos de la librería:</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo">&lt;taglib&gt;
+	&lt;taglib-uri&gt;faqtags&lt;/taglib-uri&gt;
+	&lt;taglib-location&gt;faqtags.tld&lt;/taglib-location&gt;
+&lt;/taglib&gt;</pre>
+        <p>NOTA: consultar la configuración de aplicaciones Web para ver dónde
+        debe ir colocada la marca <i>taglib</i>.</p>
+      </blockquote>
+      <p><b>d) Probar la librería en alguna página</b></p>
+      <p>Podemos probar a utilizar algún tag <i>faq</i> en alguna página.</p>
+      <ul>
+        <li>Probad el tag en páginas como <i>faqs.jsp</i>
+          (la que muestra una lista con las FAQS disponibles), o <i>faq.jsp</i>
+          (que muestra todos los datos de una FAQ seleccionada). Simplemente
+          tendríamos que añadir la cabecera en la página:</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo">&lt;%@ taglib uri=&quot;faqtags&quot; prefix=&quot;ft&quot; %&gt;</pre>
+        <p>No utilizaremos los beans, así que no necesitamos las líneas:</p>
+        <pre class="codigo">&lt;jsp:useBean ... /&gt;</pre>
+        <pre class="codigo">&lt;jsp:setProperty name=&quot;faq&quot; property=&quot;id&quot; .../&gt;
+&lt;jsp:setProperty name=&quot;faq&quot; property=&quot;pregunta&quot; .../&gt;
+&lt;jsp:setProperty name=&quot;faq&quot; property=&quot;respuesta&quot; .../&gt;
+&lt;jsp:setProperty name=&quot;faq&quot; property=&quot;fechaModif&quot; .../&gt;</pre>
+        <p>... etc.</p>
+        <p>En su lugar nos guardaremos el parámetro <i>faqs</i> (para <i>faqs.jsp</i>)
+        o <i>faq</i> (para <i>faq.jsp</i>) en una variable JSP del mismo tipo:</p>
+        <pre class="codigo">&lt;% FAQBean[] faqs = 
+   (FAQBean[])request.getAttribute(&quot;faqs&quot;); %&gt;</pre>
+        <pre class="codigo">&lt;% FAQBean faq = 
+   (FAQBean)request.getAttribute(&quot;faq&quot;); %&gt;</pre>
+        <p>y para mostrar los datos tendremos, respectivamente para cada fichero:</p>
+        <pre class="codigo">&lt;ft:datosfaq id=&quot;&lt;%= faqs[i].getId() %&gt;&quot;
+     pregunta=&quot;&lt;%= faqs[i].getPregunta() %&gt;&quot;/&gt;</pre>
+        <pre class="codigo">&lt;ft:datosfaq id=&quot;&lt;%= faq.getId() %&gt;&quot;
+     pregunta=&quot;&lt;%= faq.getPregunta() %&gt;&quot;
+     respuesta=&quot;&lt;%= faq.getRespuesta() %&gt;&quot;
+     fecha=&quot;&lt;%= faq.getFechaModif().toString() %&gt;&quot;/&gt;</pre>
+        Vemos que se omiten los atributos no requeridos en <i>faqs.jsp</i>, para
+        que se muestre el enlace que lleva a <i>faq.jsp</i> para ver los datos
+        de la FAQ.
+      </blockquote>
+      <p>&nbsp;</p>
+      <p><b>2. (FAQS)</b> Opcionalmente, añadir un quinto atributo <i>estilo</i>
+      al tag anterior. Dicho atributo será opcional, y en función de su&nbsp;
+      valor, se presentarán los datos del tag en uno u otro formato. Por
+      ejemplo, <i>estilo</i> podría valer:</p>
+      <ul>
+        <li><b>tabla</b>: se mostrarían los datos de la FAQ en una tabla HTML</li>
+        <li><b>lista</b>: se mostrarían los datos en una lista no ordenada</li>
+        <li><b>... otros</b>: a gusto del usuario</li>
+        <li><b>valor por defecto</b>: si no se indica estilo, se mostrarán los
+          datos tal y como se dejaron en el ejercicio 1.</li>
+      </ul>
+      <p>Para añadir este atributo, se recomienda seguir los pasos:</p>
+      <ul>
+        <li>Añadir el <b>campo</b> correspondiente a la clase que implementa el
+          tag:</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo">String estilo = null;</pre>
+           
+      </blockquote>
+      <ul>
+        <li>Añadir los <b>métodos para leer/escribir</b> el campo en la clase:</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo">public String getEstilo()
+{
+	return estilo;
+}
+
+public void setEstilo(String estilo)
+{
+	this.estilo = estilo;
+}</pre>
+           
+      </blockquote>
+      <ul>
+        <li>Modificar el método <b>doEndTag()</b> para que muestre los datos en
+          uno u otro formato dependiendo del valor del campo <i>estilo</i>.</li>
+        <li>Añadir una etiqueta <i><b>attribute</b></i> en el tag en el fichero
+          TLD, con los datos del nuevo atributo:</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo">...
+	&lt;attribute&gt; 
+		&lt;name&gt;estilo&lt;/name&gt;
+		&lt;required&gt;false&lt;/required&gt;
+		&lt;rtexprvalue&gt;true&lt;/rtexprvalue&gt;
+	&lt;/attribute&gt; 	
+...</pre>
+      </blockquote>
+      <ul>
+        <li>Actualizar el fichero TLD y la clase <i>FAQTag </i>en la
+          aplicación, con los cambios realizados</li>
+        <li>Probar el tag con los cambios en las páginas <i>faqs.jsp</i> y <i>faq.jsp</i>:</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo">&lt;ft:datosfaq id=&quot;&lt;%= faqs[i].getId() %&gt;&quot;
+     pregunta=&quot;&lt;%= faqs[i].getPregunta() %&gt;&quot;
+     estilo=&quot;tabla&quot;/&gt;</pre>
+        <pre class="codigo">&lt;ft:datosfaq id=&quot;&lt;%= faq.getId() %&gt;&quot;
+     pregunta=&quot;&lt;%= faq.getPregunta() %&gt;&quot;
+     respuesta=&quot;&lt;%= faq.getRespuesta() %&gt;&quot;
+     fecha=&quot;&lt;%= faq.getFechaModif().toString() %&gt;&quot;
+     estilo=&quot;lista&quot;/&gt;</pre>
+        <p>&nbsp;</p>
+      </blockquote>
+           
+        </body>
+        </html>

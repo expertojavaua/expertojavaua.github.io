@@ -1,0 +1,245 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+	<title>Untitled</title>
+	<link href="../../../apuntes.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<h1> Tema 2: Programación JSP con JavaBeans </h1>
+
+<h2> 2.1. JavaBeans </h2>
+<p>
+Un <b>JavaBean</b> (o, para abreviar, un <em>bean</em>) es un componente software reutilizable escrito en Java. En realidad un <em>bean</em> no es más que una clase Java escrita siguiendo unas ciertas convenciones. Estas convenciones hacen posible que herramientas automáticas puedan acceder a sus propiedades y manipularlas sin necesidad de modificar el código. Esto puede servir en el caso de un IDE, por ejemplo, para realizar "programación visual". En JSP el uso principal de los <em>beans</em> es manipular componentes Java sin necesidad de incluir código en la página, accediendo a sus propiedades mediante etiquetas. 
+</p>
+<p>
+El uso de <em>beans</em> en páginas JSP ofrece diversas ventajas con respecto al uso directo de código Java:
+<ul>
+<li>Se evita el uso de sintaxis Java, en su lugar se emplean etiquetas con sintaxis XML. Esto permite separar más fácilmente el trabajo de programadores y diseñadores web.</li>
+<li>Se simplifica la creación y uso de objetos compartidos entre varias páginas.</li>
+<li>Se simplifica la creación de objetos a partir de los parámetros de la petición </li>
+</ul>
+<p></p>
+
+<h2>2.2. Características de un <em>bean</em></h2>
+<p>
+Como se ha comentado, un <em>bean</em> no es más que una clase Java en la que se observan ciertas convenciones. En lo que respecta a su uso con JSP, estas convenciones afectan al modo de definir  constructores, métodos y variables miembro:
+</p>
+<p>
+<ol>
+<li>Un <em>bean</em> debe tener al menos un constructor sin argumentos. Este constructor será llamado cuando una página JSP cree una instancia del <em>bean</em>.</li>
+<li>Un <em>bean</em> no debe tener variables miembro de acceso público. El acceso a las variables y su modificación se debe hacer a través de métodos.</li>
+  <li>El nombre de los métodos de acceso y modificación de variables miembro debe 
+    seguir una norma: si la variable tiene el nombre <code><var>nombreVar</var></code>, 
+    entonces el método de acceso debe llamarse <code>getNombreVar</code> (obsérvese 
+    el cambio a mayúsculas de la "N", siguiendo las convenciones habituales de 
+    Java), y el método de cambio de valor (en caso de que exista) debe llamarse 
+    <code>setNombreVar</code>. En el caso especial de variables booleanas, el 
+    m&eacute;todo de acceso se debe denominar <code>isXXX</code>.</li>
+</ol>
+<p></p>
+<p>
+Por ejemplo, supongamos que se desea definir un <em>bean</em> para almacenar información relativa a un usuario (nombre, número de visitas al sitio y fecha de la última visita), y compartirla entre varias páginas, una vez que se ha autentificado en la aplicación y sabemos quién es. Para ello podríamos utilizar un código similar al siguiente:
+
+<pre class="codigo">
+
+package beans;<br>import java.util.Date;
+public class UsuarioBean {
+  
+  <b>//variables miembro, privadas</b>
+  private String nombre;
+  private int visitas;
+  private Date ultimaVisita;
+  private boolean varon;
+
+  <b>//constructor sin argumentos</b>
+  public UsuarioBean() {
+     nombre = null;
+     visitas = 0; 
+     ultimaVisita = null;
+     varon = false; 
+  } 
+  
+  <b>//m&eacute;todos de acceso: getXXX, isXXX</b> 
+  public String getNombre() { 
+     return nombre; 
+  }
+  
+  public int getVisitas() {
+     return visitas; 
+  }
+  
+  public Date getUltimaVisita() {
+     return ultimaVisita;
+  }
+  
+  public boolean isVaron() {
+     return varon;
+  }
+  
+  <b>//m&eacute;todos de cambio de valor: setXXX</b> 
+  public void setNombre(String nom) {
+     nombre = nom; 
+  }
+  
+  public void setVisitas(int v) {
+     visitas = v; 
+  }
+  
+  public void setUltimaVisita(Date fecha) {
+     ultimaVisita = fecha; 
+  }
+  
+  public void setVaron(boolean valor) {
+     varon = valor; 
+  }
+}
+
+</pre>
+
+
+<h2> 2.3. Uso de <em>beans</em> desde páginas JSP </h2>
+<p>
+Para interactuar con un <em>bean</em> desde una página JSP es necesario primero asignarle un nombre y especificar qué clase Java lo define. Una vez hecho esto, se puede acceder a sus propiedades y darles nuevos valores. 
+</p>
+<h3>2.3.1. Acceso al <em>bean</em> </h3>
+<p>
+Para hacer accesible un <em>bean</em> a una página JSP se emplea la etiqueta <code>useBean</code>. En su forma más simple la sintaxis es:
+</p>
+<pre class="codigo">
+&lt;jsp:useBean id="<var>nombreBean</var>" class="<var>paquete.Clase</var>"/&gt;
+</pre>
+<p>
+En caso de que el <em>bean</em> referenciado no existiera previamente, esta etiqueta se puede ver como la creación de una variable en Java de nombre <code>nombreBean</code> y de tipo <code>paquete.Clase</code>. Así, para crear un <em>bean</em> de tipo <code>usuarioBean</code> sería equivalente utilizar las siguientes expresiones:
+</p>
+<pre class="codigo">
+&lt;jsp:useBean id="usuario" class="beans.UsuarioBean" /&gt;
+</pre> 
+<p>
+
+</p>
+<pre class="codigo">
+&lt;% beans.UsuarioBean usuario = new beans.UsuarioBean() %&gt;
+</pre> 
+<p>
+La clase a la que pertenece el <em>bean</em> debería colocarse donde están habitualmente las clases Java que pertenecen a una aplicación web, es decir, en <code>WEB-INF/classes</code>. Para que el contenedor JSP pueda encontrar la clase del <em>bean</em>, es conveniente que éste pertenezca a un <em>package</em> (como en el ejemplo anterior). En caso contrario se asumiría que pertenece al mismo <em>package</em> que el servlet generado a partir del JSP, con el problema de que el nombre de este <em>package</em> es desconocido.
+</p>
+<h3>2.3.2. Acceso a las propiedades del <em>bean</em></h3>
+<p>
+El acceso a una propiedad se realiza mediante la etiqueta <code>jsp:getProperty</code>. Su sintaxis es:
+</p>
+<pre class="codigo">
+&lt;jsp:getProperty name="<var>nombreBean</var>" property="<var>nombrePropiedad</var>"/&gt;
+</pre>
+<p> donde <code>nombreBean</code> debe corresponderse con el atributo <code>id</code> 
+  definido mediante alguna etiqueta anterior <code>jsp:useBean</code>. El acceso 
+  a la propiedad también se podría hacer llamando al método Java correspondiente. 
+  De este modo, el acceso a la propiedad <code>visitas</code> del <em>bean</em> 
+  <code>usuario</code> se puede hacer mediante las dos formas alternativas: </p>
+<pre class="codigo">
+&lt;jsp:getProperty name="usuario" property="visitas"/&gt;
+&lt;%= usuario.getVisitas() %&gt;
+</pre>
+<p>
+aunque se considera preferible la primera forma, ya que la sintaxis es más accesible a diseñadores web que no programen en Java.
+</p>
+<h3>2.3.3. Asignación de valores a las propiedades del bean</h3>
+<p>
+La asignación de valores se realiza mediante la etiqueta <code>jsp:setProperty</code>. Esta etiqueta requiere tres parámetros: <code>name</code> (el <code>id</code> del <em>bean</em>, definido anteriormente mediante alguna etiqueta <code>jsp:useBean</code>), <code>property</code> (el nombre de la propiedad) y <code>value</code> (el valor que se desea dar a la propiedad). Por ejemplo, para darle a la propiedad <code>visitas</code> del <em>bean</em> <code>usuario</code> el valor 1 se haría:
+</p>
+<pre class="codigo">
+&lt;jsp:setProperty name="usuario" property="visitas" value="1"/&gt;
+</pre>
+Una forma alternativa en código Java sería llamar directamente al método, aunque normalmente es preferible el uso de la sintaxis anterior:
+<pre class="codigo">
+&lt;% usuario.setVisitas(1) %&gt;
+</pre>
+<p>
+Además de poder asignar a una propiedad un valor fijo, se pueden usar expresiones JSP:
+</p>
+<pre class="codigo">
+&lt;jsp:setProperty name="usuario" property="ultimaVisita" 
+                 value="<b>&lt;%= new java.util.Date() %&gt;</b>"/&gt;
+
+</pre>
+<h3> 2.3.4. Inicialización de un <em>bean</em> </h3>
+<p>
+En algunos casos, puede ser necesario inicializar un bean antes de empezar a usarlo. Esto no se puede hacer directamente con la etiqueta <code>jsp:useBean</code>, ya que no admite parámetros. Para solucionar el problema, en el cuerpo de la etiqueta <code>jsp:useBean</code> (siguiendo sintaxis XML) se pueden introducir etiquetas <code>jsp:setProperty</code> que inicialicen las propiedades. Además se pueden colocar <em>scriptlets</em> y código HTML.
+</p>
+<pre class="codigo">
+&lt;jsp:useBean id="usuario" class="beans.usuarioBean" /&gt;
+   &lt;b&gt; inicializando datos de usuario &lt;/b&gt;
+   &lt;jsp:setProperty name="usuario" property="ultimaVisita" 
+                    value="<b>&lt;%= new java.util.Date() %&gt;</b>"/&gt;
+&lt;/jsp:useBean&gt;
+
+</pre>
+<p>
+Es importante destacar que el código de inicialización solo se ejecutará en caso de que el <em>bean</em> no existiera previamente (no sea un <em>bean</em> compartido con otras páginas o creado por ejemplo por un servlet).
+</p>
+<h3> 2.3.5. Utilizar los parámetros de la petición HTTP </h3>
+<p> JSP incluye un mecanismo para asignar los valores de los parámetros de la 
+  petición a las propiedades de un <em>bean</em>. Para ello hay que utilizar el 
+  parámetro <code>param</code> de la etiqueta <code>jsp:setProperty</code>. Por 
+  ejemplo, supongamos que se ha definido el siguiente formulario, que toma el 
+  nombre del usuario y llama a la p&aacute;gina <b>main.jsp</b> con los datos 
+  introducidos por el usuario (nombre y sexo):</p>
+
+<pre class="codigo">
+
+&lt;html&gt;<br>&lt;head&gt;<br>	&lt;title&gt;Entrada a la aplicaci&oacute;n&lt;/title&gt;<br>&lt;/head&gt;
+<p>&lt;body&gt;<br>  &lt;form action=&quot;<b>main.jsp</b>&quot; method=&quot;get&quot;&gt;<br>     Nombre <b>&lt;input type=&quot;text&quot; name=&quot;nombre&quot;&gt;</b><br>     &lt;br&gt;<br>     Sexo: varon <b>&lt;input type=&quot;radio&quot; name=&quot;varon&quot; value=&quot;true&quot;&gt;</b><br>           mujer: <b>&lt;input type=&quot;radio&quot; name=&quot;varon&quot; value=&quot;false&quot;&gt; </b>
+     &lt;br&gt;<br>     &lt;input type=&quot;submit&quot; value=&quot;entrar&quot;&gt;<br>  &lt;/form&gt;<br>&lt;/body&gt;<br>&lt;/html&gt;</pre>
+	 
+<p> En la página <b>main.jsp</b> se puede hacer uso de los par&aacute;metros para 
+  instanciar algunas propiedades del bean:</p>
+<pre class="codigo">
+
+&lt;html&gt;<br>&lt;head&gt;<br>	&lt;title&gt;Untitled&lt;/title&gt;<br>&lt;/head&gt;<br>&lt;body&gt;<br>   &lt;jsp:useBean id=&quot;usuario&quot; class=&quot;beans.UsuarioBean&quot;/&gt;<br>   &lt;jsp:setProperty name=&quot;usuario&quot; property=&quot;nombre&quot; <b>param=&quot;nombre&quot;</b>/&gt;
+   &lt;jsp:setProperty name=&quot;usuario&quot; property=&quot;varon&quot; <b>param=&quot;varon&quot;</b>/&gt;<br>   Buenos d&iacute;as, &lt;jsp:getProperty name=&quot;usuario&quot; property=&quot;nombre&quot;/&gt;<br>&lt;/body&gt;<br>&lt;/html&gt;
+
+</pre>
+<p> Nótese que, aunque los par&aacute;metros HTTP son en realidad cadenas, el 
+  contenedor JSP es capaz de efectuar la conversi&oacute;n al tipo correspondiente, 
+  al menos para tipos primitivos (por ejemplo, se ha convertido de la cadena &quot;true&quot; 
+  al valor <code>true</code> que requiere el m&eacute;todo <code>setVaron</code>. 
+  Esta conversi&oacute;n de tipos no funciona en caso de tipos no primitivos. 
+  Por ejemplo, no se puede aplicar a la propiedad <code>ultimaVisita</code>, de 
+  tipo <code>java.util.Date</code>, ya que no se puede convertir autom&aacute;ticamente 
+  de cadena a <code>Date</code> (al menos el est&aacute;ndar JSP no lo exige).</p>
+<p>En caso de que las propiedades del <em>bean</em> tengan el mismo nombre que 
+  los par&aacute;metros HTTP, (como en el caso anterior) la asignaci&oacute;n 
+  de todos los par&aacute;metros se puede hacer mediante una &uacute;nica etiqueta 
+  <code>setProperty</code>, con el par&aacute;metro <code>property=&quot;*&quot;</code>.</p>
+<pre class="codigo">&lt;html&gt;<br>&lt;head&gt;<br>	&lt;title&gt;Untitled&lt;/title&gt;<br>&lt;/head&gt;<br>&lt;body&gt;<br>   &lt;jsp:useBean id=&quot;usuario&quot; class=&quot;beans.UsuarioBean&quot;/&gt;<br>   &lt;jsp:setProperty name=&quot;usuario&quot; <b>property=&quot;*&quot;</b> /&gt;<br>   Buenos d&iacute;as, &lt;jsp:getProperty name=&quot;usuario&quot; property=&quot;nombre&quot;/&gt;<br>&lt;/body&gt;<br>&lt;/html&gt;</pre>
+<h2> 2.4. Compartir <em>beans</em></h2>
+<p>Hasta el momento, se han tratado los <em>beans</em> como si fueran objetos 
+  propios de la p&aacute;gina en la que se definen, y exclusivos de ella. Este 
+  es el comportamiento por defecto, pero podemos cambiar el <b>&aacute;mbito</b> 
+  de un <em>bean</em> para definir desde d&oacute;nde ser&aacute; accesible, lo 
+  que nos permite compartirlo entre varias p&aacute;ginas. El &aacute;mbito se 
+  controla con el atributo <code>scope</code> de la etiqueta <code>jsp:useBean</code>, 
+  y puede tomar cuatro valores distintos:</p>
+<ul>
+  <li><code><b>page</b></code>: es el valor por defecto</li>
+  <li><b><code>application</code></b>: el bean ser&aacute; accesible a todas las 
+    p&aacute;ginas JSP de la aplicaci&oacute;n web, y compartido entre todos los 
+    usuarios. Los servlets pueden acceder a &eacute;l a trav&eacute;s del objeto 
+    <code>ServletContext</code>.</li>
+  <li><b><code>session</code></b>: el bean ser&aacute; accesible a todas las p&aacute;ginas 
+    JSP, pero cada usuario tendr&aacute; su propio objeto. Los servlets pueden 
+    acceder a &eacute;l a trav&eacute;s del objeto <code>HttpSession</code>, obteniendo 
+    su valor con el m&eacute;todo <code>getAttribute</code>.</li>
+  <li><b><code>request</code></b>: el bean ser&aacute; accesible durante la petici&oacute;n 
+    actual, lo que significa que podr&aacute;n acceder a &eacute;l las p&aacute;ginas 
+    a las que se desv&iacute;e la petici&oacute;n con un <code>&lt;jsp:include&gt;</code> 
+    o un <code>&lt;jsp:forward&gt;</code>. Los servlets pueden acceder a &eacute;l 
+    a trav&eacute;s del objeto <code>ServletRequest</code>, de donde se puede 
+    obtener su valor con <code>getAttribute</code>.</li>
+</ul>
+</body>
+</html>

@@ -1,0 +1,214 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="Nacho">
+   <meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+   <title>Tema 3: Conceptos avanzados</title>
+<link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+</head>
+<body>
+
+<h1>3. Conceptos avanzados</h1>
+<p>&nbsp;</p>
+<p>Veremos en este tema algunos aspectos avanzados sobre el trabajo con servlets,
+como son la generación dinámica de imágenes con servlets, la gestión de un
+pool de conexiones combinando servlets con JDBC, y la seguridad en servlets y
+aplicaciones Web.</p>
+<h2>3.1. Generación de imágenes con servlets</h2>
+<p>En ocasiones se necesita representar cierto tipo de información (datos
+numéricos, por ejemplo) con alguna imagen (una gráfica, etc). Si los datos son
+fijos podríamos construir la imagen a priori y mostrarla luego directamente,
+pero si los datos pueden cambiar con cierta frecuencia (como por ejemplo las
+visitas mensuales o anuales a una página), o la cantidad de datos es tan grande
+que hacerlo a mano puede resultar muy pesado, entonces es conveniente <b>construir
+dinámicamente</b> estas imágenes.</p>
+<p>A la hora de manipular imágenes, debemos tener en cuenta el <b>formato</b>
+de las mismas. En sistemas Web el formato más común es GIF, aunque si queremos
+escribir en formato GIF, debemos tener en cuenta que su formato de compresión
+está protegido por una patente. Así que podemos decantarnos por otros formatos
+soportados, como son JPEG o PNG.&nbsp;</p>
+<p>Para generar estas imágenes dinámicas se siguen básicamente dos pasos:</p>
+<ul>
+  <li>Indicar de qué tipo va a ser la imagen (en el <i>Content-type</i> de la
+    respuesta)</li>
+  <li>Escribir los bytes de la imagen en la respuesta</li>
+</ul>
+<p>El problema es que la API de Java no ofrece muchas facilidades para realizar
+estas tareas, aunque sí pueden utilizarse algunas de sus librerías para ello.
+Dependiendo de la versión de Java que se esté manejando, podremos optar por
+unas posibilidades u otras.</p>
+<p>Veremos a continuación cómo construir un círculo azul, utilizando Java 1.1
+por un lado, y utilizando luego versiones posteriores (algunos servidores y/o
+navegadores no incorporan aún versiones posteriores a Java 1.1, por motivos de
+compatibilidad con el plug-in).</p>
+<h3>3.1.1. Generación de imágenes con Java 1.1</h3>
+<p>Para leer/escribir imágenes en Java 1.1 Sun ofrece una librería llamada <i>Jimi</i>,
+dentro del paquete <i>com.sun</i>. Así, para producir una imagen PNG utilizando
+esta librería, los pasos a dar son:</p>
+<ul>
+  <li>Crear un <i>Frame</i> y en él una imagen AWT</li>
+  <li>Utilizar la imagen para obtener un objeto <i>Graphics</i></li>
+  <li>Dibujar lo que se quiera en el objeto <i>Graphics</i></li>
+  <li>Crear un objeto <i>JimiWriter</i> utilizando el canal de salida HTTP</li>
+  <li>Escribir en el objeto <i>JimiWriter</i> la imagen creada</li>
+</ul>
+<p>Aquí vemos el código de un servlet que crea el círculo utilizando esta
+técnica, y lo sirve como resultado:</p>
+           
+<pre class="codigo">import java.io.*;
+import java.awt.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
+import com.sun.jimi.core.*;
+
+public class ServletImagenes11 extends HttpServlet
+{
+	<b>// Metodo para GET
+</b>	
+	public void doGet(HttpServletRequest request, 
+			  HttpServletResponse response) 
+	throws ServletException, IOException
+	{
+		response.setContentType(&quot;image/png&quot;);
+		
+<b>		// Crear el frame
+</b>		
+		Frame f = new Frame();
+		f.setVisible(true);
+		Image img = f.createImage(150, 150);
+		Graphics g = img.getGraphics();
+		f.setVisible(false);
+
+<b>		// Dibujar la imagen
+</b>
+		g.setColor(Color.blue);
+		g.fillOval(0, 0, 100, 100);
+		
+<b>		// Crear el JimiWriter para volcar la imagen 
+		// al OutputStream que se pida
+</b>		
+		try
+		{
+			OutputStream salida = 
+				response.getOutputStream();
+			JimiWriter writer = 
+				Jimi.createJimiWriter(
+					&quot;image/png&quot;, salida);
+			writer.setSource(img);
+			writer.putImage(salida);
+		} catch (JimiException e) {}
+	}
+}</pre>
+           
+<p>El paquete <b>com.sun.jimi.core</b> contiene las clases de <i>Jimi</i> para
+generar imágenes. Lo que hacemos es:</p>
+<ul>
+  <li>
+    <p align="left">Indicar el <i>Content-Type</i> de la respuesta como una
+    imagen PNG</li>
+  <li>
+    <p align="left">Crear el <i>Frame</i> y dibujar la imagen sobre el objeto <i>Graphics</i></li>
+  <li>
+    <p align="left">Obtener el <i>OutputStream</i> de la respuesta y volcar la
+    imagen utilizando un <i>JimiWriter</i>.</li>
+</ul>
+<h3>3.1.2. Generación de imágenes con Java 1.2</h3>
+<p>Para generar imágenes con versiones posteriores de Java 1.1, se pueden
+utilizar codificadores específicos. Por ejemplo, para generar imágenes JPEG se
+emplea la clase <b>com.sun.image.codec.jpeg.JPEGImageEncoder</b>. Los pasos a
+dar son:</p>
+<ul>
+  <li>Construir un <i>JPEGImageEncoder</i>, dándole un <i>OutputStream</i>
+    donde volcar la imagen</li>
+  <li>Construir una <i>BufferedImage</i> con las dimensiones deseadas</li>
+  <li>Utilizar el objeto <i>Graphics2D</i> de la <i>BufferedImage</i> para
+    dibujar la imagen</li>
+  <li>Utilizar el <i>JPEGImageEncoder</i> para volcar la imagen dibujada</li>
+</ul>
+<p>Aquí vemos el código de un servlet que crea el círculo utilizando esta
+técnica, y lo sirve como resultado:</p>
+           
+<pre class="codigo">import java.io.*;
+import java.awt.*;
+import java.awt.image.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
+import com.sun.image.codec.jpeg.*;
+
+public class ServletImagenes12 extends HttpServlet
+{
+	<b>// Metodo para GET
+</b>	
+	public void doGet(HttpServletRequest request, 
+			  HttpServletResponse response) 
+	throws ServletException, IOException
+	{
+		response.setContentType(&quot;image/jpeg&quot;);
+				
+<b>		// Crear la imagen
+</b>		
+		BufferedImage img = 
+		   new BufferedImage(150, 150, 
+			BufferedImage.TYPE_BYTE_INDEXED);
+		Graphics2D g = img.createGraphics();
+
+<b>		// Dibujar
+</b>
+		g.setColor(Color.blue);
+		g.fillOval(0, 0, 100, 100);
+		
+<b>		// Crear el Codificador para volcar la imagen 
+		// al OutputStream que se pida
+</b>		
+		try
+		{
+			OutputStream salida = 
+			    response.getOutputStream();
+			JPEGImageEncoder encoder = 
+			    JPEGCodec.createJPEGEncoder(salida);
+			encoder.encode(img);
+		} catch (Exception e) {}
+	}
+}</pre>
+           
+<p>Igual que en el caso anterior:</p>
+<ul>
+  <li>
+    <p align="left">Indicamos el <i>Content-Type</i> de la respuesta como una
+    imagen PNG</li>
+  <li>
+    <p align="left">En este caso creamos una <i>BufferedImage</i> y dibujamos
+    con su objeto <i>Graphics2D</i></li>
+  <li>
+    <p align="left">Obtenemos el <i>OutputStream</i> de la respuesta y volcamos
+    la imagen utilizando el codificador, en este caso un <i>JPEGImageEncoder</i>.</li>
+</ul>
+           
+<p>NOTA: al utilizar el paquete <i>com.sun</i>, no se garantiza la portabilidad
+de este sistema de generación de imágenes.</p>
+
+<h3>3.1.3. Ejemplos</h3>
+<p>Tenéis un <a href="ejemplos/avanzado/ejemploimagenes.war.zip">WAR</a> con los dos servlets propuestos.
+Copiadlo en el directorio <i>webapps </i>de Tomcat, reiniciad el servidor y
+probad los servlets:</p>
+<pre class="codigo">http://localhost:8080/ejemploimagenes/servlet/ServletImagenes11
+http://localhost:8080/ejemploimagenes/servlet/ServletImagenes12</pre>
+           
+<p>Notar que en los dos métodos vistos (para Java 1.1 y para Java 1.2) se
+genera la imagen sola. Podemos generar la imagen junto con otro contenido en una
+página HTML, sin más que haciendo que el <i>OutputStream</i> sea un fichero
+(PNG o JPG, según el ejemplo) en lugar del <i>HttpServletResponse</i>, y luego
+escribiendo un tag <i>&lt;img&gt;</i> que cargue dicho fichero:</p>
+<pre class="codigo">...
+FileOutputStream fichero = new FileOutputStream(&quot;imagen.png&quot;);
+crearImagen(fichero);
+PrintWriter out = response.getWriter();<b>
+</b>out.println (&quot;&lt;img src=\&quot;imagen.png\&quot;&gt;&quot;);<b>
+</b>...</pre>
+           
+<p align="left">donde <i>crearImagen()</i> haría los mismos pasos que se han
+visto en el método <i>doGet()</i>, volcando la imagen creada a la salida <i>fichero</i>.</p>
+           
+</body>
+</html>

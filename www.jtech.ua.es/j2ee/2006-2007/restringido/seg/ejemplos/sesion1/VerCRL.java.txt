@@ -1,0 +1,75 @@
+import java.io.FileInputStream;
+import java.util.Set;
+import java.util.Iterator;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509CRL;
+import java.security.cert.X509CRLEntry;
+
+public
+class VerCRL
+{
+  public
+  static
+  void
+  main(String [] arstring)
+  {
+    try
+    {
+      // Coger la CertificateFactory
+      CertificateFactory certificatefactory =
+        CertificateFactory.getInstance("X.509");
+      // Cada fichero de la linea de comandos debe tener una única CRL codificada en DER
+      for (int i = 0; i < arstring.length; i++)
+      {
+        // Abrir fichero.
+        FileInputStream fileinputstream = new FileInputStream(arstring[i]);
+        // Generar una X509CRL desde el fichero.
+        X509CRL x509crl =
+          (X509CRL)certificatefactory.generateCRL(fileinputstream);
+        // Imprimir info sobre la crl.
+        System.out.println("---CRL---");
+        System.out.println("tipo = " +
+          x509crl.getType());
+        System.out.println("version = " +
+          x509crl.getVersion());
+        System.out.println("emisor = " +
+          x509crl.getIssuerDN().getName());
+        System.out.println("algoritmo de firma = " +
+          x509crl.getSigAlgName());
+        System.out.println("OID firmante = " +
+          x509crl.getSigAlgOID());
+        System.out.println("esta actualizacion = " +
+          x509crl.getThisUpdate());
+        System.out.println("proxima actualizacion = " +
+          x509crl.getNextUpdate());
+        System.out.println();
+	// Ahora imprimimos la info de las entradas (certificados revocados)
+        System.out.println("---Entradas---");
+        Set setEntries = x509crl.getRevokedCertificates();
+        if (setEntries != null && setEntries.isEmpty() == false)
+        {
+          for (Iterator iterator = setEntries.iterator();
+               iterator.hasNext(); )
+          {
+            X509CRLEntry x509crlentry = (X509CRLEntry)iterator.next();
+            System.out.println("numero de serie = " +
+              x509crlentry.getSerialNumber());
+            System.out.println("fecha de revocacion = " +
+              x509crlentry.getRevocationDate());
+            System.out.println("extensiones = " +
+              x509crlentry.hasExtensions());
+            System.out.println();
+          }
+        }
+        // Hemos acabado.
+        System.out.println("---");
+        // Cerrar fichero.
+        fileinputstream.close();
+      }
+    }
+    catch (Exception exception)
+    {
+      exception.printStackTrace();
+    }
+  }
+}

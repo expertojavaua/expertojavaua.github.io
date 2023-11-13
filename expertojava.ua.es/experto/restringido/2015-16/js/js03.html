@@ -1,0 +1,2753 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 1.5.2">
+<meta name="author" content="Aitor Medrano">
+<title>JavaScript</title>
+<style>/*! normalize.css v2.1.2 | MIT License | git.io/normalize */
+/* ========================================================================== HTML5 display definitions ========================================================================== */
+/** Correct `block` display not defined in IE 8/9. */
+article, aside, details, figcaption, figure, footer, header, hgroup, main, nav, section, summary { display: block; }
+
+/** Correct `inline-block` display not defined in IE 8/9. */
+audio, canvas, video { display: inline-block; }
+
+/** Prevent modern browsers from displaying `audio` without controls. Remove excess height in iOS 5 devices. */
+audio:not([controls]) { display: none; height: 0; }
+
+/** Address `[hidden]` styling not present in IE 8/9. Hide the `template` element in IE, Safari, and Firefox < 22. */
+[hidden], template { display: none; }
+
+script { display: none !important; }
+
+/* ========================================================================== Base ========================================================================== */
+/** 1. Set default font family to sans-serif. 2. Prevent iOS text size adjust after orientation change, without disabling user zoom. */
+html { font-family: sans-serif; /* 1 */ -ms-text-size-adjust: 100%; /* 2 */ -webkit-text-size-adjust: 100%; /* 2 */ }
+
+/** Remove default margin. */
+body { margin: 0; }
+
+/* ========================================================================== Links ========================================================================== */
+/** Remove the gray background color from active links in IE 10. */
+a { background: transparent; }
+
+/** Address `outline` inconsistency between Chrome and other browsers. */
+a:focus { outline: thin dotted; }
+
+/** Improve readability when focused and also mouse hovered in all browsers. */
+a:active, a:hover { outline: 0; }
+
+/* ========================================================================== Typography ========================================================================== */
+/** Address variable `h1` font-size and margin within `section` and `article` contexts in Firefox 4+, Safari 5, and Chrome. */
+h1 { font-size: 2em; margin: 0.67em 0; }
+
+/** Address styling not present in IE 8/9, Safari 5, and Chrome. */
+abbr[title] { border-bottom: 1px dotted; }
+
+/** Address style set to `bolder` in Firefox 4+, Safari 5, and Chrome. */
+b, strong { font-weight: bold; }
+
+/** Address styling not present in Safari 5 and Chrome. */
+dfn { font-style: italic; }
+
+/** Address differences between Firefox and other browsers. */
+hr { -moz-box-sizing: content-box; box-sizing: content-box; height: 0; }
+
+/** Address styling not present in IE 8/9. */
+mark { background: #ff0; color: #000; }
+
+/** Correct font family set oddly in Safari 5 and Chrome. */
+code, kbd, pre, samp { font-family: monospace, serif; font-size: 1em; }
+
+/** Improve readability of pre-formatted text in all browsers. */
+pre { white-space: pre-wrap; }
+
+/** Set consistent quote types. */
+q { quotes: "\201C" "\201D" "\2018" "\2019"; }
+
+/** Address inconsistent and variable font size in all browsers. */
+small { font-size: 80%; }
+
+/** Prevent `sub` and `sup` affecting `line-height` in all browsers. */
+sub, sup { font-size: 75%; line-height: 0; position: relative; vertical-align: baseline; }
+
+sup { top: -0.5em; }
+
+sub { bottom: -0.25em; }
+
+/* ========================================================================== Embedded content ========================================================================== */
+/** Remove border when inside `a` element in IE 8/9. */
+img { border: 0; }
+
+/** Correct overflow displayed oddly in IE 9. */
+svg:not(:root) { overflow: hidden; }
+
+/* ========================================================================== Figures ========================================================================== */
+/** Address margin not present in IE 8/9 and Safari 5. */
+figure { margin: 0; }
+
+/* ========================================================================== Forms ========================================================================== */
+/** Define consistent border, margin, and padding. */
+fieldset { border: 1px solid #c0c0c0; margin: 0 2px; padding: 0.35em 0.625em 0.75em; }
+
+/** 1. Correct `color` not being inherited in IE 8/9. 2. Remove padding so people aren't caught out if they zero out fieldsets. */
+legend { border: 0; /* 1 */ padding: 0; /* 2 */ }
+
+/** 1. Correct font family not being inherited in all browsers. 2. Correct font size not being inherited in all browsers. 3. Address margins set differently in Firefox 4+, Safari 5, and Chrome. */
+button, input, select, textarea { font-family: inherit; /* 1 */ font-size: 100%; /* 2 */ margin: 0; /* 3 */ }
+
+/** Address Firefox 4+ setting `line-height` on `input` using `!important` in the UA stylesheet. */
+button, input { line-height: normal; }
+
+/** Address inconsistent `text-transform` inheritance for `button` and `select`. All other form control elements do not inherit `text-transform` values. Correct `button` style inheritance in Chrome, Safari 5+, and IE 8+. Correct `select` style inheritance in Firefox 4+ and Opera. */
+button, select { text-transform: none; }
+
+/** 1. Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio` and `video` controls. 2. Correct inability to style clickable `input` types in iOS. 3. Improve usability and consistency of cursor style between image-type `input` and others. */
+button, html input[type="button"], input[type="reset"], input[type="submit"] { -webkit-appearance: button; /* 2 */ cursor: pointer; /* 3 */ }
+
+/** Re-set default cursor for disabled elements. */
+button[disabled], html input[disabled] { cursor: default; }
+
+/** 1. Address box sizing set to `content-box` in IE 8/9. 2. Remove excess padding in IE 8/9. */
+input[type="checkbox"], input[type="radio"] { box-sizing: border-box; /* 1 */ padding: 0; /* 2 */ }
+
+/** 1. Address `appearance` set to `searchfield` in Safari 5 and Chrome. 2. Address `box-sizing` set to `border-box` in Safari 5 and Chrome (include `-moz` to future-proof). */
+input[type="search"] { -webkit-appearance: textfield; /* 1 */ -moz-box-sizing: content-box; -webkit-box-sizing: content-box; /* 2 */ box-sizing: content-box; }
+
+/** Remove inner padding and search cancel button in Safari 5 and Chrome on OS X. */
+input[type="search"]::-webkit-search-cancel-button, input[type="search"]::-webkit-search-decoration { -webkit-appearance: none; }
+
+/** Remove inner padding and border in Firefox 4+. */
+button::-moz-focus-inner, input::-moz-focus-inner { border: 0; padding: 0; }
+
+/** 1. Remove default vertical scrollbar in IE 8/9. 2. Improve readability and alignment in all browsers. */
+textarea { overflow: auto; /* 1 */ vertical-align: top; /* 2 */ }
+
+/* ========================================================================== Tables ========================================================================== */
+/** Remove most spacing between table cells. */
+table { border-collapse: collapse; border-spacing: 0; }
+
+meta.foundation-mq-small { font-family: "only screen and (min-width: 768px)"; width: 768px; }
+
+meta.foundation-mq-medium { font-family: "only screen and (min-width:1280px)"; width: 1280px; }
+
+meta.foundation-mq-large { font-family: "only screen and (min-width:1440px)"; width: 1440px; }
+
+*, *:before, *:after { -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
+
+html, body { font-size: 97%; }
+
+body { background: white; color: #222222; padding: 0; margin: 0; font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif; font-weight: normal; font-style: normal; line-height: 1; position: relative; cursor: auto; }
+
+a:hover { cursor: pointer; }
+
+img, object, embed { max-width: 100%; height: auto; }
+
+object, embed { height: 100%; }
+
+img { -ms-interpolation-mode: bicubic; }
+
+#map_canvas img, #map_canvas embed, #map_canvas object, .map_canvas img, .map_canvas embed, .map_canvas object { max-width: none !important; }
+
+.left { float: left !important; }
+
+.right { float: right !important; }
+
+.text-left { text-align: left !important; }
+
+.text-right { text-align: right !important; }
+
+.text-center { text-align: center !important; }
+
+.text-justify { text-align: justify !important; }
+
+.hide { display: none; }
+
+.antialiased, body { -webkit-font-smoothing: antialiased; }
+
+img { display: inline-block; vertical-align: middle; }
+
+textarea { height: auto; min-height: 50px; }
+
+select { width: 100%; }
+
+p.lead, .paragraph.lead > p, #preamble > .sectionbody > .paragraph:first-of-type p { font-size: 1.21875em; line-height: 1.6; }
+
+.subheader, .admonitionblock td.content > .title, .audioblock > .title, .exampleblock > .title, .imageblock > .title, .listingblock > .title, .literalblock > .title, .stemblock > .title, .openblock > .title, .paragraph > .title, .quoteblock > .title, table.tableblock > .title, .verseblock > .title, .videoblock > .title, .dlist > .title, .olist > .title, .ulist > .title, .qlist > .title, .hdlist > .title { line-height: 1.4; color: #6f6f6f; font-weight: 300; margin-top: 0.2em; margin-bottom: 0.5em; }
+
+/* Typography resets */
+div, dl, dt, dd, ul, ol, li, h1, h2, h3, #toctitle, .sidebarblock > .content > .title, h4, h5, h6, pre, form, p, blockquote, th, td { margin: 0; padding: 0; direction: ltr; }
+
+/* Default Link Styles */
+a { color: #1164be; text-decoration: none; line-height: inherit; }
+a img { border: none; }
+
+/* Default paragraph styles */
+p { font-family: inherit; font-weight: normal; font-size: 1em; line-height: 1.4; margin-bottom: 1em; text-rendering: optimizeLegibility; }
+p aside { font-size: 0.875em; line-height: 1.35; font-style: italic; }
+
+/* Default header styles */
+h1, h2, h3, #toctitle, .sidebarblock > .content > .title, h4, h5, h6 { font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif; font-weight: bold; font-style: normal; color: #1c355e; text-rendering: optimizeLegibility; margin-top: 1em; margin-bottom: 0.5em; line-height: 1.2125em; }
+h1 small, h2 small, h3 small, #toctitle small, .sidebarblock > .content > .title small, h4 small, h5 small, h6 small { font-size: 60%; color: #6f6f6f; line-height: 0; }
+
+h1 { font-size: 2.125em; }
+
+h2 { font-size: 1.6875em; }
+
+h3, #toctitle, .sidebarblock > .content > .title { font-size: 1.375em; }
+
+h4 { font-size: 1.125em; }
+
+h5 { font-size: 1.125em; }
+
+h6 { font-size: 1em; }
+
+hr { border: solid #dddddd; border-width: 1px 0 0; clear: both; margin: 1.25em 0 1.1875em; height: 0; }
+
+/* Helpful Typography Defaults */
+em, i { font-style: italic; line-height: inherit; }
+
+strong, b { font-weight: bold; line-height: inherit; }
+
+small { font-size: 60%; line-height: inherit; }
+
+code { font-family: Consolas, "Liberation Mono", Courier, monospace; font-weight: bold; }
+
+/* Lists */
+ul, ol, dl { font-size: 1em; line-height: 1.4; margin-bottom: 1.25em; list-style-position: outside; font-family: inherit; }
+
+ul, ol { margin-left: 2.5em; }
+ul.no-bullet, ol.no-bullet { margin-left: 1.5em; }
+
+/* Unordered Lists */
+ul li ul, ul li ol { margin-left: 1.25em; margin-bottom: 0; font-size: 1em; /* Override nested font-size change */ }
+ul.square li ul, ul.circle li ul, ul.disc li ul { list-style: inherit; }
+ul.square { list-style-type: square; }
+ul.circle { list-style-type: circle; }
+ul.disc { list-style-type: disc; }
+ul.no-bullet { list-style: none; }
+
+/* Ordered Lists */
+ol li ul, ol li ol { margin-left: 1.25em; margin-bottom: 0; }
+
+/* Definition Lists */
+dl dt { margin-bottom: 0.3125em; font-weight: bold; }
+dl dd { margin-bottom: 1.25em; }
+
+/* Abbreviations */
+abbr, acronym { text-transform: uppercase; font-size: 90%; color: #222222; border-bottom: 1px dotted #dddddd; cursor: help; }
+
+abbr { text-transform: none; }
+
+/* Blockquotes */
+blockquote { margin: 0 0 1.25em; padding: 0.5625em 1.25em 0 1.1875em; border-left: 1px solid #dddddd; }
+blockquote cite { display: block; font-size: 0.8125em; color: #555555; }
+blockquote cite:before { content: "\2014 \0020"; }
+blockquote cite a, blockquote cite a:visited { color: #555555; }
+
+blockquote, blockquote p { line-height: 1.6; color: #6f6f6f; }
+
+/* Microformats */
+.vcard { display: inline-block; margin: 0 0 1.25em 0; border: 1px solid #dddddd; padding: 0.625em 0.75em; }
+.vcard li { margin: 0; display: block; }
+.vcard .fn { font-weight: bold; font-size: 0.9375em; }
+
+.vevent .summary { font-weight: bold; }
+.vevent abbr { cursor: auto; text-decoration: none; font-weight: bold; border: none; padding: 0 0.0625em; }
+
+/*@media only screen and (min-width: 768px) { h1, h2, h3, #toctitle, .sidebarblock > .content > .title, h4, h5, h6 { line-height: 1.4; }
+  h1 { font-size: 2.75em; }
+  h2 { font-size: 2.3125em; }
+  h3, #toctitle, .sidebarblock > .content > .title { font-size: 1.6875em; }
+  h4 { font-size: 1.4375em; } }*/
+/* Tables */
+table { background: white; margin-bottom: 1.25em; border: solid 1px #dddddd; }
+table thead, table tfoot { background: whitesmoke; font-weight: bold; }
+table thead tr th, table thead tr td, table tfoot tr th, table tfoot tr td { padding: 0.5em 0.625em 0.625em; font-size: inherit; color: #222222; text-align: left; }
+table tr th, table tr td { padding: 0.5625em 0.625em; font-size: inherit; color: #222222; }
+table tr.even, table tr.alt, table tr:nth-of-type(even) { background: #f9f9f9; }
+table thead tr th, table tfoot tr th, table tbody tr td, table tr td, table tfoot tr td { display: table-cell; line-height: 1.4; }
+
+h1, h2, h3, #toctitle, .sidebarblock > .content > .title, h4, h5, h6 { line-height: 1.4; border-bottom: 1px solid #dddddd }
+
+.clearfix:before, .clearfix:after, .float-group:before, .float-group:after { content: " "; display: table; }
+.clearfix:after, .float-group:after { clear: both; }
+
+*:not(pre) > code { font-size: inherit; font-style: normal !important; letter-spacing: 0; padding: 3px 2px 1px 2px; background-color: #eeeeee; border: 1px solid #dddddd; -webkit-border-radius: 0; border-radius: 0; line-height: inherit; font-weight: normal; }
+
+pre, pre > code { line-height: 1.4; color: black; font-family: monospace, serif; font-weight: normal; }
+
+.keyseq { color: #555555; }
+
+kbd { display: inline-block; color: #222222; font-size: 0.75em; line-height: 1.4; background-color: #f7f7f7; border: 1px solid #ccc; -webkit-border-radius: 3px; border-radius: 3px; -webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 0 0 0.1em white inset; box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 0 0 0.1em white inset; margin: -0.15em 0.15em 0 0.15em; padding: 0.2em 0.6em 0.2em 0.5em; vertical-align: middle; white-space: nowrap; }
+
+.keyseq kbd:first-child { margin-left: 0; }
+
+.keyseq kbd:last-child { margin-right: 0; }
+
+.menuseq, .menu { color: #090909; }
+
+b.button:before, b.button:after { position: relative; top: -1px; font-weight: normal; }
+
+b.button:before { content: "["; padding: 0 3px 0 2px; }
+
+b.button:after { content: "]"; padding: 0 2px 0 3px; }
+
+#header, #content, #footnotes, #footer { width: 100%; margin-left: auto; margin-right: auto; margin-top: 0; margin-bottom: 0; max-width: 62.5em; *zoom: 1; position: relative; padding-left: 0.9375em; padding-right: 0.9375em; }
+#header:before, #header:after, #content:before, #content:after, #footnotes:before, #footnotes:after, #footer:before, #footer:after { content: " "; display: table; }
+#header:after, #content:after, #footnotes:after, #footer:after { clear: both; }
+
+#content { margin-top: 1.25em; }
+
+#content:before { content: none; }
+
+#header > h1:first-child { color: black; margin-top: 2.25rem; margin-bottom: 0; }
+#header > h1:first-child + #toc { margin-top: 8px; border-top: 1px solid #dddddd; }
+#header > h1:only-child, body.toc2 #header > h1:nth-last-child(2) { border-bottom: 1px solid #dddddd; padding-bottom: 8px; }
+#header .details { border-bottom: 1px solid #dddddd; line-height: 1.45; padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; color: #555555; display: -ms-flexbox; display: -webkit-flex; display: flex; -ms-flex-flow: row wrap; -webkit-flex-flow: row wrap; flex-flow: row wrap; }
+#header .details span:first-child { margin-left: -0.125em; }
+#header .details span.email a { color: #6f6f6f; }
+#header .details br { display: none; }
+#header .details br + span:before { content: "\00a0\2013\00a0"; }
+#header .details br + span.author:before { content: "\00a0\22c5\00a0"; color: #6f6f6f; }
+#header .details br + span#revremark:before { content: "\00a0|\00a0"; }
+#header #revnumber { text-transform: capitalize; }
+#header #revnumber:after { content: "\00a0"; }
+
+#content > h1:first-child:not([class]) { color: black; border-bottom: 1px solid #dddddd; padding-bottom: 8px; margin-top: 0; padding-top: 1rem; margin-bottom: 1.25rem; }
+
+#floating {
+  position: fixed;
+  z-index: 1000;
+  padding: 0.5em;
+  right: 0;
+  top: 0;
+  background: white;
+  box-shadow: 0 0 1em #777777;
+  -webkit-box-shadow: 0 0 1em #777777;
+  -moz-box-shadow: 0 0 1em #777777;
+  -webkit-border-bottom-left-radius: 5px;
+  -moz-border-radius-bottomleft: 5px;
+  max-height: 80%;
+  overflow: auto;
+}
+
+#floating #full { display: none; } /* Hide the full TOC by default */
+
+#floating:hover #full{
+  display: block; /* Show it on hover */
+}
+
+
+#toc { border-bottom: 1px solid #dddddd; padding-bottom: 0.5em; }
+#toc > ul { margin-left: 0.125em; }
+#toc ul.sectlevel0 > li > a { font-style: italic; }
+#toc ul.sectlevel0 ul.sectlevel1 { margin: 0.5em 0; }
+#toc ul { font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif; list-style-type: none; }
+#toc a { text-decoration: none; }
+#toc a:active { text-decoration: underline; }
+
+#toctitle { color: #6f6f6f; font-size: 1.2em; }
+
+@media only screen and (min-width: 768px) { #toctitle { font-size: 1.375em; }
+  body.toc2 { padding-left: 15em; padding-right: 0; }
+  #toc.toc2 { margin-top: 0 !important; background-color: #f2f2f2; position: fixed; width: 15em; left: 0; top: 0; border-right: 1px solid #dddddd; border-top-width: 0 !important; border-bottom-width: 0 !important; z-index: 1000; padding: 1.25em 1em; height: 100%; overflow: auto; }
+  #toc.toc2 #toctitle { margin-top: 0; font-size: 1.2em; }
+  #toc.toc2 > ul { font-size: 0.9em; margin-bottom: 0; }
+  #toc.toc2 ul ul { margin-left: 0; padding-left: 1em; }
+  #toc.toc2 ul.sectlevel0 ul.sectlevel1 { padding-left: 0; margin-top: 0.5em; margin-bottom: 0.5em; }
+  body.toc2.toc-right { padding-left: 0; padding-right: 15em; }
+  body.toc2.toc-right #toc.toc2 { border-right-width: 0; border-left: 1px solid #dddddd; left: auto; right: 0; } }
+@media only screen and (min-width: 1280px) { body.toc2 { padding-left: 20em; padding-right: 0; }
+  #toc.toc2 { width: 20em; }
+  #toc.toc2 #toctitle { font-size: 1.375em; }
+  #toc.toc2 > ul { font-size: 0.95em; }
+  #toc.toc2 ul ul { padding-left: 1.25em; }
+  body.toc2.toc-right { padding-left: 0; padding-right: 20em; } }
+#content #toc { border-style: solid; border-width: 1px; border-color: #d9d9d9; margin-bottom: 1.25em; padding: 1.25em; background: #f2f2f2; -webkit-border-radius: 0; border-radius: 0; }
+#content #toc > :first-child { margin-top: 0; }
+#content #toc > :last-child { margin-bottom: 0; }
+
+#footer { max-width: 100%; background-color: #222222; padding: 1.25em; }
+
+#footer-text { color: #dddddd; line-height: 1.44; }
+
+.sect1 { padding-bottom: 0.625em; }
+
+@media only screen and (min-width: 768px) { .sect1 { padding-bottom: 1.25em; } }
+.sect1 + .sect1 { border-top: 1px solid #dddddd; }
+
+#content h1 > a.anchor, h2 > a.anchor, h3 > a.anchor, #toctitle > a.anchor, .sidebarblock > .content > .title > a.anchor, h4 > a.anchor, h5 > a.anchor, h6 > a.anchor { position: absolute; z-index: 1001; width: 1.5ex; margin-left: -1.5ex; display: block; text-decoration: none !important; visibility: hidden; text-align: center; font-weight: normal; }
+#content h1 > a.anchor:before, h2 > a.anchor:before, h3 > a.anchor:before, #toctitle > a.anchor:before, .sidebarblock > .content > .title > a.anchor:before, h4 > a.anchor:before, h5 > a.anchor:before, h6 > a.anchor:before { content: "\00A7"; font-size: 0.85em; display: block; padding-top: 0.1em; }
+#content h1:hover > a.anchor, #content h1 > a.anchor:hover, h2:hover > a.anchor, h2 > a.anchor:hover, h3:hover > a.anchor, #toctitle:hover > a.anchor, .sidebarblock > .content > .title:hover > a.anchor, h3 > a.anchor:hover, #toctitle > a.anchor:hover, .sidebarblock > .content > .title > a.anchor:hover, h4:hover > a.anchor, h4 > a.anchor:hover, h5:hover > a.anchor, h5 > a.anchor:hover, h6:hover > a.anchor, h6 > a.anchor:hover { visibility: visible; }
+#content h1 > a.link, h2 > a.link, h3 > a.link, #toctitle > a.link, .sidebarblock > .content > .title > a.link, h4 > a.link, h5 > a.link, h6 > a.link { color: #222222; text-decoration: none; }
+#content h1 > a.link:hover, h2 > a.link:hover, h3 > a.link:hover, #toctitle > a.link:hover, .sidebarblock > .content > .title > a.link:hover, h4 > a.link:hover, h5 > a.link:hover, h6 > a.link:hover { color: #151515; }
+
+.audioblock, .imageblock, .literalblock, .listingblock, .stemblock, .videoblock { margin-bottom: 1.25em; }
+
+.admonitionblock td.content > .title, .audioblock > .title, .exampleblock > .title, .imageblock > .title, .listingblock > .title, .literalblock > .title, .stemblock > .title, .openblock > .title, .paragraph > .title, .quoteblock > .title, table.tableblock > .title, .verseblock > .title, .videoblock > .title, .dlist > .title, .olist > .title, .ulist > .title, .qlist > .title, .hdlist > .title { text-rendering: optimizeLegibility; text-align: left; }
+
+table.tableblock > caption.title { white-space: nowrap; overflow: visible; max-width: 0; }
+
+.paragraph.lead > p, #preamble > .sectionbody > .paragraph:first-of-type p { color: black; }
+
+table.tableblock #preamble > .sectionbody > .paragraph:first-of-type p { font-size: inherit; }
+
+.admonitionblock > table { border-collapse: separate; border: 0; background: none; width: 100%; }
+.admonitionblock > table td.icon { text-align: center; width: 80px; }
+.admonitionblock > table td.icon img { max-width: none; }
+.admonitionblock > table td.icon .title { font-weight: bold; font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif; text-transform: uppercase; }
+.admonitionblock > table td.content { padding-left: 1.125em; padding-right: 1.25em; border-left: 1px solid #dddddd; color: #555555; }
+.admonitionblock > table td.content > :last-child > :last-child { margin-bottom: 0; }
+
+.exampleblock > .content { border-style: solid; border-width: 1px; border-color: #e6e6e6; margin-bottom: 1.25em; padding: 1.25em; background: white; -webkit-border-radius: 0; border-radius: 0; }
+.exampleblock > .content > :first-child { margin-top: 0; }
+.exampleblock > .content > :last-child { margin-bottom: 0; }
+
+.sidebarblock { border-style: solid; border-width: 1px; border-color: #d9d9d9; margin-bottom: 1.25em; padding: 1.25em; background: #f2f2f2; -webkit-border-radius: 0; border-radius: 0; }
+.sidebarblock > :first-child { margin-top: 0; }
+.sidebarblock > :last-child { margin-bottom: 0; }
+.sidebarblock > .content > .title { color: #6f6f6f; margin-top: 0; }
+
+.exampleblock > .content > :last-child > :last-child, .exampleblock > .content .olist > ol > li:last-child > :last-child, .exampleblock > .content .ulist > ul > li:last-child > :last-child, .exampleblock > .content .qlist > ol > li:last-child > :last-child, .sidebarblock > .content > :last-child > :last-child, .sidebarblock > .content .olist > ol > li:last-child > :last-child, .sidebarblock > .content .ulist > ul > li:last-child > :last-child, .sidebarblock > .content .qlist > ol > li:last-child > :last-child { margin-bottom: 0; }
+
+.literalblock pre, .listingblock pre:not(.highlight), .listingblock pre[class="highlight"], .listingblock pre[class^="highlight "], .listingblock pre.CodeRay, .listingblock pre.prettyprint { background: #eeeeee; }
+.sidebarblock .literalblock pre, .sidebarblock .listingblock pre:not(.highlight), .sidebarblock .listingblock pre[class="highlight"], .sidebarblock .listingblock pre[class^="highlight "], .sidebarblock .listingblock pre.CodeRay, .sidebarblock .listingblock pre.prettyprint { background: #f2f1f1; }
+
+.literalblock pre, .literalblock pre[class], .listingblock pre, .listingblock pre[class] { border: 1px solid #cccccc; -webkit-border-radius: 0; border-radius: 0; word-wrap: break-word; padding: 0.8em 0.8em 0.65em 0.8em; font-size: 0.8125em; }
+.literalblock pre.nowrap, .literalblock pre[class].nowrap, .listingblock pre.nowrap, .listingblock pre[class].nowrap { overflow-x: auto; white-space: pre; word-wrap: normal; }
+@media only screen and (min-width: 768px) { .literalblock pre, .literalblock pre[class], .listingblock pre, .listingblock pre[class] { font-size: 0.90625em; } }
+@media only screen and (min-width: 1280px) { .literalblock pre, .literalblock pre[class], .listingblock pre, .listingblock pre[class] { font-size: 1em; } }
+
+.literalblock.output pre { color: #eeeeee; background-color: black; }
+
+.listingblock pre.highlightjs { padding: 0; }
+.listingblock pre.highlightjs > code { padding: 0.8em 0.8em 0.65em 0.8em; -webkit-border-radius: 0; border-radius: 0; }
+
+.listingblock > .content { position: relative; }
+
+.listingblock code[data-lang]:before { display: none; content: attr(data-lang); position: absolute; font-size: 0.75em; top: 0.425rem; right: 0.5rem; line-height: 1; text-transform: uppercase; color: #999; }
+
+.listingblock:hover code[data-lang]:before { display: block; }
+
+.listingblock.terminal pre .command:before { content: attr(data-prompt); padding-right: 0.5em; color: #999; }
+
+.listingblock.terminal pre .command:not([data-prompt]):before { content: "$"; }
+
+table.pyhltable { border-collapse: separate; border: 0; margin-bottom: 0; background: none; }
+
+table.pyhltable td { vertical-align: top; padding-top: 0; padding-bottom: 0; }
+
+table.pyhltable td.code { padding-left: .75em; padding-right: 0; }
+
+pre.pygments .lineno, table.pyhltable td:not(.code) { color: #999; padding-left: 0; padding-right: .5em; border-right: 1px solid #dddddd; }
+
+pre.pygments .lineno { display: inline-block; margin-right: .25em; }
+
+table.pyhltable .linenodiv { background: none !important; padding-right: 0 !important; }
+
+.quoteblock { margin: 0 1em 1.25em 1.5em; display: table; }
+.quoteblock > .title { margin-left: -1.5em; margin-bottom: 0.75em; }
+.quoteblock blockquote, .quoteblock blockquote p { color: #6f6f6f; font-size: 1.15rem; line-height: 1.75; word-spacing: 0.1em; letter-spacing: 0; font-style: italic; text-align: justify; }
+.quoteblock blockquote { margin: 0; padding: 0; border: 0; }
+.quoteblock blockquote:before { content: "\201c"; float: left; font-size: 2.75em; font-weight: bold; line-height: 0.6em; margin-left: -0.6em; color: #6f6f6f; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); }
+.quoteblock blockquote > .paragraph:last-child p { margin-bottom: 0; }
+.quoteblock .attribution { margin-top: 0.5em; margin-right: 0.5ex; text-align: right; }
+.quoteblock .quoteblock { margin-left: 0; margin-right: 0; padding: 0.5em 0; border-left: 3px solid #555555; }
+.quoteblock .quoteblock blockquote { padding: 0 0 0 0.75em; }
+.quoteblock .quoteblock blockquote:before { display: none; }
+
+.verseblock { margin: 0 1em 1.25em 1em; }
+.verseblock pre { font-family: "Open Sans", "DejaVu Sans", sans; font-size: 1.15rem; color: #6f6f6f; font-weight: 300; text-rendering: optimizeLegibility; }
+.verseblock pre strong { font-weight: 400; }
+.verseblock .attribution { margin-top: 1.25rem; margin-left: 0.5ex; }
+
+.quoteblock .attribution, .verseblock .attribution { font-size: 0.8125em; line-height: 1.45; font-style: italic; }
+.quoteblock .attribution br, .verseblock .attribution br { display: none; }
+.quoteblock .attribution cite, .verseblock .attribution cite { display: block; letter-spacing: -0.05em; color: #555555; }
+
+.quoteblock.abstract { margin: 0 0 1.25em 0; display: block; }
+.quoteblock.abstract blockquote, .quoteblock.abstract blockquote p { text-align: left; word-spacing: 0; }
+.quoteblock.abstract blockquote:before, .quoteblock.abstract blockquote p:first-of-type:before { display: none; }
+
+table.tableblock { max-width: 100%; border-collapse: separate; }
+table.tableblock td > .paragraph:last-child p > p:last-child, table.tableblock th > p:last-child, table.tableblock td > p:last-child { margin-bottom: 0; }
+
+table.spread { width: 100%; }
+
+table.tableblock, th.tableblock, td.tableblock { border: 0 solid #dddddd; }
+
+table.grid-all th.tableblock, table.grid-all td.tableblock { border-width: 0 1px 1px 0; }
+
+table.grid-all tfoot > tr > th.tableblock, table.grid-all tfoot > tr > td.tableblock { border-width: 1px 1px 0 0; }
+
+table.grid-cols th.tableblock, table.grid-cols td.tableblock { border-width: 0 1px 0 0; }
+
+table.grid-all * > tr > .tableblock:last-child, table.grid-cols * > tr > .tableblock:last-child { border-right-width: 0; }
+
+table.grid-rows th.tableblock, table.grid-rows td.tableblock { border-width: 0 0 1px 0; }
+
+table.grid-all tbody > tr:last-child > th.tableblock, table.grid-all tbody > tr:last-child > td.tableblock, table.grid-all thead:last-child > tr > th.tableblock, table.grid-rows tbody > tr:last-child > th.tableblock, table.grid-rows tbody > tr:last-child > td.tableblock, table.grid-rows thead:last-child > tr > th.tableblock { border-bottom-width: 0; }
+
+table.grid-rows tfoot > tr > th.tableblock, table.grid-rows tfoot > tr > td.tableblock { border-width: 1px 0 0 0; }
+
+table.frame-all { border-width: 1px; }
+
+table.frame-sides { border-width: 0 1px; }
+
+table.frame-topbot { border-width: 1px 0; }
+
+th.halign-left, td.halign-left { text-align: left; }
+
+th.halign-right, td.halign-right { text-align: right; }
+
+th.halign-center, td.halign-center { text-align: center; }
+
+th.valign-top, td.valign-top { vertical-align: top; }
+
+th.valign-bottom, td.valign-bottom { vertical-align: bottom; }
+
+th.valign-middle, td.valign-middle { vertical-align: middle; }
+
+table thead th, table tfoot th { font-weight: bold; }
+
+tbody tr th { display: table-cell; line-height: 1.4; background: whitesmoke; }
+
+tbody tr th, tbody tr th p, tfoot tr th, tfoot tr th p { color: #222222; font-weight: bold; }
+
+p.tableblock > code:only-child { background: none; padding: 0; }
+
+p.tableblock { font-size: 1em; }
+
+td > div.verse { white-space: pre; }
+
+ol { margin-left: 2.5em; }
+
+ul li ol { margin-left: 1.5em; }
+
+dl dd { margin-left: 1.125em; }
+
+dl dd:last-child, dl dd:last-child > :last-child { margin-bottom: 0; }
+
+ol > li p, ul > li p, ul dd, ol dd, .olist .olist, .ulist .ulist, .ulist .olist, .olist .ulist { margin-bottom: 0.625em; }
+
+ul.unstyled, ol.unnumbered, ul.checklist, ul.none { list-style-type: none; }
+
+ul.unstyled, ol.unnumbered, ul.checklist { margin-left: 0.625em; }
+
+ul.checklist li > p:first-child > .fa-check-square-o:first-child, ul.checklist li > p:first-child > input[type="checkbox"]:first-child { margin-right: 0.25em; }
+
+ul.checklist li > p:first-child > input[type="checkbox"]:first-child { position: relative; top: 1px; }
+
+ul.inline { margin: 0 auto 0.625em auto; margin-left: -1.375em; margin-right: 0; padding: 0; list-style: none; overflow: hidden; }
+ul.inline > li { list-style: none; float: left; margin-left: 1.375em; display: block; }
+ul.inline > li > * { display: block; }
+
+.unstyled dl dt { font-weight: normal; font-style: normal; }
+
+ol.arabic { list-style-type: decimal; }
+
+ol.decimal { list-style-type: decimal-leading-zero; }
+
+ol.loweralpha { list-style-type: lower-alpha; }
+
+ol.upperalpha { list-style-type: upper-alpha; }
+
+ol.lowerroman { list-style-type: lower-roman; }
+
+ol.upperroman { list-style-type: upper-roman; }
+
+ol.lowergreek { list-style-type: lower-greek; }
+
+.hdlist > table, .colist > table { border: 0; background: none; }
+.hdlist > table > tbody > tr, .colist > table > tbody > tr { background: none; }
+
+td.hdlist1 { padding-right: .75em; font-weight: bold; }
+
+td.hdlist1, td.hdlist2 { vertical-align: top; }
+
+.literalblock + .colist, .listingblock + .colist { margin-top: -0.5em; }
+
+.colist > table tr > td:first-of-type { padding: 0 0.75em; line-height: 1; }
+.colist > table tr > td:last-of-type { padding: 0.25em 0; }
+
+.thumb, .th { line-height: 0; display: inline-block; border: solid 4px white; -webkit-box-shadow: 0 0 0 1px #dddddd; box-shadow: 0 0 0 1px #dddddd; }
+
+.imageblock.left, .imageblock[style*="float: left"] { margin: 0.25em 0.625em 1.25em 0; }
+.imageblock.right, .imageblock[style*="float: right"] { margin: 0.25em 0 1.25em 0.625em; }
+.imageblock > .title { margin-bottom: 0; }
+.imageblock.thumb, .imageblock.th { border-width: 6px; }
+.imageblock.thumb > .title, .imageblock.th > .title { padding: 0 0.125em; }
+
+.image.left, .image.right { margin-top: 0.25em; margin-bottom: 0.25em; display: inline-block; line-height: 0; }
+.image.left { margin-right: 0.625em; }
+.image.right { margin-left: 0.625em; }
+
+a.image { text-decoration: none; }
+
+span.footnote, span.footnoteref { vertical-align: super; font-size: 0.875em; }
+span.footnote a, span.footnoteref a { text-decoration: none; }
+span.footnote a:active, span.footnoteref a:active { text-decoration: underline; }
+
+#footnotes { padding-top: 0.75em; padding-bottom: 0.75em; margin-bottom: 0.625em; }
+#footnotes hr { width: 20%; min-width: 6.25em; margin: -.25em 0 .75em 0; border-width: 1px 0 0 0; }
+#footnotes .footnote { padding: 0 0.375em; line-height: 1.3; font-size: 0.875em; margin-left: 1.2em; text-indent: -1.2em; margin-bottom: .2em; }
+#footnotes .footnote a:first-of-type { font-weight: bold; text-decoration: none; }
+#footnotes .footnote:last-of-type { margin-bottom: 0; }
+
+#content #footnotes { margin-top: -0.625em; margin-bottom: 0; padding: 0.75em 0; }
+
+.gist .file-data > table { border: 0; background: #fff; width: 100%; margin-bottom: 0; }
+.gist .file-data > table td.line-data { width: 99%; }
+
+div.unbreakable { page-break-inside: avoid; }
+
+.big { font-size: larger; }
+
+.small { font-size: smaller; }
+
+.underline { text-decoration: underline; }
+
+.overline { text-decoration: overline; }
+
+.line-through { text-decoration: line-through; }
+
+.aqua { color: #00bfbf; }
+
+.aqua-background { background-color: #00fafa; }
+
+.black { color: black; }
+
+.black-background { background-color: black; }
+
+.blue { color: #0000bf; }
+
+.blue-background { background-color: #0000fa; }
+
+.fuchsia { color: #bf00bf; }
+
+.fuchsia-background { background-color: #fa00fa; }
+
+.gray { color: #606060; }
+
+.gray-background { background-color: #7d7d7d; }
+
+.green { color: #006000; }
+
+.green-background { background-color: #007d00; }
+
+.lime { color: #00bf00; }
+
+.lime-background { background-color: #00fa00; }
+
+.maroon { color: #600000; }
+
+.maroon-background { background-color: #7d0000; }
+
+.navy { color: #000060; }
+
+.navy-background { background-color: #00007d; }
+
+.olive { color: #606000; }
+
+.olive-background { background-color: #7d7d00; }
+
+.purple { color: #600060; }
+
+.purple-background { background-color: #7d007d; }
+
+.red { color: #bf0000; }
+
+.red-background { background-color: #fa0000; }
+
+.silver { color: #909090; }
+
+.silver-background { background-color: #bcbcbc; }
+
+.teal { color: #006060; }
+
+.teal-background { background-color: #007d7d; }
+
+.white { color: #bfbfbf; }
+
+.white-background { background-color: #fafafa; }
+
+.yellow { color: #bfbf00; }
+
+.yellow-background { background-color: #fafa00; }
+
+span.icon > .fa { cursor: default; }
+
+.admonitionblock td.icon [class^="fa icon-"] { font-size: 2.5em; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); cursor: default; }
+.admonitionblock td.icon .icon-note:before { content: "\f05a"; color: #207c98; }
+.admonitionblock td.icon .icon-tip:before { content: "\f0eb"; text-shadow: 1px 1px 2px rgba(155, 155, 0, 0.8); color: #111; }
+.admonitionblock td.icon .icon-warning:before { content: "\f071"; color: #bf6900; }
+.admonitionblock td.icon .icon-caution:before { content: "\f06d"; color: #bf3400; }
+.admonitionblock td.icon .icon-important:before { content: "\f06a"; color: #bf0000; }
+
+.conum[data-value] { display: inline-block; color: #fff !important; background-color: #222222; -webkit-border-radius: 100px; border-radius: 100px; text-align: center; font-size: 0.75em; width: 1.67em; height: 1.67em; line-height: 1.67em; font-family: "Open Sans", "DejaVu Sans", sans-serif; font-style: normal; font-weight: bold; }
+.conum[data-value] * { color: #fff !important; }
+.conum[data-value] + b { display: none; }
+.conum[data-value]:after { content: attr(data-value); }
+pre .conum[data-value] { position: relative; top: -0.125em; }
+
+b.conum * { color: inherit !important; }
+
+.conum:not([data-value]):empty { display: none; }
+
+.literalblock pre, .listingblock pre { background: #eeeeee; }
+
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css">
+<style>.listingblock .pygments .hll { background-color: #ffffcc }
+.listingblock .pygments  { background: #f8f8f8; }
+.listingblock .pygments .tok-c { color: #408080; font-style: italic } /* Comment */
+.listingblock .pygments .tok-err { border: 1px solid #FF0000 } /* Error */
+.listingblock .pygments .tok-k { color: #008000; font-weight: bold } /* Keyword */
+.listingblock .pygments .tok-o { color: #666666 } /* Operator */
+.listingblock .pygments .tok-cm { color: #408080; font-style: italic } /* Comment.Multiline */
+.listingblock .pygments .tok-cp { color: #BC7A00 } /* Comment.Preproc */
+.listingblock .pygments .tok-c1 { color: #408080; font-style: italic } /* Comment.Single */
+.listingblock .pygments .tok-cs { color: #408080; font-style: italic } /* Comment.Special */
+.listingblock .pygments .tok-gd { color: #A00000 } /* Generic.Deleted */
+.listingblock .pygments .tok-ge { font-style: italic } /* Generic.Emph */
+.listingblock .pygments .tok-gr { color: #FF0000 } /* Generic.Error */
+.listingblock .pygments .tok-gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.listingblock .pygments .tok-gi { color: #00A000 } /* Generic.Inserted */
+.listingblock .pygments .tok-go { color: #888888 } /* Generic.Output */
+.listingblock .pygments .tok-gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.listingblock .pygments .tok-gs { font-weight: bold } /* Generic.Strong */
+.listingblock .pygments .tok-gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.listingblock .pygments .tok-gt { color: #0044DD } /* Generic.Traceback */
+.listingblock .pygments .tok-kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.listingblock .pygments .tok-kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.listingblock .pygments .tok-kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.listingblock .pygments .tok-kp { color: #008000 } /* Keyword.Pseudo */
+.listingblock .pygments .tok-kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.listingblock .pygments .tok-kt { color: #B00040 } /* Keyword.Type */
+.listingblock .pygments .tok-m { color: #666666 } /* Literal.Number */
+.listingblock .pygments .tok-s { color: #BA2121 } /* Literal.String */
+.listingblock .pygments .tok-na { color: #7D9029 } /* Name.Attribute */
+.listingblock .pygments .tok-nb { color: #008000 } /* Name.Builtin */
+.listingblock .pygments .tok-nc { color: #0000FF; font-weight: bold } /* Name.Class */
+.listingblock .pygments .tok-no { color: #880000 } /* Name.Constant */
+.listingblock .pygments .tok-nd { color: #AA22FF } /* Name.Decorator */
+.listingblock .pygments .tok-ni { color: #999999; font-weight: bold } /* Name.Entity */
+.listingblock .pygments .tok-ne { color: #D2413A; font-weight: bold } /* Name.Exception */
+.listingblock .pygments .tok-nf { color: #0000FF } /* Name.Function */
+.listingblock .pygments .tok-nl { color: #A0A000 } /* Name.Label */
+.listingblock .pygments .tok-nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+.listingblock .pygments .tok-nt { color: #008000; font-weight: bold } /* Name.Tag */
+.listingblock .pygments .tok-nv { color: #19177C } /* Name.Variable */
+.listingblock .pygments .tok-ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
+.listingblock .pygments .tok-w { color: #bbbbbb } /* Text.Whitespace */
+.listingblock .pygments .tok-mb { color: #666666 } /* Literal.Number.Bin */
+.listingblock .pygments .tok-mf { color: #666666 } /* Literal.Number.Float */
+.listingblock .pygments .tok-mh { color: #666666 } /* Literal.Number.Hex */
+.listingblock .pygments .tok-mi { color: #666666 } /* Literal.Number.Integer */
+.listingblock .pygments .tok-mo { color: #666666 } /* Literal.Number.Oct */
+.listingblock .pygments .tok-sb { color: #BA2121 } /* Literal.String.Backtick */
+.listingblock .pygments .tok-sc { color: #BA2121 } /* Literal.String.Char */
+.listingblock .pygments .tok-sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.listingblock .pygments .tok-s2 { color: #BA2121 } /* Literal.String.Double */
+.listingblock .pygments .tok-se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
+.listingblock .pygments .tok-sh { color: #BA2121 } /* Literal.String.Heredoc */
+.listingblock .pygments .tok-si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
+.listingblock .pygments .tok-sx { color: #008000 } /* Literal.String.Other */
+.listingblock .pygments .tok-sr { color: #BB6688 } /* Literal.String.Regex */
+.listingblock .pygments .tok-s1 { color: #BA2121 } /* Literal.String.Single */
+.listingblock .pygments .tok-ss { color: #19177C } /* Literal.String.Symbol */
+.listingblock .pygments .tok-bp { color: #008000 } /* Name.Builtin.Pseudo */
+.listingblock .pygments .tok-vc { color: #19177C } /* Name.Variable.Class */
+.listingblock .pygments .tok-vg { color: #19177C } /* Name.Variable.Global */
+.listingblock .pygments .tok-vi { color: #19177C } /* Name.Variable.Instance */
+.listingblock .pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
+</style>
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>JavaScript</h1>
+<div class="details">
+<span id="author" class="author">Aitor Medrano</span><br>
+<span id="email" class="email">&lt;<a href="mailto:aitor.medrano@ua.es">aitor.medrano@ua.es</a>&gt;</span><br>
+</div>
+<div id="toc" class="toc2">
+<div id="toctitle">Índice de contenidos</div>
+<ul class="sectlevel1">
+<li><a href="#sesion03">3. JavaScript y DOM</a>
+<ul class="sectlevel2">
+<li><a href="#_bom">3.1. BOM</a>
+<ul class="sectlevel3">
+<li><a href="#_objeto_code_window_code">3.1.1. Objeto <code>window</code></a></li>
+<li><a href="#_objeto_code_navigator_code">3.1.2. Objeto <code>navigator</code></a></li>
+<li><a href="#_objeto_code_document_code">3.1.3. Objeto <code>document</code></a></li>
+</ul>
+</li>
+<li><a href="#_trabajando_con_el_dom">3.2. Trabajando con el DOM</a>
+<ul class="sectlevel3">
+<li><a href="#_el_objeto_code_window_code">3.2.1. El objeto <code>window</code></a></li>
+<li><a href="#_el_objeto_code_document_code">3.2.2. El objeto <code>document</code></a></li>
+<li><a href="#_elementos_del_dom">3.2.3. Elementos del DOM</a></li>
+<li><a href="#_recorriendo_el_dom">3.2.4. Recorriendo el DOM</a></li>
+<li><a href="#_seleccionando_elementos">3.2.5. Seleccionando elementos</a></li>
+<li><a href="#_a%C3%B1adiendo_contenido_al_dom">3.2.6. Añadiendo contenido al DOM</a></li>
+</ul>
+</li>
+<li><a href="#_trabajando_con_css">3.3. Trabajando con CSS</a>
+<ul class="sectlevel3">
+<li><a href="#_trabajando_con_clases">3.3.1. Trabajando con clases</a></li>
+<li><a href="#_mostrando_y_ocultando_contenido">3.3.2. Mostrando y ocultando contenido</a></li>
+</ul>
+</li>
+<li><a href="#_animaciones">3.4. Animaciones</a></li>
+<li><a href="#_eventos">3.5. Eventos</a>
+<ul class="sectlevel3">
+<li><a href="#_gestionando_eventos">3.5.1. Gestionando eventos</a></li>
+<li><a href="#_flujo_de_eventos">3.5.2. Flujo de eventos</a></li>
+<li><a href="#_el_modelo_est%C3%A1ndar">3.5.3. El modelo estándar</a></li>
+<li><a href="#_delegaci%C3%B3n_de_eventos">3.5.4. Delegación de eventos</a></li>
+<li><a href="#_tipos_de_eventos">3.5.5. Tipos de eventos</a></li>
+<li><a href="#_eventos_y_closures">3.5.6. Eventos y closures</a></li>
+</ul>
+</li>
+<li><a href="#_trabajando_con_formularios">3.6. Trabajando con formularios</a>
+<ul class="sectlevel3">
+<li><a href="#_campos_de_texto">3.6.1. Campos de texto</a></li>
+<li><a href="#_desplegables">3.6.2. Desplegables</a></li>
+<li><a href="#_opciones">3.6.3. Opciones</a></li>
+</ul>
+</li>
+<li><a href="#_ejercicios">3.7. Ejercicios</a>
+<ul class="sectlevel3">
+<li><a href="#__0_4_ptos_ejercicio_31_contenido_bloqueado">3.7.1. (0.4 ptos) Ejercicio 31. Contenido bloqueado</a></li>
+<li><a href="#__0_3_ptos_ejercicio_32_temporizador_dom">3.7.2. (0.3 ptos) Ejercicio 32. Temporizador DOM</a></li>
+<li><a href="#__0_5_ptos_ejercicio_33_tabla_din%C3%A1mica">3.7.3. (0.5 ptos) Ejercicio 33. Tabla dinámica</a></li>
+<li><a href="#__0_3_ptos_ejercicio_34_carrusel">3.7.4. (0.3 ptos) Ejercicio 34. Carrusel</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div style="page-break-after: always;"></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="sesion03">3. JavaScript y DOM</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><em>JavaScript</em> funciona de la mano de las páginas web, y éstas se basan en el DOM y trabajan sobre un navegador que interactúa con el BOM.</p>
+</div>
+<div class="sect2">
+<h3 id="_bom">3.1. BOM</h3>
+<div class="paragraph">
+<p>El BOM (<em>Browser Object Model</em>) define una serie de objetos que nos permiten interactuar con el navegador, como son <code>window</code>, <code>navigator</code> y <code>location</code>.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/js03/bom.jpg" alt="BOM" width="75%">
+</div>
+<div class="title">Figure 1. BOM</div>
+</div>
+<div class="sect3">
+<h4 id="_objeto_code_window_code">3.1.1. Objeto <code>window</code></h4>
+<div class="paragraph">
+<p>El objeto <code>window</code> es el objeto raíz (global) del navegador.</p>
+</div>
+<div class="paragraph">
+<p>Mediante el objeto <code>window</code> podemos:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>abrir una nueva ventana del navegador mediante <code>window.open()</code></p>
+<div class="paragraph">
+<p>En los navegadores actuales, si intentamos abrir más de una ventana mediante <code>window.open</code> el propio navegador bloqueará su apertura, tal como sucede con las ventanas emergentes de publicidad.</p>
+</div>
+<div class="paragraph">
+<p>Tras abrir una ventana mediante <code>window.open()</code> el método devolverá un nuevo objeto <code>window</code>, el cual será el objeto global para el <em>script</em> que corre sobre dicha ventana, conteniendo todas las propiedades comunes a los objetos como el constructor <code>Object</code> o el objeto <code>Math</code>. Pero si intentamos mirar sus propiedades, la mayoría de los navegadores no lo permitirán, ya que funciona a modo de <strong><em>sandbox</em></strong>.</p>
+</div>
+<div class="paragraph">
+<p>Este modo de trabajo implica que el navegador sólo nos mostrará la información relativa al mismo dominio, y si abrimos una página de un dominio diferente al nuestro no tendremos control sobre las propiedades privadas del objeto <code>window</code>. Este caso lo estudiaremos en la siguiente unidad y aprenderemos como solucionarlo.</p>
+</div>
+</li>
+<li>
+<p>cerrar una ventana mediante <code>window.close()</code></p>
+</li>
+<li>
+<p>mostrar mensajes de alerta, confirmación y consulta mediante <code>window.alert(mensaje)</code>, <code>window.confirm(mensaje)</code> y <code>window.prompt(mensaje [,valorPorDefecto])</code>.</p>
+<div class="paragraph">
+<p>Por ejemplo, si ejecutamos el siguiente fragmento:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-nx">alert</span><span class="tok-p">(</span><span class="tok-s2">&quot;uno&quot;</span><span class="tok-p">);</span>
+<span class="tok-nx">confirm</span><span class="tok-p">(</span><span class="tok-s2">&quot;dos&quot;</span><span class="tok-p">);</span>
+<span class="tok-kd">var</span> <span class="tok-nx">resp</span> <span class="tok-o">=</span> <span class="tok-nx">prompt</span><span class="tok-p">(</span><span class="tok-s2">&quot;tres&quot;</span><span class="tok-p">);</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Podemos observar las diferencias entre los tres diálogos:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/js03/windowMensajes.jpg" alt="Mensajes del objeto window" width="75%">
+</div>
+<div class="title">Figure 2. Mensajes del objeto window</div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_objeto_code_navigator_code">3.1.2. Objeto <code>navigator</code></h4>
+<div class="paragraph">
+<p>Mediante el objeto <code>navigator</code> podemos acceder a propiedades de información del navegador, tales como su nombre y versión. Para ello, podemos acceder a las propiedades <code>navigator.appName</code> o <code>navigator.appVersion</code>.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/js03/navigator.jpg" alt="Objeto navigator" width="66%">
+</div>
+<div class="title">Figure 3. Objeto navigator - <a href="http://jsbin.com/luhaye/1/edit?js" class="bare">http://jsbin.com/luhaye/1/edit?js</a></div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_objeto_code_document_code">3.1.3. Objeto <code>document</code></h4>
+<div class="paragraph">
+<p>Cada objeto <code>window</code> contiene la propiedad <code>document</code>, el cual contiene un objeto que representa el documento mostrado. Este objeto, a su vez, contiene la propiedad <code>location</code> que nos permite obtener información sobre la URL con las propiedades:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>href</code>: cadena que representa la URL completa</p>
+</li>
+<li>
+<p><code>protocol</code>: protocolo de la URL</p>
+</li>
+<li>
+<p><code>host</code>: nombre del host</p>
+</li>
+<li>
+<p><code>pathname</code>: trayectoria del recurso</p>
+</li>
+<li>
+<p><code>search</code>: parte que contiene los parámetros, incluido el símbolo <code>?</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Suponiendo que accedemos a la URL <code><a href="http://localhost:63342/Pruebas/bom/location.html?alfa=beta&amp;gama=delta" class="bare">http://localhost:63342/Pruebas/bom/location.html?alfa=beta&amp;gama=delta</a></code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-nx">console</span><span class="tok-p">.</span><span class="tok-nx">log</span><span class="tok-p">(</span><span class="tok-s2">&quot;href:&quot;</span> <span class="tok-o">+</span> <span class="tok-nx">location</span><span class="tok-p">.</span><span class="tok-nx">href</span><span class="tok-p">);</span>  <span class="tok-c1">// http://localhost:63342/Pruebas/bom/location.html?alfa=beta&amp;gama=delta</span>
+<span class="tok-nx">console</span><span class="tok-p">.</span><span class="tok-nx">log</span><span class="tok-p">(</span><span class="tok-s2">&quot;protocol:&quot;</span> <span class="tok-o">+</span> <span class="tok-nx">location</span><span class="tok-p">.</span><span class="tok-nx">protocol</span><span class="tok-p">);</span>  <span class="tok-c1">// http:</span>
+<span class="tok-nx">console</span><span class="tok-p">.</span><span class="tok-nx">log</span><span class="tok-p">(</span><span class="tok-s2">&quot;host:&quot;</span> <span class="tok-o">+</span> <span class="tok-nx">location</span><span class="tok-p">.</span><span class="tok-nx">host</span><span class="tok-p">);</span>  <span class="tok-c1">// localhost:63342</span>
+<span class="tok-nx">console</span><span class="tok-p">.</span><span class="tok-nx">log</span><span class="tok-p">(</span><span class="tok-s2">&quot;pathname:&quot;</span> <span class="tok-o">+</span> <span class="tok-nx">location</span><span class="tok-p">.</span><span class="tok-nx">pathname</span><span class="tok-p">);</span>  <span class="tok-c1">// /Pruebas/bom/location.html</span>
+<span class="tok-nx">console</span><span class="tok-p">.</span><span class="tok-nx">log</span><span class="tok-p">(</span><span class="tok-s2">&quot;search:&quot;</span> <span class="tok-o">+</span> <span class="tok-nx">location</span><span class="tok-p">.</span><span class="tok-nx">search</span><span class="tok-p">);</span>  <span class="tok-c1">// ?alfa=beta&amp;gama=delta</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Si a <code>location.href</code> le asignamos una nueva URL, el navegador realizará una petición a dicha URL y el navegador cargará el nuevo documento.</p>
+</div>
+<div class="paragraph">
+<p>Una operación a destacar dentro del objeto <code>document</code> es <code>document.write(texto)</code>, que permite escribir contenido HTML en el documento. Si le pasamos como <code>texto</code> un documento HTML entero, sustituirá por completo el documento existente por el recibido por el método <code>write</code>. Así pues, mediante este método podemos añadir contenido dinámico al documento.</p>
+</div>
+<div class="paragraph">
+<p>Por ejemplo, si queremos generar la hora actual, podemos usar el objeto <code>Date</code> y mediante <code>document.write()</code> escribirla:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="html"><span class="tok-nt">&lt;html&gt;</span>
+<span class="tok-nt">&lt;head&gt;&lt;title&gt;</span>La hora<span class="tok-nt">&lt;/title&gt;&lt;/head&gt;</span>
+<span class="tok-nt">&lt;body&gt;</span>
+    <span class="tok-nt">&lt;p&gt;</span>Son las
+      <span class="tok-nt">&lt;script </span><span class="tok-na">type=</span><span class="tok-s">&quot;text/javascript&quot;</span><span class="tok-nt">&gt;</span>
+        <span class="tok-kd">var</span> <span class="tok-nx">time</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-nb">Date</span><span class="tok-p">();</span>
+        <span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">write</span><span class="tok-p">(</span><span class="tok-nx">time</span><span class="tok-p">.</span><span class="tok-nx">getHours</span><span class="tok-p">()</span> <span class="tok-o">+</span> <span class="tok-s2">&quot;:&quot;</span> <span class="tok-o">+</span> <span class="tok-nx">time</span><span class="tok-p">.</span><span class="tok-nx">getMinutes</span><span class="tok-p">());</span>
+      <span class="tok-nt">&lt;/script&gt;</span>
+    <span class="tok-nt">&lt;/p&gt;</span>
+  <span class="tok-nt">&lt;/body&gt;</span>
+<span class="tok-nt">&lt;/html&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_trabajando_con_el_dom">3.2. Trabajando con el DOM</h3>
+<div class="paragraph">
+<p>El 99% de las aplicaciones <em>JavaScript</em> están orientadas a la web, y de ahí su integración con el DOM de las páginas web.</p>
+</div>
+<div class="paragraph">
+<p>El API DOM permite interactuar con el documento HTML y cambiar el contenido y la estructura del mismo, los estilos CSS y gestionar los eventos mediante <em>listeners</em>.</p>
+</div>
+<div class="paragraph">
+<p>Se trata de un modelo que representa un documento mediante una jerarquía de objetos en árbol y que facilita su programación mediante métodos y propiedades.</p>
+</div>
+<div class="paragraph">
+<p>DOM ha ido evolucionando en diferentes versiones:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>DOM Level 0 (<em>Legacy DOM</em>): define las colecciones <code>forms</code>, <code>links</code> e <code>images</code>.</p>
+</li>
+<li>
+<p>DOM Level 1 (1998): introduce el objeto <code>Node</code> y a partir de él, los nodos <code>Document</code>, <code>Element</code>, <code>Attr</code> y <code>Text</code>. Además, las operaciones <code>getElemensByTagName</code>, <code>getAttribute</code>, <code>removeAtribute</code> y <code>setAttribute</code></p>
+</li>
+<li>
+<p>DOM Level 2: facilita el trabajo con XHTML y añade los métodos <code>getElementById</code>, <code>hasAttributes</code> y <code>hasAttribute</code></p>
+</li>
+<li>
+<p>DOM Level 3: añade atributos al modelo, entre ellos <code>textContent</code> y el método <code>isEqualNode</code>.</p>
+</li>
+<li>
+<p>DOM Level 4 (2004): supone el abandono de HTML por XML e introduce los métodos <code>getElementsByClassName</code>, <code>prepend</code>, <code>append</code>,
+<code>before</code>, <code>after</code>, <code>replace</code> y <code>remove</code>.</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="_el_objeto_code_window_code">3.2.1. El objeto <code>window</code></h4>
+<div class="paragraph">
+<p>Tal como vimos en la primera sesión, al declarar una variable tiene un alcance global. Realmente, todas las variable globales forman parte del objeto <code>window</code>, ya que éste objeto es el padre de la jerarquía de objetos del navegador (DOM, <em>Document Object Model</em>).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-kd">var</span> <span class="tok-nx">batman</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;Bruce Wayne&quot;</span><span class="tok-p">;</span>
+<span class="tok-nx">console</span><span class="tok-p">.</span><span class="tok-nx">log</span><span class="tok-p">(</span><span class="tok-nb">window</span><span class="tok-p">.</span><span class="tok-nx">batman</span><span class="tok-p">);</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Por lo general, casi nunca vamos a referenciar directamente al objeto <code>window</code>. Una de las excepciones es cuando desde una función declaramos una variable local a la función (con alcance anidado) que tiene el mismo nombre que una variable global y queremos referenciar a la global de manera únivoca, utilizaremos el objeto <code>window</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-kd">var</span> <span class="tok-nx">superheroe</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;Batman&quot;</span><span class="tok-p">;</span>
+<span class="tok-kd">var</span> <span class="tok-nx">mejorSuperheroe</span> <span class="tok-o">=</span> <span class="tok-kd">function</span> <span class="tok-p">()</span> <span class="tok-p">{</span>
+  <span class="tok-kd">var</span> <span class="tok-nx">superheroe</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;Superman&quot;</span><span class="tok-p">;</span>
+
+  <span class="tok-k">if</span> <span class="tok-p">(</span><span class="tok-nb">window</span><span class="tok-p">.</span><span class="tok-nx">superheroe</span> <span class="tok-o">!=</span> <span class="tok-nx">superheroe</span><span class="tok-p">)</span> <span class="tok-p">{</span>
+    <span class="tok-nx">superheroe</span> <span class="tok-o">=</span> <span class="tok-nb">window</span><span class="tok-p">.</span><span class="tok-nx">superheroe</span><span class="tok-p">;</span>
+  <span class="tok-p">}</span>
+<span class="tok-p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Queda claro que sería más conveniente utilizar otro nombre para la variable local, pero ahí queda un ejemplo de su uso.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_el_objeto_code_document_code">3.2.2. El objeto <code>document</code></h4>
+<div class="paragraph">
+<p>El objeto <code>document</code> nos da acceso al <em>DOM</em> (Modelo de objetos de documento) de una página web, y a partir de él, acceder a los elementos que forman la página mediante una estructura jerárquica.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Podemos cargar los scripts JS al final de un documento HTML para acelerar la carga de una página web y asegurarnos que el DOM ya está cargado.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Al objeto que hace de raíz del árbol, el nodo <code>html</code>, se puede acceder mediante la propiedad <code>document.documentElement</code>. Sin embargo, la mayoría de ocasiones necesitaremos acceder al elemento <code>body</code> más que a la raíz, con lo que usaremos <code>document.body</code>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_elementos_del_dom">3.2.3. Elementos del DOM</h4>
+<div class="paragraph">
+<p>Cada elemento exceptuando el elemento <code>&lt;html&gt;</code> forma parte de otro elemento, que se le conoce como padre (<em>parent</em>). Un elemento a su vez puede contener elementos hijos (<em>child</em>) y/o hermanos (<em>sibling</em>).</p>
+</div>
+<div class="paragraph">
+<p>Supongamos el siguiente fragmento de código HTML:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="html"><span class="tok-nt">&lt;p&gt;&lt;strong&gt;</span>Hello<span class="tok-nt">&lt;/strong&gt;</span> how are you doing?<span class="tok-nt">&lt;/p&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Cada porción de este fragmento se convierte en un nodo DOM con punteros a otros nodos que apuntan sus nodos relativos (padres, hijos, hermanos, &#8230;&#8203;), del siguiente modo:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/js03/domRelaciones.jpg" alt="Relaciones entre nodos DOM" width="66%">
+</div>
+<div class="title">Figure 4. Relaciones entre nodos DOM</div>
+</div>
+<div class="paragraph">
+<p>Vamos a estudiar estos enlaces en detalle.</p>
+</div>
+<div class="sect4">
+<h5 id="_enlaces_de_nodos">Enlaces de nodos</h5>
+<div class="paragraph">
+<p>Podemos acceder a los enlaces existentes entre los nodos mediante las propiedades que poseen los nodos. Cada objeto DOM contiene un conjunto de propiedades para acceder a los nodos con lo que mantiene alguna relación. Por ejemplo, cada nodo tiene una propiedad <code>parentNode</code> que referencia a su padre (si tiene). Estos padres, a su vez, contienen enlaces que devuelven la referencia a sus hijos, pero como puede tener más de un hijo, se almacenan en un <em>pseudoarray</em> denominado <code>childNodes</code>.</p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Plantilla Ejemplo DOM</div>
+<div class="paragraph">
+<p>Para poder realizar algunos ejemplos de manejo de DOM, vamos a crear un sencillo documento HTML:</p>
+</div>
+<div class="listingblock">
+<div class="title">Plantilla HTML con la que vamos a trabajar el DOM - <a href="http://jsbin.com/bopije/1/edit?html" class="bare">http://jsbin.com/bopije/1/edit?html</a></div>
+<div class="content">
+<pre class="pygments highlight"><code data-lang="html"><span class="tok-cp">&lt;!DOCTYPE html&gt;</span>
+<span class="tok-nt">&lt;html</span> <span class="tok-na">lang=</span><span class="tok-s">&quot;es&quot;</span><span class="tok-nt">&gt;</span>
+<span class="tok-nt">&lt;head&gt;</span>
+<span class="tok-nt">&lt;title&gt;</span>Ejemplo DOM<span class="tok-nt">&lt;/title&gt;</span>
+<span class="tok-nt">&lt;meta</span> <span class="tok-na">charset=</span><span class="tok-s">&quot;utf-8&quot;</span> <span class="tok-nt">/&gt;</span>
+<span class="tok-nt">&lt;/head&gt;</span>
+<span class="tok-nt">&lt;body&gt;</span>
+<span class="tok-nt">&lt;h1&gt;</span>Encabezado uno<span class="tok-nt">&lt;/h1&gt;</span>
+<span class="tok-nt">&lt;p&gt;</span>Primer párrafo<span class="tok-nt">&lt;/p&gt;</span>
+<span class="tok-nt">&lt;p&gt;</span>Segundo párrafo<span class="tok-nt">&lt;/p&gt;</span>
+<span class="tok-nt">&lt;div&gt;&lt;p</span> <span class="tok-na">id=</span><span class="tok-s">&quot;tres&quot;</span><span class="tok-nt">&gt;</span>Tercer párrafo dentro de un div<span class="tok-nt">&lt;/p&gt;&lt;/div&gt;</span>
+<span class="tok-nt">&lt;script </span><span class="tok-na">src=</span><span class="tok-s">&quot;dom.js&quot;</span> <span class="tok-na">charset=</span><span class="tok-s">&quot;utf-8&quot;</span><span class="tok-nt">&gt;&lt;/script&gt;</span>
+<span class="tok-nt">&lt;/body&gt;</span>
+<span class="tok-nt">&lt;/html&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>En el documento anterior, <code>document.body.childNodes</code> contiene 5 elementos: el encabezado <code>h1</code>, los dos párrafos, la capa y la referencia al script.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+Si el documento HTML contiene saltos de línea, tabuladores, etc&#8230;&#8203; DOM interpreta estos como nodos de texto, con lo que el número de hijos de un nodo puede no ser el que nosotros esperemos.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Los otros enlaces que ofrece un nodo son:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>firstChild</code>: primer hijo de un nodo, o <code>null</code> si no tiene hijos.</p>
+</li>
+<li>
+<p><code>lastChild</code>: último hijo de un nodo, o <code>null</code> si no tiene hijos.</p>
+</li>
+<li>
+<p><code>nextSibling</code>: siguiente hermano de un nodo, o <code>null</code> si no tiene un hermano a continuación (es el último).</p>
+</li>
+<li>
+<p><code>previousSibling</code>: anterior hermano de un nodo, o <code>null</code> si no tiene un hermano previo (es el primero).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Por ejemplo:</p>
+</div>
+<div class="listingblock">
+<div class="title">Enlaces DOM - <a href="http://jsbin.com/bopije/1/edit?js" class="bare">http://jsbin.com/bopije/1/edit?js</a></div>
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-kd">var</span> <span class="tok-nx">encabezado</span> <span class="tok-o">=</span> <span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">body</span><span class="tok-p">.</span><span class="tok-nx">firstChild</span><span class="tok-p">;</span>
+<span class="tok-kd">var</span> <span class="tok-nx">scriptJS</span> <span class="tok-o">=</span> <span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">body</span><span class="tok-p">.</span><span class="tok-nx">lastChild</span><span class="tok-p">;</span>
+<span class="tok-kd">var</span> <span class="tok-nx">parrafo1</span> <span class="tok-o">=</span> <span class="tok-nx">encabezado</span><span class="tok-p">.</span><span class="tok-nx">nextSibling</span><span class="tok-p">;</span>
+<span class="tok-kd">var</span> <span class="tok-nx">capa</span> <span class="tok-o">=</span> <span class="tok-nx">scriptJS</span><span class="tok-p">.</span><span class="tok-nx">previousSibling</span><span class="tok-p">;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>En resumen, los punteros que ofrece un nodo DOM son:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/js03/domPunteros.jpg" alt="Puntero de un nodo DOM" width="66%">
+</div>
+<div class="title">Figure 5. Puntero de un nodo DOM</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_tipos_de_nodos">Tipos de nodos</h5>
+<div class="paragraph">
+<p>Cada uno de los elementos se conoce como nodo, que pueden ser de los siguientes tipos:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Element</strong>: nodo que contiene una etiqueta HTML</p>
+</li>
+<li>
+<p><strong>Attr</strong>: nodo que forma parte de un elemento HTML</p>
+</li>
+<li>
+<p><strong>Text</strong>: nodo que contiene texto y que no puede tener hijos</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Si nos centramos en el código de la capa:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="html"><span class="tok-nt">&lt;div&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
+  <span class="tok-nt">&lt;p</span> <span class="tok-na">id=</span><span class="tok-s">&quot;tres&quot;</span><span class="tok-nt">&gt;</span> <i class="conum" data-value="2"></i><b>(2)</b>
+    Tercer párrafo dentro de un div <i class="conum" data-value="3"></i><b>(3)</b>
+  <span class="tok-nt">&lt;/p&gt;</span>
+<span class="tok-nt">&lt;/div&gt;</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>La capa es un nodo de tipo elemento</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>El atributo id es un nodo de tipo atributo</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>El contenido del párrafo es un nodo de tipo texto</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Si queremos averiguar si un nodo representa un texto o un elemento, usaremos la propiedad <code>nodeType</code>, que devolverá un número, por ejemplo: <code>1</code> si es un elemento (nodo HTML), <code>3</code> si es de texto. Estos números están asociados a constantes del objeto <code>document</code>: <code>document.ELEMENT_NODE</code>, <code>document.TEXT_NODE</code>, etc&#8230;&#8203;</p>
+</div>
+<div class="paragraph">
+<p>Así pues, si quisiéramos crear una función que averiguase si es un nodo de texto:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-kd">function</span> <span class="tok-nx">esNodoTexto</span><span class="tok-p">(</span><span class="tok-nx">nodo</span><span class="tok-p">)</span> <span class="tok-p">{</span>
+  <span class="tok-k">return</span> <span class="tok-nx">nodo</span><span class="tok-p">.</span><span class="tok-nx">nodeType</span> <span class="tok-o">==</span> <span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">TEXT_NODE</span><span class="tok-p">;</span> <span class="tok-c1">// 3</span>
+<span class="tok-p">}</span>
+<span class="tok-nx">esNodoTexto</span><span class="tok-p">(</span><span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">body</span><span class="tok-p">);</span> <span class="tok-c1">// false</span>
+<span class="tok-nx">esNodoTexto</span><span class="tok-p">(</span><span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">body</span><span class="tok-p">.</span><span class="tok-nx">firstChild</span><span class="tok-p">.</span><span class="tok-nx">firstChild</span><span class="tok-p">);</span> <span class="tok-c1">// true</span></code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Realmente existen 12 tipos, pero estos tres son los más importantes. Por ejemplo, el objeto <code>document</code> es el tipo 9.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Los elementos contienen la propiedad <code>nodeName</code> que indica el tipo de etiqueta HTML que representa (siempre en mayúsculas). Los nodos de texto, en cambio, contienen <code>nodeValue</code> que obtiene el texto contenido.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">body</span><span class="tok-p">.</span><span class="tok-nx">firstChild</span><span class="tok-p">.</span><span class="tok-nx">nodeName</span><span class="tok-p">;</span> <span class="tok-c1">// H1</span>
+<span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">body</span><span class="tok-p">.</span><span class="tok-nx">firstChild</span><span class="tok-p">.</span><span class="tok-nx">firstChild</span><span class="tok-p">.</span><span class="tok-nx">nodeValue</span><span class="tok-p">;</span> <span class="tok-c1">// Encabezado uno</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_recorriendo_el_dom">3.2.4. Recorriendo el DOM</h4>
+<div class="paragraph">
+<p>Si queremos recorrer todos los nodos de un árbol, lo mejor es realizar un recorrido recursivo. Por ejemplo, si queremos crear una función que indique si un nodo (o sus hijos) contiene una determinada cadena:</p>
+</div>
+<div class="listingblock">
+<div class="title">Recorriendo el DOM - <a href="http://jsbin.com/mufin/9/edit?js" class="bare">http://jsbin.com/mufin/9/edit?js</a></div>
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-kd">function</span> <span class="tok-nx">buscarTexto</span><span class="tok-p">(</span><span class="tok-nx">nodo</span><span class="tok-p">,</span> <span class="tok-nx">cadena</span><span class="tok-p">)</span> <span class="tok-p">{</span>
+  <span class="tok-k">if</span> <span class="tok-p">(</span><span class="tok-nx">nodo</span><span class="tok-p">.</span><span class="tok-nx">nodeType</span> <span class="tok-o">==</span> <span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">ELEMENT_NODE</span><span class="tok-p">)</span> <span class="tok-p">{</span>
+    <span class="tok-k">for</span> <span class="tok-p">(</span><span class="tok-kd">var</span> <span class="tok-nx">i</span><span class="tok-o">=</span><span class="tok-mi">0</span><span class="tok-p">,</span> <span class="tok-nx">len</span><span class="tok-o">=</span><span class="tok-nx">nodo</span><span class="tok-p">.</span><span class="tok-nx">childNodes</span><span class="tok-p">.</span><span class="tok-nx">length</span><span class="tok-p">;</span> <span class="tok-nx">i</span><span class="tok-o">&lt;</span><span class="tok-nx">len</span><span class="tok-p">;</span> <span class="tok-nx">i</span><span class="tok-o">++</span><span class="tok-p">)</span> <span class="tok-p">{</span>
+      <span class="tok-k">if</span> <span class="tok-p">(</span><span class="tok-nx">buscarTexto</span><span class="tok-p">(</span><span class="tok-nx">nodo</span><span class="tok-p">.</span><span class="tok-nx">childNodes</span><span class="tok-p">[</span><span class="tok-nx">i</span><span class="tok-p">],</span> <span class="tok-nx">cadena</span><span class="tok-p">))</span> <span class="tok-p">{</span>
+        <span class="tok-k">return</span> <span class="tok-kc">true</span><span class="tok-p">;</span>
+      <span class="tok-p">}</span>
+    <span class="tok-p">}</span>
+    <span class="tok-k">return</span> <span class="tok-kc">false</span><span class="tok-p">;</span>
+  <span class="tok-p">}</span> <span class="tok-k">else</span> <span class="tok-k">if</span> <span class="tok-p">(</span><span class="tok-nx">nodo</span><span class="tok-p">.</span><span class="tok-nx">nodeType</span> <span class="tok-o">==</span> <span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">TEXT_NODE</span><span class="tok-p">)</span> <span class="tok-p">{</span>
+    <span class="tok-k">return</span> <span class="tok-nx">nodo</span><span class="tok-p">.</span><span class="tok-nx">nodeValue</span><span class="tok-p">.</span><span class="tok-nx">indexOf</span><span class="tok-p">(</span><span class="tok-nx">cadena</span><span class="tok-p">)</span> <span class="tok-o">&gt;</span> <span class="tok-o">-</span><span class="tok-mi">1</span><span class="tok-p">;</span>
+  <span class="tok-p">}</span>
+<span class="tok-p">}</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_seleccionando_elementos">3.2.5. Seleccionando elementos</h4>
+<div class="paragraph">
+<p>Mediante el DOM, podemos usar dos métodos para seleccionar un determinado elemento.</p>
+</div>
+<div class="paragraph">
+<p>Si queremos seleccionar un conjunto de elementos, por ejemplo, todos los párrafos del documento, necesitamos utilizar el método <code>document.getElementsByTagName(nombreDeTag)</code>. En cambio, si queremos acceder a un elemento por su id (que debería ser único), usaremos el método <code>document.getElementById(nombreDeId)</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-p">(</span><span class="tok-kd">function</span><span class="tok-p">()</span> <span class="tok-p">{</span>
+  <span class="tok-kd">var</span> <span class="tok-nx">pElements</span> <span class="tok-o">=</span> <span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">getElementsByTagName</span><span class="tok-p">(</span><span class="tok-s2">&quot;p&quot;</span><span class="tok-p">);</span> <span class="tok-c1">// NodeList</span>
+  <span class="tok-nx">console</span><span class="tok-p">.</span><span class="tok-nx">log</span><span class="tok-p">(</span><span class="tok-nx">pElements</span><span class="tok-p">.</span><span class="tok-nx">length</span><span class="tok-p">);</span>  <span class="tok-c1">// 3</span>
+  <span class="tok-nx">console</span><span class="tok-p">.</span><span class="tok-nx">log</span><span class="tok-p">(</span><span class="tok-nx">pElements</span><span class="tok-p">[</span><span class="tok-mi">0</span><span class="tok-p">]);</span>  <span class="tok-c1">// Primer párrafo</span>
+
+  <span class="tok-kd">var</span> <span class="tok-nx">divpElement</span> <span class="tok-o">=</span> <span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">getElementById</span><span class="tok-p">(</span><span class="tok-s2">&quot;tres&quot;</span><span class="tok-p">);</span>
+  <span class="tok-nx">console</span><span class="tok-p">.</span><span class="tok-nx">log</span><span class="tok-p">(</span><span class="tok-nx">divpElement</span><span class="tok-p">);</span> <span class="tok-c1">// &quot;&lt;p id=&quot;tres&quot;&gt;Tercer párrafo dentro de un div&lt;/p&gt;&quot;</span>
+<span class="tok-p">}());</span></code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+En vez de usarlos sobre el objeto <code>document</code>, podemos utilizarlos sobre un elemento en concreto para refinar la búsqueda
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Destacar que si estamos interesados en un único elemento, lo haremos mediante su <em>id</em>, mientras que si queremos más de un elemento, lo haremos mediante tu <em>tag</em>, ya que obtendremos un <em>NodeList</em>, el cual es similar a un array, y es una representación viva de los elementos, de modo que si se produce algún cambio en el DOM se verá trasladado al navegador.</p>
+</div>
+<div class="sect4">
+<h5 id="__code_queryselector_code"><code>querySelector</code></h5>
+<div class="paragraph">
+<p>El método de <code>getElementsByTagName</code> es antiguo y no se suele utilizar. En el año 2013 se definió el <em>Selector API</em>, que define los métodos <code>querySelectorAll</code> y <code>querySelector</code>, los cuales permiten obtener elementos mediantes consultas CSS, las cuales ofrecen mayor flexibilidad:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-kd">var</span> <span class="tok-nx">pElements</span> <span class="tok-o">=</span> <span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">querySelectorAll</span><span class="tok-p">(</span><span class="tok-s2">&quot;p&quot;</span><span class="tok-p">);</span>
+<span class="tok-kd">var</span> <span class="tok-nx">divpElement</span> <span class="tok-o">=</span> <span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">querySelector</span><span class="tok-p">(</span><span class="tok-s2">&quot;div p&quot;</span><span class="tok-p">);</span>
+<span class="tok-kd">var</span> <span class="tok-nx">tresElement</span> <span class="tok-o">=</span> <span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">querySelector</span><span class="tok-p">(</span><span class="tok-s2">&quot;#tres&quot;</span><span class="tok-p">);</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Esta manera de acceder a los elementos es la misma que usa <em>jQuery</em>, por lo que la estudiaremos en la sesión correspondiente.</p>
+</div>
+<div class="paragraph">
+<p>Conviene citar que <code>getElementById</code> es casi 5 veces más rápido que <code>querySelector</code>. Más información en: <a href="http://jsperf.com/getelementbyid-vs-queryselector" class="bare">http://jsperf.com/getelementbyid-vs-queryselector</a></p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_añadiendo_contenido_al_dom">3.2.6. Añadiendo contenido al DOM</h4>
+<div class="paragraph">
+<p>Si queremos añadir un párrafo al documento que teníamos previamente, primero tenemos que crear el contenido y luego decidir donde colocarlo. Para ello, usaremos el método <code>createElement</code> para crear el elemento y posteriormente, decidir donde colocarlo y añadir el contenido (por ejemplo, mediante <code>appendChild</code>).</p>
+</div>
+<div class="listingblock">
+<div class="title">Añadiendo contenido - <a href="http://jsbin.com/cunoma/1/edit?html,js,console,output" class="bare">http://jsbin.com/cunoma/1/edit?html,js,console,output</a></div>
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-p">(</span><span class="tok-kd">function</span><span class="tok-p">()</span> <span class="tok-p">{</span>
+  <span class="tok-kd">var</span> <span class="tok-nx">elem</span> <span class="tok-o">=</span> <span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">createElement</span><span class="tok-p">(</span><span class="tok-s2">&quot;p&quot;</span><span class="tok-p">),</span>
+    <span class="tok-nx">texto</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;&lt;strong&gt;Nuevo párrafo creado dinámicamente&lt;/strong&gt;&quot;</span><span class="tok-p">,</span>
+    <span class="tok-nx">contenido</span> <span class="tok-o">=</span> <span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">createTextNode</span><span class="tok-p">(</span><span class="tok-nx">texto</span><span class="tok-p">);</span>
+
+  <span class="tok-nx">elem</span><span class="tok-p">.</span><span class="tok-nx">appendChild</span><span class="tok-p">(</span><span class="tok-nx">contenido</span><span class="tok-p">);</span>
+  <span class="tok-nx">elem</span><span class="tok-p">.</span><span class="tok-nx">id</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;conAppendChild&quot;</span><span class="tok-p">;</span>
+
+  <span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">body</span><span class="tok-p">.</span><span class="tok-nx">appendChild</span><span class="tok-p">(</span><span class="tok-nx">elem</span><span class="tok-p">);</span>
+  <span class="tok-c1">// lo añade como el último nodo detrás de script</span>
+<span class="tok-p">}());</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Si probamos el código veremos que las etiquetas <code>&lt;strong&gt;</code> se han parseado y en vez de mostrar el texto en negrita se muestra el código de la etiqueta. Además, si intentamos ver el código fuente de la página no veremos el contenido creado dinámicamente, y necesitaremos utilizar las herramientas de desarrollador que ofrecen los navegadores web.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/js03/domAppendChild.jpg" alt="Añadiendo un nodo" width="66%">
+</div>
+</div>
+<div class="paragraph">
+<p>Los métodos que podemos utilizar para añadir contenidos son:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>appendChild(nuevoElemento)</code>: el nuevo nodo se incluye inmediatamente después de los hijos ya existentes (si hay alguno) y el nodo padre cuenta con una nueva rama.</p>
+</li>
+<li>
+<p><code>insertBefore(nuevoElemento, elementoExistente)</code>: permiten elegir un nodo existente del documento e incluir otro antes que él.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="title">insertAfter</div>
+<div class="paragraph">
+<p>Aunque parezca mentira, no existe ningún método para añadir después, pero podríamos crearlo fácilmente de la siguiente manera:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-kd">function</span> <span class="tok-nx">insertAfter</span><span class="tok-p">(</span><span class="tok-nx">e</span><span class="tok-p">,</span> <span class="tok-nx">i</span><span class="tok-p">){</span>
+  <span class="tok-k">if</span> <span class="tok-p">(</span><span class="tok-nx">e</span><span class="tok-p">.</span><span class="tok-nx">nextSibling</span><span class="tok-p">){</span>
+    <span class="tok-nx">e</span><span class="tok-p">.</span><span class="tok-nx">parentNode</span><span class="tok-p">.</span><span class="tok-nx">insertBefore</span><span class="tok-p">(</span><span class="tok-nx">i</span><span class="tok-p">,</span> <span class="tok-nx">e</span><span class="tok-p">.</span><span class="tok-nx">nextSibling</span><span class="tok-p">);</span>
+  <span class="tok-p">}</span> <span class="tok-k">else</span> <span class="tok-p">{</span>
+    <span class="tok-nx">e</span><span class="tok-p">.</span><span class="tok-nx">parentNode</span><span class="tok-p">.</span><span class="tok-nx">appendChild</span><span class="tok-p">(</span><span class="tok-nx">i</span><span class="tok-p">);</span>
+  <span class="tok-p">}</span>
+<span class="tok-p">}</span></code></pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>replaceChild(nuevoElemento, elementoExistente)</code>: reemplazar un nodo por otro</p>
+</li>
+<li>
+<p><code>removeChild(nodoABorrar)</code>: elimina un nodo</p>
+</li>
+<li>
+<p><code>cloneNode()</code>: permite clonar un nodo, permitiendo tanto el elemento como el elemento con su contenido</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Así pues, si queremos añadir el párrafo dentro de la capa que tenemos definida en vez de al final del documento, podemos obtener el nodo que contiene el párrafo de la capa, y añadir el nuevo nodo a su padre en la posición que deseemos (al final, antes del nodo o sustituirlo).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-p">(</span><span class="tok-kd">function</span><span class="tok-p">()</span> <span class="tok-p">{</span>
+  <span class="tok-kd">var</span> <span class="tok-nx">doc</span> <span class="tok-o">=</span> <span class="tok-nb">document</span><span class="tok-p">,</span>   <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="tok-nx">elem</span> <span class="tok-o">=</span> <span class="tok-nx">doc</span><span class="tok-p">.</span><span class="tok-nx">createElement</span><span class="tok-p">(</span><span class="tok-s2">&quot;p&quot;</span><span class="tok-p">),</span>
+    <span class="tok-nx">contenido</span> <span class="tok-o">=</span> <span class="tok-nx">doc</span><span class="tok-p">.</span><span class="tok-nx">createTextNode</span><span class="tok-p">(</span><span class="tok-s2">&quot;&lt;strong&gt;Nuevo párrafo creado dinámicamente&lt;/strong&gt;&quot;</span><span class="tok-p">),</span>
+    <span class="tok-nx">pTres</span> <span class="tok-o">=</span> <span class="tok-nx">doc</span><span class="tok-p">.</span><span class="tok-nx">getElementById</span><span class="tok-p">(</span><span class="tok-s2">&quot;tres&quot;</span><span class="tok-p">);</span> <i class="conum" data-value="2"></i><b>(2)</b>
+
+  <span class="tok-nx">elem</span><span class="tok-p">.</span><span class="tok-nx">appendChild</span><span class="tok-p">(</span><span class="tok-nx">contenido</span><span class="tok-p">);</span>
+  <span class="tok-nx">elem</span><span class="tok-p">.</span><span class="tok-nx">id</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;conAppendChild&quot;</span><span class="tok-p">;</span>
+
+  <span class="tok-nx">pTres</span><span class="tok-p">.</span><span class="tok-nx">parentNode</span><span class="tok-p">.</span><span class="tok-nx">appendChild</span><span class="tok-p">(</span><span class="tok-nx">elem</span><span class="tok-p">);</span> <i class="conum" data-value="3"></i><b>(3)</b>
+<span class="tok-p">}());</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Guardamos en una variable la referencia a <code>document</code> para evitar tener que salir del alcance y subir al alcance global con cada referencia. Se trata de una pequeño mejora que aumenta la eficiencia del código.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Obtenemos una referencia al Node que contiene el párrafo de dentro del <code>div</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Insertamos un hijo al padre de <code>#tres</code>, lo que lo convierte en su hermano.
+Si hubiesemos querido que se hubiese colocado delante, tendríamos que haber utilizado <code>pTres.parentNode.insertBefore(elem, pTres)</code>.
+En cambio, para sustituir un párrafo por el nuevo necesitaríamos hacer <code>pTres.parentNode.replaceChild(elem, pTres)</code>;</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Otra forma de añadir contenido es mediante la propiedad <code>innerHTML</code>, el cual sí que va a parsear el código incluido. Para ello, en vez de crear un elemento y añadirle contenido, el contenido se lo podemos añadir como una propiedad del elemento.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-p">(</span><span class="tok-kd">function</span><span class="tok-p">()</span> <span class="tok-p">{</span>
+  <span class="tok-kd">var</span>
+    <span class="tok-nx">doc</span> <span class="tok-o">=</span> <span class="tok-nb">document</span><span class="tok-p">,</span>
+    <span class="tok-nx">elem</span> <span class="tok-o">=</span> <span class="tok-nx">doc</span><span class="tok-p">.</span><span class="tok-nx">createElement</span><span class="tok-p">(</span><span class="tok-s2">&quot;p&quot;</span><span class="tok-p">),</span>
+    <span class="tok-nx">pTres</span> <span class="tok-o">=</span> <span class="tok-nx">doc</span><span class="tok-p">.</span><span class="tok-nx">getElementById</span><span class="tok-p">(</span><span class="tok-s2">&quot;tres&quot;</span><span class="tok-p">);</span>
+
+  <span class="tok-nx">elem</span><span class="tok-p">.</span><span class="tok-nx">innerHTML</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;&lt;strong&gt;Nuevo párrafo reemplazado dinámicamente&lt;/strong&gt;&quot;</span><span class="tok-p">;</span>
+  <span class="tok-nx">elem</span><span class="tok-p">.</span><span class="tok-nx">id</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;conInner&quot;</span><span class="tok-p">;</span>
+
+  <span class="tok-nx">pTres</span><span class="tok-p">.</span><span class="tok-nx">parentNode</span><span class="tok-p">.</span><span class="tok-nx">replaceChild</span><span class="tok-p">(</span><span class="tok-nx">elem</span><span class="tok-p">,</span> <span class="tok-nx">pTres</span><span class="tok-p">);</span>
+<span class="tok-p">}());</span></code></pre>
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/js03/domInnerHtml.jpg" alt="Sustituyendo un nodo con parseo HTML" width="50%">
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="title">innerHTML vs nodeValue</div>
+<div class="paragraph">
+<p>Mientras que <code>innerHTML</code> interpreta la cadena como HTML, <code>nodeValue</code> la interpreta como texto plano, con lo que los símbolos de <code>&lt;</code> y <code>&gt;</code> no aportan significado al contenido</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="title">document.write()</div>
+<div class="paragraph">
+<p>Pese a que el método <code>document.write(txt)</code> permite añadir contenido a un documento, hemos de tener mucho cuidado porque, pese a funcionar si lo incluimos al cargar una página, al ejecutarlo dentro de una función una vez el DOM ya ha cargado, el texto que queramos escribir sustituirá todo el contenido que había previamente.
+Por lo tanto, si queremos añadir contenido, es mejor hacerlo añadiendo un nodo o mediante <code>innerHtml</code></p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect4">
+<h5 id="__code_getelementsby_code_vs_code_queryselector_code"><code>getElementsBy</code> vs <code>querySelector</code></h5>
+<div class="paragraph">
+<p>Una diferencia importante es que las referencias con <code>getElementsBy*</code> están vivas y siempre contienen el estado actual del documento, mientras que con <code>querySelector*</code> obtenemos las referencias existentes en el momento de ejecución, sin que cambios posteriores en el DOM afecten a las referencias obtenidas.</p>
+</div>
+<div class="listingblock">
+<div class="title">getElementsBy vs querySelector - <a href="http://jsbin.com/luzexi/2/" class="bare">http://jsbin.com/luzexi/2/</a></div>
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-p">(</span><span class="tok-kd">function</span><span class="tok-p">()</span> <span class="tok-p">{</span>
+  <span class="tok-kd">var</span>
+    <span class="tok-nx">getElements</span> <span class="tok-o">=</span> <span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">getElementsByTagName</span><span class="tok-p">(</span><span class="tok-s2">&quot;p&quot;</span><span class="tok-p">),</span>
+    <span class="tok-nx">queryElements</span> <span class="tok-o">=</span> <span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">querySelectorAll</span><span class="tok-p">(</span><span class="tok-s2">&quot;p&quot;</span><span class="tok-p">);</span>
+
+  <span class="tok-nx">console</span><span class="tok-p">.</span><span class="tok-nx">log</span><span class="tok-p">(</span><span class="tok-s2">&quot;Antes con getElements:&quot;</span> <span class="tok-o">+</span> <span class="tok-nx">getElements</span><span class="tok-p">.</span><span class="tok-nx">length</span><span class="tok-p">);</span>  <span class="tok-c1">// 3</span>
+  <span class="tok-nx">console</span><span class="tok-p">.</span><span class="tok-nx">log</span><span class="tok-p">(</span><span class="tok-s2">&quot;Antes con querySelector:&quot;</span> <span class="tok-o">+</span> <span class="tok-nx">queryElements</span><span class="tok-p">.</span><span class="tok-nx">length</span><span class="tok-p">);</span>  <span class="tok-c1">// 3</span>
+
+  <span class="tok-kd">var</span> <span class="tok-nx">elem</span> <span class="tok-o">=</span> <span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">createElement</span><span class="tok-p">(</span><span class="tok-s2">&quot;p&quot;</span><span class="tok-p">);</span>
+  <span class="tok-nx">elem</span><span class="tok-p">.</span><span class="tok-nx">innerHTML</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;getElements vs querySelector&quot;</span><span class="tok-p">;</span>
+  <span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">body</span><span class="tok-p">.</span><span class="tok-nx">appendChild</span><span class="tok-p">(</span><span class="tok-nx">elem</span><span class="tok-p">);</span>
+
+  <span class="tok-nx">console</span><span class="tok-p">.</span><span class="tok-nx">log</span><span class="tok-p">(</span><span class="tok-s2">&quot;Después con getElements:&quot;</span> <span class="tok-o">+</span> <span class="tok-nx">getElements</span><span class="tok-p">.</span><span class="tok-nx">length</span><span class="tok-p">);</span> <span class="tok-c1">// 4</span>
+  <span class="tok-nx">console</span><span class="tok-p">.</span><span class="tok-nx">log</span><span class="tok-p">(</span><span class="tok-s2">&quot;Después con querySelector:&quot;</span> <span class="tok-o">+</span> <span class="tok-nx">queryElements</span><span class="tok-p">.</span><span class="tok-nx">length</span><span class="tok-p">);</span> <span class="tok-c1">// 3</span>
+<span class="tok-p">}());</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Si ejecutamos la página y visualizamos el contenido de la consola tendremos:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/js03/getElementVSquerySelector.jpg" alt="getElement vs querySelector" width="50%">
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_gestionando_atributos">Gestionando atributos</h5>
+<div class="paragraph">
+<p>Una vez hemos recuperado un nodo, podemos acceder a sus atributos mediante el método <code>getAttribute(nombreAtributo)</code> y modificarlo mediante <code>setAttribute(nombreAtributo, valorAtributo)</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-p">(</span><span class="tok-kd">function</span><span class="tok-p">()</span> <span class="tok-p">{</span>
+  <span class="tok-kd">var</span> <span class="tok-nx">pTres</span> <span class="tok-o">=</span> <span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">getElementById</span><span class="tok-p">(</span><span class="tok-s2">&quot;tres&quot;</span><span class="tok-p">);</span>
+  <span class="tok-nx">pTres</span><span class="tok-p">.</span><span class="tok-nx">setAttribute</span><span class="tok-p">(</span><span class="tok-s2">&quot;align&quot;</span><span class="tok-p">,</span><span class="tok-s2">&quot;right&quot;</span><span class="tok-p">);</span>
+<span class="tok-p">}());</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>También podemos acceder a los atributos como propiedades de los elementos, con lo que podemos hacer lo mismo del siguiente modo:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-p">(</span><span class="tok-kd">function</span><span class="tok-p">()</span> <span class="tok-p">{</span>
+  <span class="tok-kd">var</span> <span class="tok-nx">pTres</span> <span class="tok-o">=</span> <span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">getElementById</span><span class="tok-p">(</span><span class="tok-s2">&quot;tres&quot;</span><span class="tok-p">);</span>
+  <span class="tok-nx">pTres</span><span class="tok-p">.</span><span class="tok-nx">align</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;right&quot;</span><span class="tok-p">;</span>
+<span class="tok-p">}());</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>La gestión de los atributos están en desuso en favor de las hojas de estilo para dotar a las páginas de un comportamiento predefinido y desacoplado en su archivo correspondiente.</p>
+</div>
+<div class="paragraph">
+<p>Cuando veamos el impacto de HTML 5 en JavaScript estudiaremos el uso de los atributos <code>data</code> y el conjunto <code>dataset</code>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_trabajando_con_css">3.3. Trabajando con CSS</h3>
+<div class="paragraph">
+<p>En este apartado vamos a ver como modificar el estilos de los elementos, cambiando sus propiedades CSS mediante el uso de Javascript.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+Se supone que el alumno ya tiene unos conocimientos básicos de CSS
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Para ello, vamos a basarnos en el siguiente código HTML.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="html"><span class="tok-cp">&lt;!DOCTYPE html&gt;</span>
+<span class="tok-nt">&lt;html</span> <span class="tok-na">lang=</span><span class="tok-s">&quot;es&quot;</span><span class="tok-nt">&gt;</span>
+<span class="tok-nt">&lt;head&gt;</span>
+  <span class="tok-nt">&lt;meta</span> <span class="tok-na">charset=</span><span class="tok-s">&quot;utf-8&quot;</span> <span class="tok-nt">/&gt;</span>
+  <span class="tok-nt">&lt;title&gt;&lt;/title&gt;</span>
+  <span class="tok-nt">&lt;style&gt;</span>
+    <span class="tok-nf">#batman</span> <span class="tok-p">{</span> <span class="tok-p">}</span>
+    <span class="tok-nc">.css-class</span> <span class="tok-p">{</span>
+      <span class="tok-k">color</span><span class="tok-o">:</span> <span class="tok-nb">blue</span><span class="tok-p">;</span>
+      <span class="tok-k">border</span> <span class="tok-o">:</span> <span class="tok-m">1px</span> <span class="tok-k">solid</span> <span class="tok-nb">black</span><span class="tok-p">;</span>
+    <span class="tok-p">}</span>
+  <span class="tok-nt">&lt;/style&gt;</span>
+<span class="tok-nt">&lt;/head&gt;</span>
+<span class="tok-nt">&lt;body&gt;</span>
+  <span class="tok-nt">&lt;div</span> <span class="tok-na">style=</span><span class="tok-s">&quot;font-size:xx-large&quot;</span> <span class="tok-na">id=</span><span class="tok-s">&quot;batman&quot;</span><span class="tok-nt">&gt;</span>Batman siempre gana.<span class="tok-nt">&lt;/div&gt;</span>
+  <span class="tok-nt">&lt;script </span><span class="tok-na">src=</span><span class="tok-s">&quot;css.js&quot;</span><span class="tok-nt">&gt;&lt;/script&gt;</span>
+<span class="tok-nt">&lt;/body&gt;</span>
+<span class="tok-nt">&lt;/html&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>La propiedad <code>style</code> de los elementos nos permiten obtener/modificar los estilos. Por ejemplo, si queremos cambiar mediante <em>JavaScript</em> el color del texto del párrafo a azul y añadirle un borde negro, haríamos lo siguiente:</p>
+</div>
+<div class="listingblock">
+<div class="title">style - <a href="http://jsbin.com/qitume/1/edit?html,js,output" class="bare">http://jsbin.com/qitume/1/edit?html,js,output</a></div>
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-p">(</span><span class="tok-kd">function</span><span class="tok-p">()</span> <span class="tok-p">{</span>
+  <span class="tok-kd">var</span> <span class="tok-nx">divBatman</span> <span class="tok-o">=</span> <span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">getElementById</span><span class="tok-p">(</span><span class="tok-s2">&quot;batman&quot;</span><span class="tok-p">);</span>
+  <span class="tok-nx">divBatman</span><span class="tok-p">.</span><span class="tok-nx">style</span><span class="tok-p">.</span><span class="tok-nx">color</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;blue&quot;</span><span class="tok-p">;</span>
+  <span class="tok-nx">divBatman</span><span class="tok-p">.</span><span class="tok-nx">style</span><span class="tok-p">.</span><span class="tok-nx">border</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;1px solid black&quot;</span><span class="tok-p">;</span>
+<span class="tok-p">}());</span></code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Si la propiedad CSS contiene un guión, para usarla mediante <em>JavaScript</em>, se usa la notación <em>camelCase</em>. Así pues, <code>background-color</code> pasará a usarse como <code>backgroundColor</code>.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_trabajando_con_clases">3.3.1. Trabajando con clases</h4>
+<div class="paragraph">
+<p>Si vamos a modificar más de un estilo, es conveniente usar una clase CSS para evitar los múltiples accesos, a la cual accederemos mediante mediante JavaScript con la propiedad <code>className</code>.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+No se utiliza <code>class</code> por que se trata de una palabra reservada.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-p">(</span><span class="tok-kd">function</span><span class="tok-p">()</span> <span class="tok-p">{</span>
+  <span class="tok-kd">var</span> <span class="tok-nx">divBatman</span> <span class="tok-o">=</span> <span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">getElementById</span><span class="tok-p">(</span><span class="tok-s2">&quot;batman&quot;</span><span class="tok-p">);</span>
+  <span class="tok-nx">divBatman</span><span class="tok-p">.</span><span class="tok-nx">className</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;css-class&quot;</span><span class="tok-p">;</span>
+  <span class="tok-c1">// divBatman.className = &quot;&quot;; -&gt; elimina la clase CSS</span>
+<span class="tok-p">}());</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Si queremos añadir más de una clase, podemos separarlas con espacios o utilizar la propiedad <code>classList</code> (en navegadores actuales - <a href="http://caniuse.com/classlist" class="bare">http://caniuse.com/classlist</a> ) que permite añadir clases mediante el método <code>add</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-p">(</span><span class="tok-kd">function</span><span class="tok-p">()</span> <span class="tok-p">{</span>
+  <span class="tok-kd">var</span> <span class="tok-nx">divBatman</span> <span class="tok-o">=</span> <span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">getElementById</span><span class="tok-p">(</span><span class="tok-s2">&quot;batman&quot;</span><span class="tok-p">);</span>
+  <span class="tok-nx">divBatman</span><span class="tok-p">.</span><span class="tok-nx">classList</span><span class="tok-p">.</span><span class="tok-nx">add</span><span class="tok-p">(</span><span class="tok-s2">&quot;css-class&quot;</span><span class="tok-p">);</span>
+  <span class="tok-nx">divBatman</span><span class="tok-p">.</span><span class="tok-nx">classList</span><span class="tok-p">.</span><span class="tok-nx">add</span><span class="tok-p">(</span><span class="tok-s2">&quot;css-class2&quot;</span><span class="tok-p">);</span>
+<span class="tok-p">}());</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Otros métodos útiles de <code>classList</code> son <code>remove</code> para eliminar una clase, <code>toggle</code> para cambiar una clase por otra, <code>length</code> para averiguar la longitud de la lista de clases y <code>contains</code> para averiguar si una clase existe dentro de la lista.</p>
+</div>
+<div class="paragraph">
+<p>Si en algún momento queremos averiguar el estilo de una determinada propiedad, podemos acceder a la propiedad de <code>window.getComputedStyle(elem, null).getPropertyValue(cssProperty)</code>. En el caso de que el navegador no lo soporte (sólo IE antiguos), hay que usar el array <code>currentStyle</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-p">(</span><span class="tok-kd">function</span><span class="tok-p">()</span> <span class="tok-p">{</span>
+  <span class="tok-kd">var</span> <span class="tok-nx">divBatman</span> <span class="tok-o">=</span> <span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">getElementById</span><span class="tok-p">(</span><span class="tok-s2">&quot;batman&quot;</span><span class="tok-p">);</span>
+  <span class="tok-kd">var</span> <span class="tok-nx">color</span> <span class="tok-o">=</span> <span class="tok-nb">window</span><span class="tok-p">.</span><span class="tok-nx">getComputedStyle</span><span class="tok-p">(</span><span class="tok-nx">divBatman</span><span class="tok-p">,</span> <span class="tok-kc">null</span><span class="tok-p">).</span><span class="tok-nx">getPropertyValue</span><span class="tok-p">(</span><span class="tok-s2">&quot;color&quot;</span><span class="tok-p">);</span>
+  <span class="tok-kd">var</span> <span class="tok-nx">colorIE</span> <span class="tok-o">=</span> <span class="tok-nx">divBatman</span><span class="tok-p">.</span><span class="tok-nx">currentStyle</span><span class="tok-p">[</span><span class="tok-s2">&quot;color&quot;</span><span class="tok-p">];</span>
+<span class="tok-p">}());</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_mostrando_y_ocultando_contenido">3.3.2. Mostrando y ocultando contenido</h4>
+<div class="paragraph">
+<p>Una acción muy común es mostrar y ocultar contenido de manera dinámica. Esto se puede conseguir ocultando un nodo, y posteriormente volverlo a mostrar.</p>
+</div>
+<div class="paragraph">
+<p>Para ello, tenemos la propiedad <code>style.display</code>. Cuando toma el valor de <code>"none"</code>, no se mostrará el elemento, aunque el mismo exista. Más adelante, para volver a mostrarlo, le asignaremos una cadena vacía a la propiedad <code>style.display</code>, y el elemento reaparecerá.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-p">(</span><span class="tok-kd">function</span><span class="tok-p">()</span> <span class="tok-p">{</span>
+  <span class="tok-kd">var</span> <span class="tok-nx">divBatman</span> <span class="tok-o">=</span> <span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">getElementById</span><span class="tok-p">(</span><span class="tok-s2">&quot;batman&quot;</span><span class="tok-p">);</span>
+  <span class="tok-nx">divBatman</span><span class="tok-p">.</span><span class="tok-nx">style</span><span class="tok-p">.</span><span class="tok-nx">display</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;none&quot;</span><span class="tok-p">;</span> <span class="tok-c1">// oculta</span>
+  <span class="tok-nx">divBatman</span><span class="tok-p">.</span><span class="tok-nx">style</span><span class="tok-p">.</span><span class="tok-nx">display</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;&quot;</span><span class="tok-p">;</span> <span class="tok-c1">// visible</span>
+<span class="tok-p">}());</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_animaciones">3.4. Animaciones</h3>
+<div class="paragraph">
+<p>Uno de las acciones más usadas en las web actual es el movimiento y la manipulación de contenidos, de modo que hay texto que aparece/desaparece o cambia de lugar de manera dinámica.</p>
+</div>
+<div class="paragraph">
+<p>Por ejemplo, si lo que queremos es crear una animación, haremos llamadas sucesivas a una función, pero con un límite de ejecuciones mediante el uso de <a href="#Timers">[Timers]</a>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-p">(</span><span class="tok-kd">function</span><span class="tok-p">()</span> <span class="tok-p">{</span>
+  <span class="tok-kd">var</span> <span class="tok-nx">velocidad</span> <span class="tok-o">=</span> <span class="tok-mi">2000</span><span class="tok-p">,</span>
+    <span class="tok-nx">i</span> <span class="tok-o">=</span> <span class="tok-mi">0</span><span class="tok-p">;</span>
+    <span class="tok-nx">miFuncion</span> <span class="tok-o">=</span> <span class="tok-kd">function</span><span class="tok-p">()</span> <span class="tok-p">{</span>
+      <span class="tok-nx">console</span><span class="tok-p">.</span><span class="tok-nx">log</span><span class="tok-p">(</span><span class="tok-s2">&quot;Batman vuelve &quot;</span> <span class="tok-o">+</span> <span class="tok-nx">i</span><span class="tok-p">);</span>
+      <span class="tok-nx">i</span> <span class="tok-o">=</span> <span class="tok-nx">i</span> <span class="tok-o">+</span> <span class="tok-mi">1</span><span class="tok-p">;</span>
+      <span class="tok-k">if</span> <span class="tok-p">(</span><span class="tok-nx">i</span> <span class="tok-o">&lt;</span> <span class="tok-mi">10</span><span class="tok-p">)</span> <span class="tok-p">{</span>
+        <span class="tok-nx">setTimeout</span><span class="tok-p">(</span><span class="tok-nx">miFuncion</span><span class="tok-p">,</span> <span class="tok-nx">velocidad</span><span class="tok-p">);</span>  <i class="conum" data-value="2"></i><b>(2)</b>
+      <span class="tok-p">}</span>
+    <span class="tok-p">};</span>
+  <span class="tok-nx">setTimeout</span><span class="tok-p">(</span><span class="tok-nx">miFuncion</span><span class="tok-p">,</span> <span class="tok-nx">velocidad</span><span class="tok-p">);</span> <i class="conum" data-value="1"></i><b>(1)</b>
+<span class="tok-p">}());</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Hacemos una llamada a <code>miFuncion</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Con los valores de <code>i</code> de 0 a 9 se ejecutará <code>miFuncion</code> con una separación de <code>velocidad</code> milisegundos</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Otra manera de hacerlo es utilizar la función <code>setInterval(funcion, intervalo)</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-p">(</span><span class="tok-kd">function</span><span class="tok-p">()</span> <span class="tok-p">{</span>
+  <span class="tok-kd">var</span> <span class="tok-nx">velocidad</span> <span class="tok-o">=</span> <span class="tok-mi">2000</span><span class="tok-p">,</span>
+    <span class="tok-nx">i</span> <span class="tok-o">=</span> <span class="tok-mi">0</span><span class="tok-p">;</span>
+    <span class="tok-nx">miFuncion</span> <span class="tok-o">=</span> <span class="tok-kd">function</span><span class="tok-p">()</span> <span class="tok-p">{</span>
+      <span class="tok-nx">console</span><span class="tok-p">.</span><span class="tok-nx">log</span><span class="tok-p">(</span><span class="tok-s2">&quot;Batman vuelve &quot;</span> <span class="tok-o">+</span> <span class="tok-nx">i</span><span class="tok-p">);</span>
+      <span class="tok-nx">i</span> <span class="tok-o">=</span> <span class="tok-nx">i</span> <span class="tok-o">+</span> <span class="tok-mi">1</span><span class="tok-p">;</span>
+      <span class="tok-k">if</span> <span class="tok-p">(</span><span class="tok-nx">i</span> <span class="tok-o">&gt;</span> <span class="tok-mi">9</span><span class="tok-p">)</span> <span class="tok-p">{</span>
+        <span class="tok-nx">clearInterval</span><span class="tok-p">(</span><span class="tok-nx">timer</span><span class="tok-p">);</span>
+      <span class="tok-p">}</span>
+    <span class="tok-p">};</span>
+  <span class="tok-kd">var</span> <span class="tok-nx">timer</span> <span class="tok-o">=</span> <span class="tok-nx">setTimeout</span><span class="tok-p">(</span><span class="tok-nx">miFuncion</span><span class="tok-p">,</span> <span class="tok-nx">velocidad</span><span class="tok-p">);</span>
+<span class="tok-p">}());</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Para ver un ejemplo de animación en movimiento, a partir de una capa con un cuadrado azul, vamos a moverla horizontalmente de manera ininterrumpida.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="html"><span class="tok-cp">&lt;!DOCTYPE html&gt;</span>
+<span class="tok-nt">&lt;html</span> <span class="tok-na">lang=</span><span class="tok-s">&quot;es&quot;</span><span class="tok-nt">&gt;</span>
+<span class="tok-nt">&lt;head&gt;</span>
+  <span class="tok-nt">&lt;meta</span> <span class="tok-na">charset=</span><span class="tok-s">&quot;utf-8&quot;</span> <span class="tok-nt">/&gt;</span>
+  <span class="tok-nt">&lt;title&gt;</span>Caja<span class="tok-nt">&lt;/title&gt;</span>
+  <span class="tok-nt">&lt;style&gt;</span>
+      <span class="tok-nf">#caja</span> <span class="tok-p">{</span>
+        <span class="tok-k">position</span><span class="tok-o">:</span> <span class="tok-k">absolute</span><span class="tok-p">;</span>
+        <span class="tok-k">left</span><span class="tok-o">:</span> <span class="tok-m">50px</span><span class="tok-p">;</span>
+        <span class="tok-k">top</span><span class="tok-o">:</span> <span class="tok-m">50px</span><span class="tok-p">;</span>
+        <span class="tok-k">background-color</span><span class="tok-o">:</span> <span class="tok-nb">blue</span><span class="tok-p">;</span>
+        <span class="tok-k">height</span><span class="tok-o">:</span> <span class="tok-m">100px</span><span class="tok-p">;</span>
+        <span class="tok-k">width</span><span class="tok-o">:</span> <span class="tok-m">100px</span><span class="tok-p">;</span>
+      <span class="tok-p">}</span>
+  <span class="tok-nt">&lt;/style&gt;</span>
+<span class="tok-nt">&lt;/head&gt;</span>
+<span class="tok-nt">&lt;body&gt;</span>
+  <span class="tok-nt">&lt;div</span> <span class="tok-na">id=</span><span class="tok-s">&quot;caja&quot;</span><span class="tok-nt">&gt;&lt;/div&gt;</span>
+  <span class="tok-nt">&lt;script </span><span class="tok-na">src=</span><span class="tok-s">&quot;caja.js&quot;</span><span class="tok-nt">&gt;&lt;/script&gt;</span>
+<span class="tok-nt">&lt;/body&gt;</span>
+<span class="tok-nt">&lt;/html&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Y en script, de forma similar al ejemplo anterior:</p>
+</div>
+<div class="listingblock">
+<div class="title">Ejemplo Animación - <a href="http://jsbin.com/daziha/2/edit?html,css,js,output" class="bare">http://jsbin.com/daziha/2/edit?html,css,js,output</a></div>
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-p">(</span><span class="tok-kd">function</span><span class="tok-p">()</span> <span class="tok-p">{</span>
+  <span class="tok-kd">var</span> <span class="tok-nx">velocidad</span> <span class="tok-o">=</span> <span class="tok-mi">10</span><span class="tok-p">,</span>
+    <span class="tok-nx">mueveCaja</span> <span class="tok-o">=</span> <span class="tok-kd">function</span><span class="tok-p">(</span><span class="tok-nx">pasos</span><span class="tok-p">)</span> <span class="tok-p">{</span>
+      <span class="tok-kd">var</span> <span class="tok-nx">el</span> <span class="tok-o">=</span> <span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">getElementById</span><span class="tok-p">(</span><span class="tok-s2">&quot;caja&quot;</span><span class="tok-p">),</span>
+        <span class="tok-nx">izq</span> <span class="tok-o">=</span> <span class="tok-nx">el</span><span class="tok-p">.</span><span class="tok-nx">offsetLeft</span><span class="tok-p">;</span> <i class="conum" data-value="1"></i><b>(1)</b>
+
+      <span class="tok-k">if</span> <span class="tok-p">((</span><span class="tok-nx">pasos</span> <span class="tok-o">&gt;</span> <span class="tok-mi">0</span> <span class="tok-o">&amp;&amp;</span> <span class="tok-nx">izq</span> <span class="tok-o">&gt;</span> <span class="tok-mi">399</span><span class="tok-p">)</span> <span class="tok-o">||</span> <span class="tok-p">(</span><span class="tok-nx">pasos</span> <span class="tok-o">&lt;</span> <span class="tok-mi">0</span> <span class="tok-o">&amp;&amp;</span> <span class="tok-nx">izq</span> <span class="tok-o">&lt;</span> <span class="tok-mi">51</span><span class="tok-p">))</span> <span class="tok-p">{</span>
+        <span class="tok-nx">clearTimeout</span><span class="tok-p">(</span><span class="tok-nx">timer</span><span class="tok-p">);</span> <i class="conum" data-value="2"></i><b>(2)</b>
+        <span class="tok-nx">timer</span> <span class="tok-o">=</span> <span class="tok-nx">setInterval</span><span class="tok-p">(</span><span class="tok-kd">function</span><span class="tok-p">()</span> <span class="tok-p">{</span>
+          <span class="tok-nx">mueveCaja</span><span class="tok-p">(</span><span class="tok-nx">pasos</span> <span class="tok-o">*</span> <span class="tok-o">-</span><span class="tok-mi">1</span><span class="tok-p">);</span>  <i class="conum" data-value="3"></i><b>(3)</b>
+        <span class="tok-p">},</span> <span class="tok-nx">velocidad</span><span class="tok-p">);</span>
+      <span class="tok-p">}</span>
+
+      <span class="tok-nx">el</span><span class="tok-p">.</span><span class="tok-nx">style</span><span class="tok-p">.</span><span class="tok-nx">left</span> <span class="tok-o">=</span> <span class="tok-nx">izq</span> <span class="tok-o">+</span> <span class="tok-nx">pasos</span> <span class="tok-o">+</span> <span class="tok-s2">&quot;px&quot;</span><span class="tok-p">;</span> <i class="conum" data-value="4"></i><b>(4)</b>
+    <span class="tok-p">};</span>
+
+  <span class="tok-kd">var</span> <span class="tok-nx">timer</span> <span class="tok-o">=</span> <span class="tok-nx">setInterval</span><span class="tok-p">(</span><span class="tok-kd">function</span> <span class="tok-p">()</span> <span class="tok-p">{</span>
+    <span class="tok-nx">mueveCaja</span><span class="tok-p">(</span><span class="tok-mi">3</span><span class="tok-p">);</span>
+  <span class="tok-p">},</span> <span class="tok-nx">velocidad</span><span class="tok-p">);</span>
+<span class="tok-p">}());</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Obtenemos su posición respecto al margen izquierdo</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Si llegamos a uno de los límites horizontales (de 0 a 400, paramos la función)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Y volvemos a llamarla pero en sentido contrario</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Fija la posición del cuadrado con la que tenía más el número de pasos definidos (de 3 en 3, o de -3 en -3)</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_eventos">3.5. Eventos</h3>
+<div class="paragraph">
+<p>Los eventos nos van a permitir asociar funciones a acciones que ocurren en el navegador tras la interacción con el usuario, ya sea mediante el teclado o el ratón.</p>
+</div>
+<div class="sect3">
+<h4 id="_gestionando_eventos">3.5.1. Gestionando eventos</h4>
+<div class="paragraph">
+<p>Para comenzar con un ejemplo muy sencillo, vamos a basarnos en la página web que dibujaba un cuadrado. A partir del evento de hacer click sobre el mismo, cambiaremos su color a rojo. Para ello:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-p">(</span><span class="tok-kd">function</span><span class="tok-p">()</span> <span class="tok-p">{</span>
+  <span class="tok-kd">var</span> <span class="tok-nx">el</span> <span class="tok-o">=</span> <span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">getElementById</span><span class="tok-p">(</span><span class="tok-s2">&quot;caja&quot;</span><span class="tok-p">);</span>
+
+  <span class="tok-nx">el</span><span class="tok-p">.</span><span class="tok-nx">onclick</span> <span class="tok-o">=</span> <span class="tok-kd">function</span><span class="tok-p">()</span> <span class="tok-p">{</span>  <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="tok-k">this</span><span class="tok-p">.</span><span class="tok-nx">style</span><span class="tok-p">.</span><span class="tok-nx">backgroundColor</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;red&quot;</span><span class="tok-p">;</span>
+  <span class="tok-p">};</span>  <i class="conum" data-value="2"></i><b>(2)</b>
+
+<span class="tok-p">}());</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Definimos una función que se ejecutará cada vez que se haga click sobre el elemento</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Un error muy común es olvidar el <code>;</code> tras la definición de la función</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Podemos observar como hemos asociado una función a la propiedad <code>onclick</code> de un elemento, mediante la técnica de <strong>elemento.evento</strong>. De este modo, cada vez que hagamos click sobre el elemento <code>caja</code> se ejecutará dicha función anónima. Otros eventos que podemos usar son <code>onload</code>, <code>onmouseover</code>, <code>onblur</code>, <code>onfocus</code>, etc&#8230;&#8203;</p>
+</div>
+<div class="paragraph">
+<p>Otra formar de asociar una acción al evento, aunque no se recomienda, es incrustar el código JavaScript como parte de un atributo de etiqueta HTML, con el nombre del evento:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="html"><span class="tok-nt">&lt;button</span> <span class="tok-na">onclick=</span><span class="tok-s">&quot;this.style.backgroundColor=&#39;red&#39;;&quot;</span><span class="tok-nt">&gt;</span>Incrustado<span class="tok-nt">&lt;/button&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Y la tercera forma es utilizar la función <code>addEventListener(evento, función, flujoEvento)</code> que veremos más adelante.</p>
+</div>
+<div class="sect4">
+<h5 id="_ejemplo_botones_y_click">Ejemplo botones y click</h5>
+<div class="paragraph">
+<p>Vamos a hacer un ejemplo un poco más completo. Para ello, vamos a definir una página de web que va a cambiar el estilo con los colores de fondo/frente conforme pulsemos un botón u otro.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="html"><span class="tok-cp">&lt;!DOCTYPE html&gt;</span>
+<span class="tok-nt">&lt;html</span> <span class="tok-na">lang=</span><span class="tok-s">&quot;es&quot;</span><span class="tok-nt">&gt;</span>
+  <span class="tok-nt">&lt;head&gt;</span>
+    <span class="tok-nt">&lt;meta</span> <span class="tok-na">charset=</span><span class="tok-s">&quot;utf-8&quot;</span> <span class="tok-nt">/&gt;</span>
+    <span class="tok-nt">&lt;title&gt;</span>Hola Eventos<span class="tok-nt">&lt;/title&gt;</span>
+    <span class="tok-nt">&lt;style&gt;</span>
+      <span class="tok-nc">.normal</span> <span class="tok-p">{</span>
+        <span class="tok-k">background-color</span><span class="tok-o">:</span> <span class="tok-nb">white</span><span class="tok-p">;</span>
+        <span class="tok-k">color</span><span class="tok-o">:</span> <span class="tok-nb">black</span><span class="tok-p">;</span>
+      <span class="tok-p">}</span>
+      <span class="tok-nc">.contrario</span> <span class="tok-p">{</span>
+        <span class="tok-k">background-color</span><span class="tok-o">:</span> <span class="tok-nb">black</span><span class="tok-p">;</span>
+        <span class="tok-k">color</span><span class="tok-o">:</span> <span class="tok-nb">white</span><span class="tok-p">;</span>
+      <span class="tok-p">}</span>
+    <span class="tok-nt">&lt;/style&gt;</span>
+  <span class="tok-nt">&lt;/head&gt;</span>
+  <span class="tok-nt">&lt;body</span> <span class="tok-na">class=</span><span class="tok-s">&quot;normal&quot;</span><span class="tok-nt">&gt;</span>
+      <span class="tok-nt">&lt;h1&gt;</span>Hola Eventos<span class="tok-nt">&lt;/h1&gt;</span>
+      <span class="tok-nt">&lt;p&gt;&lt;a</span> <span class="tok-na">href=</span><span class="tok-s">&quot;http://es.wikipedia.org/wiki/Batman&quot;</span><span class="tok-nt">&gt;</span>Batman<span class="tok-nt">&lt;/a&gt;</span> Forever<span class="tok-nt">&lt;/p&gt;</span>
+
+      <span class="tok-nt">&lt;button&gt;</span>Normal<span class="tok-nt">&lt;/button&gt;</span>
+      <span class="tok-nt">&lt;button&gt;</span>Contrario<span class="tok-nt">&lt;/button&gt;</span>
+
+      <span class="tok-nt">&lt;script </span><span class="tok-na">src=</span><span class="tok-s">&quot;eventos.js&quot;</span><span class="tok-nt">&gt;&lt;/script&gt;</span>
+  <span class="tok-nt">&lt;/body&gt;</span>
+<span class="tok-nt">&lt;/html&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Y el código <em>JavaScript</em> sería el siguiente:</p>
+</div>
+<div class="listingblock">
+<div class="title">Ejemplo Click - <a href="http://jsbin.com/qawilu/1/edit?html,css,js,output" class="bare">http://jsbin.com/qawilu/1/edit?html,css,js,output</a></div>
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-p">(</span><span class="tok-kd">function</span><span class="tok-p">()</span> <span class="tok-p">{</span>
+  <span class="tok-kd">var</span> <span class="tok-nx">botones</span> <span class="tok-o">=</span> <span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">getElementsByTagName</span><span class="tok-p">(</span><span class="tok-s2">&quot;button&quot;</span><span class="tok-p">);</span>
+
+  <span class="tok-k">for</span> <span class="tok-p">(</span><span class="tok-kd">var</span> <span class="tok-nx">i</span><span class="tok-o">=</span><span class="tok-mi">0</span><span class="tok-p">,</span> <span class="tok-nx">len</span><span class="tok-o">=</span><span class="tok-nx">botones</span><span class="tok-p">.</span><span class="tok-nx">length</span><span class="tok-p">;</span> <span class="tok-nx">i</span><span class="tok-o">&lt;</span><span class="tok-nx">len</span><span class="tok-p">;</span> <span class="tok-nx">i</span><span class="tok-o">=</span><span class="tok-nx">i</span><span class="tok-o">+</span><span class="tok-mi">1</span><span class="tok-p">)</span> <span class="tok-p">{</span>
+    <span class="tok-nx">botones</span><span class="tok-p">[</span><span class="tok-nx">i</span><span class="tok-p">].</span><span class="tok-nx">onclick</span> <span class="tok-o">=</span> <span class="tok-kd">function</span><span class="tok-p">()</span> <span class="tok-p">{</span>
+      <span class="tok-kd">var</span> <span class="tok-nx">className</span> <span class="tok-o">=</span> <span class="tok-k">this</span><span class="tok-p">.</span><span class="tok-nx">innerHTML</span><span class="tok-p">.</span><span class="tok-nx">toLowerCase</span><span class="tok-p">();</span>
+      <span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">body</span><span class="tok-p">.</span><span class="tok-nx">className</span> <span class="tok-o">=</span> <span class="tok-nx">className</span><span class="tok-p">;</span>
+    <span class="tok-p">};</span>
+    <span class="tok-c1">// botones[i].onclick = function() {};</span>
+  <span class="tok-p">}</span>
+<span class="tok-p">}());</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Para cada uno de los botones, le añadimos una función anónima al evento <code>onclick</code> para que le asigne al <code>body</code> la clase que coincide con el nombre del botón (en minúsculas).</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+Mucho cuidado con añadir una segunda función al mismo evento tal cual está en la línea 9, ya que realmente estaremos sobreescribiendo (y borrando) la función anterior.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Ante el mismo evento, un objeto puede tener solo un manejador, pero varios listeners.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_flujo_de_eventos">3.5.2. Flujo de eventos</h4>
+<div class="paragraph">
+<p>A la hora de propagarse un evento, existen dos posibilidades al definir el flujo de eventos para saber cual es el elemento que va a responder al mismo:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Con la <strong>captura de eventos</strong>, al pulsar sobre un elemento, se produce una evento de arriba a abajo, desde el elemento <code>window</code>, pasando por <code>&lt;body&gt;</code> hasta llegar al elemento que lo captura.</p>
+</li>
+<li>
+<p>En cambio, mediante el <strong>burbujeo de eventos</strong> (<em>event bubbling</em>), el evento se produce en el elemento de más abajo y va subiendo hasta llegar al <code>window</code>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Por ejemplo, si tuviéramos el siguiente fragmento HTML:</p>
+</div>
+<div class="listingblock">
+<div class="title">Ejemplo de Flujo de Evento</div>
+<div class="content">
+<pre class="pygments highlight"><code data-lang="html"><span class="tok-nt">&lt;html</span> <span class="tok-na">onclick=</span><span class="tok-s">&quot;procesaEvento()&quot;</span><span class="tok-nt">&gt;</span>
+  <span class="tok-nt">&lt;head&gt;&lt;title&gt;</span>Ejemplo de flujo de eventos<span class="tok-nt">&lt;/title&gt;&lt;/head&gt;</span>
+  <span class="tok-nt">&lt;body</span> <span class="tok-na">onclick=</span><span class="tok-s">&quot;procesaEvento()&quot;</span><span class="tok-nt">&gt;</span>
+    <span class="tok-nt">&lt;div</span> <span class="tok-na">onclick=</span><span class="tok-s">&quot;procesaEvento()&quot;</span><span class="tok-nt">&gt;</span>Pincha aqui<span class="tok-nt">&lt;/div&gt;</span>
+  <span class="tok-nt">&lt;/body&gt;</span>
+<span class="tok-nt">&lt;/html&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Cuando se pulsa sobre el texto <em>"Pincha aquí"</em> que se encuentra dentro del <code>&lt;div&gt;</code>, si el navegador sigue el modelo de <em>event bubbling</em>, se ejecutan los siguientes eventos en el orden que muestra el siguiente esquema:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/js03/eventosBurbuja.gif" alt="Burbuja de evento" width="50%">
+</div>
+<div class="title">Figure 6. Burbuja de Eventos</div>
+</div>
+<div class="paragraph">
+<p>En cambio mediante la captura de eventos tendríamos:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/js03/eventosCaptura.gif" alt="Captura de eventos" width="50%">
+</div>
+<div class="title">Figure 7. Captura de Eventos</div>
+</div>
+<div class="paragraph">
+<p>El flujo de eventos definido en la especificación DOM soporta tanto el burbujeo como la captura, pero la captura de eventos se ejecuta en primer lugar. Los dos flujos de eventos recorren todos los objetos DOM desde el objeto <code>document</code> hasta el elemento más específico o viceversa.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_el_modelo_estándar">3.5.3. El modelo estándar</h4>
+<div class="paragraph">
+<p>También conocido como eventos de DOM nivel 0, consisten en asignar una función al evento de un elemento.</p>
+</div>
+<div class="paragraph">
+<p>Este modelo se puede hacer utilizando el atributo <code>on*</code> de las etiquetas HTML, o de manera programativa mediante el uso del método <code>addEventListener(evento, función, flujoEvento)</code>.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Vamos a obviar a IE8 y versiones anteriores que no gestionan los eventos de esta manera. Si estás interesado en dicho navegador, emplean la función <code>attachEvent</code> con el mismo propósito. La gestión de código <em>cross-browser</em> la solucionaremos mediante el uso de <em>jQuery</em>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>El parámetro <code>flujoEvento</code> puede tomar los valores <code>true</code> para aplicar el modelo de captura de eventos, o <code>false</code> para <em>event bubbling</em> (recomendado).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-p">(</span><span class="tok-kd">function</span><span class="tok-p">()</span> <span class="tok-p">{</span>
+  <span class="tok-kd">var</span> <span class="tok-nx">botonClick</span> <span class="tok-o">=</span> <span class="tok-kd">function</span><span class="tok-p">()</span> <span class="tok-p">{</span>  <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="tok-kd">var</span> <span class="tok-nx">className</span> <span class="tok-o">=</span> <span class="tok-k">this</span><span class="tok-p">.</span><span class="tok-nx">innerHTML</span><span class="tok-p">.</span><span class="tok-nx">toLowerCase</span><span class="tok-p">();</span>
+    <span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">body</span><span class="tok-p">.</span><span class="tok-nx">className</span> <span class="tok-o">=</span> <span class="tok-nx">className</span><span class="tok-p">;</span>
+  <span class="tok-p">}</span>
+
+  <span class="tok-kd">var</span> <span class="tok-nx">botones</span> <span class="tok-o">=</span> <span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">getElementsByTagName</span><span class="tok-p">(</span><span class="tok-s2">&quot;button&quot;</span><span class="tok-p">);</span>
+  <span class="tok-k">for</span> <span class="tok-p">(</span><span class="tok-kd">var</span> <span class="tok-nx">i</span><span class="tok-o">=</span><span class="tok-mi">0</span><span class="tok-p">,</span> <span class="tok-nx">len</span><span class="tok-o">=</span><span class="tok-nx">botones</span><span class="tok-p">.</span><span class="tok-nx">length</span><span class="tok-p">;</span> <span class="tok-nx">i</span><span class="tok-o">&lt;</span><span class="tok-nx">len</span><span class="tok-p">;</span> <span class="tok-nx">i</span><span class="tok-o">=</span><span class="tok-nx">i</span><span class="tok-o">+</span><span class="tok-mi">1</span><span class="tok-p">)</span> <span class="tok-p">{</span>
+    <span class="tok-nx">botones</span><span class="tok-p">[</span><span class="tok-nx">i</span><span class="tok-p">].</span><span class="tok-nx">addEventListener</span><span class="tok-p">(</span><span class="tok-s2">&quot;click&quot;</span><span class="tok-p">,</span> <span class="tok-nx">botonClick</span><span class="tok-p">,</span> <span class="tok-kc">false</span><span class="tok-p">);</span>  <i class="conum" data-value="2"></i><b>(2)</b>
+    <span class="tok-c1">// botones[i].removeEventListener(&quot;click&quot;, botonClick, false);</span>
+  <span class="tok-p">}</span>
+<span class="tok-p">}());</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Función que cambia la clase del <code>body</code> al valor del elemento con el que se invoque (en nuestro caso, el nombre del botón)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>A cada botón, se le registra al evento <em>click</em> el manejador de eventos de la función del paso 1, y con flujo de <em>event bubbling</em>.</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Al añadir eventos mediante <code>addEventListener</code> sí que podemos añadir más de una función con el mismo evento a un mismo elemento.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Para borrar un evento podemos usar su antónimo <code>removeEventListener(evento, función, flujoEvento)</code>. Cabe destacar que la función a eliminar debe ser la misma que la utilizada al añadir el evento, por lo que no podemos usar funciones anónimas.</p>
+</div>
+<div class="paragraph">
+<p>Si en algún momento necesitamos obtener información sobre el evento, podemos recoger en la función manejadora del evento un parámetro que se asociará de manera automática al evento. Este parámetro contiene las propiedad <code>type</code> que índica el evento del que proviene (en el ejemplo, sería <code>click</code>), y <code>target</code> con el elemento sobre el cual esta registrado (en el ejemplo sería <code>HTMLButtonElement</code>).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-kd">var</span> <span class="tok-nx">botonClick</span> <span class="tok-o">=</span> <span class="tok-kd">function</span><span class="tok-p">(</span><span class="tok-nx">evt</span><span class="tok-p">)</span> <span class="tok-p">{</span>
+  <span class="tok-kd">var</span> <span class="tok-nx">className</span> <span class="tok-o">=</span> <span class="tok-k">this</span><span class="tok-p">.</span><span class="tok-nx">innerHTML</span><span class="tok-p">.</span><span class="tok-nx">toLowerCase</span><span class="tok-p">();</span>
+  <span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">body</span><span class="tok-p">.</span><span class="tok-nx">className</span> <span class="tok-o">=</span> <span class="tok-nx">className</span><span class="tok-p">;</span>
+  <span class="tok-nx">console</span><span class="tok-p">.</span><span class="tok-nx">log</span><span class="tok-p">(</span><span class="tok-nx">evt</span><span class="tok-p">.</span><span class="tok-nx">type</span> <span class="tok-o">+</span> <span class="tok-s2">&quot; - &quot;</span> <span class="tok-o">+</span> <span class="tok-nx">evt</span><span class="tok-p">.</span><span class="tok-nx">target</span><span class="tok-p">);</span> <span class="tok-c1">// click - HTMLButtonElement</span>
+<span class="tok-p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Por último, sobre el evento podemos llamar al método <code>preventDefault()</code> para cancelar el comportamiento por defecto que tenía asociado el elemento sobre el cual se ha registrado el evento. Por ejemplo, si quisiéramos evitar que al pulsar sobre el enlace nos llevase a su destino:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-kd">var</span> <span class="tok-nx">enlaceClick</span> <span class="tok-o">=</span> <span class="tok-kd">function</span><span class="tok-p">(</span><span class="tok-nx">evt</span><span class="tok-p">)</span> <span class="tok-p">{</span>
+  <span class="tok-nx">evt</span><span class="tok-p">.</span><span class="tok-nx">preventDefault</span><span class="tok-p">();</span>
+<span class="tok-p">}</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_delegación_de_eventos">3.5.4. Delegación de eventos</h4>
+<div class="paragraph">
+<p>Se basa en el flujo de eventos ofrecidos por <em>event bubbling</em> para delegar un evento desde un elemento inferior en el DOM que va a subir como una burbuja hasta el exterior.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-p">(</span><span class="tok-kd">function</span><span class="tok-p">()</span> <span class="tok-p">{</span>
+  <span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">addEventListener</span><span class="tok-p">(</span><span class="tok-s2">&quot;click&quot;</span><span class="tok-p">,</span> <span class="tok-kd">function</span><span class="tok-p">(</span><span class="tok-nx">evt</span><span class="tok-p">)</span> <span class="tok-p">{</span>
+    <span class="tok-kd">var</span> <span class="tok-nx">tag</span> <span class="tok-o">=</span> <span class="tok-nx">evt</span><span class="tok-p">.</span><span class="tok-nx">target</span><span class="tok-p">.</span><span class="tok-nx">tagName</span><span class="tok-p">;</span>
+      <span class="tok-nx">console</span><span class="tok-p">.</span><span class="tok-nx">log</span><span class="tok-p">(</span><span class="tok-s2">&quot;Click en &quot;</span> <span class="tok-o">+</span> <span class="tok-nx">tag</span><span class="tok-p">);</span>
+
+    <span class="tok-k">if</span> <span class="tok-p">(</span><span class="tok-s2">&quot;A&quot;</span> <span class="tok-o">==</span> <span class="tok-nx">tag</span><span class="tok-p">)</span> <span class="tok-p">{</span>
+      <span class="tok-nx">evt</span><span class="tok-p">.</span><span class="tok-nx">preventDefault</span><span class="tok-p">();</span>
+    <span class="tok-p">}</span>
+  <span class="tok-p">},</span> <span class="tok-kc">false</span><span class="tok-p">);</span>
+<span class="tok-p">})();</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_tipos_de_eventos">3.5.5. Tipos de eventos</h4>
+<div class="paragraph">
+<p>Podemos dividir, a grosso modo, los eventos en los siguientes tipos:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Evento de carga.</p>
+</li>
+<li>
+<p>Eventos de foco.</p>
+</li>
+<li>
+<p>Eventos de ratón.</p>
+</li>
+<li>
+<p>Eventos de teclado.</p>
+</li>
+</ul>
+</div>
+<div class="sect4">
+<h5 id="_evento_de_carga">Evento de carga</h5>
+<div class="paragraph">
+<p>Para poder asignar un <em>listener</em> a un elemento del DOM, éste debe haberse cargado, y de ahí la conveniencia de incluir el código JavaScript al final de la página HTML, justo antes de cerrar el body.</p>
+</div>
+<div class="paragraph">
+<p>Para asegurarnos que el documento ha cargado completamente, podemos usar el evento <code>window.onload</code>. De este modo podríamos enlazar el código JavaScript al inicio de la página:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-kd">function</span> <span class="tok-nx">preparandoManejadores</span><span class="tok-p">()</span> <span class="tok-p">{</span>
+  <span class="tok-kd">var</span> <span class="tok-nx">miLogo</span> <span class="tok-o">=</span> <span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">getElementById</span><span class="tok-p">(</span><span class="tok-s2">&quot;logo&quot;</span><span class="tok-p">);</span>
+  <span class="tok-nx">miLogo</span><span class="tok-p">.</span><span class="tok-nx">onclick</span><span class="tok-p">()</span> <span class="tok-p">{</span>
+    <span class="tok-nx">alert</span><span class="tok-p">(</span><span class="tok-s2">&quot;Has venido al sitio adecuado.&quot;</span><span class="tok-p">);</span>
+  <span class="tok-p">}</span>
+<span class="tok-p">}</span>
+
+<span class="tok-nb">window</span><span class="tok-p">.</span><span class="tok-nx">onload</span> <span class="tok-o">=</span> <span class="tok-kd">function</span><span class="tok-p">()</span> <span class="tok-p">{</span>
+  <span class="tok-nx">preparandoManejadores</span><span class="tok-p">();</span>
+<span class="tok-p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Un fallo recurrente es incluir más de un manejador para el mismo evento <code>onload</code>. Si incluimos diferentes archivos <code>.js</code>, únicamente se cargará el último manejador, lo que puede provocar comportamientos no deseados.</p>
+</div>
+<div class="paragraph">
+<p>Una característica a destacar es que el evento se lanzará una vez todo el contenido se ha descargado, lo que incluye las imágenes de la página.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_eventos_de_foco">Eventos de foco</h5>
+<div class="paragraph">
+<p>Cuando trabajamos con formularios, al <em>clickar</em> o acceder a un campo mediante el uso del tabulador, éste obtiene el foco, lo que lanza el evento <code>onfocus</code>. Al cambiar a otro campo, el elemento que tiene el foco lo pierde, y se lanza el evento <code>onblur</code>.</p>
+</div>
+<div class="paragraph">
+<p>Supongamos el siguiente fragmento de un formulario:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="html"><span class="tok-nt">&lt;form</span> <span class="tok-na">name=</span><span class="tok-s">&quot;miForm&quot;</span><span class="tok-nt">&gt;</span>
+  Nombre: <span class="tok-nt">&lt;input</span> <span class="tok-na">type=</span><span class="tok-s">&quot;text&quot;</span> <span class="tok-na">name=</span><span class="tok-s">&quot;nombre&quot;</span> <span class="tok-na">id=</span><span class="tok-s">&quot;nom&quot;</span> <span class="tok-na">tabindex=</span><span class="tok-s">&quot;10&quot;</span> <span class="tok-nt">/&gt;</span>
+  Apellidos: <span class="tok-nt">&lt;input</span> <span class="tok-na">type=</span><span class="tok-s">&quot;text&quot;</span> <span class="tok-na">name=</span><span class="tok-s">&quot;apellidos&quot;</span> <span class="tok-na">id=</span><span class="tok-s">&quot;ape&quot;</span> <span class="tok-na">tabindex=</span><span class="tok-s">&quot;20&quot;</span> <span class="tok-nt">/&gt;</span>
+<span class="tok-nt">&lt;/form&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Vamos a simular el comportamiento del atributo <code>placeHolder</code> de HTML5, que escribe un texto de ayuda al campo que desaparece al tener el foco. Tal como veremos más adelante, para acceder al valor de un campo de texto hemos de utilizar la propiedad <code>value</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-kd">var</span> <span class="tok-nx">campoNombre</span> <span class="tok-o">=</span> <span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">getElementById</span><span class="tok-p">(</span><span class="tok-s2">&quot;nom&quot;</span><span class="tok-p">);</span>
+<span class="tok-nx">campoNombre</span><span class="tok-p">.</span><span class="tok-nx">value</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;Escribe tu nombre&quot;</span><span class="tok-p">;</span>
+
+<span class="tok-nx">campoNombre</span><span class="tok-p">.</span><span class="tok-nx">onfocus</span> <span class="tok-o">=</span> <span class="tok-kd">function</span><span class="tok-p">()</span> <span class="tok-p">{</span>
+  <span class="tok-k">if</span> <span class="tok-p">(</span> <span class="tok-nx">campoNombre</span><span class="tok-p">.</span><span class="tok-nx">value</span> <span class="tok-o">==</span> <span class="tok-s2">&quot;Escribe tu nombre&quot;</span><span class="tok-p">)</span> <span class="tok-p">{</span>
+    <span class="tok-nx">campoNombre</span><span class="tok-p">.</span><span class="tok-nx">value</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;&quot;</span><span class="tok-p">;</span>
+  <span class="tok-p">}</span>
+<span class="tok-p">};</span>
+
+<span class="tok-nx">campoNombre</span><span class="tok-p">.</span><span class="tok-nx">onblur</span> <span class="tok-o">=</span> <span class="tok-kd">function</span><span class="tok-p">()</span> <span class="tok-p">{</span>
+  <span class="tok-k">if</span> <span class="tok-p">(</span> <span class="tok-nx">campoNombre</span><span class="tok-p">.</span><span class="tok-nx">value</span> <span class="tok-o">==</span> <span class="tok-s2">&quot;&quot;</span><span class="tok-p">)</span> <span class="tok-p">{</span>
+    <span class="tok-nx">campoNombre</span><span class="tok-p">.</span><span class="tok-nx">value</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;Escribe tu nombre&quot;</span><span class="tok-p">;</span>
+  <span class="tok-p">}</span>
+<span class="tok-p">};</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_eventos_de_ratón">Eventos de ratón</h5>
+<div class="paragraph">
+<p>Cuando el usuario hace <em>click</em> con el ratón, se generan tres eventos. Primero se genera <code>mousedown</code> en el momento que se presiona el botón. Luego, <code>mouseup</code> cuando se suelta el botón. Finalmente, se genera <code>click</code> para indicar que se ha clickado sobre un elemento. Cuando esto sucede dos veces de manera consecutiva, se genera un evento <code>dblclick</code> (doble <em>click</em>).</p>
+</div>
+<div class="paragraph">
+<p>Cuando asociamos un manejador de eventos a un botón, lo normal es que sólo nos interese si ha hecho <em>click</em>. En cambio, si asociamos el manejador a un nodo que tiene hijos, al hacer click sobre los hijos el evento "burbujea" hacia arriba, por lo que nos interesará averiguar que hijo ha sido el responsable, utilizando la propiedad <code>target</code> del evento.</p>
+</div>
+<div class="paragraph">
+<p>Si nos interesa las coordenadas exactas del click, el objeto evento contiene la propiedades <code>clientX</code> y <code>clientY</code> con los valores en pixeles del cursor en la pantalla. Como los documentos pueden usar el scroll, en ocasiones, estas coordenadas no nos indica en que parte del documento se encuentra el ratón. Algunos navegadores ofrecen las propiedades <code>pageX</code> y <code>pageY</code> para este propósito, aunque otros no. Por suerte, la información respecto a la cantidad de píxeles que el documento ha sido <em>scrollado</em> puede encontrarse en <code>document.body.scrollLeft</code> y <code>document.body.scrollTop</code>.</p>
+</div>
+<div class="paragraph">
+<p>Aunque también es posible averiguar que botón del ratón hemos pulsado mediante las propiedades <code>which</code> y <code>button</code> del evento, es muy dependiente del navegador, por lo que dejaremos su gestión a <em>jQuery</em>.</p>
+</div>
+<div class="paragraph">
+<p>Si además de los <em>clicks</em> nos interesa el movimiento del ratón, el evento <code>mousemove</code> salta cada vez que el ratón se mueve sobre un elemento. Además, los evento <code>mouseover</code> y <code>mouseout</code> se lanzan al entrar o salir del elemento. Para estos dos eventos, la propiedad <code>target</code> referencia el nodo que ha lanzado el evento, mientras que <code>relatedTarget</code> nos indica el nodo de donde viene el ratón (para <code>mouseover</code>) o adonde va (para <code>mouseout</code>)</p>
+</div>
+<div class="paragraph">
+<p>Si el nodo tiene hijos, los eventos <code>mouseover</code> y <code>mouseout</code> pueden dar lugar a malinterpretaciones. Los evento lanzado desde los hijos nodos <em>burbujean</em> hasta el elemento padre, con lo que tendremos un evento <code>mouseover</code> cuando el ratón entre en uno de los hijos. Para detectar (e ignorar) estos eventos, podemos usar la propiedad <code>target</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-nx">miParrafo</span><span class="tok-p">.</span><span class="tok-nx">addEventListener</span><span class="tok-p">(</span><span class="tok-s2">&quot;mouseover&quot;</span><span class="tok-p">,</span> <span class="tok-kd">function</span><span class="tok-p">(</span><span class="tok-nx">event</span><span class="tok-p">)</span> <span class="tok-p">{</span>
+  <span class="tok-k">if</span> <span class="tok-p">(</span><span class="tok-nx">event</span><span class="tok-p">.</span><span class="tok-nx">target</span> <span class="tok-o">==</span> <span class="tok-nx">miParrafo</span><span class="tok-p">)</span>
+    <span class="tok-nx">console</span><span class="tok-p">.</span><span class="tok-nx">log</span><span class="tok-p">(</span><span class="tok-s2">&quot;El ratón ha entrado en mi párrafo&quot;</span><span class="tok-p">);</span>
+<span class="tok-p">},</span> <span class="tok-kc">false</span><span class="tok-p">);</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_eventos_de_teclado">Eventos de teclado</h5>
+<div class="paragraph">
+<p>Si queremos que nuestra aplicación reaccione a la pulsación de las teclas, tenemos de nuevo 3 eventos:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>keydown</code>: al pulsar una tecla; también se lanza si se mantiene pulsada</p>
+</li>
+<li>
+<p><code>keyup</code>: al soltar una tecla</p>
+</li>
+<li>
+<p><code>keypress</code>: tras soltar la tecla, pero sin las teclas de modificación; también se lanza si se mantiene pulsada</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Cuando se pulsa una tecla correspondiente a un carácter alfanumérico, se produce la siguiente secuencia de eventos: <code>keydown</code>, <code>keypress</code>, <code>keyup</code>. Cuando se pulsa otro tipo de tecla, se produce la siguiente secuencia de eventos: <code>keydown</code>, <code>keyup</code>. Si se mantiene pulsada la tecla, en el primer caso se repiten de forma continua los eventos <code>keydown</code> y <code>keypress</code> y en el segundo caso, se repite el evento <code>keydown</code> de forma continua.</p>
+</div>
+<div class="paragraph">
+<p>Normalmente, usaremos <code>keydown</code> y <code>keyup</code> para averiguar que tecla se ha pulsado, por ejemplo los cursores. Si estamos interesado en el carácter pulsado, entonces usaremos <code>keypress</code>.</p>
+</div>
+<div class="paragraph">
+<p>Para probar estos eventos, nos vamos a basar en el siguiente código:</p>
+</div>
+<div class="listingblock">
+<div class="title">Ejemplo Eventos de Teclado - <a href="http://jsbin.com/nisuc/12/watch?html,js,console,output" class="bare">http://jsbin.com/nisuc/12/watch?html,js,console,output</a></div>
+<div class="content">
+<pre class="pygments highlight"><code data-lang="html"><span class="tok-cp">&lt;!DOCTYPE html&gt;</span>
+<span class="tok-nt">&lt;html</span> <span class="tok-na">lang=</span><span class="tok-s">&quot;es&quot;</span><span class="tok-nt">&gt;</span>
+<span class="tok-nt">&lt;head&gt;</span>
+  <span class="tok-nt">&lt;title&gt;</span>Eventos Teclado<span class="tok-nt">&lt;/title&gt;</span>
+  <span class="tok-nt">&lt;meta</span> <span class="tok-na">charset=</span><span class="tok-s">&quot;utf-8&quot;</span> <span class="tok-nt">/&gt;</span>
+<span class="tok-nt">&lt;/head&gt;</span>
+<span class="tok-nt">&lt;body&gt;</span>
+    <span class="tok-nt">&lt;input</span> <span class="tok-na">type=</span><span class="tok-s">&quot;text&quot;</span> <span class="tok-na">name=</span><span class="tok-s">&quot;cajaTexto&quot;</span> <span class="tok-na">id=</span><span class="tok-s">&quot;cajaTexto&quot;</span> <span class="tok-nt">/&gt;</span>
+    <span class="tok-nt">&lt;script </span><span class="tok-na">src=</span><span class="tok-s">&quot;eventos.js&quot;</span><span class="tok-nt">&gt;&lt;/script&gt;</span>
+<span class="tok-nt">&lt;/body&gt;</span>
+<span class="tok-nt">&lt;/html&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Por ejemplo, si nos basamos en el evento <code>keypress</code>, si queremos que sólo se permitan escribir letras en mayúsculas, mediante <code>evt.charCode</code> podemos obtener el código ASCII de la tecla pulsada:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-p">(</span><span class="tok-kd">function</span><span class="tok-p">()</span> <span class="tok-p">{</span>
+  <span class="tok-kd">var</span> <span class="tok-nx">caja</span> <span class="tok-o">=</span> <span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">getElementById</span><span class="tok-p">(</span><span class="tok-s2">&quot;cajaTexto&quot;</span><span class="tok-p">);</span>
+  <span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">addEventListener</span><span class="tok-p">(</span><span class="tok-s2">&quot;keypress&quot;</span><span class="tok-p">,</span> <span class="tok-kd">function</span><span class="tok-p">(</span><span class="tok-nx">evt</span><span class="tok-p">)</span> <span class="tok-p">{</span>
+
+    <span class="tok-kd">var</span> <span class="tok-nx">ascii</span> <span class="tok-o">=</span> <span class="tok-nx">evt</span><span class="tok-p">.</span><span class="tok-nx">charCode</span><span class="tok-p">;</span>
+
+    <span class="tok-k">if</span> <span class="tok-p">(</span><span class="tok-nx">ascii</span> <span class="tok-o">&gt;=</span> <span class="tok-mi">65</span> <span class="tok-o">&amp;&amp;</span> <span class="tok-nx">ascii</span> <span class="tok-o">&lt;=</span><span class="tok-mi">90</span><span class="tok-p">)</span> <span class="tok-p">{</span>  <i class="conum" data-value="1"></i><b>(1)</b>
+      <span class="tok-c1">// solo dejamos mayúsculas</span>
+      <span class="tok-c1">// las minúsculas van del 97 al 122</span>
+    <span class="tok-p">}</span> <span class="tok-k">else</span> <span class="tok-p">{</span>
+      <span class="tok-nx">evt</span><span class="tok-p">.</span><span class="tok-nx">preventDefault</span><span class="tok-p">();</span>
+    <span class="tok-p">}</span>
+  <span class="tok-p">},</span> <span class="tok-kc">false</span><span class="tok-p">);</span>
+<span class="tok-p">}());</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Letras en Mayúsculas. Mediante <code>String.fromCharCode</code> podemos obtener una cadena de una letra con la representación del caracter.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>En cambio, si usamos los eventos <code>keydown</code> y <code>keyup</code>, podemos consultar a partir del evento las propiedades:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>keyCode</code>: obtiene el código ASCII del elemento pulsado</p>
+</li>
+<li>
+<p><code>altKey</code>: devuelve <code>true</code>/<code>false</code> si ha pulsado la tecla <em>ALT</em></p>
+</li>
+<li>
+<p><code>ctrlKey</code>: devuelve <code>true</code>/<code>false</code> si ha pulsado la tecla <em>CTRL</em></p>
+</li>
+<li>
+<p><code>shiftKey</code>: devuelve <code>true</code>/<code>false</code> si ha pulsado la tecla <em>SHIFT</em></p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Si usamos un sistema OSX (Apple) al tener un combinación de teclas diferente, la tecla de opción se asocia a la propiedad <code>altKey</code> y la tecla <em>command</em> tienen su propia propiedad <code>metaKey</code>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Por ejemplo, si queremos capturar cuando el usuario pulsa CTRL + B dentro de la caja de texto, haremos:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">addEventListener</span><span class="tok-p">(</span><span class="tok-s2">&quot;keydown&quot;</span><span class="tok-p">,</span> <span class="tok-kd">function</span><span class="tok-p">(</span><span class="tok-nx">evt</span><span class="tok-p">)</span> <span class="tok-p">{</span>
+  <span class="tok-kd">var</span> <span class="tok-nx">code</span> <span class="tok-o">=</span> <span class="tok-nx">evt</span><span class="tok-p">.</span><span class="tok-nx">keyCode</span><span class="tok-p">;</span>
+  <span class="tok-kd">var</span> <span class="tok-nx">ctrlKey</span> <span class="tok-o">=</span> <span class="tok-nx">evt</span><span class="tok-p">.</span><span class="tok-nx">ctrlKey</span><span class="tok-p">;</span>
+
+  <span class="tok-k">if</span> <span class="tok-p">(</span><span class="tok-nx">ctrlKey</span> <span class="tok-o">&amp;&amp;</span> <span class="tok-nx">code</span> <span class="tok-o">===</span> <span class="tok-mi">66</span><span class="tok-p">)</span> <span class="tok-p">{</span>
+    <span class="tok-nx">console</span><span class="tok-p">.</span><span class="tok-nx">log</span><span class="tok-p">(</span><span class="tok-s2">&quot;Ctrl+B&quot;</span><span class="tok-p">);</span>
+  <span class="tok-p">}</span>
+
+<span class="tok-p">},</span> <span class="tok-kc">false</span><span class="tok-p">);</span></code></pre>
+</div>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+Cuidado con confundir <code>charCode</code> para un evento <code>keypress</code> con <code>keyCode</code> en un evento <code>keydown</code>/<code>keyup</code>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_eventos_y_closures">3.5.6. Eventos y closures</h4>
+<div class="paragraph">
+<p>Una manera de asociar una función a un evento que responda a determinados elementos es mediante <em>Closures</em>. Vamos a crear un ejemplo muy sencillo para demostrar su uso.</p>
+</div>
+<div class="paragraph">
+<p>Supongamos que queremos añadir algunos botones a una página para ajustar el tamaño del texto. Una manera de hacer esto es especificar el tamaño de fuente del elemento <code>body</code> en píxeles y, a continuación, ajustar el tamaño de los demás elementos de la página (como los encabezados) utilizando la unidad relativa <code>em</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="css"><span class="tok-nt">body</span> <span class="tok-p">{</span>
+  <span class="tok-k">font-family</span><span class="tok-o">:</span> <span class="tok-n">Helvetica</span><span class="tok-o">,</span> <span class="tok-n">Arial</span><span class="tok-o">,</span> <span class="tok-k">sans-serif</span><span class="tok-p">;</span>
+  <span class="tok-k">font-size</span><span class="tok-o">:</span> <span class="tok-m">12px</span><span class="tok-p">;</span>
+<span class="tok-p">}</span>
+<span class="tok-nt">h1</span> <span class="tok-p">{</span>
+  <span class="tok-k">font-size</span><span class="tok-o">:</span> <span class="tok-m">1.5em</span><span class="tok-p">;</span>
+<span class="tok-p">}</span>
+<span class="tok-nt">h2</span> <span class="tok-p">{</span>
+  <span class="tok-k">font-size</span><span class="tok-o">:</span> <span class="tok-m">1.2em</span><span class="tok-p">;</span>
+<span class="tok-p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Nuestros botones interactivos de tamaño de texto pueden cambiar la propiedad <code>font-size</code> del elemento <code>body</code>, y los ajustes serán aplicados por los otros elementos de la página gracias a las unidades relativas.</p>
+</div>
+<div class="paragraph">
+<p>Aquí está el código JavaScript:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-kd">function</span> <span class="tok-nx">cambiarTamanyo</span><span class="tok-p">(</span><span class="tok-nx">tamanyo</span><span class="tok-p">)</span> <span class="tok-p">{</span>  <i class="conum" data-value="1"></i><b>(1)</b>
+  <span class="tok-k">return</span> <span class="tok-kd">function</span><span class="tok-p">()</span> <span class="tok-p">{</span>
+    <span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">body</span><span class="tok-p">.</span><span class="tok-nx">style</span><span class="tok-p">.</span><span class="tok-nx">fontSize</span> <span class="tok-o">=</span> <span class="tok-nx">tamanyo</span> <span class="tok-o">+</span> <span class="tok-s1">&#39;px&#39;</span><span class="tok-p">;</span>
+  <span class="tok-p">};</span>
+<span class="tok-p">}</span>
+
+<span class="tok-kd">var</span> <span class="tok-nx">tam12</span> <span class="tok-o">=</span> <span class="tok-nx">cambiarTamanyo</span><span class="tok-p">(</span><span class="tok-mi">12</span><span class="tok-p">);</span>  <i class="conum" data-value="2"></i><b>(2)</b>
+<span class="tok-kd">var</span> <span class="tok-nx">tam14</span> <span class="tok-o">=</span> <span class="tok-nx">cambiarTamanyo</span><span class="tok-p">(</span><span class="tok-mi">14</span><span class="tok-p">);</span>
+<span class="tok-kd">var</span> <span class="tok-nx">tam16</span> <span class="tok-o">=</span> <span class="tok-nx">cambiarTamanyo</span><span class="tok-p">(</span><span class="tok-mi">16</span><span class="tok-p">);</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Closure que cambia el tamaño de texto del body</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><code>tam12</code>, <code>tam14</code> y <code>tam16</code> ahora son funciones que cambian el tamaño del texto de body a <code>12</code>, <code>14</code> y <code>16</code> píxeles respectivamente</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Suponiendo que tenemos tres botones con los diferentes tamaños, tal que así:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="html"><span class="tok-nt">&lt;button</span> <span class="tok-na">id=</span><span class="tok-s">&quot;tam-12&quot;</span><span class="tok-nt">&gt;</span>12<span class="tok-nt">&lt;/button&gt;</span>
+<span class="tok-nt">&lt;button</span> <span class="tok-na">id=</span><span class="tok-s">&quot;tam-14&quot;</span><span class="tok-nt">&gt;</span>14<span class="tok-nt">&lt;/button&gt;</span>
+<span class="tok-nt">&lt;button</span> <span class="tok-na">id=</span><span class="tok-s">&quot;tam-16&quot;</span><span class="tok-nt">&gt;</span>16<span class="tok-nt">&lt;/button&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Podemos conectar los <em>closures</em> a los botones de la siguiente forma:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">getElementById</span><span class="tok-p">(</span><span class="tok-s1">&#39;tam-12&#39;</span><span class="tok-p">).</span><span class="tok-nx">onclick</span> <span class="tok-o">=</span> <span class="tok-nx">tam12</span><span class="tok-p">;</span>
+<span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">getElementById</span><span class="tok-p">(</span><span class="tok-s1">&#39;tam-14&#39;</span><span class="tok-p">).</span><span class="tok-nx">onclick</span> <span class="tok-o">=</span> <span class="tok-nx">tam14</span><span class="tok-p">;</span>
+<span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">getElementById</span><span class="tok-p">(</span><span class="tok-s1">&#39;tam-16&#39;</span><span class="tok-p">).</span><span class="tok-nx">onclick</span> <span class="tok-o">=</span> <span class="tok-nx">tam16</span><span class="tok-p">;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_trabajando_con_formularios">3.6. Trabajando con formularios</h3>
+<div class="paragraph">
+<p>Previo a HTML5, gran parte del código <em>JavaScript</em> se centraba en la validación de formularios.</p>
+</div>
+<div class="paragraph">
+<p>Para poder interactuar con un formulario y poder capturar cuando se envía la información, lo mejor es crear un <code>id</code> al formulario y acceder al formulario mediante dicho <code>id</code> tal como hemos visto anteriormente con <code>getElementById</code>.</p>
+</div>
+<div class="paragraph">
+<p>Si el formulario no tiene atributo <code>id</code> pero si <code>name</code>, podremos acceder mediante la propiedad <code>document.forms.nombreDelFormulario</code>.</p>
+</div>
+<div class="paragraph">
+<p>Del mismo modo, para acceder a un campo del formulario, bien lo haremos a través de su <code>id</code> o mediante la propiedad <code>document.forms.nombreDelFormulario.nombreDelCampo</code>.</p>
+</div>
+<div class="paragraph">
+<p>Supongamos que tenemos el siguiente formulario:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="html"><span class="tok-nt">&lt;form</span> <span class="tok-na">name=</span><span class="tok-s">&quot;formCliente&quot;</span> <span class="tok-na">id=</span><span class="tok-s">&quot;frmClnt&quot;</span><span class="tok-nt">&gt;</span>
+<span class="tok-nt">&lt;fieldset</span> <span class="tok-na">id=</span><span class="tok-s">&quot;infoPersonal&quot;</span><span class="tok-nt">&gt;</span>
+  <span class="tok-nt">&lt;legend&gt;</span>Datos Personales<span class="tok-nt">&lt;/legend&gt;</span>
+  <span class="tok-nt">&lt;p&gt;&lt;label</span> <span class="tok-na">for=</span><span class="tok-s">&quot;nom&quot;</span><span class="tok-nt">&gt;</span>Nombre<span class="tok-nt">&lt;/label&gt;</span>
+    <span class="tok-nt">&lt;input</span> <span class="tok-na">type=</span><span class="tok-s">&quot;text&quot;</span> <span class="tok-na">name=</span><span class="tok-s">&quot;nombre&quot;</span> <span class="tok-na">id=</span><span class="tok-s">&quot;nom&quot;</span> <span class="tok-nt">/&gt;&lt;/p&gt;</span>
+  <span class="tok-nt">&lt;p&gt;&lt;label</span> <span class="tok-na">for=</span><span class="tok-s">&quot;email&quot;</span><span class="tok-nt">&gt;</span>Email<span class="tok-nt">&lt;/label&gt;</span>
+    <span class="tok-nt">&lt;input</span> <span class="tok-na">type=</span><span class="tok-s">&quot;email&quot;</span> <span class="tok-na">name=</span><span class="tok-s">&quot;correo&quot;</span> <span class="tok-na">id=</span><span class="tok-s">&quot;email&quot;</span> <span class="tok-nt">/&gt;&lt;/p&gt;</span>
+<span class="tok-nt">&lt;/fieldset&gt;</span>
+
+<span class="tok-c">&lt;!-- ...Dirección ... --&gt;</span>
+
+<span class="tok-nt">&lt;/fieldset&gt;</span>
+<span class="tok-nt">&lt;/form&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Para acceder al formulario y al nombre del cliente usaríamos:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-c1">// Mediante el atributo name</span>
+<span class="tok-kd">var</span> <span class="tok-nx">formulario</span> <span class="tok-o">=</span> <span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">forms</span><span class="tok-p">.</span><span class="tok-nx">formCliente</span><span class="tok-p">;</span>
+<span class="tok-kd">var</span> <span class="tok-nx">correo</span> <span class="tok-o">=</span> <span class="tok-nx">formulario</span><span class="tok-p">.</span><span class="tok-nx">correo</span><span class="tok-p">;</span>
+<span class="tok-c1">// Mediante el atributo id</span>
+<span class="tok-kd">var</span> <span class="tok-nx">formuId</span> <span class="tok-o">=</span> <span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">getElementById</span><span class="tok-p">(</span><span class="tok-s2">&quot;frmClnt&quot;</span><span class="tok-p">);</span>
+<span class="tok-kd">var</span> <span class="tok-nx">correoId</span> <span class="tok-o">=</span> <span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">getElementById</span><span class="tok-p">(</span><span class="tok-s2">&quot;email&quot;</span><span class="tok-p">);</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Al enviarse un formulario se lanza el evento <code>onsubmit</code>. Si queremos interrumpir el envío, sólo tenemos que devolver <code>false</code> desde el manejador de eventos:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-kd">function</span> <span class="tok-nx">preparandoManejadores</span><span class="tok-p">()</span> <span class="tok-p">{</span>
+  <span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">getElementById</span><span class="tok-p">(</span><span class="tok-s2">&quot;frmClnt&quot;</span><span class="tok-p">).</span><span class="tok-nx">onsubmit</span> <span class="tok-o">=</span> <span class="tok-kd">function</span><span class="tok-p">()</span> <span class="tok-p">{</span>
+    <span class="tok-kd">var</span> <span class="tok-nx">ok</span> <span class="tok-o">=</span> <span class="tok-kc">false</span><span class="tok-p">;</span>
+    <span class="tok-c1">// validamos el formulario</span>
+    <span class="tok-k">if</span> <span class="tok-p">(</span><span class="tok-nx">ok</span><span class="tok-p">)</span> <span class="tok-p">{</span>
+      <span class="tok-k">return</span> <span class="tok-kc">true</span><span class="tok-p">;</span>  <span class="tok-c1">// se realiza el envío</span>
+    <span class="tok-p">}</span> <span class="tok-k">else</span> <span class="tok-p">{</span>
+      <span class="tok-k">return</span> <span class="tok-kc">false</span><span class="tok-p">;</span>
+    <span class="tok-p">}</span>
+  <span class="tok-p">};</span>
+<span class="tok-p">}</span>
+
+<span class="tok-nb">window</span><span class="tok-p">.</span><span class="tok-nx">onload</span> <span class="tok-o">=</span>  <span class="tok-kd">function</span><span class="tok-p">()</span> <span class="tok-p">{</span>
+  <span class="tok-nx">preparandoManejadores</span><span class="tok-p">();</span>
+<span class="tok-p">};</span></code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_campos_de_texto">3.6.1. Campos de texto</h4>
+<div class="paragraph">
+<p>Si nos centramos en los campos de texto (<code>type="text"</code>) (también válido para los campos de tipo <code>password</code> o <code>hidden</code>), para obtener el valor del campo usaremos la propiedad <code>value</code>, tal como vimos en el apartado de <a href="#_eventos_de_foco">Eventos de foco</a>. Cabe recordar que los eventos que puede lanzar un campo de texto son: <code>focus</code>, <code>blur</code>, <code>change</code>, <code>keypress</code>, <code>keydown</code> y <code>keyup</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-kd">var</span> <span class="tok-nx">correoId</span> <span class="tok-o">=</span> <span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">getElementById</span><span class="tok-p">(</span><span class="tok-s2">&quot;email&quot;</span><span class="tok-p">);</span>
+<span class="tok-k">if</span> <span class="tok-p">(</span><span class="tok-nx">correoId</span><span class="tok-p">.</span><span class="tok-nx">value</span> <span class="tok-o">==</span> <span class="tok-s2">&quot;&quot;</span><span class="tok-p">)</span> <span class="tok-p">{</span>
+  <span class="tok-nx">alert</span><span class="tok-p">(</span><span class="tok-s2">&quot;Por favor, introduce el correo&quot;</span><span class="tok-p">);</span>
+<span class="tok-p">}</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_desplegables">3.6.2. Desplegables</h4>
+<div class="paragraph">
+<p>Para un desplegable creado con <code>select</code>, mediante la propiedad <code>type</code> podemos averiguar si se trata de una lista de selección única (<code>select-one</code>) o selección múltiple (<code>select-multiple</code>).</p>
+</div>
+<div class="paragraph">
+<p>Al seleccionar un elemento, se lanza el evento <code>change</code>. En el caso de tener una selección única, para acceder al elemento seleccionado, usaremos la propiedad <code>selectedIndex</code> (de 0 a n-1). En el caso de selección múltiple, tendremos que recorrer el array de <code>options</code> y consultar la propiedad <code>selected</code>, es decir, <code>options[i].selected</code>.</p>
+</div>
+<div class="paragraph">
+<p>Cada uno de los elementos de la lista es un objeto <code>Option</code>. Si queremos obtener el valor de una opción usaremos la propiedad <code>value</code>, y para su texto <code>text</code>.</p>
+</div>
+<div class="paragraph">
+<p>Supongamos el siguiente código con una lista:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="html"><span class="tok-nt">&lt;form</span> <span class="tok-na">name=</span><span class="tok-s">&quot;formCliente&quot;</span> <span class="tok-na">id=</span><span class="tok-s">&quot;frmClnt&quot;</span><span class="tok-nt">&gt;</span>
+<span class="tok-c">&lt;!-- ... Datos Personales ... --&gt;</span>
+
+<span class="tok-nt">&lt;fielset</span> <span class="tok-na">id=</span><span class="tok-s">&quot;direccion&quot;</span><span class="tok-nt">&gt;</span>
+  <span class="tok-nt">&lt;legend&gt;</span>Dirección<span class="tok-nt">&lt;/legend&gt;</span>
+  <span class="tok-nt">&lt;p&gt;&lt;label</span> <span class="tok-na">for=</span><span class="tok-s">&quot;tipoVia&quot;</span><span class="tok-nt">&gt;</span>Tipo de Via<span class="tok-nt">&lt;/label&gt;</span>
+    <span class="tok-nt">&lt;select</span> <span class="tok-na">name=</span><span class="tok-s">&quot;tipoVia&quot;</span> <span class="tok-na">id=</span><span class="tok-s">&quot;tipoViaId&quot;</span><span class="tok-nt">&gt;</span>
+      <span class="tok-nt">&lt;option</span> <span class="tok-na">value=</span><span class="tok-s">&quot;calle&quot;</span><span class="tok-nt">&gt;</span>Calle<span class="tok-nt">&lt;/option&gt;</span>
+      <span class="tok-nt">&lt;option</span> <span class="tok-na">value=</span><span class="tok-s">&quot;avda&quot;</span><span class="tok-nt">&gt;</span>Avenida<span class="tok-nt">&lt;/option&gt;</span>
+      <span class="tok-nt">&lt;option</span> <span class="tok-na">value=</span><span class="tok-s">&quot;pza&quot;</span><span class="tok-nt">&gt;</span>Plaza<span class="tok-nt">&lt;/option&gt;</span>
+    <span class="tok-nt">&lt;/select&gt;</span>
+  <span class="tok-nt">&lt;/p&gt;</span>
+  <span class="tok-nt">&lt;p&gt;&lt;label</span> <span class="tok-na">for=</span><span class="tok-s">&quot;domicilio&quot;</span><span class="tok-nt">&gt;</span>Domicilio<span class="tok-nt">&lt;/label&gt;</span>
+    <span class="tok-nt">&lt;input</span> <span class="tok-na">type=</span><span class="tok-s">&quot;text&quot;</span> <span class="tok-na">name=</span><span class="tok-s">&quot;domicilio&quot;</span> <span class="tok-na">id=</span><span class="tok-s">&quot;domi&quot;</span> <span class="tok-nt">/&gt;&lt;/p&gt;</span>
+<span class="tok-nt">&lt;/fieldset&gt;</span>
+<span class="tok-nt">&lt;/form&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Para obtener que tipo de vía ha seleccionado el usuario haríamos:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-kd">var</span> <span class="tok-nx">tipoViaId</span> <span class="tok-o">=</span> <span class="tok-nb">document</span><span class="tok-p">.</span><span class="tok-nx">getElementById</span><span class="tok-p">(</span><span class="tok-s2">&quot;tipoViaId&quot;</span><span class="tok-p">);</span>
+
+<span class="tok-nx">tipoViaId</span><span class="tok-p">.</span><span class="tok-nx">onchange</span> <span class="tok-o">=</span> <span class="tok-kd">function</span><span class="tok-p">()</span> <span class="tok-p">{</span>
+  <span class="tok-kd">var</span> <span class="tok-nx">indice</span> <span class="tok-o">=</span> <span class="tok-nx">tipoViaId</span><span class="tok-p">.</span><span class="tok-nx">selectedIndex</span><span class="tok-p">;</span>   <span class="tok-c1">// 1</span>
+  <span class="tok-kd">var</span> <span class="tok-nx">valor</span> <span class="tok-o">=</span> <span class="tok-nx">tipoViaId</span><span class="tok-p">.</span><span class="tok-nx">options</span><span class="tok-p">[</span><span class="tok-nx">indice</span><span class="tok-p">].</span><span class="tok-nx">value</span><span class="tok-p">;</span>  <span class="tok-c1">// avda</span>
+  <span class="tok-kd">var</span> <span class="tok-nx">texto</span> <span class="tok-o">=</span> <span class="tok-nx">tipoViaId</span><span class="tok-p">.</span><span class="tok-nx">options</span><span class="tok-p">[</span><span class="tok-nx">indice</span><span class="tok-p">].</span><span class="tok-nx">text</span><span class="tok-p">;</span>  <span class="tok-c1">// Avenida</span>
+<span class="tok-p">};</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Si en algún momento queremos añadir o eliminar un elemento a la lista de manera dinámica, usaremos los métodos <code>add(option, lugarAntesDe)</code> (si no se indica el lugar se insertará al final de la lista) o <code>remove(indice)</code> respectivamente:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-kd">var</span> <span class="tok-nx">op</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-nx">Option</span><span class="tok-p">(</span><span class="tok-s2">&quot;Camino Rural&quot;</span><span class="tok-p">,</span> <span class="tok-s2">&quot;rural&quot;</span><span class="tok-p">);</span>
+<span class="tok-nx">tipoViaId</span><span class="tok-p">.</span><span class="tok-nx">add</span><span class="tok-p">(</span><span class="tok-nx">op</span><span class="tok-p">,</span> <span class="tok-nx">tipoViaId</span><span class="tok-p">.</span><span class="tok-nx">options</span><span class="tok-p">[</span><span class="tok-mi">3</span><span class="tok-p">]);</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Más información en: <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLSelectElement" class="bare">https://developer.mozilla.org/en-US/docs/Web/API/HTMLSelectElement</a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_opciones">3.6.3. Opciones</h4>
+<div class="paragraph">
+<p>Tanto los <em>radio</em> como los <em>checkboxes</em> tienen la propiedad <code>checked</code> que nos dice si hay algún elemento seleccionado (<code>true</code> o <code>false</code>). Para averiguar cual es el elemento marcado, tenemos que recorrer el array de elementos que lo forman.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-nx">color</span><span class="tok-p">.</span><span class="tok-nx">checked</span> <span class="tok-o">=</span> <span class="tok-kc">true</span><span class="tok-p">;</span>
+
+<span class="tok-kd">var</span> <span class="tok-nx">colorElegido</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;&quot;</span><span class="tok-p">;</span>
+
+<span class="tok-k">for</span> <span class="tok-p">(</span><span class="tok-kd">var</span> <span class="tok-nx">i</span> <span class="tok-o">=</span> <span class="tok-mi">0</span><span class="tok-p">,</span> <span class="tok-nx">l</span> <span class="tok-o">=</span> <span class="tok-nx">color</span><span class="tok-p">.</span><span class="tok-nx">length</span><span class="tok-p">;</span> <span class="tok-nx">i</span> <span class="tok-o">&lt;</span> <span class="tok-nx">l</span><span class="tok-p">;</span> <span class="tok-nx">i</span> <span class="tok-o">=</span> <span class="tok-nx">i</span> <span class="tok-o">+</span> <span class="tok-mi">1</span><span class="tok-p">)</span> <span class="tok-p">{</span>
+  <span class="tok-k">if</span> <span class="tok-p">(</span><span class="tok-nx">color</span><span class="tok-p">[</span><span class="tok-nx">i</span><span class="tok-p">].</span><span class="tok-nx">checked</span><span class="tok-p">)</span> <span class="tok-p">{</span>
+    <span class="tok-nx">colorElegido</span> <span class="tok-o">=</span> <span class="tok-nx">color</span><span class="tok-p">[</span><span class="tok-nx">i</span><span class="tok-p">].</span><span class="tok-nx">value</span><span class="tok-p">;</span>
+  <span class="tok-p">}</span>
+<span class="tok-p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Respecto a los eventos, se lanzan tanto el evento <code>click</code> como el <code>change</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_ejercicios">3.7. Ejercicios</h3>
+<div class="sect3">
+<h4 id="__0_4_ptos_ejercicio_31_contenido_bloqueado">3.7.1. (0.4 ptos) Ejercicio 31. Contenido bloqueado</h4>
+<div class="paragraph">
+<p>Crear una función que recorra el DOM desde la etiqueta <code>&lt;body&gt;</code> y si encuentra la palabra "sexo", elimine el elemento y lo sustituya por "<strong>Contenido Bloqueado</strong>", con el texto en negrita.</p>
+</div>
+<div class="paragraph">
+<p>La función se almacenará en una archivo denominado <code>ej31.js</code>, y tendrá la siguiente definición:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-kd">function</span> <span class="tok-nx">bloquearContenido</span><span class="tok-p">()</span> <span class="tok-p">{}</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="__0_3_ptos_ejercicio_32_temporizador_dom">3.7.2. (0.3 ptos) Ejercicio 32. Temporizador DOM</h4>
+<div class="paragraph">
+<p>Siguiendo la misma idea que el ejercicio 12 del Temporizador, crear dos elementos de formulario que indiquen los minutos y segundos de un temporizador, de modo que al darle a comenzar, se muestre el temporizador por pantalla.</p>
+</div>
+<div class="paragraph">
+<p>El código para mostrar el temporizador será el siguiente:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="html"><span class="tok-nt">&lt;h2&gt;</span>Temporizador<span class="tok-nt">&lt;/h2&gt;</span>
+<span class="tok-nt">&lt;form</span> <span class="tok-na">id=</span><span class="tok-s">&quot;formTemporizador&quot;</span><span class="tok-nt">&gt;</span>
+    Min: <span class="tok-nt">&lt;input</span> <span class="tok-na">type=</span><span class="tok-s">&quot;number&quot;</span> <span class="tok-na">name=</span><span class="tok-s">&quot;min&quot;</span> <span class="tok-na">id=</span><span class="tok-s">&quot;formMin&quot;</span><span class="tok-nt">&gt;</span> <span class="tok-nt">&lt;br</span> <span class="tok-nt">/&gt;</span>
+    Seg: <span class="tok-nt">&lt;input</span> <span class="tok-na">type=</span><span class="tok-s">&quot;number&quot;</span> <span class="tok-na">name=</span><span class="tok-s">&quot;seg&quot;</span> <span class="tok-na">id=</span><span class="tok-s">&quot;formSeg&quot;</span><span class="tok-nt">&gt;</span> <span class="tok-nt">&lt;br</span> <span class="tok-nt">/&gt;</span>
+    <span class="tok-nt">&lt;input</span> <span class="tok-na">type=</span><span class="tok-s">&quot;submit&quot;</span><span class="tok-nt">&gt;</span>
+<span class="tok-nt">&lt;/form&gt;</span>
+
+<span class="tok-nt">&lt;br</span> <span class="tok-nt">/&gt;</span>
+
+<span class="tok-nt">&lt;div</span> <span class="tok-na">id=</span><span class="tok-s">&quot;temporizador&quot;</span><span class="tok-nt">&gt;</span>
+<span class="tok-nt">&lt;span</span> <span class="tok-na">id=</span><span class="tok-s">&quot;min&quot;</span><span class="tok-nt">&gt;</span>_<span class="tok-nt">&lt;/span&gt;</span>:<span class="tok-nt">&lt;span</span> <span class="tok-na">id=</span><span class="tok-s">&quot;seg&quot;</span><span class="tok-nt">&gt;</span>_<span class="tok-nt">&lt;/span&gt;</span>
+<span class="tok-nt">&lt;/div&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>La apariencia será similar a la siguiente:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/js03/ej32.jpg" alt="Ejercicio temporizador" width="33%">
+</div>
+<div class="title">Figure 8. Ejercicio Temporizador</div>
+</div>
+<div class="paragraph">
+<p>El contenido HTML y el código JavaScript se almacenarán en una archivo denominado <code>ej32.html</code>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="__0_5_ptos_ejercicio_33_tabla_dinámica">3.7.3. (0.5 ptos) Ejercicio 33. Tabla dinámica</h4>
+<div class="paragraph">
+<p>A partir de una tabla con la siguiente estructura:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="html"><span class="tok-nt">&lt;input</span> <span class="tok-na">type=</span><span class="tok-s">&quot;text&quot;</span> <span class="tok-na">id=</span><span class="tok-s">&quot;texto&quot;</span> <span class="tok-nt">/&gt;</span>
+<span class="tok-nt">&lt;button</span> <span class="tok-na">onclick=</span><span class="tok-s">&quot;anyadirFila()&quot;</span><span class="tok-nt">&gt;</span>Añadir fila<span class="tok-nt">&lt;/button&gt;</span>
+
+<span class="tok-nt">&lt;br</span> <span class="tok-nt">/&gt;</span>
+
+<span class="tok-nt">&lt;table&gt;</span>
+<span class="tok-nt">&lt;thead&gt;</span>
+<span class="tok-nt">&lt;tr&gt;&lt;th&gt;</span>Contenido<span class="tok-nt">&lt;/th&gt;&lt;th&gt;</span>Operación<span class="tok-nt">&lt;/th&gt;&lt;/tr&gt;</span>
+<span class="tok-nt">&lt;/thead&gt;</span>
+<span class="tok-nt">&lt;tbody</span> <span class="tok-na">id=</span><span class="tok-s">&quot;bodyTabla&quot;</span><span class="tok-nt">&gt;</span>
+<span class="tok-nt">&lt;tr&gt;</span>
+  <span class="tok-nt">&lt;td</span> <span class="tok-na">id=</span><span class="tok-s">&quot;fila1&quot;</span><span class="tok-nt">&gt;</span>Ejemplo de contenido<span class="tok-nt">&lt;/td&gt;</span>
+  <span class="tok-nt">&lt;td&gt;&lt;button</span> <span class="tok-na">onclick=</span><span class="tok-s">&quot;toCani(&#39;fila1&#39;)&quot;</span><span class="tok-nt">&gt;</span>Caniar<span class="tok-nt">&lt;/button&gt;&lt;/td&gt;</span>
+<span class="tok-nt">&lt;/tr&gt;</span>
+<span class="tok-nt">&lt;/tbody&gt;</span>
+<span class="tok-nt">&lt;/tr&gt;</span>
+<span class="tok-nt">&lt;/table&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Añade el código necesarios para que la pulsar sobre los botones realice las siguientes acciones:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>Añadir fila</em>: Añade el contenido del campo como última fila de la tabla</p>
+</li>
+<li>
+<p><em>Caniar</em>: Transformar el texto de la celda mediante la función <code>toCani</code> de la primera sesión</p>
+</li>
+<li>
+<p>Al pasar el ratón por encima de una celda, cambiará el color de fondo de la misma.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>El contenido HTML y el código JavaScript se almacenarán en una archivo denominado <code>ej33.html</code>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="__0_3_ptos_ejercicio_34_carrusel">3.7.4. (0.3 ptos) Ejercicio 34. Carrusel</h4>
+<div class="paragraph">
+<p>A partir de un array de imágenes:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-kd">var</span> <span class="tok-nx">imagenes</span> <span class="tok-o">=</span> <span class="tok-p">[</span><span class="tok-s2">&quot;img/agua.jpg&quot;</span><span class="tok-p">,</span> <span class="tok-s2">&quot;img/hieba.jpg&quot;</span><span class="tok-p">,</span> <span class="tok-s2">&quot;img/hoja.jpg&quot;</span><span class="tok-p">,</span> <span class="tok-s2">&quot;img/primavera.jpg&quot;</span><span class="tok-p">];</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Escribir el código necesario para que tras dos segundos, se muestre la siguiente imagen. Una vez mostrada la última imagen, el carrusel volverá a comenzar por la primera.</p>
+</div>
+<div class="paragraph">
+<p>El contenido HTML y el código JavaScript se almacenarán en una archivo denominado <code>ej34.html</code>.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2016-02-23 21:54:11 CET
+</div>
+</div>
+</body>
+</html>

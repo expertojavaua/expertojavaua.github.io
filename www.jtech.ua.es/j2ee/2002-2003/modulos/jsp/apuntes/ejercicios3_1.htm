@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+  <link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+  <title>Tema 3: Librer&iacute;as de Tags</title>
+</head>
+  <body>
+      <b>      
+<h1>Librerías de tags</h1>
+      </b><p><b><br>
+      1. (FAQS) </b>En la aplicación de FAQs, algunas páginas utilizan
+      parámetros enviados desde otras. Para leer el valor de esos parámetros
+      se emplea código JSP como: </p>
+           
+      <pre class="codigo">&lt;%= request.getParameter(&quot;nombreParametro&quot;) %&gt;
+&lt;%= request.getAttribute(&quot;nombreAtributo&quot;) %&gt;</pre>
+           
+      <p>Lo que se pide en este ejercicio es que se sustituya ese código Java
+      por etiquetas JSP de la librería <i>request</i> que hagan lo mismo. </p>
+           
+      <p>Por ejemplo, las páginas <i>insert.jsp</i>, <i>update.jsp</i> y <i>delete.jsp</i>
+      utilizan un parámetro <i>token</i>, que de momento leen con: </p>
+           
+      <pre class="codigo">&lt;%= request.getAttribute(&quot;token&quot;) %&gt;</pre>
+           
+      <p>Utilizad la librería <i>request</i> para tomar este parámetro. Para
+      ello tendréis que: </p>
+           
+      <ul>
+        <li>Copiar el fichero TLD de la librería (<i>request.tld</i>) en el
+          directorio <i>WEB-INF</i> de la aplicación</li>
+        <li>Copiar el fichero JAR de la librería (<i>request.jar</i>) en el
+          directorio <i>WEB-INF/lib</i>.</li>
+        <li>Añadir la librería en el fichero descriptor de la aplicación (<i>web.xml</i>):</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo">&lt;taglib&gt;
+	&lt;taglib-uri&gt;http://jakarta.apache.org/taglibs/request-1.0&lt;/taglib-uri&gt;
+	&lt;taglib-location&gt;/WEB-INF/request.tld&lt;/taglib-location&gt;
+&lt;/taglib&gt;</pre>
+           
+        <p>NOTA: consultad la configuración de aplicaciones Web para ver dónde
+        debe ir la marca <i>taglib </i>en el fichero descriptor</p>
+      </blockquote>
+      <ul>
+        <li>En cada página donde vayamos a utilizar la librería, añadir al
+          principio la línea para importarla:</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo"><font size="2">&lt;%@ taglib uri=&quot;http://jakarta.apache.org/taglibs/request-1.0&quot; prefix=&quot;req&quot; %&gt;</font></pre>
+           
+      </blockquote>
+      <ul>
+        <li>Para tomar el valor del atributo &quot;token&quot; se emplea la
+          marca <b>attribute</b>, similar al <i>parameter</i> visto en teoría:</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo"><font size="2">&lt;req:attribute name=&quot;nombreAtributo&quot;/&gt;</font></pre>
+           
+      </blockquote>
+      <p>Si utilizáis otros atributos o parámetros de este estilo,
+      sustituidlos también por la correspondiente etiqueta de la librería <i>request</i>. </p>
+           
+        </body>
+        </html>

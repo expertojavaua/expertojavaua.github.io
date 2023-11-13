@@ -1,0 +1,228 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="Nacho">
+   <meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+   <title>Tema 2: Manejo de Cookies y Sesiones</title>
+<link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+</head>
+<body>
+
+<h1>2. Manejo de Cookies y de Sesiones</h1>
+<p>&nbsp;</p>
+<p>Veremos en este tema aspectos sobre el seguimiento de las acciones de los
+usuarios sobre un sitio web. Para ello veremos cómo trabajar con cookies en los
+servlets, y cómo manejar información sobre las sesiones de los usuarios.</p>
+<h2>&nbsp;</h2>
+<h2>2.1. Cookies</h2>
+<p>Una <b>cookie</b> es un objeto de tipo:</p>
+<p align="center"><i>nombre = valor</i></p>
+<p>donde se asigna un <i>valor</i> determinado (una cadena de texto) a una
+variable del <i>nombre</i>  indicado. Dicho objeto es almacenado y recordado por
+el servidor web y el navegador durante un período de tiempo (indicado como un
+parámetro interno de la propia <i>cookie</i>). Así, se puede tener una lista
+de <i>cookies</i> con distintas variables y distintos valores, para almacenar
+información relevante para cada usuario (se tienen listas de cookies
+independientes para cada usuario).</p>
+<p>En Javascript, por ejemplo, el objeto <i> document.cookie</i> contiene como valor una
+lista de la forma:</p>
+<p align="center"><i>nombre1=valor1;nombre2=valor2;...;nombreN=valorN</i></p>
+<p>donde se almacenan así los valores de las cookies que se tengan definidas.</p>
+<p>Se pueden emplear <i>cookies</i>, entre otras cosas, para:</p>
+<ul>
+  <li><b>Identificar a un usuario durante una o varias sesiones</b>. Por
+    ejemplo, a la hora de realizar compras a través de una tienda web, se
+    almacena su identidad (login y password) como una cookie y se recuerda a lo
+    largo de diferentes visitas qué es lo que lleva almacenado en su cesta de
+    la compra cada usuario.</li>
+  <li><b>Personalizar un sitio web de acuerdo a las preferencias de cada usuario</b>:
+    definir el contenido, apariencia, etc, que queremos que tenga una
+    determinada página en función de las preferencias del usuario que la esté
+    visitando.</li>
+</ul>
+<p> Los navegadores que trabajen con cookies pueden
+soportar hasta 20 cookies por servidor, de al menos 4 KB cada una. Los servlets
+que se ejecutan en un mismo servidor comparten las cookies.</p>
+<p>A la hora de trabajar con cookies, debemos tener en cuenta que nuestro sitio
+web no debe depender de ellas, puesto que muchos navegadores y usuarios las
+deshabilitan para evitar problemas de privacidad y otras cuestiones.</p>
+<p>Veremos ahora cómo trabajar con cookies desde servlets.</p>
+
+<h3>2.1.1. Enviar una cookie</h3>
+<p>Para crear una nueva cookie y enviarla, se siguen los pasos:</p>
+<p><b>1. Crear la cookie</b></p>
+<p>Las cookies se manejan con la clase <b>Cookie</b>.<b> </b>Se tiene el
+constructor:</p>
+<pre class="codigo">public Cookie (String nombre, String valor)</pre>
+           
+<p>que crea una cookie de nombre <i>nombre</i>, dándole el valor <i>valor</i>.</p>
+<p><b>2. Establecer los atributos de la cookie</b></p>
+<p>Una vez creada la cookie, podemos establecer los atributos que queramos, con
+los métodos de la clase <i>Cookie</i>. Por ejemplo, se tienen:</p>
+
+<pre class="codigo">public void setComment(String comentario)
+public void setMaxAge(int edad)
+...</pre>
+           
+<p>El primero asigna una cadena descriptiva sobre la cookie. El segundo indica
+cuántos segundos de vida tiene. Si es un valor negativo, se borrará la cookie
+cuando se cierre el navegador. Si el valor es 0, se borra la cookie
+instantáneamente, y si es positivo, se borrará la cookie cuando pasen los
+segundos indicados (si cerramos y volvemos a abrir el navegador dentro de ese
+tiempo, la cookie todavía persistirá). Se tienen otros métodos para
+establecer atributos de la cookie.</p>
+
+<p><b>3. Enviar la cookie</b></p>
+
+<p>Las cookies se añaden a la cabecera de la respuesta, y se envían así al
+cliente, mediante el método de <i>HttpServletResponse</i>:</p>
+
+<pre class="codigo">public void addCookie (Cookie cookie)</pre>
+           
+<p><b>Ejemplo</b></p>
+
+<p>Vemos un ejemplo completo de envío de cookie:</p>
+
+<pre class="codigo">public class MiServlet extends HttpServlet 
+{ 
+	public void doGet (HttpServletRequest request, 
+			   HttpServletResponse response) 
+	throws ServletException, IOException
+	{	
+		Cookie miCookie = new Cookie (&quot;nombre&quot;, &quot;Pepe&quot;);
+		miCookie.setMaxAge(120);
+		response.addCookie(miCookie);
+		PrintWriter out = response.getWriter();
+		...
+	}
+}</pre>
+           
+<p>Hay que tener en cuenta que las cookies son parte de la cabecera HTTP, con lo
+cual hay que enviarlas ANTES de escribir la respuesta (o antes de obtener el
+objeto <i>Writer</i> si lo queremos utilizar).</p>
+
+<h3>2.1.2. Obtener una cookie</h3>
+<p>Para obtener una cookie que envía el cliente se trabaja sobre la petición del cliente (<i>HttpServletRequest</i>),<i>
+</i>siguiendo los pasos:</p>
+<p><b>1. Obtener todas las cookies</b></p>
+<p>Obtenemos todas las cookies con el método <b>getCookies()</b> de la clase <i>HttpServletRequest</i>:</p>
+<pre class="codigo">public Cookie[] getCookies()</pre>
+           
+<p>Con esto se tiene un array con todas las cookies actuales para el usuario. Si
+no hay cookies el método devuelve <i>null</i>.</p>
+<p><b>2. Obtener el valor de una cookie</b></p>
+<p>Con lo anterior, para obtener el valor de una cookie simplemente recorremos
+el array de cookies buscando la que concuerde con el nombre que queramos. Pueden
+ser útiles los métodos de <i>Cookie</i>:</p>
+<pre class="codigo">public String getName()
+public String getValue()</pre>
+           
+<p>El primero obtiene el nombre de la cookie, y el segundo el valor.</p>
+<p><b>Ejemplo</b></p>
+<p>Un ejemplo de uso, para obtener el nombre del usuario, guardado en la cookie
+&quot;nombre&quot;:</p>
+<pre class="codigo">public void doGet (HttpServletRequest request, 
+		   HttpServletResponse response) 
+throws ServletException, IOException
+{	
+	Cookie[] cookies = request.getCookies();
+	String nombre;
+	for (int i = 0; i &lt; cookies.length; i++)
+		if (cookies[i].getName().equals(&quot;nombre&quot;))
+			nombre = cookies[i].getValue();
+}</pre>
+           
+<h3>2.1.3. Ejemplo</h3>
+<p>Aquí tenéis un <a href="ejemplos/sesiones/ejemplocookies.war.zip">WAR</a> con un ejemplo de uso de
+cookies. El servlet <i>ServletCookies</i>  cuenta el número de visitas a una
+página con una cookie que
+    dura 3 minutos.</p>
+
+<pre class="codigo">import java.io.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
+
+public class ServletCookies extends HttpServlet
+{
+   <b>// Metodo para GET
+</b>	
+   public void doGet(HttpServletRequest request, 
+		     HttpServletResponse response) 
+   throws ServletException, IOException
+   {
+	response.setContentType(&quot;text/html&quot;);
+	response.setHeader(&quot;Cache-Control&quot;, &quot;no-cache&quot;);
+		
+	Cookie[] cookies = request.getCookies();
+	Cookie contador = buscaCookie(&quot;contador&quot;, cookies);
+		
+	if (contador == null)
+	{
+<b>	   // Creamos la cookie con el contador
+</b>			
+	   Cookie cookie = new Cookie (&quot;contador&quot;, &quot;1&quot;);
+	   cookie.setMaxAge(180);
+	   response.addCookie(cookie);
+
+	<b>   // Mostramos el mensaje de primera visita
+</b>
+	   PrintWriter out = response.getWriter();
+	   out.println (&quot;&lt;HTML&gt;&quot;);			
+	   out.println (&quot;&lt;BODY&gt;&quot;);			
+	   out.println (&quot;Primera visita&quot;); 
+	   out.println (&quot;&lt;BR&gt;&quot;);
+	   out.println (&quot;&lt;/BODY&gt;&quot;);
+	   out.println (&quot;&lt;/HTML&gt;&quot;);
+
+	} else {
+		
+	<b>   // Obtenemos el valor actual del contador
+</b>			
+	   int cont = Integer.parseInt(contador.getValue());
+	   cont++;
+			
+	<b>   // Modificamos el valor de la cookie 
+	   // incrementando el contador
+</b>			
+	   Cookie cookie = new Cookie (&quot;contador&quot;, &quot;&quot; + cont);
+	   cookie.setMaxAge(180);
+	   response.addCookie(cookie);
+
+	<b>   // Mostramos el numero de visitas
+</b>
+	   PrintWriter out = response.getWriter();
+	   out.println (&quot;&lt;HTML&gt;&quot;);
+	   out.println (&quot;&lt;BODY&gt;&quot;);
+	   out.println (&quot;Visita numero &quot; + cont);
+	   out.println (&quot;&lt;BR&gt;&quot;);
+	   out.println (&quot;&lt;/BODY&gt;&quot;);
+	   out.println (&quot;&lt;/HTML&gt;&quot;);
+	}		
+   }	
+	
+   <b>// Busca la cookie 'nombre' 
+   // en el array de cookies indicado. 
+   // Devuelve null si no esta
+</b>	
+   private Cookie buscaCookie(String nombre, 
+			      Cookie[] cookies)
+   {
+	if (cookies == null)
+	   return null;
+		
+	for (int i = 0; i &lt; cookies.length; i++)
+	   if (cookies[i].getName().equals(nombre))
+		return cookies[i];
+		
+	return null;
+   }
+}</pre>
+           
+<p>Copiad el ejemplo en el directorio <i>webapps</i> de Tomcat, reiniciar el
+servidor y probadlo con:</p>
+
+<pre class="codigo">http://localhost:8080/ejemplocookies/servlet/ServletCookies </pre>
+           
+</body>
+</html>

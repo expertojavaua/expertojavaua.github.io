@@ -1,0 +1,432 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0052)http://www.dccia.ua.es/j2ee/seguridad/apuntes/sesion5.htm -->
+<HTML><HEAD><TITLE>Seguridad en Java</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=iso-8859-1">
+<META content=Sco name=Author><LINK href="../../../apuntes.css"
+type=text/css rel=stylesheet>
+<META content="MSHTML 5.50.4134.100" name=GENERATOR></HEAD>
+<BODY>
+<H1>Tema 8: Seguridad en BEA WebLogic</H1>
+<P>En este tema revisaremos diversos ejemplos de seguridad proporcionados por WebLogic. Concretamente revisaremos
+aquí los conceptos de SSL y JAAS en el contexto de un servidor de aplicaciones real.</P>
+<H2>8.1. Ejemplos de SSL en WebLogic</H2>
+<H3>8.1.1. Variables de entorno</H3>
+<P>En primer lugar, abriremos un nuevo shell y definiremos las siguientes variables de entorno,
+suponiendo que <I>$HOME=/home/sco</I> siendo <I>sco</I> el nombre de usuario:</P>
+<P><I>$ export HOME_BEA=$HOME/bea</I></P>
+<P><I>$ export SAMPLES_HOME=$HOME_BEA/weblogic700/samples</I></P>
+<P><I>$ export CONFIG_HOME=$SAMPLES_HOME/server/config/examples</I></P>
+<P><I>$ export EXAMPLES_HOME=$SAMPLES_HOME/server/src/examples</I></P>
+<P>Concretamente, <I>$CONFIG_HOME</I> es el directorio de configuración de ejemplos desde donde lanzaremos
+el servidor de ejemplos, y <I>$EXAMPLES_HOME</I> es el directorio donde están todos los fuentes de
+ejemplos. Concretamente en el subdirectorio <I>security</I> se encuentran los ejemplos de seguridad.
+Los fuentes de los ejemplos relacionados con SSL se encuentran en el sub-subdirectorio <I>sslclient</I>
+y forman el package <I>examples.security.sslclient</I></P>
+
+<H3>8.1.2. Compilando los ejemplos con ant</H3>
+<P>Primero accedemos al directorio donde están los fuentes y seguidamente
+copiamos el script que inicializa las variables de entorno para el ejemplo (entre ellas el acceso a
+la implementación Java del servidor en <I>weblogic.jar</I>).</P>
+<P><I>$ cd $EXAMPLES_HOME/security/sslclient</I></P>
+<P><I>$ cp $CONFIG_HOME/setExamplesEnv.sh .</I></P>
+<P>A continuación añadimos la línea <I>ant</I> al final del fichero <I>setExamplesEnv.sh</I> y
+seguidamente invocamos este script que construye los ejemplos relacionados con SSL a
+partir del fichero de directivas <I>build.xml</I>. La construcción de los ejemplos implica compilar
+todas las clases, almacenar los *.class en otros directorios, copiar los JSPs necesarios a sus directorios
+de destino. Pero este proceso también conlleva la copia del certificado digital para identificar el
+servidor <I>CertGenCA.der</I> y su clave privada <I>CertGenCAKey.der</I>. Ambos han sido generados por la
+herramienta <I>CertGen</I> y firmados por una CA de <I>demostración</I>, y por lo tanto deberán sustituirse
+por certificados firmados por una CA real cuando estemos en producción.
+Asímismo, <I>ant</I>  tambien crea un certificado y clave para identificar al cliente caso de que
+se requiera: <I>clientcer.der</I> y <I>clientkey.der</I>. Los certificados y claves se traducen a formato
+<I>pem</I> Finalmente se crea el almacén <I>mykeystore</I> para el cliente.</P>
+
+<H3>8.1.3. Servidor de Ejemplos</H3>
+<P>Todos los ejemplos que veremos en esta sección dedicada a SSL necesitan que el
+<B>Servidor de Ejemplos</B> de BEA WebLogic esté arrancado ya que en él se encuentran algunos JSPs
+y servlets a los que nos intentaremos conectar desde los clientes java, ya sea desde línea de comando
+o desde el navegador. Para arrancar este servidor abriremos un nuevo shell, re-exportaremos las
+variables de entorno y haremos lo siguiente:</P>
+<P><I>$ cd $CONFIG_HOME</I></P>
+<P><I>$ ./StartExamplesServer.sh</I></P>
+<P>Una vez lanzado (RUNNING mode) podremos acceder a la consola de administración abriendo un
+navegador (Netscape/Mozilla) con: <I>http://localhost:7001/console</I> y entraremos poniendo como
+login y password la palabra <I>weblogic</I>.</P>
+
+<H3>8.1.4. Ejemplo SSLClient</H3>
+<P>En este ejemplo se muestra como crear un cliente que establezca una conexión HTTP y otra HTTPS con
+un JSP servido por el <I>Servidor de Ejemplos</I> de WebLogic. En el código fuente
+(ver <A href="sesion7_archivos/security/sslclient/SSLClient.java.txt">SSLClient.java</A>) cabe la
+posibilidad de utilizar la implementación JSSE de Sun o bien la de WebLogic (cambiar los comentarios
+del código). Si utilizamos la de WebLogic, en el método <B>wlsURLConnect()</B> se construye un
+objeto <B>URL</B> y a continuación se toma como argumento para crear un
+objeto <B>weblogic.net.http.HttpURLConnection</B> y pasáreselo al método <B>SSLClient.tryConnection()</B>
+que intenta realizar la conexión ya sea en HTTP o en HTTPS:</P>
+<PRE class=codigo>
+try {
+  wlsUrl = new <B>URL</B>("http", host, Integer.valueOf(port).intValue(), query);
+  <B>weblogic.net.http.HttpURLConnection</B> connection =
+     new weblogic.net.http.HttpURLConnection(wlsUrl);
+  <B>tryConnection</B>(connection, out);
+} catch (Exception e) {
+  printOut(e.getMessage(), out);
+  e.printStackTrace();
+  printSecurityProviders(System.out);
+  System.out.println("----");
+}
+</PRE>
+
+<P>El caso sencillo, y más general, es que no se pida la autentificación del cliente sino tan solo la
+del servidor (autentificación <I>one-way</I> o unidireccional). Para lanzar este ejemplo solamente
+tenemos que sustituir la última línea del <I>setExamplesEnv.sh</I> (donde pone <I>ant</I>) por
+<I>ant run_sslclient</I>. La salida generada será la siguiente:</P>
+<P>1. Package que implementa el protocolo SSL. </P>
+<P>2. Proveedores de seguridad definidos en el fichero <I>java.security</I>.</P>
+<P>3. Resultado de la conexión con HTTP (al puerto 7001).</P>
+<P>4. Resultado de la conexión con HTTPS (al puerto 7002).</P>
+<PRE>
+run_sslclient:
+     [java] ----
+     [java]  JDK Protocol Handlers and Security Providers:
+     [java]    java.protocol.handler.pkgs - weblogic.net
+     [java]    provider[0] - SUN - SUN (DSA key/parameter generation; DSA signing;
+	  SHA-1, MD5 digests; SecureRandom; X.509 certificates; JKS keystore)
+     [java]    provider[1] - SunRsaSign - SUN's provider for RSA signatures
+     [java]
+     [java]  Trying a new HTTP connection using WLS client classes -
+     [java]     http://localhost:7001/examplesWebApp/SnoopServlet.jsp
+     [java]             200 -- OK
+     [java]             weblogic.net.http.KeepAliveStream
+     [java]  Trying a new HTTPS connection using WLS client classes -
+     [java]     https://localhost:7002/examplesWebApp/SnoopServlet.jsp
+     [java]             200 -- OK
+     [java]             weblogic.net.http.KeepAliveStream
+     [java] ----
+
+BUILD SUCCESSFUL
+
+Total time: 7 seconds
+</PRE>
+
+<H3>8.1.5. Ejemplo SSLSocketClient</H3>
+<P>En este ejemplo se demuestra el uso de los sockets SSL para realizar conexiones seguras (ver
+el constructor del código fuente en
+<A href="sesion7_archivos/security/sslclient/SSLSocketClient.java.txt">SSLSocketClient.java</A>).
+Como ya vimos en su día se siguen los siguientes pasos:</P>
+<P>1. Inicializar un <B>SSLContext</B>. En WebLogic, esto implica obtener la clave privada del
+cliente y su certificado que están guardados en el almacén <I>mykeystore</I> y asignarlas al
+contexto con <B>loadLocalIdentity()</B>. Posteriormente se define un <B>TrustManagerJSSE</B> y se
+asigna al contexto.</P>
+<PRE class=codigo>
+...
+<B>SSLContext</B> sslCtx = SSLContext.getInstance("https");
+...
+
+KeyStore ks = KeyStore.getInstance("jks");
+ks.load(new FileInputStream("mykeystore"), null);
+PrivateKey key = (PrivateKey)ks.getKey("mykey", "testkey".toCharArray());
+Certificate [] certChain = ks.getCertificateChain("mykey");
+sslCtx.<B>loadLocalIdentity</B>(certChain, key);
+...
+
+<B>TrustManagerJSSE</B> tManager = new NulledTrustManager();
+sslCtx.<B>setTrustManagerJSSE</B>(tManager);
+...
+</PRE>
+<P>2. Definir una <B>SSLSocketFactory</B> a partir del contexto, y a partir de ella crear un <B>SSLSocket</B>.
+</P>
+<PRE class=codigo>
+<B>SSLSocketFactory</B> sslSF = (SSLSocketFactory) sslCtx.getSocketFactoryJSSE();
+System.out.println(" Creating and opening new SSLSocket with SSLSocketFactory");
+// using createSocket(String hostname, int port)
+<B>SSLSocket</B> sslSock = (SSLSocket) sslSF.createSocket(argv[0],
+                                         new Integer(argv[1]).intValue());
+</PRE>
+<P>A partir de ahí lo que queda es enviar la petición y mostrar la respuesta por pantalla:</P>
+<PRE class=codigo>
+String req = "<B>GET /examplesWebApp/ShowDate.jsp HTTP/1.0\r\n\r\n";</B>
+      out.write(req.getBytes());
+</PRE>
+
+<P>Para lanzar este ejemplo sustituiremos la última línea del <I>setExamplesEnv.sh</I>
+(donde pone <I>ant run_sslclient</I>) por <I>ant run_sslsocketclient</I>. La salida
+generada por el script será la siguiente</P>
+<PRE>
+run_sslsocketclient:
+     [java]
+     [java] https://localhost:7002
+     [java]  Creating the SSLContext
+     [java]  Initializing the SSLContext with client
+     [java]   identity (certificates and private key),
+     [java]   HostnameVerifierJSSE, AND NulledTrustManager
+     [java]  Creating new SSLSocketFactory with SSLContext
+     [java]  Creating and opening new SSLSocket with SSLSocketFactory
+     [java]  SSLSocket created
+     [java]  --- Do Not Use In Production ---
+     [java]   By using this NulledTrustManager, the trust in the server's identity
+	  is completely lost.
+     [java]  --------------------------------
+     [java]  certificate 0 -- Serial number: 33
+     [java] Issuer:C=US, ST=California, L=San Francisco, O=BEA WebLogic, OU=Security,
+	  CN=Demo Certificate Authority, EMAIL=support@bea.com
+     [java] Subject:C=US, ST=California, L=San Francisco, O=BEA WebLogic, CN=weblogic.bea.com,
+	  EMAIL=support@bea.com
+     [java] Not Valid Before:Tue May 30 21:38:01 EDT 2000
+     [java] Not Valid After:Thu May 13 21:38:01 EDT 2004
+     [java] Signature Algorithm:MD5withRSA
+     [java]
+     [java]  certificate 1 -- Serial number: 0
+     [java] Issuer:C=US, ST=California, L=San Francisco, O=BEA WebLogic, OU=Security,
+	  CN=Demo Certificate Authority, EMAIL=support@bea.com
+     [java] Subject:C=US, ST=California, L=San Francisco, O=BEA WebLogic, OU=Security,
+	  CN=Demo Certificate Authority, EMAIL=support@bea.com
+     [java] Not Valid Before:Tue May 30 21:37:44 EDT 2000
+     [java] Not Valid After:Fri May 14 21:37:44 EDT 2004
+     [java] Signature Algorithm:MD5withRSA
+     [java]
+     [java] Handshake Completed with peer 127.0.0.1:7002
+     [java]    cipher: TLS_RSA_WITH_RC4_128_MD5
+     [java]    peer certificates:
+     [java]       certs[0]: Serial number: 33
+     [java] Issuer:C=US, ST=California, L=San Francisco, O=BEA WebLogic, OU=Security,
+	  CN=Demo Certificate Authority, EMAIL=support@bea.com
+     [java] Subject:C=US, ST=California, L=San Francisco, O=BEA WebLogic, CN=weblogic.bea.com,
+	  EMAIL=support@bea.com
+     [java] Not Valid Before:Tue May 30 21:38:01 EDT 2000
+     [java] Not Valid After:Thu May 13 21:38:01 EDT 2004
+     [java] Signature Algorithm:MD5withRSA
+     [java]
+     [java] HTTP/1.0 200 OK
+     [java] Date: Fri, 08 Mar 2002 19:31:47 GMT
+     [java] Server: WebLogic WebLogic Server 7.0 beta Thu Mar 7 22:34:51 PST 2002 170092
+     [java] Content-Length: 494
+     [java] Content-Type: text/html
+     [java] Refresh: 5
+     [java] Set-Cookie: JSESSIONID=8JRk2lZLbcNVSqqMXI5r1WYl7DxjbwG8eEr3IUDuozkAIx5yS1Wq!1675777731; path=/
+     [java] Cache-control: no-cache="set-cookie"
+     [java] Connection: Close
+     [java]
+     \\
+     \\The output of the ShowDate.jsp is shown here. The text is formatted in HTML for browser display.
+     \\See your output for actual text.
+     \\
+     [java]  SSLSocket closed
+
+BUILD SUCCESSFUL
+
+Total time: 6 seconds
+</PRE>
+<P>en donde la primera parte de la respuesta tiene que ver con el proceso de creación del socket,
+incluyendo los datos del certificado del cliente, mientras que la segunda tiene que ver con la salida
+HTML generada por el JSP.</P>
+
+<H3>8.1.6. Ejemplo SSLClientServlet</H3>
+<P>Finalmente, este ejemplo cuyo código se encuentra en
+<A href="sesion7_archivos/security/sslclient/SSLClientServlet.java.txt">SSLClientServlet.java</A>, es
+un servlet que envuelve el código SSLClient. Este ejemplo, como el anterior, ya estará construido así que
+antes de lanzarlo solamente tenemos que editar el fichero: <I>$CONFIG_HOME/startExamplesServer.sh</I> y
+poner la siguiente línea:</P>
+<PRE class=codigo>
+JAVA_OPTIONS ="
+	-Dweblogic.security.SSL.hostnameVerifier=
+	   examples.security.sslclient.NulledHostnameVerifier
+	-Dweblogic.security.SSL.trustedCAKeyStore=
+	   /home/sco/bea/weblogic700/server/lib/cacerts"
+</PRE>
+<P>donde la propiedad <I>trustedCAKeyStore</I> indica el almacén de claves que contiene las CAs en cuyos
+certificados confía el servidor. Estamos diciéndole al servidor que confíe en aquellos certificados
+contenidos en <I>/home/sco/bea/weblogic700/server/lib/cacerts</I>, entre ellos los generados por
+<I>CertGen</I>. Si no hacemos esto, el servidor solamente confía en las CAs registradas en el fichero
+<I>$JAVA_HOME/lib/security/cacerts</I> en donde están incluidas autoridades reales como Verisign.</P>
+<P>Una vez activado el servidor de ejemplos consultaríamos la siguente URL desde el navegador:</P>
+<P><I>http://localhost:7001/examplesWebApp/SSLClientServlet</I></P>
+<P>y la salida que deberíamos observar sería:</P>
+<PRE>
+wls ssl client classes
+
+java SSLClient wls localhost 7001 7002 /examplesWebApp/SnoopServlet.jsp
+
+ JDK Protocol Handlers and Security Providers:
+   java.protocol.handler.pkgs - weblogic.utils|weblogic.utils|weblogic.net|weblogic.management
+   provider[0] - SUN - SUN (DSA key/parameter generation; DSA signing; SHA-1, MD5 digests; SecureRandom; X.509 certificates; JKS keystore)
+   provider[1] - SunRsaSign - SUN's provider for RSA signatures
+
+ Trying a new HTTP connection using WLS client classes -
+        http://localhost:7001/examplesWebApp/SnoopServlet.jsp
+                200 -- OK
+                weblogic.net.http.KeepAliveStream
+ Trying a new HTTPS connection using WLS client classes -
+        https://localhost:7002/examplesWebApp/SnoopServlet.jsp
+                200 -- OK
+                weblogic.net.http.KeepAliveStream
+</PRE>
+
+<H2>8.2. Ejemplos de JAAS en WebLogic</H2>
+<P>En el ejemplo del paquete <I>examples.security.jaas</I> se muestra la implementación de un cliente
+(ver código <A href="sesion7_archivos/security/jaas/SampleClient.java.txt">SampleClient.java</A>) que
+implementa una autentificación por login-password, y si ésta tiene éxito se llama a un EJB del servidor
+WebLogic. Para ello se siguen los siguientes pasos:</P>
+<P>1. Instanciar un <B>LoginContext</B> con una implementación de <B>CallbackHandler</B> (vér código
+<A href="sesion7_archivos/security/jaas/SampleCallbackHandler.java.txt">SampleCallbackHandler.java</A>)
+que se encargará de pedir el nombre de usuario y el password caso de que éstos no se suministren en la
+línea de comandos.</P>
+<P>2.Intentar la autentificación llamando al método <B>LoginContext.login()</B> que se define en una
+implementación de la interfaz <B>LoginModule</B>. Como es habitual, esta implementación se referencia en
+un fichero de configuración. En este caso dicho fichero es
+<A href="sesion7_archivos/security/jaas/sample_jaas.config.txt">sample_jaas.config</A> y su contenido
+es el siguiente:</P>
+<PRE class=codigo>
+Sample {
+   weblogic.security.auth.login.<B>UsernamePasswordLoginModule</B> required debug=false;
+};
+</PRE>
+<P>donde<B>UsernamePasswordLoginModule</B> está definido en la distribución de WebLogic, es decir
+está incluido en <I>$HOME_BEA/weblogic700/server/lib/weblogic.jar</I> aunque su código fuente
+está impreso en el documento
+<A href="http://www.jtech.ua.es/j2ee/2002-2003/seguridad/apuntes/sesion7_archivos/security/security.pdf">Programming WebLogic Security</A>.
+Concretamente, la autentificación se realiza en el método <B>login()</B>, concretamente en la
+llamada al método <B>weblogic.security.auth.Authenticate.authenticate</B>: </P>
+<PRE class=codigo>
+...
+if (url != null) {
+  Envirnoment env = new Environment();
+  env.setProviderUrl(url);
+  env.setSecurityPrincipal(username);
+  env.setSecurityCredentials(password);
+
+  try {
+     <B>Authenticate.authenticate</B>(env, subject);
+  }
+  catch(RemoteException re) { ... }
+
+  catch(IOException ioe) { ... }
+
+  catch(<B>LoginException</B> le) { ... }
+...
+}
+</PRE>
+
+<P>3. Obtener los datos del <B>Subject</B> autentificado, y definir una acción a realizar. Dicha
+acción es una clase
+<A href="sesion7_archivos/security/jaas/SampleAction.java.txt">SampleAction.java</A>
+que implementa la interfaz <B>PrivilegedAction</B>. Concretamente contiene un método <B>run()</B> que
+hace una llamada a un EJB el cual realiza algunas compras y ventas.</P>
+<PRE class=codigo>
+public class <B>SampleAction</B> implements <B>PrivilegedAction</B>
+{
+  private static final String JNDI_NAME = "ejb20-statelessSession-TraderHome";
+  private String url;
+
+  public SampleAction(String url)
+  {
+    this.url = url;
+  }
+
+  public Object <B>run()</B>
+  {
+    Object obj = null;
+
+    try {
+      <B>callTraderEJB();</B>
+    }
+    catch(Exception e) {
+      e.printStackTrace();
+    }
+    return obj;
+  }
+
+  /**
+   * Call Trader EJB.
+   */
+  public void <B>callTraderEJB()</B>
+    throws NamingException, CreateException, RemoteException, RemoveException
+  {
+    TraderHome home = lookupTraderHome();
+
+    // create a Trader
+    ExampleUtils.log("Creating a trader");
+    Trader trader = (Trader)ExampleUtils.narrow(home.create(), Trader.class);
+
+    String [] stocks = {"BEAS", "MSFT", "AMZN", "HWP" };
+
+      // execute some buys
+    for (int i=0; i&lt;stocks.length; i++) {
+      int shares = (i+1) * 100;
+      ExampleUtils.log("Buying "+shares+" shares of "+stocks[i]+".");
+      trader.<B>buy</B>(stocks[i], shares);
+    }
+
+    // execute some sells
+    for (int i=0; i&lt;stocks.length; i++) {
+      int shares = (i+1) * 100;
+      ExampleUtils.log("Selling "+shares+" shares of "+stocks[i]+".");
+      trader.<B>sell</B>(stocks[i], shares);
+    }
+
+    // remove the Trader
+    ExampleUtils.log("Removing the trader");
+    trader.remove();
+  }
+
+  /**
+   * Look up the bean's home interface using JNDI.
+   */
+  private TraderHome lookupTraderHome()
+    throws NamingException
+  {
+    Context ctx = ExampleUtils.getInitialContext(url);
+    Object home = (TraderHome)ctx.lookup(JNDI_NAME);
+    return (TraderHome)ExampleUtils.narrow(home, TraderHome.class);
+  }
+
+}
+</PRE>
+
+<P>Este método se ejecuta al llamar
+al método <B>weblogic.security.Security.runAs()</B> desde el cliente.</P>
+<P>Para probar este ejemplo, suponiendo que el servidor de ejemplos esté arrancado,
+tenemos que hacer lo siguiente:</P>
+<P><I>$ cd $EXAMPLES_HOME/security/jaas</I></P>
+<P><I>$ cp $CONFIG_HOME/setExamplesEnv.sh .</I></P>
+<P>Añadiendo la línea <I>ant</I> al final y ejecutando el shell conseguimos construir
+el ejemplo, lo cual consiste en compilar las clases (includo el EJB) y alojarlas en
+sus directorios.</P>
+<P>Después se ha de copiar el fichero <I>sample_jaas.config</I> en el directorio
+<I>$JAVA_HOME/jre/lib/security</I> (donde <I>JAVA_HOME=$HOME/bea/jdk121_03</I>) y
+añadimos la siguiente línea a <I>$JAVA_HOME/jre/lib/security/java.security</I></P>
+<PRE class=codigo>
+login.config.url.1=file:${java.home}/lib/security/sample_jaas.config
+</PRE>
+
+<P>A continuación añadimos al final el contenido del fichero <I>run.sh</I>:</P>
+<PRE class=codigo>
+java -classpath $CLASSPATH:$CLIENT_CLASSES/ejb20_basic_statelessSession_client.jar:
+               $CLIENT_CLASSES/utils_common.jar  examples.security.jaas.SampleClient
+	       t3://localhost:7001 weblogic weblogic
+</PRE>
+<P>y ejecutamos el shell. Las dos últimas palabras (weblogic, weblogic) son el número de usuario
+y password esperados (si omitimos estas dos palabras nos pide nombre de usuario y password). Así,
+si la autentificación tiene éxito se observará la siguiente salida: </P>
+<PRE>
+username: weblogic
+password: weblogic
+URL: t3://localhost:7001
+Creating a trader
+Buying 100 shares of BEAS.
+Buying 200 shares of MSFT.
+Buying 300 shares of AMZN.
+Buying 400 shares of HWP.
+Selling 100 shares of BEAS.
+Selling 200 shares of MSFT.
+Selling 300 shares of AMZN.
+Selling 400 shares of HWP.
+Removing the trader
+</PRE>
+<P>Si ponemos un nombre de usuario y un password que no corresponden a ningún usuario creado desde la
+consola entonces la autentificación fallará y con ello el acceso al EJB. Para crear un nuevo usuario hay
+que lanzar la consola de administración y activar la siguiente cadena de subdirectorios en el applet de
+la izquierda: <I>Security -> Realms -> myRealm -> Users</I> y luego en el javascript de la derecha pinchar en
+<I>Configure a new user...</I>. Seguidamente nos pedirá nombre y password (mínino 8 caracteres). Tras
+pulsar en <I>Apply</I> ya podemos lanzar de nuevo el shell para acceder al EJB. En cuanto a la configuración
+de grupos no hay que seleccionar ninguna opción</P>
+</BODY></HTML>

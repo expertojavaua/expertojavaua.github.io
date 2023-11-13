@@ -1,0 +1,95 @@
+package examples.security.jaas;
+
+import java.security.PrivilegedAction;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import java.util.Hashtable;
+import javax.ejb.CreateException;
+import javax.ejb.EJBException;
+import javax.ejb.FinderException;
+import javax.ejb.ObjectNotFoundException;
+import javax.ejb.RemoveException;
+import java.rmi.RemoteException;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import examples.ejb20.basic.statelessSession.TraderHome;
+import examples.ejb20.basic.statelessSession.Trader;
+import examples.utils.common.ExampleUtils;
+
+/**
+ * SampleAction.java
+ *
+ * JAAS sample PrivilegedAction Implementation
+ *
+ * @author Copyright (c) 2000-2002 by BEA Systems, Inc. All Rights Reserved.
+ */
+public class SampleAction implements PrivilegedAction
+{
+  private static final String JNDI_NAME = "ejb20-statelessSession-TraderHome";
+  private String url;
+  
+  public SampleAction(String url)
+  {
+    this.url = url;
+  }
+  
+  public Object run()
+  {
+    Object obj = null;
+
+    try {
+      callTraderEJB();
+    }
+    catch(Exception e) {
+      e.printStackTrace();
+    }
+    return obj;
+  }
+
+  /**
+   * Call Trader EJB.
+   */
+  public void callTraderEJB()
+    throws NamingException, CreateException, RemoteException, RemoveException
+  {
+    TraderHome home = lookupTraderHome();
+    
+    // create a Trader
+    ExampleUtils.log("Creating a trader");
+    Trader trader = (Trader)ExampleUtils.narrow(home.create(), Trader.class);
+
+    String [] stocks = {"BEAS", "MSFT", "AMZN", "HWP" };
+
+      // execute some buys
+    for (int i=0; i<stocks.length; i++) {
+      int shares = (i+1) * 100;
+      ExampleUtils.log("Buying "+shares+" shares of "+stocks[i]+".");
+      trader.buy(stocks[i], shares);
+    }
+
+    // execute some sells
+    for (int i=0; i<stocks.length; i++) {
+      int shares = (i+1) * 100;
+      ExampleUtils.log("Selling "+shares+" shares of "+stocks[i]+".");
+      trader.sell(stocks[i], shares);
+    }
+
+    // remove the Trader
+    ExampleUtils.log("Removing the trader");
+    trader.remove();
+  }
+
+  /**
+   * Look up the bean's home interface using JNDI.
+   */
+  private TraderHome lookupTraderHome()
+    throws NamingException
+  {    
+    Context ctx = ExampleUtils.getInitialContext(url);
+    Object home = (TraderHome)ctx.lookup(JNDI_NAME);
+    return (TraderHome)ExampleUtils.narrow(home, TraderHome.class);
+  }
+
+}
+

@@ -1,0 +1,186 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.7">
+<meta name="Forrest-skin-name" content="pelt">
+<title>Ejercicios de opciones avanzadas en el acceso a una BD</title>
+<link type="text/css" href="skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="skin/print.css" rel="stylesheet">
+<link type="text/css" href="skin/profile.css" rel="stylesheet">
+<script src="skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<div class="header">
+<div class="grouplogo">
+<a href="http://www.jtech.ua.es/j2ee"><img class="logoImage" alt="J2EE" src="images/baner_j2ee_izq.gif" title="Curso Especialista Universitario J2EE"></a>
+</div>
+<div class="projectlogoA1">
+<a href="http://www.dccia.ua.es/"><img class="logoImage" alt="Bases de datos con JDBC" src="images/baner_j2ee_der.gif" title="Bases de datos con JDBC"></a>
+</div>
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="../index.html">M&oacute;dulos</a>
+</li>
+<li class="current">
+<a class="base-selected" href="index.html">Bases de datos con JDBC</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<div id="level2tabs"></div>
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<div id="menu">
+<div onclick="SwitchMenu('menu_selected_1.1', 'skin/')" id="menu_selected_1.1Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Materiales</div>
+<div id="menu_selected_1.1" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="index.html" title="Bases de datos con JDBC">&Iacute;ndice</a>
+</div>
+<div onclick="SwitchMenu('menu_1.1.2', 'skin/')" id="menu_1.1.2Title" class="menutitle">Teor&iacute;a</div>
+<div id="menu_1.1.2" class="menuitemgroup">
+<div class="menuitem">
+<a href="sesion01-apuntes.html">Sesion 1</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-apuntes.html">Sesion 2</a>
+</div>
+<div class="menuitem">
+<a href="sesion03-apuntes.html">Sesion 3</a>
+</div>
+<div class="menuitem">
+<a href="sesion04-apuntes.html">Sesion 4</a>
+</div>
+<div class="menuitem">
+<a href="roadmap-apuntes.html">Roadmap</a>
+</div>
+</div>
+<div onclick="SwitchMenu('menu_selected_1.1.3', 'skin/')" id="menu_selected_1.1.3Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Ejercicios</div>
+<div id="menu_selected_1.1.3" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="sesion01-ejercicios.html">Sesion 1</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-ejercicios.html">Sesion 2</a>
+</div>
+<div class="menuitem">
+<a href="sesion03-ejercicios.html">Sesion 3</a>
+</div>
+<div class="menupage">
+<div class="menupagetitle">Sesion 4</div>
+</div>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<div id="credit2"></div>
+</div>
+<div id="content">
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="sesion04-ejercicios.pdf"><img alt="PDF -icon" src="skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1>Ejercicios de opciones avanzadas en el acceso a una BD</h1>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#Transacciones">Transacciones</a>
+</li>
+<li>
+<a href="#Pool+de+conexiones">Pool de conexiones</a>
+</li>
+<li>
+<a href="#RowSet">RowSet</a>
+</li>
+</ul>
+</div>
+
+<a name="N1000C"></a><a name="Transacciones"></a>
+<h2 class="underlined_10">Transacciones</h2>
+<div class="section">
+<p>Vamos a trabajar con las transacciones. Para ello, vais a crear un m&eacute;todo en 
+el DAO de usuario llamado <em>reserva</em>. Recibir&aacute; tres par&aacute;metros, el
+dni del usuario que reserva, el n&uacute;mero de vuelo y el n&uacute;mero de hotel.
+Se debe restar tanto al hotel como al vuelo una plaza del campo
+<em>PlazasDisp</em>. Cuando se haga esto, se debe introducir un registro en
+las tablas correspondientes de reserva. Como el campo <em>PlazasDisp</em>
+es sin signo, cuando intentemos restar a alg&uacute;n elemento que no tenga 
+plazas, dar&aacute; un error MySQL. Este es un buen ejercicio para comprobar
+el funcionamiento de las transacciones.</p>
+<p>Para introducir un registro pod&eacute;is usar lo siguiente:</p>
+<pre class="code">
+insert into resHotel values (null, 1, dni, '2006-11-20', 2)
+</pre>
+<p>El primer valor que se introduce es <em>null</em> debido a que el campo 
+tiene autoincrento. La fecha hay que indicarla as&iacute;.
+</p>
+</div>
+
+
+<a name="N1002C"></a><a name="Pool+de+conexiones"></a>
+<h2 class="underlined_10">Pool de conexiones</h2>
+<div class="section">
+<p>En la implementaci&oacute;n de la fuente de datos que hab&eacute;is usado hasta ahora, se manejaba 
+una s&oacute;lo conexi&oacute;n. Esto es un problema si tenemos varios clientes de manera simult&aacute;nea.
+Una posible soluci&oacute;n es que la fuente de datos maneje el pool de conexiones. Vais a 
+modificar la clase <em>FuenteDatos</em> de la siguiente manera:
+</p>
+<ul>
+    
+<li>Cread un array de conexiones. Se crear&aacute;n las conexiones en el constructor.
+    Usad una variable para definir el n&uacute;mero m&aacute;ximo de conexiones.</li>
+    
+<li>Cread otro array de booleanos que indicar&aacute; si la conexi&oacute;n correspondiente
+    est&aacute; siendo usada.</li>
+    
+<li>Modificad el m&eacute;todo <em>getConnection</em> para que busque por el array y
+    devuelva la primera conexi&oacute;n no usada. Si encuentra una conexi&oacute;n libre la
+    devuelve y si no deuelve <em>null</em>.</li>
+    
+<li>A&ntilde;adid un m&eacute;todo adicional que llamar&eacute;is <em>close(Connection c)</em>. Este
+    m&eacute;todo chequea el array con al conexi&oacute;n pasada por par&aacute;metro y libera la 
+    conexi&oacute;n (cambiando el valor del array de booleanos.</li>
+
+</ul>
+</div>
+
+
+<a name="N10051"></a><a name="RowSet"></a>
+<h2 class="underlined_10">RowSet</h2>
+<div class="section">
+<p>Como parte optativa de esta sesi&oacute;n se propone el uso de los RowSet para manejar 
+los usuarios.</p>
+</div>
+
+
+<p class="pageBreakAfter"></p>
+
+</div>
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+        Copyright &copy;
+         2006-2007 Depto. CCIA</div>
+</div>
+</body>
+</html>

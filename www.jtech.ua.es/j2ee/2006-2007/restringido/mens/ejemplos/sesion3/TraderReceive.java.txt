@@ -1,0 +1,187 @@
+package examples.jms.trader;
+
+import java.io.*;
+import java.rmi.RemoteException;
+import java.util.*;
+import javax.ejb.*;
+import javax.jms.*;
+import javax.transaction.*;
+import javax.naming.*;
+import examples.ejb20.basic.statelessSession.*;
+
+/**
+ * Receives messages and 
+ * invokes an EJBean to process them.
+ *
+ * @author Copyright (c) 1999-2002 by BEA Systems, Inc. All Rights Reserved.  
+ */
+public class TraderReceive
+{
+/**
+ * Defines JNDI context factory.
+ */
+  public final static String JNDI_FACTORY="weblogic.jndi.WLInitialContextFactory";
+/**
+ *  Defines JMS connection factory.
+ */
+  public final static String JMS_FACTORY="jms.connection.traderFactory";
+/**
+ * Defines EJB stateless session.
+ */
+  public final static String EJB_HOME="ejb20-statelessSession-TraderHome";
+
+/**
+ * Defines JMS topic.
+ */
+  public final static String TOPIC="weblogic.examples.jms.exampleTopic";
+/**
+ * Defines JTA user transaction.
+ */
+  public final static String TX="javax.transaction.UserTransaction";
+
+  private TopicConnectionFactory connectionFactory;
+  private TopicConnection connection;
+  private TopicSession session;
+  private TopicSubscriber subscriber;
+  private Topic topic;
+  private Trader ejbTrader;
+  private UserTransaction tx;
+
+  // MessageListener interface
+  /** 
+    * Message listener interface.
+   */
+  public void processMessages()
+  {
+    while(true) {
+      try {
+        System.out.println("Waiting to receive message...");
+        Message msg = subscriber.receive();
+
+        if (msg instanceof MapMessage) {
+          Exception e = null;
+          try {
+            tx.begin();
+            MapMessage m = (MapMessage) msg;
+            String customerName = m.getString("CustomerName"); 
+            String tradeType = m.getString("TradeType");
+            String symbol = m.getString("Symbol"); 
+            int numberOfShares = m.getInt("Shares"); 
+            try {
+              TradeResult tr = null;
+            
+              if ("buy".equalsIgnoreCase(tradeType)) {
+                tr = ejbTrader.buy(symbol, numberOfShares);
+                System.out.println("Bought " + tr.getNumberTraded());
+                tx.commit();
+              } else {
+                if ("sell".equalsIgnoreCase(tradeType)) {
+                  tr = ejbTrader.sell(symbol, numberOfShares);
+                  System.out.println("Sold " + tr.getNumberTraded());
+                  tx.commit();
+                } else {
+                  System.out.println("Rolling Back Transaction");
+                  tx.rollback();
+                  System.out.println("Unknown TradeType: "+tradeType);
+                }
+              }
+            } catch (RollbackException re) {
+              e = re;
+            } catch (HeuristicRollbackException hre) {
+              e = hre;
+            } catch (HeuristicMixedException hme) {
+              e = hme;
+            } catch (RemoteException re) {
+              e = re;
+            }
+            if (e != null) {
+              e.printStackTrace();
+            }
+          } catch (SystemException se) {
+            e = se;
+          } catch (NotSupportedException nse) {
+            nse.printStackTrace();
+          }
+        }
+      } catch (JMSException jmse) {
+        try {
+          tx.rollback();
+        } catch (SystemException se) {}
+        jmse.printStackTrace();
+      }
+    }
+  }
+
+  /**
+   * Creates all the necessary objects for receiving messages from a JMS topic.  
+   * The session is transacted so that calling the EJB occurs in the same
+   * transaction as dequeueing the message.
+   * @param ctx JNDI initial context
+   * @param topicName	name of topic
+   * @exception NamingException if problem with JNDI context interface
+   * @exception JMSException if JMS fails during initialization due to an internal error
+   * @exception RemoteException if problem occurs during remote operation
+   * @exception CreateException if problem occurs during creation
+   */
+  public void init(Context ctx, String topicName)
+       throws NamingException, JMSException, RemoteException, CreateException
+  {
+    connectionFactory = (TopicConnectionFactory) ctx.lookup(JMS_FACTORY);
+
+    connection = connectionFactory.createTopicConnection();
+    connection.setClientID("traderReceive");
+    session = connection.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
+    topic = (Topic) ctx.lookup(topicName);
+    subscriber = session.createDurableSubscriber(topic, "traderReceive");
+    TraderHome brokerage = (TraderHome) ctx.lookup(EJB_HOME);
+    ejbTrader = brokerage.create();
+    tx = (javax.transaction.UserTransaction) ctx.lookup(TX);
+    connection.start();
+  }
+
+  /**
+   * Closes JMS objects.
+   * @exception JMSException if JMS fails to close objects due to internal error
+   */
+  public void close()
+       throws JMSException
+  {
+    subscriber.close();
+    session.close();
+    connection.close();
+  }
+
+  /**
+   * main() method.
+   * @param args WebLogic URL
+   * @exception Exception if problem occurs
+   */
+
+  public static void main(String[] args)
+       throws Exception 
+  {
+    if (args.length != 1) {
+      System.out.println("Usage: java examples.jms.trader.TraderReceive WebLogicURL");
+      return;
+    }
+    InitialContext ic = getInitialContext(args[0]);
+    TraderReceive demo = new TraderReceive();
+    demo.init(ic, TOPIC);
+
+    demo.processMessages();
+    demo.close();
+  }
+
+  private static InitialContext getInitialContext(String url)
+       throws NamingException
+  {
+    Hashtable env = new Hashtable();
+    env.put(Context.INITIAL_CONTEXT_FACTORY, JNDI_FACTORY);
+    env.put(Context.PROVIDER_URL, url);
+    return new InitialContext(env);
+  }
+
+}
+
+
+

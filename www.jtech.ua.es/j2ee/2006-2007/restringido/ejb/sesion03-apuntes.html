@@ -1,0 +1,1492 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.7">
+<meta name="Forrest-skin-name" content="pelt">
+<title>La arquitectura EJB en detalle</title>
+<link type="text/css" href="skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="skin/print.css" rel="stylesheet">
+<link type="text/css" href="skin/profile.css" rel="stylesheet">
+<script src="skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<div class="header">
+<div class="grouplogo">
+<a href="http://www.jtech.ua.es/j2ee"><img class="logoImage" alt="J2EE" src="images/baner_j2ee_izq.gif" title="Curso Especialista Universitario J2EE"></a>
+</div>
+<div class="projectlogoA1">
+<a href="http://www.dccia.ua.es/"><img class="logoImage" alt="Componentes EJB" src="images/baner_j2ee_der.gif" title="Componentes EJB"></a>
+</div>
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="../index.html">M&oacute;dulos</a>
+</li>
+<li class="current">
+<a class="base-selected" href="index.html">Componentes EJB</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<div id="level2tabs"></div>
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<div id="menu">
+<div onclick="SwitchMenu('menu_selected_1.1', 'skin/')" id="menu_selected_1.1Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Materiales</div>
+<div id="menu_selected_1.1" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="index.html" title="Componentes EJB">&Iacute;ndice</a>
+</div>
+<div onclick="SwitchMenu('menu_selected_1.1.2', 'skin/')" id="menu_selected_1.1.2Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Teor&iacute;a</div>
+<div id="menu_selected_1.1.2" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="sesion01-apuntes.html" title="Introducci&oacute;n a los Enterprise Beans">Sesi&oacute;n 1</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-apuntes.html" title="Beans de sesi&oacute;n">Sesi&oacute;n 2</a>
+</div>
+<div class="menupage">
+<div class="menupagetitle">Sesi&oacute;n 3</div>
+</div>
+<div class="menuitem">
+<a href="sesion04-apuntes.html" title="Beans de sesi&oacute;n">Sesi&oacute;n 4</a>
+</div>
+<div class="menuitem">
+<a href="sesion05-apuntes.html" title="Seguridad">Sesi&oacute;n 5</a>
+</div>
+<div class="menuitem">
+<a href="sesion06-apuntes.html" title="Transacciones">Sesi&oacute;n 6</a>
+</div>
+<div class="menuitem">
+<a href="sesion07-apuntes.html" title="EJB 3.0">Sesi&oacute;n 7</a>
+</div>
+<div class="menuitem">
+<a href="sesion08-apuntes.html" title="JPA">Sesi&oacute;n 8</a>
+</div>
+<div class="menuitem">
+<a href="roadmap.html" title="Roadmap EJB">Roadmap</a>
+</div>
+</div>
+<div onclick="SwitchMenu('menu_1.1.3', 'skin/')" id="menu_1.1.3Title" class="menutitle">Ejercicios</div>
+<div id="menu_1.1.3" class="menuitemgroup">
+<div class="menuitem">
+<a href="sesion01-ejercicios.html" title="Introducci&oacute;n a los Enterprise Beans">Sesi&oacute;n 1</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-ejercicios.html" title="Beans de sesi&oacute;n">Sesi&oacute;n 2</a>
+</div>
+<div class="menuitem">
+<a href="sesion03-ejercicios.html" title="Beans de sesi&oacute;n">Sesi&oacute;n 3</a>
+</div>
+<div class="menuitem">
+<a href="sesion04-ejercicios.html" title="Beans de sesi&oacute;n con estado">Sesi&oacute;n 4</a>
+</div>
+<div class="menuitem">
+<a href="sesion05-ejercicios.html" title="Seguridad">Sesi&oacute;n 5</a>
+</div>
+<div class="menuitem">
+<a href="sesion06-ejercicios.html" title="Transacciones">Sesi&oacute;n 6</a>
+</div>
+<div class="menuitem">
+<a href="sesion07-ejercicios.html" title="EJB 3.0">Sesi&oacute;n 7</a>
+</div>
+<div class="menuitem">
+<a href="sesion08-ejercicios.html" title="JPA">Sesi&oacute;n 8</a>
+</div>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<div id="credit2"></div>
+</div>
+<div id="content">
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="sesion03-apuntes.pdf"><img alt="PDF -icon" src="skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1>La arquitectura EJB en detalle</h1>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#La+arquitectura+Enterprise+JavaBean">La arquitectura Enterprise JavaBean</a>
+<ul class="minitoc">
+<li>
+<a href="#EJB+y+RMI">EJB y RMI</a>
+</li>
+<li>
+<a href="#Funcionamiento+de+la+clase+home">Funcionamiento de la clase home</a>
+</li>
+<li>
+<a href="#Acceso+de+m%C3%BAltiples+clientes+a+un+bean+de+sesi%C3%B3n+sin+estado">Acceso de m&uacute;ltiples clientes a un bean de sesi&oacute;n sin estado</a>
+</li>
+<li>
+<a href="#Arquitectura+de+los+beans+de+sesi%C3%B3n+con+estado">Arquitectura de los beans de sesi&oacute;n con estado</a>
+</li>
+<li>
+<a href="#Interfaces+locales+y+remotas">Interfaces locales y remotas</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Las+anotaciones+BEA+WebLogic+para+EJB+2.1">Las anotaciones BEA WebLogic para EJB 2.1</a>
+<ul class="minitoc">
+<li>
+<a href="#Ejemplo">Ejemplo</a>
+</li>
+<li>
+<a href="#Especificaci%C3%B3n+detallada">Especificaci&oacute;n detallada</a>
+<ul class="minitoc">
+<li>
+<a href="#%40FileGeneration">@FileGeneration</a>
+</li>
+<li>
+<a href="#%40JndiName">@JndiName</a>
+</li>
+<li>
+<a href="#%40LocalHomeMethod">@LocalHomeMethod</a>
+</li>
+<li>
+<a href="#%40LocalMethod">@LocalMethod</a>
+</li>
+<li>
+<a href="#%40RemoteHomeMethod">@RemoteHomeMethod</a>
+</li>
+<li>
+<a href="#%40RemoteMethod">@RemoteMethod</a>
+</li>
+<li>
+<a href="#%40Session">@Session</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+
+<p>Es muy importante comprender la arquitectura EJB para poder dise&ntilde;ar, desarrollar y depurar este tipo de componentes. Se trata de una arquitectura algo complicada, basada en una extensi&oacute;n de RMI. Vamos a verla en este apartado.</p>
+
+
+<a name="N1000F"></a><a name="La+arquitectura+Enterprise+JavaBean"></a>
+<h2 class="underlined_10">La arquitectura Enterprise JavaBean</h2>
+<div class="section">
+<a name="N10015"></a><a name="EJB+y+RMI"></a>
+<h3 class="underlined_5">EJB y RMI</h3>
+<p>&iquest;C&oacute;mo usa la arquitectura EJB la tecnolog&iacute;a RMI? Comencemos por presentar la siguiente figura, que muestra la diferencia fundamental entre EJB y RMI.</p>
+<p>
+
+<img alt="" content-width="10cm" src="imagenes/apuntes/llamada-ejb.jpg" width="500">
+</p>
+<p>En el lado del cliente todo es igual. El cliente sigue comunic&aacute;ndose con un stub que implementa la interfaz <span class="codefrag">Saludo</span>. Sin embargo, los cambios se encuentran en el lado del servidor. El objeto remoto (<span class="codefrag">Saludo EJBObject</span>) no tiene la implementaci&oacute;n realizada por el programador, sino que &eacute;sta se encuentra en el llamado objeto Bean (<span class="codefrag">SaludoBean</span>). El objeto remoto hace de "cortafuegos" que separa el bean de los clientes y permite intercalar las llamadas al contenedor en las peticiones de los clientes. As&iacute; es posible incorporar los servicios de transacciones, seguridad, etc., proporcionados por el servidor.</p>
+<p>Adem&aacute;s del objeto remoto que implementa la interfaz del bean (llamada interfaz componente), la arquitectura EJB proporciona otro objeto remoto llamado objeto home que hace el papel de factor&iacute;a del bean. Este objeto home (<span class="codefrag">SaludoHome</span>, en el ejemplo) proprociona al cliente m&eacute;todos remotos para crear y localizar instancias de beans. La siguiente figura proporciona una imagen completa de ambas caracter&iacute;sticas:</p>
+<p>
+
+<img alt="" content-width="10cm" src="imagenes/apuntes/arquitectura3.jpg" width="500">
+</p>
+<p>Repasemos las clases que se deben implementar para defir un enterprise bean, as&iacute; como las interfaces que extienden:</p>
+<ul>
+
+
+<li>La <em>clase bean</em> <span class="codefrag">SaludoBean</span> que implementa los m&eacute;todos de negocio y que debe heredar de la clase <span class="codefrag">javax.bean.SessionBean</span>.</li>
+
+
+<li>La <em>interfaz componente</em> <span class="codefrag">Saludo</span> que define los m&eacute;todos accesibles por el cliente y que debe heredar de la interfaz <span class="codefrag">javax.ejb.EJBObject</span>.</li>
+
+
+<li>La <em>interfaz home</em> <span class="codefrag">SaludoHome</span> que define los m&eacute;todos de creaci&oacute;n de beans y que debe heredar de la interfaz <span class="codefrag">javax.ejb.EJBHome</span>.</li>
+
+
+</ul>
+<p>A su vez, las interfaces <span class="codefrag">EJBObject</span> y <span class="codefrag">EJBHome</span> heredan de la interfaz RMI <span class="codefrag">Remote</span>. Esto hace que las interfaces <span class="codefrag">Saludo</span> y <span class="codefrag">SaludoHome</span> sean tambi&eacute;n remotas. Sin embargo, ni la clase <span class="codefrag">SaludoBean</span>ni la clase <span class="codefrag">SessionBean</span> implementan la interfaz <span class="codefrag">Remote</span>. Esto es muy importante para entender la arquitectura de EJB: la <strong>clase bean no es remota</strong>. Recuerda que el objetivo principal de la estructura de clases e interfaces de EJB es evitar que el cliente llame directamente al bean. Existe siempre un objeto intermedio, el EJBObject, que intercepta las llamadas de los clientes y realiza todos los servicios que proporciona el servidor de aplicaciones.</p>
+<p>La siguiente figura representa la estructura de clases del ejemplo que hemos visto.</p>
+<p>
+
+<img alt="" content-width="10cm" src="imagenes/apuntes/UML-1.jpg" width="500">
+</p>
+<p>&iquest;Qui&eacute;n crea las clases que implementan todas estas interfaces de las que estamos hablando? Evidentemente, como ya hemos dicho, esa es tarea del contenedor EJB. La siguiente tabla resume qui&eacute;n escribe cada una de las clases de un bean.</p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+
+<tr>
+
+<th colspan="1" rowspan="1">Programador</th>
+<th colspan="1" rowspan="1">Contenedor de aplicaciones</th>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="2">La interfaz componente que hereda de 
+<span class="codefrag">javax.ejb.EJBObject</span>. (<span class="codefrag">Saludo.java</span>)</td>
+<td colspan="1" rowspan="1">La clase EJBObject que implementa la interfaz componente.
+(Objeto remoto SaludoEJB.java)</td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1">La clase stub EJBObject que implementa la interfaz componente y
+sirve para comunicarse por la red con la clase EJBObject anterior.
+(<span class="codefrag">SaludoStub.java</span>)</td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="2">
+La interfaz home que hereda de <span class="codefrag">javax.ejb.EJBHome</span>. (<span class="codefrag">SaludoHome.java</span>)
+</td>
+<td colspan="1" rowspan="1">La clase EJBHome que implementa la interfaz home. (<span class="codefrag">SaludoHome.java</span>)</td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1">La clase stub EJBHome que implementa la interfaz home y sirve para
+comunicarse por la red con la clase EJBHome
+anterior. (<span class="codefrag">SaludoHomeStub.java</span>)</td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1">La clase bean que implementa <span class="codefrag">javax.ejb.SessionBean</span> o 
+<span class="codefrag">javax.ejb.EntityBean</span> (<span class="codefrag">SaludoBean.java</span>)</td>
+<td colspan="1" rowspan="1"></td>
+
+</tr>
+
+</table>
+<a name="N100FE"></a><a name="Funcionamiento+de+la+clase+home"></a>
+<h3 class="underlined_5">Funcionamiento de la clase home</h3>
+<p>La clase home de un bean define los m&eacute;todos de creaci&oacute;n de instancias del bean. Cuando se despliega un bean en el contenedor EJB, se crea autom&aacute;ticamente una &uacute;nica instancia de la clase home del bean desplegado. Esta instancia reside en el contenedor EJB y queda a la espera de recibir peticiones de los clientes para crear instancias del bean.</p>
+<p>El funcionamiento completo de la clase home en los beans de sesi&oacute;n sin estado se podr&iacute;a resumir con la siguiente figura y los siguientes pasos (para simplificar vamos a usar como ejemplo el bean de sesi&oacute;n sin estado SaludoBean que vimos en la sesi&oacute;n anterior).</p>
+<p>
+
+<img alt="" content-width="10cm" src="imagenes/apuntes/funcionamiento-home.jpg" width="500">
+</p>
+<ol>
+
+
+<li>Desplegamos en el contenedor EJB el bean SaludoBean.  Inmendiatamente, el contenedor crea una instancia de SaludoHome y la registra en JNDI con el nombre "SaludoEJB". &Eacute;sta va a ser la &uacute;nica instancia de objeto Home del bean SaludoBean.</li>
+
+
+<li>El cliente realiza un lookup en JNDI buscando el objeto home con el nombre "SaludoEJB".</li>
+
+
+<li>JNDI devuelve el stub del objeto Home y el cliente lo instala en su JVM. Este stub define la interfaz home del bean que el cliente puede usar para crear nuevas instancias del bean.</li>
+
+
+<li>El cliente llama al m&eacute;todo create() del stub para que el objeto Home realice una instanciaci&oacute;n del bean y devuelva un stub de la instancia del bean SaludoEJB reci&eacute;n creada. Este stub ser&aacute; un stub del EJBObject que intercepta las llamadas al bean.</li>
+
+
+<li>El objeto Home recibe la petici&oacute;n y le pide al contenedor EJB que inicialize un nuevo bean. Se crea un objeto de la clase SaludoBean y se crea su correspondiente EJBObject que intercepta las llamadas de los clientes. Por &uacute;ltimo, se devuelve el stub del EJBObject al cliente.</li>
+
+
+<li>Ahora ya por fin el cliente puede realizar una petici&oacute;n al bean Saludo. Ya puede usar la interfaz componente del bean, porque el stub devuelto por el objeto home implementa esta interfaz. Por ejemplo, puede ejecutar el m&eacute;todo Saluda() del stub.</li>
+
+
+<li>Se realiza una llamada a un m&eacute;todo de la interfaz componente.  Esto es, el stub transfiere por la red todos los datos al EJBObject, &eacute;ste realiza todas las comprobaciones necesarias y, por &uacute;ltimo, transfiere la petici&oacute;n al objeto bean que est&aacute; representando.</li>
+
+</ol>
+<p>Esta descripci&oacute;n del funcionamiento de la clase home, como hemos dicho, contempla &uacute;nicamente el caso en de los beans de sesi&oacute;n sin estado. El funcionamiento es distinto seg&uacute;n el tipo de bean. Cuando veamos el ciclo de vida de cada uno de los tipos de bean explicaremos c&oacute;mo funciona la clase home en el resto de casos.</p>
+<a name="N1012F"></a><a name="Acceso+de+m%C3%BAltiples+clientes+a+un+bean+de+sesi%C3%B3n+sin+estado"></a>
+<h3 class="underlined_5">Acceso de m&uacute;ltiples clientes a un bean de sesi&oacute;n sin estado</h3>
+<p>En los beans de sesi&oacute;n sin estado no existe ning&uacute;n estado que deba mantener el bean: el cliente realiza la petici&oacute;n al EJBObject, el EJBObject pasa la petici&oacute;n al bean, el bean realiza la operaci&oacute;n y devuelve la respuesta al cliente.</p>
+<p>La simplicidad del funcionamiento de este tipo de beans hace posible que sean muy escalables y que tengan un rendimiento muy bueno. El contenedor puede utlizar bastantes t&eacute;cnicas para optimizar su rendimiento, como son el mantener una reserva <em>(pool)</em>de beans, el reutilizar una instancia de un bean para distintos clientes o el usar un &uacute;nico EJBObject para varios clientes.</p>
+<p>La siguiente figura muestra un ejemplo en el que m&aacute;s de un cliente est&aacute; solicitando servicios de un bean de sesi&oacute;n sin estado.</p>
+<p>
+
+<img alt="" content-width="12cm" src="imagenes/apuntes/clientes-sessionbean.jpg" width="600">
+</p>
+<p>&iquest;Cu&aacute;ndo crea el contenedor nuevas instancias de beans? Cuando lo considera necesario para mantener el rendimiento del servicio a los clientes. Puede ser que en un momento dado haya una avalancha de peticiones concurrentes y sea necesario aumentar el n&uacute;mero de beans del pool de beans. Eso s&iacute;, como ya ha quedado claro, el m&eacute;todo <span class="codefrag">create()</span>no hace que se cree un objeto nuevo. Todos sabemos que en Java las operaciones m&aacute;s costosas tienen que ver con la creaci&oacute;n y desaparici&oacute;n de objetos y con la posible puesta en marcha del recolector de basura que ello conlleva.</p>
+<p>Vamos a detallar el ciclo de vida del contenedor EJB durante el proceso de creaci&oacute;n y uso de los beans de sesi&oacute;n sin estado.</p>
+<p>
+
+<img alt="" content-width="12cm" src="imagenes/apuntes/sesion-sin-estado.jpg" width="600">
+</p>
+<ol>
+
+<li>El cliente obtiene una referencia al objeto home.</li>
+
+
+<li>El cliente usa el m&eacute;todo <span class="codefrag">create()</span>de la interfaz home para crear una instancia de un objeto EJBObject cuya referencia (su stub) se pasa al cliente.</li>
+
+
+<li>El cliente invoca un m&eacute;todo de negocio en el objeto EJBObject.</li>
+
+
+<li>El contenedor reusa una instancia del bean existente en la reserva, si existe, o crea una nueva instancia del bean e inicializa su contexto llamando a <span class="codefrag">setSessionContext()</span>.</li>
+
+
+<li>Si la instancia del bean ha sido creada en el paso anterior, el contenedor invoca <span class="codefrag">ejbCreate()</span>en la instancia del bean.</li>
+
+
+<li>El contenedor comienza una transacci&oacute;n, si hay que hacerlo.</li>
+
+
+<li>El contenedor invoca el m&eacute;todo de negocio solicitado en la instancia del bean, y el bean realiza la operaci&oacute;n solicitada.</li>
+
+
+<li>El contenedor confirma la transacci&oacute;n, si hay que hacerlo.</li>
+
+
+<li>Los resultados de la llamada al m&eacute;todo de negocio se devuelven al cliente.</li>
+
+
+<li>El cliente puede invocar m&eacute;todos adicionales en el objeto EJBObject. El contenedor puede realizar invocar los m&eacute;todos adicionales en instancias distintas del bean.</li>
+
+
+<li>El cliente llama a <span class="codefrag">remove()</span>en el objeto EJBObject cuando ha terminado de usarlo, como una forma de comunicarle al contenedor EJB que ya no va a necesitar m&aacute;s el bean.</li>
+
+
+<li>En alg&uacute;n momento, el contenedor decide reducir el tama&ntilde;o de la reserva de beans de sesi&oacute;n e invoca el m&eacute;todo <span class="codefrag">ejbRemove()</span>en la instancia del bean que va a eliminar.</li>
+
+
+</ol>
+<a name="N10193"></a><a name="Arquitectura+de+los+beans+de+sesi%C3%B3n+con+estado"></a>
+<h3 class="underlined_5">Arquitectura de los beans de sesi&oacute;n con estado</h3>
+<p>Recordemos algunas caracter&iacute;sticas de los beans de sesi&oacute;n con estado. En un bean de sesi&oacute;n con estado, las <em>variables de instancia</em> del bean almacenan datos espec&iacute;ficos obtenidos durante la conexi&oacute;n con el cliente, en lo que se denomina estado conversacional del bean. Este estado conversacional se modifica conforme el cliente va realizando llamadas a los m&eacute;todos de negocio del bean. El estado conversacional no se guarda cuando el cliente termina la sesi&oacute;n.</p>
+<p>La interacci&oacute;n del cliente con el bean se divide en un conjunto de pasos. En cada paso se a&ntilde;ade nueva informaci&oacute;n al estado del bean. Cada paso de interacci&oacute;n suele denominarse con nombres como <span class="codefrag">setNombre</span> o <span class="codefrag">setDireccion</span>, siendo <span class="codefrag">nombre</span> y <span class="codefrag">direccion</span> dos variables de instancia del bean.</p>
+<p>Debido a que el bean guarda el estado conversacional con un cliente determinado, no le es posible al contenedor crear un almac&eacute;n de beans y compartirlos entre muchos clientes. Por ello, el manejo de beans de sesi&oacute;n con estado es m&aacute;s pesado que el de beans de sesi&oacute;n sin estado. Siempre hay una relaci&oacute;n uno a uno entre clientes y objetos EJBObjects e instancias del bean, como muestra la siguiente figura.</p>
+<p>
+<img alt="" content-width="12cm" src="imagenes/apuntes/client-estado-sbean.jpg" width="644"></p>
+<p>El proceso de creaci&oacute;n de un bean de sesi&oacute;n con estado es id&eacute;ntico al de un bean de sesi&oacute;n sin estado, con la salvedad de que, al mantenerse en el bean un estado propio de la conexi&oacute;n con el cliente, la instancia del bean asignada al cliente es la que debe ejecutar todas las llamadas. No es posible, como se hac&iacute;a en el ciclo de vida anterior, invocar a distintas instancias del bean.</p>
+<a name="N101BC"></a><a name="Interfaces+locales+y+remotas"></a>
+<h3 class="underlined_5">Interfaces locales y remotas</h3>
+<p>En la arquitectura EJB, la &uacute;nica diferencia es que las llamadas entre el cliente y el EJBObject ser&iacute;an llamadas normales entre objetos Java y no tendr&iacute;an que ser serializadas. Pero el objeto EJBObject seguir&iacute;a haciendo las mismas funciones de proteger a los beans del exterior y de incorporar los servicios del contenedor EJB.</p>
+<p>Por &uacute;ltimo, en el lado del cliente existen tres detalles que hay que modificar cuando se est&aacute;n utilizando interfaces locales. </p>
+<p>En primer lugar, la obtenci&oacute;n del contexto jndi es distinta. Al estar ejectu&aacute;ndose en la misma m&aacute;quina virtual, se puede obtener un contexto con un constructor sin par&aacute;metros:</p>
+<pre class="code">
+Context jndiContext = new InitialContext();
+</pre>
+<p>En segundo lugar, las interfaces locales no declaran la excepci&oacute;n <span class="codefrag">RemoteException</span>, por lo que no es necesario que el cliente capture estas excepciones con un <span class="codefrag">try</span>/<span class="codefrag">catch</span>. El tercer aspecto tiene que ver con el casting del objeto <em>home</em> que obtenemos de JNDI. En el caso de que el objeto <em>home</em> sea remoto, vimos en la sesi&oacute;n anterior que antes de hacer el casting hab&iacute;a que convertirlo en un objeto Java con la llamada al m&eacute;todo <span class="codefrag">PotableRemoteObject.narrow()</span>. En el caso de estar trabajando con interfaces locales no es necesario hacer esta conversi&oacute;n con lo que para hacer el casting bastar&iacute;a con hacer:</p>
+<pre class="code">
+Object ref = jndiContext.lookup("SaludoEJB");
+SaludoHome home = (SaludoHome) ref; 
+</pre>
+<p>Terminamos con unas breves consideraciones que nos pueden ayudar a determinar si conviene usar interfaces locales o remotas:</p>
+<ul>
+
+
+<li>El funcionamiento de los beans usando interfaces locales es m&aacute;s eficiente ya que todas las llamadas al interfaz componente se realiza en la misma JVM y los par&aacute;metros no tienen que ser copiados ni serializados.</li>
+
+
+<li>El uso de interfaces locales modifica la sem&aacute;ntica de la aplicaci&oacute;n, ya que hace que los objetos que se pasan en las llamadas a los beans se pasen por referencia en lugar de por valor.  Una modificaci&oacute;n de ese objeto en la implementaci&oacute;n del m&eacute;todo del bean tendr&iacute;a un efecto lateral en el cliente. Estos efectos laterales son los responsables de multitud de bugs muy dif&iacute;ciles de localizar.</li>
+
+
+<li>El funcionamiento de las interfaces locales s&oacute;lo es posible cuando los clientes de los beans van a estar en la misma JVM que los beans. Por ello, s&oacute;lo podr&iacute;amos aplicarlas a llamadas a los beans desde servlets o p&aacute;ginas JSP, pero no desde clientes independientes implementados con Swing o desde aplicaciones independientes para realizar tareas de integraci&oacute;n.</li>
+
+
+<li>El uso de interfaces locales va a hacer mucho m&aacute;s r&iacute;gida la arquitectura de la aplicaci&oacute;n, ya que obliga a que los beans residan en la misma m&aacute;quina. El uso de interfaces remotas permite una aplicaci&oacute;n distribuida en distintas m&aacute;quinas, lo que facilita la posible aplicaci&oacute;n de t&eacute;cnicas de escalabilidad de la aplicaci&oacute;n basadas en el clustering de contenedores EJB.</li>
+
+
+<li>El uso de interfaces locales permite en los beans de entidad usar relaciones entre beans gestionadas por el contenedor, cosa que no es posible cuando se usan interfaces remotas.</li>
+
+
+</ul>
+</div>
+
+
+<a name="N101FF"></a><a name="Las+anotaciones+BEA+WebLogic+para+EJB+2.1"></a>
+<h2 class="underlined_10">Las anotaciones BEA WebLogic para EJB 2.1</h2>
+<div class="section">
+<p>WebLogic permite, ya en la versi&oacute;n 2.1, el uso de anotaciones propias en el fichero de implementaci&oacute;n del enterprise bean. Estas anotaciones son procesdas por las herramientas de despliegue de WebLogic y el EJB se construye de forma autom&aacute;tica a partir de ellas. La especificaci&oacute;n EJB 3.0 utiliza una estrategia similar, pero con anotaciones est&aacute;ndar. </p>
+<p>Pasar de la forma de trabajar con WebLogic a la especificaci&oacute;n 3.0 es inmediato.</p>
+<a name="N1020B"></a><a name="Ejemplo"></a>
+<h3 class="underlined_5">Ejemplo</h3>
+<p>A continuaci&oacute;n listamos el ejemplo completo de la implementaci&oacute;n con las anotaciones de WebLogic de un bean de sesi&oacute;n que devuelve un saludo (ver los ejercicios).</p>
+<p>En el ejemplo se utilizan las anotaciones <span class="codefrag">@Session()</span>, <span class="codefrag">@JndiName()</span>, <span class="codefrag">@FileGeneration()</span>, <span class="codefrag">@RemoteMethod()</span> y <span class="codefrag">@LocalMethod()</span>.</p>
+<pre class="code">package es.ua.jtech.ejb.beans;
+
+import java.util.ArrayList;
+import java.util.Date;
+
+import javax.ejb.SessionBean;
+import weblogic.ejb.GenericSessionBean;
+import weblogic.ejbgen.Session;
+import weblogic.ejbgen.JndiName;
+import weblogic.ejbgen.FileGeneration;
+import weblogic.ejbgen.Constants;
+import weblogic.ejbgen.RemoteMethod;
+import weblogic.ejbgen.LocalMethod;
+
+@Session(ejbName = "SaludoBean")
+@JndiName(remote = "SaludoBean", local = "SaludoBeanLocal")
+@FileGeneration(remoteClass = Constants.Bool.TRUE, 
+                remoteHome = Constants.Bool.TRUE, 
+                localClass = Constants.Bool.TRUE, 
+                localHome = Constants.Bool.TRUE, 
+                remoteClassName = "Saludo", 
+                remoteHomeName = "SaludoHome", 
+                localHomeName = "SaludoLocalHome", 
+                localClassName = "SaludoLocal")
+public class SaludoBean extends GenericSessionBean implements SessionBean {
+
+   private static final long serialVersionUID = 1L;
+   private String[] saludos = { "Hola, que tal?", "Cuanto tiempo sin verte",
+            "Que te cuentas?", "Me alegro de volver a verte"};
+
+   public void ejbCreate() {
+   }
+
+    @RemoteMethod()
+    @LocalMethod()
+    public String saluda() {
+        int random = (int) (Math.random() * saludos.length);
+        return saludos[random];
+    }
+    
+    @RemoteMethod()
+    @LocalMethod()
+    public SaludoTO getSaludo(int numDatos) {
+        int random = (int) (Math.random() * saludos.length);
+        String saludo = saludos[random];
+        
+        Date fecha = new Date();
+        ArrayList&lt;Integer&gt; datos = new ArrayList&lt;Integer&gt;();
+        
+        for (int i=0;i&lt;numDatos;i++){
+            datos.add(i);
+        }
+        
+        SaludoTO miSaludo = new SaludoTO(saludo,fecha,datos);
+        return miSaludo;
+    }
+}</pre>
+<a name="N1022B"></a><a name="Especificaci%C3%B3n+detallada"></a>
+<h3 class="underlined_5">Especificaci&oacute;n detallada</h3>
+<a name="N10231"></a><a name="%40FileGeneration"></a>
+<h4>@FileGeneration</h4>
+<p>La anotaci&oacute;n @FileGeneration permite controlar las interfaces y clases generadas a partir de la clase de implementaci&oacute;n. En ella se especifican elementos como los nombres de las clases de interfaz y home (y de una clase <em>valor</em> que permite implementar un <em>Value Object</em> a partir de la especificaci&oacute;n). Su definici&oacute;n completa es la siguiente:</p>
+<p>
+<strong>Target</strong>: Class</p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+
+<tr>
+
+<th colspan="1" rowspan="1">Atributo</th>
+<th colspan="1" rowspan="1">Descripci&oacute;n</th>
+<th colspan="1" rowspan="1">Tipo de dato</th>
+<th colspan="1" rowspan="1">&iquest;Requerido?</th>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">remoteClassName</span></td>
+<td colspan="1" rowspan="1">The name of the remote class to be generated. The default value for this attribute is UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">String</span></td>
+<td colspan="1" rowspan="1">No</td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">remotePackage</span></td>
+<td colspan="1" rowspan="1">The package for the remote interface.
+The default value for this attribute is UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">String</span></td>
+<td colspan="1" rowspan="1">No</td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">valueClass</span></td>
+<td colspan="1" rowspan="1">Specifies whether to generate the value class for this EJB.
+See Constants.Bool for the list of valid values for this attribute.
+The default value is Constants.Bool.UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">Enum (Constants.Bool)</span></td>
+<td colspan="1" rowspan="1">No</td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">valueClassName</span></td>
+<td colspan="1" rowspan="1">The name of the value class to be generated.
+The default value for this attribute is UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">String</span></td>
+<td colspan="1" rowspan="1">No</td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">localClassName</span></td>
+<td colspan="1" rowspan="1">The name of the local class to be generated.
+The default value of this attribute is UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">String</span></td>
+<td colspan="1" rowspan="1">No</td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">localPackage</span></td>
+<td colspan="1" rowspan="1">The package for the local interface.
+The default value for this attribute is UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">String</span></td>
+<td colspan="1" rowspan="1">No</td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">remoteHome</span></td>
+<td colspan="1" rowspan="1">Specifies whether to generate the remote home interface for this EJB.
+See Constants.Bool for the list of valid values for this attribute.
+The default value is Constants.Bool.UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">Enum (Constants.Bool)</span></td>
+<td colspan="1" rowspan="1">No</td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">localHomePackage</span></td>
+<td colspan="1" rowspan="1">The package for the local home interface.
+The default value for this attribute is UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">String</span></td>
+<td colspan="1" rowspan="1">No</td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">remoteHomePackage</span></td>
+<td colspan="1" rowspan="1">The package for the remote home interface.
+The default value for this attribute is UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">String</span></td>
+<td colspan="1" rowspan="1">No</td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">remoteClass</span></td>
+<td colspan="1" rowspan="1">Specifies whether to generate the remote interface for this EJB.
+See Constants.Bool for the list of valid values for this attribute.
+The default value is Constants.Bool.UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">Enum (Constants.Bool)</span></td>
+<td colspan="1" rowspan="1">No</td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">localHomeName</span></td>
+<td colspan="1" rowspan="1">The name of the local home class to be generated.
+The default value for this attribute is UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">String</span></td>
+<td colspan="1" rowspan="1">No</td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">localHome</span></td>
+<td colspan="1" rowspan="1">Whether to generate the local home interface for this EJB.
+See Constants.Bool for the list of valid values for this attribute.
+The default value is Constants.Bool.UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">Enum (Constants.Bool)</span></td>
+<td colspan="1" rowspan="1">No</td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">remoteHomeName</span></td>
+<td colspan="1" rowspan="1">The name of the remote home class to be generated.
+The default value for this attribute is UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">String</span></td>
+<td colspan="1" rowspan="1">No</td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">localClass</span></td>
+<td colspan="1" rowspan="1">Whether to generate the local interface for this EJB.
+See Constants.Bool for the list of valid values for this attribute.
+The default value is Constants.Bool.UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">Enum (Constants.Bool)</span></td>
+<td colspan="1" rowspan="1">No</td>
+
+</tr>
+
+</table>
+<a name="N103BE"></a><a name="%40JndiName"></a>
+<h4>@JndiName</h4>
+<p>La anotaci&oacute;n @JndiName permite especificar el nombre JNDI remoto y local del bean.</p>
+<p>
+<strong>Target</strong>: Class</p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+
+<tr>
+
+<th colspan="1" rowspan="1">Atributo</th>
+<th colspan="1" rowspan="1">Descripci&oacute;n</th>
+<th colspan="1" rowspan="1">Tipo de dato</th>
+<th colspan="1" rowspan="1">&iquest;Requerido?</th>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">local</span></td>
+<td colspan="1" rowspan="1">Specifies the local JNDI name of this EJB. If a local JNDI name is not specified, no local interfaces will be generated.
+The default value of this attribute is UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">String</span></td>
+<td colspan="1" rowspan="1">No</td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">remote</span></td>
+<td colspan="1" rowspan="1">Specifies the remote JNDI name of this EJB. If a remote JNDI name is not specified, no remote interfaces will be generated.
+The default value of this attribute is UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">String</span></td>
+<td colspan="1" rowspan="1">No</td>
+
+</tr>
+
+</table>
+<a name="N10419"></a><a name="%40LocalHomeMethod"></a>
+<h4>@LocalHomeMethod</h4>
+<p>La anotaci&oacute;n @LocalHomeMethod se aplica a los m&eacute;todos del bean que se quieran incluir en la interfaz Home local del bean (normalmente m&eacute;todos de creaci&oacute;n y b&uacute;squeda en los beans de entidad). Algunos de los atributos definen caracter&iacute;sticas del bean que veremos m&aacute;s adelante.</p>
+<p>
+<strong>Target</strong>: Method</p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+
+<th colspan="1" rowspan="1">Atributo</th>
+<th colspan="1" rowspan="1">Descripci&oacute;n</th>
+<th colspan="1" rowspan="1">Tipo de dato</th>
+<th colspan="1" rowspan="1">&iquest;Requerido?</th>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">orderingNumber</span></td>
+<td colspan="1" rowspan="1">Specifies the number where this method must appear in the generated class.
+The default value of this attribute is UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">String</span></td>
+<td colspan="1" rowspan="1">No.</td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">isolationLevel</span></td>
+<td colspan="1" rowspan="1">Specifies the type of transaction isolation for this method.
+See Constants.IsolationLevel for valid values for this attribute.
+The default value is Constants.IsolationLevel.UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">Enum (Constants.IsolationLevel)</span></td>
+<td colspan="1" rowspan="1">No.</td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">transactionAttribute</span></td>
+<td colspan="1" rowspan="1">Specifies the transaction attribute for this local method. If not specified, the default transaction attribute will be used. Methods with this tag will be generated on the Local class.
+See Constants.TransactionAttribute for valid values for this attribute.
+The default value is Constants.TransactionAttribute.UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">Enum (Constants.TransactionAttribute)</span></td>
+<td colspan="1" rowspan="1">No</td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">roles</span></td>
+<td colspan="1" rowspan="1">Defines a comma-separated list of roles that are allowed to invoke this method.
+The default value of this attribute is UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">String</span></td>
+<td colspan="1" rowspan="1">No</td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">isIdempotent</span></td>
+<td colspan="1" rowspan="1">Sets whether this method is idempotent.
+See Constants.Bool for valid values for this attribute.
+The default value is Constants.Bool.UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">Enum (Constants.Bool)</span></td>
+<td colspan="1" rowspan="1">No</td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">retryCount</span></td>
+<td colspan="1" rowspan="1">The number of retries for this method on a rollback.
+The default value of this attribute is 0.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">int</span></td>
+<td colspan="1" rowspan="1">No</td>
+
+</tr>
+
+</table>
+<a name="N104D8"></a><a name="%40LocalMethod"></a>
+<h4>@LocalMethod</h4>
+<p>La anotaci&oacute;n @LocalMethod se aplica a los m&eacute;todos del bean que a los que se desee dotar de acceso local. La especificaci&oacute;n completa de la anotaci&oacute;n es la siguiente:</p>
+<p>
+<strong>Target</strong>: Method</p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+
+<tr>
+
+<th colspan="1" rowspan="1">Atributo</th>
+<th colspan="1" rowspan="1">Descripci&oacute;n</th>
+<th colspan="1" rowspan="1">Tipo de dato</th>
+<th colspan="1" rowspan="1">&iquest;Requerido?</th>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">orderingNumber</span></td>
+<td colspan="1" rowspan="1">Specifies the number where this method must appear in the generated class.
+The default value of this attribute is UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">String</span></td>
+<td colspan="1" rowspan="1">No.</td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">isolationLevel</span></td>
+<td colspan="1" rowspan="1">Specifies the type of transaction isolation for this method.
+See Constants.IsolationLevel for valid values for this attribute.
+The default value is Constants.IsolationLevel.UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">Enum (Constants.IsolationLevel)</span></td>
+<td colspan="1" rowspan="1">No.</td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">transactionAttribute</span></td>
+<td colspan="1" rowspan="1">Specifies the transaction attribute for this local method. If not specified, the default transaction attribute will be used. Methods with this tag will be generated on the Local class.
+See Constants.TransactionAttribute for valid values for this attribute.
+The default value is Constants.TransactionAttribute.UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">Enum (Constants.TransactionAttribute)</span></td>
+<td colspan="1" rowspan="1">No</td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">roles</span></td>
+<td colspan="1" rowspan="1">Defines a comma-separated list of roles that are allowed to invoke this method.
+The default value of this attribute is UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">String</span></td>
+<td colspan="1" rowspan="1">No</td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">isIdempotent</span></td>
+<td colspan="1" rowspan="1">Sets whether this method is idempotent.
+See Constants.Bool for valid values for this attribute.
+The default value is Constants.Bool.UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">Enum (Constants.Bool)</span></td>
+<td colspan="1" rowspan="1">No</td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">retryCount</span></td>
+<td colspan="1" rowspan="1">The number of retries for this method on a rollback.
+The default value of this attribute is 0.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">int</span></td>
+<td colspan="1" rowspan="1">No</td>
+
+</tr>
+
+</table>
+<a name="N10597"></a><a name="%40RemoteHomeMethod"></a>
+<h4>@RemoteHomeMethod</h4>
+<p>La anotaci&oacute;n @RemoteHomeMethod permite definir un m&eacute;todo como perteneciente a la interfaz home remota (normalmente m&eacute;todos de creaci&oacute;n o de b&uacute;squeda en los EJB de entidad) y configurar caracter&iacute;sticas propias de WebLogic.</p>
+<p>
+<strong>Target</strong>: Method</p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+
+<tr>
+
+<th colspan="1" rowspan="1">Atributo</th>
+<th colspan="1" rowspan="1">Descripci&oacute;n</th>
+<th colspan="1" rowspan="1">Tipo de dato</th>
+<th colspan="1" rowspan="1">&iquest;Requerido?</th>
+
+</tr>
+
+
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">orderingNumber</span></td>
+<td colspan="1" rowspan="1">Specifies the number where this method must appear in the generated class.
+The default value of this attribute is UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">String</span></td>
+<td colspan="1" rowspan="1">No.</td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">isolationLevel</span></td>
+<td colspan="1" rowspan="1">Specifies the type of transaction isolation for this method.
+See Constants.IsolationLevel for valid values for this attribute.
+The default value is Constants.IsolationLevel.UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">Enum (Constants.IsolationLevel)</span></td>
+<td colspan="1" rowspan="1">No.</td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">transactionAttribute</span></td>
+<td colspan="1" rowspan="1">Specifies the transaction attribute for this remote method. If not specified, the default transaction attribute will be used. Methods with this tag will be generated on the Remote class.
+See Constants.TransactionAttribute for valid values for this attribute.
+The default value is Constants.TransactionAttribute.UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">Enum (Constants.TransactionAttribute)</span></td>
+<td colspan="1" rowspan="1">No</td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">roles</span></td>
+<td colspan="1" rowspan="1">Defines a comma-separated list of roles that are allowed to invoke this method.
+The default value of this attribute is UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">String</span></td>
+<td colspan="1" rowspan="1">No</td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">isIdempotent</span></td>
+<td colspan="1" rowspan="1">Sets whether this method is idempotent.
+See Constants.Bool for valid values for this attribute.
+The default value is Constants.Bool.UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">Enum (Constants.Bool)</span></td>
+<td colspan="1" rowspan="1">No</td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">retryCount</span></td>
+<td colspan="1" rowspan="1">The number of retries for this method on a rollback.
+The default value of this attribute is 0.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">int</span></td>
+<td colspan="1" rowspan="1">No</td>
+
+</tr>
+
+
+</table>
+<a name="N10656"></a><a name="%40RemoteMethod"></a>
+<h4>@RemoteMethod</h4>
+<p>La anotaci&oacute;n @RemoteMethod permite definir un m&eacute;todo del bean como remoto y configurar las caracter&iacute;sticas de acceso al mismo.</p>
+<p>
+<strong>Target</strong>: Method</p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+
+<th colspan="1" rowspan="1">Atributo</th>
+<th colspan="1" rowspan="1">Descripci&oacute;n</th>
+<th colspan="1" rowspan="1">Tipo de dato</th>
+<th colspan="1" rowspan="1">&iquest;Requerido?</th>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">orderingNumber</span></td>
+<td colspan="1" rowspan="1">Specifies the number where this method must appear in the generated class.
+The default value of this attribute is UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">String</span></td>
+<td colspan="1" rowspan="1">No.</td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">isolationLevel</span></td>
+<td colspan="1" rowspan="1">Specifies the type of transaction isolation for this method.
+See Constants.IsolationLevel for valid values for this attribute.
+The default value is Constants.IsolationLevel.UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">Enum (Constants.IsolationLevel)</span></td>
+<td colspan="1" rowspan="1">No. </td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">transactionAttribute</span></td>
+<td colspan="1" rowspan="1">Specifies the transaction attribute for this remote method. If not specified, the default transaction attribute will be used. Methods with this tag will be generated on the Remote class.
+See Constants.TransactionAttribute for valid values for this attribute.
+The default value is Constants.TransactionAttribute.UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">Enum (Constants.TransactionAttribute)</span></td>
+<td colspan="1" rowspan="1">No </td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">roles</span></td>
+<td colspan="1" rowspan="1">Defines a comma-separated list of roles that are allowed to invoke this method.
+The default value of this attribute is UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">String</span></td>
+<td colspan="1" rowspan="1">No </td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">isIdempotent</span></td>
+<td colspan="1" rowspan="1">Sets whether this method is idempotent.
+See Constants.Bool for valid values for this attribute.
+The default value is Constants.Bool.UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">Enum (Constants.Bool)</span></td>
+<td colspan="1" rowspan="1">No </td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">retryCount</span></td>
+<td colspan="1" rowspan="1">The number of retries for this method on a rollback.
+The default value of this attribute is 0.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">int</span></td>
+<td colspan="1" rowspan="1">No</td>
+
+</tr>
+
+
+</table>
+<a name="N10715"></a><a name="%40Session"></a>
+<h4>@Session</h4>
+<p>La anotaci&oacute;n @Session permite especificar las caracter&iacute;sticas del EJB relacionadas con su car&aacute;cter de sesi&oacute;n. Muchas de las caracter&iacute;sticas son espec&iacute;ficas del servidor de aplicaciones WebLogic y se usan para generar el fichero de descriptor de despliegue <span class="codefrag">weblogic-ejb-jar.xml</span>.</p>
+<p>
+<strong>Target</strong>: Class</p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+
+<tr>
+
+<th colspan="1" rowspan="1">Atributo</th>
+<th colspan="1" rowspan="1">Descripci&oacute;n</th>
+<th colspan="1" rowspan="1">Tipo de dato</th>
+<th colspan="1" rowspan="1">&iquest;Requerido?</th>
+
+</tr> 
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">ejbName</span></td>
+<td colspan="1" rowspan="1">Names this session bean.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">String</span></td>
+<td colspan="1" rowspan="1">Yes </td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">isClusterable</span></td>
+<td colspan="1" rowspan="1">Sets whether this bean is clusterable.
+See Constants.Bool for valid values for this attribute.
+The default value is Constants.Bool.UNSPECIFIED</td>
+<td colspan="1" rowspan="1"><span class="codefrag">Enum (Constants.Bool)</span></td>
+<td colspan="1" rowspan="1">No </td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">replicationType</span></td>
+<td colspan="1" rowspan="1">Specifies how to replicate stateful session beans in a cluster.
+Valid values for this attribute are:
+Session.ReplicationType.UNSPECIFIED
+Session.ReplicationType.IN_MEMORY
+Session.ReplicationType.NONE
+The default value Session.ReplicationType.UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">Enum</span></td>
+<td colspan="1" rowspan="1">No </td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">clientsOnSameServer</span></td>
+<td colspan="1" rowspan="1">Specifies whether the clients are colocated with the EJB on the same server.
+See Constants.Bool for valid values for this attribute.
+The default value is Constants.Bool.UNSPECIFIED</td>
+<td colspan="1" rowspan="1"><span class="codefrag">Enum (Constants.Bool)</span></td>
+<td colspan="1" rowspan="1">No </td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">serviceEndpoint</span></td>
+<td colspan="1" rowspan="1">The fully-qualified name of the enterprise beans web service endpoint interface.
+The default value of this attribute is UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">String</span></td>
+<td colspan="1" rowspan="1">No </td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">useCallerIdentity</span></td>
+<td colspan="1" rowspan="1">Specifies whether this EJB uses callers identity.
+See Constants.Bool for valid values for this attribute.
+The default value is Constants.Bool.UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">Enum (Constants.Bool)</span></td>
+<td colspan="1" rowspan="1">No </td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">persistentStoreDir</span></td>
+<td colspan="1" rowspan="1">Specifies the directory in which to store the passivated beans.
+The default value of this attribute is UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">String</span></td>
+<td colspan="1" rowspan="1">No </td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">callRouterClassName</span></td>
+<td colspan="1" rowspan="1">Gives class name to be used for routing home method calls.
+The default value of this attribute is UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">String</span></td>
+<td colspan="1" rowspan="1">No </td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">defaultTransaction</span></td>
+<td colspan="1" rowspan="1">Specifies thetransaction attribute to be applied to all methods that do not have a specific transaction attribute setting.
+See Constants.TransactionAttribute for valid values for this attribute.
+The default value is Constants.TransactionAttribute.UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">Enum (Constants.TransactionAttribute)</span></td>
+<td colspan="1" rowspan="1">No </td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">methodsAreIdempotent</span></td>
+<td colspan="1" rowspan="1">Specifies whether the methods for this stateless session bean are idempotent or not.
+See Constants.Bool for valid values for this attribute.
+The default value is Constants.Bool.UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">Enum (Constants.Bool)</span></td>
+<td colspan="1" rowspan="1">No </td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">runAsIdentityPrincipal</span></td>
+<td colspan="1" rowspan="1">Deprecated. Use runAsPrincipalName instead.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">String</span></td>
+<td colspan="1" rowspan="1">No </td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">runAsPrincipalName</span></td>
+<td colspan="1" rowspan="1">Gives the name of the principal in case the role maps to several principals.
+The default value for this attribute is UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">String</span></td>
+<td colspan="1" rowspan="1">No </td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">enableCallByReference</span></td>
+<td colspan="1" rowspan="1">Specifies whether the container will call this EJB by reference.
+See Constants.Bool for valid values for this attribute.
+The default value is Constants.Bool.UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">Enum (Constants.Bool)</span></td>
+<td colspan="1" rowspan="1">No </td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">dispatchPolicy</span></td>
+<td colspan="1" rowspan="1">Specifies the dispatch policy queue for this bean.
+The default value of this attribute is UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">String</span></td>
+<td colspan="1" rowspan="1">No </td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">remoteClientTimeout</span></td>
+<td colspan="1" rowspan="1">Specifies the length of time that a remote RMI client will wait before it will time out.
+The default value of this attribute is UNSPECIFIED</td>
+<td colspan="1" rowspan="1"><span class="codefrag">String</span></td>
+<td colspan="1" rowspan="1">No </td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">passivateAsPrincipalName</span></td>
+<td colspan="1" rowspan="1">Names the principal to be used when ejbPassivate would otherwise run with an anonymous principal.
+The default value of this attribute is UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">String</span></td>
+<td colspan="1" rowspan="1">No </td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">maxBeansInCache</span></td>
+<td colspan="1" rowspan="1">Specifies the maximum number of beans in the cache.
+The default value of this attribute is UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">String</span></td>
+<td colspan="1" rowspan="1">No </td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">initialBeansInFreePool</span></td>
+<td colspan="1" rowspan="1">Specifies the initial number of beans in the free pool.
+The default value of this attribute is UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">String</span></td>
+<td colspan="1" rowspan="1">No </td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">allowRemoveDuringTransaction</span></td>
+<td colspan="1" rowspan="1">Specifies whether remove() can be invoked during a transaction.
+See Constants.Bool for valid values for this attribute.
+The default value is Constants.Bool.UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">Enum (Constants.Bool)</span></td>
+<td colspan="1" rowspan="1">No </td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">idleTimeoutSeconds</span></td>
+<td colspan="1" rowspan="1">Specifies the maximum duration an EJB remains cached.
+The default value of this attribute is UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">String</span></td>
+<td colspan="1" rowspan="1">No </td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">type</span></td>
+<td colspan="1" rowspan="1">Specifies the type of the Session bean. If this attribute is not specified, EJBGen will guess the right type by looking at the ejbCreate() methods on your class.
+Valid values for this attribute are:
+Session.SessionType.UNSPECIFIED
+Session.SessionType.STATELESS
+Session.SessionType.STATEFUL
+The default value Session.SessionType.UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">Enum</span></td>
+<td colspan="1" rowspan="1">No </td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">removeAsPrincipalName</span></td>
+<td colspan="1" rowspan="1">Names the principal to be used when ejbRemove would otherwise run with an anonymous principal.
+The default value of this attribute is UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">String</span></td>
+<td colspan="1" rowspan="1">No </td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">transTimeoutSeconds</span></td>
+<td colspan="1" rowspan="1">Specifies the transaction timeout (in seconds).
+The default value of this attribute is UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">String</span></td>
+<td colspan="1" rowspan="1">No </td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">transactionType</span></td>
+<td colspan="1" rowspan="1">Specifies who manages the transactions for this EJB.
+Valid values for this attribute are:
+Session.SessionTransactionType.UNSPECIFIED
+Session.SessionTransactionType.BEAN
+Session.SessionTransactionType.CONTAINER
+The default value Session.SessionTransactionType.UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">Enum</span></td>
+<td colspan="1" rowspan="1">No </td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">allowConcurrentCalls</span></td>
+<td colspan="1" rowspan="1">Specifies whether to allow concurrent calls on that EJB.
+See Constants.Bool for valid values for this attribute.
+The default value is Constants.Bool.UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">Enum (Constants.Bool)</span></td>
+<td colspan="1" rowspan="1">No </td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">maxBeansInFreePool</span></td>
+<td colspan="1" rowspan="1">Specifies the maximum number of beans in the free pool.
+The default value of this attribute is UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">String</span></td>
+<td colspan="1" rowspan="1">No </td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">sessionTimeoutSeconds</span></td>
+<td colspan="1" rowspan="1">Specifies the number of seconds an EJB stays alive before being passivated.
+The default value of this attribute is UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">String</span></td>
+<td colspan="1" rowspan="1">No </td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">beanLoadAlgorithm</span></td>
+<td colspan="1" rowspan="1">Specifies the algorithm to be used for load-balancing among replicas of this bean.
+The default value of this attribute is UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">String</span></td>
+<td colspan="1" rowspan="1">No </td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">homeLoadAlgorithm</span></td>
+<td colspan="1" rowspan="1">Specifies the algorithm to use for load-balancing between replicas of this home.
+See Constants.HomeLoadAlgorithm for valid values for this attribute.
+The default value is Constants.HomeLoadAlgorithm.UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">Enum (Constants.HomeLoadAlgorithm)</span></td>
+<td colspan="1" rowspan="1">No </td>
+
+</tr>
+
+
+<tr> 
+
+<td colspan="1" rowspan="1"><span class="codefrag">cacheType</span></td>
+<td colspan="1" rowspan="1">Specifies the type of the cache for this stateful Session bean.
+Valid values for this attribute are:
+Session.CacheType.UNSPECIFIED
+Session.CacheType.N_R_U
+Session.CacheType.L_R_U
+The default value Session.CacheType.UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">Enum</span></td>
+<td colspan="1" rowspan="1">No </td>
+
+</tr>
+
+
+<tr> 
+
+<td colspan="1" rowspan="1"><span class="codefrag">runAs</span></td>
+<td colspan="1" rowspan="1">Specifies the role-name for this EJB.
+The default value of this attribute is UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">String</span></td>
+<td colspan="1" rowspan="1">No </td>
+
+</tr>
+
+
+<tr> 
+
+<td colspan="1" rowspan="1"><span class="codefrag">homeIsClusterable</span></td>
+<td colspan="1" rowspan="1">Specifies whether this bean can be deployed from multiple servers in a cluster.
+See Constants.Bool for valid values for this attribute.
+The default value is Constants.Bool.UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">Enum (Constants.Bool)</span></td>
+<td colspan="1" rowspan="1">No </td>
+
+</tr>
+
+
+<tr>
+
+<td colspan="1" rowspan="1"><span class="codefrag">homeCallRouterClassName</span></td>
+<td colspan="1" rowspan="1">Names class to be used for routing home method calls.
+The default value of this attribute is UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">String</span></td>
+<td colspan="1" rowspan="1">No </td>
+
+</tr>
+
+
+<tr> 
+
+<td colspan="1" rowspan="1"><span class="codefrag">createAsPrincipalName</span></td>
+<td colspan="1" rowspan="1">Names the principal to be used when ejbCreate would otherwise run with an anonymous principal.
+The default value of this attribute is UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">String</span></td>
+<td colspan="1" rowspan="1">No </td>
+
+</tr>
+
+
+<tr> 
+
+<td colspan="1" rowspan="1"><span class="codefrag">networkAccessPoint</span></td>
+<td colspan="1" rowspan="1">Assigns a custom network channel that the EJB will use for network communications. A network channel defines a set of connection attributes.
+The default value of this attribute is UNSPECIFIED.</td>
+<td colspan="1" rowspan="1"><span class="codefrag">String</span></td>
+<td colspan="1" rowspan="1">No</td>
+
+</tr>
+
+
+</table>
+</div>
+
+
+<p class="pageBreakAfter"></p>
+
+</div>
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+        Copyright &copy;
+         2006-2007 Depto. CCIA</div>
+</div>
+</body>
+</html>

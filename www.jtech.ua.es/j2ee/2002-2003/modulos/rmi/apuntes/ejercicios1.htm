@@ -1,0 +1,58 @@
+<html>
+<head>
+<title>Temas 1-2-3: RMI (Ejercicios)</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<h1>Ejercicios de RMI: conceptos básicos</h1>
+<ol>
+  <li>Comprobar que el ejemplo proporcionado en el Tema 1 (apartado 1.4) funciona 
+    en una JVM, en dos JVMs del mismo ordenardor, y en 2 o m&aacute;s JVMs en 
+    ordenadores distintos. Los pasos a seguir son los siguientes: 
+    <ul>
+      <li>Definir en el fichero <code>RemoteEcho.Java</code> el interfaz remoto 
+        (se deben importar las clases <code>Java.rmi.Remote</code> y <code>Java.rmi.RemoteException</code>).</li>
+      <li>Implementar el interfaz remoto en el fichero <code>RemoteEchoServer.jav</code>a 
+        (adem&aacute;s de las clases anteriores de deben importar<code> java.rmi.Naming</code> 
+        y <code>java.rmi.server.*</code>).</li>
+      <li>Compilar el interfaz remoto mediante: <code>javac RemoteEcho.java</code></li>
+      <li>Compilar la clase que implementa la interfaz mediante: <code>javac RemoteEchoServer.java</code>. 
+        Debemos asegurarnos que la variable de entorno <code>CLASSPATH</code> 
+        contiene el directorio en donde est&aacute; el <code>bytecode</code> del 
+        interfaz remoto.</li>
+      <li>Obtenemos los ficheros <i>stub</i> y <i>skeleton</i> mediante: <code>rmic 
+        -d . RemoteEchoServer</code></li>
+      <li>Iniciar el servicio de registro de nombres de RMI mediante <code>rmiregistry 
+        &amp; </code></li>
+      <li>Ejecutamos el servidor mediante: <br>
+        <code>java -Djava.rmi.server.hostname=<i>IP_host </i>RemoteEchoServer</code></li>
+      <li>Implementar el cliente en el fichero <code>RemoteEchoClient</code>, 
+        y compilar la clase del cliente: <code>javac RemoteEchoClient</code>. 
+        Debemos asegurarnos que la variable de entorno <code>CLASSPATH</code> 
+        contiene el directorio en donde est&aacute; el <code>bytecode</code> del 
+        interfaz remoto.</li>
+      <li>Ejecutamos el cliente: <code>java RemoteEchoClient</code>.</li>
+    </ul>
+    <p>&nbsp;</p>
+    
+  </li>
+  <li> 
+    <p>Siguiendo las indicaciones anteriores para crear el servidor remoto y el 
+      cliente RMI. Implementar un servidor remoto denominado <code>RemoteInfoServer</code> 
+      (que informa de los n&uacute;meros ganadores en un sorteo, as&iacute; como 
+      de los premios obtenidos), con los m&eacute;todos remotos <code>obtener_numeros()</code> 
+      y <code>obtener_premios()</code>. El m&eacute;todo obtener n&uacute;meros 
+      devuelve un objeto <code>numeros</code> formado por 5 enteros del 1 al 9999 
+      correspondientes a los n&uacute;meros del sorteo, por orden de importancia, 
+      y el m&eacute;todo obtener premios devuelve un objeto <code>premios</code> 
+      formado por 5 cadenas de caracteres con las descripciones de los premios 
+      por orden de n&uacute;mero ganador. Las clases de los objetos numeros y 
+      premios <u>deben implementar su propia serializaci&oacute;n</u>. El cliente, 
+      denominado <code>RemoteClient</code> tiene un par&aacute;metro indicando 
+      si desea saber los numeros o los premios del sorteo.</p>
+  </li>
+</ol>
+</body>
+</html>

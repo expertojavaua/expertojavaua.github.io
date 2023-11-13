@@ -1,0 +1,572 @@
+<html>
+<head>
+<title>Servidores de aplicaciones</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="Author" content="Miguel">
+<link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+</head>
+
+<body>
+<h1>Tema 3: Administraci&oacute;n del servidor de aplicaciones</h1>
+<h2>3.3. Despliegue de aplicaciones</h2>
+<p>Una aplicaci&oacute;n web es un conjunto de recursos en la parte del servidor 
+  que crean una aplicaci&oacute;n interactiva. Estos recursos pueden contener 
+  todos o algunos de los siguientes componentes: servlets, JavaServer Pages, documentos 
+  est&aacute;ticos (p&aacute;ginas HTML, im&aacute;genes, documentos PDF, etc.), 
+  clases, applets y beans en la parte del servidor. Una aplicaci&oacute;n web 
+  se nos puede presentar de dos formas:</p>
+<ul>
+  <li>Un fichero comprimido<i> .war</i> </li>
+  <li>Una estructura de directorios expandida manteniendo la siguiente estructura: 
+    <ul>
+      <li>NombreAplicaci&oacute;n (nombre de la aplicaci&oacute;n y documento 
+        ra&iacute;z de la aplicaci&oacute;n) 
+        <ul>
+          <li>META-INF (informaci&oacute;n para herramientas de archivo)</li>
+          <li>Ficheros .html, .jsp</li>
+          <li>WEB-INF (directorio que contiene ficheros que no son servidos a 
+            clientes) 
+            <ul>
+              <li>classes (directorio que contiene clases, servlets y applets)</li>
+              <li>lib (directorio con ficheros <i>.jar</i> usados en la aplicaci&oacute;n)</li>
+              <li>web.xml (fichero descriptor de despliegue de la aplicaci&oacute;n)</li>
+              <li>weblogic.xml (fichero descriptor para mapear recursos propios 
+                de Weblogic)</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+<h3>3.3.1. Despliegue de una aplicaci&oacute;n en un fichero war</h3>
+<p>Para descargar una aplicaci&oacute;n contenida en un fichero <i>war </i>se 
+  procede de la siguiente manera. Primero pinchamos en el icono de <i>Web applications</i>. 
+  Nos aparecer&aacute; una figura como la siguiente en la cual se nos muestra 
+  las aplicaciones disponibles y se nos permite configurar nuevas. Vamos a pinchar 
+  en <i>Configure a new Web Application</i>.</p>
+<center>
+  <img src="administracion/administracion10.jpg"> 
+</center>
+<p>El primer paso es localizar el fichero que contendr&aacute; nuestra aplicaci&oacute;n. 
+  Hablamos de ficheros <i>.war</i> pero podemos desplegar cualquiera de los tipos 
+  mostrados: <i>.jar, .war, .rar </i>y<i> .ear</i>. Pinchamos en el paso 1: <i>upload 
+  it through your browser</i>. </p>
+<center>
+  <img src="administracion/administracion11.jpg"> 
+</center>
+<p>Nos aparece la siguiente figura en la que se nos permite buscar el fichero 
+  en nuestra m&aacute;quina local. Seleccionamos el fichero y pinchamos en <i>Upload</i>. 
+</p>
+<center>
+  <img src="administracion/administracion12.jpg"> 
+</center>
+<p>Nos vuelve a aparecer la anterior p&aacute;gina, en la cual debemos realizar 
+  el paso 2 que consiste en seleccionar la aplicaci&oacute;n que queremos desplegar. 
+  Pinchamos en la aplicaci&oacute;n reci&eacute;n descargada.</p>
+<center>
+  <img src="administracion/administracion13.jpg"> 
+</center>
+<p>Pasamos entonces al paso 3. Se nos advierte qu&eacute; fichero estamos configurando 
+  y nos permite asignar la aplicaci&oacute;n a uno o varios servidores o a todo 
+  un cluster. Por &uacute;ltimo le asignamos un nombre a la aplicaci&oacute;n. 
+  Este nombre tiene un car&aacute;cter informativo. Una vez introducidos los datos 
+  pinchamos en <i>Configure and Deploy</i> para que se realice el despliegue.</p>
+<center>
+  <img src="administracion/administracion14.jpg"> 
+</center>
+<p>Una vez hemos pinchado en <i>Configure and Deploy</i> nos aparecer&aacute; 
+  una ventana como la siguiente. Se nos muestra informaci&oacute;n de la actividad 
+  de despliegue. Al cabo de un tiempo nos aparecer&aacute; el resultado del despliegue. 
+  Si hemos conseguido desplegar la aplicaci&oacute;n aparecer&aacute; <i>true</i> 
+  en la columna <i>Deployed</i> del servidor correspondiente. Si ha habido alg&uacute;n 
+  problema podemos consultar el log del servidor correspondiente.</p>
+<center>
+  <img src="administracion/administracion15.jpg">
+</center>
+<p>&nbsp; </p>
+<h3>3.3.1. Despliegue de una aplicaci&oacute;n en un directorio</h3>
+<p>En modo desarrollo y cuando estamos implementando una aplicaci&oacute;n es 
+  normal que tengamos que modificar muy a menudo el c&oacute;digo de la aplicaci&oacute;n. 
+  Por ello es conveniente tener dicha aplicaci&oacute;n en un directorio, no en 
+  un fichero. La aplicaci&oacute;n sin comprimir la podemos dejar en cualquier 
+  directorio del sistema, pero es conveniente dejarla en el directorio <i>applications</i> 
+  del dominio. Dentro de ese directorio dejaremos uno nuevo que contendr&aacute; 
+  nuestra aplicaci&oacute;n. Para configurar esta aplicaci&oacute;n debemos realizar 
+  los siguientes pasos. En el paso que realizamos anteriormente cuando despleg&aacute;bamos 
+  una aplicaci&oacute;n en un fichero, seleccionamos el paso 2 el directorio <i>applications 
+  </i>(que ser&aacute; donde habremos dejado nuestra aplicaci&oacute;n) pinchando 
+  sobre su nombre.</p>
+  <center>
+  <img src="administracion/administracion16.jpg">
+</center>
+<p>Nos aparecer&aacute; el nombre de nuestra aplicaci&oacute;n (<i>faqs</i>) que 
+  es un directorio. Ahora pinchamos en <i>select</i> para seleccionar dicho directorio.</p>
+<center>
+  <img src="administracion/administracion17.jpg">
+</center>
+<p>Ya podemos seguir los pasos vistos en la secci&oacute;n anterior para configurar 
+  la aplicaci&oacute;n (selecci&oacute;n de <i>targets</i>, nombre de la aplicaci&oacute;n, 
+  etc.).</p>
+<p>Una herramienta bastante &uacute;til es el editor del descriptor de la aplicaci&oacute;n. 
+  Nos permite editar el fichero <i>web.xml</i> y modificar los datos all&iacute; 
+  contenidos. Para acceder a esta herramienta pinchamos en el nombre de una aplicaci&oacute;n 
+  y luego pinchamos en el enlace <i>Edit Web Application ...</i> mostrado en la 
+  figura. </p>
+<center>
+  <img src="administracion/administracion19.jpg">
+</center>
+<p>La siguiente figura muestra un ejemplo en la edici&oacute;n de un descriptor.</p>
+<center>
+  <img src="administracion/administracion18.jpg">
+</center>
+
+<p>&nbsp; </p>
+<h2>3.4. Gesti&oacute;n de seguridad</h2>
+<p>En la carpeta <i>Security</i> del applet de la izquierda tenemos todo lo referente 
+  a la gesti&oacute;n de seguridad. Tenemos creado un <i>Realm</i> por defecto 
+  que es el que se utiliza para guardar los usuarios que vamos creando. Podemos 
+  crear nuevos usuarios, grupos y roles. En Weblogic 7.0 la seguridad se maneja 
+  mediante pol&iacute;ticas de seguridad. Las pol&iacute;ticas de seguridad permiten 
+  definir <i>qui&eacute;n</i> tiene acceso a un determinado recurso. Adicionalmente 
+  podemos definir una restricci&oacute;n de tiempo de acceso a un recurso (de 
+  qu&eacute; hora a qu&eacute; hora se tiene acceso a un recurso). Por defecto 
+  un recurso no tiene protecci&oacute;n hasta que el administrador le asigna una 
+  determinada pol&iacute;tica de seguridad. Los recursos a los que se pueden imponer 
+  pol&iacute;ticas de seguridad son: la consola de administraci&oacute;n, recursos 
+  de aplicaci&oacute;n (web, EJB, ear, jar, etc.), JDBC, JNDI, EIS, JMS.</p>
+<center>
+  <img src="administracion/instantanea17.png"> 
+</center>
+<p>Un usuario puede ser una persona o una entidad software (cliente java). El 
+  usuario es &uacute;nico dentro del sistema y se identifica con su nombre y una 
+  contrase&ntilde;a. No existe el usuario invitado (<i>Guest</i>). Puede ser creado 
+  pero se recomienda no hacerlo por riesgo en la seguridad del sistema. Para crear 
+  un nuevo usuario pinchamos en <i>Users</i> y nos aparecer&aacute; una p&aacute;gina 
+  como la de la siguiente figura. Se nos muestra los usuarios creados y tenemos 
+  un enlace para crear un nuevo usuario. Tambi&eacute;n se nos informa de si un 
+  usuario est&aacute; bloqueado y podemos eliminar el usuario.</p>
+<center>
+  <img src="administracion/instantanea18.png"> 
+</center>
+<p>Al pinchar en <i>Configure a new User</i> nos aparece la siguiente figura. 
+  Los datos indicados son el nombre del usuario, una breve descripci&oacute;n 
+  y la contrase&ntilde;a. Una vez introducidos estos datos pinchamos en <i>Create</i>.</p>
+<center>
+  <img src="administracion/instantanea19.png"> 
+</center>
+<p>Una vez creado el usuario podemos asignarlo a un grupo. Un grupo es una agrupaci&oacute;n 
+  de usuarios con alguna caracter&iacute;stica en com&uacute;n. Un usuario puede 
+  pertenecer a m&aacute;s de un grupo. Si asignamos una determinada pol&iacute;tica 
+  de seguridad a un grupo, dicha pol&iacute;tica es asignada a todos los usuarios 
+  del grupo. Por defecto existen seis grupos:</p>
+<ul>
+  <li><b>Users</b>: todos los usuarios identificados pertenecen a este grupo.</li>
+  <li><b>Everyone</b>: incluye el anterior m&aacute;s los usuarios no identificados.</li>
+  <li><b>Administrators</b>: es el grupo que permite administrar el dominio: arrancar 
+    y parar el sistema, visualizar y modificar todos los recursos.</li>
+  <li><b>Deployers</b>: los miembros de este grupo pueden desplegar aplicaciones.</li>
+  <li><b>Monitors</b>: s&oacute;lo se permite la monitorizaci&oacute;n del sistema.</li>
+  <li><b>Operators</b>: permite cualquier operaci&oacute;n con los servidores.</li>
+</ul>
+<p>Al crear un usuario se nos permite asignarlo a un grupo. </p>
+<center>
+  <img src="administracion/instantanea20.png"> 
+</center>
+<p>Tambi&eacute;n podemos crear y configurar nuevos grupos. Para crear un nuevo 
+  grupo pinchamos en el icono <i>Groups</i> y nos aparece la siguiente figura 
+  en la que podemos modificar un grupo ya existente o bien crear uno nuevo pinchando 
+  en <i>Configure a new Group</i>. </p>
+<center>
+  <img src="administracion/instantanea21.png"> 
+</center>
+<p>Damos el nombre y una breve descripci&oacute;n al grupo y pinchamos en <i>Apply</i>. 
+  En la solapa <i>Membership</i> podemos incorporar otros grupos como miembros 
+  de este.</p>
+<center>
+  <img src="administracion/instantanea22.png"> 
+</center>
+<p>El &uacute;ltimo apartado de la seguridad son los roles. Un rol es una asociaci&oacute;n 
+  entre usuarios y recursos que permite establecer qu&eacute; usuario tiene acceso 
+  a qu&eacute; recurso. Un grupo es una agrupaci&oacute;n est&aacute;tica (los 
+  usuarios est&aacute;n agrupados siempre de la misma forma). Un rol es din&aacute;mico, 
+  porque dependiendo de qui&eacute;n est&eacute; accediendo a un recurso y dependiendo 
+  de a qu&eacute; recurso quiera acceder, tendr&aacute; permiso o no. Se recomienda 
+  agrupar usuarios en grupos y crear roles para luego asignar los roles a los 
+  grupos. Por defecto existen los siguientes roles:</p>
+<ul>
+  <li><b>Admin</b>: permite realizar cualquier operaci&oacute;n dentro del sistema: 
+    despliegues, modificar recursos, etc.</li>
+  <li><b>Deployer</b>: permite ver la configuraci&oacute;n del sistema y realizar 
+    despliegues de aplicaciones.</li>
+  <li><b>Operator</b>: permite ver la configuraci&oacute;n del sistema y realizar 
+    operaciones con los servidores.</li>
+  <li><b>Monitor</b>: s&oacute;lo permite visualizar la configuraci&oacute;n de 
+    los servidores.</li>
+  <li><b>Anonymous</b>: es el rol m&aacute;s restrictivo y es asignado a todos 
+    los usuarios.</li>
+</ul>
+<p>Cada uno de estos roles est&aacute; asignado al grupo correspondiente (<i>Admin</i> 
+  al de <i>Administrator</i>, <i>Deployer</i> al de <i>Deployers</i>, etc.). Para 
+  crear un nuevo rol pinchamos en <i>Configure a new role</i>. </p>
+<center>
+  <img src="administracion/instantanea23.png"> 
+</center>
+<center>
+</center>
+<p>&nbsp;</p>
+<p>Las pol&iacute;ticas de seguridad por defecto asociadas a los recursos de WebLogic 
+  se muestran en la siguiente tabla:</p>
+<table width="348" border="0" cellspacing="3">
+  <tr> 
+    <td width="142"><b>Recurso WebLogic</b></td>
+    <td width="196"><b>Pol&iacute;tica de seguridad</b></td>
+  </tr>
+  <tr> 
+    <td width="142">Recursos administrativos</td>
+    <td width="196">Rol <i>Admin</i>, <i>Deployer, Operator, Monitor</i></td>
+  </tr>
+  <tr> 
+    <td width="142">EIS, EJB, JMS, JDBC, JNDI, MBean</td>
+    <td width="196">Grupo <i>Everyone</i></td>
+  </tr>
+  <tr> 
+    <td width="142">Recursos servidor</td>
+    <td width="196">Rol <i>Admin, Operator</i></td>
+  </tr>
+  <tr> 
+    <td width="142">Recursos servicios web</td>
+    <td width="196">Grupo <i>Everyone</i></td>
+  </tr>
+</table>
+<p>WebLogic, en su versi&oacute;n 7.0, sigue manteniendo la asignaci&oacute;n 
+  de seguridad en los ficheros <i>web.xml </i>y<i> weblogic.xml.</i> La secuencia 
+  a seguir para asignar seguridad (restringir el acceso a determinados usuarios) 
+  a un recurso es el siguiente:</p>
+<ul>
+  <li>Declarar un patr&oacute;n URL en el fichero <i>web.xml.</i> </li>
+  <li>Declarar un rol.</li>
+  <li>Asociar el patr&oacute;n con el rol.</li>
+  <li>Mapear el rol con usuarios o grupos en el fichero <i>weblogic.xml</i></li>
+</ul>
+<p>Un ejemplo de la informaci&oacute;n que podemos poner en el fichero <i>web.xml</i> 
+  (adem&aacute;s de la de mapeado utilizada hasta ahora) es la siguiente:</p>
+<pre class="codigo">&lt;security-constraint&gt;
+	&lt;web-resource-collection&gt;
+		&lt;web-resource-name&gt;<b>nombre aplicacion</b>&lt;/web-resource-name&gt;
+		&lt;url-pattern&gt;<b>url a proteger</b>&lt;/url-pattern&gt;
+	&lt;/web-resource-collection&gt;
+ 	&lt;auth-constraint&gt;
+  		&lt;role-name&gt;<b>nombre del rol</b>&lt;/role-name&gt;
+  	&lt;/auth-constraint&gt;
+ 	&lt;user-data-constraint&gt;
+  		&lt;description&gt;SSL not required&lt;/description&gt;
+  		&lt;transport-guarantee&gt;NONE&lt;/transport-guarantee&gt;
+  	&lt;/user-data-constraint&gt;
+&lt;/security-constraint&gt;
+
+&lt;security-role&gt;
+  	&lt;role-name&gt;<b>nombre del rol</b>&lt;/role-name&gt;
+&lt;/security-role&gt;
+&lt;login-config&gt;
+	&lt;auth-method&gt;BASIC&lt;/auth-method&gt;
+&lt;/login-config&gt;</pre>
+<p>En <i>nombre aplicaci&oacute;n</i> debemos poner el nombre de nuestra aplicaci&oacute;n 
+  que queremos proteger. En <i>url a proteger</i> especificamos la url (directorios, 
+  jsp, html, etc.) Por ejemplo, /manager/* proteger&iacute;a todo el directorio 
+  <i>manager</i> de nuestra aplicaci&oacute;n (cualquier fichero por debajo del 
+  directorio). Lo anterior define un recurso web y lo asociamos a un rol. Debemos 
+  especificar el nombre del rol y la etiqueta <i>security-role</i> crea el rol. 
+  La &uacute;ltima etiqueta, <i>login-config</i>, permite especificar el m&eacute;todo 
+  de autentificaci&oacute;n: BASIC pide el nombre de usuario y contrase&ntilde;a 
+  mediante una ventana; FORM permite pedir la autentificaci&oacute;n mediante 
+  un formulario y CLIENT-CERT mediante un certificado.</p>
+<p>Por &uacute;ltimo debemos asociar el rol creado con un grupo o usuario de WebLogic. 
+  Para ello disponemos del fichero <i>weblogic.xml</i>. </p>
+<pre class="codigo">&lt;weblogic-web-app&gt;
+	&lt;security-role-assignment&gt;
+		&lt;role-name&gt;<b>nombre del rol</b>&lt;/role-name&gt;
+		&lt;principal-name&gt;<b>nombre de grupo o usuario</b>&lt;/principal-name&gt;
+	&lt;/security-role-assignment&gt;
+&lt;/weblogic-web-app&gt;
+</pre>
+<p>En <i>nombre del rol</i> pondremos el rol previamente definido en el fichero 
+  <i>web.xml</i>. Como nombre de grupo o usuario debemos poner uno v&aacute;lido 
+  (definido) dentro de WebLogic. </p>
+<h2>3.5. Administraci&oacute;n desde l&iacute;nea de comandos</h2>
+<p>La administraci&oacute;n desde l&iacute;nea de comandos es una herramienta 
+  &uacute;til para el control del sistema. Nos permite realizar varias tareas 
+  de monitorizaci&oacute;n y comprobaci&oacute;n del sistema. Tambi&eacute;n es 
+  &uacute;til en modo producci&oacute;n, pues normalmente se deshabilita la consola 
+  de administraci&oacute;n por motivos de seguridad.</p>
+<p>El comando a ejecutar es el siguiente:</p>
+<pre class="codigo">java -cp $BEA_HOME/weblogic700/server/lib/weblogic.jar weblogic.Admin -url URL 
+   -username usuario -password contrase&ntilde;a COMANDO argumentos</pre>
+<p>El comando no es m&aacute;s que una llamada a la clase <i>weblogic.Admin</i> 
+  que se encuentra en el fichero <i>weblogic.jar</i> proporcionado por BEA. El 
+  par&aacute;metro URL especifica la direcci&oacute;n URL del servidor de administraci&oacute;n 
+  o bien del servidor contra el que vayamos a realizar el comando. Debemos especificar 
+  tambi&eacute;n el puerto en la direcci&oacute;n. El usuario y su contrase&ntilde;a 
+  asociada deben ser v&aacute;lidos para el comando que vamos a ejecutar. Los 
+  posibles comandos a utilizar pueden ser algunos de los siguientes:</p>
+<table width="93%" border="1">
+  <tr> 
+    <td width="20%" valign="top"><b>CONNECT</b></td>
+    <td width="80%">Realiza el especificado n&uacute;mero de conexiones y devuelve 
+      el tiempo (en milisegundos) total y medio de conexi&oacute;n.</td>
+  </tr>
+  <tr> 
+    <td width="20%" valign="top">ejemplo</td>
+    <td width="80%"><i>java weblogic.Admin -url http://localhost:7001 -username 
+      system -password weblogic CONNECT 25</i></td>
+  </tr>
+  <tr> 
+    <td width="20%" valign="top">&nbsp;</td>
+    <td width="80%">&nbsp;</td>
+  </tr>
+  <tr> 
+    <td width="20%" valign="top"><b>FORCESHUTDOWN</b></td>
+    <td width="80%">Termina de forma inmediata un proceso servidor pasado como 
+      argumento. Como URL se suele utilizar la del servidor de administraci&oacute;n.</td>
+  </tr>
+  <tr> 
+    <td width="20%" valign="top">ejemplo</td>
+    <td width="80%"><i>java weblogic.Admin -url http://localhost:7001 -username 
+      system -password weblogic FORCESHUTDOWN Servidor1</i></td>
+  </tr>
+  <tr> 
+    <td width="20%" valign="top">&nbsp;</td>
+    <td width="80%">&nbsp;</td>
+  </tr>
+  <tr> 
+    <td width="20%" valign="top"><b>GETSTATE</b></td>
+    <td width="80%">Devuelve el estado del servidor pasado como argumento. Como 
+      URL se suele utilizar la del servidor de administraci&oacute;n.</td>
+  </tr>
+  <tr> 
+    <td width="20%" valign="top">ejemplo</td>
+    <td width="80%"><i>java weblogic.Admin -url http://localhost:7001 -username 
+      system -password weblogic GETSTATE Servidor1</i></td>
+  </tr>
+  <tr> 
+    <td width="20%" valign="top">&nbsp;</td>
+    <td width="80%">&nbsp;</td>
+  </tr>
+  <tr> 
+    <td width="20%" valign="top"><b>HELP</b></td>
+    <td width="80%">Muestra ayuda de un comando.</td>
+  </tr>
+  <tr> 
+    <td width="20%" valign="top">ejemplo</td>
+    <td width="80%"><i>java weblogic.Admin -url http://localhost:7001 -username 
+      system -password weblogic HELP GETSTATE</i></td>
+  </tr>
+  <tr> 
+    <td width="20%" valign="top">&nbsp;</td>
+    <td width="80%">&nbsp;</td>
+  </tr>
+  <tr> 
+    <td width="20%" valign="top"><b>LICENSES</b></td>
+    <td width="80%">Lista las licencias instaladas en la m&aacute;quina.</td>
+  </tr>
+  <tr> 
+    <td width="20%" valign="top">ejemplo</td>
+    <td width="80%"><i>java weblogic.Admin -url http://localhost:7001 -username 
+      system -password weblogic LICENSES</i></td>
+  </tr>
+  <tr> 
+    <td width="20%" valign="top">&nbsp;</td>
+    <td width="80%">&nbsp;</td>
+  </tr>
+  <tr> 
+    <td width="20%" valign="top"><b>PING</b></td>
+    <td width="80%">Env&iacute;a un mensaje para verificar que un servidor est&aacute; 
+      disponible y aceptando peticiones. Opcionalmente podemos pasarle dos argumentos: 
+      el n&uacute;mero de veces intentos y el tama&ntilde;o de cada paquete.</td>
+  </tr>
+  <tr> 
+    <td width="20%" valign="top">ejemplo</td>
+    <td width="80%"><i>java weblogic.Admin -url http://localhost:7001 -username 
+      system -password weblogic PING 10 1000</i></td>
+  </tr>
+  <tr> 
+    <td width="20%" valign="top">&nbsp;</td>
+    <td width="80%">&nbsp;</td>
+  </tr>
+  <tr> 
+    <td width="20%" valign="top"><b>RESUME</b></td>
+    <td width="80%">Mueve un servidor del estado STANDBY a RUNNING. </td>
+  </tr>
+  <tr> 
+    <td width="20%" valign="top">ejemplo</td>
+    <td width="80%"><i>java weblogic.Admin -url http://localhost:7001 -username 
+      system -password weblogic RESUME Servidor1</i></td>
+  </tr>
+  <tr> 
+    <td width="20%" valign="top">&nbsp;</td>
+    <td width="80%">&nbsp;</td>
+  </tr>
+  <tr> 
+    <td width="20%" valign="top"><b>SERVERLOG</b></td>
+    <td width="80%">Muestra el fichero log de un servidor. Se puede especificar 
+      un intervalo de tiempo a mostrar. En el ejemplo se muestra desde las 14:00 
+      horas del 24 de diciembre a las 10:00 horas del 31 de diciembre.</td>
+  </tr>
+  <tr> 
+    <td width="20%" valign="top">ejemplo</td>
+    <td width="80%"><i>java weblogic.Admin -url http://localhost:7001 -username 
+      system -password weblogic SERVERLOG &quot;2002/12/24 14:00&quot; &quot;2002/12/31 
+      10:00&quot; </i></td>
+  </tr>
+  <tr> 
+    <td width="20%" valign="top">&nbsp;</td>
+    <td width="80%">&nbsp;</td>
+  </tr>
+  <tr> 
+    <td width="20%" valign="top"><b>SHUTDOWN</b></td>
+    <td width="80%">Para la ejecuci&oacute;n de un servidor.</td>
+  </tr>
+  <tr> 
+    <td width="20%" valign="top">ejemplo</td>
+    <td width="80%"><i>java weblogic.Admin -url http://localhost:7001 -username 
+      system -password weblogic SHUTDOWN Servidor1</i></td>
+  </tr>
+  <tr> 
+    <td width="20%" valign="top">&nbsp;</td>
+    <td width="80%">&nbsp;</td>
+  </tr>
+  <tr> 
+    <td width="20%" valign="top"> 
+      <p><b>START</b><br>
+        <b>STARTINSTANDBY</b> </p>
+    </td>
+    <td width="80%">Arranca un servidor si tenemos disponible el Node Manager. 
+      El comando STARTINSTANDBY lo arranca en modo STANDBY</td>
+  </tr>
+  <tr> 
+    <td width="20%" valign="top">ejemplo</td>
+    <td width="80%"><i>java weblogic.Admin -url http://localhost:7001 -username 
+      system -password weblogic START Servidor1</i></td>
+  </tr>
+  <tr> 
+    <td width="20%" valign="top">&nbsp;</td>
+    <td width="80%">&nbsp;</td>
+  </tr>
+  <tr> 
+    <td width="20%" valign="top"><b>VERSION</b></td>
+    <td width="80%">Muestra la versi&oacute;n del software Weblogic.</td>
+  </tr>
+  <tr> 
+    <td width="20%" valign="top">ejemplo</td>
+    <td width="80%"><i>java weblogic.Admin -url http://localhost:7001 -username 
+      system -password weblogic VERSION</i></td>
+  </tr>
+</table>
+<p>Existen otros comandos y utilidades adicionales que se detallan a continuaci&oacute;n. 
+  En todos ellos hace falta incluir el fichero <i>weblogic.jar</i> en el classpath.</p>
+<table width="560" border="1">
+  <tr valign="top"> 
+    <td width="61"><b>dbping</b></td>
+    <td width="483">Realiza una conexi&oacute;n a la base de datos especificada 
+      utilizando una clase de las proporcionadas por WebLogic.</td>
+  </tr>
+  <tr valign="top"> 
+    <td width="61">&nbsp;</td>
+    <td width="483">java utils.dbping ORACLE_THIN system oracle localhost:1521:j2eebd 
+      <p>**** Success!!! ****</p>
+      <p>You can connect to the database in your app using:</p>
+      <p> java.util.Properties props = new java.util.Properties();<br>
+        props.put(&quot;user&quot;, &quot;system&quot;);<br>
+        props.put(&quot;password&quot;, &quot;oracle&quot;);</p>
+    </td>
+  </tr>
+  <tr valign="top"> 
+    <td width="61">&nbsp;</td>
+    <td width="483">&nbsp;</td>
+  </tr>
+  <tr valign="top"> 
+    <td width="61"><b>system</b></td>
+    <td width="483">Obtiene informaci&oacute;n del sistema: la versi&oacute;n 
+      y el desarrollador de Java, el classpath, el nombre, arquitectura y versi&oacute;n 
+      del sistema operativo</td>
+  </tr>
+  <tr valign="top"> 
+    <td width="61">ejemplo</td>
+    <td width="483">java utils.system 
+      <p>* * * * * * * java.version * * * * * * *<br>
+        1.3.1_03<br>
+        * * * * * * * java.vendor * * * * * * *<br>
+        Sun Microsystems Inc.<br>
+        * * * * * * * java.class.path * * * * * * *<br>
+        bea/weblogic700/server/lib/weblogic.jar<br>
+        * * * * * * * os.name * * * * * * *<br>
+        Linux<br>
+        * * * * * * * os.arch * * * * * * *<br>
+        i386<br>
+        * * * * * * * os.version * * * * * * *<br>
+        2.4.18-14</p>
+    </td>
+  </tr>
+  <tr valign="top"> 
+    <td width="61">&nbsp;</td>
+    <td width="483">&nbsp;</td>
+  </tr>
+  <tr valign="top"> 
+    <td width="61"><b>myip</b></td>
+    <td width="483">Obtiene la direcci&oacute;n IP y el nombre DNS de la m&aacute;quina</td>
+  </tr>
+  <tr valign="top"> 
+    <td width="61">ejemplo</td>
+    <td width="483">$ java utils.myip<br>
+      Host rvg7.i3a.ua.es is assigned IP address: 192.168.2.17</td>
+  </tr>
+  <tr valign="top"> 
+    <td width="61">&nbsp;</td>
+    <td width="483">&nbsp;</td>
+  </tr>
+  <tr valign="top"> 
+    <td width="61"><b>Deployer</b></td>
+    <td width="483">Controla el despliegue de aplicaciones</td>
+  </tr>
+  <tr valign="top"> 
+    <td width="61">ejemplo:<br>
+      desplegar una aplicaci&oacute;n</td>
+    <td width="483"> 
+      <p>java weblogic.Deployer -adminurl http://miguel.dccia.ua.es:7001 -source 
+        faqs.war -targets adminServer -user system -activate<br>
+        <br>
+        Enter a password for the user &quot;system&quot;:weblogic<br>
+        Operation started, waiting for notifications... </p>
+      <p>#TaskID Action Status Target Type Application Source<br>
+        0 Activate Success adminServer Server faqs faqs.war</p>
+      <p></p>
+    </td>
+  </tr>
+  <tr valign="top"> 
+    <td width="61">ejemplo: eliminar una aplicaci&oacute;n</td>
+    <td width="483">java weblogic.Deployer -adminurl http://miguel.dccia.ua.es:7001 
+      -name faqs -targets adminServer -user system -deactivate<br>
+      <br>
+      Enter a password for the user &quot;system&quot;:weblogic<br>
+      Operation started, waiting for notifications... 
+      <p>#TaskID Action Status Target Type Application Source<br>
+        1 Deactivate Success adminServer Server faqs null</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td width="61">ejemplo: reactivar una aplicaci&oacute;n</td>
+    <td width="483">java weblogic.Deployer -adminurl http://miguel.dccia.ua.es:7001 
+      -name faqs -targets adminServer -user system -activate<br>
+      <br>
+      Enter a password for the user &quot;system&quot;:weblogic<br>
+      Operation started, waiting for notifications...
+      <p>#TaskID Action Status Target Type Application Source<br>
+        2 Activate Success adminServer Server faqs null</p>
+    </td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<p><br>
+</p>
+</body>
+</html>

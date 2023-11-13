@@ -1,0 +1,329 @@
+<head>
+<title>Sesion 8-2 Enterprise Java Beans</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../../ejercicios.css" type="text/css">
+</head>
+<body>
+<h1> Tema 8: Seguridad</h1>
+
+<h2>8.1 Introducci&oacute;n a la seguridad en EJBs</h2>
+
+<p> Los servidores Enterprise JavaBeans pueden soportar tres tipos de seguridad: 
+  autentificaci&oacute;n, comunicaci&oacute;n segura y control de acceso. En el 
+  m&oacute;dulo de seguridad se ha hecho hincapi&eacute; en los dos primeros tipos 
+  de servicios usando las APIs que proporciona Java. En este apartado veremos 
+  qu&eacute; mecanismos define la especificaci&oacute;n EJB para el control de 
+  acceso a los EJBs. Revisemos brevemente cada uno de los tipos de seguridad.</p>
+<p><b>Autentificaci&oacute;n</b></p>
+<blockquote>
+  <p>Dicho sencillamente, la autentificaci&oacute;n valida la identidad del usuario. 
+    La forma m&aacute;s com&uacute;n de autentificaci&oacute;n es una simple ventana 
+    de login que pide un nombre de usuario y una contrase&ntilde;a. Una vez que 
+    los ususarios han pasado a trav&eacute;s del sistema de autentificaci&oacute;n, 
+    pueden usar el sistema libremente, hasta el nivel que les permita el control 
+    de acceso. La autentificaci&oacute;n se puede basar tambi&eacute;n en tarjetas 
+    de identificaci&oacute;n, certificados y en otros tipos de identificaci&oacute;n. 
+  </p>
+</blockquote>
+<p><b>Comunicaci&oacute;n segura</b></p>
+<blockquote>
+  <p>Los canales de comunicaci&oacute;n entre un cliente y un servidor son un 
+    elemento muy importante en la seguridad del sistema. Un canal de comunicaci&oacute;n 
+    puede hacerse seguro mediante aislamiento f&iacute;sico (por ejemplo, via 
+    una conexi&oacute;n de red dedicada) o por medio de la encriptaci&oacute;n 
+    de la comunicaci&oacute;n entre el cliente y el servidor. El aislamiento f&iacute;sico 
+    es caro, limita las posibilidades del sistema y es casi imposible en Internet, 
+    por lo que lo m&aacute;s usual es la encriptaci&oacute;n. Cuando la comunicaci&oacute;n 
+    se asegura mediante la encriptaci&oacute;n, los mensajes se codifican de forma 
+    que no puedean ser le&iacute;dos ni manipulados por individuos no autorizados. 
+    Esto se suele consigue mediante el intercambio de claves criptogr&aacute;ficas 
+    entre el cliente y el servidor. Las claves permiten al receptor del mensaje 
+    decodificarlo y leerlo.</p>
+</blockquote>
+<p><b>Control de acceso</b></p>
+<blockquote>
+  <p>El control de acceso (tambi&eacute;n conocido como autorizaci&oacute;n) aplica 
+    pol&iacute;ticas de seguridad que regulan lo que un usuario espec&iacute;fico 
+    puede y no puede hacer en el sistema. El control de acceso asegura que los 
+    usuarios accedan s&oacute;lo a aquellos recursos a los que se les ha dado 
+    permiso. El control de acceso puede restringir el acceso de un usuario a subistemas, 
+    datos, y objetos de negocio. Por ejemplo, a algunos usuarios se les puede 
+    dar permiso de modificar informaci&oacute;n, mientras que otros s&oacute;lo 
+    tienen permiso de visualizarla.</p>
+</blockquote>
+<p>La mayor&iacute;a de los servidores EJB soportan la comunicaci&oacute;n segura 
+  a trav&eacute;s del protocolo SSL (Secure Socket Layer) y proporcionan alg&uacute;n 
+  mecanismo de autentificaci&oacute;n, pero la especificaci&oacute;n Enterprise 
+  JavaBeans s&oacute;lo especifica el control de acceso a los EJBs.</p>
+<p>Aunque la autentificaci&oacute;n no se especifica en EJB, a menudo se consigue 
+  usando el API JNDI. Un cliente que usa JNDI puede proporcionar informaci&oacute;n 
+  de autentificaci&oacute;n usando este API para acceder a los recursos del servidor. 
+  Esta informaci&oacute;n se suele pasar cuando el cliente intenta iniciar una 
+  conexi&oacute;n JNDI con el servidor EJB. El siguiente c&oacute;digo muestra 
+  c&oacute;mo se a&ntilde;aden la contrase&ntilde;a y el nombre de usuario a las 
+  propiedades de la conexi&oacute;n que se usan para obtener una conexi&oacute;n 
+  JNDI con el servidor EJB:</p>
+<pre class="codigo">
+properties.put(Context.SECURITY_PRINCIPAL, userName );
+properties.put(Context.SECURITY_CREDENTIALS, userPassword);
+
+javax.naming.Context jndiContext = new javax.naming.InitialContext(properties);
+Object ref= jndiContext.lookup("AccountEJB");
+AccountHome accountHome = (AccountHome)
+    PortableRemoteObject.narrow(ref, AccountHomeRemote.class);
+</pre>
+
+<p>EJB especifica que todas las apliaciones clientes que acceden a un sistema 
+  EJB deben estar asociadas con una identidad de seguridad. La identidad de seguridad 
+  representa el cliente o bien como un usuario o bien como un rol. Un usuaro podr&iacute;a 
+  ser una persona, una credencial de seguridad, un computador o incluso una tarjeta 
+  inteligente. Normalmente, el usuario es una persona a la que se le asigna una 
+  identidad cuando entra en el sistema. Un rol especifica una categor&iacute;a 
+  de acceso a la que pueden pertenecer distintos usuarios. Por ejemplo, el rol 
+  &quot;ReadOnly&quot; definir&iacute;a una categor&iacute;a en la que s&oacute;lo 
+  se permite el acceso a operaciones de lectura de datos. </p>
+<p>Normalmente el servidor EJB permite definir grupos de usarios a los que se 
+  les va a asignar las mismas restricciones de seguridad. &iquest;Cu&aacute;l 
+  es la diferencia entre roles y grupos? La diferencia fundamental es que los 
+  roles son dependientes de la aplicaci&oacute;n que se despliega, mientras que 
+  los grupos son dependientes de la organizaci&oacute;n. Despu&eacute;s de desplegar 
+  una aplicaci&oacute;n es necesario realizar una asignaci&oacute;n de roles a 
+  usuarios o grupos de usuarios. Esta separaci&oacute;n entre roles y usuarios 
+  permite hacer la aplicaci&oacute;n portable e independiente de la organizaci&oacute;n 
+  en la que se despliega.</p>
+<p>Cuando un cliente remoto se autentifica en el sistema EBJ, se le asocia una 
+  identidad de seguridad que dura el tiempo que est&aacute; activa la sesi&oacute;n. 
+  Esta identidad se encuentra en una base de datos o directorio espec&iacute;fico 
+  de la plataforma EJB. Esta base de datos o directorio es responsable de almacenar 
+  las indentidades individuales, su pertenencia a grupos y las asignaciones de 
+  roles a grupos e individuos.</p>
+<p>Una vez que se le ha asociado una identidad de seguridad a un cliente remoto, 
+  est&aacute; listo para usar los beans. El servidor EJB realiza un seguimiento 
+  de cada cliente y de su identidad. Cuando un cliente invoca un m&eacute;todo 
+  de un EJB, el servidor EJB pasa impl&iacute;citamente la identidad del cliente 
+  junto con la invocaci&oacute;n al m&eacute;todo. Cuando el objeto EJB o el EJB 
+  home recibe la invocaci&oacute;n debe chequear la identidad para asegurarse 
+  de que ese cliente puede usar ese m&eacute;todo.</p>
+<h2>8.2 Control de acceso basado en roles</h2>
+
+<p> En Enterprise JavaBeans, la identidad de seguridad se representa por un objeto 
+  <code>java.security.Principal</code>. Este objeto act&uacute;a como representante 
+  de usuarios, grupos, organizaciones, tarjetas inteligentes, etc. frente a la 
+  arquitectura de control de acceso de los EJB.</p>
+<p>Los descriptores del despliegue incluyen elementos que declaran a qu&eacute; 
+  roles l&oacute;gicos se permite el acceso a los m&eacute;todos de los enterprise 
+  beans. Estos roles se consideran l&oacute;gicos porque no reflejan directamente 
+  usuarios, grupos o cualquier otra identidad de seguridad en un entorno operacional 
+  espec&iacute;fico. Los roles se hacen corresponder con grupos de usuarios o 
+  usuarios del mundo real cuando el bean se despliega. Esto permite que el bean 
+  sea portable ya que cada vez que el bean se despliega en un nuevo sistema, los 
+  roles se asignan a usuarios y grupos espec&iacute;ficos de ese entorno operacional.</p>
+<p>He aqu&iacute; una porci&oacute;n de un fichero de despliegue de un EJB que 
+  define dos roles de seguridad, <code>ReadOnly</code> y <code>Administrator</code>: 
+</p>
+<pre class="codigo">
+&lt;security-role&gt;
+    &lt;description&gt;
+       A este rol se le permite ejecutar cualquier m&eacute;todo del 
+       bean y leer y escribir cualquier dato del bean.
+    &lt;/description&gt;
+    &lt;role-name&gt;
+        Administrator
+    &lt;/role-name&gt;
+&lt;/security-role&gt;
+
+&lt;security-role&gt;
+    &lt;description&gt;
+        A este rol se le permite localizar y leer informaci&oacute;n del bean.
+        A este rol no se le permite modificar los datos del bean.
+    &lt;/description&gt;
+    &lt;role-name&gt;
+        ReadOnly
+    &lt;/role-name&gt;
+&lt;/security-role&gt;
+</pre>
+
+<p> Los nombres de los roles en este descriptor no son nombres reservados o especiales 
+  con significados predefinidos; son simplemente nombres l&oacute;gicos escogidos 
+  por el ensamblador del bean. </p>
+
+<p> Una vez que se declaran los roles, pueden asociarse con m&eacute;todos en 
+  los beans. El elemento <code>&lt;method-permission&gt;</code> es en el que definimos 
+  a qu&eacute; m&eacute;todos puede acceder cada uno de los roles. </p>
+<pre class="codigo">
+&lt;method-permission&gt;
+    &lt;role-name&gt;Administrator&lt;/role-name&gt;
+    &lt;method&gt;
+        &lt;ejb-name&gt;CustomerEJB&lt;/ejb-name&gt;
+        &lt;method-name&gt;*&lt;/method-name&gt;
+    &lt;/method&gt;
+&lt;/method-permission&gt;
+&lt;method-permission&gt;
+    &lt;role-name&gt;ReadOnly&lt;/role-name&gt;
+    &lt;method&gt;
+        &lt;ejb-name&gt;CustomerEJB&lt;/ejb-name&gt;
+        &lt;method-name&gt;getName&lt;/method-name&gt;
+    &lt;/method&gt;
+    &lt;method&gt;
+        &lt;ejb-name&gt;CustomerEJB&lt;/ejb-name&gt;
+        &lt;method-name&gt;getAddress&lt;/method-name&gt;
+    &lt;/method&gt;
+    &lt;method&gt;
+        &lt;ejb-name&gt;CustomerEJB&lt;/ejb-name&gt;
+        &lt;method-name&gt;findByPrimaryKey&lt;/method-name&gt;
+    &lt;/method&gt;
+&lt;/method-permission&gt;
+</pre>
+
+<p> En el primer <code>&lt;method-permission&gt;</code> el rol <code>Administrator</code> 
+  se asocia con todos los m&eacute;todos del EJB CustomerEJB. En el segundo, se 
+  limita el acceso del rol <code>ReadOnly</code> s&oacute;lo a tres m&eacute;todos: 
+  <code>getName()</code>, <code>getAddress()</code> y <code>findByPrimaryKey()</code>. 
+  Cualquier intento de un rol <code>ReadOnly</code> de acceder a un m&eacute;todo 
+  que no sea &eacute;stos resultar&aacute; en una excepci&oacute;n. </p>
+<p>Al desplegar el bean debemos examinar el bean y asignar cada rol l&oacute;gico 
+  a cada grupo de usuarios en el entorno operacional, sin preocuparnos de qu&eacute; 
+  m&eacute;todos son accesibles por cada rol. Esto muestra una vez m&aacute;s 
+  las ventajas de la separaci&oacute;n de papeles que promueve la arquitectura 
+  EJB. El desarrollador del bean es el que debe de preocuparse de definir los 
+  roles y restringir el acceso a los m&eacute;todos, mientras que la persona que 
+  hace el despliegue se ocupa de asignar los roles a usuarios y grupos.</p>
+<p>Una vez que el bean se despliega, el contenedor se encarga de comprobar que 
+  los usuarios acceden &uacute;nicamente a aquellos m&eacute;todos a los que tienen 
+  permisos. Esto se consigue propagando la identidad de seguridad, el objeto <code>Principal</code>, 
+  en cada invocaci&oacute;n del cliente al bean. Cuando el cliente invoca un m&eacute;todo 
+  de un bean, el objeto <code>Principal</code> del cliente se chequea para comprobar 
+  si el rol asociado tiene los privilegios necesarios.</p>
+<p>Si un bean intenta acceder a cualquier otro bean mientras que est&aacute; sirviendo 
+  a un cliente, pasar&aacute; al segundo bean la identidad del cliente para que 
+  se realiza un control de acceso en este segundo bean. De esta manera, el <code>Principal</code> 
+  del cliente se propaga de un bean al siguiente, asegurando que se controla el 
+  acceso acceda o no directamente al EJB.</p>
+<h2>8.3 M&eacute;todos no-chequeados</h2>
+
+<p>En EJB 2.0 un conjunto de m&eacute;todos se puede designar como <code>unchecked</code>, 
+  que significa que los permisos de seguridad no se chequean. Un m&eacute;todo 
+  no chequeado puede invocarse por cualquier cliente, sin importancia de el rol 
+  que ese cliente est&eacute; usando. A continuaci&oacute;n hay un ejemplo de 
+  declaraci&oacute;n de m&eacute;todos no-chequeados:</p>
+<pre class="codigo">
+&lt;method-permission&gt;
+    &lt;unchecked/&gt;
+    &lt;method&gt;
+        &lt;ejb-name&gt;CabinEJB&lt;/ejb-name&gt;
+        &lt;method-name&gt;*&lt;/method-name&gt;
+    &lt;/method&gt;
+    &lt;method&gt;
+        &lt;ejb-name&gt;CustomerEJB&lt;/ejb-name&gt;
+        &lt;method-name&gt;findByPrimaryKey&lt;/method-name&gt;
+    &lt;/method&gt;
+&lt;/method-permission&gt;
+&lt;method-permission&gt;
+    &lt;role-name&gt;administrator&lt;/role-name&gt;
+    &lt;method&gt;
+        &lt;ejb-name&gt;CabinEJB&lt;/ejb-name&gt;
+        &lt;method-name&gt;*&lt;/method-name&gt;
+    &lt;/method&gt;
+&lt;/method-permission&gt;
+</pre>
+
+<p> Esta declaraci&oacute;n nos dice que todos los m&eacute;todos del EJB Cabin, 
+  junto con el m&eacute;todo <code>findByPrimaryKey()</code> del EJB Customer, 
+  son no-chequeados. Un segundo elemento le da al administrador permiso para acceder 
+  a todos los m&eacute;todos del EJB Cabin. El permiso no-chequeado siempre tiene 
+  prioridad sobre cualquier otro permiso.</p>
+<h2>8.4 La identidad de seguridad runAs</h2>
+
+<p>Mientras que los elementos <code>&lt;method-permission&gt;</code> especifican 
+  qu&eacute; <code>Principal</code>s tienen acceso a qu&eacute; m&eacute;todos 
+  del bean, el elemento <code>&lt;security-identity&gt;</code> especifica bajo 
+  qu&eacute; <code>Principal</code> el m&eacute;todo va a ejecutarse. En otras 
+  palabras, el objeto <code>Principal</code> <code>runAs</code> se usa como la 
+  identidad del enterprise bean cuando &eacute;ste intenta invocar m&eacute;todos 
+  en otros beans. Esta identidad no tiene por qu&eacute; ser la misma que la identidad 
+  que accede al bean por primera vez.</p>
+<p>Por ejemplo, los siguientes elementos del descriptor de despliegue declaran 
+  que el m&eacute;todo <code>create()</code> s&oacute;lo puede accederse por el 
+  rol <code>JimSmith</code> y que el EJB Cabin siempre se va ejecutar con una 
+  identidad Administrator.</p>
+<pre class="codigo">
+&lt;enterprise-beans&gt;
+...
+    &lt;entity&gt;
+        &lt;ejb-name&gt;CabinEJB&lt;/ejb-name&gt;
+        ...
+        <b>&lt;security-identity&gt;
+            &lt;run-as&gt;
+               &lt;role-name&gt;Administrator&lt;/role-name&gt;
+            &lt;/run-as&gt;
+        &lt;/security-identity&gt;</b>
+        ...
+    &lt;/entity&gt;
+...
+&lt;/enterprise-beans&gt;
+&lt;assembly-descriptor&gt;
+&lt;security-role&gt;
+    &lt;role-name&gt;Administrator&lt;/role-name&gt;
+&lt;/security-role&gt;
+&lt;security-role&gt;
+    &lt;role-name&gt;JimSmith&lt;/role-name&gt;
+&lt;/security-role&gt;
+...
+&lt;method-permission&gt;
+    &lt;role-name&gt;JimSmith&lt;/role-name&gt;
+    &lt;method&gt;
+        &lt;ejb-name&gt;CabinEJB&lt;/ejb-name&gt;
+        &lt;method-name&gt;create&lt;/method-name&gt;
+    &lt;/method&gt;
+&lt;/method-permission&gt;
+...
+&lt;/assembly-descriptor&gt;
+
+</pre>
+
+<p>Esta clase de configuraci&oacute;n es &uacute;til cuando el enterprise bean 
+  o los recursos accedidos en el cuerpo del m&eacute;todo requieren un <code>Principal</code> 
+  distinto del que ha sido usado para obtener acceso al m&eacute;todo. Por ejemplo, 
+  el m&eacute;todo <code>create()</code> podr&iacute;a llamar a un m&eacute;todo 
+  en el enterprise bean X que requiera la identidad de seguridad de <code>Administrador</code>. 
+  Si quisi&eacute;ramos usar el enterprise bean X en el m&eacute;todo <code>create()</code>, 
+  pero s&oacute;lo permitimos a Jim Smith la creaci&oacute;n de nuevos camarotes, 
+  usar&iacute;amos conjuntamente los elementos <code>&lt;method-permission&gt;</code> 
+  y <code>&lt;security-identity&gt;</code> para conseguirlo. El <code>&lt;method-permission&gt;</code> 
+  para <code>create()</code> especificar&iacute;a que s&oacute;lo Jim Smith puede 
+  invocar el m&eacute;todo, y el elemento <code>&lt;security-identity&gt;</code> 
+  especificar&iacute;a que el enterprise bean siempre se debe ejecutar bajo la 
+  identidad de seguridad <code>Administrator</code>. Para especificar que un enterprise 
+  bean debe ejecutarse bajo la identidad de quien hace la llamada, el rol <code>&lt;security-identity&gt;</code> 
+  contiene un &uacute;nico elemento vac&iacute;o, el elemento <code>&lt;use-caller-identity&gt;</code>. 
+  Por ejemplo las siguientes declaraciones especifican que el EJB Cabin se ejecute 
+  siempre bajo la identidad de quien hace la llamada, por lo que si Jim Smith 
+  invoca el m&eacute;todo <code>create()</code>, el bean se ejecutar&aacute; bajo 
+  la identidad de seguridad <code>JimSmith</code>:</p>
+<pre class="codigo">
+&lt;enterprise-beans&gt;
+...
+    &lt;entity&gt;
+        &lt;ejb-name&gt;CabinEJB&lt;/ejb-name&gt;
+        ...
+        &lt;security-identity&gt;
+            <b>&lt;use-caller-identity/&gt;</b>
+        &lt;/security-identity&gt;
+        ...
+    &lt;/entity&gt;
+...
+&lt;/enterprise-beans&gt;
+</pre>
+<p>Podemos entender la secuencia de cambio de identidades de la siguiente forma:</p>
+<blockquote> 
+  <p>1. El cliente invoca el m&eacute;todo X del bean con una identidad <code>Id1</code>.<br>
+    2. El bean comprueba si la identidad <code>Id1</code> tiene permiso para ejecutar 
+    el m&eacute;todo X. La tiene.<br>
+    3. El bean consulta el elemento <code>&lt;security-identity&gt;</code> y cambia 
+    la identidad a la que indica ese elemento. Supongamos que es la identidad 
+    <code>Id2</code>. <br>
+    4. El bean realiza las llamadas del m&eacute;todo X con la identidad <code>Id2</code>.</p>
+  </blockquote>
+<p></p>
+<p>&nbsp; </p>
+

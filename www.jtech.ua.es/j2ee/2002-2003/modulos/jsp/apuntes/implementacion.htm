@@ -1,0 +1,932 @@
+<html>
+<head>
+<title>Implementación del servidor de FAQs</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">     
+
+<h1> Implementación del servidor de FAQs </h1>
+<p> A continuación se detalla la implementación del servidor de FAQs. Esta información 
+  no es estrictamente necesaria para poder realizar el ejercicio, pero sirve como 
+  ayuda para comprender todos los detalles del funcionamiento.
+<h2> 1. Implementaci&oacute;n del m&oacute;dulo de almacenamiento</h2>
+<h3>1.1 <a name="FAQBD"></a>La clase FAQBD</h3>
+<p>Esta clase se ocupa de todo lo relativo al acceso a la base de datos.</p>
+ <pre class="codigo">package faqs.bd;
+
+import java.util.*;
+import java.sql.*;
+import java.text.*;
+
+import faqs.*;
+
+public class FAQBD
+{
+	private static FAQBD instancia = null;		<b>// Instancia de la clase
+</b>	
+<b>	// ================ DATOS DE CONEXION CON LA BD ================
+</b>	
+	private static final String driver = &quot;org.gjt.mm.mysql.Driver&quot;;	<b>// Driver
+</b>	private static final String url = &quot;jdbc:mysql://localhost/faqs&quot;;<b>// URL BD
+</b>
+<b>	// ================ SENTENCIAS PREDEFINIDAS ================
+</b>	
+	private static Connection con;			<b>// Conexion con la BD</b>
+	private static PreparedStatement selStmt;	<b>// Obtener una FAQ
+</b>	private static PreparedStatement selAllStmt;	<b>// Obtener todas las FAQS
+</b>	private static PreparedStatement insStmt;	<b>// Insertar FAQ 
+</b>	private static PreparedStatement delStmt;	<b>// Borrar FAQ 
+</b>	private static PreparedStatement updStmt;	<b>// Actualizar FAQ
+</b>		
+<b>	// ================ METODOS DE INICIALIZACION ================
+</b>
+<b>	// Obtiene la unica instancia de la clase
+</b>	public static FAQBD getInstancia() throws FAQBDException
+	{
+		if (instancia == null)
+			instancia = new FAQBD();
+		return instancia;
+	}
+	
+<b>	// Constructor
+</b>	private FAQBD() throws FAQBDException
+	{
+		try
+		{
+
+		Class.forName(driver);
+		con = DriverManager.getConnection(url, null, null);		<b>
+</b>		selStmt    = 
+			con.prepareStatement(&quot;SELECT * FROM faqs WHERE ID = ?&quot;);
+		selAllStmt = 
+			con.prepareStatement(&quot;SELECT * FROM faqs ORDER BY ID&quot;);
+		insStmt    = 
+			con.prepareStatement(&quot;INSERT INTO faqs &quot; + 
+			   (pregunta, respuesta, fechamodif) VALUES(?, ?, ?)&quot;);
+		delStmt    = 
+			con.prepareStatement(&quot;DELETE FROM faqs WHERE ID = ?&quot;);
+		updStmt    = 
+			con.prepareStatement(&quot;UPDATE faqs SET pregunta = ?,&quot; + 
+			    respuesta = ?, fechamodif = ? WHERE ID = ?&quot;);
+
+		} catch (ClassNotFoundException e1) {
+			throw new FAQBDException(&quot;No se encontro el driver&quot;);
+		} catch (SQLException e2) {
+			throw new FAQBDException(e2.getMessage());
+		}
+	}
+	
+<b>	// ================ METODOS PARA LAS SENTENCIAS PREDEFINIDAS ================
+</b>
+<b>	// Obtiene una FAQ con un ID determinado
+</b>	public FAQBean getFAQ(int id) throws FAQBDException, FAQDesconocidoException
+	{
+		try
+		{
+			ResultSet rs;
+			synchronized (selStmt)
+			{
+				selStmt.clearParameters();
+				selStmt.setInt(1, id);
+				rs = selStmt.executeQuery();
+			}
+			
+			if (rs.next())
+				return crearFAQ(rs);
+			throw new FAQDesconocidoException(&quot;No hay FAQ &quot; + id);
+		} catch (SQLException e) {
+			throw new FAQBDException (e.getMessage());
+		}
+	}
+
+<b>	// Obtiene todas las FAQs, ordenadas por ID
+</b>	public FAQBean[] getFAQs() throws FAQBDException
+	{
+		try
+		{
+			ResultSet rs;
+			Collection faqs = new ArrayList();
+			synchronized (selAllStmt)
+			{
+				rs = selAllStmt.executeQuery();
+			}
+			
+			while (rs.next())
+				faqs.add(crearFAQ(rs));
+
+			return (FAQBean[])faqs.toArray(new FAQBean[0]);
+
+		} catch (SQLException e) {
+			throw new FAQBDException (e.getMessage());
+		}
+	}
+
+	<b>// Inserta una nueva FAQ con los datos proporcionados
+</b>	public void insertFAQ(FAQBean faq) throws FAQBDException
+	{
+		try
+		{
+			synchronized (insStmt)
+			{
+			insStmt.clearParameters();
+			insStmt.setString(1, faq.getPregunta());
+			insStmt.setString(2, faq.getRespuesta());
+			insStmt.setDate(3, (java.sql.Date)(faq.getFechaModif()));
+			insStmt.executeUpdate();
+			}			
+		} catch (SQLException e) {
+			throw new FAQBDException (e.getMessage());
+		}
+	}
+
+	<b>// Actualiza los datos de una FAQ con un ID determinado
+</b>	public void updateFAQ(FAQBean faq) 
+	throws FAQBDException, FAQDesconocidoException
+	{
+		try
+		{
+			synchronized (updStmt)
+			{
+			updStmt.clearParameters();
+			updStmt.setString(1, faq.getPregunta());
+			updStmt.setString(2, faq.getRespuesta());
+			updStmt.setDate(3, (java.sql.Date)(faq.getFechaModif()));
+			updStmt.setInt(4, faq.getID());
+				
+			int cambios = updStmt.executeUpdate();
+			if (cambios &lt; 1)
+				throw new FAQDesconocidoException (&quot;No hay FAQ&quot;);
+			}			
+		} catch (SQLException e) {
+			throw new FAQBDException (e.getMessage());
+		}
+	}
+
+	<b>// Borra la FAQ de ID proporcionado
+</b>	public void deleteFAQ(int id) 
+	throws FAQBDException, FAQDesconocidoException
+	{
+		try
+		{
+			synchronized (delStmt)
+			{
+			delStmt.clearParameters();
+			delStmt.setInt(1, id);
+
+			int cambios = delStmt.executeUpdate();
+			if (cambios &lt; 1)
+				throw new FAQDesconocidoException (&quot;No hay FAQ&quot;);
+			}
+		} catch (SQLException e) {
+			throw new FAQBDException (e.getMessage());
+		}
+	}
+
+<b>	// ================ METODOS AUXILIARES ================
+	</b>
+	<b>// Crea un FAQBean con los datos que se le pasan. Utiliza
+	// el elemento actual del ResultSet para crear el FAQBean
+</b>	private FAQBean crearFAQ(ResultSet datos) throws FAQBDException
+	{
+		try
+		{
+			FAQBean faq = new FAQBean();
+			faq.setID(datos.getInt(&quot;ID&quot;));
+			faq.setPregunta(datos.getString(&quot;pregunta&quot;));
+			faq.setRespuesta(datos.getString(&quot;respuesta&quot;));
+			
+			String sfecha = datos.getString(&quot;fechamodif&quot;);
+			DateFormat df = DateFormat.getDateInstance();
+			java.util.Date fecha = df.parse(sfecha);
+			faq.setFechaModif(fecha);
+			
+			return faq;
+			
+		} catch (Exception e) {
+			throw new FAQBDException (e.getMessage());
+		}
+	}
+
+	<b>// Cierra la conexion con la base de datos
+</b>	public void cerrar()
+	{
+		if (con != null)
+			try
+			{
+				con.close();
+			} catch (Exception e) {}
+	}
+}</pre>
+           
+      <p align="left">La clase permite sólo crear una instancia de sí misma, y
+      proporciona acceso a esa instancia. Proporciona una serie de métodos para
+      acceder a la base de datos. Todos ellos trabajan con objetos de tipo <i>FAQBean</i>. </p>
+           
+      <ul>
+        <li>
+          <p align="left">El <b>constructor</b> es privado para evitar que sea
+          llamado. En él simplemente establecemos la conexión con la base de
+          datos y dejamos predefinidas las sentencias para:
+          <ul>
+            <li>
+              <p align="left">Obtener una FAQ con un ID determinado (campo <i>selStmt</i>)</li>
+            <li>
+              <p align="left">Obtener todas las FAQs ordenadas por ID (campo <i>selAllStmt</i>)</li>
+            <li>
+              <p align="left">Insertar una FAQ nueva en la base de datos (campo <i>insStmt</i>)</li>
+            <li>
+              <p align="left">Actualizar los datos de una FAQ existente (campo <i>updStmt</i>)</li>
+            <li>
+              <p align="left">Borrar una FAQ de la base de datos (campo <i>delStmt</i>)</li>
+          </ul>
+        </li>
+        <li>
+          <p align="left">Sólo se puede obtener un objeto de la clase mediante <b>getInstancia()</b>,
+          que se encarga de servir una sola instancia del objeto.</li>
+        <li>
+          <p align="left">Se tienen definidos métodos para definir las <b>sentencias
+          predefinidas</b>. Estos métodos tienen bloques de código <i>synchronized</i>
+          para poder reutilizar las sentencias, y evitar que diferentes hilos
+          las ejecuten a la vez. Cada método realiza una sentencia distinta:
+          <ul>
+            <li>
+              <p align="left"><b>getFAQ</b> obtiene un <i>FAQBean</i> con los
+              datos de la FAQ cuyo ID se pasa como parámetro.</li>
+            <li>
+              <p align="left"><b>getFAQs </b>obtiene un array con todos los FAQs
+              de la base de datos, ordenados por ID.</li>
+            <li>
+              <p align="left"><b>insertFAQ</b> inserta en la base de datos una
+              nueva FAQ con los datos del <i>FAQBean</i> que se le pasa como
+              parámetro.</li>
+            <li>
+              <p align="left"><b>updateFAQ</b> actualiza los datos de una FAQ de
+              la base de datos, con los datos del <i>FAQBean</i> que se le pasa
+              como parámetro.</li>
+            <li>
+              <p align="left"><b>deleteFAQ</b> elimina la FAQ cuyo ID se le pasa
+              como parámetro.</li>
+          </ul>
+        </li>
+        <li>
+          <p align="left">El método <b>crearFAQ</b> crea un objeto <i>FAQBean</i>
+          con los datos de la fila actual del <i>ResultSet</i> que se le pasa
+          como parámetro. Se utiliza en los métodos. <i>getFAQ()</i> y <i>getFAQs()</i>,
+          para construir los objetos <i>FAQBean</i> que se devuelven.</li>
+        <li>
+          <p align="left">El método <b>cerrar</b> cierra la conexión con la
+          base de datos.</li>
+      </ul>
+
+<h3> 1.2 Excepciones en el acceso a los datos </h3>
+<p align="left">Vemos el código de las dos excepciones: </p>
+           
+      
+<a name="FAQBDException"></a>
+
+<pre class="codigo">package faqs.bd;
+
+public class FAQBDException extends Exception
+{	
+	public FAQBDException()
+	{
+		super();
+	}
+
+	public FAQBDException(String msg)
+	{
+		super(msg);
+	}	
+}</pre>
+<a name="FAQDesconocidoException"></a>
+<pre class="codigo">package faqs.bd;
+
+public class FAQDesconocidoException extends FAQBDException
+{	
+	public FAQDesconocidoException()
+	{
+		super();
+	}
+
+	public FAQDesconocidoException(String msg)
+	{
+		super(msg);
+	}	
+}</pre>
+<b> 
+<h2>2. Implementaci&oacute;n del m&oacute;dulo de administraci&oacute;n</h2>
+<h3>2.1 <a name="FAQCentralServlet"></a>El servlet de administraci&oacute;n: la 
+  clase FAQCentralServlet</h3>
+</b> 
+<pre class="codigo">package faqs.servlets;
+
+import java.io.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
+import java.util.*;
+
+import faqs.comandos.*;
+
+public class FAQCentralServlet extends HttpServlet
+{
+<b>	// Comandos que se pueden solicitar
+</b>	private HashMap comandos;
+	
+<b>	// Pagina de error
+</b>	private String error = &quot;error.jsp&quot;;
+
+<b>	// Directorio de las paginas JSP
+</b>	private String dirJSP = &quot;/jsp/&quot;;
+
+<b>	// ============== METODOS PRINCIPALES DEL SERVLET ==============
+</b>		
+<b>	// Metodo de inicializacion
+
+</b>	public void init(ServletConfig config) throws ServletException
+	{
+		super.init(config);
+		
+		comandos = new HashMap();
+		comandos.put(&quot;menu&quot;, new FAQComandoNull(&quot;menu.jsp&quot;));
+		comandos.put(&quot;abortar&quot;, new FAQComandoAbortar(&quot;menu.jsp&quot;));
+		comandos.put(&quot;insert&quot;, new FAQComandoNull(&quot;insert.jsp&quot;));
+		comandos.put(&quot;exe-insert&quot;, new FAQComandoInsert(&quot;menu.jsp&quot;));
+		comandos.put(&quot;menu-update&quot;, new FAQComandoGetAll(&quot;update_menu.jsp&quot;));
+		comandos.put(&quot;update&quot;, new FAQComandoGet(&quot;update.jsp&quot;));
+		comandos.put(&quot;exe-update&quot;, new FAQComandoUpdate(&quot;menu.jsp&quot;));
+		comandos.put(&quot;menu-delete&quot;, new FAQComandoGetAll(&quot;delete_menu.jsp&quot;));
+		comandos.put(&quot;delete&quot;, new FAQComandoGet(&quot;delete.jsp&quot;));
+		comandos.put(&quot;exe-delete&quot;, new FAQComandoDelete(&quot;menu.jsp&quot;));		
+	}
+
+<b>	// Metodo de procesamiento de peticion
+
+</b>	public void service(HttpServletRequest req, HttpServletResponse res) 
+	throws ServletException, IOException
+	{
+		String siguiente;
+		
+		try
+		{
+			FAQComando cmd = getComando(req.getParameter(&quot;cmd&quot;));
+			siguiente = cmd.ejecutar(req);
+			FAQComandoToken.set(req);
+		} catch (FAQComandoException e) {
+			req.setAttribute(&quot;javax.servlet.jsp.jspException&quot;, e);
+			siguiente = error;
+		}
+		
+		RequestDispatcher rd = 
+			getServletContext().getRequestDispatcher(dirJSP + siguiente);
+		rd.forward(req, res);
+	}
+	
+
+<b>	// ============== METODOS AUXILIARES ==============
+</b>	
+<b>	// Obtiene un comando indicado por un nombre
+
+</b>	private FAQComando getComando(String cmd) throws FAQComandoException
+	{
+		if (cmd == null)
+			cmd = &quot;menu&quot;;
+		if (comandos.containsKey(cmd.toLowerCase()))
+			return (FAQComando)comandos.get(cmd.toLowerCase());
+		else
+			throw new FAQComandoException(&quot;Comando invalido&quot;);
+	}
+}</pre>
+           
+      <p>Vemos cada método del servlet: </p>
+           
+      <ul>
+        <li><b>init()</b>: Cada página JSP indica la acción a realizar pasando en la petición
+      un parámetro <i>cmd</i> con el nombre del comando a realizar. Dicho
+      comando es uno entre:
+          <ul>
+            <li><b>menu</b>: para ir al menú principal</li>
+            <li><b>abortar</b>: para cancelar la operación actual</li>
+            <li><b>insert</b>: para ir a la pantalla de insertar una FAQ</li>
+            <li><b>exe-insert</b>: para realizar la inserción de una FAQ</li>
+            <li><b>menu-update</b>: para mostrar el menú para actualizar una FAQ</li>
+            <li><b>update</b>: para ir a la pantalla de actualizar una FAQ</li>
+            <li><b>exe-update</b>: para realizar la actualización de la FAQ</li>
+            <li><b>menu-delete</b>: para mostrar el menú para borrar una FAQ</li>
+            <li><b>delete</b>: para ir a la pantalla de borrar una FAQ</li>
+            <li><b>exe-delete</b>: para realizar el borrado de una FAQ</li>
+          </ul>
+        </li>
+      </ul>
+      <blockquote>
+        <p>Se ponen esos nombres de comando en una tabla hash y se les asocia la clase que lo implementa.
+        Notar que algunos nombres de comando utilizan la misma clase. Cada clase
+        que implementa un comando utiliza como parámetro la página destino donde mostrar los resultados.</p>
+      </blockquote>
+      <ul>
+        <li><b>service()</b>: al recibir una petición, se obtiene el comando
+          que se ha pasado como parámetro, se obtiene luego la clase que lo
+          implementa, y se
+      llama a su método <b>ejecutar()</b>, que devuelve el nombre de la
+      siguiente página que hay que cargar. Este nombre de página es gestionado
+          por el servlet, que redirige el control a dicha página.</li>
+        <li><b>getComando()</b>: obtiene la clase que implementa el comando que
+          se le pasa como parámetro. Veremos los comandos a continuación.</li>
+      </ul>
+      
+<h3>2.2. <a name="FAQComandoToken"></a>Seguridad en las transacciones: clase FAQComandoToken</h3>
+           
+      <pre class="codigo">package faqs.comandos;
+
+import javax.servlet.http.*;
+import java.security.*;
+
+public class FAQComandoToken
+{	
+<b>	// Establece un token asociado para una petición determinada
+</b>	public static void set(HttpServletRequest req)
+	{
+		HttpSession sesion = req.getSession(true);
+		
+		long tiempoms = System.currentTimeMillis();
+		byte[] tiempo = new Long(tiempoms).toString().getBytes();
+		byte[] id = sesion.getId().getBytes();
+		
+		try
+		{
+			MessageDigest md5 = MessageDigest.getInstance(&quot;MD5&quot;);
+			md5.update(id);
+			md5.update(tiempo);
+			String token = toHex(md5.digest());
+			req.setAttribute(&quot;token&quot;, token);
+			sesion.setAttribute(&quot;token&quot;, token);
+		} catch (Exception e) {
+			System.err.println (&quot;Error al calcular codificacion MD5&quot;);
+		}
+	}
+
+	<b>// Comprueba si una peticion es valida
+</b>	public static boolean isValida(HttpServletRequest req)
+	{
+		HttpSession sesion = req.getSession(true);
+		String tokenReq = req.getParameter(&quot;token&quot;);
+		String tokenSes = (String)sesion.getAttribute(&quot;token&quot;);
+		
+		if (tokenReq == null || tokenSes == null)
+			return false;
+		return (tokenReq.equals(tokenSes));
+	}
+	
+	<b>// Convierte un array de bytes a una cadena de hexadecimales
+</b>	private static String toHex(byte[] datos)
+	{
+		StringBuffer buf = new StringBuffer();
+		for (int i = 0; i &lt; datos.length; i++)
+			buf.append(Integer.toHexString((int)datos[i] &amp; 0x00ff));
+		return buf.toString();
+	}
+	
+}</pre>
+
+<p>&nbsp;</p>
+<ul>
+  <li>Con el método <b>set()</b> se crea una token único para cada transacción 
+    y se almacena como cadena de caracteres hexadecimal, tanto en la sesión del 
+    usuario como en los datos de la petición.</li>
+  <li>El método <b>isValido()</b> valida la petición, busca si existe un token 
+    asociado para la misma, y si lo encuentra devuelve <i>true</i> (devuelve <i>false</i> 
+    si no lo encuentra, indicando que el token de la petición no es correcto).&nbsp;</li>
+  <li>El método <b>toHex()</b> se emplea para convertir un array de bytes en una 
+    cadena hexadecimal (para el proceso de codificación del token).</li>
+</ul>
+      <p>El token en sí es un mensaje encriptado en formato MD5, formado a
+      partir del identificador de sesión del usuario y el tiempo actual. Esto
+      asegura que cada token es único y no se repite. </p>
+           
+      
+<p>En el servlet central, se llama al comando <b>set()</b> cada vez que se completa 
+  un comando. Así se crea un token con la operación, y en las páginas JSP que 
+  precedan a las que tengan acciones que deseemos controlar mediante tokens, añadimos 
+  el token como parámetro de la petición. Así, al llamar al comando, podrá obtener 
+  los datos del token de la petición y ver si es válido o no, llamado a <b>isValid()</b>. 
+  Lo veremos más adelante en los comandos que son críticos (insertar, borrar, 
+  modificar). </p>
+<h3>2.3.<a name="comandosPosibles"></a> Comandos posibles</h3>
+<h4><a name="FAQComando"></a>2.3.1. Comando genérico: interfaz FAQComando</h4>
+<p>La interfaz <b>FAQComando</b> define los métodos que debe implementar todo 
+  comando que queramos ejecutar en el administrador de FAQs. En realidad sólo 
+  tiene un método, <b>ejecutar()</b>, con el código que se ejecutará al llamar 
+  al comando: </p>
+<pre class="codigo">package faqs.comandos;
+
+import javax.servlet.*;
+import javax.servlet.http.*;
+
+public interface FAQComando
+{	
+<b>   // Ejecuta el comando
+</b>   public String ejecutar(HttpServletRequest req) throws FAQComandoException;
+}</pre>
+<p>Al terminar de ejecutar, el comando puede almacenar sus resultados como atributos 
+  del <i>HttpServletRequest</i>, para poderlos obtener luego por el servlet o 
+  las páginas.&nbsp; </p>
+<h4><a name="FAQComandoException"></a>2.3.2. Excepciones que se tratan: clase 
+  FAQComandoException</h4>
+<p>La excepción <b>FAQComandoException</b> se lanza cuando ocurre un error al 
+  ejecutar algún comando: </p>
+<pre class="codigo">package faqs.comandos;
+
+public class FAQComandoException extends Exception
+{	
+   public FAQComandoException()
+   {
+	super();
+   }
+
+   public FAQComandoException(String msg)
+   {
+	super(msg);
+   }	
+}</pre>
+<h4><a name="FAQComandoNull"></a>2.3.3. Comando nulo: clase FAQComandoNull</h4>
+<p>El comando <b>FAQComandoNull</b> es un comando que no hace nada, simplemente 
+  devuelve la siguiente página que debe cargarse: </p>
+<pre class="codigo">package faqs.comandos;
+
+import javax.servlet.*;
+import javax.servlet.http.*;
+
+public class FAQComandoNull implements FAQComando
+{	
+   <b>// Siguiente pagina a mostrar
+</b>   private String siguiente;
+	
+<b>   // Constructor
+</b>   public FAQComandoNull(String siguiente)
+   {
+	this.siguiente = siguiente;
+   }
+	
+<b>   // Ejecuta el comando
+</b>   public String ejecutar(HttpServletRequest req) throws FAQComandoException
+   {
+	return siguiente;
+   }
+}</pre>
+<h4><a name="FAQComandoAbortar"></a>2.3.4. Abortar: clase FAQComandoAbortar</h4>
+<p>El comando <b>FAQComandoAbortar</b> se utiliza para cancelar una operación 
+  en curso. Lo que hace es devolver la página que debe cargarse, con un mensaje 
+  de &quot;operación abortada&quot;: </p>
+<pre class="codigo">package faqs.comandos;
+
+import javax.servlet.*;
+import javax.servlet.http.*;
+
+public class FAQComandoAbortar implements FAQComando
+{	
+   <b>// Siguiente pagina a mostrar
+</b>   private String siguiente;
+	
+<b>   // Constructor
+</b>   public FAQComandoAbortar(String siguiente)
+   {
+	this.siguiente = siguiente;
+   }
+	
+   <b>// Ejecuta el comando
+</b>   public String ejecutar(HttpServletRequest req) throws FAQComandoException
+   {
+	req.setAttribute(&quot;faqs.mensaje&quot;, &quot;Operacion Abortada&quot;);
+	return siguiente;
+   }
+}</pre>
+<h4><a name="FAQComandoGet"></a>2.3.5. Obtener una FAQ: clase FAQComandoGet</h4>
+<p>El comando <b>FAQComandoGet</b> se emplea para obtener un objeto <i>FAQBean 
+  </i>con los datos de una FAQ de <i>id </i>determinado: </p>
+<pre class="codigo">package faqs.comandos;
+
+import javax.servlet.*;
+import javax.servlet.http.*;
+
+import faqs.bd.*;
+import faqs.*;
+
+public class FAQComandoGet implements FAQComando
+{	
+   <b>// Siguiente pagina a mostrar
+</b>   private String siguiente;
+	
+   <b>// Constructor
+</b>   public FAQComandoGet(String siguiente)
+   {
+	this.siguiente = siguiente;
+   }
+	
+   <b>// Ejecuta el comando
+</b>   public String ejecutar(HttpServletRequest req) throws FAQComandoException
+   {
+	try
+	{
+		FAQBD faqs = FAQBD.getInstancia();
+		int id = Integer.parseInt(req.getParameter(&quot;id&quot;));
+		FAQBean faq = faqs.getFAQ(id);
+		req.setAttribute(&quot;faq&quot;, faq);
+		return siguiente;
+	} catch (NumberFormatException e1) {
+		throw new FAQComandoException(&quot;FAQComandoGet: &quot; + 
+					      e1.getMessage());
+	} catch (FAQDesconocidoException e2) {
+		throw new FAQComandoException(&quot;FAQComandoGet: &quot; + 
+					      e2.getMessage());
+	} catch (FAQBDException e3) {
+		throw new FAQComandoException(&quot;FAQComandoGet: &quot; + 
+					      e3.getMessage());
+	}
+   }
+}</pre>
+<p>Lo que hace es obtener el <i>id </i>de la FAQ que se busca, y luego obtener 
+  un objeto <i>FAQBD</i>, y llamar a su método <i>getFAQ()</i> para obtener los 
+  datos de la FAQ. Finalmente, añade un objeto <i>FAQBean</i> con los datos de 
+  la FAQ a la petición <i>HttpServletRequest</i> (atributo <i>faq</i>). </p>
+<h4><a name="FAQComandoGetAll"></a>2.3.6. Obtener todas las FAQs: clase FAQComandoGetAll</h4>
+<p>El comando <b>FAQComandoGetAll</b> se emplea para obtener una lista de objetos 
+  <i>FAQBean </i>con todas las FAQs almacenadas: </p>
+<pre class="codigo">package faqs.comandos;
+
+import javax.servlet.*;
+import javax.servlet.http.*;
+
+import faqs.bd.*;
+import faqs.*;
+
+public class FAQComandoGetAll implements FAQComando
+{	
+   <b>// Siguiente pagina a mostrar
+</b>   private String siguiente;
+	
+   <b>// Constructor
+</b>   public FAQComandoGetAll(String siguiente)
+   {
+	this.siguiente = siguiente;
+   }
+	
+   <b>// Ejecuta el comando
+</b>   public String ejecutar(HttpServletRequest req) throws FAQComandoException
+   {
+	try
+	{
+		FAQBD faqs = FAQBD.getInstancia();
+		FAQBean[] lista = faqs.getFAQs();
+		req.setAttribute(&quot;faqs&quot;, lista);
+		return siguiente;
+	} catch (FAQBDException e) {
+		throw new FAQComandoException(&quot;FAQComandoGetAll: &quot; + 
+					      e.getMessage());
+	}
+   }
+}</pre>
+<p>Lo que hace es obtener un objeto <i>FAQBD</i>, y llamar a su método <i>getFAQs()</i> 
+  para obtener todas las FAQs de la base de datos, que se colocan en la petición 
+  <i>HttpServletRequest</i> como un array de <i>FAQBean[ ]</i> (atributo <i>faqs</i>). 
+</p>
+<h4><a name="FAQComandoInsert"></a>2.3.7. Insertar una nueva FAQ: clase FAQComandoInsert</h4>
+<p>El comando <b>FAQComandoInsert</b> se emplea para insertar en la base de datos 
+  los datos de una nueva FAQ: </p>
+<pre class="codigo">package faqs.comandos;
+
+import javax.servlet.*;
+import javax.servlet.http.*;
+
+import faqs.bd.*;
+import faqs.*;
+
+public class FAQComandoInsert implements FAQComando
+{	
+   <b>// Siguiente pagina a mostrar
+</b>   private String siguiente;
+	
+   <b>// Constructor
+</b>   public FAQComandoInsert(String siguiente)
+   {
+	this.siguiente = siguiente;
+   }
+	
+   <b>// Ejecuta el comando
+</b>   public String ejecutar(HttpServletRequest req) throws FAQComandoException
+   {
+	try
+	{
+<b>		// Es un comando critico que no debe repetirse accidentalmente
+</b>			
+		if (FAQComandoToken.isValida(req))
+		{
+			FAQBD faqs = FAQBD.getInstancia();
+			FAQBean faq = new FAQBean();
+			faq.setPregunta(req.getParameter(&quot;pregunta&quot;));
+			faq.setRespuesta(req.getParameter(&quot;respuesta&quot;));
+			faqs.insertFAQ(faq);
+			req.setAttribute(&quot;faqs.mensaje&quot;, 
+					 &quot;FAQ añadida correctamente&quot;);
+		} else {
+			req.setAttribute(&quot;faqs.mensaje&quot;, 
+					 &quot;Error al añadir FAQ&quot;);
+		}
+		return siguiente;
+
+	} catch (FAQBDException e) {
+		throw new FAQComandoException(&quot;FAQComandoInsert: &quot; + 
+					      e.getMessage());
+	}
+   }
+}</pre>
+<p>La inserción es un comando que no debe repetirse por error. Por eso se comprueba 
+  con <i>FAQComandoToken </i>si es una acción válida, y en caso afirmativo se 
+  obtiene un objeto <i>FAQBD</i>, se construye un objeto <i>FAQBean</i> con los 
+  datos de la FAQ a introducir, y se llama al método <i>insertFAQ()</i> pasándole 
+  el <i>FAQBean</i> con la FAQ a introducir. En la petición <i>HttpServletRequest</i> 
+  se añade un mensaje con el resultado de la operación. </p>
+<h4><a name="FAQComandoUpdate"></a>2.3.8. Actualizar una FAQ: clase FAQComandoUpdate</h4>
+<p>El comando <b>FAQComandoUpdate</b> se emplea para actualizar los datos de una 
+  FAQ existente: </p>
+<pre class="codigo">package faqs.comandos;
+
+import javax.servlet.*;
+import javax.servlet.http.*;
+
+import faqs.bd.*;
+import faqs.*;
+
+public class FAQComandoUpdate implements FAQComando
+{	
+   <b>// Siguiente pagina a mostrar
+</b>   private String siguiente;
+	
+   <b>// Constructor
+</b>   public FAQComandoUpdate(String siguiente)
+   {
+	this.siguiente = siguiente;
+   }
+	
+   <b>// Ejecuta el comando
+</b>   public String ejecutar(HttpServletRequest req) throws FAQComandoException
+   {
+	try
+	{
+<b>		// Es un comando critico que no debe repetirse accidentalmente
+</b>			
+		if (FAQComandoToken.isValida(req))
+		{
+			FAQBD faqs = FAQBD.getInstancia();
+			FAQBean faq = new FAQBean();
+			faq.setId(Integer.parseInt(req.getParameter(&quot;id&quot;)));
+			faq.setPregunta(req.getParameter(&quot;pregunta&quot;));
+			faq.setRespuesta(req.getParameter(&quot;respuesta&quot;));
+			faqs.updateFAQ(faq);
+			req.setAttribute(&quot;faqs.mensaje&quot;, 
+					 &quot;FAQ actualizada correctamente&quot;);
+		} else {
+			req.setAttribute(&quot;faqs.mensaje&quot;, 
+					 &quot;Error al actualizar FAQ&quot;);
+		}
+		return siguiente;
+
+	} catch (NumberFormatException e1) {
+		throw new FAQComandoException(&quot;FAQComandoUpdate: &quot; + 
+					      e1.getMessage());
+	} catch (FAQDesconocidoException e2) {
+		throw new FAQComandoException(&quot;FAQComandoUpdate: &quot; + 
+					      e2.getMessage());
+	} catch (FAQBDException e3) {
+		throw new FAQComandoException(&quot;FAQComandoUpdate: &quot; + 
+					      e3.getMessage());
+	}
+   }
+}</pre>
+<p>La actualización también es un comando que no debe repetirse por error. Por 
+  eso se comprueba con <i>FAQComandoToken </i>si es una acción válida, y en caso 
+  afirmativo se obtiene un objeto <i>FAQBD</i>, se construye un objeto <i>FAQBean</i> 
+  con los datos de la FAQ a actualizar, y se llama al método <i>updateFAQ()</i> 
+  pasándole el <i>FAQBean</i> con la FAQ a actualizar. En la petición <i>HttpServletRequest</i> 
+  se añade un mensaje con el resultado de la operación. </p>
+<h4><a name="FAQComandoDelete"></a>2.3.9. Borrar una FAQ: clase FAQComandoDelete</h4>
+<p>El comando <b>FAQComandoDelete</b> se emplea para actualizar los datos de una 
+  FAQ existente: </p>
+<pre class="codigo">package faqs.comandos;
+
+import javax.servlet.*;
+import javax.servlet.http.*;
+
+import faqs.bd.*;
+import faqs.*;
+
+public class FAQComandoDelete implements FAQComando
+{	
+   <b>// Siguiente pagina a mostrar
+</b>   private String siguiente;
+	
+   <b>// Constructor
+</b>   public FAQComandoDelete(String siguiente)
+   {
+	this.siguiente = siguiente;
+   }
+	
+   <b>// Ejecuta el comando
+</b>   public String ejecutar(HttpServletRequest req) throws FAQComandoException
+   {
+	try
+	{
+<b>		// Es un comando critico que no debe repetirse accidentalmente
+</b>			
+		if (FAQComandoToken.isValida(req))
+		{
+			FAQBD faqs = FAQBD.getInstancia();
+			int id = Integer.parseInt(req.getParameter(&quot;id&quot;));
+			faqs.deleteFAQ(id);
+			req.setAttribute(&quot;faqs.mensaje&quot;, 
+					 &quot;FAQ eliminada correctamente&quot;);
+		} else {
+			req.setAttribute(&quot;faqs.mensaje&quot;, 
+					 &quot;Error al eliminar FAQ&quot;);
+		}
+		return siguiente;
+
+	} catch (NumberFormatException e1) {
+		throw new FAQComandoException(&quot;FAQComandoDelete: &quot; + 
+					      e1.getMessage());
+	} catch (FAQDesconocidoException e2) {
+		throw new FAQComandoException(&quot;FAQComandoDelete: &quot; + 
+					      e2.getMessage());
+	} catch (FAQBDException e3) {
+		throw new FAQComandoException(&quot;FAQComandoDelete: &quot; + 
+					      e3.getMessage());
+	}
+   }
+}</pre>
+<p>El borrado también es un comando que no debe repetirse por error. Por eso se 
+  comprueba con <i>FAQComandoToken </i>si es una acción válida, y en caso afirmativo 
+  se obtiene un objeto <i>FAQBD</i>, se obtiene el <i>id</i> de la FAQ que se 
+  quiere borrar, y se llama al método <i>deleteFAQ()</i> pasándole el <i>id</i> 
+  de la FAQ a eliminar. En la petición <i>HttpServletRequest</i> se añade un mensaje 
+  con el resultado de la operación. </p>
+<h2>3. Implementación del módulo de acceso web</h2>
+<p><a name="FAQServlet"></a>Se tiene el servlet <b>FAQServlet</b> en el paquete 
+  <b>faqs.servlets </b>que se encarga de devolver bien un listado con todas las 
+  FAQs de la base de datos, bien los datos de una&nbsp; FAQ en concreto. </p>
+<pre class="codigo">package faqs.servlets;
+
+import java.io.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
+import java.util.*;
+
+import faqs.comandos.*;
+
+public class FAQServlet extends HttpServlet
+{
+<b>	// Pagina de error
+</b>	private String error = &quot;jsp/error.jsp&quot;;
+
+<b>	// Directorio de las paginas JSP
+</b>	private String dirJSP = &quot;/&quot;;
+
+<b>	// Metodo de procesamiento de peticion
+</b>	public void service(HttpServletRequest req, HttpServletResponse res) 
+	throws ServletException, IOException
+	{
+		String siguiente;
+		FAQComando cmd;
+		
+		try
+		{
+			<b>// Siguiente pagina a mostrar
+</b>
+			siguiente = req.getParameter(&quot;pagina&quot;);
+			if (siguiente == null)
+			   throw new FAQComandoException(&quot;Pagina no especificada&quot;);
+
+			<b>// Si hay &quot;id&quot; buscamos solo la FAQ del id indicado
+			// Si no hay &quot;id&quot; buscamos todas las FAQs
+</b>
+			if (req.getParameter(&quot;id&quot;) != null)
+			   cmd = new FAQComandoGet(siguiente);
+			else
+			   cmd = new FAQComandoGetAll(siguiente);
+			cmd.ejecutar(req);
+			
+		} catch (FAQComandoException e) {
+			req.setAttribute(&quot;javax.servlet.jsp.jspException&quot;, e);
+			siguiente = error;
+		}
+		
+		RequestDispatcher rd = 
+			getServletContext().getRequestDispatcher(dirJSP + siguiente);
+		rd.forward(req, res);
+	}
+}</pre>
+<p>En función de si encuentra o no un parámetro <i>id</i>, se buscará la FAQ del 
+  <i>id</i> indicado, o todas las FAQs, utilizando para ello los comandos <i>FAQComandoGet</i> 
+  y <i>FAQComandoGetAll</i> vistos antes, respectivamente.</p>
+<h2>&nbsp;</h2>
+</body>
+</html>

@@ -1,0 +1,1049 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Configuración de aplicaciones. Plugins interesantes</title>
+
+		<meta name="description" content="Experto en desarrollo de aplicaciones web con JavaEE y Javascript">
+		<meta name="author" content="Francisco José García Rico">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/experto.css" id="theme">
+		
+    	<!-- coloreado de sintaxis con highlight.js -->
+    	<link rel="stylesheet" type="text/css" href="lib/css/github.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+
+	</head>
+
+<body>
+	<div class="reveal">
+	<div class="slides">
+		<!-- todo lo que se ponga aqui (que no sea un <section>) aparecerá
+		en todas las diapositivas -->
+		<div class="header">
+			<div class="logo">
+			 <img src="css/images/logo_small.png">
+			</div>
+			<div class="bar">Experto en desarrollo de aplicaciones web con JavaEE y Javascript</div>
+		</div>
+		<div class="footer">
+			<div class="left">
+				Framework Grails
+			</div>
+			<div class="center">
+				&copy; 2014-15 Dpto. Ciencia de la Computación e I.A.
+			</div>
+			<div class="right">
+				Sesión 8
+			</div>	
+		</div>	
+		<!-- Cada <section> es una slide -->	
+		
+		<section>
+			<!-- al poner el <h1> automáticamente aparece el logo del curso-->
+			<h1>Framework Grails</h1>
+			<h2>Sesión 8: Configuración de aplicaciones. Plugins interesantes</h2>
+		</section>
+		
+		<section>
+			<h2>Índice</h2>
+			<ul>
+				<li>Configuración de aplicaciones</li>
+				<li>Empaquetamiento de aplicaciones</li>
+				<li>Otros comandos interesantes</li>
+				<li>Plugins</li>
+			</ul>
+		</section>
+
+		<section>			
+			<h2>Configuración de aplicaciones</h2>
+			<ul>
+				<li>El archivo <em>Config.groovy</em></li>
+				<li>Sistema de logs</li>
+				<li>El archivo <em>BuildConfig.groovy</em></li>
+				<li>El archivo <em>DataSource.groovy</em></li>
+				<li>El archivo <em>Bootstrap.groovy</em></li>
+				<li>El archivo <em>UrlMappings.groovy</em></li>
+			</ul>		 
+		</section>
+
+		<section>			
+			<h2>El archivo <em>Config.groovy</em></h2>
+			<ul>
+				<li>grails.config.locations</li>
+				<li>grails.project.groupId</li>
+				<li>grails.views.default.codec</li>
+				<li>grails.controllers.defaultScope</li>
+				<li>grails.views.gsp</li>
+				<li>grails.converters.encoding</li>
+				<li>grails.scaffolding.templates.domainSuffix</li>
+				<li>grails.mime.types</li>
+			</ul>		 
+		</section>
+
+		<section>			
+			<h2>Sistema de logs</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+log4j.main = {
+    error  'org.codehaus.groovy.grails.web.servlet',  //  controllers
+           'org.codehaus.groovy.grails.web.pages', //  GSP
+           'org.codehaus.groovy.grails.web.sitemesh', //  layouts
+           'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
+           'org.codehaus.groovy.grails.web.mapping', // URL mapping
+           'org.codehaus.groovy.grails.commons', // core / classloading
+           'org.codehaus.groovy.grails.plugins', // plugins
+           'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
+           'org.springframework',
+           'org.hibernate',
+           'net.sf.ehcache.hibernate'
+}
+				</code>
+			</pre>		
+		</section>
+
+		<section>			
+			<h2>Niveles de log</h2>
+			<ul>
+				<li>off</li>
+				<li>fatal</li>
+				<li>error</li>
+				<li>warn</li>
+				<li>info</li>
+				<li>debug</li>
+				<li>trace</li>
+				<li>all</li>
+			</ul>		 
+		</section>
+
+		<section>			
+			<h2>Artefactos de Grails</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+log4j.main = {
+  // Establecemos el nivel info para todos los artefactos de la aplicación
+  info "grails.app"
+
+  // Especificamos el nivel debug para el controlador de la clase Tag
+  debug "grails.app.controllers.es.ua.expertojava.todo.TagController"
+
+  // Especificamos el nivel error para el servicio de la clase Todo
+  error "grails.app.services.es.ua.expertojava.todo.TodoService"
+
+  // Especificamos el nivel para todas las librerías de etiquetas 
+  info "grails.app.taglib" 
+}
+				</code>
+			</pre>		
+		</section>						
+
+		<section>			
+			<h2>Tipos de artefactos</h2>
+			<ul>
+				<li>conf</li>
+				<li>filters</li>
+				<li>taglib</li>
+				<li>services</li>
+				<li>controllers</li>
+				<li>domain</li>
+			</ul>		 
+		</section>
+
+		<section>			
+			<h2>Ejemplo</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+log4j.main = {
+  appenders {
+    file name:'file', file:'mylog.log'
+  }
+}
+				</code>
+			</pre>		
+		</section>			
+
+		<section>			
+			<h2>Ejemplo</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+trace file: "grails.app.controllers.es.ua.expertojava.todo.CategoryController"
+				</code>
+			</pre>		
+		</section>	
+
+		<section>			
+			<h2>Ejemplo</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def index() {
+  log.trace("Método index del controlador CategoryController")
+  params.max = Math.min(max ?: 10, 100)
+  respond Category.list(params), model:[categoryInstanceCount: Category.count()]
+}
+				</code>
+			</pre>		
+		</section>	
+
+		<section>			
+			<h2>Ejemplo</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+2015-03-28 12:05:08,549 ["http-bio-8080"-exec-1] TRACE es.ua.expertojava.todo.CategoryController  - 
+Método index del controlador CategoryController
+				</code>
+			</pre>		
+		</section>	
+
+		<section>			
+			<h2>El archivo <em>BuildConfig.groovy</em></h2>
+			<ul>
+				<li>grails.servlet.version</li>
+				<li>grails.project.class.dir</li>
+				<li>grails.project.test.class.dir</li>
+				<li>grails.project.test.reports.dir</li>
+				<li>grails.project.target.level</li>
+				<li>grails.project.war.file</li>
+				<li>grails.project.fork</li>
+				<li>grails.project.dependency.resolution</li>
+				<li>grails.project.dependency.resolution.plugins</li>
+			</ul>		 
+		</section>
+
+		<section>			
+			<h2>El archivo <em>DataSource.groovy</em></h2>
+			<ul>
+				<li>3 entornos: desarrollo, test y producción</li>
+				<li>Configuración diferentes para cada entorno</li>
+			</ul>		 
+		</section>
+
+		<section>			
+			<h2>DataSource.groovy</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+dataSource {
+    pooled = true
+    jmxExport = true
+    driverClassName = "org.h2.Driver"
+    username = "sa"
+    password = ""
+}
+hibernate {
+    cache.use_second_level_cache = true
+    cache.use_query_cache = false
+//    cache.region.factory_class = 'net.sf.ehcache.hibernate.EhCacheRegionFactory' // Hibernate 3
+    cache.region.factory_class = 'org.hibernate.cache.ehcache.EhCacheRegionFactory' // Hibernate 4
+    singleSession = true // configure OSIV singleSession mode
+    flush.mode = 'manual' // OSIV session flush mode outside of transactional context
+}
+
+// environment specific settings
+environments {
+    development {
+        dataSource {
+            dbCreate = "create-drop" // one of 'create', 'create-drop', 'update', 'validate', ''
+            url = "jdbc:h2:mem:devDb;MVCC=TRUE;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE"
+        }
+    }
+    test {
+        dataSource {
+            dbCreate = "update"
+            url = "jdbc:h2:mem:testDb;MVCC=TRUE;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE"
+        }
+    }
+    production {
+        dataSource {
+            dbCreate = "update"
+            url = "jdbc:h2:prodDb;MVCC=TRUE;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE"
+            properties {
+               // See http://grails.org/doc/latest/guide/conf.html#dataSource for documentation
+               jmxEnabled = true
+               initialSize = 5
+               maxActive = 50
+               minIdle = 5
+               maxIdle = 25
+               maxWait = 10000
+               maxAge = 10 * 60000
+               timeBetweenEvictionRunsMillis = 5000
+               minEvictableIdleTimeMillis = 60000
+               validationQuery = "SELECT 1"
+               validationQueryTimeout = 3
+               validationInterval = 15000
+               testOnBorrow = true
+               testWhileIdle = true
+               testOnReturn = false
+               jdbcInterceptors = "ConnectionState"
+               defaultTransactionIsolation = java.sql.Connection.TRANSACTION_READ_COMMITTED
+            }
+        }
+    }
+}
+				</code>
+			</pre>		
+		</section>
+
+		<section>
+			<h2>Arranque por entorno</h2>
+			<ul>
+				<li>Desarrollo: <em>grails dev run-app</em> o <em>grails run-app</em></li>
+				<li>Test: <em>grails test run-app</em></li>
+				<li>Producción: <em>grails prod run-app</em></li>
+			</ul>
+		</section>
+
+		<section>			
+			<h2>Mysql</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+production {
+        dataSource {
+            dbCreate = "update"
+            url = "jdbc:mysql://localhost:3306/todo?useUnicode=true&characterEncoding=UTF-8"
+            username = "userprod"
+            password = "pwdprod"
+            properties {
+               // See http://grails.org/doc/latest/guide/conf.html#dataSource for documentation
+               jmxEnabled = true
+               initialSize = 5
+               maxActive = 50
+               minIdle = 5
+               maxIdle = 25
+               maxWait = 10000
+               maxAge = 10 * 60000
+               timeBetweenEvictionRunsMillis = 5000
+               minEvictableIdleTimeMillis = 60000
+               validationQuery = "SELECT 1"
+               validationQueryTimeout = 3
+               validationInterval = 15000
+               testOnBorrow = true
+               testWhileIdle = true
+               testOnReturn = false
+               jdbcInterceptors = "ConnectionState"
+               defaultTransactionIsolation = java.sql.Connection.TRANSACTION_READ_COMMITTED
+            }
+        }
+    }
+				</code>
+			</pre>		
+		</section>
+
+		<section>			
+			<h2>Driver Mysql</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+grails.project.dependency.resolution = {
+  ...
+
+  dependencies {
+    runtime 'mysql:mysql-connector-java:5.1.34'
+  }
+  ....
+}
+				</code>
+			</pre>				
+		</section>
+
+		<section>
+			<h2>Opciones <em>dbCreate</em></h2>
+			<ul>
+				<li>create-drop</li>
+				<li>create</li>
+				<li>update</li>
+				<li>validate</li>
+				<li>otro valor</li>
+			</ul>
+		</section>		
+
+		<section>			
+			<h2>El archivo Bootstrap.groovy</h2>
+			<ul>
+				<li>Ahorra tiempo</li>
+				<li><em>init()</em></li>
+				<li><em>destroy()</em></li>
+				<li>Diferentes entornos</li>
+			</ul>			
+		</section>	
+
+		<section>			
+			<h2>Driver Mysql</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+import grails.util.Environment
+
+class BootStrap {
+  def init = { servletContext -> 
+    switch (Environment.current) {
+      case Environment.DEVELOPMENT:
+        configuracionDesarrollo()
+        break
+      case Environment.PRODUCTION:
+        configuracionProduccion()
+        break
+      case Environment.TEST:
+        configuracionTest()
+        break
+    }
+  }
+  def destroy = {
+    switch (Environment.current) {
+      case Environment.DEVELOPMENT:
+        salirDesarrollo()
+        break
+      case Environment.PRODUCTION:
+        salirProduccion()
+        break
+      case Environment.TEST:
+        salirTest()
+        break
+    }
+  }
+}
+				</code>
+			</pre>				
+		</section>		
+
+		<section>			
+			<h2>El archivo <em>UrlMappings.groovy</em></h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+class UrlMappings {
+
+  static mappings = {
+        "/$controller/$action?/$id?(.$format)?"{
+            constraints {
+                // apply constraints here
+            }
+        }
+
+        "/"(view:"/index")
+        "500"(view:'/error')
+  }
+}
+				</code>
+			</pre>			
+		</section>
+
+		<section>			
+			<h2>Tareas por usuario</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+"/todos/$username"(controller:"todo",action:"showTodosByUser")
+				</code>
+			</pre>
+			<pre class="fragment">
+				<code class="groovy" data-trim style="font-size: 18px;">
+"/$username"{
+      controller = "todo"
+      action = "showtodosbyuser"
+}
+				</code>
+			</pre>						
+		</section>
+
+		<section>			
+			<h2>Internacionalización</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+"/tarea/$action?/$id?(.$format)?"{
+      controller = "tarea"
+}
+
+"/usuario/$action?/$id?(.$format)?"{
+      controller = "user"
+}
+				</code>
+			</pre>						
+		</section>
+
+		<section>			
+			<h2>Restricciones</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+"/$year/$month/$day" {
+  controller = "todo"
+  action = "showtodosbyday"
+  constraints {
+    year(matches:/\d{4}/)
+    month(matches:/\d{2}/)
+    day(matches:/\d{2}/)
+  }
+}
+				</code>
+			</pre>						
+		</section>
+
+		<section>			
+			<h2>Códigos de error</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+"404"(view:'/error')
+				</code>
+			</pre>
+			<pre class="fragment">
+				<code class="groovy" data-trim style="font-size: 18px;">
+"404"(controller:'error', action:'notFound')
+				</code>
+			</pre>									
+		</section>
+
+		<section>			
+			<h2>Reescritura de URLs</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+static mappings = {
+   "/$blog/$year?/$month?/$day?/$id?"(controller:"blog", action:"show")
+}
+				</code>
+			</pre>			
+		</section>
+
+		<section>			
+			<h2>Reescritura de URLs</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+&lt;g:link controller=&quot;blog&quot; action=&quot;show&quot; params=&quot;[blog:'fred', year:2014]&quot;&gt;
+    My Blog
+&lt;/g:link&gt;
+
+&lt;g:link controller=&quot;blog&quot; action=&quot;show&quot; params=&quot;[blog:'fred', year:2014, month:10]&quot;&gt; 
+My Blog - October 2014 Posts 
+&lt;/g:link&gt;
+				</code>
+			</pre>			
+		</section>
+
+		<section>			
+			<h2>Reescritura de URLs</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+&lt;a href=&quot;/fred/2014&quot;&gt;My Blog&lt;/a&gt;
+&lt;a href=&quot;/fred/2014/10&quot;&gt;My Blog - October 2014 Posts&lt;/a&gt;
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Empaquetamiento de aplicaciones</h2>
+			<ul>
+				<li>Actualizar repositorio</li>
+				<li>Tests</li>
+				<li>Incrementar version <em>app.version</em></li>
+				<li><em>grails clean</em></li>
+				<li>Generar war <em>grails prod war</em></li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Servidores de aplicaciones</h2>
+			<ul>
+				<li>JBoss</li>
+				<li>GlassFish</li>
+				<li>Apache Geronimo</li>
+				<li>BEA WebLogic</li>
+				<li>IBM WebSphere</li>
+				<li>Apache Tomcat</li>
+				<li>Jetty</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Otros comandos interesantes</h2>
+			<ul>
+				<li>grails bug-report</li>
+				<li>grails clean</li>
+				<li>grails console</li>
+				<li>grails doc</li>
+				<li>grails help</li>
+				<li>grails list-plugins</li>
+				<li>grails plugin-info</li>
+				<li>grails run-app -https</li>
+				<li>grails schema-export</li>
+				<li>grails set-version</li>
+				<li>grails stats</li>
+				<li>grails uninstall-plugin</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Plugins</h2>
+			<ul>
+				<li>Plugin console</li>
+				<li>Plugin Searchable</li>
+				<li>Plugin export</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Plugin console</h2>
+			<ul>
+				<li>Ejecución en línea de comandos</li>
+				<li>Acceso a contextos: aplicación o clases de dominio</li>
+			</ul>
+		</section>
+
+		<section>			
+			<h2>Instalación plugin console</h2>
+			<pre>
+				<code class="bash" data-trim style="font-size: 18px;">
+grails install-plugin console
+				</code>
+			</pre>
+			<pre class="fragment">
+				<code class="groovy" data-trim style="font-size: 18px;">
+grails.project.dependency.resolution {
+  ...
+  plugins {
+    ...
+    compile ":console:1.5.4"
+  }
+}
+				</code>
+			</pre>						
+		</section>
+
+		<section>
+			<h2>A tener en cuenta</h2>
+			<ul>
+				<li>http://localhost:8080/todo/console</li>
+				<li>Aplicación asegurada</li>
+			</ul>
+		</section>
+
+		<section>			
+			<h2>Acceso al plugin console</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+grails.plugin.springsecurity.controllerAnnotations.staticRules = [
+    "/console/**":          ['ROLE_ADMIN'],
+    "/plugins/console*/**": ['ROLE_ADMIN']
+]
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Interfaz plugin console</h2>
+			<p align=center><img style="border: 0;" src="../images/grails08/console.png"></p>	
+		</section>
+
+		<section>
+			<h2>Variables en el plugin console</h2>
+			<ul>
+				<li><em>ctx</em></li>
+				<li><em>grailsApplication</em></li>
+				<li><em>config</em></li>
+				<li><em>request</em></li>
+				<li><em>session</em></li>
+			</ul>
+		</section>
+
+		<section>			
+			<h2>Ejemplos de uso del plugin console</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+Todo todo = es.ua.expertojava.todo.Todo.get(1)
+
+ctx.todoService.deleteTodo(todo)
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Plugin Searchable</h2>
+			<ul>
+				<li>Tareas de búsqueda</li>
+				<li>Basado en Compass</li>
+				<li>Utiliza Apache Lucene</li>
+			</ul>
+		</section>
+
+		<section>			
+			<h2>Instalación plugin searchable</h2>
+			<pre class="fragment">
+				<code class="groovy" data-trim style="font-size: 18px;">
+grails.project.dependency.resolution = {
+  ...
+  
+  repositories {
+    ...
+    mavenRepo "http://repo.grails.org/grails/core"
+  }
+
+  plugins {
+    ...
+    compile ":searchable:0.6.9"
+  }
+}
+				</code>
+			</pre>						
+		</section>
+
+		<section>
+			<h2>Buscador generado</h2>
+			<ul>
+				<li>http://localhost:8080/todo/searchable</li>
+			</ul>
+		</section>
+
+		<section>			
+			<h2>Buscador de tareas</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+package es.ua.expertojava.todo
+
+class Todo {
+    String title
+    String description
+    Date date
+    Date reminderDate
+    String url
+    Boolean done = false
+    Category category
+
+    Date dateCreated
+    Date lastUpdated
+
+    Date dateDone
+
+    User user
+
+    static searchable = true
+
+    ...
+}
+				</code>
+			</pre>			
+		</section>
+
+		<section>			
+			<h2>Restringir la búsqueda</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+static searchable = [only: ['title', 'description']]
+				</code>
+			</pre>
+			<pre class="fragment">
+				<code class="groovy" data-trim style="font-size: 18px;">
+static searchable = [except: 'date', 'reminderDate']
+				</code>
+			</pre>						
+		</section>
+
+		<section>			
+			<h2>Problemas con Hibernate 4</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+runtime ":hibernate4:4.3.5.5" // or ":hibernate:3.6.10.17"
+				</code>
+			</pre>
+			<pre class="fragment">
+				<code class="groovy" data-trim style="font-size: 18px;">
+//cache.region.factory_class = 'net.sf.ehcache.hibernate.EhCacheRegionFactory' // Hibernate 3
+cache.region.factory_class = 'org.hibernate.cache.ehcache.EhCacheRegionFactory' // Hibernate 4
+				</code>
+			</pre>						
+		</section>
+
+		<section>
+			<h2>SearchableService</h2>
+			<ul>
+				<li><em>search</em>, https://grails.org/Searchable+Plugin+-\+Methods+-+search</li>
+				<li><em>countHits</em>, https://grails.org/Searchable+Plugin+-\+Methods+-+countHits</li>
+				<li><em>moreLikeThis</em>, https://grails.org/Searchable+Plugin+-\+Methods+-+moreLikeThis</li>
+				<li><em>suggestQuery</em>, https://grails.org/Searchable+Plugin+-\+Methods+-+suggestQuery</li>
+				<li><em>termsFreqs</em>, https://grails.org/Searchable+Plugin+-\+Methods+-+termFreqs</li>
+			</ul>
+		</section>
+
+		<section>			
+			<h2>Ejemplo con SearchableService</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def searchResult = searchableService.search(
+    "Tests",
+    [offset: 0, max: 20]
+)
+println "${searchResult.total} hits:"
+for (i in 0..&lt;searchResult.results.size()) {
+    println "${searchResult.offset + i + 1}: " +
+        "${searchResult.results[i].toString()} " +
+        "(score ${searchResult.scores[i]})"
+}
+				</code>
+			</pre>			
+		</section>
+
+		<section>			
+			<h2>Ejemplo con SearchableService</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+//Devuelve un único objeto de tipo Todo
+//que coincidan con la búsqueda realizada
+def todo = Todo.search(
+    "Tests", 
+    [result: 'top']
+)
+assert todo instanceof Todo
+
+//Devuelve todos los objetos de tipo Todo
+//que coincidan con la búsqueda realizada
+def todos = Todo.search(
+    "Tests",
+    [reload: true, result: 'every']
+)
+assert todos.each { it instanceof Todo }
+				</code>
+			</pre>			
+		</section>
+
+		<section>			
+			<h2>Filtrar por parámetro</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def todos = Todo.search([result:'every']) {
+    must(queryString(params.q))
+    must(term('$/Todo/category/id',Category.findByName("Hogar")?.id))
+}
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Plugin export</h2>
+			<ul>
+				<li>Exportar a otros formatos: excel, pdf, csv, etc.</li>
+			</ul>
+		</section>
+
+		<section>			
+			<h2>Instalación plugin export</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+grails.project.dependency.resolution = {
+  ...
+  
+  repositories {
+    ...
+    mavenRepo "http://repo.grails.org/grails/core"
+  }
+
+  dependencies {
+    ...
+    compile 'commons-beanutils:commons-beanutils:1.8.3'
+  }
+  plugins {
+    ...
+    compile ":export:1.7-SNAPSHOT"
+  }
+}
+				</code>
+			</pre>			
+		</section>
+
+		<section>			
+			<h2>Configuración plugin export</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+grails.mime.types = [
+    all:           '*/*',
+    atom:          'application/atom+xml',
+    css:           'text/css',
+    csv:           'text/csv',
+    pdf:           'application/pdf',
+    excel:         'application/vnd.ms-excel',
+    ods:           'application/vnd.oasis.opendocument.spreadsheet',
+    form:          'application/x-www-form-urlencoded',
+    html:          ['text/html','application/xhtml+xml'],
+    js:            'text/javascript',
+    json:          ['application/json', 'text/json'],
+    multipartForm: 'multipart/form-data',
+    rss:           'application/rss+xml',
+    text:          'text/plain',
+    hal:           ['application/hal+json','application/hal+xml'],
+    xml:           ['text/xml', 'application/xml']
+]
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Uso del plugin export</h2>
+			<ul>
+				<li>Incluir etiqueta <em>&lt;export:resource/&gt;</em></li>
+				<li>Incluir etiqueta <em>&lt;export:formats /&gt;</em></li>
+				<li>Especificar que formatos queremos <em>&lt;export:formats formats=&quot;['csv','excel','ods','pdf','xml']&quot;/&gt;</em></li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Ejemplo del plugin export</h2>
+			<pre>
+				<code class="html" data-trim style="font-size: 18px;">
+&lt;html&gt;
+  &lt;head&gt;
+    ...
+    &lt;export:resource/&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    ...
+      &lt;h1&gt;&lt;g:message code=&quot;default.list.label&quot; args=&quot;[entityName]&quot; /&gt;&lt;/h1&gt;
+      &lt;g:if test=&quot;${flash.message}&quot;&gt;
+        &lt;div class=&quot;message&quot; role=&quot;status&quot;&gt;${flash.message}&lt;/div&gt;
+      &lt;/g:if&gt;
+      &lt;export:formats formats=&quot;['csv', 'excel', 'ods', 'pdf', 'xml']&quot; /&gt;
+    ...
+  &lt;/body&gt;
+&lt;/html&gt;
+				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>Interfaz de usuario del plugin export</h2>
+			<p align=center><img style="border: 0;" src="../images/grails08/exportbar.png"></p>	
+		</section>
+
+		<section>
+			<h2>Cambios en el controlador</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+package es.ua.expertojava.todo
+
+
+
+import static org.springframework.http.HttpStatus.*
+import grails.transaction.Transactional
+
+@Transactional(readOnly = true)
+class TodoController {
+
+    def todoService
+    def springSecurityService
+    def exportService
+
+    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
+
+    def index(Integer max) {
+        params.max = Math.min(max ?: 10, 100)
+        if(params?.f && params.f != "html"){
+            response.contentType = grailsApplication.config.grails.mime.types[params.f]
+            response.setHeader("Content-disposition", "attachment; filename=todos.${params.extension}")
+            exportService.export(params.f, response.outputStream, Todo.findAllByUser(springSecurityService.currentUser, params), [:], [:])
+        }
+        respond Todo.findAllByUser(springSecurityService.currentUser, params), model:[todoInstanceCount: Todo.countByUser(springSecurityService.currentUser)]
+    }
+  ...
+}
+				</code>
+			</pre>
+		</section>		
+
+		<section>
+			<h2>Mejoras en la forma de exportar</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def index(Integer max) {
+    params.max = Math.min(max ?: 10, 100)
+    if(params?.f && params.f != "html"){
+        response.contentType = grailsApplication.config.grails.mime.types[params.f]
+        response.setHeader("Content-disposition", "attachment; filename=todos.${params.extension}")
+
+        List props = ["title", "description", "date", "url", "done"]
+        Map tags = ["title":"Título",
+                     "description":"Descripción",
+                     "date":"Fecha",
+                     "url":"URL",
+                     "done":"Hecho"]
+
+        // Closure formateador
+        def uppercase = { domain, value ->  return value.toUpperCase() }
+
+        Map formatters = [title: uppercase]
+        Map parameters = [title: "LISTADO DE USUARIOS"]
+
+        exportService.export(params.f, response.outputStream,
+            Todo.findAllByUser(springSecurityService.currentUser, params), props, tags,
+            formatters, parameters)
+    }
+    respond Todo.findAllByUser(springSecurityService.currentUser, params), model:[todoInstanceCount: Todo.countByUser(springSecurityService.currentUser)]
+}
+				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>Internacionalizar el plugin export</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+default.csv = CSV
+default.excel = EXCEL
+default.pdf = PDF
+default.xml = XML
+default.ods = ODS
+				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h1>¿Preguntas...?</h1>
+		</section>
+
+		<section>
+			<h1>Ejercicios</h1>
+		</section>
+	</div>
+</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+				slideNumber: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Parallax scrolling
+				// parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+				// parallaxBackgroundSize: '2100px 900px',
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+
+				]
+			});
+
+		</script>
+
+	</body>
+</html>

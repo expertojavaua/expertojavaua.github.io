@@ -1,0 +1,2036 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 1.5.2">
+<meta name="author" content="Domingo Gallardo">
+<title>Frameworks de persistencia - JPA</title>
+<style>/*! normalize.css v2.1.2 | MIT License | git.io/normalize */
+/* ========================================================================== HTML5 display definitions ========================================================================== */
+/** Correct `block` display not defined in IE 8/9. */
+article, aside, details, figcaption, figure, footer, header, hgroup, main, nav, section, summary { display: block; }
+
+/** Correct `inline-block` display not defined in IE 8/9. */
+audio, canvas, video { display: inline-block; }
+
+/** Prevent modern browsers from displaying `audio` without controls. Remove excess height in iOS 5 devices. */
+audio:not([controls]) { display: none; height: 0; }
+
+/** Address `[hidden]` styling not present in IE 8/9. Hide the `template` element in IE, Safari, and Firefox < 22. */
+[hidden], template { display: none; }
+
+script { display: none !important; }
+
+/* ========================================================================== Base ========================================================================== */
+/** 1. Set default font family to sans-serif. 2. Prevent iOS text size adjust after orientation change, without disabling user zoom. */
+html { font-family: sans-serif; /* 1 */ -ms-text-size-adjust: 100%; /* 2 */ -webkit-text-size-adjust: 100%; /* 2 */ }
+
+/** Remove default margin. */
+body { margin: 0; }
+
+/* ========================================================================== Links ========================================================================== */
+/** Remove the gray background color from active links in IE 10. */
+a { background: transparent; }
+
+/** Address `outline` inconsistency between Chrome and other browsers. */
+a:focus { outline: thin dotted; }
+
+/** Improve readability when focused and also mouse hovered in all browsers. */
+a:active, a:hover { outline: 0; }
+
+/* ========================================================================== Typography ========================================================================== */
+/** Address variable `h1` font-size and margin within `section` and `article` contexts in Firefox 4+, Safari 5, and Chrome. */
+h1 { font-size: 2em; margin: 0.67em 0; }
+
+/** Address styling not present in IE 8/9, Safari 5, and Chrome. */
+abbr[title] { border-bottom: 1px dotted; }
+
+/** Address style set to `bolder` in Firefox 4+, Safari 5, and Chrome. */
+b, strong { font-weight: bold; }
+
+/** Address styling not present in Safari 5 and Chrome. */
+dfn { font-style: italic; }
+
+/** Address differences between Firefox and other browsers. */
+hr { -moz-box-sizing: content-box; box-sizing: content-box; height: 0; }
+
+/** Address styling not present in IE 8/9. */
+mark { background: #ff0; color: #000; }
+
+/** Correct font family set oddly in Safari 5 and Chrome. */
+code, kbd, pre, samp { font-family: monospace, serif; font-size: 1em; }
+
+/** Improve readability of pre-formatted text in all browsers. */
+pre { white-space: pre-wrap; }
+
+/** Set consistent quote types. */
+q { quotes: "\201C" "\201D" "\2018" "\2019"; }
+
+/** Address inconsistent and variable font size in all browsers. */
+small { font-size: 80%; }
+
+/** Prevent `sub` and `sup` affecting `line-height` in all browsers. */
+sub, sup { font-size: 75%; line-height: 0; position: relative; vertical-align: baseline; }
+
+sup { top: -0.5em; }
+
+sub { bottom: -0.25em; }
+
+/* ========================================================================== Embedded content ========================================================================== */
+/** Remove border when inside `a` element in IE 8/9. */
+img { border: 0; }
+
+/** Correct overflow displayed oddly in IE 9. */
+svg:not(:root) { overflow: hidden; }
+
+/* ========================================================================== Figures ========================================================================== */
+/** Address margin not present in IE 8/9 and Safari 5. */
+figure { margin: 0; }
+
+/* ========================================================================== Forms ========================================================================== */
+/** Define consistent border, margin, and padding. */
+fieldset { border: 1px solid #c0c0c0; margin: 0 2px; padding: 0.35em 0.625em 0.75em; }
+
+/** 1. Correct `color` not being inherited in IE 8/9. 2. Remove padding so people aren't caught out if they zero out fieldsets. */
+legend { border: 0; /* 1 */ padding: 0; /* 2 */ }
+
+/** 1. Correct font family not being inherited in all browsers. 2. Correct font size not being inherited in all browsers. 3. Address margins set differently in Firefox 4+, Safari 5, and Chrome. */
+button, input, select, textarea { font-family: inherit; /* 1 */ font-size: 100%; /* 2 */ margin: 0; /* 3 */ }
+
+/** Address Firefox 4+ setting `line-height` on `input` using `!important` in the UA stylesheet. */
+button, input { line-height: normal; }
+
+/** Address inconsistent `text-transform` inheritance for `button` and `select`. All other form control elements do not inherit `text-transform` values. Correct `button` style inheritance in Chrome, Safari 5+, and IE 8+. Correct `select` style inheritance in Firefox 4+ and Opera. */
+button, select { text-transform: none; }
+
+/** 1. Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio` and `video` controls. 2. Correct inability to style clickable `input` types in iOS. 3. Improve usability and consistency of cursor style between image-type `input` and others. */
+button, html input[type="button"], input[type="reset"], input[type="submit"] { -webkit-appearance: button; /* 2 */ cursor: pointer; /* 3 */ }
+
+/** Re-set default cursor for disabled elements. */
+button[disabled], html input[disabled] { cursor: default; }
+
+/** 1. Address box sizing set to `content-box` in IE 8/9. 2. Remove excess padding in IE 8/9. */
+input[type="checkbox"], input[type="radio"] { box-sizing: border-box; /* 1 */ padding: 0; /* 2 */ }
+
+/** 1. Address `appearance` set to `searchfield` in Safari 5 and Chrome. 2. Address `box-sizing` set to `border-box` in Safari 5 and Chrome (include `-moz` to future-proof). */
+input[type="search"] { -webkit-appearance: textfield; /* 1 */ -moz-box-sizing: content-box; -webkit-box-sizing: content-box; /* 2 */ box-sizing: content-box; }
+
+/** Remove inner padding and search cancel button in Safari 5 and Chrome on OS X. */
+input[type="search"]::-webkit-search-cancel-button, input[type="search"]::-webkit-search-decoration { -webkit-appearance: none; }
+
+/** Remove inner padding and border in Firefox 4+. */
+button::-moz-focus-inner, input::-moz-focus-inner { border: 0; padding: 0; }
+
+/** 1. Remove default vertical scrollbar in IE 8/9. 2. Improve readability and alignment in all browsers. */
+textarea { overflow: auto; /* 1 */ vertical-align: top; /* 2 */ }
+
+/* ========================================================================== Tables ========================================================================== */
+/** Remove most spacing between table cells. */
+table { border-collapse: collapse; border-spacing: 0; }
+
+meta.foundation-mq-small { font-family: "only screen and (min-width: 768px)"; width: 768px; }
+
+meta.foundation-mq-medium { font-family: "only screen and (min-width:1280px)"; width: 1280px; }
+
+meta.foundation-mq-large { font-family: "only screen and (min-width:1440px)"; width: 1440px; }
+
+*, *:before, *:after { -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
+
+html, body { font-size: 97%; }
+
+body { background: white; color: #222222; padding: 0; margin: 0; font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif; font-weight: normal; font-style: normal; line-height: 1; position: relative; cursor: auto; }
+
+a:hover { cursor: pointer; }
+
+img, object, embed { max-width: 100%; height: auto; }
+
+object, embed { height: 100%; }
+
+img { -ms-interpolation-mode: bicubic; }
+
+#map_canvas img, #map_canvas embed, #map_canvas object, .map_canvas img, .map_canvas embed, .map_canvas object { max-width: none !important; }
+
+.left { float: left !important; }
+
+.right { float: right !important; }
+
+.text-left { text-align: left !important; }
+
+.text-right { text-align: right !important; }
+
+.text-center { text-align: center !important; }
+
+.text-justify { text-align: justify !important; }
+
+.hide { display: none; }
+
+.antialiased, body { -webkit-font-smoothing: antialiased; }
+
+img { display: inline-block; vertical-align: middle; }
+
+textarea { height: auto; min-height: 50px; }
+
+select { width: 100%; }
+
+p.lead, .paragraph.lead > p, #preamble > .sectionbody > .paragraph:first-of-type p { font-size: 1.21875em; line-height: 1.6; }
+
+.subheader, .admonitionblock td.content > .title, .audioblock > .title, .exampleblock > .title, .imageblock > .title, .listingblock > .title, .literalblock > .title, .stemblock > .title, .openblock > .title, .paragraph > .title, .quoteblock > .title, table.tableblock > .title, .verseblock > .title, .videoblock > .title, .dlist > .title, .olist > .title, .ulist > .title, .qlist > .title, .hdlist > .title { line-height: 1.4; color: #6f6f6f; font-weight: 300; margin-top: 0.2em; margin-bottom: 0.5em; }
+
+/* Typography resets */
+div, dl, dt, dd, ul, ol, li, h1, h2, h3, #toctitle, .sidebarblock > .content > .title, h4, h5, h6, pre, form, p, blockquote, th, td { margin: 0; padding: 0; direction: ltr; }
+
+/* Default Link Styles */
+a { color: #1164be; text-decoration: none; line-height: inherit; }
+a img { border: none; }
+
+/* Default paragraph styles */
+p { font-family: inherit; font-weight: normal; font-size: 1em; line-height: 1.4; margin-bottom: 1em; text-rendering: optimizeLegibility; }
+p aside { font-size: 0.875em; line-height: 1.35; font-style: italic; }
+
+/* Default header styles */
+h1, h2, h3, #toctitle, .sidebarblock > .content > .title, h4, h5, h6 { font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif; font-weight: bold; font-style: normal; color: #1c355e; text-rendering: optimizeLegibility; margin-top: 1em; margin-bottom: 0.5em; line-height: 1.2125em; }
+h1 small, h2 small, h3 small, #toctitle small, .sidebarblock > .content > .title small, h4 small, h5 small, h6 small { font-size: 60%; color: #6f6f6f; line-height: 0; }
+
+h1 { font-size: 2.125em; }
+
+h2 { font-size: 1.6875em; }
+
+h3, #toctitle, .sidebarblock > .content > .title { font-size: 1.375em; }
+
+h4 { font-size: 1.125em; }
+
+h5 { font-size: 1.125em; }
+
+h6 { font-size: 1em; }
+
+hr { border: solid #dddddd; border-width: 1px 0 0; clear: both; margin: 1.25em 0 1.1875em; height: 0; }
+
+/* Helpful Typography Defaults */
+em, i { font-style: italic; line-height: inherit; }
+
+strong, b { font-weight: bold; line-height: inherit; }
+
+small { font-size: 60%; line-height: inherit; }
+
+code { font-family: Consolas, "Liberation Mono", Courier, monospace; font-weight: bold; }
+
+/* Lists */
+ul, ol, dl { font-size: 1em; line-height: 1.4; margin-bottom: 1.25em; list-style-position: outside; font-family: inherit; }
+
+ul, ol { margin-left: 2.5em; }
+ul.no-bullet, ol.no-bullet { margin-left: 1.5em; }
+
+/* Unordered Lists */
+ul li ul, ul li ol { margin-left: 1.25em; margin-bottom: 0; font-size: 1em; /* Override nested font-size change */ }
+ul.square li ul, ul.circle li ul, ul.disc li ul { list-style: inherit; }
+ul.square { list-style-type: square; }
+ul.circle { list-style-type: circle; }
+ul.disc { list-style-type: disc; }
+ul.no-bullet { list-style: none; }
+
+/* Ordered Lists */
+ol li ul, ol li ol { margin-left: 1.25em; margin-bottom: 0; }
+
+/* Definition Lists */
+dl dt { margin-bottom: 0.3125em; font-weight: bold; }
+dl dd { margin-bottom: 1.25em; }
+
+/* Abbreviations */
+abbr, acronym { text-transform: uppercase; font-size: 90%; color: #222222; border-bottom: 1px dotted #dddddd; cursor: help; }
+
+abbr { text-transform: none; }
+
+/* Blockquotes */
+blockquote { margin: 0 0 1.25em; padding: 0.5625em 1.25em 0 1.1875em; border-left: 1px solid #dddddd; }
+blockquote cite { display: block; font-size: 0.8125em; color: #555555; }
+blockquote cite:before { content: "\2014 \0020"; }
+blockquote cite a, blockquote cite a:visited { color: #555555; }
+
+blockquote, blockquote p { line-height: 1.6; color: #6f6f6f; }
+
+/* Microformats */
+.vcard { display: inline-block; margin: 0 0 1.25em 0; border: 1px solid #dddddd; padding: 0.625em 0.75em; }
+.vcard li { margin: 0; display: block; }
+.vcard .fn { font-weight: bold; font-size: 0.9375em; }
+
+.vevent .summary { font-weight: bold; }
+.vevent abbr { cursor: auto; text-decoration: none; font-weight: bold; border: none; padding: 0 0.0625em; }
+
+/*@media only screen and (min-width: 768px) { h1, h2, h3, #toctitle, .sidebarblock > .content > .title, h4, h5, h6 { line-height: 1.4; }
+  h1 { font-size: 2.75em; }
+  h2 { font-size: 2.3125em; }
+  h3, #toctitle, .sidebarblock > .content > .title { font-size: 1.6875em; }
+  h4 { font-size: 1.4375em; } }*/
+/* Tables */
+table { background: white; margin-bottom: 1.25em; border: solid 1px #dddddd; }
+table thead, table tfoot { background: whitesmoke; font-weight: bold; }
+table thead tr th, table thead tr td, table tfoot tr th, table tfoot tr td { padding: 0.5em 0.625em 0.625em; font-size: inherit; color: #222222; text-align: left; }
+table tr th, table tr td { padding: 0.5625em 0.625em; font-size: inherit; color: #222222; }
+table tr.even, table tr.alt, table tr:nth-of-type(even) { background: #f9f9f9; }
+table thead tr th, table tfoot tr th, table tbody tr td, table tr td, table tfoot tr td { display: table-cell; line-height: 1.4; }
+
+h1, h2, h3, #toctitle, .sidebarblock > .content > .title, h4, h5, h6 { line-height: 1.4; border-bottom: 1px solid #dddddd }
+
+.clearfix:before, .clearfix:after, .float-group:before, .float-group:after { content: " "; display: table; }
+.clearfix:after, .float-group:after { clear: both; }
+
+*:not(pre) > code { font-size: inherit; font-style: normal !important; letter-spacing: 0; padding: 3px 2px 1px 2px; background-color: #eeeeee; border: 1px solid #dddddd; -webkit-border-radius: 0; border-radius: 0; line-height: inherit; font-weight: normal; }
+
+pre, pre > code { line-height: 1.4; color: black; font-family: monospace, serif; font-weight: normal; }
+
+.keyseq { color: #555555; }
+
+kbd { display: inline-block; color: #222222; font-size: 0.75em; line-height: 1.4; background-color: #f7f7f7; border: 1px solid #ccc; -webkit-border-radius: 3px; border-radius: 3px; -webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 0 0 0.1em white inset; box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 0 0 0.1em white inset; margin: -0.15em 0.15em 0 0.15em; padding: 0.2em 0.6em 0.2em 0.5em; vertical-align: middle; white-space: nowrap; }
+
+.keyseq kbd:first-child { margin-left: 0; }
+
+.keyseq kbd:last-child { margin-right: 0; }
+
+.menuseq, .menu { color: #090909; }
+
+b.button:before, b.button:after { position: relative; top: -1px; font-weight: normal; }
+
+b.button:before { content: "["; padding: 0 3px 0 2px; }
+
+b.button:after { content: "]"; padding: 0 2px 0 3px; }
+
+#header, #content, #footnotes, #footer { width: 100%; margin-left: auto; margin-right: auto; margin-top: 0; margin-bottom: 0; max-width: 62.5em; *zoom: 1; position: relative; padding-left: 0.9375em; padding-right: 0.9375em; }
+#header:before, #header:after, #content:before, #content:after, #footnotes:before, #footnotes:after, #footer:before, #footer:after { content: " "; display: table; }
+#header:after, #content:after, #footnotes:after, #footer:after { clear: both; }
+
+#content { margin-top: 1.25em; }
+
+#content:before { content: none; }
+
+#header > h1:first-child { color: black; margin-top: 2.25rem; margin-bottom: 0; }
+#header > h1:first-child + #toc { margin-top: 8px; border-top: 1px solid #dddddd; }
+#header > h1:only-child, body.toc2 #header > h1:nth-last-child(2) { border-bottom: 1px solid #dddddd; padding-bottom: 8px; }
+#header .details { border-bottom: 1px solid #dddddd; line-height: 1.45; padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; color: #555555; display: -ms-flexbox; display: -webkit-flex; display: flex; -ms-flex-flow: row wrap; -webkit-flex-flow: row wrap; flex-flow: row wrap; }
+#header .details span:first-child { margin-left: -0.125em; }
+#header .details span.email a { color: #6f6f6f; }
+#header .details br { display: none; }
+#header .details br + span:before { content: "\00a0\2013\00a0"; }
+#header .details br + span.author:before { content: "\00a0\22c5\00a0"; color: #6f6f6f; }
+#header .details br + span#revremark:before { content: "\00a0|\00a0"; }
+#header #revnumber { text-transform: capitalize; }
+#header #revnumber:after { content: "\00a0"; }
+
+#content > h1:first-child:not([class]) { color: black; border-bottom: 1px solid #dddddd; padding-bottom: 8px; margin-top: 0; padding-top: 1rem; margin-bottom: 1.25rem; }
+
+#floating {
+  position: fixed;
+  z-index: 1000;
+  padding: 0.5em;
+  right: 0;
+  top: 0;
+  background: white;
+  box-shadow: 0 0 1em #777777;
+  -webkit-box-shadow: 0 0 1em #777777;
+  -moz-box-shadow: 0 0 1em #777777;
+  -webkit-border-bottom-left-radius: 5px;
+  -moz-border-radius-bottomleft: 5px;
+  max-height: 80%;
+  overflow: auto;
+}
+
+#floating #full { display: none; } /* Hide the full TOC by default */
+
+#floating:hover #full{
+  display: block; /* Show it on hover */
+}
+
+
+#toc { border-bottom: 1px solid #dddddd; padding-bottom: 0.5em; }
+#toc > ul { margin-left: 0.125em; }
+#toc ul.sectlevel0 > li > a { font-style: italic; }
+#toc ul.sectlevel0 ul.sectlevel1 { margin: 0.5em 0; }
+#toc ul { font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif; list-style-type: none; }
+#toc a { text-decoration: none; }
+#toc a:active { text-decoration: underline; }
+
+#toctitle { color: #6f6f6f; font-size: 1.2em; }
+
+@media only screen and (min-width: 768px) { #toctitle { font-size: 1.375em; }
+  body.toc2 { padding-left: 15em; padding-right: 0; }
+  #toc.toc2 { margin-top: 0 !important; background-color: #f2f2f2; position: fixed; width: 15em; left: 0; top: 0; border-right: 1px solid #dddddd; border-top-width: 0 !important; border-bottom-width: 0 !important; z-index: 1000; padding: 1.25em 1em; height: 100%; overflow: auto; }
+  #toc.toc2 #toctitle { margin-top: 0; font-size: 1.2em; }
+  #toc.toc2 > ul { font-size: 0.9em; margin-bottom: 0; }
+  #toc.toc2 ul ul { margin-left: 0; padding-left: 1em; }
+  #toc.toc2 ul.sectlevel0 ul.sectlevel1 { padding-left: 0; margin-top: 0.5em; margin-bottom: 0.5em; }
+  body.toc2.toc-right { padding-left: 0; padding-right: 15em; }
+  body.toc2.toc-right #toc.toc2 { border-right-width: 0; border-left: 1px solid #dddddd; left: auto; right: 0; } }
+@media only screen and (min-width: 1280px) { body.toc2 { padding-left: 20em; padding-right: 0; }
+  #toc.toc2 { width: 20em; }
+  #toc.toc2 #toctitle { font-size: 1.375em; }
+  #toc.toc2 > ul { font-size: 0.95em; }
+  #toc.toc2 ul ul { padding-left: 1.25em; }
+  body.toc2.toc-right { padding-left: 0; padding-right: 20em; } }
+#content #toc { border-style: solid; border-width: 1px; border-color: #d9d9d9; margin-bottom: 1.25em; padding: 1.25em; background: #f2f2f2; -webkit-border-radius: 0; border-radius: 0; }
+#content #toc > :first-child { margin-top: 0; }
+#content #toc > :last-child { margin-bottom: 0; }
+
+#footer { max-width: 100%; background-color: #222222; padding: 1.25em; }
+
+#footer-text { color: #dddddd; line-height: 1.44; }
+
+.sect1 { padding-bottom: 0.625em; }
+
+@media only screen and (min-width: 768px) { .sect1 { padding-bottom: 1.25em; } }
+.sect1 + .sect1 { border-top: 1px solid #dddddd; }
+
+#content h1 > a.anchor, h2 > a.anchor, h3 > a.anchor, #toctitle > a.anchor, .sidebarblock > .content > .title > a.anchor, h4 > a.anchor, h5 > a.anchor, h6 > a.anchor { position: absolute; z-index: 1001; width: 1.5ex; margin-left: -1.5ex; display: block; text-decoration: none !important; visibility: hidden; text-align: center; font-weight: normal; }
+#content h1 > a.anchor:before, h2 > a.anchor:before, h3 > a.anchor:before, #toctitle > a.anchor:before, .sidebarblock > .content > .title > a.anchor:before, h4 > a.anchor:before, h5 > a.anchor:before, h6 > a.anchor:before { content: "\00A7"; font-size: 0.85em; display: block; padding-top: 0.1em; }
+#content h1:hover > a.anchor, #content h1 > a.anchor:hover, h2:hover > a.anchor, h2 > a.anchor:hover, h3:hover > a.anchor, #toctitle:hover > a.anchor, .sidebarblock > .content > .title:hover > a.anchor, h3 > a.anchor:hover, #toctitle > a.anchor:hover, .sidebarblock > .content > .title > a.anchor:hover, h4:hover > a.anchor, h4 > a.anchor:hover, h5:hover > a.anchor, h5 > a.anchor:hover, h6:hover > a.anchor, h6 > a.anchor:hover { visibility: visible; }
+#content h1 > a.link, h2 > a.link, h3 > a.link, #toctitle > a.link, .sidebarblock > .content > .title > a.link, h4 > a.link, h5 > a.link, h6 > a.link { color: #222222; text-decoration: none; }
+#content h1 > a.link:hover, h2 > a.link:hover, h3 > a.link:hover, #toctitle > a.link:hover, .sidebarblock > .content > .title > a.link:hover, h4 > a.link:hover, h5 > a.link:hover, h6 > a.link:hover { color: #151515; }
+
+.audioblock, .imageblock, .literalblock, .listingblock, .stemblock, .videoblock { margin-bottom: 1.25em; }
+
+.admonitionblock td.content > .title, .audioblock > .title, .exampleblock > .title, .imageblock > .title, .listingblock > .title, .literalblock > .title, .stemblock > .title, .openblock > .title, .paragraph > .title, .quoteblock > .title, table.tableblock > .title, .verseblock > .title, .videoblock > .title, .dlist > .title, .olist > .title, .ulist > .title, .qlist > .title, .hdlist > .title { text-rendering: optimizeLegibility; text-align: left; }
+
+table.tableblock > caption.title { white-space: nowrap; overflow: visible; max-width: 0; }
+
+.paragraph.lead > p, #preamble > .sectionbody > .paragraph:first-of-type p { color: black; }
+
+table.tableblock #preamble > .sectionbody > .paragraph:first-of-type p { font-size: inherit; }
+
+.admonitionblock > table { border-collapse: separate; border: 0; background: none; width: 100%; }
+.admonitionblock > table td.icon { text-align: center; width: 80px; }
+.admonitionblock > table td.icon img { max-width: none; }
+.admonitionblock > table td.icon .title { font-weight: bold; font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif; text-transform: uppercase; }
+.admonitionblock > table td.content { padding-left: 1.125em; padding-right: 1.25em; border-left: 1px solid #dddddd; color: #555555; }
+.admonitionblock > table td.content > :last-child > :last-child { margin-bottom: 0; }
+
+.exampleblock > .content { border-style: solid; border-width: 1px; border-color: #e6e6e6; margin-bottom: 1.25em; padding: 1.25em; background: white; -webkit-border-radius: 0; border-radius: 0; }
+.exampleblock > .content > :first-child { margin-top: 0; }
+.exampleblock > .content > :last-child { margin-bottom: 0; }
+
+.sidebarblock { border-style: solid; border-width: 1px; border-color: #d9d9d9; margin-bottom: 1.25em; padding: 1.25em; background: #f2f2f2; -webkit-border-radius: 0; border-radius: 0; }
+.sidebarblock > :first-child { margin-top: 0; }
+.sidebarblock > :last-child { margin-bottom: 0; }
+.sidebarblock > .content > .title { color: #6f6f6f; margin-top: 0; }
+
+.exampleblock > .content > :last-child > :last-child, .exampleblock > .content .olist > ol > li:last-child > :last-child, .exampleblock > .content .ulist > ul > li:last-child > :last-child, .exampleblock > .content .qlist > ol > li:last-child > :last-child, .sidebarblock > .content > :last-child > :last-child, .sidebarblock > .content .olist > ol > li:last-child > :last-child, .sidebarblock > .content .ulist > ul > li:last-child > :last-child, .sidebarblock > .content .qlist > ol > li:last-child > :last-child { margin-bottom: 0; }
+
+.literalblock pre, .listingblock pre:not(.highlight), .listingblock pre[class="highlight"], .listingblock pre[class^="highlight "], .listingblock pre.CodeRay, .listingblock pre.prettyprint { background: #eeeeee; }
+.sidebarblock .literalblock pre, .sidebarblock .listingblock pre:not(.highlight), .sidebarblock .listingblock pre[class="highlight"], .sidebarblock .listingblock pre[class^="highlight "], .sidebarblock .listingblock pre.CodeRay, .sidebarblock .listingblock pre.prettyprint { background: #f2f1f1; }
+
+.literalblock pre, .literalblock pre[class], .listingblock pre, .listingblock pre[class] { border: 1px solid #cccccc; -webkit-border-radius: 0; border-radius: 0; word-wrap: break-word; padding: 0.8em 0.8em 0.65em 0.8em; font-size: 0.8125em; }
+.literalblock pre.nowrap, .literalblock pre[class].nowrap, .listingblock pre.nowrap, .listingblock pre[class].nowrap { overflow-x: auto; white-space: pre; word-wrap: normal; }
+@media only screen and (min-width: 768px) { .literalblock pre, .literalblock pre[class], .listingblock pre, .listingblock pre[class] { font-size: 0.90625em; } }
+@media only screen and (min-width: 1280px) { .literalblock pre, .literalblock pre[class], .listingblock pre, .listingblock pre[class] { font-size: 1em; } }
+
+.literalblock.output pre { color: #eeeeee; background-color: black; }
+
+.listingblock pre.highlightjs { padding: 0; }
+.listingblock pre.highlightjs > code { padding: 0.8em 0.8em 0.65em 0.8em; -webkit-border-radius: 0; border-radius: 0; }
+
+.listingblock > .content { position: relative; }
+
+.listingblock code[data-lang]:before { display: none; content: attr(data-lang); position: absolute; font-size: 0.75em; top: 0.425rem; right: 0.5rem; line-height: 1; text-transform: uppercase; color: #999; }
+
+.listingblock:hover code[data-lang]:before { display: block; }
+
+.listingblock.terminal pre .command:before { content: attr(data-prompt); padding-right: 0.5em; color: #999; }
+
+.listingblock.terminal pre .command:not([data-prompt]):before { content: "$"; }
+
+table.pyhltable { border-collapse: separate; border: 0; margin-bottom: 0; background: none; }
+
+table.pyhltable td { vertical-align: top; padding-top: 0; padding-bottom: 0; }
+
+table.pyhltable td.code { padding-left: .75em; padding-right: 0; }
+
+pre.pygments .lineno, table.pyhltable td:not(.code) { color: #999; padding-left: 0; padding-right: .5em; border-right: 1px solid #dddddd; }
+
+pre.pygments .lineno { display: inline-block; margin-right: .25em; }
+
+table.pyhltable .linenodiv { background: none !important; padding-right: 0 !important; }
+
+.quoteblock { margin: 0 1em 1.25em 1.5em; display: table; }
+.quoteblock > .title { margin-left: -1.5em; margin-bottom: 0.75em; }
+.quoteblock blockquote, .quoteblock blockquote p { color: #6f6f6f; font-size: 1.15rem; line-height: 1.75; word-spacing: 0.1em; letter-spacing: 0; font-style: italic; text-align: justify; }
+.quoteblock blockquote { margin: 0; padding: 0; border: 0; }
+.quoteblock blockquote:before { content: "\201c"; float: left; font-size: 2.75em; font-weight: bold; line-height: 0.6em; margin-left: -0.6em; color: #6f6f6f; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); }
+.quoteblock blockquote > .paragraph:last-child p { margin-bottom: 0; }
+.quoteblock .attribution { margin-top: 0.5em; margin-right: 0.5ex; text-align: right; }
+.quoteblock .quoteblock { margin-left: 0; margin-right: 0; padding: 0.5em 0; border-left: 3px solid #555555; }
+.quoteblock .quoteblock blockquote { padding: 0 0 0 0.75em; }
+.quoteblock .quoteblock blockquote:before { display: none; }
+
+.verseblock { margin: 0 1em 1.25em 1em; }
+.verseblock pre { font-family: "Open Sans", "DejaVu Sans", sans; font-size: 1.15rem; color: #6f6f6f; font-weight: 300; text-rendering: optimizeLegibility; }
+.verseblock pre strong { font-weight: 400; }
+.verseblock .attribution { margin-top: 1.25rem; margin-left: 0.5ex; }
+
+.quoteblock .attribution, .verseblock .attribution { font-size: 0.8125em; line-height: 1.45; font-style: italic; }
+.quoteblock .attribution br, .verseblock .attribution br { display: none; }
+.quoteblock .attribution cite, .verseblock .attribution cite { display: block; letter-spacing: -0.05em; color: #555555; }
+
+.quoteblock.abstract { margin: 0 0 1.25em 0; display: block; }
+.quoteblock.abstract blockquote, .quoteblock.abstract blockquote p { text-align: left; word-spacing: 0; }
+.quoteblock.abstract blockquote:before, .quoteblock.abstract blockquote p:first-of-type:before { display: none; }
+
+table.tableblock { max-width: 100%; border-collapse: separate; }
+table.tableblock td > .paragraph:last-child p > p:last-child, table.tableblock th > p:last-child, table.tableblock td > p:last-child { margin-bottom: 0; }
+
+table.spread { width: 100%; }
+
+table.tableblock, th.tableblock, td.tableblock { border: 0 solid #dddddd; }
+
+table.grid-all th.tableblock, table.grid-all td.tableblock { border-width: 0 1px 1px 0; }
+
+table.grid-all tfoot > tr > th.tableblock, table.grid-all tfoot > tr > td.tableblock { border-width: 1px 1px 0 0; }
+
+table.grid-cols th.tableblock, table.grid-cols td.tableblock { border-width: 0 1px 0 0; }
+
+table.grid-all * > tr > .tableblock:last-child, table.grid-cols * > tr > .tableblock:last-child { border-right-width: 0; }
+
+table.grid-rows th.tableblock, table.grid-rows td.tableblock { border-width: 0 0 1px 0; }
+
+table.grid-all tbody > tr:last-child > th.tableblock, table.grid-all tbody > tr:last-child > td.tableblock, table.grid-all thead:last-child > tr > th.tableblock, table.grid-rows tbody > tr:last-child > th.tableblock, table.grid-rows tbody > tr:last-child > td.tableblock, table.grid-rows thead:last-child > tr > th.tableblock { border-bottom-width: 0; }
+
+table.grid-rows tfoot > tr > th.tableblock, table.grid-rows tfoot > tr > td.tableblock { border-width: 1px 0 0 0; }
+
+table.frame-all { border-width: 1px; }
+
+table.frame-sides { border-width: 0 1px; }
+
+table.frame-topbot { border-width: 1px 0; }
+
+th.halign-left, td.halign-left { text-align: left; }
+
+th.halign-right, td.halign-right { text-align: right; }
+
+th.halign-center, td.halign-center { text-align: center; }
+
+th.valign-top, td.valign-top { vertical-align: top; }
+
+th.valign-bottom, td.valign-bottom { vertical-align: bottom; }
+
+th.valign-middle, td.valign-middle { vertical-align: middle; }
+
+table thead th, table tfoot th { font-weight: bold; }
+
+tbody tr th { display: table-cell; line-height: 1.4; background: whitesmoke; }
+
+tbody tr th, tbody tr th p, tfoot tr th, tfoot tr th p { color: #222222; font-weight: bold; }
+
+p.tableblock > code:only-child { background: none; padding: 0; }
+
+p.tableblock { font-size: 1em; }
+
+td > div.verse { white-space: pre; }
+
+ol { margin-left: 2.5em; }
+
+ul li ol { margin-left: 1.5em; }
+
+dl dd { margin-left: 1.125em; }
+
+dl dd:last-child, dl dd:last-child > :last-child { margin-bottom: 0; }
+
+ol > li p, ul > li p, ul dd, ol dd, .olist .olist, .ulist .ulist, .ulist .olist, .olist .ulist { margin-bottom: 0.625em; }
+
+ul.unstyled, ol.unnumbered, ul.checklist, ul.none { list-style-type: none; }
+
+ul.unstyled, ol.unnumbered, ul.checklist { margin-left: 0.625em; }
+
+ul.checklist li > p:first-child > .fa-check-square-o:first-child, ul.checklist li > p:first-child > input[type="checkbox"]:first-child { margin-right: 0.25em; }
+
+ul.checklist li > p:first-child > input[type="checkbox"]:first-child { position: relative; top: 1px; }
+
+ul.inline { margin: 0 auto 0.625em auto; margin-left: -1.375em; margin-right: 0; padding: 0; list-style: none; overflow: hidden; }
+ul.inline > li { list-style: none; float: left; margin-left: 1.375em; display: block; }
+ul.inline > li > * { display: block; }
+
+.unstyled dl dt { font-weight: normal; font-style: normal; }
+
+ol.arabic { list-style-type: decimal; }
+
+ol.decimal { list-style-type: decimal-leading-zero; }
+
+ol.loweralpha { list-style-type: lower-alpha; }
+
+ol.upperalpha { list-style-type: upper-alpha; }
+
+ol.lowerroman { list-style-type: lower-roman; }
+
+ol.upperroman { list-style-type: upper-roman; }
+
+ol.lowergreek { list-style-type: lower-greek; }
+
+.hdlist > table, .colist > table { border: 0; background: none; }
+.hdlist > table > tbody > tr, .colist > table > tbody > tr { background: none; }
+
+td.hdlist1 { padding-right: .75em; font-weight: bold; }
+
+td.hdlist1, td.hdlist2 { vertical-align: top; }
+
+.literalblock + .colist, .listingblock + .colist { margin-top: -0.5em; }
+
+.colist > table tr > td:first-of-type { padding: 0 0.75em; line-height: 1; }
+.colist > table tr > td:last-of-type { padding: 0.25em 0; }
+
+.thumb, .th { line-height: 0; display: inline-block; border: solid 4px white; -webkit-box-shadow: 0 0 0 1px #dddddd; box-shadow: 0 0 0 1px #dddddd; }
+
+.imageblock.left, .imageblock[style*="float: left"] { margin: 0.25em 0.625em 1.25em 0; }
+.imageblock.right, .imageblock[style*="float: right"] { margin: 0.25em 0 1.25em 0.625em; }
+.imageblock > .title { margin-bottom: 0; }
+.imageblock.thumb, .imageblock.th { border-width: 6px; }
+.imageblock.thumb > .title, .imageblock.th > .title { padding: 0 0.125em; }
+
+.image.left, .image.right { margin-top: 0.25em; margin-bottom: 0.25em; display: inline-block; line-height: 0; }
+.image.left { margin-right: 0.625em; }
+.image.right { margin-left: 0.625em; }
+
+a.image { text-decoration: none; }
+
+span.footnote, span.footnoteref { vertical-align: super; font-size: 0.875em; }
+span.footnote a, span.footnoteref a { text-decoration: none; }
+span.footnote a:active, span.footnoteref a:active { text-decoration: underline; }
+
+#footnotes { padding-top: 0.75em; padding-bottom: 0.75em; margin-bottom: 0.625em; }
+#footnotes hr { width: 20%; min-width: 6.25em; margin: -.25em 0 .75em 0; border-width: 1px 0 0 0; }
+#footnotes .footnote { padding: 0 0.375em; line-height: 1.3; font-size: 0.875em; margin-left: 1.2em; text-indent: -1.2em; margin-bottom: .2em; }
+#footnotes .footnote a:first-of-type { font-weight: bold; text-decoration: none; }
+#footnotes .footnote:last-of-type { margin-bottom: 0; }
+
+#content #footnotes { margin-top: -0.625em; margin-bottom: 0; padding: 0.75em 0; }
+
+.gist .file-data > table { border: 0; background: #fff; width: 100%; margin-bottom: 0; }
+.gist .file-data > table td.line-data { width: 99%; }
+
+div.unbreakable { page-break-inside: avoid; }
+
+.big { font-size: larger; }
+
+.small { font-size: smaller; }
+
+.underline { text-decoration: underline; }
+
+.overline { text-decoration: overline; }
+
+.line-through { text-decoration: line-through; }
+
+.aqua { color: #00bfbf; }
+
+.aqua-background { background-color: #00fafa; }
+
+.black { color: black; }
+
+.black-background { background-color: black; }
+
+.blue { color: #0000bf; }
+
+.blue-background { background-color: #0000fa; }
+
+.fuchsia { color: #bf00bf; }
+
+.fuchsia-background { background-color: #fa00fa; }
+
+.gray { color: #606060; }
+
+.gray-background { background-color: #7d7d7d; }
+
+.green { color: #006000; }
+
+.green-background { background-color: #007d00; }
+
+.lime { color: #00bf00; }
+
+.lime-background { background-color: #00fa00; }
+
+.maroon { color: #600000; }
+
+.maroon-background { background-color: #7d0000; }
+
+.navy { color: #000060; }
+
+.navy-background { background-color: #00007d; }
+
+.olive { color: #606000; }
+
+.olive-background { background-color: #7d7d00; }
+
+.purple { color: #600060; }
+
+.purple-background { background-color: #7d007d; }
+
+.red { color: #bf0000; }
+
+.red-background { background-color: #fa0000; }
+
+.silver { color: #909090; }
+
+.silver-background { background-color: #bcbcbc; }
+
+.teal { color: #006060; }
+
+.teal-background { background-color: #007d7d; }
+
+.white { color: #bfbfbf; }
+
+.white-background { background-color: #fafafa; }
+
+.yellow { color: #bfbf00; }
+
+.yellow-background { background-color: #fafa00; }
+
+span.icon > .fa { cursor: default; }
+
+.admonitionblock td.icon [class^="fa icon-"] { font-size: 2.5em; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); cursor: default; }
+.admonitionblock td.icon .icon-note:before { content: "\f05a"; color: #207c98; }
+.admonitionblock td.icon .icon-tip:before { content: "\f0eb"; text-shadow: 1px 1px 2px rgba(155, 155, 0, 0.8); color: #111; }
+.admonitionblock td.icon .icon-warning:before { content: "\f071"; color: #bf6900; }
+.admonitionblock td.icon .icon-caution:before { content: "\f06d"; color: #bf3400; }
+.admonitionblock td.icon .icon-important:before { content: "\f06a"; color: #bf0000; }
+
+.conum[data-value] { display: inline-block; color: #fff !important; background-color: #222222; -webkit-border-radius: 100px; border-radius: 100px; text-align: center; font-size: 0.75em; width: 1.67em; height: 1.67em; line-height: 1.67em; font-family: "Open Sans", "DejaVu Sans", sans-serif; font-style: normal; font-weight: bold; }
+.conum[data-value] * { color: #fff !important; }
+.conum[data-value] + b { display: none; }
+.conum[data-value]:after { content: attr(data-value); }
+pre .conum[data-value] { position: relative; top: -0.125em; }
+
+b.conum * { color: inherit !important; }
+
+.conum:not([data-value]):empty { display: none; }
+
+.literalblock pre, .listingblock pre { background: #eeeeee; }
+
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css">
+<style>.listingblock .pygments .hll { background-color: #ffffcc }
+.listingblock .pygments  { background: #f8f8f8; }
+.listingblock .pygments .tok-c { color: #408080; font-style: italic } /* Comment */
+.listingblock .pygments .tok-err { border: 1px solid #FF0000 } /* Error */
+.listingblock .pygments .tok-k { color: #008000; font-weight: bold } /* Keyword */
+.listingblock .pygments .tok-o { color: #666666 } /* Operator */
+.listingblock .pygments .tok-cm { color: #408080; font-style: italic } /* Comment.Multiline */
+.listingblock .pygments .tok-cp { color: #BC7A00 } /* Comment.Preproc */
+.listingblock .pygments .tok-c1 { color: #408080; font-style: italic } /* Comment.Single */
+.listingblock .pygments .tok-cs { color: #408080; font-style: italic } /* Comment.Special */
+.listingblock .pygments .tok-gd { color: #A00000 } /* Generic.Deleted */
+.listingblock .pygments .tok-ge { font-style: italic } /* Generic.Emph */
+.listingblock .pygments .tok-gr { color: #FF0000 } /* Generic.Error */
+.listingblock .pygments .tok-gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.listingblock .pygments .tok-gi { color: #00A000 } /* Generic.Inserted */
+.listingblock .pygments .tok-go { color: #888888 } /* Generic.Output */
+.listingblock .pygments .tok-gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.listingblock .pygments .tok-gs { font-weight: bold } /* Generic.Strong */
+.listingblock .pygments .tok-gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.listingblock .pygments .tok-gt { color: #0044DD } /* Generic.Traceback */
+.listingblock .pygments .tok-kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.listingblock .pygments .tok-kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.listingblock .pygments .tok-kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.listingblock .pygments .tok-kp { color: #008000 } /* Keyword.Pseudo */
+.listingblock .pygments .tok-kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.listingblock .pygments .tok-kt { color: #B00040 } /* Keyword.Type */
+.listingblock .pygments .tok-m { color: #666666 } /* Literal.Number */
+.listingblock .pygments .tok-s { color: #BA2121 } /* Literal.String */
+.listingblock .pygments .tok-na { color: #7D9029 } /* Name.Attribute */
+.listingblock .pygments .tok-nb { color: #008000 } /* Name.Builtin */
+.listingblock .pygments .tok-nc { color: #0000FF; font-weight: bold } /* Name.Class */
+.listingblock .pygments .tok-no { color: #880000 } /* Name.Constant */
+.listingblock .pygments .tok-nd { color: #AA22FF } /* Name.Decorator */
+.listingblock .pygments .tok-ni { color: #999999; font-weight: bold } /* Name.Entity */
+.listingblock .pygments .tok-ne { color: #D2413A; font-weight: bold } /* Name.Exception */
+.listingblock .pygments .tok-nf { color: #0000FF } /* Name.Function */
+.listingblock .pygments .tok-nl { color: #A0A000 } /* Name.Label */
+.listingblock .pygments .tok-nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+.listingblock .pygments .tok-nt { color: #008000; font-weight: bold } /* Name.Tag */
+.listingblock .pygments .tok-nv { color: #19177C } /* Name.Variable */
+.listingblock .pygments .tok-ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
+.listingblock .pygments .tok-w { color: #bbbbbb } /* Text.Whitespace */
+.listingblock .pygments .tok-mb { color: #666666 } /* Literal.Number.Bin */
+.listingblock .pygments .tok-mf { color: #666666 } /* Literal.Number.Float */
+.listingblock .pygments .tok-mh { color: #666666 } /* Literal.Number.Hex */
+.listingblock .pygments .tok-mi { color: #666666 } /* Literal.Number.Integer */
+.listingblock .pygments .tok-mo { color: #666666 } /* Literal.Number.Oct */
+.listingblock .pygments .tok-sb { color: #BA2121 } /* Literal.String.Backtick */
+.listingblock .pygments .tok-sc { color: #BA2121 } /* Literal.String.Char */
+.listingblock .pygments .tok-sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.listingblock .pygments .tok-s2 { color: #BA2121 } /* Literal.String.Double */
+.listingblock .pygments .tok-se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
+.listingblock .pygments .tok-sh { color: #BA2121 } /* Literal.String.Heredoc */
+.listingblock .pygments .tok-si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
+.listingblock .pygments .tok-sx { color: #008000 } /* Literal.String.Other */
+.listingblock .pygments .tok-sr { color: #BB6688 } /* Literal.String.Regex */
+.listingblock .pygments .tok-s1 { color: #BA2121 } /* Literal.String.Single */
+.listingblock .pygments .tok-ss { color: #19177C } /* Literal.String.Symbol */
+.listingblock .pygments .tok-bp { color: #008000 } /* Name.Builtin.Pseudo */
+.listingblock .pygments .tok-vc { color: #19177C } /* Name.Variable.Class */
+.listingblock .pygments .tok-vg { color: #19177C } /* Name.Variable.Global */
+.listingblock .pygments .tok-vi { color: #19177C } /* Name.Variable.Instance */
+.listingblock .pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
+</style>
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>Frameworks de persistencia - JPA</h1>
+<div class="details">
+<span id="author" class="author">Domingo Gallardo</span><br>
+<span id="email" class="email"><a href="mailto:domingo.gallardo@ua.es">domingo.gallardo@ua.es</a></span><br>
+</div>
+<div id="toc" class="toc2">
+<div id="toctitle">Índice de contenidos</div>
+<ul class="sectlevel1">
+<li><a href="#sesion02">2. Entity Manager y contexto de persistencia</a>
+<ul class="sectlevel2">
+<li><a href="#_introducci%C3%B3n">2.1. Introducción</a>
+<ul class="sectlevel3">
+<li><a href="#_entidades_gestionadas_y_desconectadas">2.1.1. Entidades gestionadas y desconectadas</a></li>
+<li><a href="#_apis_de_java_ee_7">2.1.2. APIs de Java EE 7</a></li>
+<li><a href="#_obtenci%C3%B3n_del_entity_manager_factory_y_de_los_entity_manager">2.1.3. Obtención del entity manager factory y de los entity manager</a></li>
+<li><a href="#_transacciones">2.1.4. Transacciones</a></li>
+</ul>
+</li>
+<li><a href="#_operaciones_crud_del_entity_manager">2.2. Operaciones CRUD del entity manager</a>
+<ul class="sectlevel3">
+<li><a href="#_persist_para_hacer_persistente_una_entidad">2.2.1. Persist para hacer persistente una entidad</a></li>
+<li><a href="#_find_para_buscar_entidades_por_clave_primaria">2.2.2. Find para buscar entidades por clave primaria</a></li>
+<li><a href="#_actualizaci%C3%B3n_de_entidades">2.2.3. Actualización de entidades</a></li>
+<li><a href="#_remove_para_borrar_entidades">2.2.4. Remove para borrar entidades</a></li>
+</ul>
+</li>
+<li><a href="#_operaciones_en_cascada">2.3. Operaciones en cascada</a>
+<ul class="sectlevel3">
+<li><a href="#_persist_en_cascada">2.3.1. Persist en cascada</a></li>
+<li><a href="#_borrado_en_cascada">2.3.2. Borrado en cascada</a></li>
+</ul>
+</li>
+<li><a href="#_queries">2.4. Queries</a></li>
+<li><a href="#_operaciones_sobre_el_contexto_de_persistencia">2.5. Operaciones sobre el contexto de persistencia</a>
+<ul class="sectlevel3">
+<li><a href="#_sincronizaci%C3%B3n_con_la_base_de_datos_con_code_flush_code">2.5.1. Sincronización con la base de datos con <code>flush</code></a></li>
+<li><a href="#_desconexi%C3%B3n_de_entidades">2.5.2. Desconexión de entidades</a></li>
+<li><a href="#_merge">2.5.3. Merge</a></li>
+<li><a href="#_actualizaci%C3%B3n_de_las_colecciones_en_las_relaciones_a_muchos">2.5.4. Actualización de las colecciones en las relaciones a-muchos</a></li>
+</ul>
+</li>
+<li><a href="#_implementaci%C3%B3n_de_un_dao_con_jpa">2.6. Implementación de un DAO con JPA</a></li>
+<li><a href="#_ejercicios">2.7. Ejercicios</a>
+<ul class="sectlevel3">
+<li><a href="#__0_5_puntos_contexto_de_persistencia">2.7.1. (0,5 puntos) Contexto de persistencia</a></li>
+<li><a href="#__0_5_puntos_clases_dao_del_m%C3%B3dulo_code_filmoteca_code">2.7.2. (0,5 puntos) Clases DAO del módulo <code>filmoteca</code></a></li>
+<li><a href="#__0_5_puntos_clase_code_peliculaservicio_code">2.7.3. (0,5 puntos) Clase <code>PeliculaServicio</code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div style="page-break-after: always;"></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="sesion02">2. Entity Manager y contexto de persistencia</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_introducción">2.1. Introducción</h3>
+<div class="paragraph">
+<p>En JPA todas las operaciones relacionadas con la persistencia de las entidades y el mapeado de estas entidades con la base de datos subyacente se realizan a través de un <em>gestor de entidades</em> (<em>entity manager</em> en inglés). El <em>entity manager</em> tiene dos responsabilidad fundamentales:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Define una conexión transaccional con la base de datos que debemos abrir y mantener abierta mientras estamos realizado operaciones. En este sentido realiza funciones similares a las de una conexión JDBC.</p>
+</li>
+<li>
+<p>Además, mantiene en memoria una caché con las entidades que gestiona y es responsable de sincronizarlas correctamente con la base de datos cuando se realiza un <em>flush</em>. El conjunto de entidades que gestiona un <em>entity manager</em> se denomina su <em>contexto de persistencia</em>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>El <em>entity manager</em> se obtiene a través de una factoría del tipo <code>EntityManagerFactory</code>, que se configura mediante la especificación de una <em>unidad de persistencia</em> (<em>persistence unit</em> en inglés) definida en el fichero XML <code>persistence.xml</code>. En el fichero pueden haber definidas más de una unidad de persistencia, cada una con un nombre distinto. El nombre de la unidad de persistencia escogida se pasa a la factoría. La unidad de persistencia define las características concretas de la base de datos con la que van a trabajar todos los <em>entity managers</em> obtenidos a partir de esa factoría y queda asociada a ella en el momento de su creación. Existe, por tanto, una relación uno-a-uno entre una unidad de persistencia y su <code>EntityManagerFactory</code> concreto. Para obtener una factoría <code>EntityManagerFactory</code> debemos llamar a un método estático de la clase <code>Persistence</code> .</p>
+</div>
+<div class="paragraph">
+<p>Las relaciones entre las clases que intervienen en la configuración y en la creación de <em>entity managers</em> se muestran en la siguiente figura.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/jpa02/entity-manager.png" alt="Clases EntityManager" width="66%">
+</div>
+</div>
+<div class="sect3">
+<h4 id="_entidades_gestionadas_y_desconectadas">2.1.1. Entidades gestionadas y desconectadas</h4>
+<div class="paragraph">
+<p>Una vez creado el <em>entity manager</em> lo utilizaremos para realizar todas las operaciones de recuperación, consulta y actualización de entidades. Cuando un <em>entity manager</em> obtiene una referencia a una entidad, se dice que la entidad está <strong>gestionada</strong> (una <em>managed entity</em> en inglés) por él. El <em>entity manager</em> guarda internamente todas las entidades que gestiona y las utiliza como una caché de los datos en la base de datos. Por ejemplo, cuando va a recuperar una entidad por su clave primaria, lo primero que hace es consultar en su caché si esta entidad ya la ha recuperado previamente. Si es así, no necesita hacer la búsqueda en la base de datos y devuelve la propia referencia que mantiene. Al conjunto de entidades gestionadas por un <em>entity manager</em> se le denomina su <em>contexto de persistencia</em> (<em>persistence context</em> en inglés).</p>
+</div>
+<div class="paragraph">
+<p>En un determinado momento, el <em>entity manager</em> debe volcar a la base de datos todos los cambios que se han realizado sobre las entidades. También debe ejecutar las consultas JPQL definidas. Para ello el <em>entity manager</em> utiliza un <em>proveedor de persistencia</em> (<em>persistence provider</em> en inglés) que es el responsable de generar todo el código SQL compatible con la base de datos.</p>
+</div>
+<div class="paragraph">
+<p>En esta sesión estudiaremos las distintas operaciones que realiza el entity manager, así como el concepto de <em>contexto de persistencia</em> y las distintas problemáticas relacionadas con la gestión de esta caché de objetos persistentes y la sincronización con la base de datos subyacente.</p>
+</div>
+<div class="paragraph">
+<p>Una vez que se cierra la transacción y se cierra el <em>entity manager</em>, éste desaparece pero las entidades gestionadas siguen estando en memoria, pero ahora en estado <strong>desconectado</strong> (<em>detached</em> en inglés). Podrían volverse a gestionar por un <em>entity manager</em> usando el método <code>merge</code>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_apis_de_java_ee_7">2.1.2. APIs de Java EE 7</h4>
+<div class="paragraph">
+<p>Veremos una parte de la completa APIs de Java EE 7 sobre estas clases. Los siguientes métodos de la interfaz <code>EntityManager</code> son los más importantes y los estudiaremos en detalle en los siguientes apartados:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>void clear()</code>: borra el contexto de persistencia, desconectando todas sus entidades</p>
+</li>
+<li>
+<p><code>boolean contains(Object entity)</code>: comprueba si una entidad está gestionada en el contexto de persistencia</p>
+</li>
+<li>
+<p><code>Query createNamedQuery(String name)</code>: obtiene una consulta JPQL precompilada</p>
+</li>
+<li>
+<p><code>void detach(Object entity)</code>: elimina la entidad del contexto de persistencia, dejándola desconectada de la base de datos</p>
+</li>
+<li>
+<p><code>&lt;T&gt; T find(Class&lt;T&gt;, Object key)</code>: busca por clave primaria</p>
+</li>
+<li>
+<p><code>void flush()</code>: sincroniza el contexto de persistencia con la base de datos</p>
+</li>
+<li>
+<p><code>&lt;T&gt; T getReference(Class&lt;T&gt;, Object key)</code>: obtiene una referencia a una entidad, que puede haber sido recuperada de forma <em>lazy</em></p>
+</li>
+<li>
+<p><code>EntityTransaction getTransaction()</code>: devuelve la transacción actual</p>
+</li>
+<li>
+<p><code>&lt;T&gt; T merge(T entity)</code>: incorpora una entidad al contexto de persistencia, haciéndola gestionada</p>
+</li>
+<li>
+<p><code>void persist(Object entity)</code>: hace una entidad persistente y gestionada</p>
+</li>
+<li>
+<p><code>void refresh(Object entity)</code>: refresca el estado de la entidad con los valores de la base de datos, sobreescribiendo los cambios que se hayan podido realizar en ella</p>
+</li>
+<li>
+<p><code>void remove(Object entity)</code>: elimina la entidad</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Puedes consultar el API completo de estas clases en los siguientes enlaces:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://docs.oracle.com/javaee/7/api/javax/persistence/EntityManager.html">javax.persistence.EntityManager</a></p>
+</li>
+<li>
+<p><a href="https://docs.oracle.com/javaee/7/api/javax/persistence/EntityManagerFactory.html">java.persistence.EntityManagerFactory</a></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_obtención_del_entity_manager_factory_y_de_los_entity_manager">2.1.3. Obtención del entity manager factory y de los entity manager</h4>
+<div class="paragraph">
+<p>La forma de obtener un <em>entity manager</em> o un <em>entity manager factory</em> varía dependiendo de si estamos utilizando JPA desde una aplicación <em>standalone</em> (lo que se denomina <em>JPA gestionado por la aplicación</em>) o desde un servidor de aplicaciones Java EE (en lo que se denomina JPA gestionado por el contenedor). En el segundo caso se obtienen mediante <em>inyección de dependencias</em>, siendo el servidor el responsable de obtener el <em>entity manager</em> e <em>inyectarlo</em> en una variable que tiene una determinada anotación. En el caso de JPA gestionado por la aplicación, es el programador el que debe llamar de forma explícita a las instrucciones para obtener estos objetos.</p>
+</div>
+<div class="sect4">
+<h5 id="_obtención_del_entity_manager_factory">Obtención del entity manager factory</h5>
+<div class="paragraph">
+<p>En el primer caso, cuando estamos usando JPA gestionado por la aplicación, lo primero que debemos hacer es crear un <code>EntityManagerFactory</code>, para lo que hay que invocar al método <code>createEntityManagerFactory()</code> pasando por parámetro el nombre de la unidad de persistencia definida en el fichero <code>persistence.xml</code>. En este fichero, como ya hemos visto, se especifican los parámetros de configuración de la conexión con la base de datos (URL de la conexión, nombre de la base de datos, usuario, contraseña, gestor de base de datos, características del <em>pool</em> de conexiones, etc.). Por ejemplo:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-n">EntityManagerFactory</span> <span class="tok-n">emf</span> <span class="tok-o">=</span>
+   <span class="tok-n">Persistence</span><span class="tok-o">.</span><span class="tok-na">createEntityManagerFactory</span><span class="tok-o">(</span><span class="tok-s">&quot;mensajes-mysql&quot;</span><span class="tok-o">);</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Esta creación es un proceso costoso, ya que incluye el procesamiento de todas las anotaciones de las clases de entidad declaradas en el <code>persistence.xml</code>, la generación del esquema de datos asociados para compararlo con el existente en la base de datos con la que se realiza la conexión y bastantes otros procesos relacionados con el mapeo de las entidades con la base de datos.</p>
+</div>
+<div class="paragraph">
+<p>Es conveniente llamar al método sólo una vez y guardar el <code>entityManagerFactory</code> resultante en una variable estática o en un <em>singleton</em> para reusar la misma factoría durante el tiempo de vida de la aplicación. Por ejemplo, el siguiente código define un <em>singleton</em> que inicializa el <em>entityManagerFactory</em> sólo una vez. Lo llamamos <code>EmfSingleton</code> y lo definimos en el paquete <code>org.expertojava.jpa.mensajes.persistencia</code>:</p>
+</div>
+<div class="listingblock">
+<div class="title">EmfSingleton</div>
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-kn">package</span> <span class="tok-n">org</span><span class="tok-o">.</span><span class="tok-na">expertojava</span><span class="tok-o">.</span><span class="tok-na">jpa</span><span class="tok-o">.</span><span class="tok-na">mensajes</span><span class="tok-o">.</span><span class="tok-na">persistencia</span>
+
+<span class="tok-kn">import</span> <span class="tok-nn">javax.persistence.EntityManagerFactory</span><span class="tok-o">;</span>
+<span class="tok-kn">import</span> <span class="tok-nn">javax.persistence.Persistence</span><span class="tok-o">;</span>
+
+<span class="tok-kd">public</span> <span class="tok-kd">class</span> <span class="tok-nc">EmfSingleton</span> <span class="tok-o">{</span>
+    <span class="tok-kd">private</span> <span class="tok-kd">static</span> <span class="tok-n">EmfSingleton</span> <span class="tok-n">ourInstance</span> <span class="tok-o">=</span>
+            <span class="tok-k">new</span> <span class="tok-nf">EmfSingleton</span><span class="tok-o">();</span>
+    <span class="tok-kd">static</span> <span class="tok-kd">private</span> <span class="tok-kd">final</span> <span class="tok-n">String</span> <span class="tok-n">PERSISTENCE_UNIT_NAME</span> <span class="tok-o">=</span> <span class="tok-s">&quot;mensajes-mysql&quot;</span><span class="tok-o">;</span> <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="tok-kd">private</span> <span class="tok-n">EntityManagerFactory</span> <span class="tok-n">emf</span> <span class="tok-o">=</span> <span class="tok-kc">null</span><span class="tok-o">;</span>
+
+    <span class="tok-kd">public</span> <span class="tok-kd">static</span> <span class="tok-n">EmfSingleton</span> <span class="tok-nf">getInstance</span><span class="tok-o">()</span> <span class="tok-o">{</span>
+        <span class="tok-k">return</span> <span class="tok-n">ourInstance</span><span class="tok-o">;</span>
+    <span class="tok-o">}</span>
+
+    <span class="tok-kd">private</span> <span class="tok-nf">EmfSingleton</span><span class="tok-o">()</span> <span class="tok-o">{</span>
+    <span class="tok-o">}</span>
+
+    <span class="tok-kd">public</span> <span class="tok-n">EntityManagerFactory</span> <span class="tok-nf">getEmf</span><span class="tok-o">()</span> <span class="tok-o">{</span>
+        <span class="tok-k">if</span> <span class="tok-o">(</span><span class="tok-k">this</span><span class="tok-o">.</span><span class="tok-na">emf</span> <span class="tok-o">==</span> <span class="tok-kc">null</span><span class="tok-o">)</span>
+            <span class="tok-k">this</span><span class="tok-o">.</span><span class="tok-na">emf</span> <span class="tok-o">=</span> <span class="tok-n">Persistence</span>
+                    <span class="tok-o">.</span><span class="tok-na">createEntityManagerFactory</span><span class="tok-o">(</span><span class="tok-n">PERSISTENCE_UNIT_NAME</span><span class="tok-o">);</span> <i class="conum" data-value="2"></i><b>(2)</b>
+        <span class="tok-k">return</span> <span class="tok-k">this</span><span class="tok-o">.</span><span class="tok-na">emf</span><span class="tok-o">;</span>
+    <span class="tok-o">}</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Constante con el nombre de la unidad de persistencia</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Creación de la factoría. Sólo se hace una vez, la primera vez que se llama al método.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Una vez definido el <em>singleton</em> anterior podemos acceder a la factoría con el siguiente código:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-n">EntityManagerFactory</span> <span class="tok-n">emf</span> <span class="tok-o">=</span> <span class="tok-n">EmfSingleton</span><span class="tok-o">.</span><span class="tok-na">getInstance</span><span class="tok-o">().</span><span class="tok-na">getEmf</span><span class="tok-o">()</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_obtención_de_los_entitymanager">Obtención de los entityManager</h5>
+<div class="paragraph">
+<p>Los <code>entityManager</code> se obtienen a partir del <code>entityManagerFactory</code> mediante el método <code>createEntityManager()</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-n">EntityManager</span> <span class="tok-n">em</span> <span class="tok-o">=</span> <span class="tok-n">emf</span><span class="tok-o">.</span><span class="tok-na">createEntityManager</span><span class="tok-o">();</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Lo normal es que no necesitemos trabajar con la factoría de y que llamemos directamente al objeto que nos devuelve el <em>singleton</em>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-n">EntityManager</span> <span class="tok-n">em</span> <span class="tok-o">=</span> <span class="tok-n">EmfSingleton</span><span class="tok-o">.</span><span class="tok-na">getInstance</span><span class="tok-o">().</span><span class="tok-na">getEmf</span><span class="tok-o">().</span><span class="tok-na">createEntityManager</span><span class="tok-o">();</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Esta llamada no es nada costosa, ya que las implementaciones de JPA (como Hibernate) implementan <em>pools</em> de entity managers. El método <code>createEntityManager</code> no realiza ninguna reserva de memoria ni de otros recursos sino que simplemente devuelve alguno de los entity managers disponibles.</p>
+</div>
+<div class="paragraph">
+<p>Repetimos a continuación un ejemplo típico de uso que ya hemos visto previamente:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-kd">public</span> <span class="tok-kd">class</span> <span class="tok-nc">EjemploUnidadDeTrabajoJPA</span> <span class="tok-o">{</span>
+   <span class="tok-kd">public</span> <span class="tok-kd">static</span> <span class="tok-kt">void</span> <span class="tok-nf">main</span><span class="tok-o">(</span><span class="tok-n">String</span><span class="tok-o">[]</span> <span class="tok-n">args</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+      <span class="tok-n">EntityManagerFactory</span> <span class="tok-n">emf</span> <span class="tok-o">=</span>
+          <span class="tok-n">EmfSingleton</span><span class="tok-o">.</span><span class="tok-na">getInstance</span><span class="tok-o">().</span><span class="tok-na">getEmf</span><span class="tok-o">();</span>
+      <span class="tok-n">EntityManager</span> <span class="tok-n">em</span> <span class="tok-o">=</span> <span class="tok-n">emf</span><span class="tok-o">.</span><span class="tok-na">createEntityManager</span><span class="tok-o">();</span>
+
+      <span class="tok-c1">// Abrimos una transacción</span>
+      <span class="tok-n">EntityTransaction</span> <span class="tok-n">tx</span> <span class="tok-o">=</span> <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">getTransaction</span><span class="tok-o">();</span>
+      <span class="tok-n">tx</span><span class="tok-o">.</span><span class="tok-na">begin</span><span class="tok-o">();</span>
+
+      <span class="tok-c1">// El em realiza operaciones sobre las entidades</span>
+
+      <span class="tok-c1">// Cerramos la transacción, el em</span>
+      <span class="tok-n">tx</span><span class="tok-o">.</span><span class="tok-na">commit</span><span class="tok-o">();</span>
+      <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">close</span><span class="tok-o">();</span>
+
+      <span class="tok-c1">// Cerramos el emf cuando se termina la aplicación</span>
+      <span class="tok-n">emf</span><span class="tok-o">.</span><span class="tok-na">close</span><span class="tok-o">();</span>
+   <span class="tok-o">}</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Es muy importante considerar que los objetos <code>EntityManager</code> no son <em>thread-safe</em>, no pueden ser compartidos por más de un <em>thread</em>. Cuando los utilicemos en servlets, por ejemplo, deberemos crearlos en cada petición HTTP. De esta forma se evita que distintas sesiones accedan al mismo contexto de persistencia.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_transacciones">2.1.4. Transacciones</h4>
+<div class="paragraph">
+<p>Cualquier operación que conlleve una creación, modificación o borrado de entidades debe hacerse dentro de una transacción. En JPA las transacciones se gestionan de forma distinta dependiendo de si estamos en un entorno Java SE o en un entorno Java EE. La diferencia fundamental entre ambos casos es que en un entorno Java EE las transacciones se manejan con JTA (Java Transaction API), un API que implementa el <em>two face commit</em> y que permite gestionar operaciones sobre múltiples recursos transaccionales o múltiples operaciones transaccionales sobre el mismo recurso. En el caso de Java SE las transacciones se implementan con el gestor de transacciones propio del recurso local (la base de datos) y se especifican en la interfaz <code>EntityTransaction</code>.</p>
+</div>
+<div class="paragraph">
+<p>El gestor de transacciones locales se obtiene con la llamada <code>getTransaction()</code> al <code>EntityManager</code>. Una vez obtenido, podemos pedirle cualquiera de los métodos definidos en la interfaz: <code>begin()</code> para comenzar la transacción, <code>commit()</code> para actualizar los cambios en la base de datos (en ese momento JPA vuelca las sentencias SQL en la base de datos) o <code>rollback()</code> para deshacer la transacción actual.</p>
+</div>
+<div class="paragraph">
+<p>El siguiente listado muestra un ejemplo de uso de una transacción:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">getTransaction</span><span class="tok-o">().</span><span class="tok-na">begin</span><span class="tok-o">();</span>
+<span class="tok-n">createEmpleado</span><span class="tok-o">(</span><span class="tok-s">&quot;Juan Garcia&quot;</span><span class="tok-o">,</span> <span class="tok-mi">30000</span><span class="tok-o">);</span>
+<span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">getTransaction</span><span class="tok-o">().</span><span class="tok-na">commit</span><span class="tok-o">();</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_operaciones_crud_del_entity_manager">2.2. Operaciones CRUD del entity manager</h3>
+<div class="paragraph">
+<p>Vamos a ver con más detalle las operaciones básicas relacionadas con entidades que podemos hacer con un <em>entity manager</em>. Veremos las siguientes:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>persist()</code> para almacenar una entidad en la base de datos</p>
+</li>
+<li>
+<p><code>find()</code> para buscar entidades por clave primaria</p>
+</li>
+<li>
+<p>actualización de entidades con los <em>setters</em></p>
+</li>
+<li>
+<p><code>remove()</code> para borrar entidades</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="_persist_para_hacer_persistente_una_entidad">2.2.1. Persist para hacer persistente una entidad</h4>
+<div class="paragraph">
+<p>El método <code>persist()</code> del <code>EntityManager</code> acepta una nueva instancia de entidad y la convierte en gestionada. Si la entidad que se pasa como parámetro ya está gestionada en el contexto de persistencia, la llamada se ignora. La operación <code>contains()</code> puede usarse para comprobar si una entidad está gestionada.</p>
+</div>
+<div class="paragraph">
+<p>El hecho de convertir una entidad en gestionada no la hace persistir inmediatamente en la base de datos. La verdadera llamada a SQL para crear los datos relacionales no se generará hasta que el contexto de persistencia se sincronice con la base de datos. Lo más normal es que esto suceda cuando se realiza un commit de la transacción. En el momento en que la entidad se convierte en gestionada, los cambios que se realizan sobre ella afectan al contexto de persistencia. Y en el momento en que la transacción termina, el estado en el que se encuentra la entidad es volcado en la base de datos.</p>
+</div>
+<div class="paragraph">
+<p>Si se llama a <code>persist()</code> fuera de una transacción la entidad se incluirá en el contexto de persistencia, pero no se realizará ninguna acción hasta que la transacción comience y el contexto de persistencia se sincronice con la base de datos.</p>
+</div>
+<div class="paragraph">
+<p>La operación <code>persist()</code> se utiliza con entidades nuevas que no existen en la base de datos. Si se le pasa una instancia con un identificador que ya existe en la base de datos el proveedor de persistencia puede detectarlo y lanzar una excepción <code>EntityExistsException</code>. Si no lo hace, entonces se lanzará la excepción cuando se sincronice el conexto de persistencia con la base de datos, al encontrar una clave primaria duplicada.</p>
+</div>
+<div class="paragraph">
+<p>Un ejemplo completo de utilización de <code>persist()</code>, en el que también se realiza una actualización de una relación a-muchos, es el siguiente:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-n">EntityManager</span> <span class="tok-n">em</span> <span class="tok-o">=</span> <span class="tok-n">emf</span><span class="tok-o">.</span><span class="tok-na">createEntityManager</span><span class="tok-o">();</span>
+<span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">getTransaction</span><span class="tok-o">().</span><span class="tok-na">begin</span><span class="tok-o">();</span>
+
+<span class="tok-c1">// Añadimos un nuevo empleado al departamento 1</span>
+<span class="tok-n">Departamento</span> <span class="tok-n">depto</span> <span class="tok-o">=</span> <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">find</span><span class="tok-o">(</span><span class="tok-n">Departamento</span><span class="tok-o">.</span><span class="tok-na">class</span><span class="tok-o">,</span> <span class="tok-mi">1L</span><span class="tok-o">);</span>
+<span class="tok-n">Empleado</span> <span class="tok-n">empleado</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-nf">Empleado</span><span class="tok-o">();</span>
+<span class="tok-n">empleado</span><span class="tok-o">.</span><span class="tok-na">setNombre</span><span class="tok-o">(</span><span class="tok-s">&quot;Pedro&quot;</span><span class="tok-o">);</span>
+<span class="tok-n">empleado</span><span class="tok-o">.</span><span class="tok-na">setSueldo</span><span class="tok-o">(</span><span class="tok-mf">38000.0</span><span class="tok-o">);</span>
+<span class="tok-n">empleado</span><span class="tok-o">.</span><span class="tok-na">setDepartamento</span><span class="tok-o">(</span><span class="tok-n">depto</span><span class="tok-o">);</span>
+<span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">persist</span><span class="tok-o">(</span><span class="tok-n">empleado</span><span class="tok-o">);</span>
+
+<span class="tok-c1">// Actualizamos la colección en memoria de empleados del departamento</span>
+<span class="tok-n">depto</span><span class="tok-o">.</span><span class="tok-na">getEmpleados</span><span class="tok-o">().</span><span class="tok-na">add</span><span class="tok-o">(</span><span class="tok-n">empleado</span><span class="tok-o">);</span>
+
+<span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">getTransaction</span><span class="tok-o">().</span><span class="tok-na">commit</span><span class="tok-o">();</span>
+<span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">close</span><span class="tok-o">();</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>En el ejemplo comenzamos obteniendo una instancia que ya existe en la base de datos de la entidad <code>Departamento</code>. Se crea una nueva instancia de <code>Empleado</code>, proporcionando algún atributo. Después asignamos el empleado al departamento, llamando al método <code>setDepartamento()</code> del empleado y pasándole la instancia de <code>Departamento</code> que habíamos recuperado. Después realizamos la llamada al método <code>persist()</code> que convierte la entidad en gestionada. Cuando el contexto de persistencia se sincroniza con la base de datos, se añade el nuevo empleado en la tabla y se actualiza su id. En la columna <code>departmento_id</code> se guarda la clave ajena al departamento al que está asignado. Hay que hacer notar que sólo se actualiza la tabla de <code>Empleado</code>, que es la propietaria de la relación y la que contiene la clave ajena a <code>Departamento</code>.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/jpa02/tabla-empleados.png" alt="Clases EntityManager" width="66%">
+</div>
+</div>
+<div class="paragraph">
+<p>Por último actualizamos en memoria el otro lado de la relación llamando al método <code>add()</code> de la colección. Esto no es necesario para actualizar la base de datos, sólo para actualizar la relación en memoria. Es importante tener siempre presente que JPA no actualiza las colecciones en memoria de las relaciones uno-a-muchos.</p>
+</div>
+<div class="paragraph">
+<p>Una cuestión muy importante a tener en cuenta es que si el identificador del empleado es una clave primaria generada por la base de datos no estará disponible hasta que el contexto de persistencia realice la ejecución de los comandos SQL. Hay que tener cuidado y no realizar el <code>add</code> en la colección con el identificador a null. Con Hibernate no hay problema, porque realiza la actualización en la base de datos de inmediantamente y tenemos el <code>id</code> actualizado justo después de ejecutar el <code>persist</code> (si el <code>flush()</code> está puesto a <code>AUTO</code>). Pero tenemos que tener cuidado, y comprobar el comportamiento de cada proveedor de persistencia.</p>
+</div>
+<div class="paragraph">
+<p>Si queremos asegurarnos de que el identificador se carga en la entidad podemos utilizar las siguientes sentencias:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">persist</span><span class="tok-o">(</span><span class="tok-n">empleado</span><span class="tok-o">);</span>
+<span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">flush</span><span class="tok-o">(</span><span class="tok-n">empleado</span><span class="tok-o">);</span>
+<span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">refresh</span><span class="tok-o">(</span><span class="tok-n">empleado</span><span class="tok-o">);</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>La llamada a <code>flush</code> asegura que se ejecuta el <code>insert</code> en la BD y la llamada a <code>refresh</code> asegura que el identificador se carga en la instancia. Esto es válido para cualquier proveedor de persistencia.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_find_para_buscar_entidades_por_clave_primaria">2.2.2. Find para buscar entidades por clave primaria</h4>
+<div class="paragraph">
+<p>Una vez que la entidad está en la base de datos, lo siguiente que podemos hacer es recuperarla de nuevo. Para ello basta con escribir una línea de código:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-n">Empeado</span> <span class="tok-n">empleado</span> <span class="tok-o">=</span> <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">find</span><span class="tok-o">(</span><span class="tok-n">Empleado</span><span class="tok-o">.</span><span class="tok-na">class</span><span class="tok-o">,</span> <span class="tok-mi">4L</span><span class="tok-o">);</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Pasamos la clase de la entidad que estamos buscando (en el ejemplo estamos buscando una instancia de la clase <code>Empleado</code>) y el identificador o clave primaria que identifica la entidad. El entity manager buscará esa entidad en la base de datos y devolverá la instancia buscada. La entidad devuelta será una entidad gestionada que existirá en el contexto de persistencia actual asociado al entity manager.</p>
+</div>
+<div class="paragraph">
+<p>En el caso en que no existiera ninguna entidad con ese identificador, se devolvería simplemente <code>null</code>.</p>
+</div>
+<div class="paragraph">
+<p>La llamada a <code>find</code> puede devolver dos posibles excepciones de tiempo de ejecución, ambas de la clase <code>PersistenceException</code>: <code>IllegalStateException</code> si el entitiy manager ha sido previamente cerrado o <code>IllegalArgumentException</code> si el primer argumento no contiene una clase entidad o el segundo no es el tipo correcto de la clave primaria de la entidad.</p>
+</div>
+<div class="paragraph">
+<p>Existe una versión especial de <code>find()</code> que sólo recupera <strong>una referencia</strong> (técnicamente, un <em>proxy</em>) a la entidad, sin obtener los datos de los campos de la base de datos. Se trata del método <code>getReference()</code>. Es últil cuando se quiere añadir un objeto con una clave primaria conocida a una relación. Ya que únicamente estamos creando una relación, no es necesario cargar todo el objeto de la base de datos. Sólo se necesita su clave primaria. Veamos la nueva versión del ejemplo anterior:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-n">Departamento</span> <span class="tok-n">depto</span> <span class="tok-o">=</span> <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">getReference</span><span class="tok-o">(</span><span class="tok-n">Departamento</span><span class="tok-o">.</span><span class="tok-na">class</span><span class="tok-o">,</span> <span class="tok-mi">1L</span><span class="tok-o">);</span>
+<span class="tok-n">Empleado</span> <span class="tok-n">empleado</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-nf">Empleado</span><span class="tok-o">();</span>
+<span class="tok-n">empleado</span><span class="tok-o">.</span><span class="tok-na">setNombre</span><span class="tok-o">(</span><span class="tok-s">&quot;Pedro&quot;</span><span class="tok-o">);</span>
+<span class="tok-n">empleado</span><span class="tok-o">.</span><span class="tok-na">setSueldo</span><span class="tok-o">(</span><span class="tok-mf">38000.0</span><span class="tok-o">);</span>
+<span class="tok-n">empleado</span><span class="tok-o">.</span><span class="tok-na">setDepartamento</span><span class="tok-o">(</span><span class="tok-n">depto</span><span class="tok-o">);</span>
+<span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">persist</span><span class="tok-o">(</span><span class="tok-n">empleado</span><span class="tok-o">);</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Esta versión es más eficiente que la anterior porque no se realiza ningún <code>SELECT</code> en la base de datos para buscar la instancia del <code>Departamento</code>. Cuando se llama a <code>getReference()</code>, el proveedor devolverá un <em>proxy</em> al <code>Departamento</code> sin recuperarlo realmente de la base de datos. En tanto que sólo se acceda a la clave primaria, no se recuperará ningún dato. Y cuando se haga persistente el <code>Empleado</code>, se guardará en la clave ajena correspondiente el valor de la clave primaria del <code>Departamento</code>.</p>
+</div>
+<div class="paragraph">
+<p>Un posible problema de este método es que, a diferencia de <code>find()</code> no devuelve <code>null</code> si la instancia no existe, ya que realmente no realiza la búsqueda en la base de datos. Únicamente se debe utilizar el método cuando estamos seguros de que la instancia existe en la base de datos. En caso contrario estaremos guardando en la variable <code>dept</code> una referencia (clave primaria) de una entidad que no existe, y cuando se haga persistente el empleado se generará una excepción porque el <code>Empleado</code> estará haciendo referencia a una entidad no existente.</p>
+</div>
+<div class="paragraph">
+<p>En general, la mayoría de las veces llamaremos al método <code>find()</code> directamente. Las implementaciones de JPA hacen un buen trabajo con las cachés y si ya tenemos la entidad en el contexto de persistencia no se realiza la consulta a la base de datos.</p>
+</div>
+<div class="paragraph">
+<p>Por ejemplo, el siguiente código sólo generaría un <code>SELECT</code> sobre la base de datos:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-n">Departamento</span> <span class="tok-n">depto1</span> <span class="tok-o">=</span> <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">find</span><span class="tok-o">(</span><span class="tok-n">Departamento</span><span class="tok-o">.</span><span class="tok-na">class</span><span class="tok-o">,</span> <span class="tok-mi">1L</span><span class="tok-o">);</span>
+<span class="tok-n">Departamento</span> <span class="tok-n">depto2</span> <span class="tok-o">=</span> <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">find</span><span class="tok-o">(</span><span class="tok-n">Departamento</span><span class="tok-o">.</span><span class="tok-na">class</span><span class="tok-o">,</span> <span class="tok-mi">1L</span><span class="tok-o">);</span>
+<span class="tok-n">Departamento</span> <span class="tok-n">depto3</span> <span class="tok-o">=</span> <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">find</span><span class="tok-o">(</span><span class="tok-n">Departamento</span><span class="tok-o">.</span><span class="tok-na">class</span><span class="tok-o">,</span> <span class="tok-mi">1L</span><span class="tok-o">);</span>
+<span class="tok-n">Departamento</span> <span class="tok-n">depto4</span> <span class="tok-o">=</span> <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">find</span><span class="tok-o">(</span><span class="tok-n">Departamento</span><span class="tok-o">.</span><span class="tok-na">class</span><span class="tok-o">,</span> <span class="tok-mi">1L</span><span class="tok-o">);</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>La única sentencia SQL generada es:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="sql"><span class="tok-n">Hibernate</span><span class="tok-p">:</span> <span class="tok-k">select</span> <span class="tok-n">departamen0_</span><span class="tok-p">.</span><span class="tok-n">id</span> <span class="tok-k">as</span> <span class="tok-n">id1_0_0_</span><span class="tok-p">,</span> <span class="tok-n">departamen0_</span><span class="tok-p">.</span><span class="tok-n">campus</span> <span class="tok-k">as</span> <span class="tok-n">campus2_0_0_</span><span class="tok-p">,</span>
+<span class="tok-n">departamen0_</span><span class="tok-p">.</span><span class="tok-n">edificio</span> <span class="tok-k">as</span> <span class="tok-n">edificio3_0_0_</span><span class="tok-p">,</span> <span class="tok-n">departamen0_</span><span class="tok-p">.</span><span class="tok-n">nombre</span> <span class="tok-k">as</span> <span class="tok-n">nombre4_0_0_</span>
+<span class="tok-k">from</span> <span class="tok-n">Departamento</span> <span class="tok-n">departamen0_</span> <span class="tok-k">where</span> <span class="tok-n">departamen0_</span><span class="tok-p">.</span><span class="tok-n">id</span><span class="tok-o">=?</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_actualización_de_entidades">2.2.3. Actualización de entidades</h4>
+<div class="paragraph">
+<p>Para actualizar una entidad, primero debemos obtenerla para convertirla en gestionada. Después podremos colocar los nuevos valores en sus atributos utilizando los métodos <code>set</code> de la entidad. Por ejemplo, supongamos que queremos subir el sueldo del empleado 146 en 1.000 euros. Tendríamos que hacer lo siguiente:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">getTransaction</span><span class="tok-o">().</span><span class="tok-na">begin</span><span class="tok-o">();</span>
+<span class="tok-n">Empleado</span> <span class="tok-n">empleado</span> <span class="tok-o">=</span> <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">find</span><span class="tok-o">(</span><span class="tok-n">Empleado</span><span class="tok-o">.</span><span class="tok-na">class</span><span class="tok-o">,</span> <span class="tok-mi">2L</span><span class="tok-o">);</span>
+<span class="tok-kt">double</span> <span class="tok-n">sueldo</span> <span class="tok-o">=</span> <span class="tok-n">empleado</span><span class="tok-o">.</span><span class="tok-na">getSueldo</span><span class="tok-o">();</span>
+<span class="tok-n">empleado</span><span class="tok-o">.</span><span class="tok-na">setSueldo</span><span class="tok-o">(</span><span class="tok-n">sueldo</span> <span class="tok-o">+</span> <span class="tok-mf">1000.0</span><span class="tok-o">);</span>
+<span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">getTransaction</span><span class="tok-o">().</span><span class="tok-na">commit</span><span class="tok-o">();</span>
+<span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">close</span><span class="tok-o">();</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Nótese la diferencia con las operaciones anteriores, en las que el <code>EntityManager</code> era el responsable de realizar la operación directamente. Aquí no llamamos al <code>EntityManager</code> sino a la propia entidad. Estamos, por así decirlo, trabajando con una caché de los datos de la base de datos. Posteriormente, cuando se finalice la transacción, el <code>EntityManager</code> hará persistentes los cambios mediante las correspondientes sentencias SQL.</p>
+</div>
+<div class="paragraph">
+<p>La otra forma de actualizar una entidad es con el método <code>merge()</code> del <code>EntityManager</code>. A este método se le pasa como parámetro una entidad no gestionada. El <code>EntityManager</code> busca la entidad en su contexto de persistencia (utilizando su identificador) y actualiza los valores del contexto de persistencia con los de la entidad no gestionada. En el caso en que la entidad no existiera en el contexto de persistencia, se crea con los valores que lleva la entidad no gestionada.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-n">EntityManager</span> <span class="tok-n">em</span> <span class="tok-o">=</span> <span class="tok-n">emf</span><span class="tok-o">.</span><span class="tok-na">createEntityManager</span><span class="tok-o">();</span>
+<span class="tok-n">Empleado</span> <span class="tok-n">empleado</span> <span class="tok-o">=</span> <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">find</span><span class="tok-o">(</span><span class="tok-n">Empleado</span><span class="tok-o">.</span><span class="tok-na">class</span><span class="tok-o">,</span> <span class="tok-mi">2L</span><span class="tok-o">);</span>
+<span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">close</span><span class="tok-o">();</span>
+
+<span class="tok-n">empleado</span><span class="tok-o">.</span><span class="tok-na">setNombre</span><span class="tok-o">(</span><span class="tok-s">&quot;Pepito Pérez&quot;</span><span class="tok-o">);</span>
+
+<span class="tok-n">em</span> <span class="tok-o">=</span> <span class="tok-n">emf</span><span class="tok-o">.</span><span class="tok-na">createEntityManager</span><span class="tok-o">();</span>
+<span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">getTransaction</span><span class="tok-o">().</span><span class="tok-na">begin</span><span class="tok-o">();</span>
+<span class="tok-n">empleado</span> <span class="tok-o">=</span> <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">merge</span><span class="tok-o">(</span><span class="tok-n">empleado</span><span class="tok-o">);</span>
+<span class="tok-n">empleado</span><span class="tok-o">.</span><span class="tok-na">setSueldo</span><span class="tok-o">(</span><span class="tok-mf">20000.0</span><span class="tok-o">);</span>
+<span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">getTransaction</span><span class="tok-o">().</span><span class="tok-na">commit</span><span class="tok-o">();</span>
+<span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">close</span><span class="tok-o">();</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Es muy importante notar que no está permitido modificar la clave primaria de una entidad gestionada. Si intentamos hacerlo, en el momento de hacer un commit la transacción lanzará una excepción <code>RollbackException</code>. Para reforzar esta idea, es conveniente definir las entidades sin un método <code>set</code> de la clave primaria. En el caso de aquellas entidades con una generación automática de la clave primaria, ésta se generará en tiempo de creación de la entidad. Y en el caso en que la aplicación tenga que proporcionar la clave primaria, lo puede hacer en el constructor.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_remove_para_borrar_entidades">2.2.4. Remove para borrar entidades</h4>
+<div class="paragraph">
+<p>Un borrado de una entidad realiza una sentencia <code>DELETE</code> en la base de datos. Esta acción no es demasiado frecuente, ya que las aplicaciones de gestión normalmente conservan todos los datos obtenidos y marcan como no activos aquellos que quieren dejar fuera de vista de los casos de uso. Se suele utilizar para eliminar datos que se han introducido por error en la base de datos o para trasladar de una tabla a otra los datos (se borra el dato de una y se inserta en la otra). En el caso de entidades esto último sería equivalente a un cambio de tipo de una entidad.</p>
+</div>
+<div class="paragraph">
+<p>Para eliminar una entidad, la entidad debe estar gestionada, esto es, debe existir en el contexto de persistencia. Esto significa que la aplicación debe obtener la entidad antes de eliminarla. Un ejemplo sencillo es:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-n">Empleado</span> <span class="tok-n">empleado</span> <span class="tok-o">=</span> <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">find</span><span class="tok-o">(</span><span class="tok-n">Empleado</span><span class="tok-o">.</span><span class="tok-na">class</span><span class="tok-o">,</span> <span class="tok-mi">1L</span><span class="tok-o">);</span>
+<span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">remove</span><span class="tok-o">(</span><span class="tok-n">emp</span><span class="tok-o">);</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>La llamada a <code>remove</code> asume que el empleado existe. En el caso de no existir se lanzaría una excepción.</p>
+</div>
+<div class="paragraph">
+<p>Borrar una entidad no es una tarea compleja, pero puede requerir algunos pasos, dependiendo del número de relaciones en la entidad que vamos a borrar. En su forma más simple, el borrado de una entidad se realiza pasando la entidad como parámetro del método <code>remove()</code> del entity manager que la gestiona. En el momento en que el contexto de persistencia se sincroniza con una transacción y se realiza un commit, la entidad se borra. Hay que tener cuidado, sin embargo, con las relaciones en las que participa la entidad para no comprometer la integridad de la base de datos.</p>
+</div>
+<div class="paragraph">
+<p>Veamos un sencillo ejemplo. Consideremos las entidades <code>Empleado</code> y <code>Despacho</code> y supongamos una relación unidireccional uno-a-uno entre <code>Empleado</code> y <code>Despacho</code> que se mapea utilizando una clave ajena en la tabla <code>EMPLEADO</code> hacia la tabla <code>DESPACHO</code> (lo veremos en la sesión siguiente).  Supongamos el siguiente código dentro de una transacción en el que borramos el despacho de un empleado:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-n">Empleado</span> <span class="tok-n">emp</span> <span class="tok-o">=</span> <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">find</span><span class="tok-o">(</span><span class="tok-n">Empleado</span><span class="tok-o">.</span><span class="tok-na">class</span><span class="tok-o">,</span> <span class="tok-mi">1L</span><span class="tok-o">);</span>
+<span class="tok-n">Despacho</span> <span class="tok-n">desp</span> <span class="tok-o">=</span> <span class="tok-n">emp</span><span class="tok-o">.</span><span class="tok-na">getDespacho</span><span class="tok-o">();</span>
+<span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">remove</span><span class="tok-o">(</span><span class="tok-n">desp</span><span class="tok-o">);</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Cuando se realice un commit de la transacción veremos una sentencia <code>DELETE</code> en la tabla <code>DESPACHO</code>, pero en ese momento obtendremos una excepción con un error de la base de datos referido a que hemos violado una restricción de la clave ajena. Esto se debe a que existe una restricción de integridad referencial entre la tabla <code>EMPLEADO</code> y la tabla <code>DESPACHO</code>. Se ha borrado una fila de la tabla <code>DESPACHO</code> pero la clave ajena correspondiente en la tabla <code>EMPLEADO</code> no se ha puesto a <code>NULL</code>. Para corregir el problema, debemos poner explícitamente a <code>null</code> el atributo <code>despacho</code> de la entidad <code>Empleado</code> antes de que la transacción finalice:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-n">Empleado</span> <span class="tok-n">empleado</span> <span class="tok-o">=</span> <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">find</span><span class="tok-o">(</span><span class="tok-n">Empleado</span><span class="tok-o">.</span><span class="tok-na">class</span><span class="tok-o">,</span> <span class="tok-mi">3L</span><span class="tok-o">);</span>
+<span class="tok-n">Despacho</span> <span class="tok-n">desp</span> <span class="tok-o">=</span> <span class="tok-n">empleado</span><span class="tok-o">.</span><span class="tok-na">getDespacho</span><span class="tok-o">();</span>
+<span class="tok-n">empleado</span><span class="tok-o">.</span><span class="tok-na">setDespacho</span><span class="tok-o">(</span><span class="tok-kc">null</span><span class="tok-o">);</span> <i class="conum" data-value="1"></i><b>(1)</b>
+<span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">remove</span><span class="tok-o">(</span><span class="tok-n">desp</span><span class="tok-o">);</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Eliminamos la clave ajena hacia el despacho poniendo un <code>null</code> en el atributo.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>El mantenimiento de las relaciones es una responsabilidad de la aplicación. Casi todos los problemas que suceden en los borrados de entidades tienen relación con este aspecto. Si la entidad que se va a borrar es el objetivo de una clave ajena en otras tablas, entonces debemos limpiar esas claves ajenas antes de borrar la entidad.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_operaciones_en_cascada">2.3. Operaciones en cascada</h3>
+<div class="paragraph">
+<p>Por defecto, las operaciones del entity manager se aplican únicamente a las entidades proporcionadas como argumento. La operación no se propagará a otras entidades que tienen relación con la entidad que se está modificando. Lo hemos visto antes con la llamada a <code>remove()</code>. Pero no sucede lo mismo con operaciones como <code>persist()</code>. Es bastante probable que si tenemos una entidad nueva y tiene una relación con otra entidad, las dos deben persistir juntas.</p>
+</div>
+<div class="paragraph">
+<p>Consideremos la secuencia de operaciones del siguiente códgo que muestran cómo se crea un nuevo <code>Empleado</code> con una entidad <code>Direccion</code> asociada y cómo se hacen los dos persistentes. La segunda llamada a <code>persist()</code> sobre la <code>Direccion</code> es algo redundante. Una entidad <code>Direccion</code> se acopla a la entidad <code>Empleado</code> que la almacena y tiene sentido que siempre que se cree un nuevo <code>Empleado</code>, se propague en cascada la llamada a <code>persist()</code> para la <code>Direccion</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-n">Empleado</span> <span class="tok-n">emp</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-nf">Empleado</span><span class="tok-o">(</span><span class="tok-mi">12</span><span class="tok-o">,</span> <span class="tok-s">&quot;Rob&quot;</span><span class="tok-o">);</span>
+<span class="tok-n">Direccion</span> <span class="tok-n">dir</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-nf">Direccion</span><span class="tok-o">(</span><span class="tok-s">&quot;Alicante&quot;</span><span class="tok-o">);</span>
+<span class="tok-n">emp</span><span class="tok-o">.</span><span class="tok-na">setDireccion</span><span class="tok-o">(</span><span class="tok-n">dir</span><span class="tok-o">);</span>
+<span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">persist</span><span class="tok-o">(</span><span class="tok-n">emp</span><span class="tok-o">);</span>
+<span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">persist</span><span class="tok-o">(</span><span class="tok-n">dir</span><span class="tok-o">);</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>El API JPA proporciona un mecanismo para definir cuándo operaciones como <code>persist()</code> deben propagarse en cascada. Para ello se define el elemento <code>cascade</code> en todas las anotaciones de relaciones (<code>@OneToOne</code>, <code>@OneToMany</code>, <code>@ManyToOne</code> y <code>@ManyToMany</code>).</p>
+</div>
+<div class="paragraph">
+<p>Las operaciones a las que hay que aplicar la propagación se identifican utilizando el tipo enumerado <code>CasacadeType</code>, que puede tener como valor <code>PERSIST</code>, <code>REFRESH</code>, <code>REMOVE</code>, <code>MERGE</code> y <code>ALL</code>.</p>
+</div>
+<div class="sect3">
+<h4 id="_persist_en_cascada">2.3.1. Persist en cascada</h4>
+<div class="paragraph">
+<p>Para activar la propagación de la persistencia en cascada debemos añadir el elemento <code>cascade=CascadeType.PERSIST</code> en la declaración de la relación. Por ejemplo, en el caso anterior, si hemos definido una relación muchos-a-uno entre <code>Empleado</code> y <code>Direccion</code>, podemos escribir el siguiente código:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-nd">@Entity</span>
+<span class="tok-kd">public</span> <span class="tok-kd">class</span> <span class="tok-nc">Empleado</span> <span class="tok-o">{</span>
+   <span class="tok-o">...</span>
+   <span class="tok-nd">@ManyToOne</span><span class="tok-o">(</span><span class="tok-n">cascadeCascdeType</span><span class="tok-o">.</span><span class="tok-na">PERSIST</span><span class="tok-o">)</span>
+   <span class="tok-n">Direccion</span> <span class="tok-n">direccion</span><span class="tok-o">;</span>
+   <span class="tok-o">...</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Para invocar la persistencia en cascada sólo nos tenemos que asegurar de que la nueva entidad <code>Direccion</code> se ha puesto en el atributo <code>direccion</code> del <code>Empleado</code> antes de llamar a <code>persist()</code> con él. La definición de la operación en cascada es unidireccional, y tenemos que tener en cuenta quién es el propietario de la relación y dónde se va a actualizar la misma antes de tomar la decisión de poner el elemento en ambos lados. Por ejemplo, en el caso anterior cuando definamos un nuevo empleado y una nueva dirección pondremos la dirección en el empleado, por lo que el elemento <code>cascade</code> tendremos que definirlo únicamente en la relación anterior.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Aunque JPA define esta forma de crear y hacer persistentes en cascada las entidades, no es una característica demasiado utilizada. La mayoría de las ocasiones tendremos ya las entidades hechas persistentes por una llamada previa al método persist.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_borrado_en_cascada">2.3.2. Borrado en cascada</h4>
+<div class="paragraph">
+<p>A primera vista, la utilización de un borrado en cascada puede parecer atractiva. Dependiendo de la cardinalidad de la relación podría eliminar la necesidad de eliminar múltiples instancias de entidad. Sin embargo, aunque es un elemento muy interesante, debe utilizarse con cierto cuidado. Hay sólo dos situaciones en las que un <code>remove()</code> en cascada se puede usar sin problemas: relaciones uno-a-uno y uno-a-muchos en donde hay una clara relación de propiedad y la eliminación de la instancia propietaria debe causar la eliminación de sus instancias dependientes. No puede aplicarse ciegamente a todas las relaciones uno-a-uno o uno-a-muchos porque las entidades dependientes podrían también estar participando en otras relaciones o podrían tener que continuar en la base de datos como entidades aisladas.</p>
+</div>
+<div class="paragraph">
+<p>Habiendo realizado el aviso, veamos qué sucede cuando se realiza una operación de <code>remove()</code> en cascada. Si una entidad <code>Empleado</code> se elimina, no tiene sentido eliminar el despacho (seguirá existiendo) pero sí sus cuentas de correo (suponiendo que le corresponde más de una). El siguiente código muestra cómo definimos este comportamiento:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-nd">@Entity</span>
+<span class="tok-kd">public</span> <span class="tok-kd">class</span> <span class="tok-nc">Empleado</span> <span class="tok-o">{</span>
+   <span class="tok-o">...</span>
+   <span class="tok-nd">@OneToOne</span><span class="tok-o">(</span><span class="tok-n">cascade</span><span class="tok-o">={</span><span class="tok-n">CascadeType</span><span class="tok-o">.</span><span class="tok-na">PERSIST</span><span class="tok-o">})</span>
+   <span class="tok-n">Despacho</span> <span class="tok-n">despacho</span><span class="tok-o">;</span>
+   <span class="tok-nd">@OneToMany</span><span class="tok-o">(</span><span class="tok-n">mappedBy</span><span class="tok-o">=</span><span class="tok-s">&quot;empleado&quot;</span><span class="tok-o">,</span>
+             <span class="tok-n">cascade</span><span class="tok-o">={</span><span class="tok-n">CascadeType</span><span class="tok-o">.</span><span class="tok-na">PERSIST</span><span class="tok-o">,</span> <span class="tok-n">CascadeType</span><span class="tok-o">.</span><span class="tok-na">REMOVE</span><span class="tok-o">})</span>
+   <span class="tok-n">Collection</span><span class="tok-o">&lt;</span><span class="tok-n">CuentaCorreo</span><span class="tok-o">&gt;</span> <span class="tok-n">cuentasCorreo</span><span class="tok-o">;</span>
+   <span class="tok-o">...</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Cuando se llama al método <code>remove()</code> el entity manager navegará por las relaciones entre el empleado y sus cuentas de correo e irá eliminando todas las instancias asociadas al empleado.</p>
+</div>
+<div class="paragraph">
+<p>Hay que hacer notar que este borrado en cascada afecta sólo a la base de datos y que no tiene ningún efecto en las relaciones en memoria entre las instancias en el contexto de persistencia. Cuando la instancia de <code>Empleado</code> se desconecte de la base de datos, su colección de cuentas de correo contendrá las mismas instancias de <code>CuentaCorreo</code> que tenía antes de llamar a la operación <code>remove()</code>. Incluso la misma instancia de <code>Empleado</code> seguirá existiendo, pero desconectada del contexto de persistencia.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_queries">2.4. Queries</h3>
+<div class="paragraph">
+<p>Uno de los aspectos fundamentales de JPA es la posibilidad de realizar consultas sobre las entidades, muy similares a las consultas SQL. El lenguaje en el que se realizan las consultas se denomina <em>Java Persistence Query Language</em> (JPQL). Desde la versión 2.0 de JPA es posible también utilizar el API Criteria que permite la detección de errores de sintaxis en la construcción de las consultas. Lo veremos más adelante.</p>
+</div>
+<div class="paragraph">
+<p>Una consulta se implementa mediante un objeto <code>Query</code>. Los objetos <code>Query</code> se construyen utilizando el <code>EntityManager</code> como una factoría. La interfaz <code>EntityManager</code> proporciona un conjunto de métodos que devuelven un objeto <code>Query</code> nuevo. Veremos algún ejemplo ahora, pero profundizaremos en el tema más adelante.</p>
+</div>
+<div class="paragraph">
+<p>Una consulta puede ser estática o dinámica. Las consultas estáticas se definen con metadatos en forma de anotaciones o XML, y deben incluir la consulta propiamente dicha y un nombre asignado por el usuario. Este tipo de consulta se denomina una consulta con nombre (<em>named query</em> en inglés). El nombre se utiliza en tiempo de ejecución para recuperar la consulta.</p>
+</div>
+<div class="paragraph">
+<p>Una consulta dinámica puede lanzarse en tiempo de ejecución y no es necesario darle un nombre, sino especificar únicamente las condiciones. Son un poco más costosas de ejecutar, porque el proveedor de persistencia (el gestor de base de datos) no puede realizar ninguna preparación, pero son muy útiles y versátiles porque pueden construirse en función de la lógica del programa, o incluso de los datos proporcionados por el usuario.</p>
+</div>
+<div class="paragraph">
+<p>El siguiente código muestra un ejemplo de consulta dinámica:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-n">Query</span> <span class="tok-n">query</span> <span class="tok-o">=</span> <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">createQuery</span><span class="tok-o">(</span><span class="tok-s">&quot;SELECT e FROM Empleado e &quot;</span> <span class="tok-o">+</span>
+                             <span class="tok-s">&quot;WHERE e.sueldo &gt; :sueldo&quot;</span><span class="tok-o">);</span>
+<span class="tok-n">query</span><span class="tok-o">.</span><span class="tok-na">setParameter</span><span class="tok-o">(</span><span class="tok-s">&quot;sueldo&quot;</span><span class="tok-o">,</span> <span class="tok-mi">20000</span><span class="tok-o">);</span>
+<span class="tok-n">List</span> <span class="tok-n">emps</span> <span class="tok-o">=</span> <span class="tok-n">query</span><span class="tok-o">.</span><span class="tok-na">getResultList</span><span class="tok-o">();</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>En el ejemplo vemos que, al igual que en JDBC, es posible especificar consultas con parámetros y posteriormente especificar esos parámetros con el método <code>setParameter()</code>. Una vez definida la consulta, el método <code>getResultList()</code> devuelve la lista de entidades que cumplen la condición. Este método devuelve un objeto que implementa la interfaz <code>List</code>, una subinterfaz de <code>Collection</code> que soporta ordenación. Hay que notar que no se devuelve una <code>List&lt;Empleado&gt;</code> ya que no se pasa ninguna clase en la llamada y no es posible parametrizar el tipo devuelto. Sí que podemos hacer un casting en los valores devueltos por los métodos que implementan las búsquedas, como muestra el siguiente código:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-kd">public</span> <span class="tok-n">List</span><span class="tok-o">&lt;</span><span class="tok-n">Empleado</span><span class="tok-o">&gt;</span> <span class="tok-nf">findEmpleadosSueldo</span><span class="tok-o">(</span><span class="tok-kt">long</span> <span class="tok-n">sueldo</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+   <span class="tok-n">Query</span> <span class="tok-n">query</span> <span class="tok-o">=</span> <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">createQuery</span><span class="tok-o">(</span><span class="tok-s">&quot;SELECT e FROM Empleado e &quot;</span> <span class="tok-o">+</span>
+                             <span class="tok-s">&quot;WHERE e.sueldo &gt; :sueldo&quot;</span><span class="tok-o">);</span>
+   <span class="tok-n">query</span><span class="tok-o">.</span><span class="tok-na">setParameter</span><span class="tok-o">(</span><span class="tok-s">&quot;sueldo&quot;</span><span class="tok-o">,</span> <span class="tok-mi">20000</span><span class="tok-o">);</span>
+   <span class="tok-k">return</span> <span class="tok-o">(</span><span class="tok-n">List</span><span class="tok-o">&lt;</span><span class="tok-n">Empleado</span><span class="tok-o">&gt;)</span> <span class="tok-n">query</span><span class="tok-o">.</span><span class="tok-na">getResultList</span><span class="tok-o">();</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_operaciones_sobre_el_contexto_de_persistencia">2.5. Operaciones sobre el contexto de persistencia</h3>
+<div class="paragraph">
+<p>Una cuestión muy importante para entender el funcionamiento del <em>entity manager</em> es comprender el funcionamiento de las operaciones que gestionan el contexto de persistencia. Hemos dicho que el contexto de persistencia es la colección de entidades gestionadas por el <em>entity manager</em>, entidades que están conectadas y sincronizadas con la base de datos. Cuando el <em>entity manager</em> cierra una transacción, genera las sentencias SQL necesarias para que el estado de estas entidades se vuelque a la base de datos. Es fundamental entender que el contexto de persistencia hace el papel de <em>caché</em> de las entidades que están en la base de datos. Cuando actualizamos una instancia en el contexto de persistencia estamos actualizando una caché, una copia que sólo se hace persistente en la base de datos cuando el entity manager realiza un <em>flush</em> de las instancias en la base de datos.</p>
+</div>
+<div class="paragraph">
+<p>Simplificando bastante, el entity manager realiza el siguiente proceso para todas las entidades:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Si la aplicación solicita una entidad (mediante un <code>find</code>, o accediendo a un atributo de otra entidad en una relación), se comprueba si ya se encuentra en el contexto de persistencia. Si es así, se devuelve su referencia. Si no se ha recuperado previamente, se obtiene la instancia de la entidad de la base de datos.</p>
+</li>
+<li>
+<p>La aplicación utiliza las entidades del contexto de persistencia, accediendo a sus atributos y (posiblemente) modificándolos. Todas las modificaciones se realizan en la memoria, en el contexto de persistencia.</p>
+</li>
+<li>
+<p>En un momento dado (cuando termina la transacción, se ejecuta una query o se hace una llamada al método <code>flush</code>) el entity manager comprueba qué entidades han sido modificadas y vuelca los cambios a la base de datos.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Es muy importante darse cuenta de la diferencia entre el contexto de persistencia y la base de datos propiamente dicha. La sincronización no se realiza hasta que el entity manager vuelca los cambios a la base de datos. La aplicación debe ser consciente de esto y utilizar razonablemente los contextos de persistencia.</p>
+</div>
+<div class="paragraph">
+<p>Vamos a ver con algún detalle las operaciones del <em>entity manager</em> relacionadas con el contexto de persistencia:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>flush()</code> sincroniza el contexto de persistencia con la base de datos</p>
+</li>
+<li>
+<p><code>detach()</code> desconecta una entidad del contexto de persistencia</p>
+</li>
+<li>
+<p><code>merge()</code> mezcla una entidad desconectada en el contexto de persistencia actual</p>
+</li>
+<li>
+<p><code>refresh()</code> refresca el estado de una entidad con los valores de la base de datos, sobreescribiendo sus cambios en memoria</p>
+</li>
+<li>
+<p><code>clear()</code> y <code>close()</code> vacían el contexto de persistencia y lo desconectan de la base de datos</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="_sincronización_con_la_base_de_datos_con_code_flush_code">2.5.1. Sincronización con la base de datos con <code>flush</code></h4>
+<div class="paragraph">
+<p>Cada vez que el proveedor de persistencia genera sentencias SQL y las escribe en la base de datos a través de una conexión JDBC, decimos que se ha volcado (<em>flush</em>) el contexto de persistencia. Todos los cambios pendientes que requieren que se ejecute una sentencia SQL en la transacción se escriben en la base de datos cuando ésta realiza un commit. Esto significa que cualquier operación SQL que tenga lugar después de haberse realizado el volcado ya incorporará estos cambios. Esto es particularmente importante para consultas SQL que se ejecutan en una transacción que también está realizando cambios en los datos de la entidad.</p>
+</div>
+<div class="paragraph">
+<p>¿Qué sucede exactamente cuando se realiza un volcado del contexto de persistencia? Un volcado consiste básicamente en tres componentes: entidades nuevas que necesitan hacerse persistentes, entidades modificadas que necesitan ser actualizadas y entidades borradas que deben ser eliminadas de la base de datos. Toda esta información es gestionada por el contexto de persistencia.</p>
+</div>
+<div class="paragraph">
+<p>Cuando ocurre un volcado, el entity manager itera primero sobre las entidades gestionadas y busca nuevas entidades que se han añadido a las relaciones y que tienen activada la opción de persistencia en cascada. Esto es equivalente lógicamente a invocar a <code>persist()</code> con cada una de las entidades gestionadas antes de que se realice el volcado. El entity manager también comprueba la integridad de todas las relaciones. Si una entidad apunta a otra que no está gestionada o que ha sido eliminada, entonces se puede lanzar una excepción.</p>
+</div>
+<div class="paragraph">
+<p>Si en el proceso de volcado alguno de los objetos a los que apunta la instancia que estamos haciendo persistente no está gestionado, no tiene el atributo de persistencia en cascada y no está incluido en una relación uno-a-uno o muchos-a-uno entonces se lanzará una excepción <code>IllegalStateException</code>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_desconexión_de_entidades">2.5.2. Desconexión de entidades</h4>
+<div class="paragraph">
+<p>Como resultado de una consulta o de una relación, obtendremos una colección de entidades que deberemos tratar, pasar a otras capas de la aplicación y, en una aplicación web, mostrar en una página JSP o JSF. En este apartado vamos a ver cómo trabajar con las entidades obtenidas y vamos a reflexionar sobre su desconexión del contexto de persistencia.</p>
+</div>
+<div class="paragraph">
+<p>Una entidad desconectada (<em>detached entity</em> en inglés) es una entidad que ya no está asociada a un contexto de persistencia. En algún momento estuvo gestionada, pero el contexto de persistencia puede haber terminado, o la entidad puede haberse transformado de forma que ha perdido su asociación con el contexto de persistencia que la gestionaba. Cualquier cambio que se realice en el estado de la entidad no se hará persistente en la base de datos, pero todo el estado que estaba en la entidad antes de desconectarse sigue estando ahí para ser usado por la aplicación.</p>
+</div>
+<div class="paragraph">
+<p>Hay dos formas de ver la desconexión de entidades. Por una parte, es una herramienta poderosa que puede utilizarse por las aplicaciones para trabajar con aplicaciones remotas o para soportar el acceso a los datos de la entidad mucho después de que la transacción ha concluido. Además, son objetos que pueden hacer el papel de DTOs (<em>Data Transfer Objets</em>) y ser devueltos por la capa de lógica de negocio y utilizados por la capa de presentación. La otra posible interpretación es que puede ser una fuente de problemas frustrantes cuando las entidades contienen una gran cantidad de atributos que se cargan de forma perezosa y los clientes que usan estas entidades desconectadas necesitan acceder a esta información.</p>
+</div>
+<div class="paragraph">
+<p>Existen muchas condiciones en las que una entidad se convierte en desconectada. Cada una de las situaciones siguientes generarán entidades desconectadas:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Cuando el contexto de persistencia se cierra con una llamada a <code>close()</code> del entity manager</p>
+</li>
+<li>
+<p>Cuando se llama al método <code>clear()</code> del entity manager</p>
+</li>
+<li>
+<p>Cuando se produce un rollback de la transacción</p>
+</li>
+<li>
+<p>Cuando una entidad se serializa</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Todos los casos se refieren a contextos de persistencias gestionados por la aplicación (Java SE y aplicaciones web sin contenedor de EJB).</p>
+</div>
+<div class="sect4">
+<h5 id="_recuperación_lazy_y_eager_de_las_entidades_relacionadas">Recuperación LAZY y EAGER de las entidades relacionadas</h5>
+<div class="paragraph">
+<p>Una característica que hace muy cómoda la programación con JPA es la recuperación de todo el grafo de relaciones asociado a una entidad. Cuando el <em>entity manager</em> trae a memoria entidades (como resultado de una consulta o de una llamada a <code>find</code>) también trae todas aquellas entidades relacionadas. De esta forma podemos acceder a las entidades relacionadas a través de llamadas a los <em>getters</em>. Sin embargo, no todas las entidades relacionadas se traen realmente a memoria. En muchos casos, por motivos de eficiencia, lo que JPA guarda en el <em>getter</em> no es la propia entidad sino un <em>proxy</em> que generará una consulta a la base de datos cuando se acceda a él. Es lo que se denomina <em>carga perezosa</em> (<em>lazy loading</em>).</p>
+</div>
+<div class="paragraph">
+<p>Podemos definir el tipo de carga que queremos marcando las relaciones con los atributos <code>EAGER</code> o <code>LAZY</code>. Por defecto las relaciones a-uno son de tipo <em>eager</em> y las a-muchos de tipo <em>lazy</em>.</p>
+</div>
+<div class="paragraph">
+<p>Es fundamental saber si un atributo se ha traído a memoria o si está cargado de forma perezosa cuando se realiza una desconexión del contexto de persistencia, por ejemplo cuando se cierra el <em>entity manager</em>. Veamos un ejemplo. Supongamos que tenemos la siguiente definición de <code>Empleado</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-kd">public</span> <span class="tok-kd">class</span> <span class="tok-nc">Empleado</span> <span class="tok-o">{</span>
+    <span class="tok-nd">@Id</span>
+    <span class="tok-nd">@GeneratedValue</span>
+    <span class="tok-kd">private</span> <span class="tok-n">Long</span> <span class="tok-n">id</span><span class="tok-o">;</span>
+
+    <span class="tok-o">...</span>
+
+    <span class="tok-nd">@OneToMany</span><span class="tok-o">(</span><span class="tok-n">mappedBy</span> <span class="tok-o">=</span> <span class="tok-s">&quot;empleado&quot;</span><span class="tok-o">,</span> <span class="tok-n">fetch</span> <span class="tok-o">=</span> <span class="tok-n">FetchType</span><span class="tok-o">.</span><span class="tok-na">EAGER</span><span class="tok-o">)</span>
+    <span class="tok-kd">private</span> <span class="tok-n">Set</span><span class="tok-o">&lt;</span><span class="tok-n">CuentaCorreo</span><span class="tok-o">&gt;</span> <span class="tok-n">correos</span><span class="tok-o">;</span>
+
+   <span class="tok-o">...</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Todos los elementos de la relación <code>correos</code> se cargarán en memoria al recupar un empleado, aunque no accedamos a ellos. De esta forma, si el entity manager se cierra, tendremos acceso a la colección:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-c1">// Cargamos una entidad y cerramos la conexión</span>
+<span class="tok-c1">// del entity manager</span>
+<span class="tok-n">EntityManager</span> <span class="tok-n">em</span> <span class="tok-o">=</span> <span class="tok-n">emf</span><span class="tok-o">.</span><span class="tok-na">createEntityManager</span><span class="tok-o">();</span>
+<span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">getTransaction</span><span class="tok-o">().</span><span class="tok-na">begin</span><span class="tok-o">();</span>
+<span class="tok-n">Empleado</span> <span class="tok-n">empleado</span> <span class="tok-o">=</span> <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">find</span><span class="tok-o">(</span><span class="tok-n">Empleado</span><span class="tok-o">.</span><span class="tok-na">class</span><span class="tok-o">,</span> <span class="tok-mi">1L</span><span class="tok-o">);</span>
+<span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">getTransaction</span><span class="tok-o">().</span><span class="tok-na">commit</span><span class="tok-o">();</span>
+<span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">close</span><span class="tok-o">();</span>
+
+<span class="tok-c1">// Comprobamos que los correos se han cargado en memoria</span>
+<span class="tok-c1">// por ser el tipo Eager Fetch</span>
+
+<span class="tok-n">assertTrue</span><span class="tok-o">(</span><span class="tok-n">empleado</span><span class="tok-o">.</span><span class="tok-na">getCorreos</span><span class="tok-o">().</span><span class="tok-na">size</span><span class="tok-o">()==</span><span class="tok-mi">2</span><span class="tok-o">);</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>El comportamento del acceso a atributos no cargados cuando la entidad está desconectada no está definido en la especificación. Algunas implemenentaciones pueden intentar resolver la relación, mientras que otros simplemente lanzan una excepción y dejan el atributo sin inicializar. En el caso de Hibernate, se lanza una excepción de tipo <code>org.hibernate.LazyInitializationException</code>. Si la entidad ha sido desconectada debido a una serialización entonces no hay virtualmente ninguna esperanza de resolver la relación. La única forma portable de gestionar estos casos es no utilizando estos atributos.</p>
+</div>
+<div class="paragraph">
+<p>En el caso en el que las entidades no tengan atributos de carga perezosa, no debe haber demasiados problemas con la desconexión. Todo el estado de la entidad estará todavía disponible para su uso en la entidad.</p>
+</div>
+<div class="paragraph">
+<p>Si las relaciones a-muchos no tienen un número demasiado elevado de elementos es recomendable definirlas de tipo <code>EAGER</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_merge">2.5.3. Merge</h4>
+<div class="paragraph">
+<p>El método merge() permite volver a incorporar en el contexto de persistencia del entity manager una entidad que había sido desconectada. Debemos pasar como parámetro la entidad que queremos incluir. Hay que tener cuidado con su utilización, porque el objeto que se pasa como parámetro no pasa a ser gestionado. Hay que usar el objeto que devuelve el método. Un ejemplo:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-kd">public</span> <span class="tok-kt">void</span> <span class="tok-nf">subeSueldo</span><span class="tok-o">(</span><span class="tok-n">Empleado</span> <span class="tok-n">emp</span><span class="tok-o">,</span> <span class="tok-kt">long</span> <span class="tok-n">inc</span><span class="tok-o">)</span>
+   <span class="tok-n">Empleado</span> <span class="tok-n">empGestionado</span> <span class="tok-o">=</span> <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">merge</span><span class="tok-o">(</span><span class="tok-n">emp</span><span class="tok-o">);</span>
+   <span class="tok-n">empGestionado</span><span class="tok-o">.</span><span class="tok-na">setSueldo</span><span class="tok-o">(</span><span class="tok-n">empGestionado</span><span class="tok-o">.</span><span class="tok-na">getSueldo</span><span class="tok-o">()+</span><span class="tok-n">inc</span><span class="tok-o">);</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Si una entidad con el mismo identificador que <code>emp</code> existe en el contexto de persistencia, se devuelve como resultado y se actualizan sus atributos. Si el objeto que se le pasa a <code>merge()</code> es un objeto nuevo, se comporta igual que <code>persist()</code>, con la única diferencia de que la entidad gestionada es la devuelta como resultado de la llamada.</p>
+</div>
+<div class="sect4">
+<h5 id="_clear">Clear</h5>
+<div class="paragraph">
+<p>En ocasiones puede ser necesario limpiar (<code>clear</code>) contexto de persistencia y vaciar las entidades gestiondas. Esto puede suceder, por ejemplo, en conextos extendidos gestionados por la aplicación que han crecido demasiado. Por ejemplo, consideremos el caso de un entity manager gestionado por la aplicación que lanza una consulta que devuelve varios cientos de instancias entidad. Una vez que ya hemos realizado los cambios a unas cuantas de esas instancias y la transacción se termina, se quedan en memoria cientos de objetos que no tenemos intención de cambiar más. Si no queremos cerrar el contexto de persistencia en ese momento, entonces tendremos que limpiar de alguna forma las instancias gestionadas, o el contexto de persistencia irá creciendo cada vez más.</p>
+</div>
+<div class="paragraph">
+<p>El método <code>clear()</code> del interfaz <code>EntityManager</code> se utiliza para limpiar el contexto de persistencia. En muchos sentidos su funcionamiento es similar a un rollback de una transacción en memoria. Todas las instancias gestionadas por el contexto e persistencia se desconectan del contexto y quedan con el estado previo a la llamada a <code>clear()</code>. La operación <code>clear()</code> es del tipo todo o nada. No es posible cancelar selectivamente la gestión de una instancia particular cuando el contexto de persistencia está abierto.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_actualización_de_las_colecciones_en_las_relaciones_a_muchos">2.5.4. Actualización de las colecciones en las relaciones a-muchos</h4>
+<div class="paragraph">
+<p>En una relación uno-a-muchos el campo que mantiene la colección es un <em>proxy</em> que nos permite acceder a los elementos propiamente dichos, pero sólo si la entidad está gestionada. Hay que tener cuidado porque si la parte inversa de la relación se actualiza con un nuevo elemento, JPA no tiene forma de saberlo por si solo. La aplicación debe actualizar la colección también.</p>
+</div>
+<div class="paragraph">
+<p>Veamos un ejemplo. Supongamos que tenemos la relación uno-a-muchos entre <code>AutorEntity</code> y <code>MensajeEntity</code> definida en la sesión anterior, que la entidad <code>MensajeEntity</code> contiene la clave ajena hacia <code>AutorEntity</code> y que la aplicación ejecuta el siguiente código para añadir un mensaje a un autor:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">getTransaction</span><span class="tok-o">().</span><span class="tok-na">begin</span><span class="tok-o">();</span>
+<span class="tok-n">AutorEntity</span> <span class="tok-n">autor</span> <span class="tok-o">=</span> <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">find</span><span class="tok-o">(</span><span class="tok-n">AutorEntity</span><span class="tok-o">.</span><span class="tok-na">class</span><span class="tok-o">,</span> <span class="tok-mi">1L</span><span class="tok-o">);</span>
+<span class="tok-n">System</span><span class="tok-o">.</span><span class="tok-na">out</span><span class="tok-o">.</span><span class="tok-na">println</span><span class="tok-o">(</span><span class="tok-n">autor</span><span class="tok-o">.</span><span class="tok-na">getNombre</span><span class="tok-o">()</span> <span class="tok-o">+</span> <span class="tok-s">&quot; ha escrito &quot;</span> <span class="tok-o">+</span>
+                <span class="tok-n">autor</span><span class="tok-o">.</span><span class="tok-na">getMensajes</span><span class="tok-o">().</span><span class="tok-na">size</span><span class="tok-o">()</span> <span class="tok-o">+</span> <span class="tok-s">&quot; mensajes&quot;</span><span class="tok-o">);</span>
+<span class="tok-n">Mensaje</span> <span class="tok-n">mens</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-nf">Mensaje</span><span class="tok-o">(</span><span class="tok-s">&quot;Nuevo mensaje&quot;</span><span class="tok-o">);</span>
+<span class="tok-n">mens</span><span class="tok-o">.</span><span class="tok-na">setAutor</span><span class="tok-o">(</span><span class="tok-n">autor</span><span class="tok-o">);</span>
+<span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">persist</span><span class="tok-o">(</span><span class="tok-n">mens</span><span class="tok-o">);</span>
+<span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">getTransaction</span><span class="tok-o">().</span><span class="tok-na">commit</span><span class="tok-o">();</span>
+<span class="tok-n">System</span><span class="tok-o">.</span><span class="tok-na">out</span><span class="tok-o">.</span><span class="tok-na">println</span><span class="tok-o">(</span><span class="tok-n">autor</span><span class="tok-o">.</span><span class="tok-na">getNombre</span><span class="tok-o">()</span> <span class="tok-o">+</span> <span class="tok-s">&quot; ha escrito &quot;</span> <span class="tok-o">+</span>
+                <span class="tok-n">autor</span><span class="tok-o">.</span><span class="tok-na">getMensajes</span><span class="tok-o">().</span><span class="tok-na">size</span><span class="tok-o">()</span> <span class="tok-o">+</span> <span class="tok-s">&quot; mensajes&quot;</span><span class="tok-o">);</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Si comprobamos qué sucede veremos que no aparecerá ningún cambio entre el primer mensaje de la aplicación y el segundo, ambos mostrarán el mismo número de mensajes. ¿Por qué? ¿Es que no se ha actualizado el nuevo mensaje del autor en la base de datos?. Si miramos en la base de datos, comprobamos que la transacción sí que se ha completado correctamente. Sin embargo cuando llamamos al método <code>getMensajes()</code> en la colección resultante no aparece el nuevo mensaje que acabamos de añadir.</p>
+</div>
+<div class="paragraph">
+<p>Este es un ejemplo del tipo de errores que podemos cometer por trabajar con contextos de persistencia pensando que estamos conectados directamente con la BD. El problema se encuentra en que la primera llamada a <code>getMensajes()</code> (antes de crear el nuevo mensaje) ha generado la consulta a la base de datos y ha cargado el resultado en memoria. Cuando hacemos una segunda llamada, el proveedor detecta que esa información ya la tiene en la caché y no la vuelve a consultar.</p>
+</div>
+<div class="paragraph">
+<p>La aplicación es la responsable de actualizar las relaciones en memoria. Por eso hay que añadir manualmente el mensaje a la colección. Hay que hacerlo una vez que se ha hecho persistente el mensaje, para que su identicador autogenerado esté actualizado. Lo haríamos añadiendo al código anterior la línea que actualiza la colección:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">getTransaction</span><span class="tok-o">().</span><span class="tok-na">begin</span><span class="tok-o">();</span>
+<span class="tok-n">Autor</span> <span class="tok-n">autor</span> <span class="tok-o">=</span> <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">find</span><span class="tok-o">(</span><span class="tok-n">Autor</span><span class="tok-o">.</span><span class="tok-na">class</span><span class="tok-o">,</span> <span class="tok-mi">1L</span><span class="tok-o">);</span>
+<span class="tok-n">System</span><span class="tok-o">.</span><span class="tok-na">out</span><span class="tok-o">.</span><span class="tok-na">println</span><span class="tok-o">(</span><span class="tok-n">autor</span><span class="tok-o">.</span><span class="tok-na">getNombre</span><span class="tok-o">()</span> <span class="tok-o">+</span> <span class="tok-s">&quot; ha escrito &quot;</span> <span class="tok-o">+</span>
+                   <span class="tok-n">autor</span><span class="tok-o">.</span><span class="tok-na">getMensajes</span><span class="tok-o">().</span><span class="tok-na">size</span><span class="tok-o">()</span> <span class="tok-o">+</span> <span class="tok-s">&quot; mensajes&quot;</span><span class="tok-o">);</span>
+<span class="tok-n">Mensaje</span> <span class="tok-n">mens</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-nf">Mensaje</span><span class="tok-o">(</span><span class="tok-s">&quot;Nuevo mensaje&quot;</span><span class="tok-o">);</span>
+<span class="tok-n">mens</span><span class="tok-o">.</span><span class="tok-na">setAutor</span><span class="tok-o">(</span><span class="tok-n">autor</span><span class="tok-o">);</span>
+<span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">persist</span><span class="tok-o">(</span><span class="tok-n">mens</span><span class="tok-o">);</span>
+<span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">getTransaction</span><span class="tok-o">().</span><span class="tok-na">commit</span><span class="tok-o">();</span>
+<span class="tok-n">autor</span><span class="tok-o">.</span><span class="tok-na">getMensajes</span><span class="tok-o">().</span><span class="tok-na">add</span><span class="tok-o">(</span><span class="tok-n">mens</span><span class="tok-o">);</span> <i class="conum" data-value="1"></i><b>(1)</b>
+<span class="tok-n">System</span><span class="tok-o">.</span><span class="tok-na">out</span><span class="tok-o">.</span><span class="tok-na">println</span><span class="tok-o">(</span><span class="tok-n">autor</span><span class="tok-o">.</span><span class="tok-na">getNombre</span><span class="tok-o">()</span> <span class="tok-o">+</span> <span class="tok-s">&quot; ha escrito &quot;</span> <span class="tok-o">+</span>
+                <span class="tok-n">autor</span><span class="tok-o">.</span><span class="tok-na">getMensajes</span><span class="tok-o">().</span><span class="tok-na">size</span><span class="tok-o">()</span> <span class="tok-o">+</span> <span class="tok-s">&quot; mensajes&quot;</span><span class="tok-o">);</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>La llamada al método <code>add()</code> de la colección añade un mensaje nuevo a la colección de mensajes del autor existente en el contexto de persistencia. De esta forma estamos reflejando en memoria lo que hemos realizado en la base de datos.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Otra posible solución (menos recomendable) es obligar al entity manager a que sincronice la entidad y la base de datos. Para ello podemos llamar al método <code>refresh()</code> del entity manager:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">getTransaction</span><span class="tok-o">().</span><span class="tok-na">begin</span><span class="tok-o">();</span>
+<span class="tok-c1">// ... añado un mensaje al autor</span>
+<span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">refresh</span><span class="tok-o">(</span><span class="tok-n">autor</span><span class="tok-o">);</span> <i class="conum" data-value="1"></i><b>(1)</b>
+<span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">getTransaction</span><span class="tok-o">().</span><span class="tok-na">commit</span><span class="tok-o">();</span>
+<span class="tok-n">System</span><span class="tok-o">.</span><span class="tok-na">out</span><span class="tok-o">.</span><span class="tok-na">println</span><span class="tok-o">(</span><span class="tok-n">autor</span><span class="tok-o">.</span><span class="tok-na">getNombre</span><span class="tok-o">()</span> <span class="tok-o">+</span> <span class="tok-s">&quot; ha escrito &quot;</span> <span class="tok-o">+</span>
+                   <span class="tok-n">autor</span><span class="tok-o">.</span><span class="tok-na">getMensajes</span><span class="tok-o">().</span><span class="tok-na">size</span><span class="tok-o">()</span> <span class="tok-o">+</span>
+                   <span class="tok-s">&quot; mensajes&quot;</span><span class="tok-o">);</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>La llamada al método <code>refresh</code> obliga a JPA a volver a hacer un <code>SELECT</code> la siguiente vez que se pida la colección <code>autor.getMensajes()</code>.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Estos ejemplos ponen en evidencia que para trabajar bien con JPA es fundamental entender que el contexto de persistencia es una caché de la base de datos propiamente dicha.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_implementación_de_un_dao_con_jpa">2.6. Implementación de un DAO con JPA</h3>
+<div class="paragraph">
+<p>El patrón DAO (<em>Data Access Object</em>) se ha utilizado históricamente para ocultar los detalles de implementación de la capa de persistencia y ofrecer una interfaz más sencilla a otras partes de la aplicación. Esto es necesario cuando se trabaja con un API de persistencia de bajo nivel, como JDBC, en la que las operaciones sobre la base de datos conlleva la utilización de sentencias SQL que queremos aislar de otras capas de la aplicación.</p>
+</div>
+<div class="paragraph">
+<p>Sin embargo, en desarrollos en los que utilizamos un API de persistencia de mayor nivel como JPA, la utilización de un patrón DAO no es tan necesaria. Muchos argumentan incluso que se trata de un <em>antipatrón</em>, un patrón que conviene evitar. No creemos que sea así, porque un patrón DAO bien diseñado y adaptado a JPA permite eliminar errores derivados de la mala utilización del contexto de persistencia y agrupar en una única clase todas las consultas relacionadas con una misma clase de dominio.</p>
+</div>
+<div class="paragraph">
+<p>Presentamos a continuación una adaptación del <a href="http://kenai.com/projects/javaee-patterns/sources/hg/show/DAOPattern?rev=454">patrón DAO</a> propuesto por <a href="http://www.adam-bien.com">Adam Bien</a>, uno de los autores y expertos sobre Java EE más importantes en la actualidad.</p>
+</div>
+<div class="paragraph">
+<p>Cada clase de entidad definirá una clase DAO en la que se definen los métodos CRUD sobre la entidad (<em>Create</em>, <em>Read</em>, <em>Update</em> y <em>Delete</em>), así como el <em>find</em> que devuelve la entidad a partir de su clave primaria. También definirán las consultas JPQL.</p>
+</div>
+<div class="paragraph">
+<p>Por ejemplo, el DAO de la clase <code>Autor</code> definiría los siguientes métodos:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>create (Autor autor)</code>: recibe una variable <code>autor</code> no gestionada y devuelve una variable gestionada con la clave primaria actualizada</p>
+</li>
+<li>
+<p><code>update (Autor autor)</code>: recibe una variable <code>autor</code> que puede no estar gestionada (pero ya está en la base de datos) y actualiza el valor de la base de datos con los valores de la variable</p>
+</li>
+<li>
+<p><code>delete (Autor autor)</code>: borra la entidad <code>autor</code> de la base de datos</p>
+</li>
+<li>
+<p><code>find (Long id)</code>: devuelve una entidad gestionada correspondiente a la clave primaria que se pasa como parámetro.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Todos estos métodos se deben implementar a través de un <em>entity manager</em> que habremos creado al comienzo del trabajo con los DAOs y le habremos pasado a los DAO en su creación. O sea que los DAO trabajarán con un <em>entity manager</em> y una transacción abierta, de forma que podremos englobar distintas operaciones de distintos DAOs en una misma transacción y un mismo contexto de persistencia.</p>
+</div>
+<div class="paragraph">
+<p>La capa responsable de abrir la transacción y el <em>entity manager</em> será la capa que utiliza los DAO, la que implementa la lógica de negocio. Si se intenta llamar a cualquiera de los métodos del DAO sin que se haya abierto una transacción en el <em>entity manager</em> se deberá lanzar una excepción.</p>
+</div>
+<div class="paragraph">
+<p>Vamos a definir todas las clases DAO en el paquete <code>persistencia</code> y las clases que usan los DAO para implementar la lógica de negocio en el paquete <code>service</code>.</p>
+</div>
+<div class="paragraph">
+<p>La implementación concreta se especifica a continuación. Agrupamos todas las funciones CRUD comunes a todos los DAO en una clase abstracta genérica, que tiene como parámetro la entidad que va a gestionar y el tipo de su clave primaria de la entidad. En las aplicaciones JPA que utilicen este patrón se definirá una clase DAO específica por cada entidad que definamos.</p>
+</div>
+<div class="paragraph">
+<p>Clase DAO genérica:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-kn">package</span> <span class="tok-n">org</span><span class="tok-o">.</span><span class="tok-na">expertojava</span><span class="tok-o">.</span><span class="tok-na">jpa</span><span class="tok-o">.</span><span class="tok-na">empleados</span><span class="tok-o">.</span><span class="tok-na">persistencia</span><span class="tok-o">;</span>
+
+<span class="tok-kn">import</span> <span class="tok-nn">javax.persistence.EntityManager</span><span class="tok-o">;</span>
+
+<span class="tok-kd">abstract</span> <span class="tok-kd">class</span> <span class="tok-nc">Dao</span><span class="tok-o">&lt;</span><span class="tok-n">T</span><span class="tok-o">,</span> <span class="tok-n">K</span><span class="tok-o">&gt;</span> <span class="tok-o">{</span> <i class="conum" data-value="1"></i><b>(1)</b>
+   <span class="tok-n">EntityManager</span> <span class="tok-n">em</span><span class="tok-o">;</span> <i class="conum" data-value="2"></i><b>(2)</b>
+
+   <span class="tok-kd">public</span> <span class="tok-nf">Dao</span><span class="tok-o">(</span><span class="tok-n">EntityManager</span> <span class="tok-n">em</span><span class="tok-o">)</span> <span class="tok-o">{</span> <i class="conum" data-value="3"></i><b>(3)</b>
+      <span class="tok-k">this</span><span class="tok-o">.</span><span class="tok-na">em</span> <span class="tok-o">=</span> <span class="tok-n">em</span><span class="tok-o">;</span>
+   <span class="tok-o">}</span>
+
+   <span class="tok-kd">public</span> <span class="tok-n">EntityManager</span> <span class="tok-nf">getEntityManager</span><span class="tok-o">()</span> <span class="tok-o">{</span>
+      <span class="tok-k">return</span> <span class="tok-k">this</span><span class="tok-o">.</span><span class="tok-na">em</span><span class="tok-o">;</span>
+   <span class="tok-o">}</span>
+
+   <span class="tok-kd">public</span> <span class="tok-n">T</span> <span class="tok-nf">create</span><span class="tok-o">(</span><span class="tok-n">T</span> <span class="tok-n">t</span><span class="tok-o">)</span> <span class="tok-o">{</span> <i class="conum" data-value="4"></i><b>(4)</b>
+      <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">persist</span><span class="tok-o">(</span><span class="tok-n">t</span><span class="tok-o">);</span>
+      <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">flush</span><span class="tok-o">();</span>
+      <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">refresh</span><span class="tok-o">(</span><span class="tok-n">t</span><span class="tok-o">);</span>
+      <span class="tok-k">return</span> <span class="tok-n">t</span><span class="tok-o">;</span>
+   <span class="tok-o">}</span>
+
+   <span class="tok-kd">public</span> <span class="tok-n">T</span> <span class="tok-nf">update</span><span class="tok-o">(</span><span class="tok-n">T</span> <span class="tok-n">t</span><span class="tok-o">)</span> <span class="tok-o">{</span> <i class="conum" data-value="5"></i><b>(5)</b>
+      <span class="tok-k">return</span> <span class="tok-o">(</span><span class="tok-n">T</span><span class="tok-o">)</span> <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">merge</span><span class="tok-o">(</span><span class="tok-n">t</span><span class="tok-o">);</span>
+   <span class="tok-o">}</span>
+
+   <span class="tok-kd">public</span> <span class="tok-kt">void</span> <span class="tok-nf">delete</span><span class="tok-o">(</span><span class="tok-n">T</span> <span class="tok-n">t</span><span class="tok-o">)</span> <span class="tok-o">{</span> <i class="conum" data-value="6"></i><b>(6)</b>
+      <span class="tok-n">t</span> <span class="tok-o">=</span> <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">merge</span><span class="tok-o">(</span><span class="tok-n">t</span><span class="tok-o">);</span>
+      <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">remove</span><span class="tok-o">(</span><span class="tok-n">t</span><span class="tok-o">);</span>
+   <span class="tok-o">}</span>
+
+   <span class="tok-kd">public</span> <span class="tok-kd">abstract</span> <span class="tok-n">T</span> <span class="tok-nf">find</span><span class="tok-o">(</span><span class="tok-n">K</span> <span class="tok-n">id</span><span class="tok-o">);</span> <i class="conum" data-value="7"></i><b>(7)</b>
+
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Definición de la clase abstracta genérica. Las clases <code>T</code> y <code>K</code> se corresponden con la clase de la entidad y la clase de la clave primaria.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Variable de instancia con el <em>entity manager</em> en el que vamos a utilizar el DAO</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Creación del DAO en el que se le pasa el <em>entity manager</em> en el se van a realizar todas las operaciones</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td><code>create</code>: se recibe un objeto entidad creado con los datos a hacer persistente y se llama a <code>persist()</code>, <code>flush()</code> y <code>refresh()</code> para hacer persistente la entidad y actualizar su clave primaria. Se devuelve la entidad gestionada.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td><code>update</code>: de realiza un <code>merge</code> de la entidad y se devuelve la entidad resultante, ya gestionada</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td><code>delete</code>: se hace un <code>merge</code> (la entidad que se pasa puede estar desconectada) y se hace un <code>remove</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td><code>find</code>: se define como un método abstracto que se implementará en los DAOs concretos que extiendan esta clase abstracta genérica. Se define el perfil de la función: se devuelve la entidad con la clave primaria que buscamos o <code>null</code> si no la encuentra.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Para cada clase entidad definiremos una clase DAO que extiende la clase anterior genérica. En esta clase DAO concreta se implementan también todas las consultas relacionadas con la entidad. Por ejemplo, a continuación vemos el ejemplo concreto de DAO <code>EmpleadoDao</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-kn">package</span> <span class="tok-n">org</span><span class="tok-o">.</span><span class="tok-na">expertojava</span><span class="tok-o">.</span><span class="tok-na">jpa</span><span class="tok-o">.</span><span class="tok-na">empleados</span><span class="tok-o">.</span><span class="tok-na">persistencia</span><span class="tok-o">;</span>
+
+<span class="tok-kn">import</span> <span class="tok-nn">org.expertojava.jpa.empleados.modelo.Empleado</span><span class="tok-o">;</span>
+<span class="tok-kn">import</span> <span class="tok-nn">org.expertojava.jpa.empleados.modelo.Proyecto</span><span class="tok-o">;</span>
+
+<span class="tok-kn">import</span> <span class="tok-nn">javax.persistence.EntityManager</span><span class="tok-o">;</span>
+<span class="tok-kn">import</span> <span class="tok-nn">javax.persistence.Query</span><span class="tok-o">;</span>
+<span class="tok-kn">import</span> <span class="tok-nn">java.util.List</span><span class="tok-o">;</span>
+
+<span class="tok-kd">public</span> <span class="tok-kd">class</span> <span class="tok-nc">EmpleadoDao</span> <span class="tok-kd">extends</span> <span class="tok-n">Dao</span><span class="tok-o">&lt;</span><span class="tok-n">Empleado</span><span class="tok-o">,</span> <span class="tok-n">Long</span><span class="tok-o">&gt;</span> <span class="tok-o">{</span>
+    <span class="tok-n">String</span> <span class="tok-n">FIND_ALL_EMPLEADOS</span> <span class="tok-o">=</span> <span class="tok-s">&quot;SELECT e FROM Empleado e &quot;</span><span class="tok-o">;</span>
+
+    <span class="tok-kd">public</span> <span class="tok-nf">EmpleadoDao</span><span class="tok-o">(</span><span class="tok-n">EntityManager</span> <span class="tok-n">em</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+        <span class="tok-kd">super</span><span class="tok-o">(</span><span class="tok-n">em</span><span class="tok-o">);</span>
+    <span class="tok-o">}</span>
+
+    <span class="tok-nd">@Override</span>
+    <span class="tok-kd">public</span> <span class="tok-n">Empleado</span> <span class="tok-nf">find</span><span class="tok-o">(</span><span class="tok-n">Long</span> <span class="tok-n">id</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+        <span class="tok-n">EntityManager</span> <span class="tok-n">em</span> <span class="tok-o">=</span> <span class="tok-k">this</span><span class="tok-o">.</span><span class="tok-na">getEntityManager</span><span class="tok-o">();</span>
+        <span class="tok-k">return</span> <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">find</span><span class="tok-o">(</span><span class="tok-n">Empleado</span><span class="tok-o">.</span><span class="tok-na">class</span><span class="tok-o">,</span> <span class="tok-n">id</span><span class="tok-o">);</span>
+    <span class="tok-o">}</span>
+
+    <span class="tok-kd">public</span> <span class="tok-n">List</span><span class="tok-o">&lt;</span><span class="tok-n">Empleado</span><span class="tok-o">&gt;</span> <span class="tok-nf">listAllEmpleados</span><span class="tok-o">()</span> <span class="tok-o">{</span>
+        <span class="tok-n">EntityManager</span> <span class="tok-n">em</span> <span class="tok-o">=</span> <span class="tok-k">this</span><span class="tok-o">.</span><span class="tok-na">getEntityManager</span><span class="tok-o">();</span>
+        <span class="tok-n">Query</span> <span class="tok-n">query</span> <span class="tok-o">=</span> <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">createQuery</span><span class="tok-o">(</span><span class="tok-n">FIND_ALL_EMPLEADOS</span><span class="tok-o">);</span>
+        <span class="tok-k">return</span> <span class="tok-o">(</span><span class="tok-n">List</span><span class="tok-o">&lt;</span><span class="tok-n">Empleado</span><span class="tok-o">&gt;)</span> <span class="tok-n">query</span><span class="tok-o">.</span><span class="tok-na">getResultList</span><span class="tok-o">();</span>
+    <span class="tok-o">}</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Los DAO proporcionan métodos de un grano muy fino, un CRUD básico sobre las entidades de cada clase. Trabajan con entidades gestionadas por un mismo entorno de persistencia y en el código llamador hay que gestionar la transacción y el entity manager.</p>
+</div>
+<div class="paragraph">
+<p>Es habitual definir clases de más nivel que contienen las operaciones de negocio en un paquete <code>servicio</code>. Las operaciones de negocio se definen como métodos de estas clases en los que se encapsulan las llamadas a los DAOs y todo el trabajo de las entidades gestionadas. Los métodos reciben identificadores y datos planos y devuelven objetos entidad <strong>desconectados de la base de datos</strong></p>
+</div>
+<div class="paragraph">
+<p>Por ejemplo, podemos definir la clase <code>EmpleadoServicio</code> con los métodos de negocio:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>findPorId(Long idEmpleado)</code>: devuelve un empleadl</p>
+</li>
+<li>
+<p><code>intercambiaDespachos(Long idEmpleado1, Long idEmpleado2)</code>: intercambia los despachos de dos empleados</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-kn">import</span> <span class="tok-nn">org.expertojava.jpa.empleados.modelo.Despacho</span><span class="tok-o">;</span>
+<span class="tok-kn">import</span> <span class="tok-nn">org.expertojava.jpa.empleados.modelo.Empleado</span><span class="tok-o">;</span>
+<span class="tok-kn">import</span> <span class="tok-nn">org.expertojava.jpa.empleados.persistencia.EmpleadoDao</span><span class="tok-o">;</span>
+
+<span class="tok-kn">import</span> <span class="tok-nn">javax.persistence.EntityManager</span><span class="tok-o">;</span>
+<span class="tok-kn">import</span> <span class="tok-nn">javax.persistence.EntityManagerFactory</span><span class="tok-o">;</span>
+
+<span class="tok-kd">public</span> <span class="tok-kd">class</span> <span class="tok-nc">EmpleadoServicio</span> <span class="tok-o">{</span>
+
+    <span class="tok-kd">private</span> <span class="tok-n">EntityManagerFactory</span> <span class="tok-n">emf</span><span class="tok-o">;</span>
+
+    <span class="tok-kd">public</span> <span class="tok-kt">void</span> <span class="tok-nf">setEmf</span><span class="tok-o">(</span><span class="tok-n">EntityManagerFactory</span> <span class="tok-n">emf</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+        <span class="tok-k">this</span><span class="tok-o">.</span><span class="tok-na">emf</span> <span class="tok-o">=</span> <span class="tok-n">emf</span><span class="tok-o">;</span>
+    <span class="tok-o">}</span>
+
+    <span class="tok-kd">public</span> <span class="tok-n">Empleado</span> <span class="tok-nf">findPorId</span><span class="tok-o">(</span><span class="tok-n">Long</span> <span class="tok-n">idEmpleado</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+        <span class="tok-n">EntityManager</span> <span class="tok-n">em</span> <span class="tok-o">=</span> <span class="tok-n">emf</span><span class="tok-o">.</span><span class="tok-na">createEntityManager</span><span class="tok-o">();</span>
+        <span class="tok-n">Empleado</span> <span class="tok-n">empleado</span> <span class="tok-o">=</span> <span class="tok-kc">null</span><span class="tok-o">;</span>
+        <span class="tok-n">EmpleadoDao</span> <span class="tok-n">empleadoDao</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-nf">EmpleadoDao</span><span class="tok-o">(</span><span class="tok-n">em</span><span class="tok-o">);</span>
+        <span class="tok-k">try</span> <span class="tok-o">{</span>
+            <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">getTransaction</span><span class="tok-o">().</span><span class="tok-na">begin</span><span class="tok-o">();</span>
+            <span class="tok-n">empleado</span> <span class="tok-o">=</span> <span class="tok-n">empleadoDao</span><span class="tok-o">.</span><span class="tok-na">find</span><span class="tok-o">(</span><span class="tok-n">idEmpleado</span><span class="tok-o">);</span>
+            <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">getTransaction</span><span class="tok-o">().</span><span class="tok-na">commit</span><span class="tok-o">();</span>
+        <span class="tok-o">}</span> <span class="tok-k">catch</span> <span class="tok-o">(</span><span class="tok-n">Exception</span> <span class="tok-n">e</span><span class="tok-o">){</span>
+            <span class="tok-n">e</span><span class="tok-o">.</span><span class="tok-na">printStackTrace</span><span class="tok-o">();</span>
+        <span class="tok-o">}</span> <span class="tok-k">finally</span> <span class="tok-o">{</span>
+            <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">close</span><span class="tok-o">();</span>
+        <span class="tok-o">}</span>
+        <span class="tok-k">return</span> <span class="tok-n">empleado</span><span class="tok-o">;</span>
+    <span class="tok-o">}</span>
+
+    <span class="tok-kd">public</span> <span class="tok-kt">void</span> <span class="tok-nf">intercambiaDespachos</span><span class="tok-o">(</span><span class="tok-n">Long</span> <span class="tok-n">idEmpleado1</span><span class="tok-o">,</span> <span class="tok-n">Long</span> <span class="tok-n">idEmpleado2</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+        <span class="tok-n">EntityManager</span> <span class="tok-n">em</span> <span class="tok-o">=</span> <span class="tok-n">emf</span><span class="tok-o">.</span><span class="tok-na">createEntityManager</span><span class="tok-o">();</span>
+        <span class="tok-n">EmpleadoDao</span> <span class="tok-n">empleadoDao</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-nf">EmpleadoDao</span><span class="tok-o">(</span><span class="tok-n">em</span><span class="tok-o">);</span>
+        <span class="tok-k">try</span> <span class="tok-o">{</span>
+            <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">getTransaction</span><span class="tok-o">().</span><span class="tok-na">begin</span><span class="tok-o">();</span>
+            <span class="tok-n">Empleado</span> <span class="tok-n">emp1</span> <span class="tok-o">=</span> <span class="tok-n">empleadoDao</span><span class="tok-o">.</span><span class="tok-na">find</span><span class="tok-o">(</span><span class="tok-n">idEmpleado1</span><span class="tok-o">);</span>
+            <span class="tok-n">Empleado</span> <span class="tok-n">emp2</span> <span class="tok-o">=</span> <span class="tok-n">empleadoDao</span><span class="tok-o">.</span><span class="tok-na">find</span><span class="tok-o">(</span><span class="tok-n">idEmpleado2</span><span class="tok-o">);</span>
+            <span class="tok-n">Despacho</span> <span class="tok-n">despachoAux</span> <span class="tok-o">=</span> <span class="tok-n">emp1</span><span class="tok-o">.</span><span class="tok-na">getDespacho</span><span class="tok-o">();</span>
+            <span class="tok-n">emp1</span><span class="tok-o">.</span><span class="tok-na">setDespacho</span><span class="tok-o">(</span><span class="tok-n">emp2</span><span class="tok-o">.</span><span class="tok-na">getDespacho</span><span class="tok-o">());</span>
+            <span class="tok-n">emp2</span><span class="tok-o">.</span><span class="tok-na">setDespacho</span><span class="tok-o">(</span><span class="tok-n">despachoAux</span><span class="tok-o">);</span>
+            <span class="tok-n">empleadoDao</span><span class="tok-o">.</span><span class="tok-na">update</span><span class="tok-o">(</span><span class="tok-n">emp1</span><span class="tok-o">);</span>
+            <span class="tok-n">empleadoDao</span><span class="tok-o">.</span><span class="tok-na">update</span><span class="tok-o">(</span><span class="tok-n">emp2</span><span class="tok-o">);</span>
+            <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">getTransaction</span><span class="tok-o">().</span><span class="tok-na">commit</span><span class="tok-o">();</span>
+        <span class="tok-o">}</span> <span class="tok-k">catch</span> <span class="tok-o">(</span><span class="tok-n">Exception</span> <span class="tok-n">e</span><span class="tok-o">){</span>
+            <span class="tok-n">e</span><span class="tok-o">.</span><span class="tok-na">printStackTrace</span><span class="tok-o">();</span>
+        <span class="tok-o">}</span> <span class="tok-k">finally</span> <span class="tok-o">{</span>
+            <span class="tok-n">em</span><span class="tok-o">.</span><span class="tok-na">close</span><span class="tok-o">();</span>
+        <span class="tok-o">}</span>
+    <span class="tok-o">}</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Todos los métodos de lógica de negocio son utilizados desde otras capas de la aplicación. Por ejemplo, la capa de servicio. A diferencia de los métodos de los DAO, que toman y devuelven entidades gestionadas, los métodos de negocio toman y devuelven objetos planos, desconectados de cualquier transacción o gestor de persistencia. Son métodos atómicos. Cuando terminan podemos estar seguros de que se ha realizado la operación. En el caso en que haya algún problema, la operación no se realizará en absoluto (el estado de los objetos quedará como estaba antes de llamar a la operación) y se lanzará una excepción runtime.</p>
+</div>
+<div class="paragraph">
+<p>Todos los métodos de negocio tienen la misma estructura:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Se obtiene un <em>entity manager</em> y se abre la transacción si se va a hacer algún cambio en las entidades. No es necesario abrir una transacción cuando se va a hacer sólo una consulta.</p>
+</li>
+<li>
+<p>Se obtienen los DAO de las entidades que intervienen en la operación.</p>
+</li>
+<li>
+<p>Se realizan las consultas y modificaciones de las entidades que participan en la operación, actualizando su estado en la base de datos mediante los DAO.</p>
+</li>
+<li>
+<p>Se realiza el commit de la transacción y se cierra el <em>entity manager</em>.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Presentamos a continuación un ejemplo de test en el que se prueba el método de intercambiar los despachos:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span class="tok-nd">@Test</span>
+<span class="tok-kd">public</span> <span class="tok-kt">void</span> <span class="tok-nf">testServicioActualizaDespacho</span><span class="tok-o">()</span> <span class="tok-o">{</span>
+    <span class="tok-n">EmpleadoServicio</span> <span class="tok-n">empleadoServicio</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-nf">EmpleadoServicio</span><span class="tok-o">();</span>
+    <span class="tok-n">empleadoServicio</span><span class="tok-o">.</span><span class="tok-na">setEmf</span><span class="tok-o">(</span><span class="tok-n">emf</span><span class="tok-o">);</span>
+
+    <span class="tok-n">Empleado</span> <span class="tok-n">emp1</span> <span class="tok-o">=</span> <span class="tok-n">empleadoServicio</span><span class="tok-o">.</span><span class="tok-na">findPorId</span><span class="tok-o">(</span><span class="tok-mi">1L</span><span class="tok-o">);</span>
+    <span class="tok-n">Empleado</span> <span class="tok-n">emp2</span> <span class="tok-o">=</span> <span class="tok-n">empleadoServicio</span><span class="tok-o">.</span><span class="tok-na">findPorId</span><span class="tok-o">(</span><span class="tok-mi">2L</span><span class="tok-o">);</span>
+    <span class="tok-n">Despacho</span> <span class="tok-n">desp1</span> <span class="tok-o">=</span> <span class="tok-n">emp1</span><span class="tok-o">.</span><span class="tok-na">getDespacho</span><span class="tok-o">();</span>
+    <span class="tok-n">Despacho</span> <span class="tok-n">desp2</span> <span class="tok-o">=</span> <span class="tok-n">emp2</span><span class="tok-o">.</span><span class="tok-na">getDespacho</span><span class="tok-o">();</span>
+
+    <span class="tok-n">empleadoServicio</span><span class="tok-o">.</span><span class="tok-na">intercambiaDespachos</span><span class="tok-o">(</span><span class="tok-mi">1L</span><span class="tok-o">,</span><span class="tok-mi">2L</span><span class="tok-o">);</span>
+
+    <span class="tok-n">emp1</span> <span class="tok-o">=</span> <span class="tok-n">empleadoServicio</span><span class="tok-o">.</span><span class="tok-na">findPorId</span><span class="tok-o">(</span><span class="tok-mi">1L</span><span class="tok-o">);</span>
+    <span class="tok-n">emp2</span> <span class="tok-o">=</span> <span class="tok-n">empleadoServicio</span><span class="tok-o">.</span><span class="tok-na">findPorId</span><span class="tok-o">(</span><span class="tok-mi">2L</span><span class="tok-o">);</span>
+
+    <span class="tok-n">assertTrue</span><span class="tok-o">(</span><span class="tok-n">emp1</span><span class="tok-o">.</span><span class="tok-na">getDespacho</span><span class="tok-o">().</span><span class="tok-na">equals</span><span class="tok-o">(</span><span class="tok-n">desp2</span><span class="tok-o">));</span>
+    <span class="tok-n">assertTrue</span><span class="tok-o">(</span><span class="tok-n">emp2</span><span class="tok-o">.</span><span class="tok-na">getDespacho</span><span class="tok-o">().</span><span class="tok-na">equals</span><span class="tok-o">(</span><span class="tok-n">desp1</span><span class="tok-o">));</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</div>
+<div class="sect2">
+<h3 id="_ejercicios">2.7. Ejercicios</h3>
+<div class="sect3">
+<h4 id="__0_5_puntos_contexto_de_persistencia">2.7.1. (0,5 puntos) Contexto de persistencia</h4>
+<div class="paragraph">
+<p>En el módulo <code>mensajes</code> escribe nuevos tests que comprueben errores generados por manejar incorrectamente el contexto de persistencia:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Comprobación de que se lanza una excepción al intenta acceder a un atributo <em>lazy</em> después de cerrar el contexto de persistencia</p>
+</li>
+<li>
+<p>Comprobación del error en el manejo de las colecciones en las relaciones a muchos (apartado 2.5.4)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Explica los errores en comentarios en los propios tests.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="__0_5_puntos_clases_dao_del_módulo_code_filmoteca_code">2.7.2. (0,5 puntos) Clases DAO del módulo <code>filmoteca</code></h4>
+<div class="paragraph">
+<p>En el módulo <code>filmoteca</code> crea en el paquete org.expertojava.jpa.filmoteca.persistencia las clases DAO correspondiente a las entidades Pelicula y Critica siguiendo el patrón visto en la sesión de teoría.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="__0_5_puntos_clase_code_peliculaservicio_code">2.7.3. (0,5 puntos) Clase <code>PeliculaServicio</code></h4>
+<div class="paragraph">
+<p>Crea en el paquete <code>org.expertojava.jpa.filmoteca.servicio</code> la clase <code>PeliculaServicio</code> con los siguientes métodos de negocio:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Long creaPelicula(String titulo, Date fechaEstreno, String pais, Double presupuesto)</code>: crea una película y devuelve su identificador.</p>
+</li>
+<li>
+<p><code>void actualizaRecaudacionPelicula(Long idPelicula, Double recaudacion)</code>: actualiza la recaudación de una película.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2015-09-25 07:54:21 CEST
+</div>
+</div>
+</body>
+</html>

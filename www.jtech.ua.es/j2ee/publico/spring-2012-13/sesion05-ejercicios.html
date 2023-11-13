@@ -1,0 +1,209 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.7">
+<meta name="Forrest-skin-name" content="pelt">
+<title>Ejercicios de validaci&oacute;n e internacionalizaci&oacute;n</title>
+<link type="text/css" href="skin/highlight/shCore.css" rel="stylesheet">
+<link type="text/css" href="skin/highlight/shThemeEclipse.css" rel="stylesheet">
+<script src="skin/highlight/shCore.js" type="text/javascript"></script><script src="skin/highlight/shAutoloader.js" type="text/javascript"></script>
+<link type="text/css" href="skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="skin/print.css" rel="stylesheet">
+<link type="text/css" href="skin/profile.css" rel="stylesheet">
+<script src="skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<div class="header">
+<div class="grouplogo">
+<a href="http://web.ua.es/especialistajava"><img class="logoImage" alt="jtech" src="images/baner_j2ee_izq.gif" title="Experto Universitario Java Enterprise"></a>
+</div>
+<div class="projectlogoA1">
+<a href="http://www.dccia.ua.es/"><img class="logoImage" alt="Spring" src="images/baner_j2ee_der.gif" title="Spring"></a>
+</div>
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="javascript:location.href='../index.html'">Home</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../aplic-web.html'">Aplicaciones Web</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../aplic-ent.html'">Aplicaciones Enterprise</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../charlas.html'">Charlas</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../proy-int/index.html'">Proyecto</a>
+</li>
+<li>
+<a class="base-not-selected" href="index.html">Spring</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<div id="level2tabs"></div>
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<div id="menu">
+<div onclick="SwitchMenu('menu_1.1', 'skin/')" id="menu_1.1Title" class="menutitle">Spring</div>
+<div id="menu_1.1" class="menuitemgroup">
+<div class="menuitem">
+<a href="index.html" title="Spring">Indice</a>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<div id="credit2"></div>
+</div>
+<div id="content">
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="sesion05-ejercicios.pdf"><img alt="PDF -icon" src="skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1>Ejercicios de validaci&oacute;n e internacionalizaci&oacute;n</h1>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#Conversi%C3%B3n+y+formateo+de+datos+%280.5+puntos%29">Conversi&oacute;n y formateo de datos (0.5 puntos)</a>
+</li>
+<li>
+<a href="#Validaci%C3%B3n+%281.5+puntos%29">Validaci&oacute;n (1.5 puntos)</a>
+</li>
+<li>
+<a href="#Internacionalizaci%C3%B3n+%281+punto%29">Internacionalizaci&oacute;n (1 punto)</a>
+</li>
+</ul>
+</div>
+
+<p>En las plantillas de la sesi&oacute;n tienes un proyecto ya configurado con Spring. La aplicaci&oacute;n es para la gesti&oacute;n de una agencia de alquiler de coches. Se pueden listar los coches en alquiler, insertar nuevos o editar los existentes. Para simplificar no hay autentificaci&oacute;n de usuarios.</p>
+
+<p> En la carpeta "database" del proyecto tienes el script SQL con la base de datos mySQL. Ejec&uacute;talo como lo hacemos habitualmente para crear la base de datos. Comprueba que el listado de coches aparece correctamente accediendo a "listar.do".</p>
+
+
+<p>Si quieres probar a dar de alta un coche o modificar los datos de uno existente debes introducir la fecha en un formato como 01-ene-2010 o 05-oct-2011. En el segundo ejercicio veremos c&oacute;mo cambiar el formato de las fechas.</p>
+
+
+<a name="N10015"></a><a name="Conversi%C3%B3n+y+formateo+de+datos+%280.5+puntos%29"></a>
+<h2 class="underlined_10">Conversi&oacute;n y formateo de datos (0.5 puntos)</h2>
+<div class="section">
+<p>Vamos a a&ntilde;adir la funcionalidad de que se puedan listar solo los veh&iacute;culos matriculados con posterioridad a una fecha dada. Modifica el m&eacute;todo <span class="codefrag">listar</span> de la clase
+ <span class="codefrag">es.ua.jtech.spring.mvc.CocheController</span> para que admita un nuevo par&aacute;metro HTTP "fecha", opcional. Si fecha es null, listar&aacute; todos los coches. Si no lo es, listar&aacute; solo
+ los matriculados con posterioridad a esa fecha. Tendr&aacute;s que:</p>
+<ol>
+ 
+<li>A&ntilde;adirle un par&aacute;metro al m&eacute;todo <span class="codefrag">listar</span> y vincularlo al par&aacute;metro HTTP "fecha". Recuerda que esto se hac&iacute;a con "@RequestParam". El par&aacute;metro HTTP debe ser opcional.</li>
+ 
+<li>Anotar convenientemente el par&aacute;metro para que se haga la conversi&oacute;n de String a Date. El formato de entrada ser&aacute; de dos d&iacute;gitos para d&iacute;a,mes y a&ntilde;o separados por barras ("/"). Al ser un formato personalizado tendr&aacute;s que usar un "pattern"</li>
+ 
+<li>Modificar el c&oacute;digo del m&eacute;todo para que si la fecha es null use el "listar()" del DAO y en caso contrario llame al "listarPosterioresA(fecha)".</li>
+ 
+<li>Conprueba que todo funciona pasando el par&aacute;metro "manualmente" en la URL: "http://localhost:8080/AlquilerCoches/listar.do?<strong>fecha=01/01/09</strong>"</li>
+ 
+ 
+</ol>
+</div>
+
+<a name="N1003A"></a><a name="Validaci%C3%B3n+%281.5+puntos%29"></a>
+<h2 class="underlined_10">Validaci&oacute;n (1.5 puntos)</h2>
+<div class="section">
+<p>Modifica la aplicaci&oacute;n para validar los datos del coche cuando se d&eacute; de alta o se edite. Tendr&aacute;s que:</p>
+<ul>
+
+<li>Poner las anotaciones JSR303 pertinentes en los campos de la clase <span class="codefrag">org.especialistajee.spring.modelo.Coche</span>. Debes validar que la matr&iacute;cula tiene 7 caracteres de largo, que ni el kilometraje del coche ni el precio pueden ser n&uacute;meros negativos, y que la fecha de matriculaci&oacute;n del coche debe ser ya pasada.</li>
+
+<li>Para que Spring convierta la fecha que escribas en el formulario, que ser&aacute; un String, a un Date, debes anotar el campo "fechaMatriculacion" con <span class="codefrag">DateTimeFormat</span>. Usa el mismo formato con el que aparecen los coches en el listado (dos d&iacute;gitos para
+d&iacute;a, mes y a&ntilde;o y separados por barras).</li>
+
+<li>Modifica la cabecera de los m&eacute;todos <span class="codefrag">procesarCrear</span> y <span class="codefrag">procesarEditar</span> de la clase <span class="codefrag">org.especialistajee.spring.mvc.CocheController</span> para asegurar que Spring valida los objetos Coche que se le pasan.</li>
+
+<li>Modifica el fichero <span class="codefrag">mensajes.properties</span> de "src/main/resources", a&ntilde;adiendo las claves necesarias para que se muestren los mensajes de error de validaci&oacute;n. Puedes probar a dar de alta alg&uacute;n coche con datos no v&aacute;lidos para comprobar que se vuelve al mismo formulario. Como el log est&aacute; configurado para ello, ver&aacute;s aparecer los errores de validaci&oacute;n en la consola de Tomcat de Eclipse. Pero por supuesto no en el JSP, cosa que vamos a solucionar ahora. Cuando pruebes el funcionamiento, ten en cuenta que est&aacute;s controlando los errores de validaci&oacute;n, pero para los de conversi&oacute;n de tipos tendr&iacute;as que crear los mensajes del tipo "typeMismatch" en el 
+.properties, como hicimos en la sesi&oacute;n 3.</li>
+
+<li>Introduce en los JSP "crear.jsp" y "editar.jsp" (est&aacute;n en src/main/webapp/WEB-INF/views) <em>tags</em> de Spring para mostrar los errores al usuario. Al lado de cada campo debes meter una etiqueta form:errors, por ejemplo para la matr&iacute;cula:
+<pre class="brush:xml;">
+&lt;form:errors path="matricula"/&gt;
+</pre>
+
+</li>
+
+</ul>
+</div>
+
+<a name="N10070"></a><a name="Internacionalizaci%C3%B3n+%281+punto%29"></a>
+<h2 class="underlined_10">Internacionalizaci&oacute;n (1 punto)</h2>
+<div class="section">
+<p>Prepara la aplicaci&oacute;n para que se vea en ingl&eacute;s y espa&ntilde;ol. El localeChanger ya est&aacute; configurado en el XML de Spring. Guardar&aacute; el locale en una cookie del navegador. Tendr&aacute;s que:</p>
+<ul>
+
+<li>A&ntilde;adir un nuevo <em>locale</em> para ingl&eacute;s al <span class="codefrag">mensajes.properties</span>. Por tanto, tendr&aacute;s que cambiar el nombre actual por
+<span class="codefrag">mensajes_es.properties</span> y crear una copia del archivo como <span class="codefrag">mensajes_en.properties</span>. Edita esta &uacute;ltima y traduce los mensajes.</li>
+
+<li>Modificar los JSP para que muestren los textos con la etiqueta <span class="codefrag">message</span> de Spring en lugar de estar escritos directamente en el c&oacute;digo. Traduce al menos la p&aacute;gina del listado de coches al ingl&eacute;s y al espa&ntilde;ol, y a&ntilde;ade un enlace en dicha p&aacute;gina para poder cambiar el idioma. El enlace debe apuntar a "listar.do?locale=en_us" 
+para ingl&eacute;s de USA y lo mismo con "locale=es_es" para espa&ntilde;ol. Si no pones el pa&iacute;s en el locale, hay cosas que ser&aacute;n ambiguas, como la moneda.</li>
+
+<li>Formatea el kilometraje del coche, la fecha de matriculaci&oacute;n y la moneda para que se adapte al idioma que se est&aacute; usando. Para la fecha usa un formato corto, sin hora. Evidentemente el valor de la moneda no ser&aacute; correcto, ya que adem&aacute;s de cambiar el s&iacute;mbolo
+habr&iacute;a que aplicar un tipo de cambio, c&aacute;lculo que podr&iacute;amos introducir en el "getter". Pero no te preocupes por eso, el ejercicio solo pretende probar el soporte de internacionalizaci&oacute;n de Spring. 
+Recuerda que el formateo de Spring solo funciona con los campos de formulario, 
+as&iacute; que para probarlo tendr&aacute;s que editar o dar de alta un coche.
+<div class="frame warning">
+<div class="label">Posibles problemas con la codificaci&oacute;n de caracteres</div>
+<div class="content">Cuidado con Google Chrome, algunas versiones pueden dar problemas con el s&iacute;mbolo de la moneda. Por otro lado f&iacute;jate en que la aplicaci&oacute;n usa un filtro para procesar correctamente los caracteres UTF8. Si no lo us&aacute;ramos se producir&iacute;a un error al intentar leer caracteres como el del euro. Este filtro est&aacute; ya implementado en Spring y se llama <span class="codefrag">characterEncodingFilter</span>, puedes ver su definici&oacute;n en el web.xml. No es necesario que modifiques nada.
+</div>
+</div>
+
+</li>
+
+</ul>
+</div>
+
+<p class="pageBreakAfter"></p>
+
+</div>
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+        Copyright &copy;
+         2012-2013 Depto. Ciencia de la computaci&oacute;n e IA</div>
+</div>
+<script type="text/javascript">
+     
+         SyntaxHighlighter.defaults['toolbar'] = false;
+         SyntaxHighlighter.autoloader(
+  		     'java                   skin/highlight/shBrushJava.js',
+  		     'xml xhtml xslt html    skin/highlight/shBrushXml.js',
+  		     'js jscript javascript  skin/highlight/shBrushJScript.js',
+  		     'groovy                 skin/highlight/shBrushGroovy.js',
+  		     'bash shell             skin/highlight/shBrushBash.js',
+  		     'php                    skin/highlight/shBrushPhp.js',
+  		     'css                    skin/highlight/shBrushCss.js',
+  		     'sql                    skin/highlight/shBrushSql.js',
+  		     'objc                   skin/highlight/shBrushObjC.js',
+  		     'cpp c                  skin/highlight/shBrushCpp.js',
+  		     'text plain             skin/highlight/shBrushPlain.js'
+         );
+         SyntaxHighlighter.all();
+     </script><a href="skin/highlight/shBrushJava.js"></a><a href="skin/highlight/shBrushXml.js"></a><a href="skin/highlight/shBrushJScript.js"></a><a href="skin/highlight/shBrushGroovy.js"></a><a href="skin/highlight/shBrushBash.js"></a><a href="skin/highlight/shBrushPhp.js"></a><a href="skin/highlight/shBrushCss.js"></a><a href="skin/highlight/shBrushSql.js"></a><a href="skin/highlight/shBrushObjC.js"></a><a href="skin/highlight/shBrushCpp.js"></a><a href="skin/highlight/shBrushPlain.js"></a>
+</body>
+</html>

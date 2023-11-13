@@ -1,0 +1,309 @@
+import java.security.*;
+import java.security.spec.*;
+import javax.crypto.*;
+import javax.crypto.spec.*;
+import java.io.*;
+import java.util.*;
+
+
+public class RSAFicheros {
+
+  // Extensión para ficheros encriptados
+  private static final String SUFIJO_ENC=".enc";
+
+  // Extensión para ficheros desencriptados
+  private static final String SUFIJO_DES=".des";
+
+  // Iteraciones para hashing
+  private static final int ITERACIONES = 1000;
+
+
+  public static void main (String[] args)
+  throws Exception {
+    if ((args.length < 1) || (args.length > 2)) {
+      uso();
+    } else if ("-c".equals(args[0])) {
+      crearClave();
+    } else if ("-e".equals(args[0])) {
+      encriptar(args[1]);
+    } else if ("-d".equals(args[0])) {
+      desencriptar(args[1]);
+    } else {
+      uso();
+    }
+  }
+
+  private static void uso() {
+    System.err.println("Uso: java RSAFicheros -c|-e|-d [fichero]");
+    System.exit(1);
+  }
+
+  // Crea una clave RSA de 1024 bits y la almacena en dos ficheros
+  // uno para la publica y otro para la privada (encriptada por password)
+  private static void crearClave()
+  throws Exception {
+    // Crear la clave RSA
+    System.out.println("Generado el par de claves RSA.\n");
+    KeyPairGenerator generadorRSA = KeyPairGenerator.getInstance("RSA");
+    generadorRSA.initialize(1024);
+    KeyPair claves = generadorRSA.genKeyPair();
+
+    // Coger la forma codificada de la clave pública para
+    // usarla en el futuro. Codificacion X.509 por defecto.
+    byte[] bytesPublica = claves.getPublic().getEncoded();
+
+
+    // Leer el nombre del fichero para la clave pública
+    System.out.print("Fichero para grabar la clave pública: ");
+    BufferedReader entrada = new BufferedReader(new InputStreamReader(System.in));
+    String ficheroPublica = entrada.readLine();
+
+    // Escribir la clave pública codificada en su fichero
+    FileOutputStream salida = new FileOutputStream(ficheroPublica);
+    salida.write(bytesPublica);
+    salida.close();
+
+    // Repetimos lo mismo para la clave privada prestando atención
+    // a que la encriptaremos con un password.
+    System.out.print("Fichero para grabar la clave privada ");
+    String ficheroPrivada = entrada.readLine();
+
+    // Coger la forma codificada. PKCS#8 por defecto.
+    byte[] bytesPrivada = claves.getPrivate().getEncoded();
+
+
+    // Pedimos password para encriptar la clave privada
+    System.out.print("Password para encriptar la clave privada ");
+    String password = entrada.readLine();
+
+    // Aquí encriptamos la clave privada
+    byte[] bytesPrivadaEncriptados =
+    encriptarPBE(password.toCharArray(),bytesPrivada);
+
+    // Grabamos el resultado en el fichero
+    salida = new FileOutputStream(ficheroPrivada);
+    salida.write(bytesPrivadaEncriptados);
+    salida.close();
+  }
+
+
+  // Encripta un fichero  con una clave de sesión encriptada con
+  // una clave publica RSA que sera leida de un fichero
+  private static void encriptar(String fichEntrada)
+  throws Exception {
+
+    BufferedReader entrada = new BufferedReader
+    (new InputStreamReader(System.in));
+    System.out.print("Fichero de la clave pública: ");
+    String ficheroPublica = entrada.readLine();
+
+    // Cargar la clave publica
+    FileInputStream fis = new FileInputStream(ficheroPublica);
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+    int b = 0;
+    while ((b = fis.read()) != -1)
+    {
+      baos.write(b);
+    }
+    fis.close();
+
+    byte[] bytesClave = baos.toByteArray();
+    baos.close();
+
+    // Los bytes de clave pública en X.509 hay que transformarlos
+    // en un objeto PublicKey utilizando un spec
+    X509EncodedKeySpec specClave = new X509EncodedKeySpec(bytesClave);
+    KeyFactory factoriaClave = KeyFactory.getInstance("RSA");
+    PublicKey clavePublica = factoriaClave.generatePublic(specClave);
+
+    // Crear e inicializar el cifrado usando la clave pública
+    Cipher cifradorRSA = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+    cifradorRSA.init(Cipher.ENCRYPT_MODE, clavePublica);
+
+    // Crear una clave Rijndael (simétrica) de 256 bits para encriptar el fichero.
+    // Dicha clave será la clave de sesión (session-key)
+    KeyGenerator generadorRijndael = KeyGenerator.getInstance("Rijndael");
+    generadorRijndael.init(256);
+    System.out.println("Generando la clave de sesión...");
+    Key claveRijndael = generadorRijndael.generateKey();
+    System.out.println("Clave generada.");
+
+    // Encriptar la clave sesión con la clave pública del RSA.
+    byte[] bytesClaveCodificados= cifradorRSA.doFinal(claveRijndael.getEncoded());
+
+    // Abrir un fichero de salida donde escribiremos la salida de la encriptación
+    String fichSalida = fichEntrada + SUFIJO_ENC;
+    DataOutputStream salida = new DataOutputStream
+    (new FileOutputStream(fichSalida));
+    // Guardar la clave Rijndael (session-key) encriptada precedida de su longitud
+    salida.writeInt(bytesClaveCodificados.length);
+    salida.write(bytesClaveCodificados);
+
+    // Procedemos ahora a encriptar el fichero
+    // Lo primero es crear un IV para el cifrador en modo CBC
+    SecureRandom aleatorio = new SecureRandom();
+    byte[] iv = new byte[16];
+    aleatorio.nextBytes(iv);
+
+    // Write the IV out to the file.
+    salida.write(iv);
+    IvParameterSpec especificacion = new IvParameterSpec(iv);
+
+    // Crear un cifrador Rijndael en modo CBC
+    Cipher cifradorRijndael = Cipher.getInstance("Rijndael/CBC/PKCS5Padding");
+    cifradorRijndael.init(Cipher.ENCRYPT_MODE, claveRijndael, especificacion);
+
+    // Proceder a cifrar el fichero y generar la salida
+    CipherOutputStream cos = new CipherOutputStream(salida, cifradorRijndael);
+
+    System.out.println("Encriptando el fichero...");
+
+    FileInputStream fis2 = new FileInputStream(fichEntrada);
+
+    b = 0;
+    while ((b = fis2.read()) != -1)
+    {
+      cos.write(b);
+    }
+    fis2.close();
+    cos.close();
+    System.out.println("Fichero encriptado.");
+    return;
+  }
+
+
+  // Desencritpar el fichero con la parte privada del
+  // par RSA. Dicha clave permite desencriptar la clave
+  // de sesión (simétrica) y después usar esta clave
+  // para desencriptar el fichero propiamente dicho.
+  private static void desencriptar(String fichEntrada)
+  throws Exception {
+
+    // Leer el nombre del fichero que contiene la parte privada
+    BufferedReader entrada = new BufferedReader(new InputStreamReader(System.in));
+    System.out.print("Fichero que contiene la clave privada ");
+    String  ficheroPrivada= entrada.readLine();
+
+    // Pedir el password
+    System.out.print("Password para la clave privada: ");
+    String password = entrada.readLine();
+
+    // Cargar los bytes de la clave encriptada con el password
+    FileInputStream fis = new FileInputStream(ficheroPrivada);
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+    int b = 0;
+    while ((b = fis.read()) != -1)
+    {
+      baos.write(b);
+    }
+    fis.close();
+
+    byte[] bytesClave  = baos.toByteArray();
+    baos.close();
+
+    // Aplicar PBE para obtener la clave
+    bytesClave = desencriptarPBE(password.toCharArray(), bytesClave);
+
+    // Como la clave obtenida está en PKCS#8 hay que transformarla
+    // en un objeto PrivateKey,
+    PKCS8EncodedKeySpec especificacion = new PKCS8EncodedKeySpec(bytesClave);
+    KeyFactory factoriaRSA = KeyFactory.getInstance("RSA");
+    PrivateKey clavePrivada = factoriaRSA.generatePrivate(especificacion);
+
+    // Leer la clave sesión encriptada
+    DataInputStream dis = new DataInputStream(new FileInputStream(fichEntrada));
+    byte[] bytesClaveEncriptados = new byte[dis.readInt()];
+    dis.readFully(bytesClaveEncriptados);
+
+    // Crear e inicializar un cifrador RSA para proceder a desencriptar la clave.
+    Cipher cifradorRSA = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+
+    // Desencriptar la clave sesión
+    cifradorRSA.init(Cipher.DECRYPT_MODE, clavePrivada);
+    byte[] bytesClaveRijndael = cifradorRSA.doFinal(bytesClaveEncriptados);
+
+    // Transformar los bytes en una SecretKey
+    SecretKey claveRijndael = new SecretKeySpec(bytesClaveRijndael, "Rijndael");
+
+    // Una vez tenemos la clave simétrica ya podemos acometer el descifrado del
+    // contenido. Pero antes hay que leer el IV del fichero.
+    byte[] iv = new byte[16];
+    dis.read(iv);
+    IvParameterSpec especificacionIV = new IvParameterSpec(iv);
+
+    // Inicializamos el descifrador
+    Cipher cifradorRijndael = Cipher.getInstance("Rijndael/CBC/PKCS5Padding");
+    cifradorRijndael.init(Cipher.DECRYPT_MODE, claveRijndael, especificacionIV);
+    CipherInputStream cis = new CipherInputStream(dis, cifradorRijndael);
+
+    System.out.println("Desencriptando el fichero...");
+    FileOutputStream fos = new FileOutputStream(fichEntrada + SUFIJO_DES);
+
+    // Desencriptar el fichero
+    b = 0;
+    while ((b = cis.read()) != -1)
+    {
+      fos.write(b);
+    }
+    cis.close();
+    fos.close();
+    System.out.println("Fichero desencriptado.");
+    return;
+  }
+
+
+ // Utilidad para encriptar un array de bytes con un password.
+ // El salto serán los 8 primeros bytes del array devuelto.
+  private static byte[] encriptarPBE(char[] password, byte[] texto) throws Exception {
+
+    // Crear el salto
+    byte[] salto = new byte[8];
+    Random aleatorio = new Random();
+    aleatorio.nextBytes(salto);
+
+    // Crear una clave y un cifrador PBE
+    PBEKeySpec especificacion = new PBEKeySpec(password);
+    SecretKeyFactory factoria = SecretKeyFactory.getInstance("PBEWithSHAAndTwofish-CBC");
+    SecretKey clave = factoria.generateSecret(especificacion);
+    PBEParameterSpec parametros = new PBEParameterSpec(salto, ITERACIONES);
+    Cipher cifrador = Cipher.getInstance("PBEWithSHAAndTwofish-CBC");
+    cifrador.init(Cipher.ENCRYPT_MODE, clave, parametros);
+
+    // Encriptar el array
+    byte[] textoCifrado = cifrador.doFinal(texto);
+
+    // Escribir el salto seguido del texto cifrado y devolverlo.
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    baos.write(salto);
+    baos.write(textoCifrado);
+    return baos.toByteArray();
+  }
+
+
+  // Utilidad para desencriptar un array de bytes con un password.
+  // El salto serán los 8 primeros bytes del array que se pasa como texto cifrado.
+  private static byte[] desencriptarPBE(char[] password, byte[] textoCifrado) throws Exception {
+
+    // Leer el salto.
+    byte[] salto = new byte[8];
+    ByteArrayInputStream bais = new ByteArrayInputStream(textoCifrado);
+    bais.read(salto,0,8);
+
+    // Los bytes resultantes son el texto cifrado propiamente dicho.
+    byte[] textoRestante = new byte[textoCifrado.length-8];
+    bais.read(textoRestante,0,textoCifrado.length-8);
+
+    // Crear un descifrador PBE.
+    PBEKeySpec especificacion = new PBEKeySpec(password);
+    SecretKeyFactory factoria = SecretKeyFactory.getInstance("PBEWithSHAAndTwofish-CBC");
+    SecretKey clave = factoria.generateSecret(especificacion);
+    PBEParameterSpec parametros = new PBEParameterSpec(salto, ITERACIONES);
+    Cipher cifrador = Cipher.getInstance("PBEWithSHAAndTwofish-CBC");
+
+    // Realizar la desencriptación
+    cifrador.init(Cipher.DECRYPT_MODE, clave, parametros);
+    return cifrador.doFinal(textoRestante);
+  }
+}

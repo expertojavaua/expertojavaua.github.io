@@ -1,0 +1,676 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Integración continua y escalabilidad</title>
+
+		<meta name="description" content="Experto en desarrollo de aplicaciones web con JavaEE y Javascript">
+		<meta name="author" content="José Luis Zamora Sánchez">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/experto.css" id="theme">
+		
+    	<!-- coloreado de sintaxis con highlight.js -->
+    	<link rel="stylesheet" type="text/css" href="lib/css/github.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+		
+		<style type="text/css">.slides .header{
+			position:absolute;
+			top: -50%;
+			left: -50%;
+			width: 100%;
+			display: table;
+		}
+
+		.slides .logo {
+			display: table-cell;
+			vertical-align: middle;
+		}
+
+		.slides .bar {
+			background-color: rgb(18,64,128);
+			font-size: 20px;
+			padding-top: 5px;
+			padding-bottom: 5px;
+			color: white;
+			border-top-left-radius:10px;
+			border-bottom-left-radius:10px;
+			display: table-cell;
+			vertical-align: middle;
+			text-align: center;
+		}
+
+		.slides .footer{
+			position:absolute;
+			bottom: 50%;
+			left: -50%;
+			width: 100%;
+			font-size: 15px;
+			color: gray;
+			display: table;
+		}  
+		.slides .left {
+			display: table-cell;
+			text-align: left;
+		}
+		.slides .right {
+			display: table-cell;
+			text-align: right;
+		}
+		.slides .center {
+			display: table-cell;
+			text-align: center;
+		}
+
+</style>
+
+	</head>
+
+<body>
+	<div class="reveal">
+	<div class="slides">
+		<!-- todo lo que se ponga aqui (que no sea un <section>) aparecerá
+		en todas las diapositivas -->
+		<div class="header">
+			<div class="logo">
+			 <img src="css/images/logo_small.png">
+			</div>
+			<div class="bar">Experto en desarrollo de aplicaciones web con JavaEE y Javascript</div>
+		</div>
+		<div class="footer">
+			<div class="left">
+				Servidores Web y PaaS
+			</div>
+			<div class="center">
+				&copy; 2014-15 Dpto. Ciencia de la Computación e I.A.
+			</div>
+			<div class="right">
+				Sesión 8
+			</div>	
+		</div>	
+		<!-- Cada <section> es una slide -->	
+		
+		<section>
+			<!-- al poner el <h1> automáticamente aparece el logo del curso-->
+			<h1>Servidores Web y PaaS</h1>
+			<h2>Sesión 8: Integración continua y escalabilidad</h2>
+		</section>
+		
+		<section>
+			<h2>Índice</h2>
+			<ul>
+				<li>Escalabilidad
+					<ul>
+						<li>Autoescalado</li>
+						<li>Crear aplicaciones escalables</li>
+					</ul>
+				</li>
+				
+				<li>DevOps</li>
+				<ul>
+					<li>DevOps y Cloud Computing</li>
+					<li>Integración continua</li>
+				</ul>
+			</ul>
+		</section>
+				
+		<section>			
+			<h2>»Escalabilidad</h2>					
+		</section>
+		
+		<section>
+			<br>
+			<h2>Vertical vs Horizontal</h2>		
+			<p  align=center><img style="border: 0;" height="500" src="imagenes/paas08/scale1.png"></p>	
+		</section>
+		
+		<section>
+			<br>
+			<h2>Autoescalado</h2>
+			<p align=left>Funcionamiento:</p>
+			<ol>
+				<li><em>HAProxy</em>, balanceador sw analiza el tráfico de entrada y lo redirige a los gear.</li>
+				<li>Carga de trabajo >=90% de forma sostenida (16 conexiones activas por gear):
+					<ol>
+						<li>Creación de un nuevo gear.</li>
+						<li><em>rsync</em> de la aplicación al nuevo gear.</li>
+						<li>Activación y redirección de trafíco al nuevo gear.</li>
+					</ol>					
+				</li>
+				<li>Carga de trabajo <50%  de forma sostenida, se elimina un gear.</li>
+			</ol>
+			<p align=left>El sistema se adaptará a la carga de trabajo dentro de los límites definidos.</p>
+		</section>
+		
+		<section>
+			<br>
+			<h2>Autoescalado (II)</h2>
+			<p  align=center><img style="border: 0;" height="500" src="imagenes/paas08/scale4.png"></p>
+		</section>
+		
+		<section>
+			<br>
+			<h2>Autoescalado (III)</h2>
+			<ul>
+				<li>En las aplicaciones escalables la BD se situa en un gear independiente.</li>
+				<li>La BD es un elemento no escalable en OpenShift (hasta el momento).</li>
+				<li><em>HAProxy</em> por defecto utiliza el algoritmo <em>leastconn</em> de reparto de carga pero es configurable.</li>
+				<li>¿Y si se modifica el código de una aplicación escalable ya desplegada?
+					<ol>
+						<li>El gear principal de la aplicación compilará la nueva versión.</li>
+						<li>Los gears activos sincronizarán los cambios mediante <em>rsync</em>.</li>
+					</ol>
+				</li>
+			</ul>
+		</section>
+		
+		<section>
+			<h2>Motivos para definir una aplicación como escalable</h2>
+			<ol>
+				<li>Mejor rendimiento al tener la BD un gear dedicado.</li>
+				<li>Podemos controlar de forma automática o manual el número de gears utilizados.</li>
+				<li><strong>No es posible</strong> configurar como escalable una aplicación creada como no escalable.</li>
+			</ol>			
+			
+			<p align=left><br>El motivo principal para no hacerlo es que ahorramos gears...</p>
+		</section>
+		
+		<section>
+			<br>
+			<h2>Otras ventajas de las aplicaciones escalables</h2>
+			<ul>
+				<li>En caso de fallo de una instancia, HAproxy enviar la petición a otro gear activo. No hay reinicios automáticos (!).</li>
+				<li>Replicación de la sesión entre servidores. Uso de una caché destribuida llamada <em>Infinispan</em>.
+					<ul>
+						<li>Fichero web.xml:
+<pre><code   class="xml" data-trim  style="font-size: 18px;">
+<web-app>
+   &ltdistributable/&gt
+</web-app>						
+</code></pre>
+						</li>
+						<li>Uso de Infinispan:
+<pre><code   class="java" data-trim  style="font-size: 18px;">						
+@Resource(lookup="java:jboss/infinispan/container/cluster")
+private CacheContainer container;
+// A partir de este punto se pueden utilizar los métodos get() y put() 
+// para acceder y almacenar elementos en la caché.						
+</code></pre>	
+						</li>
+						
+					</ul>
+				</li>								
+			</ul>			
+		</section>
+		
+		<section>
+			<br>
+			<h2>Cómo crear una aplicación escalable</h2>
+			<p  align=center><img style="border: 0;" height="420" src="imagenes/paas08/scale5.png"></p>
+<pre><code   class="bash" data-trim  style="font-size: 18px;">
+   rhc rhc app create [app] [cartridges]... -s
+</code></pre>			
+		</section>
+		
+		<section>
+			<h2>Ajustar autoescalado - Web (I)</h2>
+			<p  align=center><img style="border: 0;" src="imagenes/paas08/scale6.png"></p>
+		</section>
+		
+		<section>
+			<br>
+			<h2>Ajustar autoescalado - Web (II)</h2>
+			<p  align=center><img style="border: 0;" height="500" src="imagenes/paas08/scale3.png"></p>
+		</section>
+		
+		<section>
+			<h2>Ajustar autoescalado - RHC</h2>
+<pre><code   class="bash" data-trim  style="font-size: 18px;">			
+rhc cartridge-scale [cartridge a configurar] -a  [app] --min [minimo] --max [máximo] (*)
+(*) -1: Máximo permitido por la cuenta
+</code></pre>
+			<p align=left>Aumentar/reducir gears manualmente:</p>
+<pre><code   class="bash" data-trim  style="font-size: 18px;">						
+rhc app scale-up [app]
+rhc app scale-down [app]
+</code></pre>
+			<p align=left>Escalado manual:</p>
+<pre><code   class="bash" data-trim  style="font-size: 18px;">									
+cd <app>/.openshift/markers
+touch disable_auto_scaling
+</code></pre>
+		</section>
+		
+		<section>
+			<h2>Monitorización balanceador (I)</h2>
+			<p align=left> <br>http://[app]-[domain].rhcloud.com/haproxy-status</p>
+			<p  align=center><img style="border: 0;"  src="imagenes/paas08/scale7.png"></p>
+		</section>
+		
+		<section>
+			<h2>Monitorización balanceador (II)</h2>
+			<p align=left> <br>Aumenta la carga de trabajo y se añade un gear:</p>
+			<p  align=center><img style="border: 0;"  src="imagenes/paas08/scale8.png"></p>
+		</section>
+		
+		<section>
+			<h2>Configuración HAProxy</h2>
+			
+			<p align=left> <br>Editar la configuración:</p>
+<pre><code   class="bash" data-trim  style="font-size: 18px;">												
+$ rhc ssh [app]
+$ cd haproxy/conf
+$ vi haproxy.cfg			
+</code></pre>
+			<p align=left> <br>Aplicar cambios reiniciando:</p>
+<pre><code   class="bash" data-trim  style="font-size: 18px;">															
+rhc cartridge-restart --cartridge haproxy -a [app]
+</code></pre>
+		</section>
+		
+		<section>			
+			<h2>»DevOps</h2>
+		</section>
+		
+		<section>
+			<h2>Introducción (I)</h2>
+			<ul>
+				<li>Las metodologías ágiles ya son una realidad en el desarrollo de aplicaciones.</li>
+				<li>Un producto se compone de sw y la infraestructura necesaria para ejecutarse.</li>
+				<br>
+				<li>Desarrollo vs Explotación:
+					<ul>
+						<li>Desarrollo: <q> quiero construir y publicar lo que me pide el negocio con agilidad.</q></li>
+						<li>Explotación: <q> me miden por el coste y disponibilidad. No quiero riesgos.</q></li>
+					</ul>
+				</li>
+			</ul>
+		</section>
+		
+		<section>
+			<h2>Introducción (II)</h2>
+			<ul>
+				<li>A la hora de preparar el despliegue en producción de un nuevo producto termina <em>Agile</em> y surgen las fricciones:				
+					<ul>
+						<li>Desarrollo: <q> demasiada burocracia, falta de permisos en producción, lentitud en los traspasos.</q></li>
+						<li>Explotación: <q> falta de información sobre el software, procedimientos mal documentados, incertidumbre.</q></li>
+					</ul>
+				</li>
+			</ul>
+			<p align=left><br><em>DevOps</em> es un propósito de reconducir esta situación. Participación activa de Sistemas en los proyectos y uso de las mismas metodologías que los desarrolladores.</p>
+		</section>
+		
+		<section>
+			<br>			
+			<p  align=center><img style="border: 0;"  height="500" src="imagenes/paas08/devops3.png"></p>
+		</section>
+		
+		<section>			
+			<br>	
+			<p  align=center><img style="border: 0;"  height="600" src="imagenes/paas08/devops2.png"></p>
+		</section>
+		
+		<section>
+			<p><q>En resumen, DevOps pretende mejorar la productividad potenciando el trabajo colaborativo dentre desarrolladores y técnicos de sistemas</q> permitiendo que:</p>
+			<ul>
+				<li>Desarrollo se centre en la construcción de las aplicaciones.</li>
+				<li>Operaciones se centre en la creación de entornos estandarizados.</li>
+			</ul>
+		</section>
+		
+		<section>
+			<br>
+			<h2>DevOps y Cloud Computing (I)</h2>
+			<ul>
+				<li>IaaS y PaaS resuelven gran parte del trabajo de estandarización de entornos y procesos:
+					<ul>
+						<li>Modalidad de despliegue continuo por defecto en OpenShift.</li>
+						<li>Automatización de creación de aplicaciones y configuración de servicios</li>
+					</ul>
+				</li>				
+			</ul>			
+		</section>
+		
+		<section>
+			<br>
+			<h2>DevOps y Cloud Computing (II)</h2>			
+			<p  align=center><img style="border: 0;"  height="500" src="imagenes/paas08/devops1.png"></p>
+		</section>
+		
+		<section>
+			<br>
+			<h2>Integración continua</h2>			
+			<p align=left>Entendemos por CI, un sistema que:</p>
+			<ul>
+				<li>Ante un cambio en el código de una aplicación automatiza la compilación y ejecución de pruebas.
+					<ul>
+						<li>Si las pruebas son OK, la aplicación se puede desplegar.</li>
+						<li>Si las pruebas falla, se mantiene la versión anterior de la aplicación en ejecución.</li>
+					</ul>
+				</li>
+				<li>Se suelen generar reports de las pruebas y análisis de código.</li>
+				<li>Se apoya en herramientas estándar: git/svn... maven/ant... JUnit.</li>
+			</ul>
+		</section>
+		
+		<section>
+				<h2>Jenkins CI</h2>
+				<ul>
+					<li>Es la solución CI integrada en OpenShift</li>
+					<li>Basta con indicar <em>--enable-jenkins</em> en el comando <em>rhc</em> o bien:</li>
+					<p  align=center><img style="border: 0;" src="imagenes/paas08/ci1.png"></p>
+				</ul>
+		</section>
+		
+		<section>
+				<br>
+				<h2>Funcionamiento de Jenkins</h2>
+				
+				<p  align=center><img style="border: 0;" height="300" src="imagenes/paas08/ci2.png"></p>
+				<p align=left>OpenShift proporciona:</p>
+				<ul>
+					<li>Paths a las herramientas.</li>
+					<li>Configuración y seguridad básica.</li>
+					<li>Tarea preconfigurada para lanzar las compilaciones (builds).</li>
+				</ul>
+		</section>
+		
+		<section>
+				<br>
+				<h2>Builds</h2>				
+				<p  align=center><img style="border: 0;" height="450" src="imagenes/paas08/ci3.png"></p>				
+		</section>
+		
+		<section>
+			<h2>Configuración básica de una tarea</h2>
+			<ul>
+				<li>Definición y descripción</li>
+				<li>Builder a utilizar (gear dedicado)</li>
+				<li>Origen del código fuente</li>
+				<li>Disparadores de ejecucion</li>
+				<li>Script Ejecución</li>
+				<li>Tareas post-ejecución</li>
+			</ul>
+		</section>
+		
+		<section>
+			<br>
+			<h2>Plugins de Jenkins</h2>
+			<p align=left>Añaden funciones nuevas e integran otros servicios.</p>
+			<p  align=center><img style="border: 0;" height="420" src="imagenes/paas08/ci4.png"></p>				
+		</section>
+		
+		<section>
+			<br>
+			<h2>Ejecución de una build (I)</h2>
+			<ul>
+				<li>Por defecto Jenkins crea un gear específico para la tarea de compilación .
+					<ul>
+						<li>Es bueno porque descarga de la tarea al gear que ejecuta la aplicación.</li>
+						<li>Es malo porque podemos quedarnos sin gears!! (acceso gratuito)
+					</ul>
+				</li>				
+			</ul>
+			<p align=left><br>Ejecución paso a paso:</p>
+			<p align=left>1. Se hace <em>push</em> de un cambio en el código.</p>
+			<p align=left>2. Se ejecuta un disparador en Jenkins ante el evento de push.</p>			
+		</section>
+		
+		<section>
+			<br>
+			<h2>Ejecución de una build (II)</h2>			
+			<p align=left><br>3. Jenkins crea un builder de nombre <em>[app]bldr</em></p>			
+			<p align=left>4. Compilación:
+				<ul>
+					<li>Se descarga el código fuente de Git y mediante rsync se actualizan librerías.</li>
+					<li>Ejecución de <em>ci_buid.sh</em>
+						<ul>
+							<li><em>.openshift/action_hooks/pre_build</em></li>
+							<li>Pasos construcción definidos en Jenkins</li>
+							<li><em>.openshift/action_hooks/build</em></li>
+						</ul>
+					</li>
+					<li>Pasos post-compilación</li>
+				</ul>
+			</p>
+		</section>
+		
+		<section>
+			<br>
+			<h2>Ejecución de una build (III)</h2>						
+			<p align=left>5. Parada de la aplicación (en caso de éxito).</p>
+			<p align=left>6. actualización de artefactos mediante <em>rsync</em>.</p>
+			<p align=left>7. Inicio de la aplicación.</p>
+			<p align=left>8. Archivo de la información de la build en Jenkins.</p>
+			<p align=left><br>A los 15 minutos de inactividad se libera el builder.</p>
+		</section>
+		
+		<section>
+			<h2>Control de errores</h2>
+			<ul>
+				<li>En caso de errores podemos consultar los logs de Jenkins y los log de la aplicación con <em>rhc tail</em>.</li>	
+				<li><em>Goals</em> por defecto de maven:
+<pre><code   class="bash" data-trim  style="font-size: 18px;">				
+mvn -e clean package -Popenshift -DskipTests				
+</code></pre>
+				</li>
+				<li>Añadir nuevas pruebas y tareas adicionales
+<pre><code   class="bash" data-trim  style="font-size: 18px;">
+# Run tests here				
+</code></pre>
+				</li>
+			</ul>
+		</section>
+		
+		<section>
+			<h2>Trabajar con un repositorio Bitbucket (I)</h2>
+			<p align=left>Tipos de credenciales:</p>
+			<ul aigln=left>
+				<li>Público (sin credenciales).</li>
+				<li>Usuario/password → Bitbucket Plugin</li>
+				<li>Claves RSA →Permisos sobre ./ssh (no permitido en OpenShift)</li>
+			</ul>
+			
+			<p  align=center><br><img style="border: 0;" src="imagenes/paas08/ci5.png"></p>
+		</section>
+		
+		<section>
+			<h2>Jenkins "modificado"</h2>
+<pre><code   class="bash" data-trim  style="font-size: 18px;">			
+rhc create-app jenkins  jenkins-1  \
+https://cartreflect-claytondev.rhcloud.com/reflect?github=majecek/openshift-community-git-ssh
+</code></pre>
+			<ul>
+				<li>Almacenamiento de claves en <em>$OPENSHIFT_DATA_DIR/git-ssh</em></li>
+				<li>Uso de la variable GIT_SSH apuntando a un script alternativo de uso de credenciales.</li>		
+		</section>
+		
+		<section>
+			<br>
+			<h2>Claves RSA<h2>
+			<p align=left>Crear clave para Jenkins:</p>
+<pre><code   class="bash" data-trim  style="font-size: 18px;">						
+$ cd OPENSHIFT_DATA_DIR/git-ssh
+$ ssh-keygen
+
+#Especificar ruta completa  
+#var/lib/openshift/547ae964e0b8cdbb49000092/app-root/data/git-ssh/id_rsa
+
+The key fingerprint is:
+7d:f1:25:07:da:a7:e3:b0:c5:e0:e7:82:27:dc:2d:33 547ae964e0b8cdbb49000092@ex-std-node44.prod.rhcloud.com
+The key's randomart image is:
++--[ RSA 2048]----+
+|              .  |
+|             o . |
+|            + o +|
+|         . . = * |
+|        S . + B  |
+|         . + O . |
+|          + E +  |
+|           o =   |
+|                 |
++-----------------+
+</code></pre>
+		</section>
+		
+		<section>
+			<br>
+			<h2>Configurar Bitbucket (I)<h2>
+			<p align=left>Informar de la clave pública:</p>
+			<p  align=center><img style="border: 0;" src="imagenes/paas08/ci6.png"></p>						
+		</section>
+		
+		<section>
+			<br>
+			<h2>Configurar Bitbucket (II)<h2>			
+			<p align=left>Añadir un Hook POST:</p>
+			<p  align=center><img style="border: 0;" src="imagenes/paas08/ci8.png"></p>
+		</section>
+		
+		<section>
+				<br>
+				<h2>Claves RSA - Bitbucket plugin<h2>
+				<p align=left>Seleccionar disparador y credenciales</p>
+				<p  align=center><img style="border: 0;" src="imagenes/paas08/ci85.png"></p>				
+				<p  align=center><img style="border: 0;" src="imagenes/paas08/ci9.png"></p>
+		</section>
+		
+		<section>
+			<br>
+			<h2>Especificar rama de compilación</h2>
+			
+			<p  align=center><img style="border: 0;" src="imagenes/paas08/ci10.png"></p>
+<pre><code   class="bash" data-trim  style="font-size: 18px;">									
+# Build/update libs and run user pre_build and build
+
+GIT_BRANCH=master		# <-- Forzar a compilar sobre la rama master
+gear build
+
+# Run tests here
+</code></pre>			
+		</section>
+		
+		<section>
+			<br>
+			<h2>Alternativas a Jenkins (I)</h2>			
+			<ul>
+				<li>SaaS: Travis, Shippable, CodeShip... </li>
+				<li>Leen de nuestro repositorio de fuentes y hacer un push al repositorio de OpenShift</li>
+				<p  align=center><img style="border: 0;" height =420 src="imagenes/paas08/ship1.png"></p>
+			</ul>
+		</section>
+		
+		<section>
+			<br>
+			<h2>Shippable</h2>						
+			<p align=left>shippable.yml</p>
+<pre><code   class="bash" data-trim  style="font-size: 18px;">												
+language: java
+
+jdk:
+   - openjdk7
+
+env:
+  global:
+    - JBOSS_HOME=/tmp/jboss-as-7.1.0.Final
+    - JBOSS_SERVER_LOCATION=http://download.jboss.org/jbossas/7.1/jboss-as-7.1.0.Final/jboss-as-7.1.0.Final.tar.gz
+    - OPENSHIFT_REPO=ssh://54566a5a5973ca89760000cf@jbossas-djbyte.rhcloud.com/~/git/jbossas.git/
+
+before_install:
+  - if [ ! -e $JBOSS_HOME ]; then curl -s $JBOSS_SERVER_LOCATION | tar zx -C /tmp; fi
+  - git remote -v | grep ^openshift || git remote add openshift $OPENSHIFT_REPO
+
+before_script:
+  - mkdir -p shippable/testresults
+  - mkdir -p shippable/codecoverage
+
+script:
+  - mvn clean cobertura:cobertura
+  - mvn test -Parq-jbossas-managed
+
+after_success:
+  - git push -f openshift $BRANCH:master		
+ </code></pre>		
+		</section>
+		
+		<section>
+			<br>
+			<h2>Build Pipeline (I)</h2>
+			<ul>				
+				<li>Tenemos herramientas para automatizar la creación y despliegue de aplicaciones.</li>
+				<li>Crear servidores para pruebas específicas (features).</li>
+				<li>Es necesario definir y procedimentar un ciclo de vida del software. Ej:
+					<ul>
+						<li><em>Desarrollo</em>: El programador sube sus cambios y los integra con sus compañeros de forma automática (Jenkins).</li>
+						<li><em>Test</em>: Subida de sw diaria. Realización de pruebas automáticas y de usuario.</li>
+						<li><em>Preproducción/Stage: </em>Manualmente se sube el sw que va a pasar a producción. Últimas pruebas.</li>
+						<li><em>Producción</em>: Subida manual con el OK del usuario.</li>
+					</ul>
+				</li>				
+			</ul>
+		</section>
+		
+		<section>
+			<br>
+			<h2>Build Pipeline (II)</h2>
+			<p  align=center><img style="border: 0;"  height="500" src="imagenes/paas08/devops1.png"></p>
+		</section>
+		
+		<section>
+			<h1>¿Preguntas...?</h1>
+		</section>
+	
+	</div>
+</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+				slideNumber: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
+
+		
+		</section>

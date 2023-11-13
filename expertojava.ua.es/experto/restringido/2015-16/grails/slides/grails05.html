@@ -1,0 +1,1262 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Patrón MVC: Dominios y servicios.</title>
+
+		<meta name="description" content="Experto en desarrollo de aplicaciones web con JavaEE y Javascript">
+		<meta name="author" content="Francisco José García Rico">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/experto.css" id="theme">
+		
+    	<!-- coloreado de sintaxis con highlight.js -->
+    	<link rel="stylesheet" type="text/css" href="lib/css/github.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+
+	</head>
+
+<body>
+	<div class="reveal">
+	<div class="slides">
+		<!-- todo lo que se ponga aqui (que no sea un <section>) aparecerá
+		en todas las diapositivas -->
+		<div class="header">
+			<div class="logo">
+			 <img src="css/images/logo_small.png">
+			</div>
+			<div class="bar">Experto en desarrollo de aplicaciones web con JavaEE y Javascript</div>
+		</div>
+		<div class="footer">
+			<div class="left">
+				Framework Grails
+			</div>
+			<div class="center">
+				&copy; 2015-16 Dpto. Ciencia de la Computación e I.A.
+			</div>
+			<div class="right">
+				Sesión 5
+			</div>	
+		</div>	
+		<!-- Cada <section> es una slide -->	
+		
+		<section>
+			<!-- al poner el <h1> automáticamente aparece el logo del curso-->
+			<h1>Framework Grails</h1>
+			<h2>Sesión 5: Patrón MVC: Dominios y servicios.</h2>
+		</section>
+		
+		<section>
+			<h2>Índice</h2>
+			<ul>
+				<li>Dominios</li>
+				<li>Servicios</li>
+			</ul>
+		</section>
+
+		<section>			
+			<h2>Dominios</h2>
+			<ul>
+				<li>Creación de dominios</li>
+				<li>Relaciones entre clases de dominio</li>
+			</ul>		 
+		</section>
+
+		<section>			
+			<h2>Creación de dominios</h2>
+			<pre>
+				<code class="bash" data-trim style="font-size: 18px;">
+grails create-domain-class es.ua.expertojava.todo.todo
+				</code>
+			</pre>			
+		</section>		
+
+		<section>			
+			<h2>¿Qué sucede exactamente?</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+package es.ua.expertojava.todo
+
+class Todo {
+    String title
+    String description
+    Date date
+    Date reminderDate
+    String url
+    Boolean done = false
+    Category category
+
+    static hasMany = [tags:Tag]
+    static belongsTo = [Tag]
+
+    static constraints = {
+        title(blank:false)
+        description(blank:true, nullable:true, maxSize:1000)
+        date(nullable:false)
+        reminderDate(nullable:true)
+        url(nullable:true, url:true)
+        done(nullable:false)
+        category(nullable:true)
+    }
+
+    String toString(){
+        title
+    }
+}
+				</code>
+			</pre>			
+		</section>
+
+		<section>						
+			<h2>Base de datos</h2>
+			<ul>
+				<li>http://localhost:8080/todo/dbconsole</li>
+			</ul>
+			<p align=center><img style="border: 0;" src="../images/grails05/dbconsole.png"></p>						
+		</section>
+
+		<section>						
+			<h2>Table todo</h2>
+			<ul>
+				<li>SHOW COLUMNS FROM TODO</li>
+			</ul>
+			<p align=center><img style="border: 0;" src="../images/grails05/tabletodo.png"></p>						
+		</section>
+
+		<section>						
+			<h2>Nuevas columnas</h2>
+			<ul>
+				<li>Columna <em>id</em>, clave primaria y autoincremental</li>
+				<li>Columna <em>version</em>, garantiza la integridad transaccional</li>
+			</ul>					
+		</section>
+
+		<section>						
+			<h2>Nombre de las columnas</h2>
+			<ul>
+				<li>Campos en las clases de dominio: <em>CamelCase</em></li>
+				<li>Columnas en las tablas: <em>snake_case</em></li>
+			</ul>					
+		</section>
+
+		<section>						
+			<h2>Claves ajenas</h2>
+			<ul>
+				<li>clase/table seguido de <em>_id</em></li>
+				<li>Por ejemplo, <em>category_id</em></li>
+			</ul>					
+		</section>
+
+		<section>						
+			<h2>Tipos de datos</h2>
+			<ul>
+				<li>Depende de la base de datos</li>
+				<li><em>String</em> por <em>varchar</em></li>
+				<li><em>Date</em> por <em>timestamp</em></li>
+			</ul>					
+		</section>
+
+		<section>						
+			<h2>Relaciones entre clases de dominio</h2>
+			<ul>
+				<li>Uno a uno</li>
+				<li>Uno a muchos</li>
+				<li>Muchos a muchos</li>
+			</ul>					
+		</section>
+
+		<section>						
+			<h2>Uno a uno</h2>
+			<ul>
+				<li>Un objeto de la clase A está únicamente relacionado con un objeto de la clase B</li>
+				<li>Un libro sólo puede tener una reserva y una reserva pertenece siempre a un único libro</li>
+			</ul>					
+		</section>
+
+		<section>			
+			<h2>Uno a uno</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+class Book{
+}
+
+class ActiveOperation{
+    ....
+    Book book
+    ....
+}
+				</code>
+			</pre>
+			<p>
+				Relación unidireccional desde las operaciones activas hacia los libros
+			</p>			
+		</section>	
+
+		<section>			
+			<h2>Uno a uno</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+class Book{
+    ....
+    ActiveOperation actoper
+    ....
+}
+
+class ActiveOperation{
+    ....
+    static belongsTo = [book:Book]
+    ....
+}
+				</code>
+			</pre>
+			<p>
+				Inserciones y borrados en cascada.
+			</p>			
+		</section>	
+
+		<section>			
+			<h2>Uno a uno</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+class Book{
+    ....
+    static hasOne = [actoper:ActiveOperation]
+    
+    static constraints = {
+        actoper unique:true
+    }
+    ....
+}
+
+class ActiveOperation{
+    ....
+    Book book
+    ....
+}
+				</code>
+			</pre>
+			<p>
+				Relación bidireccional entre libros y operaciones activas y columna <em>book_id</em> en la tabla <em>active_operation</em>
+			</p>			
+		</section>	
+
+		<section>			
+			<h2>Uno a muchos</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+class Category {
+    ....
+    static hasMany = [todos:Todo]
+    ....
+}
+
+class Todo {
+    ....
+    Category category
+    ....
+}
+				</code>
+			</pre>
+			<p>
+				Inserciones y actualizaciones en cascada
+			</p>			
+		</section>
+
+		<section>			
+			<h2>Uno a muchos</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+class Category {
+    ....
+    static hasMany = [todos:Todo]
+    ....
+}
+
+class Todo {
+    ....
+    static belongsTo = [category:Category]
+    ....
+}
+				</code>
+			</pre>
+			<p>
+				Borrados en cascada
+			</p>			
+		</section>
+
+		<section>			
+			<h2>Uno a muchos</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+//Ejemplo para insertar datos en relaciones
+def todo = new Todo(title:"Limpiar cocina", description:"Limpiar la cocina a fondo", ...)
+    
+def category = new Category(name:"Hogar")
+
+category.addToTodos(todo)
+category.save()
+
+//Ejemplo para eliminar datos de relaciones
+category.removeFromTodos(todo)
+category.save()
+
+//Ejemplo para buscar tareas dentro de una categoría
+def todosfound = category.todos.find {it.title = "Limpiar cocina"}
+				</code>
+			</pre>			
+		</section>
+
+		<section>			
+			<h2>Muchos a muchos</h2>
+			<ul>
+				<li>Un registro de la clase A puede estar relacionado con muchos registros de la clase B y viceversa</li>
+				<li>Relación entre etiquetas y tareas</li>
+			</ul>			
+		</section>
+
+		<section>			
+			<h2>Muchos a muchos</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+class Tag{
+    ....
+    static hasMany = [todos:Todo]
+    ....
+}
+
+class Todo{
+    ....
+    static hasMany = [tags:Tag]
+    static belongsTo = Tag
+    ....
+}
+				</code>
+			</pre>			
+		</section>
+
+		<section>			
+			<h2>Restricciones</h2>
+			<ul>
+				<li>Restricciones predefinidas en GORM</li>
+				<li>Construir tus propias restricciones</li>
+				<li>Mensajes de error de las restricciones</li>
+			</ul>			
+		</section>
+
+		<section>			
+			<h2>Restricciones predefinidas en GORM</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+package es.ua.expertojava.todo
+
+class Todo {
+    String title
+    String description
+    Date date
+    Date reminderDate
+    String url
+    Boolean done = false
+    Category category
+
+    static hasMany = [tags:Tag]
+    static belongsTo = [Tag]
+
+    static constraints = {
+        title(blank:false)
+        description(blank:true, nullable:true, maxSize:1000)
+        date(nullable:false)
+        reminderDate(nullable:true)
+        url(nullable:true, url:true)
+        done(nullable:false)
+        category(nullable:true)
+    }
+
+    String toString(){
+        title
+    }
+}
+				</code>
+			</pre>			
+		</section>		
+
+		<section>			
+			<h2>Restricciones predefinidas en GORM</h2>
+			<ul>
+				<li><em>blank</em></li>
+				<li><em>creditCard</em></li>
+				<li><em>email</em></li>
+				<li><em>password</em></li>
+				<li><em>inList</em></li>
+				<li><em>matches</em></li>
+				<li><em>max</em></li>
+				<li><em>min</em></li>
+			</ul>		
+		</section>
+
+		<section>			
+			<h2>Restricciones predefinidas en GORM</h2>
+			<ul>
+				<li><em>minSize</em></li>
+				<li><em>maxSize</em></li>
+				<li><em>notEqual</em></li>
+				<li><em>nullable</em></li>
+				<li><em>range</em></li>
+				<li><em>scale</em></li>
+				<li><em>size</em></li>
+				<li><em>unique</em></li>
+				<li><em>url</em></li>
+			</ul>		
+		</section>
+
+		<section>			
+			<h2>Restricciones predefinidas en GORM para UI</h2>
+			<ul>
+				<li><em>display</em></li>
+				<li><em>editable</em></li>
+				<li><em>format</em></li>
+				<li><em>password</em></li>
+			</ul>		
+		</section>
+
+		<section>			
+			<h2>Ejemplo de restricción</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+date(nullable:true,
+    validator: {
+        if (it) {
+            return it?.after(new Date())
+        }
+        return true
+    }
+)
+				</code>
+			</pre>			
+		</section>	
+
+		<section>			
+			<h2>A tener en cuenta</h2>
+			<ul>
+				<li>El closure <em>validator</em> debe devolver <em>true</em> o <em>false</em></li>
+				<li>Con la variable <em>it</em> accedemos al valor introducido</li>
+				<li>Si pasamos dos variables, accedemos al objeto y al valor</li>
+			</ul>		
+		</section>
+
+		<section>			
+			<h2>Pasando objeto y valor</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+reminderDate(nullable:true, 
+    validator: { val, obj ->
+        if (val && obj.date) {
+            return val.before(obj?.date)
+        }
+        return true
+    }
+)
+				</code>
+			</pre>			
+		</section>	
+
+		<section>			
+			<h2>Reutilizar restricciones</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+grails.gorm.default.constraints = {
+    max20chars(nullable: false, blank: false, maxSize:20)
+}
+				</code>
+			</pre>
+			<pre class="fragment">
+				<code class="groovy" data-trim style="font-size: 18px;">
+class User {
+    ...
+    static constraints = {
+        password shared: "max20chars"
+    }
+}
+				</code>
+			</pre>						
+		</section>
+
+		<section>			
+			<h2>Mensaje de error de las restricciones</h2>
+			<ul>
+				<li>Sistema jerárquico</li>
+				<li>Basado en diferentes aspectos</li>
+				<li>Clase de dominio, propiedad o tipo de validación</li>
+			</ul>						
+		</section>
+
+		<section>			
+			<h2>Mensaje de error de las restricciones</h2>
+			<ul>
+				<li>todo.title.blank.error.title</li>
+				<li>todo.title.blank.error.java.lang.String</li>
+				<li>todo.title.blank.error</li>
+				<li>todo.title.blank.title</li>
+				<li>todo.title.blank.java.lang.String</li>
+				<li>todo.title.blank</li>
+				<li>blank.title</li>
+				<li>blank.java.lang.String</li>
+				<li>blank</li>
+			</ul>						
+		</section>
+
+		<section>			
+			<h2>Mensaje de error de las restricciones</h2>
+			<ul>
+				<li>Si no encuentra ninguna, se imprime <em>default.blank.message</em></li>
+				<li>Para nuestros validadores empezarían por <em>todo.date.validator.error.date</em></li>
+			</ul>						
+		</section>
+
+		<section>			
+			<h2>Aspectos avanzados de GORM</h2>
+			<ul>
+				<li>Ajustes de mapeado</li>
+				<li>Herencia de clases</li>
+				<li>Propiedades transitorias</li>
+				<li>Eventos GORM</li>
+				<li>Fechas automáticas</li>
+			</ul>						
+		</section>
+
+		<section>			
+			<h2>Ajustes de mapeado</h2>
+			<ul>
+				<li>Nombres de las tablas y columnas</li>
+				<li>Deshabilitar el campo versión</li>
+				<li>Carga perezosa de los datos</li>
+				<li>Sistema caché</li>
+				<li>Modificar la clave primaria</li>
+			</ul>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+static mapping = {
+	//Todo el mapeado de la tabla aquí
+}
+				</code>
+			</pre>									
+		</section>
+
+		<section>			
+			<h2>Nombres de las tablas y columnas</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+class Todo {
+    ....
+    static mapping = {
+        table 'tbl_todo'
+        description column:'desc'
+    }
+}
+				</code>
+			</pre>						
+		</section>
+
+		<section>			
+			<h2>Deshabilitar el campo versión</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+class Todo {
+    ....
+    static mapping = {
+        version false
+    }
+}
+				</code>
+			</pre>						
+		</section>
+
+		<section>			
+			<h2>Carga perezosa de los datos</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+class Person {
+    String firstName Pet pet
+    static hasMany = [addresses: Address]
+    static mapping = { 
+        addresses lazy: false 
+        pet fetch: 'join' 
+    } 
+}
+
+class Address {
+    String street
+    String postCode
+}
+
+class Pet {
+    String name
+}
+				</code>
+			</pre>						
+		</section>
+
+		<section>			
+			<h2>Sistema caché</h2>
+			<p>
+				<em>grails-app/conf/DataSource.groovy</em>
+			</p>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+hibernate {
+    cache.use_second_level_cache = true
+    cache.use_query_cache = true
+    cache.region.factory_class = 'net.sf.ehcache.hibernate.EhCacheRegionFactory'
+    singleSession = true
+    flush.mode = 'manual'
+}
+				</code>
+			</pre>						
+		</section>
+
+		<section>			
+			<h2>Sistema caché</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+class User {
+    ...
+    static mapping = {
+        table 'tbl_users'
+        cache true
+    }
+}
+				</code>
+			</pre>						
+		</section>
+
+		<section>			
+			<h2>Sistema caché</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+class User {
+    ...
+    static mapping = {
+        table 'tbl_users'
+        cache usage: 'read-only', include: 'non-lazy'
+    }
+}
+				</code>
+			</pre>						
+		</section>
+
+		<section>			
+			<h2>Sistema caché</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+class Person {
+
+    String firstName
+
+    static hasMany = [addresses: Address]
+
+    static mapping = { 
+        table 'people' 
+        version false 
+        addresses column: 'Address', cache: true 
+    } 
+}
+				</code>
+			</pre>						
+		</section>
+
+		<section>			
+			<h2>Modificar la clave primaria</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+static mapping = {
+    id composite: ['title', 'category']
+}
+				</code>
+			</pre>						
+		</section>
+
+		<section>			
+			<h2>Herencia de clases</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+class User{
+    ....
+}
+
+class Administrator extends User{
+    ....
+}
+
+class Registered extends User{
+    ....
+}
+
+class Guest extends User{
+    ....
+}
+				</code>
+			</pre>						
+		</section>
+
+		<section>			
+			<h2>Herencia de clases</h2>
+			<ul>
+				<li>Todos los datos en la misma tabla</li>
+				<li>Se diferencia por un campo <em>class</em></li>
+				<li>Podemos tener una tabla por cada tipo</li>
+			</ul>						
+		</section>
+
+		<section>			
+			<h2>Herencia de clases</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+class User{
+    ....
+}
+class Administrator extends User{
+    static mapping = {
+        table = 'administrator'
+    }
+}
+class Registered extends User{
+    static mapping = {
+        table = 'registered'
+    }
+}
+class Guest extends User{
+    static mapping = {
+        table = 'guest'
+    }
+}
+				</code>
+			</pre>						
+		</section>
+
+		<section>			
+			<h2>Herencia de clases</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+class User{
+    .....
+    static mapping = {
+        tablePerHierarchy false
+    }
+}
+				</code>
+			</pre>						
+		</section>
+
+		<section>			
+			<h2>Propiedades transitorias</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+class User {
+    static transients = ["confirmPassword"]
+    
+    String username
+    String password
+    String confirmPassword
+    String name
+    String surnames
+}
+				</code>
+			</pre>						
+		</section>
+
+		<section>			
+			<h2>Eventos GORM</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+class Todo {
+    ....
+    User createdBy
+    User lastModifiedBy
+    
+    def beforeInsert = {
+        createdBy = session?.user
+        lastModifiedBy = session?.user
+    }
+
+    def beforeUpdate = {
+        lastModifiedBy = session?.user
+    }
+}
+				</code>
+			</pre>						
+		</section>
+
+		<section>			
+			<h2>Eventos GORM</h2>
+			<ul>
+				<li><em>beforeDelete()</em></li>
+				<li><em>beforeValidate()</em></li>
+				<li><em>afterInsert()</em></li>
+				<li><em>afterUpdate()</em></li>
+				<li><em>afterDelete()</em></li>
+				<li><em>onLoad()</em></li>				
+			</ul>				
+		</section>
+
+		<section>			
+			<h2>Fechas automáticas</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+class Todo {
+    ....
+    Date dateCreated
+    Date lastUpdated
+}
+				</code>
+			</pre>				
+		</section>
+
+		<section>			
+			<h2>Fechas automáticas</h2>
+			<p>
+				Si queremos desactivar esta característica
+			</p>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+static mapping = {
+    autoTimestamp false
+}
+				</code>
+			</pre>				
+		</section>
+
+		<section>			
+			<h2>Interactuar con la base de datos</h2>
+			<ul>
+				<li>Consultas dinámicas de GORM</li>
+				<li>Consultas HQL de Hibernate</li>
+				<li>Consultas Criteria de Hibernate</li>
+			</ul>				
+		</section>
+
+		<section>			
+			<h2>Consultas dinámicas de GORM</h2>
+			<ul>
+				<li><em>count()</em></li>
+				<li><em>countBy()</em></li>
+				<li><em>findBy()</em></li>
+				<li><em>findWhere()</em></li>
+				<li><em>findAllBy()</em></li>
+				<li><em>findAllWhere()</em></li>
+				<li><em>get()</em></li>
+				<li><em>getAll()</em></li>
+				<li><em>list()</em></li>
+				<li><em>listOrderBy()</em></li>
+			</ul>				
+		</section>
+
+		<section>			
+			<h2>Comparaciones</h2>
+			<ul>
+				<li>InList</li>
+				<li>LessThan</li>
+				<li>LessThanEquals</li>
+				<li>GreaterThan</li>
+				<li>GreaterThanEquals</li>
+				<li>Like</li>
+				<li>ILike</li>
+				<li>NotEqual</li>
+				<li>Between</li>
+				<li>IsNotNull</li>
+				<li>IsNull</li>
+			</ul>				
+		</section>
+
+		<section>			
+			<h2>Ejemplo con GORM</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+Todo.findAllByTitleAndDescriptionAndDone('Pintar cocina',null,false)
+				</code>
+			</pre>				
+		</section>
+
+		<section>			
+			<h2>Consultas HQL de Hibernate</h2>
+			<ul>
+				<li><em>find()</em></li>
+				<li><em>findAll()</em></li>
+				<li><em>executeQuery()</em></li>
+			</ul>				
+		</section>
+
+		<section>			
+			<h2>Consultas HQL de Hibernate</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def sentenciaHQL1 = Todo.find("From Todo as t")
+				</code>
+			</pre>				
+		</section>
+
+		<section>			
+			<h2>Consultas HQL de Hibernate</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def hqlsentence2 = Todo.findAll("from Todo as t where t.title='Pintar cocina'")
+
+def hqlsentence3 = Todo.findAll("from Todo as t where t.title=?", ["Escribir tests unitarios"])
+
+def hqlsentence4 = Todo.findAll("from Todo as t where t.title=:title", [title:"Cocinar pastel"])
+				</code>
+			</pre>				
+		</section>
+
+		<section>			
+			<h2>Consultas HQL de Hibernate</h2>
+			<ul>
+				<li><em>max</em></li>
+				<li><em>offset</em></li>
+				<li><em>sort</em></li>
+				<li><em>order</em></li>
+			</ul>				
+		</section>
+
+		<section>			
+			<h2>Consultas HQL de Hibernate</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+Todo.executeQuery("select date from Todo t where t.title='Pintar cocina'")
+				</code>
+			</pre>				
+		</section>
+
+		<section>			
+			<h2>Consultas Criteria de Hibernate</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+void nextTodos() {
+    def c = Todo.createCriteria()
+    def result = c{
+        between("date",new Date(),new Date()+10)
+        maxResults(15)
+        order("date","asc")
+    }
+}
+				</code>
+			</pre>				
+		</section>
+
+		<section>			
+			<h2>Consultas Criteria de Hibernate</h2>
+			<ul>
+				<li><em>between</em></li>
+				<li><em>eq</em></li>
+				<li><em>eqProperty</em></li>
+				<li><em>gt</em></li>
+				<li><em>gtProperty</em></li>
+				<li><em>ge</em></li>
+				<li><em>geProperty</em></li>
+			</ul>				
+		</section>
+
+		<section>			
+			<h2>Consultas Criteria de Hibernate</h2>
+			<ul>
+				<li><em>idEq</em></li>
+				<li><em>ilike</em></li>
+				<li><em>in</em></li>
+				<li><em>isEmpty</em></li>
+				<li><em>isNull</em></li>
+				<li><em>isNotNull</em></li>
+				<li><em>lt</em></li>
+				<li><em>ltProperty</em></li>
+				<li><em>le</em></li>
+			</ul>				
+		</section>
+
+		<section>			
+			<h2>Consultas Criteria de Hibernate</h2>
+			<ul>
+				<li><em>like</em></li>
+				<li><em>ne</em></li>
+				<li><em>neProperty</em></li>
+				<li><em>order</em></li>
+				<li><em>rlike</em></li>
+				<li><em>sizeEq</em></li>
+				<li><em>sizeGt</em></li>
+				<li><em>sizeGe</em></li>
+				<li><em>sizeLt</em></li>
+				<li><em>sizeLe</em></li>
+				<li><em>sizeNe</em></li>
+			</ul>				
+		</section>
+
+		<section>			
+			<h2>Consultas Criteria de Hibernate</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+and {
+    between("date", new Date()-10, new Date())
+    ilike("content", "%texto%")
+}
+
+or {
+    between("date", new Date()-10, new Date())
+    ilike("content", "%texto%")
+}
+
+not {
+    between("date", new Date()-10, new Date())
+    ilike("content", "%texto%")
+}
+				</code>
+			</pre>				
+		</section>	
+		
+		<section>
+			<h2>Servicios</h2>
+			<ul>
+				<li>Responsable de la lógica de negocio</li>
+				<li>No es aconsejable acumular todo el código en el controlador</li>
+				<li>Clases ubicadas en el directorio <em>grails-app/services</em> que terminan con la palabra <em>Service</em></li>
+			</ul>
+		</section>	
+
+		<section>			
+			<h2>Servicio ejemplo</h2>
+			<pre>
+				<code class="bash" data-trim style="font-size: 18px;">
+grails create-service es.ua.expertojava.todo.todo
+				</code>
+			</pre>				
+		</section>	
+
+		<section>			
+			<h2>Servicio ejemplo</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+package es.ua.expertojava.todo
+
+import grails.transaction.Transactional
+
+@Transactional
+class TodoService {
+
+    def serviceMethod() {
+
+    }
+}
+				</code>
+			</pre>				
+		</section>
+
+		<section>			
+			<h2>Tipos de transaccionalidad</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+import grails.transaction.Transactional
+
+class BookService {
+
+    @Transactional(readOnly = true) 
+    def listBooks() { 
+        Book.list() 
+    }
+
+    @Transactional
+    def updateBook() { 
+        // ...
+    }
+
+    def deleteBook() { 
+        // ... 
+    } 
+}
+				</code>
+			</pre>				
+		</section>
+
+		<section>			
+			<h2>Servicio ejemplo</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+package es.ua.expertojava.todo
+
+import grails.transaction.Transactional
+
+class TodoService {
+
+    def getNextTodos(Integer days, params) {
+        Date now = new Date(System.currentTimeMillis())
+        Date to = now + days
+        Todo.findAllByDateBetween(now, to, params)
+    }
+
+    def countNextTodos(Integer days) {
+        Date now = new Date(System.currentTimeMillis())
+        Date to = now + days
+        Todo.countByDateBetween(now, to)
+    }
+}
+				</code>
+			</pre>				
+		</section>
+
+		<section>			
+			<h2>Servicio ejemplo</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+class TodoController {
+    def todoService
+    
+    ....
+    
+    def listNextTodos(Integer days) {
+        respond todoService.getNextTodos(days, params), 
+                model:[todoInstanceCount: todoService.countNextTodos(days)], 
+                view:"index"
+    }
+    
+    ....
+}
+				</code>
+			</pre>				
+		</section>
+
+		<section>			
+			<h2>Servicio ejemplo</h2>
+			<pre>
+				<code class="bash" data-trim style="font-size: 18px;">
+curl -v -H "Accept: text/xml" -H "Content-type: text/xml" -X GET  http://localhost:8080/todo/todo/listNextTodos?days=2
+				</code>
+			</pre>
+			<pre>
+				<code class="bash" data-trim style="font-size: 18px;">
+curl -v -H "Accept: application/json" -H "Content-type: application/json" -X GET  http://localhost:8080/todo/todo/listNextTodos?days=2
+				</code>
+			</pre>									
+		</section>
+
+		<section>			
+			<h2>Ámbito de los servicios</h2>
+			<ul>
+				<li>Por defecto, los servicios son <em>singleton</em>, sólo una instancia en todos los artefactos</li>
+				<li class="fragment"><em>prototype</em>, nueva instancia por servicio inyectado</li>
+				<li class="fragment"><em>request</em>, nueva instancia por cada solicitud HTTP</li>
+				<li class="fragment"><em>flash</em>, nueva instancia por cada solicitud HTTP en la actual y la siguiente</li>
+				<li class="fragment"><em>flow</em>, nueva instancia por cada flujo en un <em>web flow</em></li>
+				<li class="fragment"><em>conversation</em>, instancia visible para el flujo actual y sus subflujos en un web flow</li>
+				<li class="fragment"><em>session</em>, nueva instancia por cada sesión de usuario</li>
+			</ul>									
+		</section>
+
+		<section>			
+			<h2>Cambiar el ámbito</h2>
+			<pre>
+				<code class="bash" data-trim style="font-size: 18px;">
+class TodoService{
+    static scope = 'session'
+    ...
+}
+				</code>
+			</pre>									
+		</section>
+
+		<section>			
+			<h2>Servicios REST</h2>
+			<ul>
+				<li>Método <em>GET</em>, <em>show()</em></li>
+				<li>Método <em>PUT</em>, <em>update()</em></li>
+				<li>Método <em>POST</em>, <em>save()</em></li>
+				<li>Método <em>DELETE</em>, <em>delete()</em></li>
+			</ul>								
+		</section>
+
+		<section>			
+			<h2>Servicios REST</h2>
+			<p>
+				Sólo necesitaríamos una url para gestionar nuestra entidad. http://localhost:8080/todo/todos/<id_todo>
+			</p>								
+		</section>
+
+		<section>			
+			<h2>Servicios REST</h2>
+			<ul>
+				<li><em>http://localhost:8080/todo/todos</em>, método <em>GET</em>, <em>show()</em>, listado de las tareas</li>
+				<li class="fragment"><em>http://localhost:8080/todo/todos/4</em>, método <em>GET</em>, <em>show()</em>, datos de la tarea 4</li>
+				<li class="fragment"><em>http://localhost:8080/todo/todos/4</em>, método <em>PUT</em>, <em>update()</em>, actualiza la tarea 4</li>
+				<li class="fragment"><em>http://localhost:8080/todo/todos</em>, método <em>POST</em>, <em>save()</em>, crea una nueva tarea</li>
+				<li class="fragment"><em>http://localhost:8080/todo/todos/4</em>, método <em>DELETE</em>, <em>delete()</em>, elimina la tarea 4</li>
+			</ul>								
+		</section>
+
+		<section>			
+			<h2>Servicios REST</h2>
+			<p>
+				Deberíamos añadir unas entradas al archivo de configuración UrlMappings.groovy
+			</p>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+"/api/todos"(resources:"todo")
+"/api/tags"(resources:"tag")
+"/api/categories"(resources:"category")
+				</code>
+			</pre>									
+		</section>
+		<section>
+			<h1>¿Preguntas...?</h1>
+		</section>
+
+		<section>
+			<h1>Ejercicios</h1>
+		</section>
+	</div>
+</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+				slideNumber: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Parallax scrolling
+				// parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+				// parallaxBackgroundSize: '2100px 900px',
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+
+				]
+			});
+
+		</script>
+
+	</body>
+</html>

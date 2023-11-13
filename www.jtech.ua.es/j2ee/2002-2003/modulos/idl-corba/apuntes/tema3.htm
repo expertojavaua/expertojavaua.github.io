@@ -1,0 +1,466 @@
+<html>
+<head>
+<title>Tema 3: Java IDL</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<h1><span class="section">3. </span>Java IDL</h1>
+<p>IDL (<i>Interface Definition Language</i>) es un lenguaje declarativo utilizado 
+  para definir las interfaces CORBA. Para hacer uso de los servidores CORBA es 
+  necesario invocar m&eacute;todos de sus interfaces IDL. </p>
+<p>Tal y como ya se ha comentado en el tema 1, se trata de un lenguaje que no 
+  contiene sentencias de programaci&oacute;n, ya que su prop&oacute;sito es &uacute;nicamente 
+  definir las signaturas de las interfaces.</p>
+<p>Existen <i>mappings </i>est&aacute;ndar para convertir interfaces IDL en clases 
+  C++, c&oacute;digo C, y clases Java, entre otros. Estas clases generadas usan 
+  el marco CORBA subyacente para comunicarse con los clientes remotes y proporcionan 
+  las bases para implementar y exportar nuestros propios objetos distribuidos. 
+  Java IDL es una implementaci&oacute;n del est&aacute;ndar <i>IDL-to-Java mapping</i> 
+  y es proporcionado por Sun con es est&aacute;ndar Java SDK en los paquetes org.omg.CORBA 
+  y org.omg.CosNaming y sus subpaquetes.</p>
+<p>Al igual que RMI, Java IDL permite acceder a objetos remotos a trav&eacute;s 
+  de la red. Tambi&eacute;n proporciona las herramientas necesarias para hacer 
+  que los objetos Java sean tambi&eacute;n accesibles a otros clientes CORBA. 
+  Si exportamos una clase usando Java IDL, se puede crear una instancia de esa 
+  clase y publicarla a trav&eacute;s del servicio de nombres. Un cliente remoto 
+  puede entontrar dicho objeto, llamar a sus m&eacute;todos, y recibir datos desde 
+  ellos, igual que si se estuviesen ejecutando en la m&aacute;quina local del 
+  cliente. Sin embargo, a diferencia de RMI, los objetos que son exportados usando 
+  CORBA pueden ser accedeidos por clientes implementados en cualquier lenguaje 
+  que tenga asociado un <i>IDL binding</i> (C, C++, Ada, etc).</p>
+<p>Las principales diferencias entre IDL y Java son:</p>
+<ul>
+  <li>IDL es un lenguaje para declaraciones. En IDL solamente declaramos nombres 
+    y tipos para las interfaces. miembros de datos, m&eacute;todos, par&aacute;metros 
+    de los m&eacute;todos, etc. Las implementaciones de los m&eacute;todos se 
+    crean en el lenguaje de implementaci&oacute;n que elijamos (en este caso Java), 
+    despu&eacute;s de que se haya usado un compilador IDL para convertir la interfaz 
+    IDL en el lenguaje destino escogido.</li>
+  <li>IDL incluye definiciones de estructuras de datos que no son clases, como 
+    los <code>structs</code>, <code>unions</code>, y <code>ennumerations.</code></li>
+  <li>Los par&aacute;metros de los m&eacute;todos en IDL incluyen modificadores 
+    que especifican si son variables de entrada, salida o entrada/salida. En Java, 
+    todos los tipos de datos primitivos se pasan por valor, y todos los tipos 
+    de datos objeto se pasan por referencia.</li>
+  <li>Un fichero IDL puede incluir m&uacute;ltiples interfaces p&uacute;blicas. 
+    Java permite m&uacute;ltiples clases interfnas dentro de una &uacute;nica 
+    definici&oacute;n de clase p&uacute;blica y m&uacute;ltiples clases no p&uacute;blicas 
+    por fichero, pero solamente una clase p&uacute;blica puede definirse en un 
+    fichero Java.</li>
+  <li>Los m&oacute;dulos, que son similares a los paquetes Java, pueden anidarse 
+    dentro de otros m&oacute;dulos en el mismo fichero IDL, e interfaces en m&uacute;ltiples 
+    m&oacute;dulos distintos pueden definirse en el mismo fichero IDL. En Java, 
+    solamente se puede definir una clase en un paquete en un &uacute;nico fichero 
+    Java.</li>
+</ul>
+<p>Todas las declaraciones hechas con IDL est&aacute;n disponibles mediante el 
+  repositorio de interfaz (<i>Interfaz Repository: IR</i>). El IR es un servicio 
+  de CORBA que proporciona informaci&oacute;n en tiempo de ejecuci&oacute;n sobre 
+  los tipos de interfaces de objetos soportados en una instalaci&oacute;n de ORB 
+  particular. Puede verse como un conjunto de objetos que encapsulan las definiciones 
+  IDL de todos los tipos CORBA disponibles en un dominio particular.</p>
+
+<h2 class="subsection">3.1. M&oacute;dulos e Interfaces</h2>
+<p>Los <b>m&oacute;dulos</b> se declaran en IDL usando la palabra reservada <code>module</code>, 
+  seguida de un nombre para el m&oacute;dulo y una llave de apertura inicia el 
+  &aacute;mbito del m&oacute;dulo. Cada elemento definido dentro del &aacute;mbito 
+  del m&oacute;dulo (interfaces, constantes, otros m&oacute;dulos) pertenece a 
+  dicho m&oacute;dulo y es referenciado en otros m&oacute;dulos IDL usando la 
+  sintaxis <code>module-name::x</code>. Supongamos que se quiere que determinadas 
+  clases est&eacute;n contenidas en un m&oacute;dulo llamado corba, que es parte 
+  de un m&oacute;dulo mayor llamado jen. En IDL esto se declara como sigue:</p>
+<pre class="codigo">//IDL
+module jen {
+  module corba {
+    interface NeatExample ...;
+  };
+};
+</pre>
+<p>Si se quiere referenciar la interfaz NeatExample en otros ficheros IDL se usa 
+  la sintaxis <code>jen::corba::netaExample</code>. Cabe destacar los punto y 
+  coma despu&eacute;s de las llaves de cierre de las definiciones del m&oacute;dulo, 
+  que son requeridos en IDL, pero no en Java. Tambi&eacute;n se requiere un punto 
+  y coma despu&eacute;s de una definici&oacute;n de interfaz.</p>
+<p>Las <b>interfaces</b> declaradas en IDL son convertidas en clases o interfaces 
+  en Java. Como se ha mencionado anteriormente, IDL se usa solamente para declarar 
+  m&oacute;dulos, interfaces y sus m&eacute;todos. Los m&eacute;todos de las interfaces 
+  IDL se dejan siempre abstractos, para ser definidos en el lenguaje de programaci&oacute;n 
+  que se quiera usar para implementar la interfaz.</p>
+<p>La declaraci&oacute;n de una interfaz include una cabecera de interfaz y un 
+  cuerpo de interfaz. La cabecera especifica el nombre de la interfaz y las interfaces 
+  de la cual es heredera (si hay alguna). Un ejemplo de cabecera de interfaz IDL 
+  es:</p>
+<pre class="codigo">interface PrintServer : Server { ...
+</pre>
+<p>Esta cabecera comienza con la declaraci&oacute;n de una interfaz llamada <code>PrintServer</code> 
+  que hereda todos los m&eacute;todos y miembros de datos de la interfaz <code>Server</code>. 
+  Una interfaz IDL puede heredar de m&uacute;ltiples interfaces; simplemente hay 
+  que separar los nombre de interfaces con comas en la parte de herencia de la 
+  cabecera. </p>
+<p>Los m&oacute;dulos pueden anidarse dentro de otros m&oacute;dulos, y sus contenidos 
+  pueden ser referenciados de forma relativa a su &aacute;mito de nombres en el 
+  que se encuentran. Por ejemplo:</p>
+<pre class="codigo">module outer {
+  module inner { //m&oacute;dulo anidado
+    interface inside{};
+  };
+  interface outside {//puede referirse a su clase anidada con su nombre local
+    inner::inside get_inside();
+  };
+};</pre>
+<p>La operaci&oacute;n <code>get_inside()</code> devuelve una referencia a objeto 
+  de tipo <code>::outer::inner::inside</code>, pero puede usar la forma relativa 
+  del nombre debido a su posici&oacute;n en el mismo &aacute;mbito que el m&oacute;dulo 
+  interno.</p>
+<p>Las interfaces pueden referenciarse mutuamente. Es decir, las declaraciones 
+  en una interfaz pueden usar el nombre de otra como tipo de objeto. Para evitar 
+  errores de compilaci&oacute;n, un tipo de interfa debe ser declarado por anticipado 
+  antes de ser usado.</p>
+<pre class="codigo">interface A; //declaraci&oacute;n <i>forward</i>
+interface B {//B puede usar A como nombre de tipo
+  A get_an_A();
+};
+interface A {
+  B get_an_B();
+};</pre>
+<p>Cuando una declaraci&oacute;n en un m&oacute;dulo necesita alguna referencia 
+  mutua en una declaraci&oacute;n en otro m&oacute;dulo, se puede cerrar el primer 
+  m&oacute;dulo y &quot;reabrirlo&quot; despu&eacute;s de algunas otras declaraciones.</p>
+<pre class="codigo">module X {
+  interface A; //declaraci&oacute;n <i>forward</i>
+};
+module Y {
+  interface B {
+    X::A get_an_A();
+  };
+};
+module X {
+  interface C {
+    A get_an_A();
+  };
+  interface A {
+    Y::B get_a_B();
+  };
+};</pre>
+
+<h2 class="subsection">3.2 Miembros de datos y m&eacute;todos</h2>
+<p>El cuerpo de la interfaz declara todos los miembros de datos (o atributos) 
+  y m&eacute;todos de una interfaz. Los miembros de datos se declaran usando la 
+  palabra clave <code>attribute</code>. Como m&iacute;nimo, la declaraci&oacute;n 
+  incluye un nombre y un tipo. Las declaraciones pueden especificar opcionalmente 
+  si el atributo es de solo lectura o no, usando la palabra reservada <code>readonly</code>. 
+  Por defecto, cada atributo que se declara se puede leer y escribir (para Java 
+  esto significa que el compilador IDL genera m&eacute;todos p&uacute;blicos de 
+  lectura y escritura para dicho atributo). Un ejemplo de declaraci&oacute;n de 
+  atributo <code>string</code> de s&oacute;lo lectura es:</p>
+<pre class="codigo">readonly attribute string myString;</pre>
+<p>Un m&eacute;todo se declara especificando su nombre, tipo de resultado y par&aacute;metros, 
+  como m&iacute;nimo. Opcionalmente se pueden declarar excepciones que el m&eacute;todo 
+  prodr&iacute;a provocar, la sem&aacute;ntica de invocaci&oacute;n del m&eacute;todo, 
+  y el contexto para el m&eacute;todo de llamada. Una declaraci&oacute;n para 
+  un met&oacute;do sencillo que devuelve un string podr&iacute;a ser:</p>
+<pre class="codigo">string parseString(in string buffer);</pre>
+<p>esto declara un m&eacute;todo llamado <code>parseString()</code> que acepta 
+  un <code>string</code> como argumento y devuelve un valor <code>string</code>.</p>
+<p>A continuaci&oacute;n mostramos un ejemplo completo de IDL.</p>
+<pre class="codigo">module OS {
+  module services {
+    interface Server {
+      readonly attribute string serverName;
+      boolean init (in string sName);
+    };
+
+    
+    interface Printable {
+      boolean print(in string header);
+    };
+
+
+    interface PrintServer: Server {
+      boolean printThis(in Printable p);
+    };
+  };
+};</pre>
+<p>La primera interfaz, <code>Server</code>, tiene un &uacute;nico atributo string 
+  de solo lectura y un m&eacute;todo <code>init()</code> que acepta un <code>string</code> 
+  y devuelve un <code>boolean</code>. La interfaz <code>Printable</code> tiene 
+  un &uacute;nico m&eacute;todo <code>print()</code> que acepta una cabecera <code>string</code>. 
+  Finalmente, la interfaz <code>PrintServer</code> &quot;extiende&quot; la interfaz 
+  <code>Server</code> (y por lo tanto hereda todos sus m&eacute;todos y atributos) 
+  y a&ntilde;ade un m&eacute;todo <code>printThis</code> que acepta un objeto 
+  <code>Printable</code> y devuelve un <code>boolean</code>. En todos los casos 
+  hemos declarado los argumentos de los m&eacute;todos solamente de entrada (es 
+  decir, se pasan por valor), usando la palabra reservada <code>in</code>. </p>
+<h2 class="subsection">3.3. Constantes y tipos</h2>
+<p>El nombre de cualquier interfaz declarada en IDL constityue un nombre de tipo 
+  de objeto que puede usarse como el tipo de cualquier par&aacute;metro de operaci&oacute;n 
+  o valor de retorno, o como un miembro en una declaraci&oacute;n de tipo estructurado. 
+  IDL proporciona un conjunto de tipos b&aacute;sicos para representar n&uacute;meros, 
+  <i>strings</i>, caracteres, y booleanos. Las definiciones de los mismos son 
+  bastante precisas para permitir codificaciones ambiguas. Los tipos estructurados 
+  en IDL son las estructuras, uniones con discriminante, <i>arrays</i>, y secuencias. 
+  Las excepciones pueden considerarse un caso especial de estructuras que pueden 
+  usarse solamente en cl&aacute;usulas <code>raise</code> de las operaciones.</p>
+<p>Los tipos b&aacute;sicos proporcionados por IDL son:</p>
+<ul>
+  <li><code>[unsigned] short</code>, <code>[unsigned] long</code>, <code>[unsigned] 
+    long long</code>, entero con complemento a dos (con o sin signo) de 16, 32 
+    y 64 bits respectivamente.</li>
+  <li><code>float</code>, <code>double</code>, <code>long double</code>, n&uacute;mero 
+    en punto flotante de 16, 32 y 64 bits respectivamente.</li>
+  <li><code>fixed</code>, n&uacute;mero decimal de punto fijo hasta 31 d&iacute;gitos.</li>
+  <li><code>boolean</code>, tipo booleano con valores <code>TRUE</code> y <code>FALSE</code>.</li>
+  <li><code>wchar</code>, <code>string</code>, <code>wstring</code>, caracter 
+    de otros juegos de caracteres para soportar internacionalizaci&oacute;n, cadena 
+    de caracteres de longitud variable, y cadena de caracteres de wchar caracteres 
+    de longitud variable, respectivamente.</li>
+  <li><code>octet</code>, <code>enum</code>, tipo no interpretado de 8 bits, y 
+    tipo enumerado con valores enteros con nombre, respectivamente.</li>
+  <li><code>any</code>, puede representar cualquier valor de los posibles IDL, 
+    b&aacute;sico o no b&aacute;sico.</li>
+  <li><code>native</code>, es un tipo opaco, cuya representaci&oacute;n es especificada 
+    por el tipo de lenguaje destino.</li>
+</ul>
+<p>Se puede utilizar la palabra reservada <code>typedef</code> para crear tipos 
+  de datos. En el caso de tipos &quot;plantilla&quot; (tipos que requieren un 
+  par&aacute;metro para determinar su longitud o contenidos) se requiere un <code>typedef</code> 
+  antes del tipo que puede usarse en una declaraci&oacute;n de atributo o de operaci&oacute;n.</p>
+<p>Los <i>strings</i> pueden ser limitados o ilimitados. Los tipos <i>string</i> 
+  limitados son tipos &quot;plantilla&quot;, indic&aacute;ndose su longitud m&aacute;xima 
+  como par&aacute;metro.</p>
+<pre class="codigo">interface StringProcessor {
+   typedef octstring string &lt;8&gt;;
+   typedef centastring string &lt;100&gt;;
+   //...
+   octstring MiddleEight(in string str);
+   centastring PadOctString(in octstring ostr, char pad_char);
+};</pre>
+<p>Los tipos de punto fijo tambi&eacute;n son tipos &quot;plantilla&quot; y deben 
+  ser introducidos con un typedef, especificando el n&uacute;mero de d&iacute;gidos 
+  decimales y la escala, expresada como potencia de 10. As&iacute; por ejemplo 
+  para representar el n&uacute;mero 123.45, se indicar&iacute;a como un n&uacute;mero 
+  con 5 d&iacute;gitos, y una escala de 2.</p>
+<pre class="codigo">typedef fixed <5,2> three_point_two;</pre>
+<p>Los tipos enumerados se declaran con un nombre, y una coma separa la lista 
+  de identificadores.</p>
+<pre class="codigo">enum glass_color {gc_clear, gc_red, gc_blue, gc_green} </pre>
+<p>Las estructuras se declaran con la palabra reservada <code>struct</code>, seguida 
+  de un nombre.</p>
+<pre class="codigo">interface HardwareStore {
+   struct window_spec {
+     glass_color color;
+     height float;
+     width float;
+
+};</pre>
+<p>Las uniones con discriminante se declaran con la palabra reservada <code>union</code>, 
+  seguida de un nombre y de la palabra reservada <code>switch</code>, y parametrizada 
+  por un tipo escalar (<code>integer</code>, <code>char</code>, <code>Boolean</code> 
+  o <code>enum</code>) que act&uacute;a como discriminante.</p>
+<pre class="codigo">enum fitting_kind {door_k, window_k, shelf_k, cupboard_k};
+union fitting switch (fitting_kind) {
+  case door_k,
+    cupboard_k: door_spec door;
+  case window_k: window_spec win;
+  default: float width;
+};</pre>
+<p>Las secuencias son tipos plantilla. Una secuencia es una colecci&oacute;n ordenada 
+  de items que puede crecer en tiempo de ejecuci&oacute;n. Sus elementos son accedidos 
+  mediante un &iacute;ndice. Las secuencias pueden ser limitadas o no. Todas las 
+  secuencias tienen dos caracter&iacute;sticas en tiempo de ejecuci&oacute;n: 
+  su longitud m&aacute;xima y la actual. La longitud m&aacute;xima de las secuencias 
+  limitadas se determina en tiempo de compilaci&oacute;n. La ventaja de las secuencias 
+  es que solamente se pasa a un objeto remoto el n&uacute;mero de elementos actuales 
+  de la secuencia cuando se utiliza una secuencia como argumento.</p>
+<pre class="codigo">//union type fitting declarada anteriormente
+typedef sequence &lt;fitting&gt; HardwareOrderSeq;
+typedef sequence &lt;fitting,10&gt; LimitedHWOrderSeq;
+typedef sequence &lt;sequence &lt;&lt;fitting&gt;,3&gt; ThreeStoreHWOrderSeq;
+typedef sequence &lt;sequence &lt;fitting&gt; ManyStoreHWOrderSeq;
+  default: float width;
+};</pre>
+<p>Los <i>arrays</i> tambi&eacute;n se declaran normalmente con un typedef. Los 
+  <i>arrays</i> tendr&aacute;n una longitud fija en tiempo de ejecuci&oacute;n. 
+  Independientemente de su longitud y contenido, el <i>array</i> completo ser&aacute; 
+  codificado y enviado por la red.</p>
+<pre class="codigo">typedef window WindowVec10[10];
+typedef fitting FittingGrid[3][10];
+struct bathroom {
+  float width;
+  float length;
+  float heigth;
+  boolean has_toilet;
+  fitting fittings[6];
+
+};</pre>
+<p>Las excepciones se declaran de la misma forma que las estructuras, usando la 
+  palabra reservada <code>exception</code>, en lugar de <code>struct</code>.</p>
+<pre class="codigo">exception OrderTooLarge {
+  long max_items;
+  long num_items_submitted;
+};
+exception ColorMismatch {
+  sequence &lt;color&gt; other_window_colors;
+  color  color_submitted;
+};</pre>
+<p>Las constantes pueden declararse con un &aacute;mbito global o dentro de los 
+  m&oacute;dulos e interfaces. Se utiliza la palabra reservada <code>const</code>.</p>
+<pre class="codigo">const short max_storage_bays = 200; 
+const windows_per_bay=45;
+const long max_windows = max_storage_bays * windows_per_bay;
+const string initial_quote= &quot;fox in socks on knox on bloks&quot;;
+const HarcwareStore::CashAmount balance = (max_storage_bays -3)/1.45;</pre>
+
+<h2 class="subsection">3.4. Operaciones y atributos</h2>
+<p>Las declaraciones de las operaciones contienen un nombre de operaci&oacute;n, 
+  un tipo de retorno (o <code>void</code> para indicar que no se espera ning&uacute;n 
+  valor), y una lista de par&aacute;metros, que puede ser vac&iacute;a. Una operaci&oacute;n 
+  puede tener cl&aacute;usulas <code>raise</code>, para indicar las excepciones.</p>
+<pre class="codigo">typedef float CashAmount;  
+typedef sequence &lt;window_spec&gt; WindowSeq;
+CashAmount OrderFittings(in HardwareOrderSeq order)
+  raises (OrderTooLarge);
+void OrderWindows(
+  in WindowSeq order,
+  in CashAmount willing_to_pay,
+  out CashAmount total_price,
+  out short  order_number)
+  raises (OrderTooLarge, ColorMismatch);
+</pre>
+<p>El modo de paso de par&aacute;metros es por valor para los tipos b&aacute;sicos 
+  y para estructuras, uniones y enumeraciones. Los argumentos de tipo objeto se 
+  pasan siempre por referencia.</p>
+<p>Un atributo es equivalente l&oacute;gicamente a un par de funciones de acceso, 
+  una para acceder al valor, y otra para modificarlo. Los atributos de solo lectura 
+  solamente requieren una funci&oacute;n de acceso. Los atributos consisten en 
+  la palabra reservada <code>attribute</code> seguida del tipo del atributo y 
+  de una lista de nombres de atributos. Pueden ir precedidos de la palabra reservada 
+  <code>readonly</code>.</p>
+<pre class="codigo">readonly attribute CashAmount min_order, max_order;
+readonly attribute FittingSeq new_fittings; 
+attribute string quote_of_the_day;  </pre>
+<p>Los atributos previos pueden reemplazarse por el siguiente IDL:</p>
+<pre class="codigo">CashAmount min_order();
+CashAmount max_order();
+FittingSeq new_fittings(); 
+string get_quote_of_the_day(); 
+void set_quote_of_the_day(in string quote);  </pre>
+<p>Tal y como est&aacute;n declaradas, las operaciones y los atributos son equivalentes.</p>
+<h2 class="subsection">3.5. Valuetypes</h2>
+<p>Los <i>valuetypes</i> son un tipo especial de datos en IDL introducidos para 
+  permitir que las entidades fueran pasadas por valor en lugar de por referencia 
+  en una invocaci&oacute;n de operaci&oacute;n, para que de esta forma el acceso 
+  al valor fuese siempre una operaci&oacute;n local.</p>
+<p>Otra raz&oacute;n de ser de los <i>valuetypes</i> es el proporcionar sem&aacute;nticas 
+  compartidas y &quot;<i>null</i>&quot; para valores IDL tales como <i>structs</i> 
+  y secuencias. Usando <i>valuetypes</i>, por ejemplo, es posible pasar un grafo 
+  entero en una invocaci&oacute;n de una operaci&oacute;n de forma que se preserven 
+  los valores compartidos en el grafo. O por ejemplo, una estructura IDL puede 
+  estar vac&iacute;a (es decir, sus valores pueden estar no inicializados), pero 
+  nunca puede ser &quot;null&quot;; los <i>valuetypes</i> s&iacute; permiten esto.</p>
+<p>Los <i>valuetypes</i> son una mezcla entre interfaces y estructuras, y se declaran 
+  con la palabra reservada <code>valuetype</code>. Existen varias clases de <i>valuetypes</i>. 
+  Los <i>regular valuetypes</i>, como las interfaces, pueden contener definiciones 
+  de atributos, operaciones y declaraciones de tipos locales. A diferencia de 
+  las interfaces, pueden tener miembros que reflejan el estado, e inicializadores.</p>
+<pre class="codigo">interface Observer {
+  void notify();
+}
+valuetype ShoppingCart supports Observer {
+  readonly attribute long current_value;
+  private HardwareOrderSeq selected;
+  void addToCart(in fitting item);
+  factory init(in HardwareOrderSeq initial);
+
+};</pre>
+<p>Los miembros que reflejan el estado (<i>state members</i>) constituyen el estado 
+  que es codificado y enviado al receptor. Los miembros estado pueden declararse 
+  <code>public</code> o <code>private</code>. Si se declara private deber&iacute;a 
+  ser colamente accesible por la implementaci&oacute;n de las operaciones <i>valuetype.</i></p>
+<p>Para crear nuevas instancias, puede definirse un inicializador usando la palabra 
+  reservada <code>factory</code>.</p>
+<p>Los <i>abstract valuetypes </i> son un tipo de <i>valuetypes</i> que no pueden 
+  ser instanciados. No tienen inicializadores, ni valores mismbros, solamente 
+  se permiten operaciones o definiciones de tipos de datos. </p>
+<pre class="codigo">abstract valuetype Cart supports Observer {
+  void add(in Any item);
+}</pre>
+<h2 class="subsection">3.6. Convirtiendo IDL en Java</h2>
+<p>Una vez que se han especificado las interfaces en IDL, es necesario generar 
+  las clases Java que sirven como punto de partida para implementar las interfaces 
+  remotas en Java usando un compilador <i>Idl-to-Java.</i> Cada compilador est&aacute;ndar 
+  <i>Idl-to-Java</i> genera las siguientes clases a partir de una interfaz IDL:</p>
+<ul>
+  <li>Una interfaz Java con el mismo nombre que el interfaz IDL. Esta puede actuar 
+    como una base para una implementaci&oacute;n Java de la interfaz</li>
+  <li>Una clase <i>helper</i> cuyo nombre es la de la interfaz IDL a&ntilde;adi&eacute;ndole 
+    <i>Helper</i>. El principal prop&oacute;sito de esta clase es proporcionar 
+    un m&eacute;odo est&aacute;tico denominado <code>narrow()</code> que puede 
+    realizar un <i>cast</i> desde referencias Object de CORBA a tipos de interfaz 
+    en Java. La clase <i>helper </i>tambi&eacute;n proporciona otros m&eacute;todos 
+    est&aacute;ticos &uacute;tiles como <code>read()</code> y <code>write()</code> 
+    que permiten leer y escribir un objeto del correspodiente tipo usando <i>streams 
+    </i> de entrada/salida.</li>
+  <li>Un clase <i>holder</i> cuyo nombre es el nombre de la interfaz IDL seguido 
+    de <i>Holder</i>. Esta clase se usa cuando los objetos de la interfaz se usan 
+    como argumentos <code>out</code> o <code>inout</code> en m&eacute;todos CORBA 
+    remotos. En luegar de pasarse directamente al m&eacute;todo remoto, el objeto 
+    es &quot;envuelto&quot; dentro de su <i>holder</i> antes de pasarse como par&aacute;metro. 
+    Cuando un m&eacute;todo remoto tiene par&aacute;metros declarados como <code>out</code> 
+    o <code>inout</code>, el m&eacute;todo tiene que ser capaz de actualizar el 
+    argumento que se ha pasado y devolver el valor actualizado. La &uacute;nica 
+    forma de garantizar esto es, incluso para tipos de datos primitivos Java, 
+    forzando a que los argumentos <code>out</code> e <code>inout</code> sean &quot;envueltos&quot; 
+    en clases <i>holder</i> Java, que toman como valor el valor de salida del 
+    argumento cuando el m&eacute;todo devuelve el resultado.</li>
+</ul>
+<p>Con respecto a la clase <i>helper</i>, la implementaci&oacute;n del m&eacute;todo 
+  <code>narrow()</code> convierte una referencia a un <code>Object</code> de CORBA 
+  en una referencia a un tipo espec&iacute;fico. Cada <i>stub</i> CORBA para un 
+  objeto remoto contiene un objeto <code>Delegate</code> interno (obtenido del 
+  paquete <code>org.omg.CORBA.portable</code>) que es usado por el <i>stub</i> 
+  para invocar peticiones remotas. Si el objeto no contiene un objeto <code>Delegate</code> 
+  interno, el m&eacute;todo <code>narrow()</code> producir&aacute; la excepci&oacute;n 
+  <code>BAD_PARAM</code>.
+<p>Una clase <i>holder</i> contiene una &uacute;nica instancia de un objeto CORBA. 
+  Cuando un objeto <i>holder</i> es pasado en una llamada a un m&eacute;todo remoto 
+  como un argumento <code>inout</code>, se invoca a su m&eacute;todo <code>_write()</code>. 
+  Este m&eacute;todo toma el objeto contenido en la clase <i>holder</i>, lo serializa, 
+  y lo env&iacute;a como un flujo de datos a trav&eacute;s del ORB al servidor 
+  del objeto remoto. Cuando la llamada al m&eacute;todo remoto termina, se invoca 
+  al m&eacute;todo <code>_read()</code> de la clase <i>holder</i> para leer el 
+  (posiblemente actualizado) objeto desde el servidor del objeto remoto, y el 
+  objeto <i>holder</i> reemplaza su valor interno con el objeto actualizado. 
+<p>La herramienta <code>idlj</code> proporcionada por Sun puede generar dos clases 
+  adicionales: 
+<ul>
+  <li>una clase cliente <i>stub</i> llamada <code>_</code><i>nombre-interfaz</i><code>Stub</code>, 
+    que actúa como una implementaci&oacute;n en la parte del cliente de la interfaz 
+    y conoce como convertir las peticiones a los m&eacute;todos en peticiones 
+    ORB que son enviadas al objeto remoto real. Por ejemplo la clase <i>stub</i> 
+    para una interfaz llamada <code>Server</code> es <code>_ServerStub</code>.</li>
+  <li>una clase servidor <i>skeleton</i> llamada <code>_</code><i>nombre-interfaz</i><code>ImplBase</code>, 
+    que es una clase base para la implementaci&oacute;n en el lado del servidor. 
+    La clase base puede aceptar peticiones para el objeto desde el ORB y devolver 
+    valores a trav&eacute;s del ORB al cliente remoto. Por ejemplo la clase <i>skeleton</i> 
+    para una interfaz llamada <code>Server</code> es <code>_ServerImplBase</code>.</li>
+</ul> 
+<p>La clase base para la implementaci&oacute;n del servidor acepta peticiones 
+  destinadas a la implementaci&oacute;n del servidor desde el ORB. La clase base 
+  converte una petici&oacute;n en una llamada a un m&eacute;todo en el objeto 
+  servidor y entonces toma el resultado de la llamada y la devuelve al ORB para 
+  enviarla al <i>stub </i>del cliente. Todo este trabajo se realiza por el m&eacute;todo 
+  del <i>skeleton</i> del servidor invoque(). El m&eacute;todo invoque() &quot;averigua&quot; 
+  el m&eacute;todo que est&aacute; siendo llamado, decodifica los argumentos del 
+  m&eacute;todo (si los hay) desde la petici&oacute;n, y llama al m&eacute;todo 
+  directamente.
+<p>Una vez que se ha escrito la interfaz IDL y generado la interfaz Java y las 
+  clases de soporte, incluyendo las clases <i>stub</i> y <i>skeleton</i>, es necesario 
+  concretar las implementaciones del servidor para todos los m&eacute;todos de 
+  la interfaz. Esto lo podemos hacer creando subclases a partir de la clase <code>_<i>xxx</i>ImplBase</code> 
+  generada por el compilador IDL. 
+<h2 class="subsection">&nbsp;</h2>
+</body>
+</html>

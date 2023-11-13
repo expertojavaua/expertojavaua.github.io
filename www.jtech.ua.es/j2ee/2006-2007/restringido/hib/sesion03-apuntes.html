@@ -1,0 +1,1183 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.7">
+<meta name="Forrest-skin-name" content="pelt">
+<title>Relaciones entre objetos</title>
+<link type="text/css" href="skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="skin/print.css" rel="stylesheet">
+<link type="text/css" href="skin/profile.css" rel="stylesheet">
+<script src="skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<div class="header">
+<div class="grouplogo">
+<a href="http://www.jtech.ua.es/j2ee"><img class="logoImage" alt="J2EE" src="images/baner_j2ee_izq.gif" title="Curso Especialista Universitario J2EE"></a>
+</div>
+<div class="projectlogoA1">
+<a href="http://www.dccia.ua.es/"><img class="logoImage" alt="Hibernate" src="images/baner_j2ee_der.gif" title="Hibernate"></a>
+</div>
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="../index.html">M&oacute;dulos</a>
+</li>
+<li class="current">
+<a class="base-selected" href="index.html">Hibernate</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<div id="level2tabs"></div>
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<div id="menu">
+<div onclick="SwitchMenu('menu_selected_1.1', 'skin/')" id="menu_selected_1.1Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Hibernate</div>
+<div id="menu_selected_1.1" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="index.html" title="Hibernate">&Iacute;ndice</a>
+</div>
+<div onclick="SwitchMenu('menu_selected_1.1.2', 'skin/')" id="menu_selected_1.1.2Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Teor&iacute;a</div>
+<div id="menu_selected_1.1.2" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="sesion01-apuntes.html" title="Sesi&oacute;n 1: Introducci&oacute;n a Hibernate:Configuraci&oacute;n e Inicio">Sesi&oacute;n 1</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-apuntes.html" title="Sesi&oacute;n 2: Mapeado de clases persistentes">Sesi&oacute;n 2</a>
+</div>
+<div class="menupage">
+<div class="menupagetitle">Sesi&oacute;n 3</div>
+</div>
+<div class="menuitem">
+<a href="sesion04-apuntes.html" title="Sesi&oacute;n 4: Consultas HQL">Sesi&oacute;n 4</a>
+</div>
+<div class="menuitem">
+<a href="roadmap-apuntes.html" title="Roadmap">Roadmap</a>
+</div>
+</div>
+<div onclick="SwitchMenu('menu_1.1.3', 'skin/')" id="menu_1.1.3Title" class="menutitle">Ejercicios</div>
+<div id="menu_1.1.3" class="menuitemgroup">
+<div class="menuitem">
+<a href="sesion01-ejercicios.html" title="Sesi&oacute;n 1: Introducci&oacute;n a Hibernate:Configuraci&oacute;n e Inicio">Sesi&oacute;n 1</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-ejercicios.html" title="Sesi&oacute;n 2: Mapeado de clases persistentes">Sesi&oacute;n 2</a>
+</div>
+<div class="menuitem">
+<a href="sesion03-ejercicios.html" title="Sesi&oacute;n 3: Relaciones entre objetos">Sesi&oacute;n 3</a>
+</div>
+<div class="menuitem">
+<a href="sesion04-ejercicios.html" title="Sesi&oacute;n 4: Consultas HQL">Sesi&oacute;n 4</a>
+</div>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<div id="credit2"></div>
+</div>
+<div id="content">
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="sesion03-apuntes.pdf"><img alt="PDF -icon" src="skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1>Relaciones entre objetos</h1>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#Persistencia+transitiva">Persistencia transitiva</a>
+</li>
+<li>
+<a href="#Composici%C3%B3n">Composici&oacute;n</a>
+</li>
+<li>
+<a href="#Herencia">Herencia</a>
+</li>
+<li>
+<a href="#Asociaciones">Asociaciones</a>
+<ul class="minitoc">
+<li>
+<a href="#Asociaci%C3%B3n+MANY-TO-ONE">Asociaci&oacute;n MANY-TO-ONE</a>
+</li>
+<li>
+<a href="#Asociaci%C3%B3n+ONE-TO-MANY">Asociaci&oacute;n ONE-TO-MANY</a>
+</li>
+<li>
+<a href="#Asociaci%C3%B3n+ONE-TO-ONE">Asociaci&oacute;n ONE-TO-ONE</a>
+</li>
+<li>
+<a href="#Asociaci%C3%B3n+MANY-TO-MANY">Asociaci&oacute;n MANY-TO-MANY</a>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+
+<p>En esta sesi&oacute;n hablaremos sobre c&oacute;mo expresar algunas relaciones entre objetos con Hibernate. 
+  Vamos a explicar el concepto de persistencia transitiva, para entender c&oacute;mo se puede propagar el estado persistente de los 
+  objetos relacionados ente s&iacute;. Veremos c&oacute;mo incluir en los ficheros de mapeado (ficheros con extensi&oacute;n 
+  <em>"hbm.xml"</em>) de las clases persistentes, las relaciones entre dichas clases. Concretemente hablaremos de las relaciones de
+  composici&oacute;n, herencia y asociaciones.  
+  </p>
+ 
+
+<a name="N10012"></a><a name="Persistencia+transitiva"></a>
+<h2 class="underlined_10">Persistencia transitiva</h2>
+<div class="section">
+<p>Las aplicaciones reales no triviales no trabajan con objetos individuales sino con grafos
+   de objetos, debido a las relaciones (asociaci&oacute;n, composici&oacute;n, herencia...) entre las clases 
+   correspondientes. Si trabajamos con un grafo de objetos, resulta un trabajo arduo y tedioso el 
+   realizar las operaciones para cambiar el estado de los objetos de forma manual. La <strong>persistencia transitiva</strong> 
+   es una t&eacute;cnica que nos permite propagar la persistencia a subgrafos <em>transient</em> o <em>detached</em> de forma 
+   autom&aacute;tica.
+</p>
+<p>Hay varios modelos de persistencia transitiva. Hibernate utiliza el suyo propio. Por ejemplo, en una relaci&oacute;n padre-hijo 
+  (hablaremos de esta relaci&oacute;n m&aacute;s adelante) 
+   en la que el hijo es un objeto de tipo <em>value</em>, el ciclo de vida del hijo depende
+   &uacute;nicamente del padre. Es decir, cuando se realiza una operaci&oacute;n <em>save</em> sobre el padre, el hijo tambi&eacute;n la sufre, si el padre
+   es borrado, el hijo tambi&eacute;n, etc.</p>
+<p>Con respecto a las asociaciones, Hibernate puede analizar las asociaciones entre los objetos para
+   determinar su estado, de forma que una instancia se convierte en persistente cuando la aplicaci&oacute;n crea una referencia a 
+   dicha instancia desde otra que ya es persistente. Para ello, Hibernate proporciona un <em>estilo de cascada</em> 
+   (<em>cascade-style)</em>
+   para cada mapeado de una asociaci&oacute;n, de forma que "lee" el estilo declarado y propaga las operaciones a los objetos asociados
+   de forma autom&aacute;tica.</p>
+<p>Por defecto, Hibernate <strong>no</strong> navega a trav&eacute;s de la asociaci&oacute;n cuando realiza una b&uacute;squeda de objetos
+   <em>transient</em> o <em>detached</em>, por lo que realizar una operaci&oacute;n <em>save</em>, <em>delete</em> o <em>update</em>, no 
+   afectar&aacute; a las instancias asociadas. Si, para una asociaci&oacute;n particular, deseamos activar la persistencia transitiva (de forma que una instancia se convierte en persistente cuando la aplicaci&oacute;n crea una referencia a 
+   dicha instancia desde otra que ya es persistente), deberemos indicarlo con el atributo <span class="codefrag">cascade</span>, cuando especificamos
+   la asociaci&oacute;n. </p>
+<div class="frame note">
+<div class="label">Recuerda</div>
+<div class="content">
+   Si queremos que ciertas operaciones sean propagadas a los objetos asociados, deberemos asignar al atributo
+   <span class="codefrag">cascade</span> un valor distinto de <span class="codefrag">none</span>. 
+ </div>
+</div>
+<p>Para cada operaci&oacute;n b&aacute;sica en una sesi&oacute;n de Hibernate, como por ejemplo <span class="codefrag">persist()</span>, <span class="codefrag">delete()</span>,
+   <span class="codefrag">lock()</span>, <span class="codefrag">refresh()</span> y <span class="codefrag">evict()</span>, se proporciona el correspondiente valor para el
+   atributo <span class="codefrag">cascade</span>: <span class="codefrag">persist</span>, <span class="codefrag">delete</span>, <span class="codefrag">lock</span>, <span class="codefrag">refresh</span>, 
+   y <span class="codefrag">evict</span>, respectivamente. Si queremos que una operaci&oacute;n se propague a trav&eacute;s de la asociaci&oacute;n, debemos indicarlo
+   en el documento de mapeado, por ejemplo:</p>
+<pre class="code"> 
+&lt;one-to-one name="person" cascade="persist"/&gt;
+
+</pre>
+<p>Se pueden combinar varios estilos:</p>
+<pre class="code"> 
+&lt;one-to-one name="person" cascade="persist,delete,lock"/&gt;
+
+</pre>
+<p>Incluso podemos especificar <span class="codefrag">cascade=all</span> para especificar que <em>todas</em> las operaciones deber&iacute;an 
+   propagarse a trav&eacute;s de la asociaci&oacute;n. Por defecto <span class="codefrag">cascade=none</span> especifica que no se debe propagar ninguna
+   operaci&oacute;n</p>
+<p>Se utiliza un estilo especial de <em>cascada</em>, <span class="codefrag">delete-orphan</span>, que se aplica solamente en las asociaciones
+   <em>uno-a-muchos</em>, que indica que la operaci&oacute;n <span class="codefrag">delete()</span> deber&iacute;a aplicarse a cualquier objeto hijo que es 
+   eliminado de la asociaci&oacute;n.</p>
+<p>Si la "vida" del objeto hijo depende totalmente de la "vida" del padre lo especificaremos mediante 
+   <span class="codefrag">cascade="all,delete-orphan"</span>.</p>
+<p>Si mapeamos una asociaci&oacute;n (bien a un &uacute;nico elemento o a una colecci&oacute;n de elementos) con <span class="codefrag">cascade="all"</span>, 
+   estaremos "marcando" la asociaci&oacute;n como un estilo de relaci&oacute;n padre/hijo, en la que las operaciones <span class="codefrag">save/update/delete</span>
+   del padre provocar&aacute;n operaciones <span class="codefrag">save/update/delete</span> en el hijo o hijos. </p>
+</div>
+
+
+
+<a name="N100B5"></a><a name="Composici%C3%B3n"></a>
+<h2 class="underlined_10">Composici&oacute;n</h2>
+<div class="section">
+<p>Vamos a tomar como ejemplo el siguiente modelo de objetos, formado por las 
+  clases <em>Usuario</em> y <em>Direccion</em>, tal y como se muestra en la Figura 
+  3.1</p>
+<p>
+	
+<img alt="Figura 3.1 Relaci&oacute;n de composici&oacute;n entre Usuario y Direccion." content-width="8cm" src="imagenes/Fig3-1.gif" width="326"> 
+</p>
+<p>En t&eacute;rminos de modelado de objetos, la asociaci&oacute;n entre <em>Usuario</em> 
+  y <em>Direcci&oacute;n</em> es una clase de agregaci&oacute;n (una relaci&oacute;n 
+  "parte de"). La agregaci&oacute;n es una forma fuerte de asociaci&oacute;n: 
+  tiene una sem&aacute;ntica adicional referente al ciclo de vida de los objetos. 
+  En nuestro caso, lo que tenemos es una forma todav&iacute;a m&aacute;s fuerte 
+  de asociaci&oacute;n: se trata de una <strong>composici&oacute;n</strong>, en la que el 
+  ciclo de vida de la "parte" depende del ciclo de vida del "todo".</p>
+<p>Los expertos en modelado de objetos y dise&ntilde;adores UML arg&uuml;ir&aacute;n 
+  que no hay diferencia entre la composici&oacute;n y otros tipos m&aacute;s d&eacute;biles 
+  de asociaci&oacute;n cuando se trata de una implementaci&oacute;n en Java. Pero 
+  en el contexto de una ORM, hay una gran diferencia: una clase componente es 
+  a menudo un candidato a un tipo <em>value</em>.</p>
+<p>Vamos a establecer la correspondencia entre <strong><em>Direccion</em></strong>, consider&aacute;ndolo 
+  como un tipo <strong><em>value</em></strong>, y <strong><em>Usuario</em></strong>, que ser&aacute; un tipo 
+  <strong><em>entity</em></strong>. &iquest;Afecta &eacute;sto 
+  de alguna forma a la implementaci&oacute;n de nuestras clases POJO?</p>
+<p>Java en s&iacute; mismo, no tiene el concepto de composici&oacute;n: una clase 
+  o atributo no puede ser marcado de ninguna forma como componente o compositor. 
+  La &uacute;nica diferencia es la identificaci&oacute;n del objeto: un componente 
+  no tiene identidad, por lo que la clase componente persistente no requiere 
+  ninguna propiedad que la identifique. La composici&oacute;n existente entre 
+  <em>Usuario</em> y <em>Direccion</em> es una noci&oacute;n a nivel de meta-datos; 
+  solamente tenemos que decirle a Hibernate que <em>Direccion</em> es de tipo 
+  <em>value</em> en el documento de correspondencia (usaremos los t&eacute;rminos 
+  correspondencia y mapeado indistintamente).</p>
+<p>Hibernate utiliza el t&eacute;rmino <strong><em>componente</em></strong> para una clase definida 
+  por el usuario que se quiere hacer persistente en la misma tabla que la entidad 
+  propietaria, tal y como se muestra a continuaci&oacute;n. (El uso aqu&iacute; 
+  del t&eacute;rmino componente no tiene nada que ver con el concepto de <em>componente 
+  software</em>).</p>
+<pre class="code"> 
+&lt;class
+   name="Usuario"
+   table="USUARIO"&gt;
+   
+   &lt;id
+      name="id"
+	  column="USER_ID"
+	  type="long"&gt;
+	  &lt;generator class="native"/&gt;
+   &lt;/id&gt;
+   
+   &lt;property
+      name="nombre"
+	  column="USERNAME"
+	  type="string"/&gt;
+	  
+   &lt;component
+      name="direccionPersonal"
+	  class="Direccion"&gt;
+	  
+	  &lt;property name="calle"
+	            type="string"
+	            column="CALLE_PERS"
+	            not-null="true"/&gt;
+	  &lt;property name="ciudad"
+	            type="string"
+	            column="CIUDAD_PERS"
+	            not-null="true"/&gt;
+	  &lt;property name="codPostal"
+	            type="short"
+	            column="COD_PERS"
+	            not-null="true"/&gt;
+   &lt;/component&gt;	  	  
+  
+   &lt;component
+      name="direccionFacturas"
+	  class="Direccion"&gt;
+	  
+	  &lt;property name="calle"
+	            type="string"
+	            column="CALLE_FACTURA"
+	            not-null="true"/&gt;
+	  &lt;property name="ciudad"
+	            type="string"
+	            column="CIUDAD_FACTURA"
+	            not-null="true"/&gt;
+	  &lt;property name="codPostal"
+	            type="short"
+	            column="COD_FACTURA"
+	            not-null="true"/&gt;
+   &lt;/component&gt; 
+   ...        
+&lt;/class&gt;
+
+</pre>
+<p>Hemos declarado los atributos persistentes de <em>Direccion</em> dentro 
+  del elemento <span class="codefrag">&lt;component&gt;</span>. La etiqueta <span class="codefrag">&lt;component&gt;</span>
+  mapea las propiedades de un objeto hijo a columnas de la tabla de una clase padre. El atributo <span class="codefrag">name</span>
+  indica el nombre de la propiedad que representa al objeto hijo. El atributo <span class="codefrag">class</span> es opcional, y representa
+  el nombre de la clase componente; por defecto toma el valor del tipo del nombre de la propiedad, mediante <em>reflection</em>.
+  La etiqueta <span class="codefrag">&lt;property&gt;</span>, como ya hemos visto anteriormente, declara una propiedad persistente
+  de la clase.
+</p>
+<p>La clase Java <em>Usuario</em> tiene declarado un atributo 
+  de tipo <em>Direccion</em> que se denomina <em>direccionPersonal</em>, para expresar la relaci&oacute;n de
+  composici&oacute;n entre <em>Usuario</em> y <em>Direccion</em>. En este caso, <em>Usuario</em> es la clase padre, y <em>Direcci&oacute;n</em>
+  la clase hija que mapeamos como un <em>componente</em>, con las propiedades <span class="codefrag">calle</span>, <span class="codefrag">ciudad</span> y
+  <span class="codefrag">codPostal</span>.</p>
+<p>Para especificar el mapeado de <em>direccionFacturas</em>, que es la otra propiedad del tipo <em>Direccion</em>, 
+  reutilizamos la misma clase del componente anterior (<em>Direccion</em>) para mapear dicha propiedad en la tabla <span class="codefrag">USUARIO</span>.
+</p>
+<p>Como resultado, en la Figura 3.2 se muestra c&oacute;mo los atributos de la 
+  clase <em>Direccion</em> se han convertido en persistentes en la misma tabla 
+  que la <em>entity</em> <em>Usuario.</em>
+</p>
+<p>
+	
+<img alt="Figura 3.2 Atributos de la tabla Usuario con componentes Direccion." content-width="7cm" src="imagenes/Fig3-2.gif" width="255"> 
+</p>
+<p>Notar que en este ejemplo hemos modelado la composici&oacute;n 
+  como <strong>unidireccional</strong>. No podemos navegar desde <em>Direccion</em> 
+  a <em>Usuario</em>. Hibernate soporta composiciones tanto unidireccionales como 
+  bidireccionales. Solamente hemos mostrado el primer caso por ser el m&aacute;s 
+  com&uacute;n.</p>
+<p>Cuando se establece una correspondencia entre clases utilizando 
+  componentes, como en el caso anterior con la clase <em>Direccion</em>, la principal 
+  limitaci&oacute;n de las clases componente es que no son posibles las referencias 
+  compartidas. Es decir, no tienen su propia entidad de base de datos (clave primaria), 
+  por lo que una direcci&oacute;n particular no podr&aacute; ser referenciada 
+  por ning&uacute;n otro objeto excepto por uno que sea una instancia de <em>Usuario</em>.</p>
+</div>
+
+
+<a name="N10184"></a><a name="Herencia"></a>
+<h2 class="underlined_10">Herencia</h2>
+<div class="section">
+<p>La herencia es la car&aacute;cter&iacute;sitca m&aacute;s evidente de las diferencias 
+  estructurales entre el mundo orientado a objetos y el mundo relacional. Los 
+  sistemas orientados a objetos permiten modelar las relaciones "es un" 
+  (herencia) y "tiene un" (asociaci&oacute;n). Los modelos basados en 
+  SQL proporcionan &uacute;nicamente una relaci&oacute;n "tiene un" 
+  entre entidades.</p>
+<p>Hay tres aproximaciones diferentes para representar una jerarqu&iacute;a de 
+  herencia. Aunque solamente vamos a analizar una de ellas, consistente en representar 
+  una relaci&oacute;n "es un" como relaciones "tiene un" (mediante 
+  asociaci&oacute;n con claves ajenas).</p>
+<p>Seg&uacute;n esta aproximaci&oacute;n, cada subclase que declara propiedades 
+  persistentes (incluyendo clases abstractas, e incluso interfaces), tiene su 
+  propia tabla. Cada tabla contiene columnas solamente para cada propiedad no 
+  heredada (declarada en la propia subclase) junto con una clave primaria que 
+  tambi&eacute;n es clave ajena de la tabla que representa la super-clase.</p>
+<p>Consideremos el siguiente ejemplo, mostrado en la Figura 3.3, en el que <em>DetallesCuenta</em> 
+  representa una clase abstracta, con informaci&oacute;n sobre cuentas asociadas 
+  con usuarios. Cada usuario puede elegir estrategias de pago diferentes, representadas 
+  como subclases de <em>DetallesCuenta</em>.</p>
+<p>
+	
+<img alt="Figura 3.3 Ejemplo de jerarqu&iacute;a de herencia." content-width="7cm" src="imagenes/Fig3-3.gif" width="256"> 
+</p>
+<p>En este caso, si una instancia de la clase <em>Tarjeta</em> se convierte en 
+  persistente, los valores declarados en las propiedades de la superclase <em>DetallesCuenta</em> 
+  se convierten en persistentes como una nueva fila de la tabla <em>DetallesCuenta</em>. 
+  Solamente los valores de las propiedades declaradas por la subclase se vuelven 
+  persistentes como una nueva fila de la tabla <em>Tarjeta</em>. Las dos filas 
+  se enlazan por su valor de clave primaria compartida. Posteriormente, la instancia 
+  de la subclase puede recuperarse de la base de datos uniendo (mediante una operaci&oacute;n <em>join</em>)
+  la tabla de la subclase con la tabla de la super-clase (veremos c&oacute;mo realizar consultas en la
+  siguiente sesi&oacute;n).</p>
+<p>En la Figura 3.4 mostramos las tablas asociadas a la jerarqu&iacute;a de herencia 
+  del ejemplo.</p>
+<p>
+	
+<img alt="Figura 3.4 Tablas asociadas a una jerarqu&iacute;a de herencia." content-width="12cm" src="imagenes/Fig3-4.gif" width="454"> 
+</p>
+<p>La principal ventaja de esta estrategia es que el modelo relacional est&aacute; 
+  completamente normalizado. Para especificar el mapeado Hibernate utilizamos 
+  el elemento <span class="codefrag">&lt;joined-subclass&gt;</span>, tal y como se muestra en el 
+  siguiente c&oacute;digo XML. </p>
+<pre class="code"> 
+&lt;?xml version="1.0"?&gt;
+&lt;hibernate-mapping&gt;
+  &lt;class
+     name="DetallesCuenta"
+     table="DETALLES_CUENTA"&gt;
+   
+     &lt;id
+        name="id"
+	    column="DET_CUENTA_ID"
+	    type="long"&gt;
+	    &lt;generator class="native"/&gt;
+     &lt;/id&gt;
+     
+     &lt;property
+        name="propietario"  
+  	    column="PROPIETARIO"
+	    type="string"/&gt;
+     
+     &lt;joined-subclass
+        name="Tarjeta"
+        table="TARJETA_CREDITO"&gt;
+	&lt;key column="TARJ_CRED_ID"/&gt;
+	&lt;property 
+	      name="tipo"
+	      column="TIPO"/&gt;
+	    ...
+      &lt;/joined-subclass&gt; 
+     ...        
+  &lt;/class&gt;
+&lt;hibernate-mapping&gt;  
+
+		 
+</pre>
+<p>Explicamos el c&oacute;digo anterior:</p>
+<ul>
+  
+<li>La clase <span class="codefrag">DetallesCuenta</span> corresponde con la tabla <span class="codefrag">DETALLES_CUENTA</span>. </li>
+  
+<li>El nuevo elemento <span class="codefrag">&lt;joined-subclass&gt;</span> se utiliza para hacer 
+    corresponder una subclase con una nueva tabla (en el ejemplo: <span class="codefrag">TARJETA_CREDITO</span>).
+	Para la clase <em>CuentaBancaria</em> el mapeado se har&iacute;a de forma similar.</li>
+  
+<li>Se requiere una clave primaria para la tabla <span class="codefrag">TARJETA_CREDITO</span>; 
+    tambi&eacute;n tendr&aacute; una restricci&oacute;n de clave ajena correspondiente 
+    con la clave primaria de la tabla <span class="codefrag">DETALLES_CUENTA</span> . Una b&uacute;squeda 
+    de un objeto <span class="codefrag">TarjetaCredito</span> requerir&aacute; una operaci&oacute;n 
+    <em>join</em> de las dos tablas (<span class="codefrag">DETALLES_CUENTA</span> y <span class="codefrag">TARJETA_CREDITO</span>). </li>
+
+</ul>
+<p>Como podemos observar, volvemos a hacer uso de la etiqueta <span class="codefrag">&lt;key&gt;</span> que define la clave ajena en la 
+   tabla <span class="codefrag">TARJETA_CREDITO</span>, 
+   y hace referencia a la clave primaria de la tabla <span class="codefrag">DETALLES_CUENTA</span> (mediante el atributo <span class="codefrag">column</span>).
+</p>
+</div>
+
+
+<a name="N1020D"></a><a name="Asociaciones"></a>
+<h2 class="underlined_10">Asociaciones</h2>
+<div class="section">
+<p>El manejo de asociaciones entre clases y las relaciones correspondientes entre 
+  tablas constituye el eje central de ORM. La mayor&iacute;a de problemas dif&iacute;ciles 
+  involucrados en la implementaci&oacute;n de una soluci&oacute;n ORM est&aacute;n 
+  relacionadas con la gesti&oacute;n de las asociaciones.</p>
+<p>El modelo de asociaciones de Hibernate es extremadamente rico, aunque en esta sesi&oacute;n solamente
+   mostraremos el mapeado de aquellas asociaciones m&aacute;s habituales. En el manual de referencia de
+   Hibernate pod&eacute;is consultar todas las opciones de mapeado posibles. </p>
+<p>Las asociaciones en Hibernate son inherentemente <strong>unidireccionales</strong> (puesto que 
+  las asociaciones, a nivel de lenguaje Java, son tambi&eacute;n unidireccionales). 
+  Es importante destacar que <strong>Hibernate no gestiona asociaciones persistentes</strong>. 
+  Esta decisi&oacute;n se tom&oacute; debido a que los objetos Hibernate, a diferencia 
+  de los <em>entity beans</em>, no se asume que est&eacute;n siempre bajo el control 
+  de un contenedor (que realizar&iacute;a la gesti&oacute;n de dichas asociaciones). 
+  En una aplicaci&oacute;n Hibernate, el comportamiento de una instancia no persistente 
+  es el mismo que el de una instancia persistente. Por lo tanto, a la hora de 
+  implementar las asociaciones de los POJOs, si queremos manipular una asociaci&oacute;n, 
+  debemos escribir exactamente el mismo c&oacute;digo que escr&iacute;bir&iacute;amos 
+  sin Hibernate. Si una asociaci&oacute;n es bidireccional, se deben considerar 
+  ambos extremos de la relaci&oacute;n. </p>
+<p>Por ejemplo, supongamos el diagrama de la figura 3.5 con la clase <em>Categoria</em>. 
+  Una Categoria puede anidarse dentro de otra <em>Categoria</em>, lo que se puede 
+  expresar como una asociaci&oacute;n recursiva de <em>Categoria</em> hacia s&iacute; 
+  misma. Cada <em>Categoria</em> puede tener muchas categor&iacute;as hijas, pero 
+  solamente una <em>Categor&iacute;a</em> padre. Es por lo tanto, una relaci&oacute;n de <strong>uno-a-muchos</strong>.</p>
+<p>
+	
+<img alt="Figura 3.5 Diagrama de clases: Categoria y Elemento." content-width="9cm" src="imagenes/Fig3-5.gif" width="361"> 
+</p>
+<p>La plantilla para implementar el c&oacute;digo para la asociaci&oacute;n recursiva 
+  anterior es &eacute;sta:</p>
+<pre class="code">
+public class Categoria implements Serializable {
+  private String nombre;
+  private Categoria padreCategoria;
+  private Set hijosCategoria = new HashSet();
+  public Categoria() {}
+}</pre>
+<p>Para permitir una navegaci&oacute;n <strong>bidireccional</strong> de la asociaci&oacute;n, 
+  se requieren dos atributos. El atributo <span class="codefrag">padreCategoria</span> implementa 
+  el extremo con un valor de la asociaci&oacute;n y se declara de tipo <span class="codefrag">Categoria</span>. 
+  El extremo de la asociaci&oacute;n con valores m&uacute;ltiples se implementa 
+  con el atributo <span class="codefrag">hijosCategoria</span>, que debe ser una colecci&oacute;n 
+  de valores. Elegimos el tipo <span class="codefrag">Set</span>, ya que no permite duplicados, 
+  e inicializamos la variable de instancia con una nueva instancia de <span class="codefrag">HashSet</span>.
+  Hibernate requiere el uso de interfaces para atributos de tipo <em>colecci&oacute;n</em>. 
+  As&iacute; por ejemplo, debemos utilizar <span class="codefrag">java.util.Set</span> en lugar del tipo <span class="codefrag">HashSet</span>. </p>
+<p>Necesitaremos a&ntilde;adir m&eacute;todos para asignar/consultar categor&iacute;as 
+  padre (<span class="codefrag">setPadreCategoria</span>/<span class="codefrag">getPadreCategoria</span>) y categorias 
+  hijo (<span class="codefrag">setHijosCategoria</span>/<span class="codefrag">getHijosCategoria</span>). </p>
+<p>El procedimiento b&aacute;sico para a&ntilde;adir una <span class="codefrag">Categoria</span> hija a una <span class="codefrag">Categoria</span> padre
+   se asemejar&iacute;a a:</p>
+<pre class="code">
+   Categoria padre = new Categoria();
+   Categoria hija = new Categoria();
+   hija.setPadreCategoria(padre);
+   padre.setHijosCategoria().add(hija);
+</pre>
+<p>Es decir, siempre que creemos una asociaci&oacute;n entre una <em>Categoria</em> padre 
+  y una <em>Categoria</em> hija se requerir&aacute;n dos acciones:</p>
+<ul>
+  
+<li>Debemos asignar la nueva categor&iacute;a (eliminando la anterior, ya que 
+    una categor&iacute;a solamente puede tener una categor&iacute;a padre),</li>
+  
+<li>La categor&iacute;a hija debe a&ntilde;adirse a la colecci&oacute;n de categor&iacute;as 
+    hijo del padre.</li>
+
+</ul>
+<p>Ya que esto es as&iacute;, es una buena idea a&ntilde;adir un m&eacute;todo a la clase <em>Categoria</em> que agrupe estas
+   operaciones, permitiendo la reutilizaci&oacute;n y adem&aacute;s ayudaremos a asegurar la correcci&oacute;n de las 
+   operaciones sobre las asociaciones:</p>
+<pre class="code">
+public void addCategoriaHija (Categoria hija) {
+   if (hija == null)
+      throw new IllegalArgumentException("&iexcl;Categor&iacute;a hija nula!");
+   if (hija.getPadreCategoria() != null)
+      hija.getPadreCategoria().getHijosCategoria().remove(hija);
+   hija.setPadreCategoria(this);
+   hijosCategoria.add(hija);
+}
+</pre>
+<p>El m&eacute;todo <span class="codefrag">addCategoriaHija</span> no solamente reduce las l&iacute;neas de c&oacute;digo cuando se
+   trabaja con objetos Categoria, sino que refuerza la cardinalidad de la asociaci&oacute;n. Se evitan, 
+   por lo tanto, Los errores derivados de obviar alguna de las dos acciones requeridas. Este
+   tipo de <em>agrupaci&oacute;n de operaciones</em> deber&iacute;a proporcionarse siempre que sea posible.</p>
+<p>Podr&iacute;amos tambi&eacute;n querer que el m&eacute;todo <span class="codefrag">addCategoriaHija</span> estuviese visible de forma
+   externa solamente para categor&iacute;as hija, por lo que podr&iacute;amos convertir dicho m&eacute;todo en privado.
+   Hibernate no tiene en cuenta si los m&eacute;todos de las clases son privados o p&uacute;blicos.</p>
+<div class="frame note">
+<div class="label">Recuerda</div>
+<div class="content">Hibernate <strong>no</strong> gestiona asociaciones persistentes. Si queremos manipular una 
+    asociaci&oacute;n, deberemos escribir exactamente el mismo c&oacute;digo que escribir&iacute;amos sin utilizar Hibernate. Si una
+	asociaci&oacute;n es bidireccional, deberemos considerar ambos extremos de la relaci&oacute;n.
+</div>
+</div>
+<p>Consideremos ahora que la clase <em>Categoria</em> tiene, a su vez, una relaci&oacute;n de <strong><em>muchos-a-muchos</em></strong> 
+   con la clase <em>Elemento</em>, tal y como se muestra en la figura 3.5., que es bidireccional. </p>
+<p>En el caso de una asociaci&oacute;n <strong><em>muchos-a-muchos</em></strong>, ambos extremos se implementan con
+   atributos de tipo <em>colecci&oacute;n</em>. Por lo tanto, a&ntilde;adiremos nuevos atributos y m&eacute;todos para acceder a la
+   clase <em>Elemento</em> desde la clase <em>Categoria</em>, tal y como se muestra en el siguiente c&oacute;digo:
+   </p>
+<pre class="code">
+public class Categoria {
+  ...
+  private Set elementos = new HashSet();
+  ...
+  public Set getElementos() {
+    return elementos;
+  }
+  public void setElementos(Set elementos) {
+    this.elementos = elementos;
+  }
+}
+</pre>
+<p>El c&oacute;digo para la clase <em>Elemento</em> es similar al c&oacute;digo para la clase <em>Categoria</em>. A&ntilde;adimos el atributo
+   con la colecci&oacute;n de categor&iacute;as, los m&eacute;todos de acceso est&aacute;ndares, y un m&eacute;todo que simplifique la gesti&oacute;n de la
+   asociaci&oacute;n:</p>
+<pre class="code">
+public class Elemento {
+  private String nombre;
+  private String descripcion;
+  ...
+  private Set categorias = new HashSet();
+  ...
+  public Set getCategorias() {
+    return cagetorias;
+  } ...
+  private void setCategorias (Set categorias) {
+    this.categorias = categorias;
+  }
+
+  public void addCategoria (Categoria categoria) {
+   if (categoria == null)
+      throw new IllegalArgumentException("&iexcl;Categor&iacute;a nula!");
+   categoria.getElementos().add(this);
+   categorias.add(categoria);
+  }
+}
+</pre>
+<p>El m&eacute;todo <span class="codefrag">addCategoria()</span> es similar al m&eacute;todo <span class="codefrag">addCategoriaHija</span> de la clase 
+   <em>Categoria</em>. Es utilizado por un cliente para manipular la relaci&oacute;n entre <em>Elemento</em> y 
+   <em>Categoria</em>. El a&ntilde;adir m&eacute;todos similares a &eacute;ste para la gesti&oacute;n de las asociaciones no es la 
+   &uacute;nica forma de mejorar el modelo de implementaci&oacute;n del dominio. Tambi&eacute;n podemos a&ntilde;adir l&oacute;gica a los
+   m&eacute;todos de acceso</p>
+<a name="N102F6"></a><a name="Asociaci%C3%B3n+MANY-TO-ONE"></a>
+<h3 class="underlined_5">Asociaci&oacute;n MANY-TO-ONE</h3>
+<p>A continuaci&oacute;n vamos a ver c&oacute;mo establecemos la correspondencia 
+  OR para la asociaci&oacute;n <em>muchos-a-uno</em> (<em>many-to-one</em>), por 
+  ser de las m&aacute;s frecuentes.</p>
+<p>
+<strong>Asociaci&oacute;n <em>MANY-TO-ONE</em> UNIDIRECCIONAL</strong>
+</p>
+<p>Consideremos primero el caso unidireccional. Por ejemplo la asociaci&oacute;n de la 
+   Figura 3.6 desde <em>Puja</em> a <em>Articulo</em> 
+  (estas clases suponemos que se encuentran en un sistema dedicado a subastas 
+  de diferentes art&iacute;culos, en el que los clientes pujan por conseguir dichos 
+  art&iacute;culos), es un ejemplo de la asociaci&oacute;n m&aacute;s sencilla 
+  en ORM. </p>
+<p>
+  
+<img alt="Figura 3.6 Relaciones entre Puja y Articulo." src="imagenes/Fig3-6.gif"> 
+</p>
+<p>Se trata de una asociaci&oacute;n <em>muchos-a-uno</em> (<em>many-to-one</em>) 
+  desde Puja a Articulo. Recordemos que las asociaciones son direccionales, tambi&eacute;n 
+  podr&iacute;amos llamar a la asociaci&oacute;n inversa desde Articulo a Puja 
+  como una asociaci&oacute;n <em>uno-a-muchos</em> (<em>one-to-many</em>). En 
+  el contexto de la persistencia de objetos, no estamos interesados en si "<em>muchos</em>" 
+  significa realmente "<em>dos</em>" o "<em>un m&aacute;ximo de 
+  cinco</em>" o "<em>sin l&iacute;mite</em>".</p>
+<p>La implementaci&oacute;n de los objetos Java para este diagrama es:</p>
+<pre class="code">
+public class Puja {
+   ...
+   private Articulo articulo;
+   public void setArticulo(Articulo articulo) {
+       this.articulo = articulo;
+   }
+   public Articulo getArticulo() {
+       return articulo;
+   }
+   ...
+} 
+
+public class Articulo {
+   private Long id;
+   ...   
+   	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
+    ...
+}     
+</pre>
+<p>Y el mapeado Hibernate para esta asociaci&oacute;n es:</p>
+<pre class="code"> 
+&lt;class name="Puja" table="PUJA"&gt;
+   &lt;id name="id" column="PUJA_ID"&gt;
+      &lt;generator class="native"&gt;
+   &lt;/id&gt;
+   ...
+   &lt;many-to-one
+      name="articulo"
+      column="ARTICULO_ID"
+      class="Articulo"
+      not-null="true"/&gt;
+&lt;/class&gt;
+
+&lt;class name="Articulo" table="ARTICULO"&gt;
+   &lt;id name="id" column="ARTICULO_ID"&gt;
+      &lt;generator class="native"/&gt;
+   &lt;/id&gt;
+   ...
+&lt;/class&gt;
+
+</pre>
+<p>Utilizamos la etiqueta <strong><span class="codefrag">&lt;many-to-one&gt;</span></strong> con los siguientes atributos:</p>
+<ul>
+  
+<li>
+<strong><span class="codefrag">name</span></strong>: nombre de la propiedad.</li>
+  
+<li>
+<strong><span class="codefrag">column</span></strong>: nombre de la clave ajena.</li>
+  
+<li>
+<strong><span class="codefrag">class</span></strong>: nombre de la clase asociada (por defecto tiene el valor del tipo de la propiedad, determinado
+      mediante <em>reflection</em>.</li>
+  
+<li>
+<strong><span class="codefrag">not-null</span></strong>: permite la generaci&oacute;n de la restricci&oacute;n de no nulo para las columnas de clave ajena.</li>
+
+</ul>
+<p>Hemos especificado el atributo <span class="codefrag">not-null</span> porque no queremos tener una puja sin ning&uacute;n art&iacute;culo asociado.</p>
+<p>Otros atributos opcionales para la etiqueta <span class="codefrag">&lt;many-to-one&gt;</span> son los siguientes: </p>
+<ul>
+  
+<li>
+<span class="codefrag">cascade</span>: especifica qu&eacute; operaciones tienen que propagarse desde el objeto padre al objeto asociado.</li>
+  
+<li>
+<span class="codefrag">unique</span>: permite la generaci&oacute;n de la restricci&oacute;n de unicidad sobre la clave ajena (esto har&iacute;a que la
+      multiplicidad efectiva de la asociaci&oacute;n fuese <em>one-to-one)</em>.</li>
+
+</ul>
+<p>Pod&eacute;is consultar en el Manual de Referencia de Hibernate todas las opciones posibles para la etiqueta 
+   <span class="codefrag">&lt;many-to-one&gt;</span> en el apartado 5.1.10.</p>
+<p>Las sentencias SQL asociadas con el mapeado <em>many-to-one</em> unidireccional anterior ser&iacute;an:</p>
+<pre class="code">
+create table Puja (PUJA_ID bigint not null primary key, ARTICULO_ID bigint not null ...)
+create table Articulo (ARTICULO_ID bigint not null primary key ...)
+</pre>
+<p>Este mapeado se denomina asociaci&oacute;n <strong>unidireccional</strong> <em>many-to-one</em>. 
+  La columna <span class="codefrag">ARTICULO_ID</span> en la tabla <span class="codefrag">PUJA</span> es una clave 
+  ajena correspondiente con la clave primaria de la tabla <span class="codefrag">ARTICULO</span>.</p>
+<p>
+<strong>Asociaci&oacute;n <em>MANY-TO-ONE</em>(<em>ONE-TO-MANY</em>) BIDIRECCIONAL</strong>
+</p>
+<p>Si necesitamos obtener todas las pujas para un art&iacute;culo particular, 
+	necesitamos hacer que la asociaci&oacute;n sea <strong>bidireccional</strong> (en cuyo 
+  caso podr&iacute;amos haberla llamado tambi&eacute;n asociaci&oacute;n <em>bidireccional 
+  one-to-many</em>) , por lo que sustituir&iacute;amos la clase <em>Articulo</em> del caso unidireccional
+  por la siguiente:</p>
+<pre class="code">public class Articulo {
+   ...
+   private Set pujas = new HashSet();
+   public void setPujas(Set pujas) {
+       this.pujas = pujas;
+   }
+   public Set getPujas() {
+       return pujas;
+   }
+   public void addPuja(Puja puja) {
+      puja.setArticulo(this);
+	  pujas.add(puja);
+   }
+   ...
+}      
+</pre>
+<p>El c&oacute;digo de <span class="codefrag">addPuja</span> ser&iacute;a como implementar una asociaci&oacute;n gestionada 
+  en el modelo de objetos.</p>
+<p>Un mapeado para esta asociaci&oacute;n bidireccional ser&iacute;a 
+  la siguiente:</p>
+<pre class="code"> 
+&lt;class name="Puja" table="PUJA"&gt;
+  &lt;id name="id" column="PUJA_ID"&gt;
+    &lt;generator class="native"&gt;
+  &lt;/id&gt;
+  ...
+  &lt;many-to-one
+      name="articulo"
+      column="ARTICULO_ID"
+      class="Articulo"
+      not-null="true"/&gt;
+&lt;/class&gt;
+
+&lt;class
+   name="Articulo"
+   table="ARTICULO"&gt;
+   ...
+   &lt;set name="pujas"
+        inverse="true"
+		cascade="all-delete-orphan"&gt;
+	  &lt;key column="ARTICULO_ID"/&gt;
+	 &lt;one-to-many class="Puja"/&gt;
+   &lt;set/&gt;
+&lt;/class&gt;
+
+</pre>
+<p>La etiqueta <span class="codefrag">&lt;one-to-many&gt;</span> indica que se trata de una asociaci&oacute;n  uno a muchos. El atributo 
+   <span class="codefrag">class</span> especifica el nombre de la clase asociada. Fijaos que no necesitamos declarar ning&uacute;n atributo
+   <span class="codefrag">column</span>, ni tampoco el nombre de la tabla mediante el atributo <span class="codefrag">table</span>
+</p>
+<p>La etiqueta <span class="codefrag">&lt;key&gt;</span> define la clave ajena en la tabla asociada <span class="codefrag">PUJA</span>. La estructura 
+  de la tabla para esta asociaci&oacute;n se muestra en la Figura 3.7.</p>
+<p>
+	
+<img alt="Figura 3.7 Modelo de datos de una asociaci&oacute;n one-to-many/many-to-one." content-width="12cm" src="imagenes/Fig3-7.gif" width="466"> 
+</p>
+<p>Para la etiqueta <span class="codefrag">&lt;set&gt;</span> utilizamos el atributo <strong><span class="codefrag">inverse</span></strong>,
+  de esta forma 
+  estamos indicando a Hibernate de forma expl&iacute;cita qu&eacute; extremo de 
+  la asociaci&oacute;n se deber&iacute;a sincronizar con la base de datos. En 
+  este ejemplo, le estamos diciendo a Hibernate que deber&iacute;a propagar los 
+  cambios realizados en el extremo <span class="codefrag">Puja</span> de la asociaci&oacute;n a 
+  la base de datos, ignorando los cambios realizados solamente en la colecci&oacute;n 
+  de <span class="codefrag">pujas</span> de la clase <em>Articulo</em> (propiedad <span class="codefrag">pujas</span>). 
+  As&iacute;, si solamente realizamos una llamada a <span class="codefrag">articulo.getPujas().add(puja)</span>, 
+  los cambios no se convertir&aacute;n en persistentes. Esto es consistente con 
+  el comportamiento de Java sin utilizar Hibernate: si una asociaci&oacute;n es 
+  bidireccional, tenemos que crear el enlace en los dos extremos de la asociaci&oacute;n, 
+  no solamente en uno.</p>
+<p>Ejemplo:</p>
+<pre class="code">
+  articulo.getPujas().add(puja);   //El art&iacute;culo ahora "conoce" la relaci&oacute;n entre Articulo y Puja
+  puja.setArticulo(articulo);      //La puja ahora "conoce" la relaci&oacute;n entre Articulo y Puja
+  
+  session.persist(articulo);           //La relaci&oacute;n entre Articulo y Puja no se guarda en la BD
+  session.persist(puja);       //La relaci&oacute;n entre Articulo y Puja se guarda en la BD
+  </pre>
+<div class="frame note">
+<div class="label">Cuidado</div>
+<div class="content">Los cambios realizados solamente en el extremo de la asociaci&oacute;n marcado como <span class="codefrag">inverse</span> 
+	    <strong>no</strong> se convierten en persistentes.</div>
+</div>
+<div class="frame note">
+<div class="label">Recuerda</div>
+<div class="content">Todas las asociaciones bidireccionales necesitan que uno de sus extremos sea marcado como
+	    <strong><span class="codefrag">inverse</span></strong>. En una asociaci&oacute;n <strong><em>one-to-many/many-to-one</em></strong> dicho extremo
+		es el de la parte <strong><em>many</em></strong>. En una asociaci&oacute;n <strong><em>many-to-many</em></strong> podemos elegir
+		cualquiera de los dos extremos.</div>
+</div>
+<p>Tambi&eacute;n para la etiqueta <span class="codefrag">&lt;set&gt;</span>, utilizamos el atributo 
+  <strong><span class="codefrag">cascade</span></strong>,que indica a Hibernate lo 
+  que hemos denominado <em>persistencia transitiva</em>, y especifica qu&eacute; operaciones 
+  deber&iacute;an propagarse desde el objeto padre hasta el objeto asociado. En 
+  este caso, estamos indicando a Hibernate que convierta en persistente una nueva 
+  instancia de <em>Puja</em> (es decir, la almacena en la BD) si est&aacute; referenciada 
+  por un <em>Articulo</em> persistente. El atributo <span class="codefrag">cascade</span> es direccional: se aplica 
+  solamente en un extremo de la asociaci&oacute;n. </p>
+<p>Si especificamos la operaci&oacute;n <span class="codefrag">delete</span> para el atributo <span class="codefrag">cascade</span>, 
+  estamos estableciendo una <strong><em>relaci&oacute;n padre/hijo</em></strong>. En una 
+  relaci&oacute;n <em>padre/hijo</em>, la entidad padre es responsable del ciclo 
+  de vida de sus entidades hijo asociadas. La sem&aacute;ntica es la misma que 
+  la de la composici&oacute;n (mediante el uso de componentes Hibernate), pero 
+  en este caso, solamente se ven implicadas entidades (<span class="codefrag">Puja</span> no es 
+  de tipo <em>value</em>). La ventaja de utilizar una relaci&oacute;n <em>padre-hijo</em> 
+  es que el hijo puede ser recuperado de forma individual o referenciado directamente 
+  por otra entidad (los objetos de tipo <em>value</em> no pueden compartirse). 
+</p>
+<p>Concretamente, el atributo <span class="codefrag">cascade="all-delete-orphan"</span> 
+  indica lo siguiente:</p>
+<ul>
+  
+<li>Cualquier nuevo elemento instanciado <span class="codefrag">Puja</span> se convierte en persistente 
+    si dicha <span class="codefrag">Puja</span> es referenciada por un <span class="codefrag">Articulo</span> persistente 
+    (ser&iacute;a equivalente a especificar solamente <span class="codefrag">cascade="save-update"</span>). 
+    Cualqueir <span class="codefrag">Puja</span> persistente deber&iacute;a borrarse si es referenciada 
+    por un <span class="codefrag">Articulo</span> cuando el art&iacute;culo es borrado.</li>
+  
+<li>Cualquier <span class="codefrag">Puja</span> persistente deber&iacute;a ser borrada si se 
+    elimina de la colecci&oacute;n de <span class="codefrag">pujas</span> de un <span class="codefrag">Articulo</span> 
+    persistente. (Hibernate asumir&aacute; que solamente estaba referenciado por 
+    este art&iacute;culo y lo considerar&aacute; hu&eacute;rfano).</li>
+
+</ul>
+<p>Con este mapeado hemos conseguido que una <span class="codefrag">Puja</span> sea eliminada 
+  de la base de datos si es eliminada de la colecci&oacute;n de pujas del <span class="codefrag">Articulo</span> 
+  (o es eliminada si el propio <span class="codefrag">Articulo</span> es eliminado).</p>
+<p>El atributo <span class="codefrag">cascade</span> para la etiqueta <span class="codefrag">&lt;set&gt;</span> es opcional,
+   su valor por defecto es <span class="codefrag">cascade="none"</span>.</p>
+<p>El procedimiento b&aacute;sico para a&ntilde;adir una puja a un art&iacute;culo se parecer&iacute;a a este c&oacute;digo:</p>
+<pre class="code">
+  Articulo unArtic = new Articulo();
+  Puja unaPuja = new Puja();
+  unaPuja.setArticulo (unArtic);
+  unArtic.getPujas().add(unaPuja);
+</pre>
+<p>Fijaos que es id&eacute;ntico al c&oacute;digo que hemos utilizado para </p>
+<p>Las sentencias SQL asociadas con el mapeado <em>many-to-one</em> bidireccional anterior ser&iacute;an:</p>
+<pre class="code">
+create table Puja (PUJA_ID bigint not null primary key, ARTICULO_ID bigint not null ...)
+create table Articulo (ARTICULO_ID bigint not null primary key ...)
+</pre>
+<p>Fijaos que son las mismas sentencias para el caso unidireccional, como para el bidireccional. Ello se 
+   debe a que la direccionalidad solamente tiene sentido en el modelo de objetos. En el modelo
+   de datos no cabe hablar de relaciones unidireccionales o bidireccionales.</p>
+<a name="N104B9"></a><a name="Asociaci%C3%B3n+ONE-TO-MANY"></a>
+<h3 class="underlined_5">Asociaci&oacute;n ONE-TO-MANY</h3>
+<p>En este caso, solamente especificaremos el caso unidireccional.</p>
+<p>Siguiendo con el ejemplo de las clases Puja y Art&iacute;culo, el c&oacute;digo 
+  Hibernate que expresa el mapeado <em>one-to-many</em> desde <em>Articulo</em> hasta <em>Puja</em>
+  es el siguiente:</p>
+<pre class="code"> 
+&lt;class name="Articulo" table="ARTICULO"&gt; 
+   &lt;id name="id" column="ARTICULO_ID"&gt; 
+      &lt;generator class="native"/&gt; 
+   &lt;/id&gt; 
+   ...
+   &lt;set name="pujas"&gt;
+       &lt;key column="ARTICULO_ID"
+	    not-null="true"/&gt;
+       &lt;one-to-many class="Puja"/&gt;
+   &lt;/set&gt;
+&lt;/class&gt;
+
+&lt;class name="Puja" table="PUJA"&gt; 
+    &lt;id name="id" column="PUJA_ID"&gt; 
+	    &lt;generator class="native"&gt; 
+    &lt;/id&gt; 
+&lt;/class&gt;
+
+</pre>
+<p>En una relaci&oacute;n <em>one-to-many</em> la columna de clave ajena (etiqueta <em>key</em>) por defecto
+   puede ser nula, por eso a&ntilde;adimos el atributo <span class="codefrag">not-null="true"</span> si queremos que dicha clave
+   ajena no sea nula.</p>
+<p>Este tipo de mapeado, utilizando una clave ajena, genera las siguientes sentencias SQL:</p>
+<pre class="code">
+create table Articulo (ARTICULO_ID bigint not null primary key, ...)
+create table Puja (PUJA_ID bigint not null primary key, ARTICULO_ID bigint not null, ...)
+</pre>
+<p>Otra forma de expresar esta relaci&oacute;n <em>one-to-many</em> unidireccional, mucho m&aacute;s utilizada que la
+   anterior es mediante el uso de una tabla intermedia (tambi&eacute;n denominada tabla <em>join</em>):</p>
+<pre class="code"> 
+&lt;class name="Articulo" table="ARTICULO"&gt; 
+   &lt;id name="id" column="ARTICULO_ID"&gt; 
+      &lt;generator class="native"/&gt; 
+   &lt;/id&gt; 
+   ...
+   &lt;set name="pujas" table="ArticuloPuja"&gt;
+       &lt;key column="ARTICULO_ID"/&gt;
+       &lt;many-to-many column="PUJA_ID"
+	           unique="true"
+			   class="Puja"/&gt;
+   &lt;/set&gt;
+&lt;/class&gt;
+
+&lt;class name="Puja" table="PUJA"&gt; 
+    &lt;id name="id" column="PUJA_ID"&gt; 
+	    &lt;generator class="native"&gt; 
+    &lt;/id&gt; 
+&lt;/class&gt;
+
+</pre>
+<p>La tabla intermedia a la que hacemos referencia la hemos llamado <span class="codefrag">ArticuloPuja</span> y contiene una clave ajena
+   (<span class="codefrag">ARTICULO_ID</span>) que hace referencia a la tabla <span class="codefrag">ARTICULO</span>. Tambi&eacute;n contiene otra clave ajena que
+   hemos denominado <span class="codefrag">PUJA_ID</span> (de la tabla <span class="codefrag">PUJA</span>), que en este caso se convierte en clave primaria
+   de la tabla <em>join</em> al establecer la restricci&oacute;n de unicidad (<span class="codefrag">unique=true</span>) sobre dicha clave.
+</p>
+<p>Para especificar la clave primaria en la tabla <em>join</em>, utilizamos la etiqueta <span class="codefrag">&lt;many-to-many&gt;</span> 
+    con los siguientes atributos:</p>
+<ul>
+   
+<li>
+<strong><span class="codefrag">column</span></strong>: nombre de la clave ajena.</li>
+   
+<li>
+<strong><span class="codefrag">unique</span></strong>: permite la generaci&oacute;n de la restricci&oacute;n de unicidad sobre la clave ajena. Esto
+        hace que la multiplicidad de la asociaci&oacute;n sea efectivamente <em>one-to-many</em>
+</li>
+   
+<li>
+<strong><span class="codefrag">class</span></strong>: nombre de la clase asociada.</li>
+
+</ul>
+<p>El mapeado anterior <em>one-to-many</em> unidireccional, utilizando una tabla intermedia, genera las siguientes sentencias SQL:</p>
+<pre class="code">
+create table Articulo (ARTICULO_ID bigint not null primary key, ...)
+create table ArticuloPuja (ARTICULO_ID bigint not null, PUJA_ID bigint not null primary key)
+create table Puja (PUJA_ID bigint not null primary key, ...)
+</pre>
+<a name="N10535"></a><a name="Asociaci%C3%B3n+ONE-TO-ONE"></a>
+<h3 class="underlined_5">Asociaci&oacute;n ONE-TO-ONE</h3>
+<p>
+<strong>Asociaci&oacute;n <em>ONE-TO-ONE</em> UNIDIRECCIONAL</strong>
+</p>
+<p>Hemos hablado de la relaci&oacute;n entre <em>Usuario</em> y <em>Direccion</em> 
+  como una relaci&oacute;n de composici&oacute;n. Normalmente, &eacute;sta es 
+  la forma m&aacute;s sencilla de representar una relaci&oacute;n uno-a-uno (<em>one-to-one</em>), 
+  ya que el ciclo de vida de una clase es casi siempre dependiente del ciclo de 
+  vida de la otra clase. Pero si queremos utilizar una tabla para <em>Direccion</em> 
+  y otra para <em>Usuario</em>, trat&aacute;ndolas as&iacute; como entidades, 
+  entonces las clases tienen una verdadera relaci&oacute;n <em>one-to-one</em>.
+  Vamos a especificar un mapeado de una relaci&oacute;n <em>one-to-one</em> unidireccional
+  desde <em>Usuario</em> a <em>Direccion</em>.
+  En este caso, comenzamos con el siguiente mapeado para <em>Direccion</em>:</p>
+<pre class="code"> 
+&lt;class name="Direccion" table="DIRECCION"&gt;
+   &lt;id name="id" column="DIRECC_ID"&gt;
+      &lt;generator class="native"/&gt;
+   &lt;/id&gt;
+   &lt;property name="calle"/&gt;
+   &lt;property name="ciudad"/&gt;
+   &lt;property name="codPostal"/&gt;
+&lt;/class&gt;
+
+</pre>
+<p>D&eacute;monos cuenta de que ahora <em>Direccion</em> requiere una propiedad que sea 
+  un identificador de la clave primaria (ya no es una clase componente). Hay dos 
+  formas de representar una relaci&oacute;n <em>one-to-one</em> en Hibernate. 
+  Vamos a ver solamente una de ellas, que utiliza una clave ajena.</p>
+<p>La forma m&aacute;s sencilla de representar la asociaci&oacute;n desde <em>Usuario</em> 
+  a su <em>Direccion</em> para recibir facturas es utilizar una correspondencia 
+  <span class="codefrag">&lt;many-to-one&gt;</span> con una restricci&oacute;n de unicidad sobre 
+  la clave ajena. Esto puede sorprendernos, ya que no parece una descripci&oacute;n 
+  muy acertada para una asociaci&oacute;n <em>one-to-one</em>. Sin embargo, desde 
+  el punto de vista de Hibernate, no hay mucha diferencia entre estos dos tipos 
+  de asociaciones con clave ajena. Por lo tanto, a&ntilde;adimos una columna de 
+  clave ajena denominada <span class="codefrag">DIRFAC_ID</span> en la tabla <em>Usuario</em>, 
+  con lo que tendr&iacute;amos la siguiente correspondencia para <span class="codefrag">Usuario</span>:</p>
+<pre class="code">
+&lt;class name="Usuario" table="USUARIO"&gt;
+   &lt;id name="id" column="USER_ID"&gt;
+   ...
+   &lt;many-to-one name="direccionFacturas"
+        class="Direccion"
+		column="DIRECC_ID"
+		cascade="all"
+		unique="true"/&gt;
+&lt;/class&gt;
+
+</pre>
+<p>De esta forma, estamos estableciendo la restricci&oacute;n de que solamente haya un 
+  &uacute;nico usuario por direcci&oacute;n, con lo que convertimos esta relaci&oacute;n en 
+  <em>one-to-one</em>. Adem&aacute;s, al establecer el valor de <span class="codefrag">cascade</span> 
+  en "<span class="codefrag">all</span>", indicamos que una <em>Direccion</em> debe hacerse 
+  persistente, as&iacute; como eliminarse, al crear una asociaci&oacute;n (o eliminarla) 
+  desde un usuario persistente.</p>
+<p>Las tablas correspondientes al modelo relacional se muestran en la  
+  Figura 3.8:</p>
+<p>
+	
+<img alt="Figura 3.8 Asociaci&oacute;n one-to-one utilizando una clave ajena." content-width="9cm" src="imagenes/Fig3-8.gif" width="324"> 
+</p>
+<p>Y las sentencias SQL asociadas al mapeado <em>one-to-one</em> unidireccional son:</p>
+<pre class="code">
+create table DIRECCION(DIRECC_ID bigint not null primary key, ...)
+create table USUARIO (USUARIO_ID bigint not null primary key, DIRECC_ID bigint not null unique...)
+</pre>
+<p>
+<strong>Asociaci&oacute;n <em>ONE-TO-ONE</em> BIDIRECCIONAL</strong>
+</p>
+<p>Si queremos que la asociaci&oacute;n sea navegable desde <em>Direccion</em> 
+  a <em>Usuario</em>, tenemos que convertir la asociaci&oacute;n <em>one-to-one</em> 
+  anterior en <strong>bidireccional</strong>. Para ello a&ntilde;adimos 
+  una propiedad denominada <span class="codefrag">usuario</span> (de tipo <em>Usuario</em>) a la 
+  clase <em>Direccion</em>, y establecemos la correspondencia de la propiedad <span class="codefrag">usuario</span> 
+  con la propiedad <span class="codefrag">direccionFacturas</span> como: </p>
+<pre class="code"> 
+&lt;class name="Direccion" table="DIRECCION"&gt;
+   &lt;id name="id" column="DIRECC_ID"&gt;
+      &lt;generator class="native"&gt;
+   &lt;/id&gt;
+   &lt;one-to-one name="usuario"
+               class="Usuario"
+	       property-ref="direccionFacturas"/&gt;
+   &lt;property name="calle"/&gt;
+   &lt;property name="ciudad"/&gt;
+   &lt;property name="codPostal"&gt;
+&lt;/class&gt;
+
+</pre>
+<p>Esta correspondencia indica a Hibernate que la asociaci&oacute;n de <span class="codefrag">usuario</span> 
+  en <em>Direccion</em> tiene la direcci&oacute;n contraria de la asociaci&oacute;n <span class="codefrag">direccionFacturas</span> en <em>Usuario</em>. 
+  El atributo <span class="codefrag">property-ref</span> es opcional, y hace 
+  referencia al nombre de una propiedad de la clase asociada que hemos "unido" 
+  (<em>joined</em>) con la clave primaria de esta clase. Si no se especifica este 
+  atributo, se utiliza la clave primaria de la clase asociada.</p>
+<p>Las sentencias SQL asociadas al mapeado <em>one-to-one</em> bidireccional son:</p>
+<pre class="code">
+create table DIRECCION(DIRECC_ID bigint not null primary key, ...)
+create table USUARIO (USUARIO_ID bigint not null primary key, DIRECC_ID bigint not null unique...)
+</pre>
+<a name="N105FA"></a><a name="Asociaci%C3%B3n+MANY-TO-MANY"></a>
+<h3 class="underlined_5">Asociaci&oacute;n MANY-TO-MANY</h3>
+<p>
+<strong>Asociaci&oacute;n <em>MANY-TO-MANY</em> UNIDIRECCIONAL</strong>
+</p>
+<p>Consideremos la asociaci&oacute;n existente entre las clases <em>Categoria</em> y <em>Elemento</em>
+   que hemos visto al principio de esta sesi&oacute;n. En primer lugar trataremos el caso de que la relaci&oacute;n
+   sea unidirecional, por ejemplo desde <em>Categoria</em> hacia <em>Elemento</em>.
+   </p>
+<p>Para mapear esta asociaci&oacute;n necesitaremos una tabla intermedia que represente la asociaci&oacute;n. Cada
+   fila en esta tabla representa un enlace entre una categor&iacute;a y un elemento. El mapeado es el siguiente:
+</p>
+<pre class="code"> 
+  &lt;class name="Categoria"&gt;
+      &lt;id name="id" column="CATEGORIA_ID"&gt;
+          &lt;generator class="native"/&gt;
+      &lt;/id&gt;
+	  
+      &lt;set name="elementos" table="CATEG_ELEM"&gt;
+           &lt;key column="CATEGORIA_ID"/&gt;
+           &lt;many-to-many column="ELEMENTO_ID"
+            class="Elemento"/&gt;
+      &lt;/set&gt;
+  &lt;/class&gt;
+  
+  &lt;class name="Elemento"&gt;
+      &lt;id name="id" column="ELEMENTO_ID"&gt;
+          &lt;generator class="native"/&gt;
+      &lt;/id&gt;
+  &lt;/class&gt;
+
+</pre>
+<p>En este caso la clase <em>Categoria</em> implementa la asociaci&oacute;n mediante un atributo denominado 
+   <span class="codefrag">elementos</span> de tipo coleccion (en 
+   concreto de tipo <em>Set</em>), que hace referencia al conjunto de objetos de tipo <em>Elemento</em>, a trav&eacute;s de una tabla
+   asociada intermedia denominada <span class="codefrag">CategElement</span>. En dicha table, la columna denominada <span class="codefrag">CATEGORIA_ID</span> es
+   una clave ajena que hace referencia a la clave primaria de la clase <em>Categoria</em>.</p>
+<p>La etiqueta <span class="codefrag">&lt;many-to-many&gt;</span> indica la relaci&oacute;n <em>many-to-many</em> entre <em>Categoria</em> y 
+   <em>Elemento</em>, y utilizamos los siguientes atributos:
+</p>
+<ul>
+  
+<li>
+<span class="codefrag">column</span>: nombre de la columna de clave ajena</li>
+  
+<li>
+<span class="codefrag">class</span>: nombre de la clase asociada</li>
+
+</ul>
+<p>El esquema de base de datos para esta asociaci&oacute;n se muestra en la Figura 3.9. Observar que la clave primaria de la 
+tabla asociada est&aacute; formada por las dos claves ajenas.</p>
+<p>
+	
+<img alt="Figura 3.9 Esquema de base de datos muchos-a-muchos." content-width="12cm" src="imagenes/Fig3-9.gif" width="524"> 
+</p>
+<p>Mientras que el modelo de objetos es el mostrado anteriormente en la Figura 3.5.</p>
+<p>Para crear una asociaci&oacute;n podemos utilizar el siguiente c&oacute;digo Java:</p>
+<pre class="code">
+  ...
+  Transaction tx = session.beginTransaction();
+  Categoria cat = (Categoria)session.get(Categoria.class,categoryId)
+  cat.getElementos().add(elem);
+  tx.commit();
+  ...
+</pre>
+<p>En un sistema real, podr&iacute;amos evitar el utilizar una asociaci&oacute;n <em>many-to-many</em>. Normalmente habr&aacute; otra informaci&oacute;n
+   que podamos a&ntilde;adir para las instancias asociadas (por ejemplo, la fecha en la que un elemento fu&eacute; a&ntilde;adido a una categor&iacute;a),
+   y la mejor forma de representar &eacute;sto es mediante una <em>clase de asociaci&oacute;n</em> (<em>associated class</em>) intermedia. 
+   En Hibernate, podr&iacute;amos mapear dicha <em>clase de asociaci&oacute;n</em> como una entidad y utilizar dos asociaciones <em>one-to-many</em>
+   en ambos extremos. No obstante, si necesitamos implementar una asociaci&oacute;n <em>many-to-many</em> entre dos entidades, podemos
+   utilizar lo explicado en este apartado.
+   </p>
+<p>
+<strong>Asociaci&oacute;n <em>MANY-TO-MANY</em> BIDIRECCIONAL</strong>
+</p>
+<p>Consideremos ahora que la asociaci&oacute;n existente entre las clases <em>Categoria</em> y <em>Elemento</em>
+   sea bidirecional, es decir, podemos navegar desde <em>Categoria</em> hacia <em>Elemento</em> y viceversa.
+   </p>
+<p>Al igual que antes, necesitamos una tabla intermedia que represente la asociaci&oacute;n. Cada
+   fila en esta tabla representa un enlace entre una categor&iacute;a y un elemento. El mapeado es el siguiente:
+</p>
+<pre class="code">
+  &lt;class name="Categoria"&gt;
+      &lt;id name="id" column="CATEGORIA_ID"&gt;
+          &lt;generator class="native"/&gt;
+      &lt;/id&gt;
+	  
+      &lt;set name="elementos" table="CategElement"&gt;
+           &lt;key column="CATEGORIA_ID"/&gt;
+           &lt;many-to-many column="ELEMENTO_ID"
+            class="Elemento"/&gt;
+      &lt;/set&gt;
+  &lt;/class&gt;
+
+  &lt;class name="Elemento"&gt;
+     &lt;id name="id" column="ELEMENTO_ID"&gt;
+         &lt;generator class="native"/&gt;
+     &lt;/id&gt;
+	 
+     &lt;set name="categorias" inverse="true" table="CategElement"&gt;
+          &lt;key column="ELEMENTO_ID"/&gt;
+          &lt;many-to-many column="CATEGORIA_ID"
+               class="Categoria"/&gt;
+     &lt;/set&gt;
+  &lt;/class&gt;
+  
+</pre>
+<p>En este caso, el mapeado para la clase <em>Elemento</em> es similar al mapeado para la
+   clase <em>Categoria</em>. Adem&aacute;s, hemos declarado un extremo de la asociaci&oacute;n como <span class="codefrag">inverse</span>. 
+   En este caso, al tratarse de
+   una asociaci&oacute;n bidireccional podemos elegir cualquiera de los dos extremos.</p>
+<p>La creaci&oacute;n de una asociaci&oacute;n entre objetos en Java, requerir&iacute;a el c&oacute;digo siguiente:</p>
+<pre class="code">
+cat.getElementos().add(elem);
+elem.getCategorias().add(cat);
+</pre>
+<div class="frame note">
+<div class="label">Recuerda</div>
+<div class="content">Una asociaci&oacute;n bidireccional (no importa la multiplicidad) requiere actualizar
+   <strong>ambos</strong> extremos de la asociaci&oacute;n.</div>
+</div>
+<p>Solamente hemos presentado un subconjunto de mapeado de asociaciones 
+  disponibles en Hibernate. El resto de opciones son menos usuales o son variaciones 
+  de las asociaciones descritas. As&iacute;, por ejemplo, como ya hemos comentado, en aplicaciones reales 
+  las relaciones <em>muchos-a-muchos</em> (<em>many-to-many</em>), tienden a no 
+  utilizarse, ya que siempre podemos representarlas como dos asociaciones <em>many-to-one</em> 
+  utilizando una clase intermedia. De esta forma, el modelo es mucho m&aacute;s 
+  f&aacute;cilmente extensible, por lo que aconsejamos no utilizar las relaciones 
+  <em>muchos-a-muchos</em> en nuestras aplicaciones.</p>
+<p>Recomendamos mantener mapeados de asociaciones sencillas, utilizando 
+  las <em>queries</em> de Hibernate para tareas m&aacute;s complejas.</p>
+</div>
+
+
+<p class="pageBreakAfter"></p>
+
+</div>
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+        Copyright &copy;
+         2006-2007 Depto. CCIA</div>
+</div>
+</body>
+</html>

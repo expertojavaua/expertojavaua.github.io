@@ -1,0 +1,359 @@
+<html>
+<head>
+<title>Servidores de aplicaciones</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="Author" content="Miguel">
+<link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+</head>
+<body>
+<h1> Tema 2: Instalaci&oacute;n del servidor Bea WebLogic</h1>
+<p>Los pasos a seguir en la instalaci&oacute;n de un servidor de aplicaciones 
+  es la siguiente:</p>
+<ol>
+  <li>Instalaci&oacute;n del software. Esta acci&oacute;n copia los ficheros necesarios 
+    y crea la estructura inicial de directorios.</li>
+  <li>Configuraci&oacute;n de dominios. Debemos configurar el o los dominios necesarios 
+    y todos los componentes dentro de cada dominio (servidores, cluster, m&aacute;quinas, 
+    etc.).</li>
+</ol>
+<h2>2.1. Instalaci&oacute;n del servidor de aplicaciones</h2>
+<p>Vamos a instalar el servidor de aplicaciones Bea WebLogic. La instalaci&oacute;n 
+  descrita aqu&iacute; es para la versi&oacute;n 7.0 y bajo el sistema operativo 
+  Linux. Los requerimientos del sistema para la instalaci&oacute;n de esta versi&oacute;n 
+  son:</p>
+<ul>
+  <li>Memoria: 256Mb m&iacute;nimo (512Mb aconsejable)</li>
+  <li>Espacio en disco: 400Mb</li>
+  <li>Versi&oacute;n de Java JDK 1.3.1 (se instala junto con el servidor). Podemos 
+    utilizar otra versi&oacute;n de Java, pero es aconsejable consultar la informaci&oacute;n 
+    que Bea muestra en <br>
+    http://e-docs.bea.com/wls/certifications/certifications/index.html para comprobar 
+    la compatibilidad entre versi&oacute;n.</li>
+</ul>
+<p>Ejecutamos el fichero <i>platform701_linux.bin </i>(no es necesario ser superusuario 
+  para instalar el servidor de aplicaciones). Esperamos hasta que nos aparezca 
+  la siguiente pantalla.</p>
+<center>
+  <img src="instalacion/instantanea1.png"> 
+</center>
+<p>&nbsp;</p>
+<p>Pinchamos en <i>Next</i>. Si ya disponemos de un directorio creado lo podemos 
+  elegir de la lista. Si no podemos dejar el mostrado por defecto.</p>
+<p><img src="instalacion/instantanea2.png"> </p>
+<p>En la pantalla siguiente elegimos la instalaci&oacute;n t&iacute;pica y despu&eacute;s 
+  el directorio por defecto (weblogic700). Empezar&aacute; la instalaci&oacute;n 
+  que durar&aacute; unos minutos. Cuando finalice nos aparecer&aacute; la ventana 
+  siguiente. Deseleccionamos la opci&oacute;n <i>Run QuickStart </i>y pinchamos 
+  en <i>Done.</i> Hemos finalizado la instalaci&oacute;n del servidor.</p>
+<center>
+  <img src="instalacion/fin_inst.png" > 
+</center>
+<p>La estructura de directorios creada en la instalaci&oacute;n es la siguiente:</p>
+<center>
+  <p><img src="instalacion/instalacion1.png"></p>
+</center>
+<p>El directorio <i>jdk131_03</i> contiene la distribuci&oacute;n 1.3.1 de J2SE 
+  de Sun. Si tenemos una versi&oacute;n actualizada de Java simplemente la a&ntilde;adiremos 
+  al CLASSPATH. En este punto debemos tener un cuidado especial y comprobar si 
+  la versi&oacute;n de Java es soportada por la versi&oacute;n del servidor de 
+  aplicaciones. Para comprobarlo visitar la p&aacute;gina de Bea. El directorio 
+  de <i>logs </i>contiene el fichero log de instalaci&oacute;n. El directorio 
+  <i>utils</i> contiene algunas utilidades que iremos viendo conforme las utilicemos. 
+  El siguiente directorio, <i>weblogic700</i>, es el que contiene todas las librer&iacute;as, 
+  clases y herramientas adicionales para el funcionamiento de nuestro servidor. 
+  El fichero <i>license.bea</i> contiene la informaci&oacute;n de nuestra licencia 
+  en formato XML. Contendr&aacute; informaci&oacute;n de la fecha de expiraci&oacute;n 
+  de la licencia, de qu&eacute; caracter&iacute;sticas disponemos (n&uacute;mero 
+  de puestos, n&uacute;mero de IPs, etc.), y toda la informaci&oacute;n necesaria 
+  para la ejecuci&oacute;n del servidor. </p>
+<p>A su vez, el directorio <i>weblogic700</i> contiene los siguientes subdirectorios:</p>
+<center>
+  <p><img src="instalacion/dibujo1.png"></p>
+</center>
+<p>Nos interesan, de momento, el directorio <i>common</i> y el <i>server</i>. 
+  <i>Common</i> contiene los subdirectorios mostrados en la siguiente figura. 
+  En el directorio <i>bin</i> tenemos una herramienta para crear dominios. El 
+  directorio <i>nodemanager</i> contiene ficheros de configuraci&oacute;n para 
+  el Node Manager.</p>
+<center>
+  <p><img src="instalacion/dibujo2.png"></p>
+</center>
+<p>El directorio <i>server</i> contiene datos y utilidades relacionadas con el 
+  servidor de aplicaciones. En el directorio <i>bin</i> (mostrado en la siguiente 
+  figura) tenemos varias aplicaciones y los <i>scripts</i> para arrancar el servidor 
+  de aplicaciones y el Node Manager. El ejecutable para arrancar un servidor que 
+  se crea en nuestro dominio llama a estos ejecutables. En otro directorio dentro 
+  de <i>server</i>, el subdirectorio <i>lib</i>, tenemos el fichero <i>weblogic.jar</i> 
+  que tendremos que incluir en el <i>classpath</i> cuando queramos realizar una 
+  aplicaci&oacute;n que utilice los recursos de WebLogic. Tambi&eacute;n disponemos 
+  en este directorio de los ficheros que gestionan las pol&iacute;ticas de seguridad.</p>
+<center>
+  <p><img src="instalacion/dibujo3.png"></p>
+</center>
+<h2>2.2. Arranque del dominio y consola de administraci&oacute;n</h2>
+<p>Antes de empezar a definir los elementos que soportan la ejecuci&oacute;n del 
+  servidor de aplicaciones vamos a comentar algunos conceptos sobre los distintos 
+  tipos de servidores. </p>
+<p>Como ya hemos comentado, nuestra principal unidad de trabajo es el dominio. 
+  El dominio no es m&aacute;s que una agrupaci&oacute;n de todos los componentes 
+  que utilizamos para nuestro trabajo (servidores, m&aacute;quinas, aplicaciones, 
+  etc.). Un ejemplo de uso de dominios es el siguiente. Cuando se desarrolla una 
+  aplicaci&oacute;n se suele separar la fase de desarrollo de una aplicaci&oacute;n 
+  con la fase de producci&oacute;n (cuando la aplicaci&oacute;n ya est&aacute; 
+  funcionando hacia el usuario y dando servicio). Para manejar esta situaci&oacute;n 
+  podemos tener creados dos dominios, uno para desarrollo y otro para producci&oacute;n. 
+  A pesar de contener exactamente los mismos componentes funcionan de forma independiente. 
+</p>
+<p>Dentro de un dominio vamos a tener m&aacute;quinas y servidores. Al menos debemos 
+  tener un servidor en nuestro dominio, que llamaremos de <i>administraci&oacute;n</i>. 
+  El servidor de administraci&oacute;n es &uacute;nico en el dominio y va a realizar, 
+  como su nombre indica, tareas administrativas. Podemos tener m&aacute;s servidores, 
+  que llamaremos <i>administrados</i> (<i>managed</i>). De este tipo de servidor 
+  podemos tener tantos como queramos. </p>
+<p>Vamos a empezar a crear nuestro primer dominio. Vamos a llamarlo <i>MiDominio</i> 
+  y contendr&aacute; dos servidores alojados en la misma m&aacute;quina: <i>Servidor1</i> 
+  y <i>Servidor2</i>. El servidor 1 ser&aacute; el de administraci&oacute;n. Utilizaremos 
+  un asistente que incorpora Weblogic para crear el dominio y los servidores. 
+  Nos situamos en $HOME_BEA/weblogic700/common/bin ($HOME_BEA es el directorio 
+  donde hemos instalado Weblogic, en mi m&aacute;quina /home/miguel/bea) y ejecutamos 
+  ./dmwiz.sh </p>
+<p>Nos aparecer&aacute; la ventana que se muestra en la siguiente figura, en la 
+  que selecionaremos <i>WLS domain</i> y le damos el nombre que queramos, en nuestro 
+  caso MiDominio. Pulsamos en el bot&oacute;n <i>Next.</i></p>
+<center>
+  <img src="instalacion/instantanea3.png"> 
+</center>
+<p>Ahora debemos seleccionar si queremos instalar s&oacute;lo un servidor, un 
+  servidor de administraci&oacute;n con servidores administrados, lo mismo en 
+  cluster o un servidor administrado. Vamos a seleccionar la opci&oacute;n mostrada: 
+  un servidor de administraci&oacute;n con servidores administrados.</p>
+<center>
+  <img src="instalacion/instantanea4.png">
+</center>
+<p>Pulsamos <i>Next</i> y nos indica que introduzcamos el directorio de instalaci&oacute;n 
+  (dejamos el que viene por defecto). Pulsamos <i>Next</i>.</p>
+<center>
+  <img src="instalacion/instantanea4b.png"> 
+</center>
+<p>En la siguiente pantalla nos pide que creemos los servidores administrados. 
+  Pinchamos en <i>Add</i> y nos aparecer&aacute; la siguiente figura en la que 
+  introducimos los datos del servidor. Fijaros que vamos a utilizar el puerto 
+  4001 y el 4002. Deb&eacute;is cambiar la direcci&oacute;n de escucha para poner 
+  la direcci&oacute;n de vuestra m&aacute;quina.</p>
+<center>
+</center>
+<center>
+</center>
+<center>
+  <img src="instalacion/instantanea4e.png"> 
+</center>
+<p>Podemos añadir tantos servidores como queramos. </p>
+<center>
+  <img src="instalacion/instantanea4f.png"> 
+</center>
+<p>Al pinchar en <i>Next</i> nos aparece la configuración del servidor de administración. 
+  Tambi&eacute;n aqu&iacute; deb&eacute;is poner la direcci&oacute;n de vuestra 
+  m&aacute;quina. Fijaros que hemos puesto un puerto distinto al anterior, porque 
+  estamos en la misma m&aacute;quina.</p>
+<center>
+  <img src="instalacion/instantanea4g.png"> 
+</center>
+<p>Por último, debemos crear un usuario de administraci&oacute;n y asignarle una 
+  contrase&ntilde;a. Vamos a utilizar <i>system</i> y <i>weblogic</i> como contrase&ntilde;a.</p>
+<center>
+  <img src="instalacion/instantanea4h.png"> 
+</center>
+<p>El &uacute;ltimo paso es confirmar los datos introducidos y pinchar en <i>Create</i> 
+  para crear el dominio.</p>
+<center>
+  <img src="instalacion/instantanea4i.png"> 
+</center>
+<p>Una vez creado el dominio la estructura de directorios creada es la siguiente:</p>
+<center>
+  <img src="instalacion/instalacion.png"> 
+</center>
+<p>Tenemos un directorio por cada servidor creado, donde se guardan datos espec&iacute;ficos 
+  del servidor (por ejemplo el fichero log). En esta figura tenemos cuatro servidores: 
+  <i>adminServer, proxy,Servidor1 </i>y<i> Servidor2</i>. El fichero <i>config.xml</i> 
+  contiene los datos del dominio (nombre de los servidores, m&aacute;quinas, dominio, 
+  etc., nombre de las aplicaciones y su configuraci&oacute;n, etc.). Los ficheros 
+  <i>.pem</i> sirven para la seguridad. Los ficheros <i>startWebLogic.sh </i>y 
+  <i>startManagedWebLogic.sh</i> sirven para arrancar al servidor de administraci&oacute;n 
+  y a los administrados.</p>
+<h2>2.3. Arranque y configuraci&oacute;n</h2>
+<p>Para poner en marcha los servidores debemos utilizar unos ejecutables que se 
+  encuentran en $HOME_BEA/user_projects/MiDominio. Primero debemos arrancar el 
+  servidor de administraci&oacute;n. Para ello ejecutamos desde l&iacute;nea de 
+  comandos: ./<i>startWebLogic.sh</i> Nos pedir&aacute; el usuario y la contrase&ntilde;a 
+  que hemos definido antes. Cuando nos aparezca el siguiente mensaje ya est&aacute; 
+  arrancado el servidor:</p>
+<p><i>&lt;Server started in RUNNING mode&gt;</i></p>
+<p>En este momento podemos arrancar los servidores administrados. Para ponerlos 
+  en marcha debemos utilizar el siguiente comando con los par&aacute;metros indicados: 
+</p>
+<p><i>./startManagedServer.sh nombre_servidor direcci&oacute;n_servidor_administraci&oacute;n</i></p>
+<p>Por ejemplo, para arrancar el servidor administrado creado anteriormente debemos 
+  ejecutar el siguiente comando:</p>
+<p><i>./startManagedServer.sh servidor2 http://localhost:7001</i></p>
+<p>El servidor de administraci&oacute;n nos facilita una aplicaci&oacute;n que 
+  permite administrar nuestro dominio. Con la consola podemos configurar los atributos 
+  de los distintos recursos, hacer despliegues de aplicaciones, monitorizar el 
+  uso de recursos, ver mensajes de log y poner en marcha o parar los distintos 
+  servidores de nuestro dominio. La consola se gestiona con un navegador en la 
+  siguiente direcci&oacute;n: <i>http://localhost:7001/console</i>. Nos aparecer&aacute; 
+  una p&aacute;gina donde se nos solicita el usuario y la contrase&ntilde;a. Una 
+  vez introducida nos aparecer&aacute; la siguiente p&aacute;gina.</p>
+<center>
+  <img src="instalacion/instantanea7.png"> 
+</center>
+<p>&nbsp;</p>
+<p>La parte de la izquierda es una applet en forma de &aacute;rbol jer&aacute;rquico 
+  que nos muestra todas las opciones que podemos configurar en el dominio. En 
+  la parte superior del &aacute;rbol tenemos el nombre del dominio. Dentro del 
+  dominio, las primeras opciones nos permiten configurar los elementos del dominio 
+  (servidores, m&aacute;quinas, cluster, etc.). A continuaci&oacute;n podemos 
+  realizar despliegues de aplicaciones, aplicaciones web, EJBs, etc. La &uacute;ltima 
+  opci&oacute;n contiene los servicios configurables (JDBC, JMS, Virtual Hosts, 
+  etc.). Los elementos de la parte izquierda disponen de un men&uacute; adicional 
+  que se obtiene pinchando con el bot&oacute;n derecho sobre un elemento del &aacute;rbol, 
+  como el mostrado en la siguiente figura:</p>
+<center><img src="instalacion/instantanea8.png"></center>
+<p>Las opciones var&iacute;an dependiendo del elemento seleccionado. </p>
+<p>En la parte derecha tenemos las mismas opciones a las que podemos acceder mediante 
+  el applet. Tambi&eacute;n nos ir&aacute;n apareciendo las detalles de configuraci&oacute;n 
+  para un servicio o caracter&iacute;stica concreta elegida en la parte izquierda. 
+</p>
+<p>Vamos a ver las opciones m&aacute;s generales. Si pinchamos en el elemento 
+  <i>console</i> nos permite configurar opciones generales a todos los dominios. 
+  Nos aparecer&aacute; una p&aacute;gina como la mostrada a continuaci&oacute;n 
+  donde podemos:</p>
+<ul>
+  <li>Seleccionar el idioma (ingl&eacute;s o japon&eacute;s)</li>
+  <li>Indicar el tiempo de refresco de las p&aacute;ginas.</li>
+  <li>Indicar el tiempo de refresco de los datos gr&aacute;ficos (vistos un poco 
+    m&aacute;s adelante).</li>
+  <li>Si marcamos la opci&oacute;n <i>Remember Last Tab</i>, cuando pasemos de 
+    una opci&oacute;n a otra se acordar&aacute; de la &uacute;ltima solapa visitada 
+    en dicha opci&oacute;n.</li>
+  <li>Al marcar la &uacute;ltima opci&oacute;n nos permite disponer del &aacute;rbol 
+    de navegaci&oacute;n.</li>
+</ul>
+<center><img src="instalacion/instantanea9.png"></center>
+<p>En la otra solapa simplemente nos da informaci&oacute;n de versi&oacute;n. 
+</p>
+<center><img src="instalacion/instantanea10.png"></center>
+<p>Pasamos a las opciones para el dominio. Pinchamos en el nombre de nuestro dominio 
+  y nos aparece una ventana como la siguiente. Los s&iacute;mbolos que aparecen 
+  a la izquierda de las opciones significan lo siguiente: <img src="instalacion/pel.png"> 
+  nos da información sobre la opción y <img src="instalacion/int.png"> nos indica que es 
+  necesario reiniciar uno o varios servidores si cambiamos esa opción. En la configuraci&oacute;n 
+  general (la solapa actual) podemos configurar las siguientes opciones:</p>
+<ul>
+  <li>Habilitar la consola. En modo producci&oacute;n suele ser habitual deshabilitar 
+    la consola, para que no pueda ser accedida desde el exterior. </li>
+  <li>La siguiente opci&oacute;n nos permite dar un nombre distinto a la aplicaci&oacute;n 
+    de la consola. Si, por ejemplo, damos el nombre <i>miconsola</i>, para acceder 
+    a la consola tendr&iacute;amos que teclear http://direcci&oacute;n:puerto/miconsola. 
+  </li>
+  <li>La habilitaci&oacute;n del puerto de administraci&oacute;n, si marcada, 
+    permite que todos los elementos del dominio se comuniquen con el servidor 
+    de administraci&oacute;n mediante una conexi&oacute;n segura. Adem&aacute;s 
+    podemos configurar un puerto adicional (no puede ser el seguro del servidor 
+    de administraci&oacute;n) para dichas comunicaciones. Esta opci&oacute;n permite 
+    que podamos arrancar un servidor en modo <i>standby</i> en el cual el servidor 
+    no escucha las peticiones que le llegan a su puerto, pero se permite una comunicaci&oacute;n 
+    con el servidor de administraci&oacute;n. Tambi&eacute;n permite separar las 
+    peticiones de aplicaci&oacute;n (llegan de las aplicaciones que usan el sistema) 
+    de las peticiones de administraci&oacute;n (generadas por o hacia el servidor 
+    de administraci&oacute;n). De esta manera una petici&oacute;n del servidor 
+    de administraci&oacute;n puede ser atendida sin tener que esperar su turno 
+    dentro de las peticiones de aplicaci&oacute;n.</li>
+</ul>
+<center><img src="instalacion/instantanea11.png"></center>
+<p>En la solapa de <i>Logging</i> (las opciones JTA y SNMP las veremos m&aacute;s 
+  adelante) podemos configurar el fichero log del dominio. El fichero log almacena 
+  toda la informaci&oacute;n y mensajes del dominio. Las opciones son las siguientes:</p>
+<ul>
+  <li>Podemos cambiar el nombre del fichero log. </li>
+  <li>La siguiente opci&oacute;n permite especificar el tipo de rotaci&oacute;n. 
+    Las opciones a elegir son por tama&ntilde;o o por tiempo. La rotaci&oacute;n 
+    permite que el fichero log no vaya creciendo indefinidamente. Si elegimos 
+    por tama&ntilde;o, se coger&aacute; el valor del par&aacute;metro <i>File 
+    Min Size</i> y, cuando el fichero de log alcance ese tama&ntilde;o, crear&aacute; 
+    un nuevo fichero de log, renombrando el anterior. Si, por ejemplo, el nombre 
+    del fichero de log es <i>wl-domain.log</i> y hemos seleccionado una rotaci&oacute;n 
+    por tama&ntilde;o y 500k de tama&ntilde;o m&iacute;nimo, cuando el fichero 
+    alcance ese tama&ntilde;o el sistema cambiar&aacute; el nombre del fichero 
+    por <i>wl-domain.0</i> y crear&aacute; uno nuevo, <i>wl-domain.log</i>, donde 
+    se seguir&aacute; almacenando la salida del sistema. Cuando se vuelva a superar 
+    ese l&iacute;mite se le dar&aacute; el nombre <i>wl-domain.1</i> y as&iacute; 
+    sucesivamente. El otro tipo de rotaci&oacute;n, de tiempo, act&uacute;a de 
+    manera similar, pero especificando un tiempo de rotaci&oacute;n. Cuando el 
+    reloj del sistema llega a esa hora se produce el cambio de fichero. En esta 
+    opci&oacute;n, podemos especificar cada cuantos d&iacute;as se produce el 
+    cambio, cambiando el valor de <i>File Time Span</i>. </li>
+  <li>La pen&uacute;ltima opci&oacute;n permite limitar el n&uacute;mero de ficheros 
+    a almacenar. Si la activamos toma el valor de la siguiente opci&oacute;n <i>File 
+    Count </i>y, cuando el contador de fichero alcance ese valor, empieza desde 
+    cero sobreescribiendo el primero.</li>
+  <li>Si pinchamos en la opci&oacute;n <i>View Domain Log</i> se nos permite ver 
+    el fichero log (ver siguientes figuras).</li>
+</ul>
+<center><img src="instalacion/instantanea11b.png"></center>
+<p>Visualizaci&oacute;n del fichero de log. </p>
+<center><img src="instalacion/instantanea11ba.png"></center>
+<p>Si pinchamos en <i>Customize this view </i>se nos permite configurar los mensajes, 
+  mostrando las opciones que queremos que se vean en el fichero de log.</p>
+<center><img src="instalacion/instantanea11bb.png"></center>
+<p>En la siguiente figura, si activamos la primera opci&oacute;n, <i>Auto Deployed 
+  Enabled</i>, el sistema se encarga de comprobar si existen aplicaciones nuevas. 
+  Estas aplicaciones se pueden crear como subdirectorios del directorio de aplicaciones. 
+  La siguiente opci&oacute;n indica cada cuantos milisegundos se comprueba si 
+  existe una aplicaci&oacute;n nueva. En modo producci&oacute;n se deshabilita 
+  esta comprobaci&oacute;n. </p>
+<center><img src="instalacion/instantanea11c.png"></center>
+<p>Pasamos a la solapa de seguridad. Todo lo referente a <i>realm </i>lo explicaremos 
+  m&aacute;s adelante. Si activamos la opci&oacute;n <i>Guest Disabled</i> no 
+  permitiremos que entre el usuario invitado.</p>
+<center><img src="instalacion/instantanea12.png"></center>
+<p>En el apartado de <i>FileRealm</i> podemos configurar opciones espec&iacute;ficas 
+  de seguridad como: n&uacute;mero m&aacute;ximo de usuarios, grupos y ACL.</p>
+<center><img src="instalacion/instantanea13.png"></center>
+<p>La siguiente solapa tiene que ver con caracter&iacute;sticas de la contrase&ntilde;a 
+  de acceso y el bloqueo de una cuenta por haber intentado acceder con una contrase&ntilde;a 
+  incorrecta. Si un usuario intenta acceder al sistema e introduce una contrase&ntilde;a 
+  incorrecta, cuando realice un determinado n&uacute;mero de intentos la cuenta 
+  ser&aacute; deshabilitada. Las opciones son:</p>
+<ul>
+  <li>Longitud m&iacute;nima de contrase&ntilde;a. Indica el n&uacute;mero de 
+    caracteres m&iacute;nimo que debe tener la contrase&ntilde;a.</li>
+  <li>La siguiente opci&oacute;n, si marcada, permite el bloqueo de una cuenta 
+    al intentar acceder con una contrase&ntilde;a err&oacute;nea.</li>
+  <li>La opci&oacute;n <i>Lockout Threshold</i> especifica el n&uacute;mero de 
+    intentos err&oacute;neos que provocan el bloqueo de la cuenta.</li>
+  <li>La siguiente es el n&uacute;mero de minutos que se bloquea la cuenta.</li>
+  <li>La opci&oacute;n <i>Lockout Reset Durationi </i>indica el n&uacute;mero 
+    de minutos durante los cuales se cuenta el n&uacute;mero de intentos fallidos. 
+    Si marcamos cinco, si durante cinco minutos se han realizado cinco (el n&uacute;mero 
+    indicado por <i>Lockout Threshold</i>) intentos fallidos, se produce el bloqueo.</li>
+  <li>La &uacute;ltima opci&oacute;n es el tama&ntilde;o de la cache de intentos 
+    fallidos de cualquier usuario que el sistema almacenar&aacute;.</li>
+</ul>
+<p>El resto de opciones de seguridad se detallar&aacute;n en el apartado de seguridad.</p>
+<center><img src="instalacion/instantanea14.png"></center>
+<p>Cuando seleccionamos la solapa <i>Monitoring</i> nos aparece un enlace que 
+  nos permite monitorizar los cluster y servidores de nuestro dominio. Si pinchamos 
+  en el enlace nos aparece la siguiente figura. Tenemos los servidores creados 
+  en nuestro dominio y se nos indica la direcci&oacute;n de escucha, los puertos 
+  de escucha y el estado del servidor. Tambi&eacute;n tenemos dos enlaces, uno 
+  para parar o poner en marcha el servidor y otro para monitorizarlo (veremos 
+  m&aacute;s adelante estas opciones). Los iconos de la parte derecha nos permiten: 
+  <img src="instalacion/cop.png"> crear un nuevo servidor con las mismas caracter&iacute;sticas 
+  que &eacute;ste y <img src="instalacion/pap.png"> eliminar este servidor.</p>
+<center><img src="instalacion/instantanea15.png"></center>
+<p>La &uacute;ltima solapa, <i>Notes</i>, nos permite introducir notas asociadas 
+  a la configuraci&oacute;n actual. Esto es com&uacute;n en la mayor&iacute;a 
+  de opciones de configuraci&oacute;n. Tienen un car&aacute;cter informativo.</p>
+<center><img src="instalacion/instantanea16.png"></center>
+</body>
+</html>

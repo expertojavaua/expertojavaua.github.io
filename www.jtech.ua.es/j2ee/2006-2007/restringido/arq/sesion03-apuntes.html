@@ -1,0 +1,636 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.7">
+<meta name="Forrest-skin-name" content="pelt">
+<title>Arquitecturas Distribuidas. MDA</title>
+<link type="text/css" href="skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="skin/print.css" rel="stylesheet">
+<link type="text/css" href="skin/profile.css" rel="stylesheet">
+<script src="skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<div class="header">
+<div class="grouplogo">
+<a href="http://www.jtech.ua.es/j2ee"><img class="logoImage" alt="J2EE" src="images/baner_j2ee_izq.gif" title="Curso Especialista Universitario en Java Enterprise"></a>
+</div>
+<div class="projectlogoA1">
+<a href="http://www.dccia.ua.es/"><img class="logoImage" alt="Desarrollo de Proyectos J2EE" src="images/baner_j2ee_der.gif" title="Desarrollo de Proyectos J2EE"></a>
+</div>
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="../index.html">M&oacute;dulos</a>
+</li>
+<li class="current">
+<a class="base-selected" href="index.html">Arquitectura de Aplicaciones</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<div id="level2tabs"></div>
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<div id="menu">
+<div onclick="SwitchMenu('menu_selected_1.1', 'skin/')" id="menu_selected_1.1Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Arquitectura de Aplicaciones</div>
+<div id="menu_selected_1.1" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="index.html" title="Arquitectura de Aplicaciones">&Iacute;ndice</a>
+</div>
+<div onclick="SwitchMenu('menu_selected_1.1.2', 'skin/')" id="menu_selected_1.1.2Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Teor&iacute;a</div>
+<div id="menu_selected_1.1.2" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="sesion01-apuntes.html" title="Sesi&oacute;n 1: Arquitectura de Aplicaciones">Sesi&oacute;n 1</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-apuntes.html" title="Sesi&oacute;n 2: Arquitecturas Web. Cach&eacute;">Sesi&oacute;n 2</a>
+</div>
+<div class="menupage">
+<div class="menupagetitle">Sesi&oacute;n 3</div>
+</div>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<div id="credit2"></div>
+</div>
+<div id="content">
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="sesion03-apuntes.pdf"><img alt="PDF -icon" src="skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1>Arquitecturas Distribuidas. MDA</h1>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#Arquitectura+y+Java+EE">Arquitectura y Java EE</a>
+<ul class="minitoc">
+<li>
+<a href="#Arquitecturas+de+2+Capas+vs+Multicapa">Arquitecturas de 2 Capas vs Multicapa</a>
+</li>
+<li>
+<a href="#Enterprise+JavaBeans">Enterprise JavaBeans</a>
+</li>
+<li>
+<a href="#Interfaces+Remotos+o+Locales">Interfaces Remotos o Locales</a>
+</li>
+<li>
+<a href="#Componentes+Distribuidos">Componentes Distribuidos</a>
+<ul class="minitoc">
+<li>
+<a href="#Rendimiento">Rendimiento</a>
+</li>
+<li>
+<a href="#Complejidad">Complejidad</a>
+</li>
+<li>
+<a href="#Impedancia+Orientada+a+Objetos">Impedancia Orientada a Objetos</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Elecci%C3%B3n+de+un+Dise%C3%B1o+Apropiado">Elecci&oacute;n de un Dise&ntilde;o Apropiado</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Propuestas+de+Arquitecturas+Java+EE">Propuestas de Arquitecturas Java EE</a>
+<ul class="minitoc">
+<li>
+<a href="#Arquitectura+JavaEE+Local">Arquitectura JavaEE Local</a>
+<ul class="minitoc">
+<li>
+<a href="#Ventajas">Ventajas</a>
+</li>
+<li>
+<a href="#Limitaciones">Limitaciones</a>
+</li>
+<li>
+<a href="#Implementaci%C3%B3n">Implementaci&oacute;n</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Arquitectura+JavaEE+Distribuida">Arquitectura JavaEE Distribuida</a>
+<ul class="minitoc">
+<li>
+<a href="#Ventajas-N101E0">Ventajas</a>
+</li>
+<li>
+<a href="#Limitaciones-N101F9">Limitaciones</a>
+</li>
+<li>
+<a href="#Implementaci%C3%B3n-N1021B">Implementaci&oacute;n</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#%C2%BFY+tu+qu%C3%A9+eliges%3F">&iquest;Y tu qu&eacute; eliges?</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Model+Driven+Architecture+%28MDA%29">Model Driven Architecture (MDA)</a>
+<ul class="minitoc">
+<li>
+<a href="#Plataforma">Plataforma</a>
+</li>
+<li>
+<a href="#Modelos">Modelos</a>
+<ul class="minitoc">
+<li>
+<a href="#PIM+%28Modelo+Independiente+de+la+Plataforma%29">PIM (Modelo Independiente de la Plataforma)</a>
+</li>
+<li>
+<a href="#PSM+%28Modelo+eSpec%C3%ADfico+de+Plataforma%29">PSM (Modelo eSpec&iacute;fico de Plataforma)</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Mapping">Mapping</a>
+</li>
+<li>
+<a href="#MDA+vs+Modelado+Tradicional">MDA vs Modelado Tradicional</a>
+<ul class="minitoc">
+<li>
+<a href="#Ventajas-N1035E">Ventajas</a>
+</li>
+<li>
+<a href="#Inconvenientes">Inconvenientes</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Para+Saber+M%C3%A1s">Para Saber M&aacute;s</a>
+<ul class="minitoc">
+<li>
+<a href="#Bibliograf%C3%ADa">Bibliograf&iacute;a</a>
+</li>
+<li>
+<a href="#Enlaces">Enlaces</a>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+
+
+<a name="N1000C"></a><a name="Arquitectura+y+Java+EE"></a>
+<h2 class="underlined_10">Arquitectura y Java EE</h2>
+<div class="section">
+<p>Desarrollar aplicaciones con arquitecturas multinivel implica el uso de computaci&oacute;n distribuida, lo que complica el proceso de desarrollo. Aunque la plataforma JavaEE simplifica en gran medida el desarrollo de sistemas en tres niveles, el dise&ntilde;o de componentes distribuidos es m&aacute;s complejo que si nos centr&aacute;ramos en uno o dos niveles.
+</p>
+<p>Esta complejidad extra debe estar justificada por los requisitos del sistema, ya que se trata de una decisi&oacute;n que va a condicionar la naturaleza del proyecto. 
+</p>
+<p>Si podemos evitar el uso de una arquitectura distribuida para los sistemas que no lo necesitan, obtendremos un dise&ntilde;o m&aacute;s simple. El hecho de evitar la complejidad nos va a ayudar a cumplir un calendario apretado.</p>
+<p>La complejidad va a:</p>
+<ul>
+	
+<li>dificultar la comprensi&oacute;n del dise&ntilde;o y el c&oacute;digo</li>
+	
+<li>alargar los tiempos de desarrollo debido a la curva de aprendizaje</li>
+	
+<li>encarecer el mantenimiento del software</li>
+	
+<li>dificultar la evaluaci&oacute;n y aplicaci&oacute;n de los cambios</li>
+	
+<li>provocar la realizaci&oacute;n de errores</li>
+
+</ul>
+<p>A continuaci&oacute;n vamos a evaluar las ventajas e inconvenientes de los sistemas distribuidos y considerar posibles arquitecturas que no se basen en componentes distribuidos</p>
+<a name="N10033"></a><a name="Arquitecturas+de+2+Capas+vs+Multicapa"></a>
+<h3 class="underlined_5">Arquitecturas de 2 Capas vs Multicapa</h3>
+<p>Antes de la entrada de las tecnolog&iacute;as distribuidas como JavaEE o CORBA, los sistemas de empresa normalmente utilizaban una arquitectura de 2 capas conocida como <em>cliente/servidor</em>, la cual se desplegaba a su vez en 2 niveles..</p>
+<p>Bajo el modelo de cliente/servidor, la l&oacute;gica de negocio se implementaba como parte integrada de un cliente rico y pesado que acced&iacute;a al servidor para obtener los datos de una base de datos centralizada.</p>
+<p>El modelo cliente/servidor disfrut&oacute; de un &eacute;xito considerable, ya que era f&aacute;cil de comprender, f&aacute;cil de probar y soportado por numerosas herramientas de desarrollo visual a alto nivel.</p>
+<p>El problema es que la arquitectura de 2 capas/niveles tiene las siguientes limitaciones:</p>
+<ul>
+	
+<li>
+<strong>Despliegue</strong>: en las grandes empresas donde existen miles de clientes, el hecho de realizar un despliegue supone un reto log&iacute;stico</li>
+	
+<li>
+<strong>Compartici&oacute;n de servicios</strong>: si la aplicaci&oacute;n debe compartir servicios dentro de la empresa, y la l&oacute;gica esta integrada con los clientes, tenemos una gran redundancia de c&oacute;digo entre las diferentes aplicaciones.</li>
+	
+<li>
+<strong>Pobre separaci&oacute;n de la presentaci&oacute;n y la l&oacute;gica de negocio</strong>: este tipo de arquitectura provoca un alto acoplamiento, ya que es muy f&aacute;cil mezclar ambas capas.</li>
+
+</ul>
+<p>Debido a estas limitaciones, la comunidad de desarrollo concluy&oacute; que era necesaria una tercera capa de negocio que se colocara entre las 2 anteriores, apareciendo la necesidad de un tercer nivel.</p>
+<p>El uso de una capa intermedia de negocio ofrece ciertos beneficios respecto al modelo cliente/servidor:</p>
+<ul>
+	
+<li>
+<strong>Inteligencia de negocio centralizada</strong>: al estar centralizado y accesible por un sistema remoto, resuelve el problema de juntar presentaci&oacute;n y negocio</li>
+	
+<li>
+<strong>F&aacute;cil despliegue</strong>: ya no es necesario actualizar miles de cliente. Al tener el negocio centralizado, los cambios se pueden desplegar de forma r&aacute;pida y f&aacute;cil con un m&iacute;nimo impacto sobre el sistema base del usuario</li>
+	
+<li>
+<strong>Redundancia</strong>: al poder desplegar la capa de negocio en un cluster, ofrecemos un conjunto de m&aacute;quinas replicadas que mantienen un entorno de alta disponibilidad</li>
+	
+<li>
+<strong>Escalabilidad</strong>: del mismo modo, el cluster de negocio nos permite incrementar el n&uacute;mero de m&aacute;quinas conforme crece la demanda de los clientes.</li>
+
+</ul>
+<p>Estos beneficios han provocado que el modelo multicapa sea la arquitectura por defecto para las aplicaciones de empresa. La plataforma JavaEE ofrece componentes distribuidos para desarrollar sistemas mediante arquitecturas multicapa/multinivel, siendo los EJBs una tecnolog&iacute;a clave para los componentes de negocio distribuidos en un nivel intermedio.</p>
+<a name="N1007B"></a><a name="Enterprise+JavaBeans"></a>
+<h3 class="underlined_5">Enterprise JavaBeans</h3>
+<p>Los EJBs permiten desarrollar aplicaciones usando una arquitectura basada en componentes.</p>
+<p>La arquitectura EJB define componentes, conocidos como <em>Beans de Empresa</em>, que encapsulan funcionalidad en m&oacute;dulos desplegables, los cuales est&aacute;n claramente definidos mediante interfaces.</p>
+<p>Como ya sabemos, la plataforma JavaEE ofrece 3 tipos de EJBs:</p>
+<ul>
+	
+<li>
+<strong>Beans de Sesi&oacute;n</strong> (SBs): encapsula la l&oacute;gica de negocio</li>
+	
+<li>
+<strong>Beans de Entidad</strong> (<acronym title="Entity Bean">EB</acronym>s): mecanismo que ofrece una vista de entidades basadas en objetos dentro de un almac&eacute;n persistente de datos.</li>
+	
+<li>
+<strong>Beans dirigidos por el Mensaje</strong> (<acronym title="Message Driven Bean">MDB</acronym>s): consume mensajes entregados al servidor via el API JMS</li>
+
+</ul>
+<p>Una arquitectura EJB ofrece beneficios substanciales a la hora de construir una aplicaci&oacute;n empresarial:</p>
+<ul>
+	
+<li>Incrementa la productividad mediante la gesti&oacute;n de las transacciones y la seguridad mediante informaci&oacute;n especificada en el descriptor de despliegue.</li>
+	
+<li>Ofrece escalabilidad gestionando inteligentemente los recursos y ofreciendo transparencia de estado en los componentes "con estado".</li>
+	
+<li>Ofrece y hace de mediador entre los componentes de negocio y m&uacute;ltiples tipos de cliente, tanto pesado como aplicaciones web ligeras.</li>
+	
+<li>A&iacute;sla al cliente de los temas de la red mediante transparencia de localizaci&oacute;n, de modo que se pueden invocar a los componentes sin necesidad de saber donde est&aacute;n desplegados. </li>
+
+</ul>
+<p>Este &uacute;ltimo punto de transparencia de localizaci&oacute;n es de especial inter&eacute;s, ya que los EJBs permiten el desarrollo de arquitecturas distribuidas mediante el modelo de componentes que ofrece JavaEE.</p>
+<a name="N100BD"></a><a name="Interfaces+Remotos+o+Locales"></a>
+<h3 class="underlined_5">Interfaces Remotos o Locales</h3>
+<p>Los clientes de un bean de sesi&oacute;n pueden acceder a &eacute;ste mediante su interfaz remoto o local. Si se utiliza el interfaz remoto, un cliente ejecut&aacute;ndose en una JVM separada accede a la instancia del EJB. Con acceso local, el cliente reside en la misma JVM que bean.
+</p>
+<p>De forma alternativa, con la especificaci&oacute;n de EJB 2.1, los cliente puede acceder a los beans mediante Web Services. Esto no es m&aacute;s que otra forma de acceso remoto.</p>
+<a name="N100CA"></a><a name="Componentes+Distribuidos"></a>
+<h3 class="underlined_5">Componentes Distribuidos</h3>
+<p>El uso de EJBs con interfaces remotos permite el desarrollo de sistemas con arquitecturas distribuidas. La plataforma JavaEE ofrece una gran ayuda para construir arquitecturas complejas de &eacute;ste tipo. Sin embargo, a&ntilde;adir interfaces remotos a los objetos de negocio implica ciertos aspectos que el arquitecto debe tener en cuenta antes de decidirse por este tipo de planteamiento.
+</p>
+<a name="N100D3"></a><a name="Rendimiento"></a>
+<h4>Rendimiento</h4>
+<p>La tecnolog&iacute;a EJB se basa en el est&aacute;ndar RMI, &eacute;l cual ofrece la transparencia necesaria para acceder a un bean a trav&eacute;s de su interfaz remoto. Sin embargo, el proceso de ejecutar una invocaci&oacute;n a un m&eacute;todo a trav&eacute;s de una JVM o entre m&aacute;quinas distintas, hace las llamadas RMI mucho m&aacute;s costosas que si se hicieran a un objeto local. 
+    </p>
+<p>Por cada llamada, RMI crea un objeto <em>stub</em> en el cliente que se responsabiliza de enviar los par&aacute;metros del m&eacute;todo y de recibir la respuesta a trav&eacute;s de la red (<em>marshalling</em>). El <em>stub</em> del cliente no habla directamente con el objeto del servidor, sino con el <em>skeleton</em> RMI. Del mismo modo, una vez ejecutado el m&eacute;todo remoto, este <em>skeleton</em> se volver&aacute; a comunicar con el <em>stub</em> del cliente para devolver la informaci&oacute;n.</p>
+<p>Por ello, se produce una sobrecarga en la llamada de los m&eacute;todos. Por lo tanto, tenemos que cuidar el dise&ntilde;o de las llamadas para asegurarnos que los beneficios de la transparencia de localizaci&oacute;n no son menores que la penalizaci&oacute;n de rendimiento obtenida.</p>
+<div class="frame note">
+<div class="label">Consejo</div>
+<div class="content">El paso de objetos pesados en las llamadas remotas reduce el rendimiento gravemente. Si un objeto contiene referencias a otros objetos, entonces estos objetos miembros tambi&eacute;n son serializados como parte de la llamada. <br>
+    Para reducir el tama&ntilde;o de algunos objetos, se pueden excluir objetos innecesarios marc&aacute;ndolos con la palabra clave <span class="codefrag">transient</span>
+    
+</div>
+</div>
+<a name="N100FE"></a><a name="Complejidad"></a>
+<h4>Complejidad</h4>
+<p>Aunque RMI puede hacer parecer que simplifica las llamadas a un bean remoto, la computaci&oacute;n distribuida introduce cierta complejidad extra al desarrollador.</p>
+<p>Se debe tener en cuenta la diferencia entre el paso de variables por valor en las llamadas remotas, y el paso por referencia en las locales. Adem&aacute;s, los clientes remotos pueden gestionar las posibles excepciones lanzadas por problemas en la red.</p>
+<a name="N1010B"></a><a name="Impedancia+Orientada+a+Objetos"></a>
+<h4>Impedancia Orientada a Objetos</h4>
+<p>El uso de las capacidades distribuidas de los EJBs requiere un cambio en el modo que aplicamos las pr&aacute;cticas de dise&ntilde;o orientado a objetos.</p>
+<p>En una arquitectura no-distribuida, los desarrolladores trabajan directamente con los objetos del modelo del dominio. Aqu&iacute;, los objetos del dominio representa entidades de negocio y exponen interfaces con m&eacute;todos de granularidad fina, como pueden ser los m&eacute;todos <span class="codefrag">get</span> y <span class="codefrag">set</span> de un <em>javabean</em>.</p>
+<p>La penalizaci&oacute;n de rendimiento de una aplicaci&oacute;n distribuida descarta el uso de &eacute;ste tipo de objetos, ya que incrementa el n&uacute;mero de llamadas a trav&eacute;s de la red.</p>
+<p>Para mantener el n&uacute;mero de viajes de ida y vuelta al m&iacute;nimo, los interfaces remotos se deben dise&ntilde;ar con granularidad gruesa, donde los m&eacute;todos combinan la funcionalidad de varios m&eacute;todos finos en una sola llamada.</p>
+<p>Una ayuda a la hora de dise&ntilde;ar los m&eacute;todos es el uso de los patrones de dise&ntilde;o, en especial, aquellos que tratan con componentes distribuidos, como pueden ser <em>Session Fa&ccedil;ade</em> y <em>Transfer/Value Object</em>. M&aacute;s informaci&oacute;n en <a href="../pat/sesion03-apuntes.html">Patrones para Aplicaciones Distribuidas</a>
+</p>
+<p>A pesar de la existencia de los patrones, el arquitecto debe tener en cuenta las restricciones que ofrecen las tecnolog&iacute;as, y reflejarlo en las arquitecturas dise&ntilde;adas. Si las tecnolog&iacute;as marcan el modo de dise&ntilde;ar el interfaz de un componente, estamos contradiciendo las pautas de un buen dise&ntilde;o orientado a objetos.</p>
+<a name="N10137"></a><a name="Elecci%C3%B3n+de+un+Dise%C3%B1o+Apropiado"></a>
+<h3 class="underlined_5">Elecci&oacute;n de un Dise&ntilde;o Apropiado</h3>
+<p>Los componentes distribuidos no son un prerrequisito para todas las arquitecturas empresariales. A menos que los requisitos del sistema dicten la necesidad de una arquitectura distribuida, siempre se podr&aacute; implementar una aplicaci&oacute;n m&aacute;s sencilla que evite el uso de las llamadas remotas.</p>
+<div class="frame note">
+<div class="label">Importante</div>
+<div class="content">La decisi&oacute;n arquitectural de utilizar componentes distribuidos va a condicionar la complejidad de la aplicaci&oacute;n, y por ello, los costes (econ&oacute;micos y temporales) del proyecto.
+</div>
+</div>
+</div>
+
+
+<a name="N10146"></a><a name="Propuestas+de+Arquitecturas+Java+EE"></a>
+<h2 class="underlined_10">Propuestas de Arquitecturas Java EE</h2>
+<div class="section">
+<a name="N1014C"></a><a name="Arquitectura+JavaEE+Local"></a>
+<h3 class="underlined_5">Arquitectura JavaEE Local</h3>
+<p>Para solucionar algunos de los problemas en la arquitectura vista previamente, la siguiente soluci&oacute;n modifica la arquitectura para incorporar los EJBs que ofrecen una <strong>vista local</strong> de sus interfaces a los clientes.</p>
+<p>Por un lado, la especificaci&oacute;n de servlets 2.3 garantiza que los objetos de la capa web puedan acceder a los EJBs v&iacute;a sus interfaces locales si la aplicaci&oacute;n se despliega en un servidor de aplicaciones JavaEE integrado en un &uacute;nica JVM. Esto nos permite beneficiarnos de los servicios ofrecidos por el contenedor EJB, pero sin incurrir en la excesiva complejidad ni la necesidad de hacer nuestra aplicaci&oacute;n distribuida.</p>
+<p>Por el otro, la especificaci&oacute;n de EJB 2.0, introdujo los interfaces locales como respuesta a la presi&oacute;n de la industria respecto al rendimiento de las arquitecturas EJB. Como ya sabemos, el uso de interfaces locales permite el uso de la convenci&oacute;n de paso por referencia, evitando la sobrecarga incurrida en las llamadas remotas.</p>
+<a name="N1015E"></a><a name="Ventajas"></a>
+<h4>Ventajas</h4>
+<p>El uso de arquitecturas con EJBs locales ofrece las siguientes ventajas:</p>
+<ul>
+        
+<li>Es menos compleja que una aplicaci&oacute;n EJB distribuida</li>
+        
+<li>El uso de los EJBs no altera el dise&ntilde;o b&aacute;sico de la aplicaci&oacute;n. En este tipo de arquitectura, podemos hacer EJBs s&oacute;lo aquellos objetos que necesitan servicios del contenedor EJB.</li>
+        
+<li>Este tipo de uso de los EJBs implica una penalizaci&oacute;n de rendimiento muy peque&ntilde;a (casi despreciable), ya que no realiza llamadas remotas ni serializaci&oacute;n de los objetos.</li>
+        
+<li>Ofrece los beneficios del contenedor EJB tales como la gesti&oacute;n de las transacciones, seguridad declarativa y gesti&oacute;n de la concurrencia.</li>
+        
+<li>En el caso de quererlo, podemos utilizar beans de entidad</li>
+    
+</ul>
+<a name="N1017A"></a><a name="Limitaciones"></a>
+<h4>Limitaciones</h4>
+<p>Hemos visto que esta arquitectura representa un buen uso (y valido) de la tecnolog&iacute;a EJB, donde los requisitos del sistema pueden utilizar la seguridad declarativa y la gesti&oacute;n de las transacciones. Algunas de las debilidades son: </p>
+<ul>
+        
+<li>Es m&aacute;s compleja que una aplicaci&oacute;n web pura.</li>
+        
+<li>Todav&iacute;a no soporta otro tipo de clientes que no sean el interfaz web, a no ser que a&ntilde;adamos una capa de servicios web.</li>
+        
+<li>Toda la aplicaci&oacute;n corre sobre la misma JVM, lo que significa que todos los componentes debe ejecutarse en el mismo servidor f&iacute;sico y no se pueden separar para desplegarlos en servidores diferentes.</li>
+        
+<li>Este tipo de EJBs son dif&iacute;cil de probar. Necesitamos hacerlo desde casos de prueba que lo hagan dentro del servidor JavaEE (con Cactus).</li>
+        
+<li>Todav&iacute;a existe la tentaci&oacute;n de modificar el dise&ntilde;o de lo objetos como resultado del uso de los EJBs. Incluso con interfaces locales,
+        existe un peque&ntilde;o ralentizacimiento en las llamadas a los m&eacute;todos, lo que nos puede llevar a modificar la granularidad natural de los objetos de negocio.</li>
+    
+</ul>
+<p>
+    A veces podemos decidir introducir EJBs en una arquitectura, que en un principio no los necesita. Si seguimos el enfoque XP de "<em>haz la cosa m&aacute;s simple que pueda funcionar</em>", puede que los requisitos funcionales no justifiquen la complejidad introducida por los EJBs, pero la incorporaci&oacute;n de futuros requisitos puede aconsejar su uso.
+    </p>
+<p>
+    Si adoptamos los interfaces como componentes de negocio, tal como en la arquitectura anterior, el hecho de introducir EJBs con interfaces locales no conlleva ning&uacute;n problema. Simplemente, podemos elegir que interfaces queremos hacerlos accesibles desde proxys.
+    </p>
+<p>
+    Si introducimos EJBs remotos, la cosa cambia. Ya no es una cuesti&oacute;n de meter o no meter EJBs, sino que modifica completamente la naturaleza de la aplicaci&oacute;n. Por ejemplo, la granularidad de los interfaces de negocio puede necesitar ser m&aacute;s gruesa para evitar el m&uacute;ltiple uso de llamadas remotas y conseguir un rendimiento adecuado. Tambi&eacute;n puede que queramos mover toda la l&oacute;gica de negocio dentro del contenedor EJB...
+    </p>
+<a name="N101A2"></a><a name="Implementaci%C3%B3n"></a>
+<h4>Implementaci&oacute;n</h4>
+<p>En la siguiente arquitectura, la capa web es id&eacute;ntica a la vista anteriormente. Los interfaces de negocio son id&eacute;nticos. La diferencia est&aacute; en su implementaci&oacute;n, lo que ata&ntilde;e a la capa EJB. Por lo tanto, la capa de middleware se divide en dos (los interfaces de negocio corriendo en el contenedor web y los EJBs), pero ambas partes ejecut&aacute;ndose dentro de la misma JVM.</p>
+<p>As&iacute; pues, hemos cambiado los objetos de negocio por beans de sesi&oacute;n, los cuales los desplegamos sobre el contenedor EJB del servidor JavaEE.</p>
+<p>Tenemos 2 posibilidades para implementar los interfaces de negocio:</p>
+<ul>
+        
+<li>mediante un <em>Proxy</em>, en el cual un EJB local implementa el interfaz de negocio directamente, y se le ofrece una referencia al interfaz del EJB local en el c&oacute;digo del contenedor web, sin la necesidad de realizar la b&uacute;squeda JNDI.</li>
+        
+<li>mediante un <em>Business Delegate</em>, en el cual el la implementaci&oacute;n del interfaz de negocio del contenedor web delega de forma explicita en el EJB apropiado. Esto tiene la ventaja de soportar el cacheo y permitir a las operaciones fallidas recuperarse en el lugar apropiado.</li>
+    
+</ul>
+<p>En ninguno de los dos casos hemos de preocuparnos por capturar la excepci&oacute;n <span class="codefrag">java.rmi.RemoteException</span>, ya que no existen errores de transporte.
+    </p>
+<p>
+        
+<img alt="Arquitectura EJB Local" content-width="11cm" src="imagenes/j2ee/arq-ejb-local.jpg" width="421">
+    </p>
+<p>En esta arquitectura, a diferencia de una arquitectura que expone los interfaces remotos v&iacute;a EJB, el uso de los EJBs simplemente es una elecci&oacute;n de implementaci&oacute;n, pero no una caracter&iacute;stica fundamental de la arquitectura. Cualquiera de los interfaces de negocio puede implementarse sin usar EJBs, lo que no conllevar&iacute;a ning&uacute;n cambio en el dise&ntilde;o global de la aplicaci&oacute;n.</p>
+<p>
+    Por lo tanto, estamos ante una arquitectura comprometida con el rendimiento, la cual es posible gracias a las mejoras introducidas en la especificaci&oacute;n EJB 2.0 </p>
+<a name="N101D7"></a><a name="Arquitectura+JavaEE+Distribuida"></a>
+<h3 class="underlined_5">Arquitectura JavaEE Distribuida</h3>
+<p>Se trata de la arquitectura cl&aacute;sica JavaEE. Ofrece la capacidad de partir la capa de middleware de forma f&iacute;sica y l&oacute;gica, usando diferentes JVMs para los EJbs, de modo que los componentes web puedan utilizarlos. Se trata de una arquitectura compleja, con una sobrecarga de rendimiento significativa.</p>
+<a name="N101E0"></a><a name="Ventajas-N101E0"></a>
+<h4>Ventajas</h4>
+<p>El uso de arquitecturas distribuidas ofrece las siguientes ventajas:</p>
+<ul>
+        
+<li>Soporta todos los tipos de cliente JavaEE mediante una capa de middleware compartida.</li>
+        
+<li>Permite la distribuci&oacute;n de componentes de aplicaci&oacute;n a trav&eacute;s de los diferentes servidores f&iacute;sicos. Esto funciona particularmente bien si la capa de EJB es "sin estado". Las aplicaciones JavaEE con capa de presentaci&oacute;n con estado (mediante el uso del objeto <span class="codefrag">Session</span>), pero con la capa de middleware sin estado (mediante <span class="codefrag">Stateless Session Beans</span>) se benefician de este tipo de despliegue y obtienen la m&aacute;xima escalabilidad posible.</li>
+    
+</ul>
+<a name="N101F9"></a><a name="Limitaciones-N101F9"></a>
+<h4>Limitaciones</h4>
+<p>Las limitaciones de esta arquitectura son:</p>
+<ul>
+        
+<li>Se trata del enfoque m&aacute;s complejo de los que hemos considerado. Si los requisitos de la aplicaci&oacute;n no obligan a esta complejidad, estaremos malgastando recursos a lo largo del ciclo de vida del proyecto, y sembrando un campo f&eacute;rtil para la aparici&oacute;n de errores.</li>
+        
+<li>Afecta al rendimiento. Las llamadas a m&eacute;todos remotos pueden ser cientos de veces m&aacute;s lentas que las llamadas locales por referencia. El efecto de esta sobrecarga de rendimiento depende del numero de llamadas remotas necesarias.</li>
+        
+<li>Las aplicaciones distribuidas son dif&iacute;ciles de probar y depurar.</li>
+        
+<li>Todos los componentes de negocio deben ejecutarse en el contenedor EJB. Mientras esto ofrece un interfaz comprensible para los clientes remotos, es un aspecto problem&aacute;tico si el EJB no puede utilizar para resolver todos los problemas impuestos por los requisitos de negocio. Por ejemplo, si el patr&oacute;n de dise&ntilde;o <span class="codefrag">Singleton</span> es una buena elecci&oacute;n, ser&aacute; muy dif&iacute;cil de implementar satisfactoriamente mediante EJBs.</li>
+        
+<li>El dise&ntilde;o OO se dificulta por el uso centralizado de RMI.</li>
+        
+<li>La gesti&oacute;n de las excepciones es m&aacute;s compleja en sistemas distribuidos. Se deben controlar tanto los errores de transporte como los de aplicaci&oacute;n.</li>
+    
+</ul>
+<a name="N1021B"></a><a name="Implementaci%C3%B3n-N1021B"></a>
+<h4>Implementaci&oacute;n</h4>
+<p>Aunque el diagrama muestre una aplicaci&oacute;n web, esta arquitectura soporta cualquier tipo de cliente JavaEE. Por lo tanto, se trata de una arquitectura preparada para las necesidades de las aplicaciones cliente.
+    </p>
+<p>Esta arquitectura utiliza RMI entre las capas de presentaci&oacute;n (o con otros cliente remotos) y los objetos de negocio, los cuales est&aacute;n expuestos como EJBs (los detalles de la comunicaci&oacute;n RMI los abstrae el contenedor de EJBs, pero hemos de tratar con las implicaciones de su uso). Esto hace las invocaciones remotas un factor determinante de rendimiento y una consideraci&oacute;n central a la hora de realizar el dise&ntilde;o. Como vimos anteriormente, hemos de minimizar el n&uacute;mero de llamadas remotas (evitando las llamadas "chatty"). Adem&aacute;s, todos los objetos enviados deben ser serializables, y debemos tratar con requisitos de gesti&oacute;n de errores m&aacute;s complejos.</p>
+<p>La capa web de esta arquitectura es la misma que hemos comentado antes. Sin embargo, la implementaci&oacute;n del interfaz de negocio debe tratar el acceso remoto al EJB en el, posiblemente remoto, contenedor EJB.</p>
+<p>De las 2 posibilidades de conectividad vistas anteriormente, solo el enfoque del <em>Business Delegate</em> es &uacute;til en este caso, ya que todos los m&eacute;todos del interfaz remoto del EJB lanzan <span class="codefrag">java.rmi.RemoteException</span>.</p>
+<p>Al tratarse de una excepci&oacute;n chequeada, a no ser que utilicemos un <em>Business Delegate</em> para contactar con los EJBs y envolver las excepciones RMI como excepciones de ejecuci&oacute;n o aplicaci&oacute;n, la capa de presentaci&oacute;n deber&aacute; capturar la excepci&oacute;n remota, lo cual la ata de forma inapropiada a la implementaci&oacute;n del EJB.</p>
+<p>
+        
+<img alt="Arquitectura EJB Remota" content-width="11cm" src="imagenes/j2ee/arq-ejb-remota.jpg" width="421">
+    </p>
+<a name="N10244"></a><a name="%C2%BFY+tu+qu%C3%A9+eliges%3F"></a>
+<h3 class="underlined_5">&iquest;Y tu qu&eacute; eliges?</h3>
+<p>Tras ver las diferentes alternativas arquitecturales, podemos hacer una elecci&oacute;n de si una nueva aplicaci&oacute;n necesita un servidor de aplicaci&oacute;n completo (con soporte de JTA, JCA, EJBs) o un contenedor web como Tomcat.</p>
+<p>Existen diferentes beneficios para evitar el uso de un servidor de aplicaciones, tales como:</p>
+<ul>
+    
+<li>Menor coste de licencia, en el caso de productos comerciales. Muchas empresas est&aacute;n pagando la licencia de un producto que no necesitan.</li>
+    
+<li>Arranque m&aacute;s r&aacute;pido, lo que nos ahorra tiempo de desarrollo.</li>
+    
+<li>Administraci&oacute;n m&aacute;s sencilla, y por lo tanto, curva de aprendizaje menor.</li>
+
+</ul>
+<p>Las aplicaciones web que s&oacute;lo utilizan una base de datos rara vez requieren un servidor de aplicaciones. Los contenedores ligeros (tipo Spring) ofrecen mejores alternativas que un contenedor EJB para gestionar los objetos de negocio en la mayor&iacute;a de las aplicaciones web. Las transacciones distribuidas, y por tanto JTA, no son necesarias cuando trabajamos con una &uacute;nica base de datos.</p>
+<p>Necesitamos un servidor de aplicaciones si:</p>
+<ul>
+    
+<li>necesitamos transacciones distribuidas</li>
+    
+<li>queremos que nuestra aplicaci&oacute;n sea remota, para lo cual los EJBs son una buena soluci&oacute;n. Sin embargo, los servicios web remotos ofrecen casi las mismas prestaciones (recuperaci&oacute;n frente a ca&iacute;da del servidor, clustering, ...) sin necesidad de un servidor de aplicaciones para ofrecer escalabilidad y tolerancia.</li>
+
+</ul>
+<p>Resumiendo, en las arquitectura que no son EJB, el factor cr&iacute;tico que se hecha en falta es la <strong>gesti&oacute;n de las transacciones</strong>. Por ello, debemos asegurarnos que nuestros requisitos se cumplen con transacciones locales o distribuidas.</p>
+</div> 
+
+
+<p class="pageBreakAfter"></p>
+
+
+<a name="N10276"></a><a name="Model+Driven+Architecture+%28MDA%29"></a>
+<h2 class="underlined_10">Model Driven Architecture (MDA)</h2>
+<div class="section">
+<p>
+<acronym title="Model Driven Architecture">MDA</acronym> (Arquitectura Dirigida por el Modelo) se trata de un enfoque al desarrollo de software definido por el <acronym title="Object Management Group">OMG</acronym> que combina la pr&aacute;ctica del modelado y la generaci&oacute;n de c&oacute;digo en un &uacute;nico paradigma. MDA promueve ambas tecnolog&iacute;as al m&aacute;ximo, mediante el uso de modelos como la base para la generaci&oacute;n de una cantidad importante de c&oacute;digo de la aplicaci&oacute;n.</p>
+<p>MDA fomenta un enfoque centrado en el negocio y utiliza el modelado como un medio para que el arquitecto se centre en las funcionalidades del sistema que son cr&iacute;ticas para el negocio sin la distracci&oacute;n de los aspectos t&eacute;cnicos</p>
+<p>El uso de modelos y generaci&oacute;n de c&oacute;digo ofrece los siguientes beneficios (los cuales son semejantes al uso de UML):</p>
+<ul>
+	
+<li>
+<strong>Reducci&oacute;n de los tiempos de desarrollo</strong>. MDA se centra en los modelos, no en el c&oacute;digo. Los modelos se producen a nivel de negocio, y se traducen a c&oacute;digo mediante herramientas sofisticadas de generaci&oacute;n de c&oacute;digo. La destreza para pasar del modelo de negocio a la implementaci&oacute;n reduce la mayor&iacute;a de los esfuerzos de codificaci&oacute;n y permite la disponibilidad de un sistema ejecutable en fases tempranas del ciclo de vida del proyecto.</li>
+	
+<li>
+<strong>Calidad homog&eacute;nea del software</strong>. MDA pone bajo el control del arquitecto el proceso autom&aacute;tico de transformar los modelos en implementaciones. El arquitecto puede producir reglas de transformaci&oacute;n para convertir los modelos en c&oacute;digo. Este proceso de transformaci&oacute;n tambi&eacute;n se puede aplicar a cualquier proyecto de desarrollo, resultando en un software el cual es consistente respecto a su calidad y uso de est&aacute;ndares.</li>
+	
+<li>
+<strong>Portabilidad de plataforma</strong>. Los modelos que inician el proceso MDA son independientes de la plataforma. Mediante el uso de generadores de c&oacute;digo a medida para un tipo especifico de plataforma, MDA permite a los sistemas abarcar cualquier tecnolog&iacute;a o framework para el cual exista el correspondiente generador de c&oacute;digo.</li>
+
+</ul>
+<p>El enfoque MDA define un proceso seg&uacute;n el cual puede generarse una aplicaci&oacute;n funcional a partir de un modelo del dominio de negocio, el cual se conoce como <strong>Modelo Independiente de la Plataforma</strong> (<acronym title="Platform Independent Model">PIM</acronym>). Este salto del modelo conceptual a una aplicaci&oacute;n funcional se consigue mediante el refinamiento sucesivo de una serie de modelos, en el cual cada modelo se genera
+mediante abstracciones de los niveles inferiores. El modelo final del proceso esta fuertemente acoplado a la plataforma de destino, y por lo tanto, se puede generar un alto porcentaje del c&oacute;digo de la aplicaci&oacute;n.</p>
+<a name="N102A8"></a><a name="Plataforma"></a>
+<h3 class="underlined_5">Plataforma</h3>
+<p>MDA utiliza el t&eacute;rmino plataforma para abordar todos los aspectos t&eacute;cnicos relacionados con la implementaci&oacute;n, aquellos que son irrelevantes para la funcionalidad del componente de software.</p>
+<p>Esta definici&oacute;n cubre aspectos t&eacute;cnicos como la elecci&oacute;n del middleware (JavaEE o .NET), los patrones de dise&ntilde;o a utilizar, framework MVC a utilizar en una aplicaci&oacute;n Web, etc...</p>
+<p>Como veremos m&aacute;s adelante, MDA pone un gran &eacute;nfasis en la neutralidad de plataforma y separa la funcionalidad del negocio de los requisitos del dise&ntilde;o de la plataforma de destino</p>
+<a name="N102B8"></a><a name="Modelos"></a>
+<h3 class="underlined_5">Modelos</h3>
+<p>El paradigma MDA utiliza modelos por todos los beneficios asociados con el modelado, como pueden ser la facilidad de comunicaci&oacute;n, tanto con el cliente como con los integrantes del equipo de desarrollo, o el medio de validar el dise&ntilde;o respecto a los cambios de requisitos mediante los diagramas de interacci&oacute;n UML.</p>
+<p>MDA maximiza los beneficios del modelado haciendo que el modelado sea el elemento centro del proceso de desarrollo, e incorporando las ventajas de la generaci&oacute;n autom&aacute;tica de c&oacute;digo de aplicaci&oacute;n.</p>
+<p>Mediante MDA, los modelos se transforman en niveles decrecientes de abstracci&oacute;n hasta llegar a nivel de la aplicaci&oacute;n. Se conoce como <strong>refinamiento</strong> a la relaci&oacute;n entre los modelos que ofrece una visi&oacute;n del mismo sistema mediante diferentes niveles de abstracci&oacute;n.</p>
+<p>Existen 2 tipos de modelos que forman la columna vertebral del paradigma MDA: el mencionado PIM y el especializado <strong>Modelo eSpec&iacute;fico de Plataforma</strong> (<acronym title="Platform Specific Model">PSM</acronym>).</p>
+<p>En este listado se puede a&ntilde;adir el c&oacute;digo del modelo, o la <strong>implementaci&oacute;n</strong>. La OMG defina la implementaci&oacute;n como una especificaci&oacute;n capaz de ofrecer toda la informaci&oacute;n necesaria para poner la
+aplicaci&oacute;n en funcionamiento. El c&oacute;digo fuente producido por una implementaci&oacute;n particular se considera un modelo MDA, y es ejecutable mediante un ordenador.</p>
+<p>La siguiente figura muestra el ciclo de vida entre los diferentes modelos MDA.</p>
+<p>
+
+<img alt="Ciclo de Vida MDA" content-width="14,6cm" src="imagenes/mda/mda2.jpg" width="506">
+</p>
+<a name="N102E6"></a><a name="PIM+%28Modelo+Independiente+de+la+Plataforma%29"></a>
+<h4>PIM (Modelo Independiente de la Plataforma)</h4>
+<p>El PIM es el resultado de una fase de an&aacute;lisis intensivo y se centra en las funcionalidades principales de negocio que el cliente solicita. Tal como indica su nombre, El PIM ofrece una visi&oacute;n del sistema que no esta restringida a ninguna plataforma en particular. De hecho, el PIM expresa el comportamiento puro de negocio.</p>
+<p>La OMG recomienda el uso de UML para construir el PIM, donde los  diagramas de clases describen el dominio del negocio. Ya que el PIM se construye en colaboraci&oacute;n con el cliente, los diagramas UML son un efectivo mecanismo de comunicar las intenciones y el comportamiento del sistema.</p>
+<p>Lo que nunca debe mostrar el PIM son las tecnolog&iacute;as espec&iacute;ficas requeridas para implementar la aplicaci&oacute;n. Para ello tenemos el PSM.</p>
+<a name="N102F6"></a><a name="PSM+%28Modelo+eSpec%C3%ADfico+de+Plataforma%29"></a>
+<h4>PSM (Modelo eSpec&iacute;fico de Plataforma)</h4>
+<p>El PSM es una refinamiento del PIM para una plataforma en particular, donde la plataforma representa el sistema operativo real, frameworks, middleware, gestor de base de datos, o cualquier tecnolog&iacute;a a nivel de implementaci&oacute;n del sistema. Por lo tanto, el PSM est&aacute; muy cercano con el c&oacute;digo de la aplicaci&oacute;n, de modo que el el c&oacute;digo puede generarse a partir de la estructura que defina el modelo.</p>
+<p>El PSM es equivalente al tipo de modelo producido por las herramientas de modelado (tipo <em>Borland Together</em> o <em>Rational Software Architect</em>). Se trata de una abstracci&oacute;n a bajo nivel que se sit&uacute;a por encima de la implementaci&oacute;n final. Mediante un proceso de transformaci&oacute;n apropiado, el PSM puede refinarse en c&oacute;digo de aplicaci&oacute;n ejecutable.</p>
+<p>El proceso de transformaci&oacute;n entre los distintos tipos de modelos se conoce como <strong>mapping</strong> y es otro de los conceptos clave de MDA.</p>
+<a name="N10312"></a><a name="Mapping"></a>
+<h3 class="underlined_5">Mapping</h3>
+<p>El elemento clave del paradigma MDA es el m&eacute;todo mediante el cual los modelos se transforman desde el PIM a una aplicaci&oacute;n en funcionamiento, y el &eacute;xito del paradigma reside en la efectividad con la que esta pueda automatizarse.</p>
+<p>Fundamentalmente, un mapping es un conjunto de reglas y t&eacute;cnicas que permiten a un tipo de modelo convertirse en otro, por ejemplo, un mapping de un PIM a un PSM.</p>
+<p>Tal como hemos comentado, el paso de PSM a la implementaci&oacute;n es una tarea de generaci&oacute;n de c&oacute;digo que ya realizan diversas herramientas existentes en el mercado con gran &eacute;xito. El mayor reto para las herramientas MDA yace en la transformaci&oacute;n del PIM al PSM.</p>
+<p>En el desarrollo convencional sin MDA, el arquitecto instruye al equipo de desarrollo como se va a transformar el PIM en un dise&ntilde;o ejecutable. El arquitecto quiz&aacute;s decida implementar la aplicaci&oacute;n Web mediante <em>Struts</em> en vez de usar <em>JSF</em>. Del mismo modo, puede decidir construir la capa de persistencia mediante <em>Hibernate</em> en vez de utilizar <em>beans de entidad</em>.</p>
+<p>Las decisiones del arquitecto no son simplemente un listado de frameworks y tecnolog&iacute;as. Tambi&eacute;n puede elegir acceder a la capa de persistencia mediante el patr&oacute;n <em>Data Access Object</em>, con <em>Value Objects</em> retornados a la
+aplicaci&oacute;n cliente a trav&eacute;s de un <em>Session Fa&ccedil;ade</em>.</p>
+<p>Estas decisiones a nivel de arquitectura, y muchas m&aacute;s, deben aplicarse por el equipo de dise&ntilde;o para llevar un PIM hasta el punto que pueda construirse un soluci&oacute;n. Para que las herramientas MDA vayan desde el PIM al PSM tambi&eacute;n deben seguir la misma direcci&oacute;n. Esta es una tarea muy compleja que todav&iacute;a hace pasar apuros incluso a los mejores arquitectos y dise&ntilde;adores.</p>
+<p>El enfoque MDA plantea que el proceso de transformaci&oacute;n puede ser manual, pero los beneficios reales de MDA solo se consiguen si se automatiza el proceso mediante el uso de herramientas software. En este aspecto, una herramienta MDA se puede considerar como un sistema experto, ya que se aplica el conocimiento y la destreza del arquitecto experto al problema del mapping.</p>
+<a name="N10343"></a><a name="MDA+vs+Modelado+Tradicional"></a>
+<h3 class="underlined_5">MDA vs Modelado Tradicional</h3>
+<p>Las herramientas de modelado como Borland Together (<a class="external" href="http://www.borland.com/us/products/together/index.html">www.borland.com/us/products/together/index.html</a>), Gentleware Poseidon (<a class="external" href="http://www.gentleware.com/products.html">www.gentleware.com/products.html</a>) o MagicDraw (<a class="external" href="http://www.magicdraw.com/">www.magicdraw.com</a>) permiten al ingeniero de software emplear modelos UML para desarrollar aplicaciones. Una pregunta muy com&uacute;n es en qu&eacute; se diferencian los procesos centrados en el uso de estas herramientas respecto a un enfoque de desarrollo MDA.</p>
+<p>Las semejanzas entre los 2 enfoques son muy claras. Ambos potencian las t&eacute;cnicas de modelado para dirigir el proceso de desarrollo, y el conjunto de herramientas necesarias es complejo y necesita de cierto tiempo para tener destreza. Adem&aacute;s, ninguna aclama que sea una capa f&aacute;cil de utilizar por encima de JavaEE. Para cada enfoque, existen grandes prerrequisitos como un gran conocimiento t&eacute;cnico y habilidades de dise&ntilde;o.</p>
+<p>No obstante, las diferencias entre MDA y otras metodolog&iacute;as de desarrollo dirigidas por el modelo existen. Los siguientes apartados aclaran estas diferencias mediante las ventajas e inconvenientes de MDA para el desarrollo de software.</p>
+<a name="N1035E"></a><a name="Ventajas-N1035E"></a>
+<h4>Ventajas</h4>
+<p>Las diferencias entre los 2 enfoques vienen dadas por los niveles de abstracci&oacute;n empleados. MDA fomenta el uso de PIMs de alto nivel para conducir el proceso de desarrollo. Este alto nivel de trabajo otorga a MDA la principal ventaja sobre los procesos de modelado convencionales y especifico a una determinada plataforma.</p>
+<a name="N10367"></a><a name="Centrada+en+el+Negocio"></a>
+<h5>Centrada en el Negocio</h5>
+<p>La construcci&oacute;n de modelo del dominio independiente de la plataforma no es exclusivo del paradigma MDA. Los modelos de dominio se construyen com&uacute;nmente como resultado de cualquier enfoque centrado en el modelo.</p>
+<p>Metodolog&iacute;as de modelado tradicional conf&iacute;an en el modelo de negocio para fomentar la compresi&oacute;n del dominio del problema con el cliente. El arquitecto utiliza los requisitos capturados en los modelos iniciales para construir un PSM, el cual se puede convertir r&aacute;pidamente en c&oacute;digo mediante la mayor&iacute;a de las herramientas de modelado.</p>
+<p>La construcci&oacute;n del PSM es una tarea que requiere conocimiento y que consume tiempo. Antes de que la herramienta de modelado pueda generar un sistema que funcione, el equipo de dise&ntilde;o debe haber definido un PSM detallado.</p>
+<p>La herramienta de modelado genera un sistema a partir del PSM, pero no asiste en la transformaci&oacute;n de los requisitos de negocio en un sistema funcional. Como consecuencia, el arquitecto en vez de repartir su atenci&oacute;n entre las diferentes necesidades de negocio del cliente, se centra en los retos t&eacute;cnicos de implementar una soluci&oacute;n para una plataforma espec&iacute;fica.</p>
+<p>La necesidad de que el arquitecto dise&ntilde;e un PSM es una distracci&oacute;n que puede provocar que los modelos iniciales de negocio no sean totalmente correctos. Mediante las herramientas convencionales, el PSM se convierte en el aspecto principal de los esfuerzos de desarrollo.</p>
+<p>MDA fuerza al arquitecto a centrarse primero en el modelo del dominio, o PIM, y considerar el PSM como un paso m&aacute;s hacia la aplicaci&oacute;n final. El uso de PIM para conducir el proceso de desarrollo mantiene la atenci&oacute;n en los requisitos del cliente, y no en la plataforma de implementaci&oacute;n.</p>
+<a name="N10380"></a><a name="Soporta+un+Proceso+de+Desarrollo+Incremental"></a>
+<h5>Soporta un Proceso de Desarrollo Incremental</h5>
+<p>Una herramienta MDA puede convertir un modelo de negocio en una aplicaci&oacute;n funcional mediante el click de un bot&oacute;n, con reglas de mapping que rellenen los huecos dejados por la falta de infraestructuras requeridas por la plataforma de destino. Esta claro que el sistema generado ser&aacute; muy pobre y con mucha falta de funcionalidad cr&iacute;tica de negocio. Sin embargo, la aplicaci&oacute;n generada ofrece una base s&oacute;lida sobre la cual construir la funcionalidad restante.</p>
+<p>Esta habilidad para saltar del modelo de negocio a una aplicaci&oacute;n funcional casa perfectamente con los procesos de desarrollo cortos, incrementales y con iteraciones. De este modo, se puede construir un prototipo funcional a partir de un modelo m&iacute;nimo en un per&iacute;odo de tiempo m&iacute;nimo. Este tipo de proceso de desarrollo ha demostrado sus beneficios, no solo por su rapidez, sino para construir sistema que cumplan las necesidades del cliente de un modo preciso.</p>
+<a name="N1038D"></a><a name="Facilita+los+Cambios"></a>
+<h5>Facilita los Cambios</h5>
+<p>Las herramientas de modelado tradicional ofrecen un mapping uno a uno con el c&oacute;digo de la aplicaci&oacute;n. Un cambio es una propiedad de una clase en un diagrama de clases UML, y una &uacute;nica clase Java se ver&aacute; afectada. Algunos cambios en los modelos no tienen efecto en el c&oacute;digo generado. El cambio de una relaci&oacute;n de una asociaci&oacute;n a una composici&oacute;n o una agregaci&oacute;n, no provocar&aacute; ning&uacute;n cambio en el c&oacute;digo fuente.</p>
+<p>Mediante una herramienta MDA, un cambio en el PIM provoca un cambio extendido a lo largo de la aplicaci&oacute;n generada. La actualizaci&oacute;n de una entidad de negocio en un PIM se propaga en todas las capas de la arquitectura. El DDL generado para crear las tablas de base de datos cambia; los objetivos de la capa de persistencia cambian; los componentes de negocio cambian; y los correspondientes componentes de aplicaci&oacute;n web tambi&eacute;n cambian.</p>
+<p>Esta habilidad para que la aplicaci&oacute;n se mantenga sincronizada con los peque&ntilde;os cambios del modelo conceptual es una de las caracter&iacute;sticas m&aacute;s poderosas de las herramientas MDA, permitiendo que los cambios en los requisitos del cliente sean efectivos de un modo extremadamente r&aacute;pido.</p>
+<a name="N1039D"></a><a name="Menos+Incidencias+de+Aplicaci%C3%B3n"></a>
+<h5>Menos Incidencias de Aplicaci&oacute;n</h5>
+<p>Una alto porcentaje de las incidencias encontradas en el c&oacute;digo de una aplicaci&oacute;n son el resultado de errores de codificaci&oacute;n en contra de requisitos mal especificados. Mediante las mejores pr&aacute;cticas de generaci&oacute;n de c&oacute;digo en el mapping de PIM a PSM, el riesgo extra de errores de codificaci&oacute;n se reduce considerablemente.</p>
+<a name="N103A7"></a><a name="Portabilidad+de+Tecnolog%C3%ADa"></a>
+<h5>Portabilidad de Tecnolog&iacute;a</h5>
+<p>Java es un lenguaje de desarrollo multiplataforma, lo cual implica la pregunta &iquest;Porqu&eacute; un paradigma que se centra en la independencia de la plataforma es relevante para construir soluciones JavaEE? La respuesta reside en la interpretaci&oacute;n del t&eacute;rmino plataforma.</p>
+<p>JavaEE es una plataforma en constante evoluci&oacute;n. Continuamente aparecen nuevas especificaci&oacute;n que extienden la plataforma, como por ejemplo, la reciente especificaci&oacute;n EJB 3.0. Mantener el ritmo de los cambios, y por tanto, mantener un sistema tecnol&oacute;gicamente actualizado, es una lucha constante.</p>
+<p>MDA, mediante el uso de modelos que describen los sistemas utilizando sem&aacute;nticas independientes de la plataforma, puede ayudar a extender la vida de un sistema asegurando que la funcionalidad se mantiene a lo largo de las diferentes tecnolog&iacute;as.</p>
+<p>El paradigma MDA pueda hacer que nos adaptemos mejor respecto a los cambios de las tecnolog&iacute;as. Para los ingenieros software, MDA reduce los costes del cambio, haciendo posible adoptar tecnolog&iacute;as emergentes sin la necesidad de actualizaciones de la aplicaci&oacute;n prohibitivamente costosas.</p>
+<a name="N103BB"></a><a name="Inconvenientes"></a>
+<h4>Inconvenientes</h4>
+<p>Por muy poderosa que parezca el paradigma MDA, tambi&eacute;n tiene su tal&oacute;n de Aquiles. Algunos de los inconvenientes son:</p>
+<a name="N103C4"></a><a name="Trabajar+con+Sistemas+Heredados+%28Legacy%29"></a>
+<h5>Trabajar con Sistemas Heredados (Legacy)</h5>
+<p>Un &aacute;rea donde las herramientas MDA fracasan es en el modelado convencional duplicado entre las aplicaciones existentes y las estructuras de datos. Las herramientas de modelado pueden realizar ingenier&iacute;a inversa de las aplicaciones en modelos. Sin embargo, tal y como el c&oacute;digo es una representaci&oacute;n del sistema implementado para una plataforma espec&iacute;fica, los modelos que construyen estas herramientas tambi&eacute;n son espec&iacute;ficos de una determinada plataforma. Es decir, no se realiza ingenier&iacute;a inversa al nivel del PIM.</p>
+<p>El mapping de PSM a PIM es complejo y dif&iacute;cil de automatizar. La mayor&iacute;a de herramientas MDA centran sus esfuerzos en mapear de PIM a PSM. Consecuentemente, quien busque la ingenier&iacute;a inversa desde un PIM para seguir un enfoque MDA tiene un duro trabajo. El est&aacute;ndar MDA especifica un mapping de PSM a PIM; sin embargo, en la actualiza pocas herramientas pueden demostrar este mapping de forma satisfactoria.</p>
+<p>Incluso si se produce un PIM para un sistema existente, los problemas todav&iacute;a existen. La capacidad de una herramienta MDA para hacer efectivos los cambios en el c&oacute;digo de la aplicaci&oacute;n mediante un peque&ntilde;o cambio en el PIM es muy reducida debido al enfoque intrusivo de MDA (estamos matando moscas a ca&ntilde;onazos).</p>
+<p>Dados estos retos t&eacute;cnicos en el mapping inverso hacia un PIM, los m&eacute;todos de modelado convencional son m&aacute;s efectivo cuando se extiende o modifica una aplicaci&oacute;n existente o estructuras de datos. Aunque el enfoque MDA deber&iacute;a dominar este &aacute;rea, una herramienta de modelado es el escenario m&aacute;s efectivo porque permite al arquitecto realizar peque&ntilde;os y estrat&eacute;gicos cambios en un posible arquitectura fr&aacute;gil.</p>
+<a name="N103D7"></a><a name="Viabilidad"></a>
+<h5>Viabilidad</h5>
+<p>En teor&iacute;a, MDA es la &uacute;ltima soluci&oacute;n para el desarrollo r&aacute;pido. Produce un modelo preciso de alto nivel a partir de los requerimientos del sistema, se pulsa un bot&oacute;n, y se genera el sistema. En la pr&aacute;ctica &iquest;funciona?</p>
+<p>El enfoque suena simple y obvio, pero tambi&eacute;n suena simple viajar de Madrid a Nueva York mediante el teletransporte instant&aacute;neo pero no es tan f&aacute;cil. Mientras que todas las teor&iacute;as en papel son factibles, hacer el concepto realidad es muy diferente.</p>
+<p>El mapping de PIM a PSM es una tarea compleja. Se trata de un tarea atractiva para un equipo de dise&ntilde;o bien formado; automatizar el proceso tiene que ser m&aacute;s dif&iacute;cil todav&iacute;a. Es en este &aacute;rea donde los oponentes de MDA proclaman la ca&iacute;da del paradigma, ya que no es posibles realizar una aplicaci&oacute;n de calidad sin la intervenci&oacute;n de un ingeniero con habilidades </p>
+<p>A pesar de estas quejas, ya existen diversas herramientas MDA. Las herramientas comerciales m&aacute;s conocidas son <strong>OptimalJ</strong> (<a class="external" href="http://www.compuware.com/products/optimalj/">www.compuware.com/products/optimalj</a>) y <strong>ArcStyler</strong> (<a class="external" href="http://www.interactive-objects.com/products/arcstyler">www.interactive-objects.com/products/arcstyler</a>). En cuanto a Open Source, siendo una herramienta emergente, tenemos <strong>AndroMDA</strong> (<a class="external" href="http://www.andromda.org/">www.andromda.org</a>). Adem&aacute;s, OMG lista de forma orgullos un n&uacute;mero creciente de casos reales exitosos en su web (<a class="external" href="http://www.omg.org/mda/products_success.htm">www.omg.org/mda/products_success.htm</a>)</p>
+</div> 
+
+
+
+<a name="N1040B"></a><a name="Para+Saber+M%C3%A1s"></a>
+<h2 class="underlined_10">Para Saber M&aacute;s</h2>
+<div class="section">
+<a name="N10411"></a><a name="Bibliograf%C3%ADa"></a>
+<h3 class="underlined_5">Bibliograf&iacute;a</h3>
+<ul>
+    
+<li>
+<strong>Expert one-on-one J2EE Design and Development </strong>, de <em>Rod Johnson</em>. Libro que sirvi&oacute; como base del desarrollo de Spring y que destaca todos los puntos fuertes y debiles de los EJBs, destacando cuando hacer qu&eacute; y c&oacute;mo hacerlo.</li>
+    
+<li>
+<strong>Expert one-on-one J2EE Development without EJB</strong>, de <em>Rod Johnson</em>. Secuela de libro anterior donde se defiende la Arquitectura de Contenedor Ligero.</li>
+    
+<li>
+<strong>MDA Explained</strong>, de <em>Anneke Kleppe</em>. Introducci&oacute;n al enfoque MDA sin entrar en detalle en ninguna herramienta.</li>
+
+</ul>
+<a name="N10433"></a><a name="Enlaces"></a>
+<h3 class="underlined_5">Enlaces</h3>
+<ul>
+    
+<li>Apartado del tutorial de Sun sobre JavaEE que habla de las Aplicaciones distribuidas en m&uacute;ltiples niveles: <a class="external" href="http://java.sun.com/javaee/5/docs/tutorial/doc/Overview3.html">java.sun.com/javaee/5/docs/tutorial/doc/Overview3.html</a>
+</li>
+    
+<li>Videos de demostraci&oacute;n de OptimalJ <a class="external" href="http://www.compuware.com/products/optimalj/1793_eng_html.htm">www.compuware.com/products/optimalj/1793_eng_html.htm</a>
+</li>
+    
+<li>Proyecto de Fin de Carrera en la Universidad de Murcia sobre "Ingenieria de Modelos con MDA" <a class="external" href="http://dis.um.es/~jmolina/pfcs/proyecto-mda.pdf">dis.um.es/~jmolina/pfcs/proyecto-mda.pdf</a>
+</li>
+
+</ul>
+</div>
+
+
+
+<p class="pageBreakAfter"></p>
+
+</div>
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+        Copyright &copy;
+         2006-2007 Depto. CCIA</div>
+</div>
+</body>
+</html>

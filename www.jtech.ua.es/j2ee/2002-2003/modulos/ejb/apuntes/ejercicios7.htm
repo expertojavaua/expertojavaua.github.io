@@ -1,0 +1,89 @@
+<head>
+<title>Ejercicios 8 Enterprise Java Beans</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../../ejercicios.css" type="text/css">
+</head>
+<body>
+
+<h1>Ejercicios sesi&oacute;n 7</h1>
+<h2>Descargar y probar el ejemplo7</h2>
+<p>Lanza el servidor de ejemplos creado en un ejercicio anterior. Descarga el 
+  fichero <code>ejemplo7.zip</code> y descompr&iacute;melo en el directorio de 
+  trabajo. Vamos a trabajar con los EJB definidos en ese fichero:</p>
+<ul>
+  <li>Customer</li>
+  <li>Address</li>
+  <li>CreditCard</li>
+  <li>Phone</li>
+</ul>
+<p> Vamos a desplegarlo y a probarlo. Esta vez, en lugar de una aplicaci&oacute;n 
+  cliente tenemos unas p&aacute;ginas JSP. Antes de desplegarlo hay que crear 
+  las tablas necesarias en la base de datos (el script se encuentra en el directorio 
+  sql).</p>
+<p>Recordamos la forma de ejecutar el script <code>ejemplo7.sql</code>:</p>
+<pre class="codigo">
+  % cd sql
+  % $WL_HOME/weblogic700/samples/server/eval/pointbase/tools/startPointBaseCommander.sh
+  Do you wish to create a &quot;New/Overwrite&quot; Database? [default: N]: 
+  Select product to connect with: Embedded (E), or Server (S)? [default: E]: S
+  Please enter the driver to use: 
+    [default: [com.pointbase.jdbc.jdbcUniversalDriver]: 
+  Please enter the database URL to use: 
+    [default: [jdbc:pointbase:server://localhost/sample]: 
+	  jdbc:pointbase:server://localhost/demo
+	Username: [default: PBPUBLIC]: examples
+	Password: [default: PBPUBLIC]: examples
+	PointBase Commander 4.2ECF build 183 SERVER
+	Interactive SQL command language. Mac OS X/10.1.5(C) Copyright 1998 - 2002 PointBase(R), 
+	Inc. All rights reserved
+	SQL&gt; run &quot;ejemplo7.sql&quot;;</pre>
+<p>Una vez que hemos creado las tablas, ya podemos proceder al despliegue y a 
+  la prueba. Despliega el fichero <code>ejemplo7.ear</code> <b>como una aplicaci&oacute;n</b>. 
+  Ver&aacute;s que tiene dos componentes, un fichero EJB JAR y un fichero WAR.</p>
+<p>Para probar las p&aacute;ginas JSP debes abrir las URL:</p>
+<ul>
+  <li>http://localhost:7001/ejemplo7/client1.jsp: se crea un ejb Customer y un 
+    ejb CreditCard y se relacionan</li>
+  <li>http://localhost:7001/ejemplo7/client2.jsp: se crea un ejb Address y se 
+    relaciona con el Customer</li>
+  <li>http://localhost:7001/ejemplo7/client3.jsp: se crean ejbs Phone y se hacen 
+    distintas operaciones</li>
+</ul>
+<h2>Ejercicios</h2>
+<p>1. Modifica la p&aacute;gina JSP <code>client1.jsp</code> para:</p>
+<ul>
+  <li> crear dos ejbs Customer con claves primarias 71 y 72</li>
+  <li>comprobar si existen los ejb y no se creen unos nuevos si ya existen</li>
+  <li>crear dos ejbs CreditCard distintos que se asignan a cada uno</li>
+  <li>terminar asignando uno de los ejb CreditCard al otro Customer. Comprueba 
+    si se ha desconectado del primero.</li>
+</ul>
+<p>Reconstruye el fichero ear para que incluya las modificaciones, vuelve a desplegarlo 
+  y comprueba si funciona bien.</p>
+<p>2. Modifica la p&aacute;gina JSP <code>client2.jsp</code> para:</p>
+<ul>
+  <li>crear una direcci&oacute;n para el Customer 72</li>
+  <li>intercambiar las direcciones del Customer 72 y del Customer 71</li>
+</ul>
+<p>3. Modifica el ejb Customer para incluir el siguiente m&eacute;todo de ayuda</p>
+<pre class="codigo">
+public void removePhoneNumberWithDelete(byte typeToRemove)
+   throws javax.ejb.RemoveException {
+   
+   Collection phoneNumbers = this.getPhoneNumbers();
+   Iterator iterator = phoneNumbers.iterator();
+   
+   while (iterator.hasNext()) {
+      PhoneLocal phone = (PhoneLocal) iterator.next();
+	  if (phone.getType() == typeToRemove) {
+	     phoneNumbers.remove(phone);
+		 phone.remove();
+	  }
+   }
+}
+</pre>
+<p> Modifica el fichero <code>client3.jsp</code> para que se llame a este m&eacute;todo 
+  y comprueba que realmente se han borrado los ejb Phone correspondientes.</p>
+<p>&nbsp;</p>
+</body>
+</html>

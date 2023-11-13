@@ -1,0 +1,1262 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Patrón MVC: Vistas y controladores.</title>
+
+		<meta name="description" content="Experto en desarrollo de aplicaciones web con JavaEE y Javascript">
+		<meta name="author" content="Francisco José García Rico">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/experto.css" id="theme">
+		
+    	<!-- coloreado de sintaxis con highlight.js -->
+    	<link rel="stylesheet" type="text/css" href="lib/css/github.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+
+	</head>
+
+<body>
+	<div class="reveal">
+	<div class="slides">
+		<!-- todo lo que se ponga aqui (que no sea un <section>) aparecerá
+		en todas las diapositivas -->
+		<div class="header">
+			<div class="logo">
+			 <img src="css/images/logo_small.png">
+			</div>
+			<div class="bar">Experto en desarrollo de aplicaciones web con JavaEE y Javascript</div>
+		</div>
+		<div class="footer">
+			<div class="left">
+				Framework Grails
+			</div>
+			<div class="center">
+				&copy; 2014-15 Dpto. Ciencia de la Computación e I.A.
+			</div>
+			<div class="right">
+				Sesión 4
+			</div>	
+		</div>	
+		<!-- Cada <section> es una slide -->	
+		
+		<section>
+			<!-- al poner el <h1> automáticamente aparece el logo del curso-->
+			<h1>Framework Grails</h1>
+			<h2>Sesión 4: Patrón MVC: Vistas y controladores.</h2>
+		</section>
+		
+		<section>
+			<h2>Índice</h2>
+			<ul>
+				<li>Vistas</li>
+				<li>Controladores</li>
+			</ul>
+		</section>
+
+		<section>			
+			<h2>Vistas</h2>
+			<ul>
+				<li>Archivos GSP</li>
+				<li>Ubicadas en <em>grails-app/views</em></li>
+				<li>Directorio <em>layouts</em></li>
+				<li><em>main.gsp</em></li>
+				<li>SiteMesh</li>
+			</ul>		 
+		</section>
+
+		<section>			
+			<h2>main.gsp</h2>
+			<pre>
+				<code class="html" data-trim style="font-size: 18px;">
+&lt;!DOCTYPE html&gt;
+&lt;!--[if lt IE 7 ]&gt; &lt;html lang=&quot;en&quot; class=&quot;no-js ie6&quot;&gt; &lt;![endif]--&gt;
+&lt;!--[if IE 7 ]&gt;    &lt;html lang=&quot;en&quot; class=&quot;no-js ie7&quot;&gt; &lt;![endif]--&gt;
+&lt;!--[if IE 8 ]&gt;    &lt;html lang=&quot;en&quot; class=&quot;no-js ie8&quot;&gt; &lt;![endif]--&gt;
+&lt;!--[if IE 9 ]&gt;    &lt;html lang=&quot;en&quot; class=&quot;no-js ie9&quot;&gt; &lt;![endif]--&gt;
+&lt;!--[if (gt IE 9)|!(IE)]&gt;&lt;!--&gt; 
+&lt;html lang=&quot;en&quot; class=&quot;no-js&quot;&gt;&lt;!--&lt;![endif]--&gt;
+    &lt;head&gt;
+        &lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8&quot;&gt;
+        &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge,chrome=1&quot;&gt;
+        &lt;title&gt;&lt;g:layoutTitle default=&quot;Grails&quot;/&gt;&lt;/title&gt;  
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+        &lt;link rel=&quot;shortcut icon&quot; href=&quot;${assetPath(src: 'favicon.ico')}&quot; type=&quot;image/x-icon&quot;&gt;
+        &lt;link rel=&quot;apple-touch-icon&quot; href=&quot;${assetPath(src: 'apple-touch-icon.png')}&quot;&gt;
+        &lt;link rel=&quot;apple-touch-icon&quot; sizes=&quot;114x114&quot; href=&quot;${assetPath(src: 'apple-touch-icon-retina.png')}&quot;&gt;
+        &lt;asset:stylesheet src=&quot;application.css&quot;/&gt;
+        &lt;asset:javascript src=&quot;application.js&quot;/&gt;
+        &lt;g:layoutHead/&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;div id=&quot;grailsLogo&quot; role=&quot;banner&quot;&gt;&lt;a href=&quot;http://grails.org&quot;&gt;&lt;asset:image src=&quot;grails_logo.png&quot; alt=&quot;Grails&quot;/&gt;&lt;/a&gt;&lt;/div&gt;
+        &lt;g:layoutBody/&gt;
+        &lt;div class=&quot;footer&quot; role=&quot;contentinfo&quot;&gt;&lt;/div&gt;
+        &lt;div id=&quot;spinner&quot; class=&quot;spinner&quot; style=&quot;display:none;&quot;&gt;&lt;g:message code=&quot;spinner.alt&quot; default=&quot;Loading&amp;hellip;&quot;/&gt;&lt;/div&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+				</code>
+			</pre>			
+		</section>		
+
+		<section>						
+			<h2>main.gsp</h2>
+			<ul>
+				<li>Etiqueta <em>layoutTitle</em></li>
+				<li>Etiqueta <em>layoutHead</em></li>
+				<li>Etiqueta <em>layoutBody</em></li>
+			</ul>						
+		</section>
+
+		<section>			
+			<h2>error.gsp</h2>
+			<pre>
+				<code class="html" data-trim style="font-size: 18px;">
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt;
+            &lt;g:if env=&quot;development&quot;&gt;Grails Runtime Exception&lt;/g:if&gt;&lt;g:else&gt;Error&lt;/g:else&gt;
+        &lt;/title&gt;
+        &lt;meta name=&quot;layout&quot; content=&quot;main&quot;&gt;
+        &lt;g:if env=&quot;development&quot;&gt;&lt;asset:stylesheet src=&quot;errors.css&quot;/&gt;&lt;/g:if&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;g:if env=&quot;development&quot;&gt;
+            &lt;g:renderException exception=&quot;${exception}&quot; /&gt;
+        &lt;/g:if&gt;
+        &lt;g:else&gt;
+            &lt;ul class=&quot;errors&quot;&gt;
+                &lt;li&gt;An error has occurred&lt;/li&gt;
+            &lt;/ul&gt;
+        &lt;/g:else&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+				</code>
+			</pre>			
+		</section>	
+
+		<section>
+			<h2>¿Cómo pinta la página de error?</h2>
+			<ul>
+				<li>Se detecta que layout debe pintar la página</li>
+				<li>Realiza la sustituciones necesarias de <em>layoutTitle</em>, <em>layoutHead</em> y <em>layoutBody</em></li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Organización de vistas</h2>
+			<ul>
+				<li>Plantillas</li>
+				<li>Vistas</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Plantillas</h2>
+			<ul>
+				<li>Empiezan por un subrayado bajo <em>_</em></li>
+				<li>Nos permite reutilizar código HTML</li>
+				<li>Cualquier plantilla relacionada con una clase de dominio en cuestión, se debe incluir en un directorio llamado como la clase de dominio</li>
+				<li>Lo que sea común a varias clases, al directorio <em>common</em></li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Plantilla de pie de página</h2>
+			<p>_footer.gsp</p>
+			<pre>
+				<code class="html" data-trim style="font-size: 18px;">
+&lt;div class=&quot;footer&quot; role=&quot;contentinfo&quot;&gt;
+    &amp;copy; 2015 Experto en Desarrollo de Aplicaciones Web con JavaEE y Javascript&lt;br/&gt;
+    Aplicación Todo creada por Francisco José García Rico (21.542.334F)
+&lt;/div&gt;
+				</code>
+			</pre>				
+		</section>
+
+		<section>
+			<h2>Plantilla de pie de página</h2>
+			<p>main.gsp</p>
+			<pre>
+				<code class="html" data-trim style="font-size: 18px;">
+&lt;g:layoutBody/&gt;
+&lt;g:render template=&quot;/common/footer&quot;/&gt;
+&lt;div id=&quot;spinner&quot;...
+				</code>
+			</pre>				
+		</section>
+
+		<section>
+			<h2>Plantilla de pie de página</h2>
+			<p>main.css</p>
+			<pre>
+				<code class="css" data-trim style="font-size: 18px;">
+.footer {
+    background: #abbf78;
+    color: #000;
+    clear: both;
+    font-size: 0.8em;
+    margin-top: 1.5em;
+    padding: 1em;
+    min-height: 1em;
+    text-align:center;
+}
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Plantilla de encabezado</h2>
+			<p>main.gsp</p>
+			<pre>
+				<code class="html" data-trim style="font-size: 18px;">
+&lt;body&gt;
+&lt;g:render template=&quot;/common/header&quot;/&gt;
+&lt;div id=&quot;grailsLogo&quot; role=&quot;banner&quot;&gt;
+    &lt;a href=&quot;http://grails.org&quot;&gt;
+        &lt;img src=&quot;${resource(dir: 'images', file: 'grails_logo.png')}&quot; alt=&quot;Grails&quot;/&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+&lt;g:layoutBody/&gt;
+&lt;g:render template=&quot;/common/footer&quot;/&gt;
+...
+				</code>
+			</pre>				
+		</section>
+
+		<section>
+			<h2>Plantilla de encabezado</h2>
+			<p>_header.gsp</p>
+			<pre>
+				<code class="html" data-trim style="font-size: 18px;">
+&lt;div id=&quot;menu&quot;&gt;
+    &lt;nobr&gt;
+        &lt;g:if test=&quot;${isUserLoggedIn}&quot;&gt;
+            &lt;b&gt;${userInstance?.name} ${userInstance?.surnames}&lt;/b&gt; |
+            &lt;g:link controller=&quot;user&quot; action=&quot;logout&quot;&gt;Logout&lt;/g:link&gt;
+        &lt;/g:if&gt;
+        &lt;g:else&gt;
+            &lt;g:link controller=&quot;user&quot; action=&quot;login&quot;&gt;Login&lt;/g:link&gt;
+        &lt;/g:else&gt;
+    &lt;/nobr&gt;
+&lt;/div&gt;
+				</code>
+			</pre>				
+		</section>
+
+		<section>
+			<h2>Plantilla de encabezado</h2>
+			<p>main.css</p>
+			<pre>
+				<code class="css" data-trim style="font-size: 18px;">
+#header {
+    text-align:left;
+    margin: 0px;
+    padding: 0;
+}
+
+#header #menu{
+    float: right;
+    width: 240px;
+    text-align:right;
+    font-size:12px;
+    padding:4px;
+}
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Páginas</h2>
+			<ul>
+				<li>Se pintan a partir de una llamada desde un controlador</li>
+				<li>No necesitan el subrayado bajo <em>_</em></li>
+			</ul>
+		</section>
+
+
+		<section>
+			<h2>Variables y alcance de las mismas en páginas</h2>
+			<pre>
+				<code class="html" data-trim style="font-size: 18px;">
+<% now = new Date() %>
+				</code>
+			</pre>
+			<pre>
+				<code class="html" data-trim style="font-size: 18px;">
+<%= now %>
+				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>Variables predefinidas</h2>
+			<ul>
+				<li>application</li>
+				<li>applicationContext</li>
+				<li>flash</li>
+				<li>grailsApplication</li>
+				<li>out</li>
+				<li>params</li>
+				<li>request</li>
+				<li>response</li>
+				<li>session</li>
+				<li>webRequest</li>
+			</ul>
+		</section>
+		
+		<section>
+			<h2>Variables y alcance de las mismas en páginas</h2>
+			<pre>
+				<code class="html" data-trim style="font-size: 18px;">
+&lt;html&gt;
+   &lt;body&gt;
+      &lt;% [1,2,3,4].each { num -&gt; %&gt;
+         &lt;p&gt;&lt;%=&quot;Hello ${num}!&quot; %&gt;&lt;/p&gt;
+      &lt;%}%&gt;
+   &lt;/body&gt;
+&lt;/html&gt;
+				</code>
+			</pre>
+		</section>
+
+
+		<section>
+			<h2>Variables y alcance de las mismas en páginas</h2>
+			<pre>
+				<code class="html" data-trim style="font-size: 18px;">
+&lt;html&gt;
+   &lt;body&gt;
+      &lt;% if (params.hello == 'true')%&gt;
+      &lt;%=&quot;Hello!&quot;%&gt;
+      &lt;% else %&gt;
+      &lt;%=&quot;Goodbye!&quot;%&gt;
+   &lt;/body&gt;
+&lt;/html&gt;
+				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>Directivas de páginas</h2>
+			<pre>
+				<code class="html" data-trim style="font-size: 18px;">
+<%@ page import="java.awt.*" %>
+				</code>
+			</pre>	
+			<pre>
+				<code class="html" data-trim style="font-size: 18px;">
+<%@ page contentType="text/json" %>
+				</code>
+			</pre>						
+		</section>
+
+		<section>
+			<h2>Expresiones</h2>
+			<pre>
+				<code class="html" data-trim style="font-size: 18px;">
+&lt;html&gt;
+  &lt;body&gt;
+    Hello ${params.name}
+  &lt;/body&gt;
+&lt;/html&gt;
+				</code>
+			</pre>						
+		</section>
+
+		<section>
+			<h2>Etiquetas</h2>
+			<ul>
+				<li>Etiquetas lógicas</li>
+				<li>Etiquetas de iteración</li>
+				<li>Etiquetas de asignación</li>
+				<li>Etiquetas de enlaces</li>
+				<li>Etiquetas de formularios</li>
+				<li>Etiquetas de renderizado</li>
+				<li>Etiquetas de validación</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Etiquetas lógicas</h2>
+			<ul>
+				<li>&lt;g:if&gt;</li>
+				<li>&lt;g:else&gt;</li>
+				<li>&lt;g:elseif&gt;</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Etiquetas lógicas</h2>
+			<pre>
+				<code class="html" data-trim style="font-size: 18px;">
+&lt;g:if test=&quot;${userInstance?.type == 'admin'}&quot;&gt;
+   &lt;%-- mostrar funciones de administrador --%&gt;
+&lt;/g:if&gt;
+&lt;g:else&gt;
+   &lt;%-- mostrar funciones b&Atilde;&iexcl;sicas --%&gt;
+&lt;/g:else&gt;
+				</code>
+			</pre>						
+		</section>
+
+		<section>
+			<h2>Etiquetas de iteración</h2>
+			<ul>
+				<li>&lt;g:while&gt;</li>
+				<li>&lt;g:each&gt;</li>
+				<li>&lt;g:collect&gt;</li>
+				<li>&lt;g:findAll&gt;</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Etiquetas de iteración</h2>
+			<pre>
+				<code class="html" data-trim style="font-size: 18px;">
+&lt;g:set var=&quot;num&quot; value=&quot;${1}&quot; /&gt; 
+&lt;g:while test=&quot;${num &lt; 5 }&quot;&gt; 
+    &lt;p&gt;Number ${num++} 
+&lt;/g:while&gt;
+
+/*************************************/
+
+&lt;g:each in=&quot;${[1,2,3]}&quot; var=&quot;num&quot;&gt;
+   &lt;p&gt;Number ${num}&lt;/p&gt;
+&lt;/g:each&gt;
+
+/*************************************/
+Stephen King's Books:
+&lt;g:findAll in=&quot;${books}&quot; expr=&quot;it.author == 'Stephen King'&quot;&gt;
+     &lt;p&gt;Title: ${it.title}
+&lt;/g:findAll&gt;
+				</code>
+			</pre>						
+		</section>
+
+		<section>
+			<h2>Etiquetas de asignación</h2>
+			<ul>
+				<li>&lt;g:while&gt;</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Etiquetas de asignación</h2>
+			<pre>
+				<code class="html" data-trim style="font-size: 18px;">
+&lt;g:set var=&quot;now&quot; value=&quot;${new Date()}&quot; /&gt;
+
+/*************************************/
+&lt;g:set var=&quot;myHTML&quot;&gt;
+   Some re-usable code on: ${new Date()}
+&lt;/g:set&gt;
+
+/*************************************/
+&lt;g:set var=&quot;now&quot; value=&quot;${new Date()}&quot; scope=&quot;request&quot; /&gt;
+				</code>
+			</pre>						
+		</section>		
+
+		<section>
+			<h2>Etiquetas de enlaces</h2>
+			<ul>
+				<li>&lt;g:link&gt;</li>
+				<li>&lt;g:createLink&gt;</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Etiquetas de enlaces</h2>
+			<pre>
+				<code class="html" data-trim style="font-size: 18px;">
+&lt;g:link action=&quot;show&quot; id=&quot;1&quot;&gt;Book 1&lt;/g:link&gt;
+&lt;g:link action=&quot;show&quot; id=&quot;${currentBook.id}&quot;&gt;${currentBook.name}&lt;/g:link&gt;
+&lt;g:link controller=&quot;book&quot;&gt;Book Home&lt;/g:link&gt;
+&lt;g:link controller=&quot;book&quot; action=&quot;list&quot;&gt;Book List&lt;/g:link&gt;
+&lt;g:link url=&quot;[action: 'list', controller: 'book']&quot;&gt;Book List&lt;/g:link&gt;
+&lt;g:link params=&quot;[sort: 'title', order: 'asc', author: currentBook.author]&quot; action=&quot;list&quot;&gt;
+    Book List
+&lt;/g:link&gt;
+				</code>
+			</pre>						
+		</section>
+
+		<section>
+			<h2>Etiquetas de formularios</h2>
+			<ul>
+				<li>&lt;g:actionSubmit&gt;</li>
+				<li>&lt;g:actionSubmitImage&gt;</li>
+				<li>&lt;g:checkBox&gt;</li>
+				<li>&lt;g:currencySelect&gt;</li>
+				<li>&lt;g:datePicker&gt;</li>
+				<li>&lt;g:form&gt;</li>
+				<li>&lt;g:hiddenField&gt;</li>
+			</ul>
+		</section>
+		
+		<section>
+			<h2>Etiquetas de formularios</h2>
+			<ul>
+				<li>&lt;g:localeSelect&gt;</li>
+				<li>&lt;g:radio&gt;</li>
+				<li>&lt;g:radioGroup&gt;</li>
+				<li>&lt;g:select&gt;</li>
+				<li>&lt;g:textField&gt;</li>
+				<li>&lt;g:passwordField&gt;</li>
+				<li>&lt;g:textArea&gt;</li>
+				<li>&lt;g:timeZoneSelect&gt;</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Etiquetas de formularios</h2>
+			<pre>
+				<code class="html" data-trim style="font-size: 18px;">
+&lt;g:form name=&quot;myForm&quot; url=&quot;[controller:'book',action:'list']&quot;&gt;...&lt;/g:form&gt;
+
+/*************************************/
+&lt;g:textField name=&quot;myField&quot; value=&quot;${myValue}&quot; /&gt;
+
+/*************************************/
+&lt;g:actionSubmit value=&quot;Some update label&quot; action=&quot;update&quot; /&gt;
+				</code>
+			</pre>						
+		</section>
+
+		<section>
+			<h2>Etiquetas de renderizado</h2>
+			<ul>
+				<li>&lt;g:applyLayout&gt;</li>
+				<li>&lt;g:formatDate&gt;</li>
+				<li>&lt;g:formatNumber&gt;</li>
+				<li>&lt;g:layoutHead&gt;</li>
+				<li>&lt;g:layoutBody&gt;</li>
+				<li>&lt;g:layoutTitle&gt;</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Etiquetas de renderizado</h2>
+			<ul>
+				<li>&lt;g:meta&gt;</li>
+				<li>&lt;g:render&gt;</li>
+				<li>&lt;g:renderErrors&gt;</li>
+				<li>&lt;g:pageProperty&gt;</li>
+				<li>&lt;g:paginate&gt;</li>
+				<li>&lt;g:sortableColumn&gt;</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Etiquetas de formularios</h2>
+			<pre>
+				<code class="html" data-trim style="font-size: 18px;">
+&lt;g:render template=&quot;bookTemplate&quot; model=&quot;[book: myBook]&quot; /&gt;
+
+/*************************************/
+&lt;g:render template=&quot;bookTemplate&quot; var=&quot;book&quot; collection=&quot;${bookList}&quot; /&gt;
+
+/*************************************/
+&lt;img src=&quot;&lt;g:createLinkTo dir=&quot;images&quot; file=&quot;logo.jpg&quot; /&gt;&quot; /&gt;
+				</code>
+			</pre>						
+		</section>
+
+		<section>
+			<h2>Etiquetas de validación</h2>
+			<ul>
+				<li>&lt;g:eachError&gt;</li>
+				<li>&lt;g:hasErrors&gt;</li>
+				<li>&lt;g:message&gt;</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Etiquetas de validación</h2>
+			<pre>
+				<code class="html" data-trim style="font-size: 18px;">
+&lt;g:eachError bean=&quot;${book}&quot;&gt;
+    &lt;li&gt;${it}&lt;/li&gt;
+&lt;/g:eachError&gt;
+
+/*************************************/
+&lt;g:message code=&quot;my.message.code&quot; /&gt;
+				</code>
+			</pre>						
+		</section>
+
+		<section>
+			<h2>Librerías de etiquetas</h2>
+			<ul>
+				<li>Crear nuestras propias etiquetas</li>
+				<li>Tareas repetitivas</li>
+				<li>No requiere configuración</li>
+				<li>No necesitan reiniciar aplicación</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Crear librería de etiquetas</h2>
+			<pre>
+				<code class="bash" data-trim style="font-size: 18px;">
+grails create-tag-lib es.ua.expertojava.todo.Todo
+				</code>
+			</pre>						
+		</section>		
+
+		<section>
+			<h2>Crear librería de etiquetas</h2>
+			<p>TodoTagLib</p>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+package es.ua.expertojava.todo
+
+class TodoTagLib {
+    static defaultEncodeAs = [taglib:'html']
+    //static encodeAsForTags = [tagName: [taglib:'html'], otherTagName: [taglib:'none']]
+}
+				</code>
+			</pre>						
+		</section>
+
+		<section>
+			<h2>Crear librería de etiquetas</h2>
+			<ul>
+				<li><em>defaultEncodeAs</em> nos permite indicar como renderizar las etiquetas de forma global</li>
+				<li>Con <em>encodeAsForTags</em> podemos especificar como renderizar las etiquetas de forma individual</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Etiquetas simples</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def includeJs = {attrs ->
+    out << "<script src='scripts/${attrs['script']}.js' ></script>"
+}
+				</code>
+			</pre>
+			<pre class="fragment">
+				<code class="html" data-trim style="font-size: 18px;">
+&lt;g:includeJs script=&quot;miscript&quot;/&gt;
+				</code>
+			</pre>
+		</section>
+
+		<section>
+			<h2>Espacio de nombres</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+package es.ua.expertojava.todo
+
+class TodoTagLib {
+
+    static defaultEncodeAs = [taglib:'html']
+    //static encodeAsForTags = [tagName: [taglib:'html'], otherTagName: [taglib:'none']]
+    
+    static namespace = 'me'
+    
+    def includeJs = {attrs ->
+        out &lt;&lt; "&lt;script src='scripts/${attrs['script']}.js'/&gt;"
+    }
+}			</code>
+			</pre>		
+		</section>
+
+		<section>
+			<h2>Espacio de nombres</h2>
+			<pre>
+				<code class="html" data-trim style="font-size: 18px;">
+					&lt;me:includeJs script=&quot;miscript&quot;/&gt;
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Referenciar otras etiquetas</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def renderImage = { attrs ->
+    println "Rendering the image ${attrs.image}"
+    asset.image(src:attrs.image)
+}				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Etiquetas lógicas</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def esAdmin = { attrs, body ->
+    def usuario = attrs['usuario']
+    if(usuario != null && usuario.tipo=="administrador") {
+        out << body()
+    }
+}				
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Etiquetas lógicas</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+&lt;me:esAdmin usuario=&quot;${session.usuario}&quot;&gt;
+    Dar de baja a usuario
+&lt;/me:esAdmin&gt;		
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Generador de código HTML</h2>
+			<ul>
+				<li>Markup Builder</li>
+				<li>Etiqueta para generar autolinks</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Generador de código HTML</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def printLink = { attrs, body ->
+    def mkp = new groovy.xml.MarkupBuilder(out)
+    mkp.a(href:body(),body())
+}	
+				</code>
+			</pre>
+			<pre class="fragment">
+				<code class="html" data-trim style="font-size: 18px;">
+&lt;me:printLink&gt;http://www.google.com[]&lt;/me:printLink&gt;	
+				</code>
+			</pre>		
+		</section>
+
+		<section>
+			<h2>Controladores</h2>
+			<ul>
+				<li>Acciones en los controladores</li>
+				<li>Ámbitos de los controladores</li>
+				<li>Relación entre vistas y controladores</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Acciones en los controladores</h2>
+			<ul>
+				<li>Controladores ubicados en <em>grails-app/controllers</em></li>
+				<li>Se encargan de dirigir las llamadas a la aplicación y se ponen en contacto con clases de dominio, vistas y servicios.</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Ejemplo de controlador</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+import static org.springframework.http.HttpStatus.*
+import grails.transaction.Transactional
+
+@Transactional(readOnly = true)
+class TodoController {
+
+    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
+
+    def index(Integer max) {
+        params.max = Math.min(max ?: 10, 100)
+        respond Todo.list(params), model:[todoInstanceCount: Todo.count()]
+    }
+    ....
+}	
+				</code>
+			</pre>		
+		</section>
+
+		<section>
+			<h2>A tener en cuenta</h2>
+			<ul>
+				<li>Anotación <em>@Transactional</em></li>
+				<li><em>allowedMethods</em>, nos permite especificar el tipo de petición aceptada</li>
+				<li>Parámetros pasados: http://localhost:8080/todo/todo/index?max=20</li>
+				<li>No es necesario especificar lo que van a devolver los métodos</li>
+				<li>Método <em>respond</em></li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Método respond</h2>
+			<p>Salida en formato json</p>
+			<pre>
+				<code class="bash" data-trim style="font-size: 18px;">
+curl -v -H "Accept: application/json" -H "Content-type: application/json" -X GET  http://localhost:8080/todo/todo/index	
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Método respond</h2>
+			<p>Salida en formato xml</p>
+			<pre>
+				<code class="bash" data-trim style="font-size: 18px;">
+curl -v -H "Accept: text/xml" -H "Content-type: text/xml" -X GET  http://localhost:8080/todo/todo/index	
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Método respond</h2>
+			<p>Salida en formato html si desde un navegador accedemos a:</p>
+			<pre>
+				<code class="bash" data-trim style="font-size: 18px;">
+http://localhost:8080/todo/todo/index
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Método por defecto en los controladores</h2>
+			<ul>
+				<li>Si sólo hay un método, por supuesto ese será el método por defecto</li>
+				<li>Si hay un método con el nombre <em>index()</em>, ese será el método por defecto</li>
+				<li>Si la clase define la propiedad <em>defaultAction</em>, el método especificado será el escogido por defecto.</li>
+			</ul>
+			<pre>
+				<code class="bash" data-trim style="font-size: 18px;">
+static defaultAction = "list"
+				</code>
+			</pre>			
+		</section>
+
+		<section>
+			<h2>Ámbitos de los controladores</h2>
+			<ul>
+				<li><em>servletContext</em>, ámbito aplicación y permite compartir variables</li>
+				<li><em>session</em>, controla el estado de un usuario de nuestra aplicación</li>
+				<li><em>request</em>, contiene la información de la aplicación</li>
+				<li><em>params</em>, mapa con la información pasada a la petición en forma de parámetro <em>GET</em> y <em>POST</em></li>
+				<li><em>flash</em>, variable efímera que sólo dura una petición</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Relación entre vistas y controladores</h2>
+			<ul>
+				<li>Las vistas muestran al usuario lo que el controlador quiere mostrar</li>
+				<li>Si en Grails no se especifica ninguna vista de forma explícita, se renderiza una vista de forma implícita.</li>
+				<li>Se busca una vista en el directorio que coincida con el nombre de la clase de dominio y se llame como el método.</li>
+				<li>nombre-del-controlador/metodo.gsp</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Renderizando vista explícitamente</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def show(Todo todoInstance) {
+    respond todoInstance
+}
+				</code>
+			</pre>
+			<p>
+				Grails renderiza la vista <em>grails-app/views/todo/show.gsp</em>
+			</p>			
+		</section>		
+
+		<section>
+			<h2>Renderizando vista implícitamente</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+...
+if (todoInstance.hasErrors()) {
+    respond todoInstance.errors, view:'create'
+    return
+}
+...
+				</code>
+			</pre>
+			<p>
+				Grails renderiza la vista <em>grails-app/views/todo/create.gsp</em>
+			</p>			
+		</section>	
+
+		<section>
+			<h2>Procesando formularios</h2>
+			<pre>
+				<code class="html" data-trim style="font-size: 18px;">
+&lt;g:form url=&quot;[resource:todoInstance, action:'save']&quot; &gt;
+    &lt;fieldset class=&quot;form&quot;&gt;
+        &lt;g:render template=&quot;form&quot;/&gt;
+    &lt;/fieldset&gt;
+    &lt;fieldset class=&quot;buttons&quot;&gt;
+        &lt;g:submitButton name=&quot;create&quot; class=&quot;save&quot; value=&quot;${message(code: 'default.button.create.label', default: 'Create')}&quot; /&gt;
+    &lt;/fieldset&gt;
+&lt;/g:form&gt;
+				</code>
+			</pre>
+			<p>
+				Formulario procesado por el método <em>save()</em>
+			</p>			
+		</section>
+
+		<section>
+			<h2>Creación de tareas</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+def create() {
+    respond new Todo(params)
+}
+				</code>
+			</pre>
+			<ul class="fragment">
+				<li>Renderiza <em>todo/create.gsp</em></li>
+				<li>Pasa la variable <em>todoInstance</em></li>
+			</ul>			
+		</section>
+
+		<section>
+			<h2>Creación de tareas</h2>
+			<pre>
+				<code class="html" data-trim style="font-size: 18px;">
+&lt;g:form url=&quot;[resource:todoInstance, action:'save']&quot; &gt;
+    &lt;fieldset class=&quot;form&quot;&gt;
+        &lt;g:render template=&quot;form&quot;/&gt;
+    &lt;/fieldset&gt;
+    &lt;fieldset class=&quot;buttons&quot;&gt;
+        &lt;g:submitButton name=&quot;create&quot; class=&quot;save&quot; value=&quot;${message(code: 'default.button.create.label', default: 'Create')}&quot; /&gt;
+    &lt;/fieldset&gt;
+&lt;/g:form&gt;
+				</code>
+			</pre>
+			<ul class="fragment">
+				<li>Se llama a la plantilla <em>todo/_form.gsp</em></li>
+				<li>El método <em>save()</em> es el encargado de procesar la petición</li>
+			</ul>			
+		</section>
+
+		<section>
+			<h2>Creación de tareas</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+@Transactional
+def save(Todo todoInstance) {
+    if (todoInstance == null) {
+        notFound()
+        return
+    }
+
+    if (todoInstance.hasErrors()) {
+        respond todoInstance.errors, view:'create'
+        return
+    }
+
+    todoInstance.save flush:true
+
+    request.withFormat {
+        form multipartForm {
+            flash.message = message(code: 'default.created.message', args: [message(code: 'todo.label', default: 'Todo'), todoInstance.id])
+            redirect todoInstance
+        }
+        '*' { respond todoInstance, [status: CREATED] }
+    }
+}
+				</code>
+			</pre>		
+		</section>
+
+		<section>
+			<h2>Creación de tareas</h2>
+			<ul>
+				<li>Si se produce algún error, se vuelve a renderizar la vista <em>todo/create.gsp</em></li>
+				<li>Si todo va bien se almacena la nueva tarea</li>
+				<li>Y se procesa en función del tipo de petición realizada</li>
+			</ul>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+todoInstance.save flush:true
+				</code>
+			</pre>						
+		</section>
+
+		<section>
+			<h2>Creación de tareas</h2>
+			<ul>
+				<li>Si hemos envíado un formulario, se rellena una variable de tipo flash</li>
+			</ul>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+flash.message = message(code: 'default.created.message', args: [message(code: 'todo.label', default: 'Todo'), todoInstance.id])
+redirect todoInstance
+				</code>
+			</pre>						
+		</section>
+
+		<section>
+			<h2>Creación de tareas</h2>
+			<ul>
+				<li>El contenido de esta variable se mostrará en la vista <em>todo/show.gsp</em></li>
+			</ul>
+			<pre>
+				<code class="html" data-trim style="font-size: 18px;">
+&lt;g:if test=&quot;${flash.message}&quot;&gt;
+    &lt;div class=&quot;message&quot; role=&quot;status&quot;&gt;${flash.message}&lt;/div&gt;
+&lt;/g:if&gt;
+				</code>
+			</pre>						
+		</section>
+
+		<section>
+			<h2>Creación de tareas</h2>
+			<ul>
+				<li>Si no hemos envíado un formulario, se renderiza una salida acorde a la petición</em></li>
+			</ul>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+'*' { respond todoInstance, [status: CREATED] }
+				</code>
+			</pre>						
+		</section>
+
+		<section>
+			<h2>Creación de tareas</h2>
+			<pre>
+				<code class="bash" data-trim style="font-size: 18px;">
+curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d "{'title':'Hacer los ejercicios de Groovy','date_day':25,'date_month':3,'date_year':2015,'date':'date.struct'}" http://localhost:8080/todo/todo/save
+				</code>
+			</pre>
+			<ul>
+				<li>Se produce una salida en formato json</em></li>
+			</ul>						
+		</section>
+
+		<section>
+			<h2>Creación de tareas</h2>
+			<pre>
+				<code class="bash" data-trim style="font-size: 18px;">
+curl -v -H "Accept: text/xml" -H "Content-type: application/json" -X POST -d "{'title':'Hacer los ejercicios de Grails','date_day':26,'date_month':3,'date_year':2015,'date':'date.struct'}" http://localhost:8080/todo/todo/save
+				</code>
+			</pre>
+			<ul>
+				<li>Se produce una salida en formato xml</em></li>
+			</ul>						
+		</section>
+
+		<section>
+			<h2>Renderizando vistas</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+render "Hello World!"
+
+render {
+   10.times {
+      div(id: it, "Div ${it}")
+   }
+}
+
+render(view: 'show')
+
+render(template: 'book_template', collection: Book.list())
+
+render(text: "<xml>some xml</xml>", contentType: "text/xml", encoding: "UTF-8")
+				</code>
+			</pre>					
+		</section>
+
+		<section>
+			<h2>Redirecciones</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+//Redirección que se hace dentro del mismo controlador
+redirect(action: login)
+
+//Redirección que se hace a otro controlador
+redirect(controller: 'home', action: 'index')
+
+//Redirección a una uri explícitamente
+redirect(uri: "/login.html")
+
+//Redirección a una url absoluta
+redirect(url: "http://grails.org")
+
+//Redirección pasando parámetros
+redirect(action: 'myaction', params: [myparam: "myvalue"])
+				</code>
+			</pre>					
+		</section>
+
+		<section>
+			<h2>Encadenamientos</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+class ExampleChainController {
+    def first() {
+        chain(action: second, model: [one: 1])
+    }
+
+    def second () {
+        chain(action: third, model: [two: 2])
+    }
+
+    def third() {
+        [three: 3])
+    }
+}
+				</code>
+			</pre>					
+		</section>
+
+		<section>
+			<h2>Encadenamientos</h2>
+			<p>
+				Se termina el encadenamiento con el método <em>third()</em>
+			</p>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+[one: 1, two: 2, three: 3]
+				</code>
+			</pre>					
+		</section>
+
+		<section>
+			<h2>Encadenamientos</h2>
+			<p>
+				Podemos acceder a los modelos dentro de una cadena con <em>chainModel</em>
+			</p>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+class ChainController {
+    def nextInChain() {
+        def model = chainModel.myModel
+        …
+    }
+}
+				</code>
+			</pre>					
+		</section>
+
+		<section>
+			<h2>Filtros</h2>
+			<ul>
+				<li>Permiten ejecutar acciones antes y después de los métodos de los controladores</li>
+				<li>Por ejemplo, para asegurar nuestra aplicación</li>
+				<li>O generar logs</li>
+				<li>grails create-filters log</li>
+				<li>grails-app/conf/todo/LogFilters.groovy</li>
+			</ul>
+		</section>		
+
+		<section>
+			<h2>Filtros</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+package todo
+
+class LogFilters {
+
+    def filters = {
+        all(controller:'*', action:'*') {
+            before = {
+
+            }
+            after = { Map model ->
+
+            }
+            afterView = { Exception e ->
+
+            }
+        }
+    }
+}
+				</code>
+			</pre>
+		</section>	
+
+		<section>
+			<h2>Filtros</h2>
+			<pre>
+				<code class="groovy" data-trim style="font-size: 18px;">
+package todo
+
+class LogFilters {
+
+    def filters = {
+        all(controller:'todo|category|tag', action:'create|edit|index|show') {
+            before = {
+
+            }
+            after = { Map model ->
+                println "Controlador ${controllerName} - Accion ${actionName} - Modelo ${model}"
+            }
+            afterView = { Exception e ->
+
+            }
+        }
+    }
+}
+				</code>
+			</pre>
+		</section>	
+
+		<section>
+			<h1>¿Preguntas...?</h1>
+		</section>
+
+		<section>
+			<h1>Ejercicios</h1>
+		</section>
+	</div>
+</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+				slideNumber: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Parallax scrolling
+				// parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+				// parallaxBackgroundSize: '2100px 900px',
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+
+				]
+			});
+
+		</script>
+
+	</body>
+</html>

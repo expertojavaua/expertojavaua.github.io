@@ -1,0 +1,397 @@
+<html>
+<head>
+<title>Acceso a bases de datos con JDBC</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+
+</head>
+
+<body>
+<h1>Tema 4: Opciones avanzadas en el acceso a una BD</h1>
+<p>En este tema vamos a detallar las opciones avanzadas que se presentan en el 
+  paquete opcional <b>javax.sql</b>.</p>
+<h2>4.1. Fuentes de datos (DataSources)</h2>
+<p>Hasta el momento, cuando quer&iacute;amos conectarnos a una base de datos, 
+  proporcion&aacute;bamos su direcci&oacute;n URL. Si cambi&aacute;bamos la direcci&oacute;n 
+  de la BD deb&iacute;amos recompilar la aplicaci&oacute;n. Si tenemos muchas 
+  aplicaciones en nuestro sistema la actualizaci&oacute;n puede ser costosa. Las 
+  fuentes de datos en JDBC permiten una utilizaci&oacute;n m&aacute;s flexible 
+  de las conexiones. Un objeto <b>DataSource</b> se gestiona de manera independiente 
+  de nuestra aplicaci&oacute;n. La clase <b>DataSource</b><i> </i>es una interfaz, 
+  por lo que no podemos instanciarla directamente. Debemos disponer de una clase 
+  que implemente dicha interfaz, usualmente desarrollada por el fabricante de 
+  la BD. </p>
+<h3>4.1.1. Uso de las fuentes de datos</h3>
+<p>Para hacer uso de las fuentes de datos debemos seguir dos fases. En la primera, 
+  haciendo uso de JDNI debemos asociar un objeto <b>DataSource</b> con una base 
+  de datos. El objeto <b>DataSource</b> contendr&aacute; los datos necesarios 
+  para la conexi&oacute;n a la BD. Este objeto lo almacenaremos en un servicio 
+  de directorios con JDNI. En principio podemos tener tantos objetos <b>DataSource</b> 
+  como queramos en nuestro sistema. Esta primera fase la suele llevar a cabo el 
+  servidor de aplicaciones. La segunda fase consiste en la conexi&oacute;n de 
+  un cliente a la base de datos. Cuando un cliente necesite conectarse a la base 
+  de datos, utilizar&aacute; JDNI para buscar el objeto <b>DataSource</b> asociado 
+  y &eacute;ste a su vez devolver&aacute; una conexi&oacute;n, tal como hac&iacute;a 
+  la clase <b>DriverManager</b> anteriormente. En el c&oacute;digo que se muestra 
+  a continuaci&oacute;n se puede observar el c&oacute;digo que implementar&aacute; 
+  el cliente cuando quiera obtener una conexi&oacute;n.</p>
+
+  
+<pre class="codigo">// Se crea un contexto inicial (JDNI)
+Context contexto = new InitialContex();
+// JDNI nos proporciona el objeto DataSource
+DataSource ds = (DataSource) context.lookup(&quot;jdbc/MySQL&quot;);
+// Obtenemos la conexi&oacute;n del objeto DataSource
+conexion = ds.getConnection();</pre>
+<p>Con esta abstracci&oacute;n en la conexi&oacute;n hemos conseguido que el cliente 
+  s&oacute;lo conozca el nombre &quot;l&oacute;gico&quot; de la BD, no su direcci&oacute;n 
+  URL. El cliente tampoco conoce los detalles del driver utilizado. Todo esto 
+  lo encapsula el objeto <b>DataSource</b>. Si queremos realizar alg&uacute;n 
+  cambio en nuestra BD (cambio de dominio, actualizaci&oacute;n, etc.) s&oacute;lo 
+  tendremos que cambiar el objeto <b>DataSource</b>, no la aplicaci&oacute;n cliente. 
+  A partir de este punto ya podemos hacer uso del API de JDBC est&aacute;ndar 
+  para realizar consultas a la BD.</p>
+<h2>4.2. Reserva de conexiones (ConnectionPool)</h2>
+<p>Cuando accedemos a una base de datos, el proceso de conexi&oacute;n es el m&aacute;s 
+  costoso temporalmente. En una aplicaci&oacute;n de servidor, el n&uacute;mero 
+  de conexiones puede llegar a ser enorme. Es por ello que se deba buscar un m&eacute;todo 
+  para optimizar el coste temporal. Una t&eacute;cnica muy utilizada es la reutilizaci&oacute;n 
+  de los recursos costosos. En este caso el recurso costoso es la conexi&oacute;n, 
+  por lo que resulta l&oacute;gico que se intente reducir el coste de conexi&oacute;n 
+  manteniendo un n&uacute;mero predeterminado de conexiones creadas e ir sirviendo 
+  a las clientes que las soliciten. Cuando una aplicaci&oacute;n termina con una 
+  conexi&oacute;n la libera y queda disponible para otra aplicaci&oacute;n. Tambi&eacute;n 
+  en este caso, al igual que en el caso de <b>DataSource</b>, es el servidor de 
+  aplicaciones el que se encarga de administrar y definir cu&aacute;ntas reservas 
+  tendremos en funcionamiento. </p>
+<p>A pesar de ser una caracter&iacute;stica muy &uacute;til, la reserva de conexiones 
+  est&aacute; aconsejada en el caso de que se cumpla lo siguiente:</p>
+<ul>
+  <li>Las aplicaciones acceden a la base de datos mediante un conjunto muy reducido 
+    de cuentas de usuario. Normalmente en la conexi&oacute;n a una base de datos 
+    especificamos el usuario con el que accedemos. La reserva de conexiones necesita 
+    que todas las conexiones sean para el mismo usuario, por lo que para aplicaciones 
+    donde se utilicen diversas cuentas de usuario para acceder y el n&uacute;mero 
+    de accesos por cada cuenta es reducido es desaconsejable el uso de la reserva 
+    de conexiones.</li>
+  <li>El acceso a la base de datos se realiza durante una &uacute;nica sesi&oacute;n. 
+    Veamos el siguiente ejemplo: en una transacci&oacute;n estamos constantemente 
+    accediendo a la base de datos durante mucho tiempo, por ejemplo, un carrito 
+    de la compra donde por cada elemento hacemos una actualizaci&oacute;n de una 
+    tabla de la BD. En este caso est&aacute; desaconsejado el uso de la reserva 
+    de conexiones, es preferible el uso de una conexi&oacute;n dedicada. </li>
+</ul>
+<p>Una aplicaci&oacute;n que utilice el enfoque de reserva de conexiones debe 
+  seguir el siguiente orden:</p>
+<ul>
+  <li>Obtener una referencia a la reserva o a un objeto que gestione la reserva.</li>
+  <li>Consigue una conexi&oacute;n de una reserva (<b>getConnection</b>)</li>
+  <li>Utiliza la conexi&oacute;n. Aqu&iacute; se realizar&aacute;n todas las consultas 
+    y actualizaciones en la base de datos. Un aspecto muy importante aqu&iacute; 
+    son las transacciones. Si una aplicaci&oacute;n empieza una transacci&oacute;n 
+    y no la termina o la deshace, puede que se produzca una p&eacute;rdida de 
+    consistencia de datos.</li>
+  <li>Devuelve la conexi&oacute;n a la reserva. Es muy importante que la aplicaci&oacute;n 
+    que solicita la reserva no cierre la conexi&oacute;n. </li>
+</ul>
+<h2>4.3. Transacciones</h2>
+<p>Muchas veces, cuando tengamos que realizar una serie de acciones, queremos 
+  que todas se hayan realizado correctamente, o bien que no se realice ninguna 
+  de ellas, pero no que se realicen algunas y otras no.</p>
+<p>Podemos ver esto mediante un ejemplo, en el que se va a hacer una reserva de 
+  vuelos para ir desde Alicante a Osaka. Para hacer esto tendremos que hacer trasbordo 
+  en dos aeropuertos, por lo que tenemos que reservar un vuelo Alicante-Madrid, 
+  un vuelo Madrid-Amsterdam y un vuelo Amsterdam-Osaka. Si cualquiera de estos 
+  tres vuelos estuviese lleno y no pudi&eacute;semos reservar, no queremos reservar 
+  ninguno de los otros dos porque no nos servir&iacute;a de nada. Por lo tanto, 
+  s&oacute;lo nos interesa que la reserva se lleve a cabo si podemos reservar 
+  los tres vuelos.</p>
+<p>Una transacci&oacute;n es un conjunto de sentencias que deben ser ejecutadas 
+  como una unidad, de forma que si una de ellas no puede realizarse, no se llevar&aacute; 
+  a cabo ninguna. Dicho de otra manera, las transacciones hacen que la BD pase 
+  de un estado consistente al siguiente. </p>
+<p>Pero para hacer esto encontramos un problema. Pensemos en nuestro ejemplo de 
+  la reserva de vuelos, en la que necesitaremos realizar las siguientes inserciones 
+  (reservas):</p>
+ 
+  <pre class="codigo">try {
+	stmt.executeUpdate(&quot;INSERT 
+		INTO RESERVAS(pasajero, origen, destino)
+		VALUES('Paquito', 'Alicante', 'Madrid')&quot;);
+	stmt.executeUpdate(&quot;INSERT 
+		INTO RESERVAS(pasajero, origen, destino)
+		VALUES('Paquito', 'Madrid', 'Amsterdam')&quot;);
+	stmt.executeUpdate(&quot;INSERT 
+		INTO RESERVAS(pasajero, origen, destino)
+		VALUES('Paquito', 'Amsterdam', 'Osaka')&quot;);
+} catch(SQLException e) {
+	// &iquest;D&oacute;nde ha fallado? &iquest;Qu&eacute; hacemos ahora?
+}</pre>
+
+<p>En este caso, vemos que si falla la reserva de uno de los tres vuelos obtendremos 
+  una excepci&oacute;n, pero en ese caso, &iquest;c&oacute;mo podremos saber d&oacute;nde 
+  se ha producido el fallo y hasta qu&eacute; acci&oacute;n debemos deshacer? 
+  Con la excepci&oacute;n lo &uacute;nico que sabemos es que algo ha fallado, 
+  pero no sabremos d&oacute;nde ha sido, por lo que de esta forma no podremos 
+  saber hasta qu&eacute; acci&oacute;n debemos deshacer.</p>
+<p>Para hacer esto de una forma limpia asegurando la consistencia de los datos, 
+  utilizaremos las operaciones de <i>commit</i> y <i>rollback</i>.</p>
+<p>Cuando realicemos cambios en la base de datos, estos cambios se har&aacute;n 
+  efectivos en ella de forma persistente cuando realicemos la operaci&oacute;n 
+  <i>commit</i>. En el modo de operaci&oacute;n que hemos visto hasta ahora, por 
+  defecto tenemos activado el modo <i>auto-commit</i>, de forma que siempre que 
+  ejecutamos alguna sentencia se realiza <i>commit</i> autom&aacute;ticamente. 
+  Sin embargo, en el caso de las transacciones con m&uacute;ltiples sentencias, 
+  no nos interesar&aacute; hacer estos cambios persistentes hasta haber comprobado 
+  que todos los cambios se pueden hacer de forma correcta. Para ello desactivaremos 
+  este modo con:</p>
+<blockquote>
+  <pre class="codigo">con.<b>setAutoCommit</b>(false); </pre>
+</blockquote>
+<p>Al desactivar este modo, una vez hayamos hecho las modificaciones de forma 
+  correcta, deberemos hacerlas persistentes mediante la operaci&oacute;n <i>commit</i> 
+  llamando de forma expl&iacute;cita a:</p>
+<blockquote>
+  <pre class="codigo">con.<b>commit</b>();</pre>
+</blockquote>
+<p>Si por el contrario hemos obtenido alg&uacute;n error, no queremos que esas 
+  modificaciones se lleven a cabo finalmente en la BD, por lo que podremos deshacerlas 
+  llamando a:</p>
+<blockquote>
+  <pre class="codigo">con.<b>rollback</b>();</pre>
+</blockquote>
+<p>Por lo tanto, la operaci&oacute;n <i>rollback</i> deshar&aacute; todos los 
+  cambios que hayamos realizado para los que todav&iacute;a no hubi&eacute;semos 
+  hecho <i>commit</i> para hacerlos persistentes, permiti&eacute;ndonos de esta 
+  forma implementar estas transacciones de forma at&oacute;mica.</p>
+<p>Nuestro ejemplo de la reserva de vuelos deber&iacute;a hacerse de la siguiente 
+  forma:</p>
+<blockquote> 
+  <pre class="codigo">try {
+
+	con.<b>setAutoCommit</b>(false);
+
+	stmt.executeUpdate(&quot;INSERT 
+		INTO RESERVAS(pasajero, origen, destino)
+		VALUES('Paquito', 'Alicante', 'Madrid')&quot;);
+	stmt.executeUpdate(&quot;INSERT 
+		INTO RESERVAS(pasajero, origen, destino)
+		VALUES('Paquito', 'Madrid', 'Amsterdam')&quot;);
+	stmt.executeUpdate(&quot;INSERT 
+		INTO RESERVAS(pasajero, origen, destino)
+		VALUES('Paquito', 'Amsterdam', 'Osaka')&quot;);
+	// Hemos podido reservar los tres vuelos correctamente
+	con.<b>commit</b>();
+} catch(SQLException e) {
+	// Alguno de los tres ha fallado, deshacemos los cambios
+	try {
+		con.<b>rollback</b>();
+	} catch(SQLException e) {};
+}</pre>
+</blockquote>
+<p>Una caracter&iacute;stica relacionada con las transacciones es la concurrencia 
+  en el acceso a la BD. Dicho de otra forma, qu&eacute; sucede cuando varios usuarios 
+  se encuentran accediendo a la vez a los mismos datos y pretenden modificarlos. 
+  Un ejemplo sencillo: tenemos una tienda y dos usuarios est&aacute;n accediendo 
+  al mismo disco, del cual s&oacute;lo queda una unidad. El primero de los usuarios 
+  consulta el disponible, comprueba que existe una unidad y lo introduce en su 
+  cesta de la compra. El otro usuario en ese preciso momento tambi&eacute;n est&aacute; 
+  consultando el disponible, tambi&eacute;n le aparece una unidad y tambi&eacute;n 
+  intenta introducirlo en su cesta de la compra. Al segundo usuario el sistema 
+  no deber&iacute;a dejarle actualizar los datos que est&aacute; manejando el 
+  primero.</p>
+<p> La concurrencia es manejada por los distintos SGBD de manera distinta. PostGres 
+  permite nivel de lectura confirmada. En este nivel, si una transacci&oacute;n 
+  lee una fila de la BD y otra transacci&oacute;n cambia la misma fila, en el 
+  momento que la primera transacci&oacute;n intente leer de nuevo se actualiza 
+  el valor. Si las dos intentan modificar la misma fila la segunda se bloquear&aacute; 
+  hasta que la primera finalice la transacci&oacute;n. Esto &uacute;ltimo hay 
+  que tenerlo en cuenta para evitar bloqueos. Para saber el nivel concurrencia 
+  permitido por el SGBD podemos utilizar el siguiente m&eacute;todo de la clase 
+  <b>Connection:</b> </p>
+<blockquote> 
+  <pre class="codigo">int con.<b>getTransactionIsolation</b>();</pre>
+</blockquote>
+<p>Los valores m&aacute;s comunes que puede devolver este m&eacute;todo son: Connection.<b>TRANSACTION_NONE</b> 
+  (no soporta transacciones), Connection.<b>TRANSACTION_READ_UNCOMMITTED</b> (soporta 
+  transacciones en su nivel m&aacute;s bajo), Connection.<b>TRANSACTION_READ_COMMITTED</b> 
+  (el nivel de PostGres antes comentado). MySQL incorpora transacciones en su 
+  &uacute;ltima versi&oacute;n (4.0). Sin embargo, su funcionamiento es diferente 
+  a PostGres. Si una aplicaci&oacute;n actualiza una fila y dentro de su transacci&oacute;n 
+  otra aplicaci&oacute;n intenta modificarla, MySQL permite la actualizaci&oacute;n 
+  y no se produce ning&uacute;n problema. Sin embargo, si la primera transacci&oacute;n 
+  no realiza <i>commit</i> (debido a alg&uacute;n error) al intentar deshacer 
+  los cambios se produce una excepci&oacute;n, pues no puede recuperar el estado 
+  anterior a la transacci&oacute;n ya que la segunda aplicaci&oacute;n cambio 
+  la fila. </p>
+<h3>4.3.1. Puntos de almacenamiento (<i>savepoint</i>)</h3>
+<p>Los puntos de almacenamiento permiten definir puntos de control en el flujo 
+  de una transacci&oacute;n. Comentaremos aqu&iacute; la definici&oacute;n y c&oacute;mo 
+  podemos utilizarlos. Sin embargo, ni MySQL ni PostGres los tienen implementados. 
+  Los puntos de almacenamiento los genera un objeto <b>Connection</b>. Permiten 
+  marcar uno o m&aacute;s lugares de una transacci&oacute;n para, si algo falla, 
+  poder deshacer las acciones realizadas a partir de uno de esos puntos marcados. 
+  Los m&eacute;todos a utilizar son los siguientes:</p>
+<pre class="codigo"><b>SavePoint</b> con.<b>setSavePoint</b>(&quot;Punto de control&quot;);
+<b>SavePoint</b> con.<b>setSavePoint</b>();</pre>
+
+<p>Este m&eacute;todo permite marcar un punto de almacenamiento. Tambi&eacute;n 
+  disponemos de una forma de deshacer los cambios producidos a partir de un punto 
+  de almacenamiento:</p>
+<pre class="codigo">con.<b>rollback (SavePoint</b> sp);</pre>
+<p>En el caso que de una excepci&oacute;n se produzca, podemos consultar el punto 
+  de almacenamiento para determinar si las acciones anteriores a la definici&oacute;n 
+  del punto de control se han realizado con &eacute;xito. El siguiente c&oacute;digo 
+  muestra un ejemplo de utilizaci&oacute;n. </p>
+<pre class="codigo"><b>SavePoint</b> sp = null;
+boolean realizar_commit = false;
+try {
+	insertarTabla1 (datos);
+	realizar_commit = true;
+	sp = con.setSavePoint();
+	insertarTabla2 (datos2);
+} catch {
+	// Si sp es null es que fall&oacute; la primera inserci&oacute;n
+	if (sp==null) {
+		con.rollback();
+	} 
+	else {
+		con.rollback(sp);
+	}
+}
+finally {
+	if (realizar_commit) {
+		con.commit();
+	}
+}</pre>
+<p>Vamos a analizar con detalle el c&oacute;digo. Se declaran dos variables. La 
+  primera es el punto de almacenamiento. La segunda es una variable de control 
+  que nos va a permitir saber si se realiz&oacute; la primera acci&oacute;n en 
+  la base de datos. El c&oacute;digo dentro de la sentencia <b>try</b> llama a 
+  dos m&eacute;todos, <b>insertarTabla1</b> e <b>insertarTabla2</b>. Estos m&eacute;todos 
+  se encargan de actualizar la base de datos, con la particularidad de que la 
+  primera inserci&oacute;n es m&aacute;s importante que la segunda. Adem&aacute;s, 
+  si la primera no ha tenido &eacute;xito se deshace toda la transacci&oacute;n, 
+  pero si ha tenido &eacute;xito y la segunda no, podemos deshacer s&oacute;lo 
+  la segunda. En este caso es cuando tiene utilidad los puntos de almacenamiento. 
+  Hemos colocado un punto de almacenamiento despu&eacute;s de la llamada a la 
+  primera inserci&oacute;n. Si se ha producido una excepci&oacute;n, sabemos que 
+  si el punto de almacenamiento creado es nulo entonces la excepci&oacute;n se 
+  produjo en la primera inserci&oacute;n. Si no es nulo, la primera inserci&oacute;n 
+  finaliz&oacute; con &eacute;xito y la segunda provoc&oacute; la excepci&oacute;n. 
+  Por ello llamamos al m&eacute;todo <b>roolback</b> con el punto de almacenamiento 
+  como par&aacute;metro. Esta acci&oacute;n provoca que se deshagan las acciones 
+  realizadas en la segunda inserci&oacute;n. Por &uacute;ltimo, en el bloque <b>finally</b>, 
+  realizamos <b>commit</b> si se ha realizado la primera inserci&oacute;n con 
+  &eacute;xito.</p>
+<p>&nbsp;</p>
+<h2>4.4. RowSet</h2>
+<p>Un <b>RowSet</b><i> </i>es un componente que se ajusta a JavaBean y que encapsula 
+  el acceso a bases de datos incluido el resultado. Permite olvidarnos de los 
+  objetos <i>Connection</i>, <i>ResultSet</i>, <i>Statement</i>, etc. Todas las 
+  funcionalidades de estas clases las implementa RowSet. Rowset es un interfaz, 
+  por lo que debe ser implementada antes de instanciarse. </p>
+<p>La clase mantiene los m&eacute;todos utilizados por el <i>ResultSet</i> para 
+  acceder a los datos y a los registros. Disponemos de <i>next, previous, getXXX, 
+  updateXXX </i>tal como los us&aacute;bamos en <i>ResultSet</i>. Los m&eacute;todos 
+  descritos a continuaci&oacute;n sirven para configurar el acceso a una base 
+  de datos:</p>
+<pre class="codigo">//Utilizamos una de las implementaciones como ejemplo
+<b>CachedRowSet</b> crs = new <b>CachedRowSet</b> ();
+// Asignamos la URL de nuestra base de datos
+crs.<b>setUrl</b> (&quot;jdbc:mysql://localhost/bd&quot;);
+// Asignamos el usuario y la contrase&ntilde;a
+crs.<b>setUsername</b> (&quot;miguel&quot;);
+crs.<b>setPassword</b> (&quot;miguel&quot;);</pre>
+<p>A partir de este momento ya podemos utilizar el RowSet y realizar consultas 
+  a la BD. Debemos tener en cuenta que debemos cargar el driver de la base de 
+  datos tal como lo hac&iacute;amos anteriormente:</p>
+<pre class="codigo">Class.forName (&quot;org.gjt.mm.mysql.Driver&quot;);</pre>
+<p>Para ejecutar un comando, primero asignamos el comando y despu&eacute;s lo 
+  ejecutamos.</p>
+<pre class="codigo">crs.<b>setCommand</b> (&quot;Select * from vuelo&quot;);
+crs.<b>execute</b> ();</pre>
+<p>Ya podemos movernos tal como lo hac&iacute;amos en el <i>ResultSet</i>. Tambi&eacute;n 
+  podemos utilizar los m&eacute;todos <i>updateXXX </i>para actualizar los datos 
+  del <i>RowSet</i>. Una vez realizada la llamada a <b>updateRow</b> debemos realizar 
+  una llamada al m&eacute;todo <b>acceptChanges</b>. Este m&eacute;todo se encargar&aacute; 
+  de actualizar los datos en la fuente de datos. Esto &uacute;ltimo depender&aacute; 
+  si lo soporta el driver. Tambi&eacute;n permite la preparaci&oacute;n de sentencias, 
+  tal como se hac&iacute;a con las sentencias preparadas. Sin embargo, aqu&iacute; 
+  no es necesario el uso de objetos adicionales.</p>
+<pre class="codigo">crs.setCommand (&quot;select numero from vuelo where aero_inic=?&quot;);
+crs.setString (1, &quot;ALC&quot;);</pre>
+<p>Sun ha desarrollado tres ejemplos de implementaciones que ser&aacute;n las 
+  que veamos en esta secci&oacute;n: CachedRowSet, JdbcRowSet y WebRowSet.</p>
+<h3>4.4.1. CachedRowSet</h3>
+<p>Esta implementaci&oacute;n permite mantener en memoria los resultados obtenidos 
+  de una consulta. Por ello es desaconsejable su uso cuando la consulta genera 
+  demasiados datos. Permite el scrolling y la actualizaci&oacute;n, a pesar de 
+  que el driver no los soporte. Esta es una de las ventajas fundamentales de esta 
+  implementaci&oacute;n. Otra de sus funcionalidades es la posibilidad de recibir 
+  datos de fuentes distintas a las bases de datos (hojas de c&aacute;lculo, ficheros 
+  de texto tabulados, etc.). Cuando invocamos al m&eacute;todo <b>execute</b> 
+  se realiza una conexi&oacute;n a la base de datos, se recibe la informaci&oacute;n 
+  resultado de realizar la consulta y se cierra la conexi&oacute;n. Si realizamos 
+  una actualizaci&oacute;n de los datos el objeto realiza una nueva conexi&oacute;n 
+  y actualiza los datos.</p>
+<h3>4.4.2. JdbcRowSet</h3>
+<p>Esta implementaci&oacute;n es la m&aacute;s sencilla de las tres. Simplemente 
+  es una capa por encima de <i>ResultSet</i> para que parezca y pueda ser utilizado 
+  como un JavaBean.</p>
+<h3>4.4.3. WebRowSet</h3>
+<p>El objetivo principal de esta implementaci&oacute;n es la lectura y escritura 
+  de datos en formato XML. En una aplicaci&oacute;n cliente-servidor, la parte 
+  del servidor es la que se encarga de consultar la base de datos y crear un objeto 
+  <b>WebRowSet</b> para a continuaci&oacute;n crear un fichero XML que es el que 
+  se le env&iacute;a al cliente. El cliente recibe los datos en formato XML, pero 
+  los puede manejar como si fuera un resultado de una consulta. Cuando actualiza 
+  alg&uacute;n dato y llama al m&eacute;todo <i>acceptChanges</i> la informaci&oacute;n 
+  se env&iacute;a de vuelta al servidor en formato XML y el servidor es el que 
+  se encarga de escribir en la base de datos. Esta implementaci&oacute;n tiene 
+  sentido cuando trabajamos detr&aacute;s de cortafuegos y/o proxys, debido a 
+  que las conexiones directas a base de datos no son siempre posibles. Esta clase 
+  dispone de dos m&eacute;todos para leer y escribir datos en XML, ambos asociados 
+  a objetos que nos permiten leer y escribir. </p>
+<pre class="codigo">java.io.FileWriter FW = new java.io.FileWriter(&quot;ejemplo.xml&quot;);
+crs.<b>writeXML</b> (FW);</pre>
+<p>Cuando llamamos al m&eacute;todo <b>writeXML</b> el contenido del RowSet se 
+  escribe en el fichero <i>ejemplo.xml</i> en formato XML. De la misma forma disponemos 
+  del m&eacute;todo <b>readXML</b> asociado a un objeto de la clase <i>java.io.FileReader</i>. 
+  El m&eacute;todo de escritura no funciona en la actual implementaci&oacute;n.</p>
+<h3>4.4.4. Manejo de eventos</h3>
+<p>Otro caracter&iacute;stica importante de los <i>RowSet</i> son los eventos. 
+  Podemos definir una clase que act&uacute;e de escuchante, para que cuando se 
+  produzca un evento se realicen una serie de acciones definidas en el escuchante. 
+  El API JDBC especifica la interfaz <i>javax.sql.RowSetListener</i>. La interfaz 
+  permite especificar tres m&eacute;todos, asociados a tres eventos distintos:</p>
+<pre class="codigo">public void<b> cursorMoved</b><b></b> (RowSetEvent evento)
+public void<b> rowChanged</b> (RowSetEvent evento)
+public void<b> rowSetChanged</b> (RowSetEvent evento)</pre>
+<p>El primer m&eacute;todo se invocar&aacute; cuando el cursor se mueva. El cursor 
+  es un elemento que indica al objeto <i>RowSet</i> en qu&eacute; fila se encuentra 
+  dentro del conjunto de resultado. Dentro de este m&eacute;todo podemos realizar 
+  las acciones que queramos: notificar el evento a otro objeto, realizar alguna 
+  comprobaci&oacute;n, cambiar la base de datos, etc. El segundo m&eacute;todo 
+  se invocar&aacute; cuando se cambie una fila y el tercero cuando cambie el <i>RowSet</i>. 
+  A continuaci&oacute;n se muestra un ejemplo de definici&oacute;n de uno de los 
+  m&eacute;todos: </p>
+<pre class="codigo">import javax.sql.*;
+import java.io.*;
+
+
+public class Escuchante implements RowSetListener {
+	public void <b>cursorMoved</b> (RowSetEvent evento) {
+		System.out.println(&quot;Se ha movido el cursor&quot;);
+	}
+.
+.
+.</pre>
+<p>Para asociar el escuchante a una clase RowSet debemos hacer uso de la anterior 
+  clase:</p>
+<pre class="codigo">Escuchante escucha = new Escuchante();
+//crs es un objeto de tipo RowSet
+crs.<b>addRowSetListener</b>(escucha);</pre>
+<p>Podemos a&ntilde;adir tantos escuchantes como queramos.</p>
+</body>
+</html>

@@ -1,0 +1,309 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.7">
+<meta name="Forrest-skin-name" content="pelt">
+<title>Ejercicios de AJAX y REST</title>
+<link type="text/css" href="skin/highlight/shCore.css" rel="stylesheet">
+<link type="text/css" href="skin/highlight/shThemeEclipse.css" rel="stylesheet">
+<script src="skin/highlight/shCore.js" type="text/javascript"></script><script src="skin/highlight/shAutoloader.js" type="text/javascript"></script>
+<link type="text/css" href="skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="skin/print.css" rel="stylesheet">
+<link type="text/css" href="skin/profile.css" rel="stylesheet">
+<script src="skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<div class="header">
+<div class="grouplogo">
+<a href="http://web.ua.es/especialistajava"><img class="logoImage" alt="jtech" src="images/baner_j2ee_izq.gif" title="Experto Universitario Java Enterprise"></a>
+</div>
+<div class="projectlogoA1">
+<a href="http://www.dccia.ua.es/"><img class="logoImage" alt="Spring" src="images/baner_j2ee_der.gif" title="Spring"></a>
+</div>
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="javascript:location.href='../index.html'">Home</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../aplic-web.html'">Aplicaciones Web</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../aplic-ent.html'">Aplicaciones Enterprise</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../charlas.html'">Charlas</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../proy-int/index.html'">Proyecto</a>
+</li>
+<li>
+<a class="base-not-selected" href="index.html">Spring</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<div id="level2tabs"></div>
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<div id="menu">
+<div onclick="SwitchMenu('menu_1.1', 'skin/')" id="menu_1.1Title" class="menutitle">Spring</div>
+<div id="menu_1.1" class="menuitemgroup">
+<div class="menuitem">
+<a href="index.html" title="Spring">Indice</a>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<div id="credit2"></div>
+</div>
+<div id="content">
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="sesion04-ejercicios.pdf"><img alt="PDF -icon" src="skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1>Ejercicios de AJAX y REST</h1>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#AJAX+%281+punto%29">AJAX (1 punto)</a>
+</li>
+<li>
+<a href="#Servicios+REST+%281.5+puntos%29">Servicios REST (1.5 puntos)</a>
+</li>
+<li>
+<a href="#Gesti%C3%B3n+de+errores+en+servicios+REST+%280.5+puntos%29">Gesti&oacute;n de errores en servicios REST (0.5 puntos)</a>
+</li>
+</ul>
+</div>
+
+<a name="N1000C"></a><a name="AJAX+%281+punto%29"></a>
+<h2 class="underlined_10">AJAX (1 punto)</h2>
+<div class="section">
+<p>Vamos a cambiar la b&uacute;squeda de usuarios para que funcione mediante AJAX. As&iacute; los resultados se mostrar&aacute;n directamente en la p&aacute;gina de b&uacute;squeda sin necesidad de cambiar de p&aacute;gina. Seguid estos pasos:</p>
+<ol>
+
+<li>Incluir la librer&iacute;a Jackson en el pom.xml, puedes copiar la dependencia que aparece de los apuntes</li>
+
+<li>
+<strong>Parte del servidor</strong>: a&ntilde;&aacute;dele un m&eacute;todo <span class="codefrag">buscarAJAX</span> al BuscarAmigosController, que se ocupe de esta funcionalidad.
+<ul>
+
+<li>El @RequestMapping puede ser a la misma URL que el buscarAmigos "convencional", con el mismo m&eacute;todo POST, pero debes indicar que genera JSON usando el atributo <span class="codefrag">produces</span>
+</li>
+
+<li>El m&eacute;todo devolver&aacute; una List&lt;Usuario&gt;. Debes anotar el valor de retorno con @ResponseBody para que se devuelva en la respuesta HTTP.</li>
+
+</ul>	
+
+</li>
+
+<li>
+<strong>Parte del cliente</strong>: copia el siguiente c&oacute;digo dentro de la p&aacute;gina busqueda.jsp, despu&eacute;s del formulario
+<pre class="brush:html;">
+&lt;div id="resultados"&gt;&lt;/div&gt;
+&lt;script type="text/javascript" src="http://code.jquery.com/jquery.min.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+function crearTabla(obj) {
+	var tabla = "&lt;table&gt;&lt;tr&gt; &lt;th&gt;Login&lt;/th&gt; &lt;th&gt;Edad&lt;/th&gt; &lt;th&gt;Localidad&lt;/th&gt; &lt;/tr&gt;"
+	for(i=0; i&lt;obj.length; i++) {
+	  tabla += "&lt;tr&gt; &lt;td&gt;" + obj[i].login + "&lt;/td&gt; &lt;td&gt;" + obj[i].edad +
+	    "&lt;/td&gt; &lt;td&gt;" + obj[i].localidad + "&lt;/td&gt; &lt;/tr&gt;" 					
+	}
+	tabla += "&lt;/table&gt;"
+	alert(JSON.stringify(obj, undefined, 2))	
+	//hide y show solo se usan aqu&iacute; para molar
+	$('#resultados').hide().html(tabla).show('slow')
+}
+
+function buscarAJAX() {
+	$.ajax({
+		type: 'POST',
+		url: 'busqueda.do', 
+		dataType: 'json',
+		data: $('#formulario').serialize(),
+		success: crearTabla
+	})
+}
+&lt;/script&gt;
+</pre>	
+
+</li>
+
+
+<li>Para que el c&oacute;digo anterior funcione, debes ponerle al formulario un atributo id="formulario". Adem&aacute;s, debes a&ntilde;adir dentro del formulario un nuevo bot&oacute;n para la b&uacute;squeda con AJAX. No es necesario que borres el anterior, as&iacute; puedes tener los dos tipos de b&uacute;squeda:
+<pre class="brush:xml;">
+&lt;input type="button" value="buscar con AJAX" onclick="buscarAJAX()"/&gt;
+</pre>
+
+</li>
+
+<li>Cuando lo pruebes, primero ver&aacute;s que aparece en un cuadro de di&aacute;logo el JSON que nos env&iacute;a el servidor (l&iacute;nea y luego se muestra la tabla formateada en HTML. Fijate en que aunque en el HTML no se ve el password del usuario, desde el servidor s&iacute; nos lo est&aacute; enviando, lo que es un problema de seguridad. Puedes anotar la clase Usuario con la anotaci&oacute;n Jackson <span class="codefrag">@JsonIgnoreProperties({"password", "credito"})</span>, para que la librer&iacute;a no serialice ninguno de los dos campos.</li>
+
+<li>Una vez hecho lo anterior, puedes quitar la l&iacute;nea 11 (el 'alert'), solamente estaba puesta para que vieras "en crudo" los datos que env&iacute;a el servidor</li>
+
+</ol>
+</div>  
+
+<a name="N1004A"></a><a name="Servicios+REST+%281.5+puntos%29"></a>
+<h2 class="underlined_10">Servicios REST (1.5 puntos)</h2>
+<div class="section">
+<p>Queremos hacer una implementaci&oacute;n REST de algunas funcionalidades de la aplicaci&oacute;n. En concreto, queremos implementar:</p>
+<ul>
+
+<li>La b&uacute;squeda de usuarios</li>
+
+<li>Obtener los datos de un usuario a partir de su login ("ver amigo")</li>
+
+<li>Dar de alta un usuario</li>
+
+</ul>
+<p>Deb&eacute;is seguir estos pasos:</p>
+<ol>
+
+<li>
+<strong>Configuraci&oacute;n</strong>: usaremos otro dispatcher servlet adicional al que ya tenemos. As&iacute; podemos configurarlo por separado. En el web.xml introduce el siguiente c&oacute;digo:
+<pre class="brush:xml;">
+&lt;servlet&gt;
+   &lt;servlet-name&gt;rest&lt;/servlet-name&gt;
+   &lt;servlet-class&gt;org.springframework.web.servlet.DispatcherServlet&lt;/servlet-class&gt;
+   &lt;load-on-startup&gt;2&lt;/load-on-startup&gt;
+&lt;/servlet&gt;
+&lt;servlet-mapping&gt;
+   &lt;servlet-name&gt;rest&lt;/servlet-name&gt;
+   &lt;url-pattern&gt;/REST/*&lt;/url-pattern&gt;
+&lt;/servlet-mapping&gt;
+</pre>	
+como ves, le asociamos las URL que comienzan por /REST. Ahora crearemos el fichero de configuraci&oacute;n .xml para dicho servlet, que se llamar&aacute; rest-servlet.xml y estar&aacute; en WEB-INF, siguiendo la convenci&oacute;n por defecto de Spring MVC:
+<pre class="brush:xml;">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	 http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-3.2.xsd
+		http://www.springframework.org/schema/mvc
+		http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd"&gt;
+
+	&lt;context:component-scan base-package="es.ua.jtech.amigosspring.rest" /&gt;
+	&lt;mvc:annotation-driven /&gt;
+&lt;/beans&gt;
+</pre>	
+
+</li>
+
+<li>
+<strong>Crear el controller</strong>: Crea el paquete <span class="codefrag">es.ua.jtech.amigosspring.rest</span>. Crea dentro de &eacute;l la clase <span class="codefrag">AmigosRESTController</span>. An&oacute;tala con @Controller y map&eacute;ala con @RequestMapping a la URL "amigos"</li>
+
+<li>Ahora "solo" te queda <strong>implementar las tres funcionalidades</strong>. Recuerda que:
+<ul>
+
+<li>Debes respetar la "filosof&iacute;a" REST en cuanto al uso de los m&eacute;todos HTTP. Buscar usuarios y ver un usuario usar&aacute;n GET, mientras que crear usuario deber&iacute;a usar POST</li>
+
+<li>As&iacute;mismo debes mapear adecuadamente las URLs. Buscar y crear usar&aacute;n la misma URL que el controller "entero" (amigos), pero la URL de "ver amigo" debe acabar por el login del usuario que quieres ver (por ejemplo "amigos/jsf")  </li>
+
+<li>Buscar y ver usuario producen JSON, mientras que crear usuario consume JSON</li>
+
+</ul>	
+
+</li>
+
+</ol>
+<p>Para probar los servicios REST puedes usar el <a href="https://github.com/downloads/SpringSource/rest-shell/rest-shell-1.2.1.RELEASE.tar.gz">cliente REST-shell</a>, desarrollado por SpringSource. Si quieres m&aacute;s informaci&oacute;n puedes ver su <a href="https://github.com/SpringSource/rest-shell">repositorio en github</a>. Ejecuta el programa "rest-shell" que est&aacute; dentro del subdirectorio "bin" de "rest-shell-1.2.1.RELEASE". Es un prompt que acepta comandos que permiten hacer peticiones REST de modo relativamente sencillo. En todo momento podemos ver la ayuda general con 'help' o  solo sobre un comando determinado, por ejemplo 'help get'.</p>
+<p>Por ejemplo, para probar el "ver usuario" har&iacute;amos</p>
+<pre class="brush:bash;">
+#Establece la URL "base" por defecto para todas las peticiones a partir de aqu&iacute;
+base http://localhost:8080/AmigosSpring/REST/amigos 
+#Para decirle al servidor que nos puede mandar JSON. Cabecera HTTP "Accept:" 
+headers set --name Accept --value application/json
+#hacer una petici&oacute;n GET a una URL   
+get jsf												 
+</pre>
+<p>Para buscar usuarios, suponiendo que ya hemos establecido la URL base y hemos fijado la cabecera Accept para aceptar JSON:</p>
+<pre class="brush:bash;">
+#podemos pasar par&aacute;metros HTTP escribi&eacute;ndolos en formato JSON 
+#(pero no se env&iacute;a JSON, se env&iacute;an en la forma param1=valor1&amp;param2=valor&amp;...)	
+get --params "{'edadMin':9, 'edadMax':90, 'sexo':'indiferente'}"
+</pre>
+<p>Para crear un nuevo usuario tendremos que hacer una petici&oacute;n POST y subir los datos JSON en el cuerpo de la petici&oacute;n.</p>
+<pre class="brush:bash;">
+#decimos que vamos a enviar JSON
+headers set --name Content-Type --value application/json
+base http://localhost:8080/AmigosSpring/REST/amigos 
+#enviamos los datos JSON (cuidado, meter todo lo siguiente en una sola l&iacute;nea)
+post --data "{'login':'test','password':'test','fechaNac':'1990-01-01',
+    'localidad':'javaland', 'varon':'true', 'descripcion':'holaaaaaa'}"
+</pre>
+<div class="frame note">
+<div class="label">Every little thing gonna be alright...</div>
+<div class="content">Por el momento vamos a suponer que no se produce ning&uacute;n error al crear el nuevo usuario. En el &uacute;ltimo ejercicio gestionaremos alguna de las posibles excepciones y en la siguiente sesi&oacute;n veremos c&oacute;mo validar los datos usando JSR303 (por ejemplo, que la fecha de nacimiento est&aacute; en el pasado). As&iacute; que no prob&eacute;is con datos err&oacute;neos ni intent&eacute;is crear un usuario con un login ya existente. </div>
+</div>
+</div>	
+
+<a name="N100B9"></a><a name="Gesti%C3%B3n+de+errores+en+servicios+REST+%280.5+puntos%29"></a>
+<h2 class="underlined_10">Gesti&oacute;n de errores en servicios REST (0.5 puntos)</h2>
+<div class="section">
+<p>Lo habitual en REST es devolver un c&oacute;digo de estado HTTP si se ha producido un error y alg&uacute;n mensaje en el cuerpo de la respuesta con m&aacute;s informaci&oacute;n. Vamos a hacer esto en nuestro servicio:</p>
+<ul>
+	
+<li>
+En primer lugar, cuando se quiere ver un usuario por login, si no existe se debe devolver un c&oacute;digo de estado 404. Hazlo si no lo has hecho ya.</li>
+
+<li>Por otro lado, cuando se genera una excepci&oacute;n (por ejemplo al intentar crear dos usuarios con el mismo login) se ve en el cliente, lo que no es apropiado. Usa la gesti&oacute;n de excepciones que hemos visto en la sesi&oacute;n para transformar las posibles RuntimeException que devuelve el DAO en c&oacute;digos de estado 400 (s&iacute;, le vamos a echar la culpa de todo al cliente, para simplificar el ejercicio). En el cuerpo de la respuesta env&iacute;a el mensaje de la excepci&oacute;n, obtenido con getMessage().</li>
+
+</ul>
+</div>
+
+
+<p class="pageBreakAfter"></p>
+
+</div>
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+        Copyright &copy;
+         2012-2013 Depto. Ciencia de la computaci&oacute;n e IA</div>
+</div>
+<script type="text/javascript">
+     
+         SyntaxHighlighter.defaults['toolbar'] = false;
+         SyntaxHighlighter.autoloader(
+  		     'java                   skin/highlight/shBrushJava.js',
+  		     'xml xhtml xslt html    skin/highlight/shBrushXml.js',
+  		     'js jscript javascript  skin/highlight/shBrushJScript.js',
+  		     'groovy                 skin/highlight/shBrushGroovy.js',
+  		     'bash shell             skin/highlight/shBrushBash.js',
+  		     'php                    skin/highlight/shBrushPhp.js',
+  		     'css                    skin/highlight/shBrushCss.js',
+  		     'sql                    skin/highlight/shBrushSql.js',
+  		     'objc                   skin/highlight/shBrushObjC.js',
+  		     'cpp c                  skin/highlight/shBrushCpp.js',
+  		     'text plain             skin/highlight/shBrushPlain.js'
+         );
+         SyntaxHighlighter.all();
+     </script><a href="skin/highlight/shBrushJava.js"></a><a href="skin/highlight/shBrushXml.js"></a><a href="skin/highlight/shBrushJScript.js"></a><a href="skin/highlight/shBrushGroovy.js"></a><a href="skin/highlight/shBrushBash.js"></a><a href="skin/highlight/shBrushPhp.js"></a><a href="skin/highlight/shBrushCss.js"></a><a href="skin/highlight/shBrushSql.js"></a><a href="skin/highlight/shBrushObjC.js"></a><a href="skin/highlight/shBrushCpp.js"></a><a href="skin/highlight/shBrushPlain.js"></a>
+</body>
+</html>

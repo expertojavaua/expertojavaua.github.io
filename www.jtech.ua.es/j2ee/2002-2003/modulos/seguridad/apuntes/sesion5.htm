@@ -1,0 +1,266 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0052)http://www.dccia.ua.es/j2ee/seguridad/apuntes/sesion5.htm -->
+<HTML><HEAD><TITLE>Seguridad en Java</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=iso-8859-1">
+<META content=Sco name=Author><LINK href="../../../apuntes.css"
+type=text/css rel=stylesheet>
+<META content="MSHTML 5.50.4134.100" name=GENERATOR></HEAD>
+<BODY>
+<H1>Tema 6: Protocolo SSL (Secure Sockets Layer)</H1>
+<H2>6.1. SSL Básico: Funcionamiento y HTTPS</H2>
+<P>SSL es el protocolo habitualmente usado para encriptar la comunicación cliente-servidor. Casi
+todo el tráfico en la red puede encriptarse con SSL: POP, IMAP, telnet, FTP, etc, pero es especialmente 
+interesante para dotar de seguridad al protocolo HTTP, es decir como base del HTTPS.</P>
+<P>La implementación de SSL es una extensión de los <I>sockets</I> que permite establecer un 
+canal <I>(stream)</I>de comunicación. Dicha comunicación se inicia con un <I>handshake</I> durante el 
+cual, el cliente y el servidor construyen una <I>session-key</I> (clave simétrica encriptada con un
+esquema asimétrico - Tema 3) compartida para verificar su identidad mútua:</P>
+<P>1.Cliente envía un mensaje <I>client_hello</I> que contiene: versiones SSL soportadas por el cliente,
+32 bytes aleatorios que crea el cliente, ID de sesión, lista de cifradores soporados, lista de métodos 
+de compresión sopordados.</P>
+<P>2. Servidor responde con <I>server_hello</I>: selección de las versiones SSL de la lista del cliente, 
+32 bytes aleatorios creados por el servidor, ID de sesión, cifradores escogidos de la lista del cliente 
+(p.e. RSA y RC4) y método de compresión usado (usualmente ninguno).</P>
+<P>A continuación, el servidor envía su certificado X.509 firmado por una CA y que contiene la clave 
+pública del servidor (así el cliente puede enviarle mensajes cifrados con ella, de manera que solo quien 
+posea la clave privada puede descrifrarlos). Seguidamente el servidor puede pedir un certificado al cliente 
+pero usualmente al cliente se le considera anónimo. Después el servidor envía un <I>server_hello_done</I> y 
+queda a la espera.</P>
+
+<P>3. Cliente verifica el mensaje del servidor y si se le requiere un certificado se lo envía. Seguidamente 
+envía un <I>client_key_exchange</I> con 48 bytes (sacados de los 32 del cliente y de los 32 del servidor) 
+que se usan para construir la <I>session-key</I> que a su vez es encriptada con la clave pública del 
+certificado del servidor. </P>
+<P>A continuación, si al cliente se le pidió un certificado, éste envía un <I>certificate_verify</I>. En 
+cualquier caso, después el cliente construye una clave simétrica con RC4 y una clave para el MAC que 
+se usará para comprobar la integridad de los datos. Después envía un <I>change_cipher_spec</I> para indicar 
+los parámetros de cifrado y seguidamente un <I>finished</I>.</P>
+<P>4. Servidor responde con su propio <I>change_cipher_spec</I> y su propio <I>finished</I>.</P>
+<P>A partir de este punto, la comunicación cliente-servidor será encriptada por clave simétrica, lo cual 
+es transparente para las librerías Java SSL como JSSE (Java Secure Sockets Extension).</P>
+
+<H2>6.2.Instalando y Configurando JSSE</H2>
+<P>JSSE es un API para usar SSL en Java. Se incluye en J2sdk1.4 pero no en las versiones anteriores.
+Concretamente, para instalarlo en J2sdk1.3 hay que descargarlo de <I>java.sun.com/products/jsse</I>,
+colocar los ficheros <I>jcert.jar</I>, <I>jnet.jar</I> y <I>jsse.jar</I> en el directorio 
+<I>$JAVA_HOME/jre/lib/ext</I> y modificar el fichero <I>$JAVA_HOME/jre/lib/security/java.security</I> 
+para que contenga la línea:</P>
+<PRE class=codigo>
+security.provider.x=com.sun.net.ssl.internal.ssl.Provider
+</PRE>
+<P>donde x indica el número de proveedor que sigue al último de los instalados. </P>
+
+<H2>6.3. Cliente y servidor HTTPS</H2>
+<P>Para ejecutar un cliente HTTPS que acceda a una determinada URL que se le pasa desde la
+línea de comandos (ver <A href="sesion5_archivos/ClienteHTTPS.java.txt">ClienteHTTPS.java</A>)
+hay que indicarle al manejador de URLs dónde están
+las clases HTTPS:</P>
+<P><I>java -Djava.protocol.handler.pkgs=com.sun.net.ssl.internal.www.protocol ClienteHTTPS 
+https://www.ua.es</I></P>
+<P>Altnerativamente el manejador puede configurarse usando el método <B>setProperty()</B>:</P>
+<PRE class=codigo>
+System.<B>setProperty</B>(
+   "java.protocol.handler.pkgs", "com.sun.net.ssl.internal.www.protocol");
+</PRE>
+<P>En cuanto al servidor (ver <A href="sesion5_archivos/ServidorHTTPS.java.txt">ServidorHTTPS.java</A>),
+lo primero es crear un socket SSL. Para ello utlizamos el método <B>getDefault()</B> de la clase
+<B>javax.net.ssl.SSLServerSocketFactory</B> para obtener una <B>SSLServerSocketFactory</B>, y luego
+llamaremos al método <B>createServerSocket</B> de esta clase para crear un <B>ServerSocket</B>:</P>
+<PRE class=codigo>
+<B>SSLServerSocketFactory</B> ssf =
+      (SSLServerSocketFactory)SSLServerSocketFactory.<B>getDefault();</B>
+    <B>ServerSocket</B> ss = ssf.<B>createServerSocket(8080);</B>
+</PRE>
+<P>y este socket puede usarse como un socket estándard. Así, a partir de aquí no hay ninguna referencia
+a SSL y el servidor trabaja de forma transparente. Con un <B>accept()</B> espera llamadas desde un cliente,
+define un <B>InputStream</B> para leer la entrada del cliente y un <B>OutputStream</B> para escribirla en
+la pantalla. Después construye una página HTML, y finalmente cierra los streams y el socket.</P>
+<P>Sin embargo, si intentamos ejecutar este ejemplo con <I>java ServidorHTTPS</I>, se lanza una 
+excepción al detectarse que no se ha creado un certificado y una clave privada para el servidor SSL. 
+Para ello, llamaremos a <I>keytool</I> desde el directorio desde donde ejecutamos el servidor:</P>
+<P><I>keytool -genkey -v -keyalg RSA -keystore .keystore</I></P>
+<P>y ponemos como nombre el nombre de la máquina, p.e. <I>localhost</I>. Así, para lanzar el servidor 
+HTTPS indicaremos a la máquina virtual el almancén que contiene el certificado y el password para 
+acceder a él. Desde línea de comandos esto queda como:</P>
+<P><I>java -Djavax.net.keyStore=.keystore -Djavax.net.ssl.keyStorePassword=scosco ServidorHTTPS</I></P>
+<P>Tras esperar unos segundos para dejar que el servidor se inicialice, pediremos desde el navegador la
+URL <I>https://localhost:8080</I> atacando al puerto donde está escuchando el servidor. Sin embargo, dado 
+que el certificado que hemos utilizado es auto-firmado, el navegador no lo reconocerá aunque nos pedirá si 
+queremos aceptarlo. Si decimos que sí, se muestra una página web con el mensaje <I>Hola!</I>.</P>
+<P>Para salvar las advertencias del navegador hemos de conseguir un certificado firmado por una CA
+reconocida, como Verisign.</P>
+<P>Cuando un cliente ataca un servidor SSL, el servidor envía un certificado al cliente para verificar 
+que el cliente conoce la identidad del servidor. El cliente entonces valida el certificado y confía en 
+la CA que lo firmó. Como el certificado de nuestro servidor es auto-firmado hemos de decirle al cliente 
+que nos acepte como CA. Desde línea de comando haremos lo siguiente:</P>
+<P><I>java -Djavax.net.ssl.trustStore=.keystore ClienteHTTPS https://localhost:8080/</I></P>
+<P>y el resultado será el código HTML de la página web que sirve el servidor HTTPS.</P>
+
+<P>Hay que tener en cuenta que el <I>trustStore</I> por defecto es el fichero 
+<I>$JRE_HOME/lib/security/cacerts</I> que contiene todos los certificados en los que Java confía, aunque 
+podemos importar otros desde <I>keytool</I>.</P>
+
+<H2>6.4. Protegiendo Keystore y Password: com.sun.net.ssl</H2>
+<P>Pasar el almacén y el password por teclado no es muy conveniente ya que alguien podría estar haciendo
+un <I>ps</I> y podría descubrirlos. Una forma más segura consiste en definir el password y cargar el
+keystore desde código. Utilizaremos para ello las clases <B>TrustManagerFactory</B> (en el cliente),
+<P>KeyManagerFactory</P> (en el servidor) y <B>SSLContext</B> (en ambos) de <B>com.sun.net.ssl</B>.<p></P>
+<P>En el cliente utlizamos el password conocido para cargar el keystore que nos interesa:</P>
+<PRE class=codigo>
+char[] password = "scosco".toCharArray();
+KeyStore keystore = KeyStore.getInstance("JKS");
+keystore.load(new FileInputStream(".keystore"), password);
+</PRE>
+<P>y seguidamente inicializamos una <B>TrustManagerFactory</B> con el keystore:</P>
+<PRE class=codigo>
+<B>TrustManagerFactory</B> tmf = TrustManagerFactory.getInstance("SunX509");
+tmf.<B>init</B>(keystore);
+</PRE>
+<P> Y ya podemos crear un <B>SSLContext</B>: 
+<PRE class=codigo>
+<B>SSLContext</B> contexto = SSLContext.getInstance("TLS");
+TrustManager[] trustManagers = tmf.getTrustManagers();
+contexto.<B>init</B>(null, trustManagers, null);
+</PRE>
+<P>Este contexto permite definir una <B>SSLSocketFactory</B> para que podamos implementar el cliente 
+directamente con sockets, esto es, sin basarnos el HTTPS. El código completo se encuentra en
+<A href="sesion5_archivos/ClienteSSLSocketsSun.java.txt">ClienteSSLSocketsSun.java</A>.</P>
+
+<P>Por otro lado, el servidor, una vez conocido el password y cargado el keystore, inicializará con 
+éste último una <B>KeyManagerFactory</B> y con ella a su vez un <B>SSLContext</B>:</P>
+<PRE class=codigo>
+<B>KeyManagerFactory</B>kmf = KeyManagerFactory.getInstance("SunX509");
+kmf.<B>init</B>(keystore, password);
+
+// Creamos un contexto SSL y lo inicializamos con los
+// KeyManagers de la KeyManagerFactory
+<B>SSLContext</B> contexto = SSLContext.getInstance("TLS");
+KeyManager[] keyManagers = kmf.getKeyManagers();
+contexto.<B>init</B>(keyManagers, null, null);
+
+// Definimos una SocketFactory para crear los sockets.
+<B>SSLServerSocketFactory</B> ssf = contexto.getServerSocketFactory();
+<B>ServerSocket</B> ss = ssf.createServerSocket(PORT);
+</PRE>
+<P>El código completo se encuentra en
+<A href="sesion5_archivos/ServidorSSLSocketsSun.java.txt">ServidorSSLSocketsSun.java</A>. Si ejecutamos
+cada uno de ellos en una ventana podemos ver que lo que escribimos en el cliente aparece en la
+ventana del servidor.</P>
+
+<H2>6.5. Autentificación del cliente </H2>
+<P>Como hemos visto, en HTTPS solamente se autentifica el servidor presentando un certificado digital,
+mientras que el cliente se considera anómino. Si queremos que, para más seguridad,
+también el cliente se autentifique ante el servidor, éste deberá presenstar un certificado digital.</P>
+
+<P>Para forzar que el cliente se autentifique modificaremos el código del servidor 
+<A href="sesion5_archivos/ServidorHTTPS.java.txt">ServidorHTTPS.java</A> de manera que incluya las
+líneas</P>
+<PRE class=codigo>
+// Utilizar una SocketFactory para crear sockets SSL:
+SSLServerSocketFactory ssf =
+  (SSLServerSocketFactory)SSLServerSocketFactory.getDefault();
+  <B>SSLServerSocket</B> ss = (SSLServerSocket)ssf.createServerSocket(8080);
+
+// Requerir autentificación del cliente
+ss.<B>setNeedClientAuth</B>(true);
+</PRE>
+<P>Es decir, que utilice sockets de la clase <B>SSLServerSocket</B> para llamar al método 
+<B>setNeedClientAuth()</B> de dicha clase. El resultado es el código 
+<A href="sesion5_archivos/ServidorHTTPSAutorizando.java.txt">ServidorHTTPSAutorizando.java</A>.
+Así, el cliente <A href="sesion5_archivos/ClienteHTTPS.java.txt">ClienteHTTPS.java</A> podrá conectarse
+a este servidor para que le muestre una página web. Pero antes, la autorización mútua fuerza a que el 
+cliente incorpore en su <I>trustStore</I> un certificado del servidor y éste incorpore en el suyo un 
+certificado del cliente. Veámoslo paso a paso:</P>
+<table border="1">
+  <tr>
+    <td>1. Keystore del cliente</td>
+    <td><I>keytool -genkey -v -keyalg RSA -keystore ks_cliente</I> con "CN=sco" y clave "scosco"</td>
+  </tr>
+  <tr>
+    <td>2. Keystore del servidor</td>
+    <td><I>keytool -genkey -v -keyalg RSA -keystore ks_servidor</I> con "CN=localhost" y clave "dcciadccia"</td>
+  </tr>
+  <tr>
+    <td>3. Certificado del servidor</td>
+    <td><I>keytool -export -v -file servidor.cer -keystore ks_servidor</I></td>
+  </tr>
+  <tr>
+    <td>4. Truststore del cliente</td>
+    <td><I>keytool -import -v -alias certservidor -file servidor.cer -keystore ts_cliente</I>
+    con clave "scosco" reconociendo que confiamos en el certificado</td>
+  </tr>
+  <tr>
+    <td>5. Certificado del cliente</td>
+    <td><I>keytool -export -v -file cliente.cer -keystore ks_cliente</I></td>
+  </tr>
+  <tr>
+    <td>6. Truststore del servidor</td>
+    <td><I>keytool -import -v -alias certcliente -file cliente.cer -keystore ts_servidor</I>
+    con clave "dcciadccia" respondiendo que confiamos en el certificado</td>
+  </tr>
+</table>
+
+<P>Así, lanzaremos el servidor de la siguiente forma</P>
+<P><I>java -S.keyStore=ks_servidor -S.keyStorePassword=dcciadccia
+-S.trustStore=ts_servidor ServidorHTTPSAutorizando</I> </P>
+<P>donde hay que sustituir S por <I>javax.net.ssl</I> al escribir el comando.
+De la misma manera, en otra ventana lanzaremos el cliente:</P>
+<P><I>java -S.keyStore=ks_cliente -S.keyStorePassword=scosco
+-S.trustStore=ts_cliente ClienteHTTPS https://localhost:8080</I></P>
+<P>donde de nuevo hay que sustituir S por su valor al escribir el comando. El resultado es que el cliente 
+puede acceder a la pagina web.</P>
+
+<P>Siguiendo con el esquema otra posibilidad es que autentifiquemos al cliente no en base a un certificado 
+completo sino a ciertos datos contenidos en el certificado, como por ejemplo el CN del mismo. Para ello, 
+dentro del servidor hemos de incluir, tras el <B>accept()</B>, el siguiente fragmento de codigo</P>
+<PRE class=codigo>
+boolean permitido = false;
+
+// Obtener la sesion
+<B>SSLSession</B> sesion = ((SSLSocket) s).<B>getSession();</B>
+
+// Comprobar la autentificación del cliente con el AutentificadorCN
+<B>AutentificadorCN</B> autentificador = new AutentificadorCN(sesion);
+try {
+  autentificador.<B>comprobarPermiso()</B>;
+  permitido = true;
+} catch (<B>ExcepcionAutentificacion</B> ea) {
+  permitido = false;
+  System.out.println("Acceso denegado." + ea);
+}
+</PRE>
+<P>resultando el código
+<A href="sesion5_archivos/ServidorHTTPSAutorizando2.java.txt">ServidorHTTPSAutorizando2.java</A>.
+En definitiva, lo que hace el servidor es acceder a la <B>SSLSession</B> para obtener la sesión del socket y
+usarla para crear un objeto de la clase <B>AutentificadorCN</B> que implementa la inferfaz
+<B>AutentificadorSSL</B>. El único método de dicha interfaz es <B>comprobarPermiso()</B> (ver 
+<A href="sesion5_archivos/AutentificadorCN.java.txt">AutentificadorCN.java</A>) y básicamente hace lo
+siguiente:</P>
+<PRE class=codigo>
+<B>// 1. Obtener la secuencia de certificados.</B>
+X509Certificate[] certChain = null;
+try {
+   certChain = mSession.getPeerCertificateChain();
+} catch (SSLPeerUnverifiedException spue) {
+   // No hay!
+   throw new ExcepcionAutentificacion("Error cadena");
+}
+<B>// 2. Obtener el certificado del cliente</B>
+X509Certificate clientCert = certChain[0];
+<B>// 3. Obtener el principal correspondiente al cliente</B>
+java.security.Principal client = clientCert.getSubjectDN();
+<B>// 4. Obtener el nombre del cliente</B>
+String name = client.getName();
+<B>// 5. Comprobar que CN=sco</B>
+if (name.indexOf("CN=sco,")!=0) {
+  throw new ExcepcionAutentificacion("Cliente no es sco");
+}
+</PRE>
+<P>Es decir, en caso de que el CN no coincida con "sco" se lanza una <B>ExcepcionAutentificacion</B> que 
+causará que se deniege el acceso al cliente. Para probar este esquema podemos utilizar los almancenes creados 
+para el ejemplo anterior ya que en el keystore del cliente los certificados tenian CN=sco.Si volvemos a 
+ejecutar el ejemplo anterior pero con este nuevo servidor el resultado será o bien acceder correctamente 
+a una página web que nos da la bienvenida o a una página web con un mensaje de rechazo, lo que ocurrirá si 
+utilizamos un certificado con otro CN aunque todo lo demás sea correcto.</P>
+
+</BODY></HTML>

@@ -1,0 +1,248 @@
+package es.ua.jtech.jms;
+
+import javax.jms.ConnectionFactory;
+import javax.jms.Topic;
+import javax.jms.Connection;
+import javax.jms.Session;
+import javax.jms.MessageProducer;
+import javax.jms.TopicSubscriber;
+import javax.jms.MessageListener;
+import javax.jms.Message;
+import javax.jms.TextMessage;
+import javax.jms.JMSException;
+import javax.annotation.Resource;
+
+public class DurableSubscriberExample {
+
+    static int startindex = 0;
+    @Resource(mappedName = "jms/ConnectionFactory")
+    private static ConnectionFactory connectionFactory;
+    @Resource(mappedName = "jms/DurableConnectionFactory")
+    private static ConnectionFactory durableConnectionFactory;
+    @Resource(mappedName = "jms/Topic")
+    private static Topic topic;
+    String conFacName1 = "jms/ConnectionFactory";
+    String conFacName2 = "jms/DurableConnectionFactory";
+    String topicName = "jms/Topic";
+
+    public void runProgram() {
+        // Instanciamos el subscriptor y el publicador
+        DurableSubscriber durableSubscriber = new DurableSubscriber();
+        MultiplePublisher multiplePublisher = new MultiplePublisher();
+        // Iniciamos el subscriptor, publicamos mensajes, y cerramos el subscriptor
+        durableSubscriber.startSubscriber();
+        multiplePublisher.publishMessages();
+        durableSubscriber.closeSubscriber();
+        // Mientras que el subscriptor esta cerrado, el publicador publica algunos mensajes más
+        multiplePublisher.publishMessages();
+        // Reiniciamos el subscriptor y recoge estos mensajes
+        durableSubscriber.startSubscriber();
+        // Cerramos las conexiones
+        durableSubscriber.closeSubscriber();
+        multiplePublisher.finish();
+        durableSubscriber.finish();
+    }
+
+    public static void main(String[] args) {
+        DurableSubscriberExample dse = new DurableSubscriberExample();
+
+        System.out.println("Factoria de conexiones sin ID Cliente es " + dse.conFacName1);
+        System.out.println("Factoria de conexiones con ID Cliente es " + dse.conFacName2);
+        System.out.println("Nombre del topico es " + dse.topicName);
+        System.out.println("-------------------------------------");
+
+
+        dse.runProgram();
+        System.exit(0);
+    }
+
+    public class DurableSubscriber {
+
+        Connection connection = null;
+        Session session = null;
+        TextListener listener = null;
+        TopicSubscriber subscriber = null;
+
+        public DurableSubscriber() {
+            try {
+                connection = durableConnectionFactory.createConnection();
+                session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            } catch (Exception e) {
+                System.err.println("Problema de conexion [DS]: " + e.toString());
+                if (connection != null) {
+                    try {
+                        connection.close();
+                    } catch (JMSException ee) {
+                    }
+                }
+                System.exit(1);
+            }
+        }
+
+        /**
+         * Para la conexion y crea el subscriptor duradero
+         * Registra el listener de mensajes (TextListener), e inicia la entrega
+         * El listener muestra los mensajes obtenidos
+         */
+        public void startSubscriber() {
+            try {
+                System.out.println("Iniciando subscriptor con MiSubscripcionDuradera");
+                connection.stop();
+                subscriber = session.createDurableSubscriber(topic, "MiSubscripcionDuradera");
+                System.out.println("subscriber:" + subscriber);
+                listener = new TextListener();
+                subscriber.setMessageListener(listener);
+                connection.start();
+            } catch (JMSException e) {
+                System.err.println("startSubscriber -> Exception: " + e.toString());
+            }
+        }
+
+        /**
+         * Se bloquea hasta que el publicador envia un mensaje de control indicando el fin de la publicación.
+         * A continuacion, cierra el subscriptor
+         */
+        public void closeSubscriber() {
+            try {
+                listener.monitor.waitTillDone();
+                System.out.println("Cerrando subscriptor");
+                subscriber.close();
+            } catch (JMSException e) {
+                System.err.println("closeSubscriber -> Exception: " + e.toString());
+            }
+        }
+
+        public void finish() {
+            if (connection != null) {
+                try {
+                    System.out.println("Unsuscribe de la subscripcion duradera");
+                    session.unsubscribe("MiSubscripcionDuradera");
+                    connection.close();
+                } catch (JMSException ee) {
+                }
+            }
+        }
+
+        private class TextListener implements MessageListener {
+
+            Monitor monitor = new Monitor();
+
+            /**
+             * Cast del mensaje a un TextMessage y muestra su texto
+             * Si el mensaje no es de texto, se interpreta como el fin del flujo de mensajes, y el listener
+             * de mensajes pone su monitor de estado a 'all done'
+             */
+            public void onMessage(Message message) {
+                if (message instanceof TextMessage) {
+                    TextMessage msg = (TextMessage) message;
+
+                    try {
+                        System.out.println(" SUBSCRIPTOR -> Leyendo mensaje: " + msg.getText());
+                    } catch (JMSException e) {
+                        System.err.println("Exception en onMessage(): " + e.toString());
+                    }
+                } else {
+                    monitor.allDone();
+                }
+            }
+        }
+    }
+
+    /**
+     * Publica varios mensajes a un topico
+     */
+    public class MultiplePublisher {
+
+        Connection connection = null;
+        MessageProducer producer = null;
+        Session session = null;
+
+        public MultiplePublisher() {
+            try {
+                connection = connectionFactory.createConnection();
+                session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+                producer = session.createProducer(topic);
+            } catch (Exception e) {
+                System.err.println("Problema de conexion [MP]: " + e.toString());
+
+                if (connection != null) {
+                    try {
+                        connection.close();
+                    } catch (JMSException ee) {
+                    }
+                }
+
+                System.exit(1);
+            }
+        }
+
+        /**
+         * Crea mensajes de texto
+         * Envia varios mensajes, cambiando el numero de mensaje
+         */
+        public void publishMessages() {
+            TextMessage message = null;
+            int i;
+            final int NUMMSGS = 3;
+            final String MSG_TEXT = "Este es el mensaje num";
+
+            try {
+                message = session.createTextMessage();
+
+                for (i = startindex; i < (startindex + NUMMSGS); i++) {
+                    message.setText(MSG_TEXT + " " + (i + 1));
+                    System.out.println(" PUBLICADOR -> Publicando mensaje: " + message.getText());
+                    producer.send(message);
+                }
+
+                // Envia un mensaje de control indicando el fin de los mensajes
+                producer.send(session.createMessage());
+                startindex = i;
+            } catch (JMSException e) {
+                System.err.println("publishMessages -> Exception : " + e.toString());
+            }
+        }
+
+        public void finish() {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (JMSException ee) {
+                }
+            }
+        }
+    }
+
+     /**
+     * Producer signals end of message stream
+     * Listener calls allDone() to notify consumer that the signal has arrived
+     * Consumer calls waitTillDone() to wait for this notification.
+     */
+    public static class Monitor {
+        boolean done = false;
+
+        /**
+         * Waits until done is set to true.
+         */
+        public void waitTillDone() {
+            synchronized (this) {
+                while (!done) {
+                    try {
+                        this.wait();
+                    } catch (InterruptedException ie) {
+                    }
+                }
+            }
+        }
+
+        /**
+         * Sets done to true.
+         */
+        public void allDone() {
+            synchronized (this) {
+                done = true;
+                this.notify();
+            }
+        }
+    }
+}

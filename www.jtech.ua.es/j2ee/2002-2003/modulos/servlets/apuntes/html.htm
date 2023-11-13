@@ -1,0 +1,694 @@
+<!-- saved from url=(0022)http://internet.e-mail -->
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+                                                            
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+                                                            
+  <meta name="Author" content="Nacho">
+                                                            
+  <meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+                                                        
+  <link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+  <title>Conceptos Previos</title>
+</head>
+  <body>
+      <b>      
+<h1>B. HTML</h1>
+<h2>&nbsp;</h2>
+<h2>B.1. Conceptos básicos</h2>
+      </b>
+           
+      <h4>B.1.1. WWW y HTML</h4>
+           
+      <p>El servicio Web o <b>WWW</b> <i>(World Wide Web</i>)<i> </i>es una
+      forma de representar la información en Internet basada en páginas. Una página
+      WWW puede incluir tres tipos de información: texto, gráficos e
+      hipertexto. Un <b>hipertexto</b> es texto resaltado que el usuario puede
+      activar para cargar otra página WWW. La diferencia entre un documento de
+      hipertexto y un documento normal consiste en que el hipertexto contiene,
+      además de la información, una serie de enlaces o conexiones con otros&nbsp;
+      documentos relacionados, de manera que el lector puede pasar de un tema a
+      otro y volver al documento original en el momento en que le interese. De
+      esta forma, se permite combinar texto y gráficos, y mediante hiperenlaces
+      podremos cargar páginas de cualquier otro lugar de Internet. </p>
+           
+      <p><b>HTML</b> (<i>HyperText Markup Language</i>), es un lenguaje simple
+      utilizado para crear documentos de hipertexto para WWW. No es un lenguaje
+      de descripción de página: no permite definir de forma estricta la
+      apariencia de una página, aunque a veces se utilice para ello, pero la
+      presentación de la página es muy dependiente del navegador empleado. </p>
+      <p>Por tanto, HTML se limita a describir la estructura y el contenido de
+      un documento. Es un &quot;lenguaje de descripción de página&quot;
+      independiente de la plataforma en que se utilice, y no es necesario
+      utilizar un editor particular para crear un documento HTML (podemos
+      trabajar con el editor de DOS o con el bloc de notas, por ejemplo)</p>
+           
+      <h4>B.1.2. Clientes, servidores y URLs</h4>
+           
+      <p>Para poder utilizar el servicio Web se necesitan dos partes. Por un
+      lado, un lugar donde poner las páginas WWW que se requieran, a disposición del público en
+      Internet. Es lo que se
+      llama un <b>servidor</b> WWW. Por otro lado, el usuario que quiere acceder
+      a dichas páginas tiene que utilizar un programa (<b>cliente</b> WWW) que
+      lea las páginas WWW e interprete su significado. Ejemplos de estos
+      programas son los navegadores Internet Explorer o Netscape.</p>
+      <p>Interconectar documentos por todo el planeta implica tener algún
+      método de identificar unívocamente un documento en la red. La dirección
+      única de un documento en WWW se llama <b>URL</b> (<i>Uniform Resource
+      Locator</i>) y se compone de los siguientes elementos:</p>
+      <ul>
+        <li>El <b>protocolo</b> de intercambio de datos entre el cliente y el
+          servidor. (<i>http</i>, <i>ftp</i>, etc)
+        <li>La <b>dirección Internet del servidor</b> que difunde los
+          documentos. Esta dirección, única en toda la red, es la dirección
+          IP de la máquina (un código de 4 bytes, separando cada byte (en
+          decimal) por puntos). Al ser estos números difíciles de memorizar,
+          un servidor de nombres (DNS) resuelve generalmente la relación entre
+          dirección numérica y nombre simbólico de la máquina y nombre del
+          ámbito. Así, por ejemplo, 134.158.48.1 es la dirección de la máquina
+          <i>sioux.in2p3.fr</i> en la que <i>sioux</i> representa el nombre de
+          la máquina y <i> .in2p3.fr</i> el nombre del ámbito.
+        <li>El <b>árbol de directorios</b> (camino) que conduce al documento,
+          dentro del servidor.
+        <li>El <b>nombre del documento</b>.</li>
+      </ul>
+      Menos frecuentemente esta dirección podrá completarse con otros
+      elementos:
+      <ul>
+        <li>El puerto
+        <li>Información de autentificación (login y password del usuario)
+        <li>Parámetros adicionales.</li>
+      </ul>
+      La sintaxis generalmente utilizada para representar el URL de un documento
+      es:<pre class="codigo">protocolo://nombre_servidor/arbol_directorios/documento</pre>
+           
+      <p>La sintaxis completa es:</p>
+      <pre class="codigo">protocolo://usuario:password@nombre_servidor:puerto/
+arbol_directorios/documento?parametros</pre>
+           
+      Ejemplos de URL:<pre class="codigo">http://www.ua.es/index.htm
+http://www.unapagina.com?param1=valor1&amp;param2=valor2
+ftp://ftp.dccia.ua.es/pub/winzip.exe</pre>
+           
+      <p>&nbsp;</p>
+      <b>      
+<h2>B.2. Componentes básicos de un documento HTML</h2>
+      </b>
+           
+      <h4>B.2.1. Componentes de un documento HTML</h4>
+           
+      <p>HTML define la estructura y contenido de los documentos insertando en
+      el texto de los mismos una serie de <b>marcas</b> (<i>tags </i>o etiquetas), que
+      delimitan elementos del documento como cabeceras, párrafos, etc y se
+      usan para dar un tratamiento diferente al texto que se encuentre entre ellas.
+      Son fragmentos de texto encerrados entre los signos &quot;&lt;&quot; y
+      &quot;&gt;&quot; (teniendo por tanto el formato &quot;<i><b>&lt;marca&gt;</b></i>&quot;).
+      </p>
+      <p>Las marcas funcionan muchas veces por parejas, una para indicar el
+      inicio de acción de la marca, y otra para indicar el final. La marca de
+      inicio consiste en una letra o una palabra, y la marca de final es la
+      misma letra o palabra precedida por &quot;/&quot;. Existen, no obstante,
+      algunas marcas que no requieren su pareja de cierre, como &lt;BR&gt; (que
+      fuerza un salto de línea). Es importante señalar que las marcas, en
+      general pueden estar indistintamente en mayúsculas o en minúsculas.</p>
+      <pre class="codigo">texto normal <b>&lt;marca&gt;</b> texto afectado por la marca <b>&lt;/marca&gt;</b> 
+resto del texto</pre>
+           
+      <p>Hay que indicar que, para las etiquetas que se abren y se cierran,
+      tendremos que cerrar una etiqueta DESPUES de haber cerrado las que se han
+      abierto después (es decir, se cierran en orden inverso al que se abren):<pre class="codigo">texto normal <b>&lt;marca1&gt;</b> texto afectado por la marca <b>
+&lt;marca2&gt;</b> texto de marca2 <b>&lt;/marca2&gt;</b> 
+otra vez texto de marca1<b>&lt;/marca1&gt;</b> resto del texto</pre>
+           
+      <p>Algunas marcas pueden admitir <b>atributos</b>, pudiendo tener cada uno
+      de estos atributos un valor. Este valor ira entre comillas (&quot;) si es
+      alfanumérico:<pre class="codigo">&lt;marca atributo1=numerico atributo2=&quot;alfanumerico&quot;&gt;</pre>
+           
+      <p>Ejemplos:</p>
+      <pre class="codigo">&lt;pre width=50&gt;
+&lt;a href=&quot;/home/default.html&quot;&gt;</pre>
+           
+      <h4>B.2.2. Esquema básico de un documento HTML</h4>
+           
+      <p>Una página HTML tiene en general el formato: </p>
+      <pre class="codigo">&lt;html&gt;
+&lt;head&gt;
+	... Lineas de cabecera
+&lt;/head&gt;
+&lt;body&gt;
+	... Cuerpo del documento
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+           
+      <p><b>CABECERA </b></p>
+      <p>La cabecera de un documento HTML está limitada por las marcas <b>HEAD</b>,
+      y en ella se introduce información acerca del documento, como por
+      ejemplo: </p>
+           
+      <ul>
+        <li>El título del mismo:</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo">&lt;title&gt;El titulo del documento&lt;/title&gt;</pre>
+           
+      </blockquote>
+      <ul>
+        <li>Cabeceras HTTP:</li>
+      </ul>
+      <blockquote>
+           
+      <pre class="codigo">&lt;META HTTP-EQUIV=&quot;Cabecera&quot; CONTENT=&quot;Valor&quot;&gt;</pre>
+           
+      </blockquote>
+      <p><b>CUERPO</b></p>
+      <p>El contenido del documento se indica en el cuerpo del mismo, delimitado
+      por las marcas <b>BODY</b>. Veremos en los siguientes apartados algunos de
+      los elementos más comunes utilizados en esta parte.</p>
+      <p><b>COMENTARIOS</b></p>
+      <p>Podemos colocar comentarios en el documento
+      (comentarios que ignorará el navegador), con:</p>
+      <pre class="codigo">&lt;!-- ... comentario ... --&gt;</pre>
+           
+      <h4>B.2.3. Encabezados</h4>
+           
+      <p>Podemos colocar títulos de mayor o menor tamaño en el documento, y
+      dividirlos así en secciones. Los títulos o encabezados están contenidos
+      dentro de etiquetas <b>H#</b>, siendo # un número del 1 al 6 que indica
+      el tamaño de la fuente del encabezado (1 para el mayor tamaño, 6 para el
+      menor): </p>
+      <center>
+      <table border="1">
+      <tr>
+      <td>
+      <pre class="codigo">&lt;h1&gt;Encabezado de letra grande&lt;/h1&gt;
+&lt;h6&gt;Encabezado de letra pequeña&lt;/h6&gt;</pre>
+	   </td>
+	   </tr>
+	   <tr>
+	   <td>
+	   <h1>Encabezado de letra grande</h1>
+	   <h6>Encabezado de letra pequeña</h6>
+	   </td>
+	   </tr>
+	   </table>
+	   </center>
+           
+      <h4>B.2.4. Bloques</h4>
+           
+      <p>Para definir y separar bloques de texto se emplean una serie de marcas
+      que definen párrafos, texto preformateado, etc. Algunas marcas de bloques
+      son:
+      <ul>
+        <li><b>&lt;P&gt;...&lt;/P&gt; </b>se utiliza para delimitar párrafos.</li>
+      </ul>
+      <ul>
+        <li><b>&lt;PRE&gt;...&lt;/PRE&gt; </b>se utiliza para visualizar el
+          texto que contiene respetando el formato en que fue escrito.</li>
+      </ul>
+      <ul>
+        <li><b>&lt;BLOCKQUOTE&gt;...&lt;/BLOCKQUOTE&gt; </b>se utiliza para
+          tabular a la derecha (cuando se abre la marca) y a la izquierda (cuando
+          se cierra).</li>
+      </ul>
+      <ul>
+        <li><b>&lt;BR&gt; </b>indica un salto de línea.</li>
+      </ul>
+      <ul>
+        <li><b>&lt;HR&gt; </b>se emplea para representar una línea horizontal.</li>
+      </ul>
+      <center>
+      <table border="1">
+      <tr>
+      <td>
+      <pre class="codigo">&lt;p&gt;Esto esta dentro de un parrafo&lt;/p&gt;
+Un texto
+&lt;br&gt;
+Otro texto
+&lt;hr&gt;</pre>
+	   </td>
+	   </tr>
+	   <tr>
+      <td>
+<p>Esto esta dentro de un parrafo</p>
+Un texto
+<br>
+Otro texto
+<hr>
+	   </td>
+	   </tr>
+	   </table>
+	   </center>
+      <h4>B.2.5. Apariencia</h4>
+           
+      <p>Algunas marcas HTML permiten controlar la apariencia del texto. Por
+      ejemplo: </p>
+      <ul>
+        <li><b>&lt;FONT&gt;...&lt;/FONT&gt; </b>establece las características
+          de la fuente para el texto que encierra.</li>
+      </ul>
+      <ul>
+        <li><b>&lt;B&gt;...&lt;/B&gt; </b>pone en negrita el texto que encierra.</li>
+      </ul>
+      <ul>
+        <li><b>&lt;I&gt;...&lt;/I&gt; </b>pone en cursiva el texto que encierra.</li>
+      </ul>
+      <ul>
+        <li><b>&lt;U&gt;...&lt;/U&gt; </b>pone en subrayado el texto que
+          encierra.</li>
+      </ul>
+      <center>
+      <table border="1">
+      <tr>
+      <td>
+      <pre class="codigo">&lt;font size=&quot;5&quot; color=&quot;blue&quot;&gt;Fuente azul tamaño 5&lt;/font&gt;
+&lt;br&gt;
+&lt;b&gt;Letra negrita&lt;/b&gt;
+&lt;br&gt;
+&lt;b&gt;&lt;i&gt;&lt;u&gt;Letra negrita, cursiva y subrayado&lt;/u&gt;&lt;/i&gt;&lt;/b&gt;</pre>
+	   </td>
+	   </tr>
+	   <tr>
+      <td>
+<font size="5" color="blue">Fuente azul tamaño 5</font>
+<br>
+<b>Letra negrita</b>
+<br>
+<b><i><u>Letra negrita, cursiva y subrayado</u></i></b>
+	   </td>
+	   </tr>
+	   </table>
+	   </center>
+      <h4>B.2.6. Listas</h4>
+           
+      <p>Para definir las listas, utilizamos dos etiquetas: </p>
+      <ul>
+        <li><b>&lt;UL&gt;...&lt;/UL&gt; </b>para definir listas no ordenadas</li>
+      </ul>
+      <ul>
+        <li><b>&lt;OL&gt;...&lt;/OL&gt; </b>para definir listas ordenadas</li>
+      </ul>
+      <p>Dentro de estas dos marcas, se utilizan marcas: </p>
+      <ul>
+        <li><b>&lt;LI&gt;...&lt;/LI&gt; </b>para definir los elementos de la
+          lista</li>
+      </ul>
+      <center>
+      <table border="1" width="442">
+      <tr>
+      <td width="432">
+      <pre class="codigo">&lt;ul&gt;
+	&lt;li&gt;Elemento 1 de lista&lt;/li&gt;
+	&lt;li&gt;Elemento 2 de lista&lt;/li&gt;
+&lt;ul&gt;
+&lt;ol&gt;
+	&lt;li&gt;Elemento 1 de lista&lt;/li&gt;
+	&lt;li&gt;Elemento 2 de lista&lt;/li&gt;
+&lt;/ol&gt;</pre>
+	   </td>
+	   </tr>
+	   <tr>
+      <td width="432">
+<ul>
+<li>Elemento 1 de lista</li>
+<li>Elemento 2 de lista</li>
+</ul>
+<ol>
+	<li>Elemento 1 de lista</li>
+	<li>Elemento 2 de lista</li>
+</ol>
+	   </td>
+	   </tr>
+	   </table>
+	   </center>
+      <h4>B.2.7. Imágenes</h4>
+           
+      <p><b>&lt;IMG&gt; </b>es la marca que permite incluir una imagen. Esta
+      marca irá siempre completada por el atributo &quot;<i>src</i>&quot; que
+      permite dar la dirección del fichero gráfico que contiene la imagen:
+        <pre class="codigo">&lt;img src=&quot;/imagenes/unaimagen.gif&quot;&gt;</pre>
+           
+      <p>El valor del atributo <i>src</i> permite especificar la ruta de la
+      imagen como URL también. Para navegadores que no puedan cargar la imagen,
+      podemos poner en el atributo <i>alt</i> el texto alternativo que se verá
+      si no se ve la imagen:</p>
+      <pre class="codigo">&lt;img src=&quot;/imagenes/unaimagen.gif&quot; alt=&quot;Imagen de ejemplo&quot;&gt;</pre>
+           
+      <p>Podemos alinear la imagen con el texto mediante el atributo <i>align</i>,
+      indicando dónde va la imagen con respecto al texto de su línea:</p>
+      <pre class="codigo">&lt;img align=&quot;right&quot; src=&quot;/imagenes/unaimagen.gif&quot;&gt;</pre>
+           
+      <h4>B.2.8. Hiperenlaces</h4>
+           
+      <p>El lector explora un documento HTML haciendo clic sobre las zonas
+      activas para así acceder a nuevos documentos. En HTML definimos una zona
+      activa (que puede ser un texto o una imagen) que se asocia a la URL a la que
+      se quiere acceder, y haciendo clic sobre esa zona se accederá a dicha URL. Para definir el hiperenlace se utiliza la marca <b>&lt;A&gt; </b>con
+      la sintaxis: </p>
+      <pre class="codigo">&lt;a href=&quot;URL&quot;&gt;Texto o imagen a mostrar&lt;/a&gt;</pre>
+           
+      <p>Podremos hacer enlaces: </p>
+      <ul>
+        <li>A <b>otras páginas</b>:</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo">&lt;a href=&quot;http://www.ua.es&quot;&gt;Universidad de Alicante&lt;/a&gt;</pre>
+           
+        
+           
+        <blockquote>
+        <a href="http://www.ua.es">Universidad de Alicante</a> 
+        </blockquote>
+           
+        
+           
+        <pre class="codigo">&lt;a href=&quot;http://www.ua.es&quot;&gt;&lt;img src=&quot;dccia.gif&quot;&gt;&lt;/a&gt;</pre>
+           
+        <p>El atributo <i>href</i> permite indicar la dirección a la que salta
+        el enlace al pinchar sobre él. Notar que entre las marcas <i>&lt;A&gt;</i>
+        y <i>&lt;/A&gt; </i>podemos colocar tanto texto como una imagen.</p>
+      </blockquote>
+      <ul>
+        <li>A otras <b>zonas de la misma página </b>(o a zonas concretas de una
+          página). Para ello se utilizan las
+          &quot;anclas&quot;.&nbsp;
+          <ul>
+            <li>En la zona a la que se quiera acceder con el enlace se le asigna
+              una marca <i>&lt;A&gt;</i> con un atributo <i>name</i>, con el
+              nombre con el que queramos identificar la zona:</li>
+          </ul>
+        </li>
+      </ul>
+      <blockquote>
+        <blockquote>
+          <pre class="codigo">&lt;a name=&quot;ancla1&quot;&gt;...&lt;/a&gt;</pre>
+           
+        </blockquote>
+        <ul type="circle">
+          <li>Luego en la zona donde coloquemos el enlace, en el <i>href </i>hacemos
+            referencia a la marca anterior, precedida por '#':</li>
+        </ul>
+        <blockquote>
+          <pre class="codigo">&lt;a href=&quot;#ancla1&quot;&gt;Enlace hacia ancla1&lt;/a&gt;</pre>
+           
+          <pre class="codigo">&lt;a href=&quot;pagina.htlm#ancla1&quot;&gt;
+Enlace hacia ancla1 de otra pagina
+&lt;/a&gt;</pre>
+           
+          <p>Al hacer click sobre el enlace &quot;Enlace hacia ancla1&quot;
+          iremos a la zona de código etiquetada con <i>&lt;a name=&quot;ancla1&quot;&gt;</i>
+          de nuestro documento (en el primer caso) o de la página <i>pagina.html</i>
+          (en el segundo caso).</p>
+           
+        </blockquote>
+      </blockquote>
+      <h4>B.2.9. Tablas</h4>
+           
+      <p>Para crear tablas, encerramos la tabla entre las marcas <b>&lt;TABLE&gt;...&lt;/TABLE&gt;</b>.
+      Podemos pasarle como atributo <i>border</i> el grosor del borde de la
+      tabla, y en el atributo <i>width</i> la anchura (en porcentaje o en
+      píxeles) </p>
+      <pre class="codigo">&lt;table border=&quot;0&quot; width=&quot;50%&quot;&gt;
+...
+&lt;/table&gt;</pre>
+           
+      <p>Dentro de la tabla, utilizamos las siguientes marcas:</p>
+      <ul>
+        <li><b>&lt;TH&gt;...&lt;/TH&gt; </b>para definir las cabeceras de la
+          tabla</li>
+      </ul>
+      <ul>
+        <li><b>&lt;TR&gt;...&lt;/TR&gt; </b>para definir las filas de la tabla</li>
+      </ul>
+      <ul>
+        <li><b>&lt;TD&gt;...&lt;/TD&gt; </b>para definir cada una de las
+          columnas dentro de cada fila&nbsp;</li>
+      </ul>
+      <p>Por ejemplo:</p>
+      <pre class="codigo">&lt;table border=&quot;2&quot;&gt;
+&lt;th&gt;Cabecera 1&lt;/th&gt;&lt;th&gt;Cabecera 2&lt;/th&gt;
+&lt;tr&gt;
+	&lt;td&gt;Columna 1.1&lt;/td&gt;
+	&lt;td&gt;Columna 1.2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td&gt;Columna 2.1&lt;/td&gt;
+	&lt;td&gt;Columna 2.2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;</pre>
+<center>
+<table border="2">
+<th>Cabecera 1</th><th>Cabecera 2</th>
+<tr>
+<td>Columna 1.1</td>
+<td>Columna 1.2</td>
+</tr>
+<tr>
+<td>Columna 2.1</td>
+<td>Columna 2.2</td>
+</tr>
+</table>
+</center>
+      <p>Las marcas td pueden tener atributos, como<i> width</i> para indicar
+      sus características (anchura, color, fuente, etc).
+ </p>
+           
+      <h4>B.2.10. Formularios</h4>
+           
+      <p>Un formulario es una plantilla para representar un conjunto de datos y
+      generar en la pantalla cuadros de diálogo. Se podrán tener zonas en las
+      que se introducirá un texto, casillas de verificación, listas de selección,
+      etc. El usuario rellenará zonas en el formulario que se identifican con
+      un nombre simbólico. Cuando el formulario se envía al programa que lo va
+      ha tratar, éste recibe el identificador de cada zona y el valor
+      introducido.
+ </p>
+           
+      <p>La marca <b>&lt;FORM&gt; ... &lt;/FORM&gt;</b> define un formulario y
+      dentro de ella se situarán todas las marcas que generan los diversos
+      elementos que componen el formulario. Esta marca debe ir acompañada
+      obligatoriamente por dos atributos:
+ </p>
+           
+      <ul>
+        <li>METHOD: define el modo de transferencia de los datos del formulario
+          (GET o POST)</li>
+        <li>ACTION: URL del programa que tratará los datos del formulario
+          cuando se envíe</li>
+      </ul>
+      <pre class="codigo">&lt;form method=&quot;post&quot; action=&quot;mipagina.jsp&quot;&gt;
+...
+&lt;/form&gt;</pre>
+           
+      <p>Los elementos que se coloquen dentro del formulario tienen los
+      siguientes <b>atributos comunes</b>: </p>
+      <ul>
+        <li>NAME: nombre del elemento.&nbsp;</li>
+        <li>VALUE: valor del elemento. Para un campo de texto es el texto que
+          aparece en el cuadro, para un botón es la etiqueta del botón, y para
+          un <i>checkbox</i> es el valor asociado a la casilla cuando está
+          pulsada.</li>
+      </ul>
+      <p>Podemos tener varios elementos iguales con el mismo nombre,
+      considerando así un mismo elemento con múltiples valores.&nbsp; </p>
+      <p>Entre los <b>elementos</b> que podemos colocar dentro de un formulario,
+      destacamos: </p>
+      <ul>
+        <li><b>Campos de entrada</b>: con marcas <b>&lt;INPUT&gt;</b> indicamos
+          distintas formas de introducir datos por el usuario. Distinguimos cada
+          una de estas formas mediante el atributo <i>type</i> de dicha marca.
+          Tenemos, por ejemplo:
+          <ul>
+            <li><b>Campos de texto</b>: los campos de texto no tienen atributo <i>type</i>,
+              o podemos poner <i>type=&quot;text&quot;</i>:<pre class="codigo">&lt;input name=&quot;texto1&quot; value=&quot;&quot;&gt;</pre>
+           
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <blockquote>
+        <ul type="circle">
+          <li><b>Botones SUBMIT</b>: al pulsar este botón se enviará el
+            formulario a la URL indicada en el <i>action</i> del mismo:<pre class="codigo">&lt;input type=&quot;submit&quot; name=&quot;botonS&quot; value=&quot;Pulsame&quot;&gt;</pre>
+           
+          </li>
+        </ul>
+        <ul type="circle">
+          <li><b>Botones RESET</b>: al pulsar este botón se borrarán los datos
+            de los campos del formulario:<pre class="codigo">&lt;input type=&quot;reset&quot; name=&quot;botonR&quot; value=&quot;Borrar&quot;&gt;</pre>
+           
+          </li>
+        </ul>
+      </blockquote>
+      <blockquote>
+        <ul type="circle">
+          <li><b>Checkboxes</b><b> y botones de radio</b>: casillas que se
+            marcan y se desmarcan al pulsar sobre ellas:<pre class="codigo">&lt;input type=&quot;checkbox&quot; name=&quot;casillas&quot; 
+ value=&quot;casilla1&quot; checked&gt;
+
+&lt;input type=&quot;checkbox&quot; name=&quot;casillas&quot; 
+ value=&quot;casilla2&quot;&gt;</pre>
+           
+          </li>
+        </ul>
+        <blockquote>
+          <p>La casilla que tiene un atributo <i>checked</i> aparece marcada.
+          Para los botones de radio, el <i>type</i> es <i>radio</i>, y la
+          diferencia con los <i>checkboxes</i> es que sólo puede haber una
+          casilla marcada.</p>
+        </blockquote>
+        <ul type="circle">
+          <li><b>Campos ocultos</b>: campos donde guardamos una información que
+            no queremos mostrar:<pre class="codigo">&lt;input type=&quot;hidden&quot; name=&quot;oculto&quot; value=&quot;Datos&quot;&gt;</pre>
+           
+          </li>
+        </ul>
+      </blockquote>
+      <ul>
+        <li><b>Listas</b>: con marcas <b>&lt;SELECT&gt;...&lt;/SELECT&gt;</b>
+          indicamos listas de elementos. Cada uno de los elementos se pone
+          dentro de la marca entre etiquetas <b>&lt;OPTION&gt;...&lt;/OPTION&gt;</b>.
+          Si la marca <i>&lt;SELECT&gt;</i> tiene el atributo MULTIPLE, es una
+          lista fija, y si no, es una lista desplegable. Para listas fijas, en
+          su atributo <i>size</i> indicamos cuántos elementos están visibles
+          (el resto se puede ver con barras de desplazamiento).</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo">&lt;select name=&quot;lista1&quot;&gt;
+	&lt;option&gt;Opcion 1&lt;/option&gt;
+	&lt;option&gt;Opcion 2&lt;/option&gt;
+&lt;/select&gt;
+&lt;select multiple name=&quot;lista2&quot; size=&quot;3&quot;&gt;
+	&lt;option&gt;Opcion 1&lt;/option&gt;
+	&lt;option&gt;Opcion 2&lt;/option&gt;
+&lt;/select&gt;	</pre>
+           
+      </blockquote>
+      <ul>
+        <li><b>Areas de texto</b>: con marcas <b>&lt;TEXTAREA&gt;...&lt;/TEXTAREA&gt;</b>
+          indicamos areas de texto de varias líneas. El atributo <i>rows</i>
+          indica el número de filas visibles del área, y <i>cols</i> el
+          número de columnas visibles (se verán las filas y columnas que se
+          indiquen en estos atributos, aunque se pueden tener más, viéndolas
+          todas con las barras de desplazamiento):</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo">&lt;textarea name=&quot;texto1&quot; rows=5 cols=40&gt;
+El texto del area
+&lt;/textarea&gt;</pre>
+           
+      </blockquote>
+      <p>Un <b>ejemplo de formulario</b>:</p>
+      <blockquote>
+      <center>
+      <table border="1">
+      <tr>
+      <td>
+        <pre class="codigo">&lt;form action=&quot;unapagina.php&quot; method=&quot;post&quot;&gt;
+Nombre: &lt;input name=&quot;nombre&quot; value=&quot;Pepe&quot;&gt;
+&lt;br&gt;
+Validado: 
+&lt;input type=&quot;checkbox&quot; value=&quot;validado&quot; checked&gt;
+&lt;br&gt;
+Comentarios: 
+&lt;textarea name=&quot;comentarios&quot; rows=5 cols=50&gt;
+&lt;/textarea&gt;
+&lt;br&gt;
+&lt;input type=&quot;submit&quot; value=&quot;Enviar&quot;&gt;
+&lt;/form&gt;</pre>
+		</td>
+		</tr>
+		<td>
+<form action="http://www.jtech.ua.es/j2ee/2002-2003/servlets/apuntes/unapagina.php" method="post">
+Nombre: <input name="nombre" value="Pepe">
+<br>
+Validado: <input type="checkbox" value="validado" checked>
+<br>
+Comentarios: <textarea name="comentarios" rows=5 cols=50></textarea>
+<br>
+<input type="submit" value="Enviar">
+</form>
+		</td>
+		
+		</table>
+		</center>		
+           
+      </blockquote>
+      <h4>B.2.11. Símbolos</h4>
+           
+      <p>Algunos símbolos (como por ejemplo '&lt;', 'á', 'é', etc) no pueden
+      representarse bien directamente en código HTML, y para representarlos se
+      utilizan otros símbolos que los sustituyen: </p>
+      <center>
+      <table border="1" width="41%">
+        <tr>
+          <td width="54%" align="center">&lt;</td>
+          <td width="46%" align="center">&amp;lt;</td>
+        </tr>
+        <tr>
+          <td width="54%" align="center">&gt;</td>
+          <td width="46%" align="center">&amp;gt;</td>
+        </tr>
+        <tr>
+          <td width="54%" align="center">&amp;</td>
+          <td width="46%" align="center">&amp;amp;</td>
+        </tr>
+        <tr>
+          <td width="54%" align="center">(espacio en blanco)</td>
+          <td width="46%" align="center">&amp;nbsp;</td>
+        </tr>
+        <tr>
+          <td width="54%" align="center">&quot;</td>
+          <td width="46%" align="center">&amp;quot;</td>
+        </tr>
+        <tr>
+          <td width="54%" align="center">ñ</td>
+          <td width="46%" align="center">&amp;ntilde;</td>
+        </tr>
+        <tr>
+          <td width="54%" align="center">á</td>
+          <td width="46%" align="center">&amp;aacute;</td>
+        </tr>
+        <tr>
+          <td width="54%" align="center">é</td>
+          <td width="46%" align="center">&amp;eacute;</td>
+        </tr>
+        <tr>
+          <td width="54%" align="center">í</td>
+          <td width="46%" align="center">&amp;iacute;</td>
+        </tr>
+        <tr>
+          <td width="54%" align="center">ó</td>
+          <td width="46%" align="center">&amp;oacute;</td>
+        </tr>
+        <tr>
+          <td width="54%" align="center">ú</td>
+          <td width="46%" align="center">&amp;uacute;</td>
+        </tr>
+        <tr>
+          <td width="54%" align="center">Á</td>
+          <td width="46%" align="center">&amp;Aacute;</td>
+        </tr>
+        <tr>
+          <td width="54%" align="center">É</td>
+          <td width="46%" align="center">&amp;Eacute;</td>
+        </tr>
+        <tr>
+          <td width="54%" align="center">...</td>
+          <td width="46%" align="center">...</td>
+        </tr>
+      </table>
+      </center>
+      <p>Por ejemplo:</p>
+      <pre class="codigo">&amp;quot;Hola&amp;quot; Esto es un texto con may&amp;uacute;sculas 
+y &amp;lt; menor que y m&amp;Aacute;s may&amp;uacute;sculas</pre>
+           
+      <p>Resultaría:</p>
+      <pre class="codigo">&quot;Hola&quot; Esto es un texto con mayúsculas 
+y &lt; menor que y mÁs mayúsculas</pre>
+
+           
+      <p>&nbsp;</p>
+           
+        </body>
+        </html>

@@ -1,0 +1,2703 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.7">
+<meta name="Forrest-skin-name" content="pelt">
+<title>El MVC en JavaServer Faces</title>
+<link type="text/css" href="skin/highlight/shCore.css" rel="stylesheet">
+<link type="text/css" href="skin/highlight/shThemeEclipse.css" rel="stylesheet">
+<script src="skin/highlight/shCore.js" type="text/javascript"></script><script src="skin/highlight/shAutoloader.js" type="text/javascript"></script>
+<link type="text/css" href="skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="skin/print.css" rel="stylesheet">
+<link type="text/css" href="skin/profile.css" rel="stylesheet">
+<script src="skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<div class="header">
+<div class="grouplogo">
+<a href="http://web.ua.es/especialistajava"><img class="logoImage" alt="jtech" src="images/baner_j2ee_izq.gif" title="Experto Universitario Java Enterprise"></a>
+</div>
+<div class="projectlogoA1">
+<a href="../../../../www.jtech.ua.es/index.html"><img class="logoImage" alt="Componentes de presentaci&oacute;n" src="images/baner_j2ee_der.gif" title="Componentes de presentaci&oacute;n"></a>
+</div>
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="javascript:location.href='../index.html'">Home</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../aplic-web.html'">Aplicaciones Web</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../aplic-ent.html'">Aplicaciones Enterprise</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../proy-int/index.html'">Proyecto</a>
+</li>
+<li class="current">
+<a class="base-selected" href="index.html">JSF</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<div id="level2tabs"></div>
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<div id="menu">
+<div onclick="SwitchMenu('menu_selected_1.1', 'skin/')" id="menu_selected_1.1Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Componentes de presentacion</div>
+<div id="menu_selected_1.1" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="index.html" title="Componentes de presentaci&oacute;n">&Iacute;ndice</a>
+</div>
+<div onclick="SwitchMenu('menu_selected_1.1.2', 'skin/')" id="menu_selected_1.1.2Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Teor&iacute;a</div>
+<div id="menu_selected_1.1.2" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="sesion01-apuntes.html">Sesion 1</a>
+</div>
+<div class="menupage">
+<div class="menupagetitle">Sesion 2</div>
+</div>
+<div class="menuitem">
+<a href="sesion03-apuntes.html">Sesion 3</a>
+</div>
+<div class="menuitem">
+<a href="sesion04-apuntes.html">Sesion 4</a>
+</div>
+</div>
+<div onclick="SwitchMenu('menu_1.1.3', 'skin/')" id="menu_1.1.3Title" class="menutitle">Ejercicios</div>
+<div id="menu_1.1.3" class="menuitemgroup">
+<div class="menuitem">
+<a href="sesion01-ejercicios.html">Sesion 1</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-ejercicios.html">Sesion 2</a>
+</div>
+<div class="menuitem">
+<a href="sesion03-ejercicios.html">Sesion 3</a>
+</div>
+<div class="menuitem">
+<a href="sesion04-ejercicios.html">Sesion 4</a>
+</div>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<div id="credit2"></div>
+</div>
+<div id="content">
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="sesion02-apuntes.pdf"><img alt="PDF -icon" src="skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1>El MVC en JavaServer Faces</h1>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#Modelo-Vista-Controlador">Modelo-Vista-Controlador</a>
+<ul class="minitoc">
+<li>
+<a href="#Vista">Vista</a>
+</li>
+<li>
+<a href="#Modelo%3A+beans+gestionados">Modelo: beans gestionados</a>
+<ul class="minitoc">
+<li>
+<a href="#%C3%81mbito+de+los+beans+gestionados">&Aacute;mbito de los beans gestionados</a>
+</li>
+<li>
+<a href="#Inicializaci%C3%B3n+de+los+beans">Inicializaci&oacute;n de los beans</a>
+</li>
+<li>
+<a href="#Relaciones+entre+beans">Relaciones entre beans</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Navegaci%C3%B3n">Navegaci&oacute;n</a>
+<ul class="minitoc">
+<li>
+<a href="#Navegaci%C3%B3n+est%C3%A1tica">Navegaci&oacute;n est&aacute;tica</a>
+</li>
+<li>
+<a href="#Navegaci%C3%B3n+din%C3%A1mica">Navegaci&oacute;n din&aacute;mica</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Controlador">Controlador</a>
+<ul class="minitoc">
+<li>
+<a href="#Llamadas+a+la+capa+de+negocio">Llamadas a la capa de negocio</a>
+</li>
+<li>
+<a href="#Determinando+la+nueva+vista+de+la+aplicaci%C3%B3n">Determinando la nueva vista de la aplicaci&oacute;n</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Resumen+de+los+elementos+de+JSF">Resumen de los elementos de JSF</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Expresiones+EL">Expresiones EL</a>
+</li>
+<li>
+<a href="#Componentes+est%C3%A1ndar+de+JSF">Componentes est&aacute;ndar de JSF</a>
+<ul class="minitoc">
+<li>
+<a href="#Un+ejemplo%3A+el+componente">Un ejemplo: el componente &lt;h:dataTable&gt;</a>
+</li>
+<li>
+<a href="#Otro+ejemplo%3A+el+componente">Otro ejemplo: el componente ui:repeat</a>
+</li>
+<li>
+<a href="#Componentes+HTML">Componentes HTML &lt;h:&gt;</a>
+</li>
+<li>
+<a href="#Etiquetas+core">Etiquetas core &lt;f:&gt;</a>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+
+
+
+<a name="N1000E"></a><a name="Modelo-Vista-Controlador"></a>
+<h2 class="underlined_10">Modelo-Vista-Controlador</h2>
+<div class="section">
+<p>JSF utiliza el framework MVC (Modelo-Vista-Controlador) para
+gestionar las aplicaciones web. Vamos a verlo con cierto detalle.</p>
+<p>La mejor forma de comprobar estas caracter&iacute;sticas de JSF es
+mediante un ejemplo concreto. Consideremos una versi&oacute;n muy
+simplificada de una aplicaci&oacute;n web de matriculaci&oacute;n de estudiantes a
+cursos. Tenemos una p&aacute;gina en la que el estudiante debe escribir su
+correo electr&oacute;nico y marcar los cursos de los que desea
+matricularse. Cuando se pulsa el bot&oacute;n para enviar los datos, la
+aplicaci&oacute;n debe realizar una llamada a un m&eacute;todo de negocio en el que
+se realiza la matr&iacute;cula del estudiante.</p>
+<p>La siguiente figura muestra el aspecto de esta p&aacute;gina web.</p>
+<p>
+<img alt="" content-width="12cm" src="imagenes/tema01/pantalla01.png" width="650"></p>
+<p>Veamos c&oacute;mo podemos implementar este sencillo ejemplo con JSF,
+separando las distintas responsabilidades de la aplicaci&oacute;n seg&uacute;n el
+modelo MVC.</p>
+<a name="N10027"></a><a name="Vista"></a>
+<h3 class="underlined_5">Vista</h3>
+<p>La forma m&aacute;s com&uacute;n de definir la <strong>vista</strong> en JSF
+(2.0) es utilizando ficheros XHTML con etiquetas especiales que
+definen componentes JSF. Al igual que en JSP, estos componentes se
+convierten al final en c&oacute;digo HTML (incluyendo JavaScript en las
+implementaciones m&aacute;s avanzadas de JSF) que se pasa al navegador para
+que lo muestre al usuario. El navegador es el responsable de gestionar
+la interacci&oacute;n del usuario.</p>
+<p>Veamos el c&oacute;digo JSF que genera el ejemplo visto anteriormente. El
+fichero llamado <span class="codefrag">selec-cursos.xhtml</span> define la vista de la
+p&aacute;gina web. A continuaci&oacute;n se muestra la parte de este fichero donde
+se define el &aacute;rbol de componentes JSF.</p>
+<p>Fichero <strong><span class="codefrag">selec-cursos.xhtml</span></strong>
+</p>
+<pre class="brush:xml;">&lt;h:body&gt;
+  &lt;h:form&gt;
+     &lt;table&gt;
+        &lt;tr&gt;
+          &lt;td&gt;Direcci&oacute;n e-mail:&lt;/td&gt;
+          &lt;td&gt;
+            &lt;h:inputText value="#{selecCursosBean.email}" /&gt;
+          &lt;/td&gt;
+       &lt;/tr&gt;
+        &lt;tr&gt;
+           &lt;td&gt;Tecnolog&iacute;as Java de inter&eacute;s&lt;/td&gt;
+           &lt;td&gt;&lt;h:selectManyCheckbox
+              value="#{selecCursosBean.cursosId}"&gt;
+              &lt;f:selectItem itemValue="Struts" itemLabel="Struts" /&gt;
+              &lt;f:selectItem itemValue="JSF" itemLabel="JSF" /&gt;
+              &lt;f:selectItem itemValue="JSP" itemLabel="Servlets y JSP" /&gt;
+              &lt;f:selectItem itemValue="JPA" itemLabel="JPA" /&gt;
+           &lt;/h:selectManyCheckbox&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+     &lt;/table&gt;
+     &lt;h:commandButton value="Enviar" 
+          action="#{selecCursosController.grabarDatosCursos}"/&gt; /&gt;
+  &lt;/h:form&gt;
+&lt;/h:body&gt;</pre>
+<p>Los componentes JSF son un sencillo campo de texto
+(<span class="codefrag">h:inputText</span>) para el correo electr&oacute;nico y una caja de
+selecci&oacute;n de opci&oacute;n m&uacute;ltiple (<span class="codefrag">h:selectManyCheckbox</span>) con
+la que marcar los cursos seleccionados. Cada curso a seleccionar es a
+su vez un componente de tipo <span class="codefrag">f:selectItem</span>. Para lanzar la
+acci&oacute;n de matricular de la capa de negocio se utiliza el componente
+bot&oacute;n (<span class="codefrag">h:commandButton</span>). Todos los componentes se
+encuentran dentro de un <span class="codefrag">h:form</span> que se traducir&aacute; a un
+formulario HTML.</p>
+<p>Los componentes tienen un conjunto de atributos con los que se
+especifican sus caracter&iacute;sticas. Por ejemplo, el
+componente <span class="codefrag">f:selectItem</span> utiliza el
+atributo <span class="codefrag">itemLabel</span> para definir el texto que aparece en
+la p&aacute;gina y el atributo <span class="codefrag">itemValue</span> para indicar el valor
+que se enviar&aacute; a la aplicaci&oacute;n.</p>
+<p>Un aspecto muy importante de JSF es la conexi&oacute;n de las vistas con
+la aplicaci&oacute;n mediante los denominados <em>beans gestionados</em>. En
+nuestro ejemplo, la vista utiliza dos
+beans: <span class="codefrag">selecCursosBean</span>
+y <span class="codefrag">selecCursosController</span>. El primero se utiliza para
+guardar los datos introducidos por el usuario, y el segundo
+proporciona el m&eacute;todo manejador al que se llamar&aacute; cuando se pulse el
+bot&oacute;n de la p&aacute;gina. El primer bean mantiene el modelo de la vista y el
+segundo su controlador..</p>
+<p>La conexi&oacute;n entre las clases Java y las p&aacute;ginas JSF se realiza mediante el
+Lenguaje de Expresiones JSF (JSF EL), una versi&oacute;n avanzada del
+lenguaje de expresiones de JSP. Con este lenguaje, podemos definir
+conexiones (<em>bindings</em>) entre las propiedades de los beans y
+los valores de los componentes que se muestran o que introduce el
+usuario.</p>
+<p>En el ejemplo anterior se define un <em>binding</em> entre el
+componente <span class="codefrag">h:selectManyCheckbox</span> y la
+propiedad <span class="codefrag">cursosId</span> del bean <span class="codefrag">selecCursosBean</span>
+mediante la expresi&oacute;n </p>
+<pre class="code">&lt;h:selectManyCheckbox
+   value="#{selecCursosBean.cursosId}"&gt;</pre>
+<p>De esta forma, los valores de los datos seleccionados por el
+usuario se guardar&aacute;n en esa propiedad del bean y podremos utilizarlos
+en la acci&oacute;n <span class="codefrag">grabarDatosCursos</span> que se ejecuta cuando se
+pulsa el bot&oacute;n.</p>
+<a name="N1008E"></a><a name="Modelo%3A+beans+gestionados"></a>
+<h3 class="underlined_5">Modelo: beans gestionados</h3>
+<p>El modelo JSF se define mediante beans id&eacute;nticos a los que
+se utilizan en JSP. Un bean es una clase con un conjunto de
+atributos (denominados <em>propiedades</em>) y
+m&eacute;todos <em>getters</em> y <em>setters</em> que devuelven y actualizan
+sus valores. Las propiedades del bean se pueden leer y escribir desde
+las p&aacute;ginas JSF utilizando el lenguaje de expresiones EL.</p>
+<p>Por ejemplo, en la anterior p&aacute;gina <span class="codefrag">selec-cursos.xhtml</span> se
+utiliza el bean <span class="codefrag">selecCursosBean</span> para guardar los datos
+seleccionados por el usuario. La definici&oacute;n del bean es la
+siguiente:</p>
+<p>Clase <strong><span class="codefrag">SelecCursosBean.java</span></strong>
+</p>
+<pre class="brush:java;">public class SelecCursosBean {
+  private String email;
+  private String[] cursosId;
+
+  public String getEmail() {
+    return email;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
+  public String[] getCursosId() {
+    return cursosId;
+  }
+
+  public void setCursosId(String[] cursosId) {
+    this.cursosId = cursosId;
+  }
+}</pre>
+<p>El bean define dos propiedades:</p>
+<ul>
+   
+<li>
+<span class="codefrag">email</span>: un <span class="codefrag">String</span> que guardar&aacute; el
+   correo electr&oacute;nico introducido por el usuario. Asociado a este
+   atributo se definen los m&eacute;todos <span class="codefrag">getEmail()</span>
+   y <span class="codefrag">setEmail(String email)</span>.</li>
+
+   
+<li>
+<span class="codefrag">cursosId</span>: un array de <span class="codefrag">Strings</span> que
+   guardar&aacute; la selecci&oacute;n de cursos realizada por el usuario. Tambi&eacute;n
+   se definen en el bean los m&eacute;todos <em>get</em> y <em>set</em>
+   asociados a esta propiedad, que devuelven y toman como par&aacute;metro un
+   array de cadenas.</li>
+
+</ul>
+<p>Para escoger el nombre de la clase hemos seguido el convenio de
+utilizar el nombre de la p&aacute;gina en la que se usa el bean y el
+sufijo <span class="codefrag">Bean</span>. De esta forma remarcamos que las
+instancias de esta clase van a ser beans gestionados que van a contener
+los datos mostrados y obtenidos en esa p&aacute;gina.</p>
+<p>En las expresiones JSF EL de la p&aacute;gina en la que se usa el bean se
+puede acceder a sus propiedades utilizando el nombre de la
+propiedad. Si la expresi&oacute;n es s&oacute;lo de lectura se utilizar&aacute;
+internamente el m&eacute;todo <em>get</em> para recuperar el contenido del
+bean y mostrarlo en la p&aacute;gina. Si la expresi&oacute;n es de lectura y
+escritura, se utilizar&aacute; adem&aacute;s el <em>set</em> para modificarlo con
+los datos introducidos por el usuario de la p&aacute;gina.</p>
+<p>Por ejemplo, en el siguiente fragmento de c&oacute;digo se est&aacute; mapeando
+la propiedad <span class="codefrag">cursoIds</span> del
+bean <span class="codefrag">selecCursosBean</span> con el valor del
+componente <span class="codefrag">h:selectManyCheckbox</span>. De esta forma, los
+valores de los cursos seleccionados por el usuario se guardar&aacute;n en la
+propiedad <span class="codefrag">cursosIds</span> como un array de cadenas utilizando
+el m&eacute;todo <span class="codefrag">setCursosId</span>. Despu&eacute;s la aplicaci&oacute;n podr&aacute;
+utilizar el m&eacute;todo <span class="codefrag">getCursosId</span> para recuperar esos
+valores.</p>
+<pre class="brush:xml;">&lt;h:selectManyCheckbox
+   value="#{selecCursosBean.cursoIds}"&gt;
+  &lt;f:selectItem itemValue="JSP" itemLabel="Servlets y JSP" /&gt;
+  &lt;f:selectItem itemValue="Struts" itemLabel="Struts" /&gt;
+  &lt;f:selectItem itemValue="JSF" itemLabel="JSF" /&gt;
+  &lt;f:selectItem itemValue="JPA" itemLabel="JPA" /&gt;
+&lt;/h:selectManyCheckbox&gt;</pre>
+<p>&iquest;D&oacute;nde se declaran los beans en una aplicaci&oacute;n JSF? Hemos visto
+hasta ahora el uso de un bean en una p&aacute;gina JSF y su definici&oacute;n como
+una clase Java. Nos falta explicar c&oacute;mo se indica que el
+bean <span class="codefrag">selecCursosBean</span> es un objeto de la
+clase <span class="codefrag">selecCursosBean</span>. Hist&oacute;ricamente, los beans de una aplicaci&oacute;n se
+han declarado en su fichero de
+configuraci&oacute;n <span class="codefrag">WEB-INF/faces-config.xml</span>.</p>
+<p>En el siguiente fragmento de c&oacute;digo podemos comprobar c&oacute;mo se
+define un bean llamado <span class="codefrag">selecCursosBean</span> de la
+clase <span class="codefrag">jtech.jsf.presentacion.SelecCursosBean</span> con
+el &aacute;mbito de sesi&oacute;n. El &aacute;mbito determina cu&aacute;ndo se crea un bean nuevo
+y desde d&oacute;nde se puede acceder a &eacute;l. El &aacute;mbito de sesi&oacute;n indica que se
+debe crear un bean nuevo en cada nueva sesi&oacute;n HTTP y que va a ser
+accesible en todas las vistas JSF que compartan esa misma sesi&oacute;n.</p>
+<p>Fichero <strong><span class="codefrag">faces-config.xml</span></strong>
+</p>
+<pre class="brush:xml;">...
+&lt;managed-bean&gt;
+   &lt;managed-bean-name&gt;<strong>selecCursosBean</strong>&lt;/managed-bean-name&gt;
+   &lt;managed-bean-class&gt;
+      <strong>jtech.jsf.presentacion.SelecCursosBean</strong>
+   &lt;/managed-bean-class&gt;
+   &lt;managed-bean-scope&gt;<strong>session</strong>&lt;/managed-bean-scope&gt;
+&lt;/managed-bean&gt;
+...</pre>
+<p>Sin embargo, con la llegada de la versi&oacute;n 2 de JSF, podemos usar anotaciones para definir beans gestionados y como el &aacute;mbito de los mismos. As&iacute;, declararemos la 
+clase <span class="codefrag">SelecCursosBean.java</span> como bean gestionado de la siguiente manera:</p>
+<pre class="brush:java;">@ManagedBean
+@SessionScope
+public class SelecCursosBean {
+   private String email;
+   private String[] cursosId;
+...</pre>
+<a name="N10133"></a><a name="%C3%81mbito+de+los+beans+gestionados"></a>
+<h4>&Aacute;mbito de los beans gestionados</h4>
+<p>El &aacute;mbito de los beans determina su ciclo de vida: cu&aacute;ndo se crean
+y destruyen instancias del bean y cu&aacute;ndo se asocian a las p&aacute;ginas
+JSF. Es muy importante definir correctamente el &aacute;mbito de un bean,
+porque en el momento de su creaci&oacute;n se realiza su incializaci&oacute;n. JSF
+llama al m&eacute;todo constructor de la clase, donde habremos colocado el
+c&oacute;digo para inicializar sus valores, creando una instancia de la clase
+que pasar&aacute; a ser gestionada por el framework.</p>
+<p>En JSF se definen los siguientes &aacute;mbitos para los beans: petici&oacute;n,
+sesi&oacute;n, vista y aplicaci&oacute;n. El &aacute;mbito de vista es un elemento nuevo
+de JSF 2.0. Los otros &aacute;mbitos son similares a los definidos con los
+JavaBeans de JSP.</p>
+<ul>
+   
+<li>
+<strong>Petici&oacute;n</strong>: Se define con el
+   valor <span class="codefrag">request</span> en la
+   propiedad <span class="codefrag">managed-bean-scope</span> del <span class="codefrag">faces-config.xml</span> o con la
+   anotaci&oacute;n <span class="codefrag">@RequestScoped</span> en la clase. El bean se asocia a una
+   petici&oacute;n HTTP. Cada nueva petici&oacute;n (cuando desde el navegador se
+   abre una p&aacute;gina por primera vez una p&aacute;gina o se recarga) crea un
+   nuevo bean y lo asocia con la p&aacute;gina. Dada su corta vida, se recomienda usar este &aacute;mbito para el paso de mensajes 
+   (bien sea de error o de estatus), o para cualquier otro tipo de dato que no sea necesario propagar a lo largo de la aplicaci&oacute;n</li>
+
+   
+<li>
+<strong>Sesi&oacute;n</strong>: Se define con el
+   valor <span class="codefrag">session</span> en el <span class="codefrag">faces-config.xml</span> o
+   con la anotaci&oacute;n <span class="codefrag">@SessionScoped</span> en la clase. Las
+   sesiones se definen internamente con el API de Servlets. Una sesi&oacute;n
+   est&aacute; asociada con una visita desde una navegador. Cuando se visita
+   la p&aacute;gina por primera vez se incia la sesi&oacute;n. Cualquier p&aacute;gina que
+   se abra dentro del mismo navegador comparte la sesi&oacute;n. La sesi&oacute;n mantiene el estado de los elementos de nuestra aplicaci&oacute;n a lo largo de las distintas peticiones. 
+   Se implementa utilizando cookies o reescritura de URLs, con el
+   par&aacute;metro <span class="codefrag">jsessionid</span>. Una sesi&oacute;n no finaliza hasta que se invoca el m&eacute;todo <span class="codefrag">invalidate</span> en el objeto 
+   <span class="codefrag">HttpSession</span>, o hasta que se produce un timeout.</li>
+   
+   
+<li>
+<strong>Aplicaci&oacute;n</strong>: Se define con el
+   valor <span class="codefrag">application</span> y con la
+   anotaci&oacute;n <span class="codefrag">@ApplicationScoped</span>. Los beans con este
+   &aacute;mbito viven asociados a la
+   aplicaci&oacute;n. Definen <em>singletons</em> que se crean e inicializa
+   s&oacute;lo una vez, al comienzo de la aplicaci&oacute;n. Se suelen utilizar
+   para guardar caracter&iacute;sticas comunes compartidas y utilizadas por
+   el resto de beans de la aplicaci&oacute;n.</li>
+
+   
+<li>
+<strong>Vista</strong> (JSF 2.0): Se define con el
+   valor <span class="codefrag">view</span> en el <span class="codefrag">faces-config.xml</span> o con
+   la anotaci&oacute;n <span class="codefrag">@ViewScoped</span> en la clase. Un bean en este 
+   &aacute;mbito persistir&aacute; mientras se repinte la misma p&aacute;gina (vista = p&aacute;gina JSF), 
+   al navegar a otra p&aacute;gina, el bean sale del &aacute;mbito. 
+   Es bastante &uacute;til para aplicaciones que usen Ajax en parte de sus p&aacute;ginas.</li>
+   
+   
+<li>
+<strong>Custom</strong> (<span class="codefrag">@CustomScoped</span>): 
+   Un &aacute;mbito al fin y al cabo no es m&aacute;s que un mapa que enlaza nombres y objetos. 
+   Lo que distingue un &aacute;mbito de otro es el tiempo de vida de ese mapa. 
+   Los tiempos de vida de los &aacute;mbitos est&aacute;ndar de JSF (sesi&oacute;n, aplicaci&oacute;n, vista y petici&oacute;n) 
+   son gestionados por la implementaci&oacute;n de JSF. 
+   En JSF 2.0 podemos crear &aacute;mbitos personalizados, que son mapas cuyo ciclo de vida gestionamos nosotros. 
+   Para incluirlo en ese mapa, usaremos la anotaci&oacute;n <span class="codefrag">@CustomScoped("#{expr}")</span>, donde <span class="codefrag">#{expr}</span> indica el mapa. 
+   Nuestra aplicaci&oacute;n ser&aacute; la responsable de eliminar elementos de ese mapa.
+   </li>
+   
+   
+<li>
+<strong>Conversaci&oacute;n</strong> (<span class="codefrag">@ConversationScoped</span>) - provee de persistencia de datos hasta que se llega a un objetivo espec&iacute;fico, 
+   sin necesidad de mantenerlo durante toda la sesi&oacute;n. 
+   Est&aacute; ligado a una ventana o pesta&ntilde;a concreta del navegador. 
+   As&iacute;, una sesi&oacute;n puede mantener varias conversaciones en distintas p&aacute;ginas. 
+   Es una caracter&iacute;stica propia de CDI, no de JSF.
+   </li>
+
+</ul>
+<a name="N1019D"></a><a name="Inicializaci%C3%B3n+de+los+beans"></a>
+<h4>Inicializaci&oacute;n de los beans</h4>
+<p>Existen dos formas de inicializar el estado de un bean. Una es
+hacerlo por c&oacute;digo, incluyendo las sentencias de inicializaci&oacute;n
+en su constructor. La otra es por configuraci&oacute;n, utilizando el
+fichero <span class="codefrag">faces-config.xml</span>.</p>
+<p>Supongamos que queremos incializar la propiedad <span class="codefrag">e-mail</span>
+del bean <span class="codefrag">selecCursosBean</span> al valor <span class="codefrag">Introduce tu
+e-mail</span>, para que aparezca este String cuando se carga la
+p&aacute;gina por primera vez.</p>
+<p>Para hacer la inicializaci&oacute;n por c&oacute;digo basta incluir la
+actualizaci&oacute;n de la propiedad en el constructor de la clase:</p>
+<pre class="brush:java;">public class SelecCursosBean {
+  private String email;
+  private String[] cursosId;
+
+  public SelecCursosBean() {
+    email="Introduce tu e-mail";
+  }
+   ...
+</pre>
+<p>La otra forma de inicializar la propiedad es a&ntilde;adiendo al
+fichero <span class="codefrag">faces-config.xml</span> la
+etiqueta <span class="codefrag">managed-property</span> con el nombre de la propiedad
+que se quiere inicializar y el valor. Ser&iacute;a de esta forma:</p>
+<pre class="brush:xml;">&lt;managed-bean&gt;
+   &lt;managed-bean-name&gt;selecCursosBean&lt;/managed-bean-name&gt;
+   &lt;managed-bean-class&gt;
+     org.especialistajee.jsf.SelecCursosBean
+   &lt;/managed-bean-class&gt;
+   &lt;managed-bean-scope&gt;request&lt;/managed-bean-scope&gt;
+   &lt;managed-property&gt;
+      &lt;property-name&gt;email&lt;/property-name&gt;
+      &lt;value&gt;Introduce to e-mail&lt;/value&gt;
+   &lt;/managed-property&gt;
+&lt;/managed-bean&gt;</pre>
+<p>Incluso existe una tercera forma con JSF 2.0: utilizando la
+anotaci&oacute;n <span class="codefrag">@ManagedProperty</span> y el
+atributo <span class="codefrag">value</span>:</p>
+<pre class="brush:java;">@ManagedBean
+@RequestScoped
+public class SelecCursosBean {
+   @ManagedProperty(value="Introduce tu e-mail")
+   private String email;
+   private String[] cursosId;
+   ...</pre>
+<p>Podemos poner como valor cualquier expresi&oacute;n EL v&aacute;lida. Por
+ejemplo, podr&iacute;amos llamar a alg&uacute;n m&eacute;todo de otro bean ya existente y
+guardar en la propiedad el resultado. Aqu&iacute; una expresi&oacute;n muy sencilla:</p>
+<pre class="brush:xml;">&lt;managed-bean&gt;
+   &lt;managed-bean-name&gt;selecCursosBean&lt;/managed-bean-name&gt;
+   &lt;managed-bean-class&gt;
+     org.especialistajee.jsf.SelecCursosBean
+   &lt;/managed-bean-class&gt;
+   &lt;managed-bean-scope&gt;request&lt;/managed-bean-scope&gt;
+   &lt;managed-property&gt;
+      &lt;property-name&gt;email&lt;/property-name&gt;
+      &lt;value&gt;#{1+2+3+4}&lt;/value&gt;
+   &lt;/managed-property&gt;
+&lt;/managed-bean&gt;</pre>
+<a name="N101E2"></a><a name="Relaciones+entre+beans"></a>
+<h4>Relaciones entre beans</h4>
+<p>Es posible utilizar la inicializaci&oacute;n de propiedades para crear
+relaciones entre distintos beans, almacenando un bean en una propiedad
+de otro. Esto es muy &uacute;til para implementar correctamente un modelo
+MVC. Veremos en el siguiente apartado que para seguir este enfoque
+necesitamos un bean haga el papel de <em>controller</em> y que defina
+las acciones a ejecutar en la aplicaci&oacute;n. Estas acciones son m&eacute;todos
+definidos en el bean. Los datos introducidos por el usuario se
+encuentran en otro bean (o incluso en m&aacute;s de un bean asociado a una
+p&aacute;gina) &iquest;C&oacute;mo acceder desde el bean <em>controller</em> a los beans
+del modelo?.</p>
+<p>Para solucionar este problema JSF provee tres soluciones.</p>
+<a name="N101F4"></a><a name="Inyecci%C3%B3n+de+dependencias"></a>
+<h5>Inyecci&oacute;n de dependencias</h5>
+<p>En caso de disponer de un servidor de aplicaciones que tenga soporte para <a href="http://jcp.org/en/jsr/summary?id=299">CDI</a>, &eacute;sta es la opci&oacute;n recomendada. 
+  El objetivo de CDI, entre otros, unificar el modelo de componentes gestionados de JSF con el modelo de componentes de EJB, con lo que el desarrollo se simplifica
+  considerablemente.</p>
+<pre class="brush:java;">
+@Named @RequestScoped
+public class EntradaBlogBean {
+  @Inject private UsuarioBean usuario;
+  
+  public void setUsuario(UsuarioBean usuario){
+    this.usuario = usuario;
+  }
+  
+  public UsuarioBean getUsuario(){
+    return usuario;
+  }    
+}
+</pre>
+<a name="N10207"></a><a name="Inyecci%C3%B3n+de+beans+gestionados"></a>
+<h5>Inyecci&oacute;n de beans gestionados</h5>
+<p>Caso y declaraci&oacute;n muy similares a la anterior. La &uacute;nica diferencia es que la inyecci&oacute;n de dependencias de JSF 
+  no es tan potente como la de CDI. Es el modelo que utilizaremos en los ejercicios, dado que la versi&oacute;n 7 de Apache Tomcat por defecto 
+  no incorpora soporte para CDI.</p>
+<pre class="brush:java;">
+@ManagedBean @RequestScoped
+public class EntradaBlogBean {
+  @ManagedProperty(value="#{usuarioBean}")
+  private UsuarioBean usuario;
+  
+  public void setUsuario(UsuarioBean usuario){
+    this.usuario = usuario;
+  }
+  
+  public UsuarioBean getUsuario(){
+    return usuario;
+  }    
+}
+
+</pre>
+<a name="N10216"></a><a name="Configurar+los+beans+gestionados+con+XML"></a>
+<h5>Configurar los beans gestionados con XML</h5>
+<p>JSF 2 mantiene la configuraci&oacute;n previa de beans a trav&eacute;s de un fichero XML. Es m&aacute;s farragosa, pero permite la configuraci&oacute;n en tiempo de despliegue. Este fichero XML puede estar en:</p>
+<ul>
+    
+<li>WEB-INF/faces-config.xml. Sitio tradicional por defecto.</li>
+    
+<li>Cualquier fichero que finalice en .faces-config.cdml dentro del directorio META-INF de un jar. Muy &uacute;til para elaborar componentes reusables y distribuirlos en un jar</li>
+    
+<li>Ficheros listados en el par&aacute;metro de inicializaci&oacute;n <span class="codefrag">javax.faces.CONFIG_FILES</span> en el <span class="codefrag">web.xml</span>. Esto resulta muy &uacute;til para separar navegaci&oacute;n de configuraci&oacute;n de beans, etc
+    <pre class="brush:xml;">
+    
+&lt;web-app&gt;   
+  &lt;context-param&gt;      
+    &lt;param-name&gt;javax.faces.CONFIG_FILES&lt;/param-name&gt;      
+    &lt;param-value&gt;WEB-INF/navigation.xml,WEB-INF/managedbeans.xml&lt;/param-value&gt;   
+  &lt;/context-param&gt;   
+  ...
+&lt;/web-app&gt;
+    
+    </pre>
+    
+</li>
+  
+</ul>
+<p>En El fichero XML, los beans se definen de la siguiente manera:</p>
+<pre class="brush:xml;">
+  
+  
+&lt;faces-config&gt;
+  &lt;managed-bean&gt;
+    &lt;managed-bean-name&gt;usuario&lt;/managed-bean-name&gt;
+    &lt;managed-bean-class&gt;
+      org.especialistajee.beans.UsuarioBean
+    &lt;/managed-bean-class&gt;
+    &lt;managed-bean-scope&gt;session&lt;/managed-bean-scope&gt; 
+    &lt;!-- (request, view, session, application, none) --&gt;
+    &lt;managed-bean eager="true"&gt; (opcional)
+    &lt;managed-property&gt;
+      &lt;property-name&gt;nombre&lt;/property-name&gt;
+      &lt;value&gt;Alejandro&lt;/value&gt; &lt;-- Inicializamos valores concretos
+    &lt;/managed-property&gt;   
+  &lt;/managed-bean&gt;
+  
+  &lt;managed-bean&gt;
+    &lt;managed-bean-name&gt;entradaBean&lt;/managed-bean-name&gt;
+    &lt;managed-bean-class&gt;
+      org.especialistajee.beans.EntradaBean
+    &lt;/managed-bean-class&gt;
+    &lt;managed-bean-scope&gt;session&lt;/managed-bean-scope&gt;
+    &lt;managed-property&gt;
+      &lt;property-name&gt;usuario&lt;/property-name&gt;
+      &lt;value&gt;#{usuarioBean}&lt;/value&gt; &lt;-- Inyectamos bean mediante expresiones EL
+    &lt;/managed-property&gt;  
+    &lt;managed-property&gt;
+      &lt;property-name&gt;titulo&lt;/property-name&gt;
+      &lt;null-value /&gt; &lt;-- Valores nulos      
+    &lt;/managed-property&gt;     
+    &lt;managed-property&gt;
+      &lt;property-name&gt;autr&lt;/property-name&gt;
+      &lt;value&gt;#{usuarioBean}&lt;/value&gt; &lt;-- Inyectamos bean mediante expresiones EL      
+    &lt;/managed-property&gt;
+  &lt;/managed-bean&gt;
+  
+  &lt;managed-bean&gt;
+    &lt;managed-bean-name&gt;listBean&lt;/managed-bean-name&gt;
+    &lt;managed-bean-class&gt;java.util.ArrayList&lt;/managed-bean-class&gt;
+    &lt;managed-bean-scope&gt;none&lt;/managed-bean-scope&gt;
+    &lt;list-entries&gt;
+      &lt;value&gt;Domingo Gallardo&lt;/value&gt;
+      &lt;value&gt;Otto Colomina&lt;/value&gt;
+      &lt;value&gt;Fran Garc&iacute;a&lt;/value&gt;
+      &lt;value&gt;Alejandro Such&lt;/value&gt;
+    &lt;/list-entries&gt;
+  &lt;/managed-bean&gt;
+  
+  &lt;managed-bean&gt;
+    &lt;managed-bean-name&gt;mapBean&lt;/managed-bean-name&gt;
+    &lt;managed-bean-class&gt;java.util.HashMap&lt;/managed-bean-class&gt;
+    &lt;managed-bean-scope&gt;none&lt;/managed-bean-scope&gt;
+    &lt;map-entries&gt;
+      &lt;map-entry&gt;
+        &lt;key&gt;JPA&lt;/key&gt;
+        &lt;value&gt;Domingo Gallardo&lt;/value&gt;                
+      &lt;/map-entry&gt;
+      &lt;map-entry&gt;
+        &lt;key&gt;Spring&lt;/key&gt;
+        &lt;value&gt;Otto Colomina&lt;/value&gt;                
+      &lt;/map-entry&gt;            
+      &lt;map-entry&gt;
+        &lt;key&gt;Grails&lt;/key&gt;
+        &lt;value&gt;Fran Garc&iacute;a&lt;/value&gt;                
+      &lt;/map-entry&gt;
+      &lt;map-entry&gt;
+        &lt;key&gt;JSF&lt;/key&gt;
+        &lt;value&gt;Alejandro Such&lt;/value&gt;                
+      &lt;/map-entry&gt;           
+    &lt;/map-entries&gt;
+  &lt;/managed-bean&gt;
+&lt;/faces-config&gt;
+  
+  </pre>
+<p>A modo de resumen, as&iacute; declararemos un bean en el fichero xml: 
+    <img alt="" content-width="9cm" src="imagenes/2012/pantallazo3.png.jpg" width="418">
+  </p>
+<p>En cualquiera de los tres casos vistos, hay que tener en cuenta que el &aacute;mbito de la propiedad no puede ser inferior al del bean contenedor.</p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+  
+<tr>
+    
+<th colspan="1" rowspan="1">Cuando nuestro bean tiene el &aacute;mbito...</th>
+    <th colspan="1" rowspan="1">...su propiedades pueden ser beans de los &aacute;mbitos</th>
+  
+</tr>
+  
+<tr>
+    
+<td colspan="1" rowspan="1">none</td>
+    <td colspan="1" rowspan="1">none</td>
+  
+</tr>
+  
+<tr>
+    
+<td colspan="1" rowspan="1">application</td>
+    <td colspan="1" rowspan="1">none, application</td>
+  
+</tr>
+  
+<tr>
+    
+<td colspan="1" rowspan="1">session</td>
+    <td colspan="1" rowspan="1">none, application, session</td>
+  
+</tr>
+  
+<tr>
+    
+<td colspan="1" rowspan="1">view</td>
+    <td colspan="1" rowspan="1">none, application, session, view</td>
+  
+</tr>
+  
+<tr>
+    
+<td colspan="1" rowspan="1">request</td>
+    <td colspan="1" rowspan="1">none, application, session, view, request</td>
+  
+</tr>
+
+</table>
+<a name="N1029C"></a><a name="Anotaciones+para+controlar+el+ciclo+de+vida+de+los+beans"></a>
+<h5>Anotaciones para controlar el ciclo de vida de los beans</h5>
+<p>Las anotaciones <span class="codefrag">@PostConstruct</span> y <span class="codefrag">@PreDestroy</span> sirven para especificar m&eacute;todos que se invocan autom&aacute;ticamente nada m&aacute;s construir un bean, o justo antes de que &eacute;ste salga del &aacute;mbito:</p>
+<pre class="brush:java;">
+
+public class MiBean {
+   @PostConstruct
+   public void initialize() {
+      // C&oacute;digo de inicializaci&oacute;n
+   }
+   @PreDestroy
+   public void shutdown() {
+      // C&oacute;digo de finalizaci&oacute;n
+   }
+   // resto de m&eacute;todos del bean
+}
+
+
+  </pre>
+<a name="N102B3"></a><a name="Navegaci%C3%B3n"></a>
+<h3 class="underlined_5">Navegaci&oacute;n</h3>
+<p>Antes de ver el controlador, es interesante comprender mejor la navegaci&oacute;n en JSF. La navegaci&oacute;n se refiere al flujo de p&aacute;ginas a lo largo de nuestra aplicaci&oacute;n. Veremos c&oacute;mo navegar de una p&aacute;gina a otra de distintas maneras.</p>
+<a name="N102BC"></a><a name="Navegaci%C3%B3n+est%C3%A1tica"></a>
+<h4>Navegaci&oacute;n est&aacute;tica</h4>
+<p>La navegaci&oacute;n est&aacute;tica se refiere a aquella situaci&oacute;n en que hacemos click en un bot&oacute;n o enlace, y el destino de esa acci&oacute;n va a ser siempre el mismo. &Eacute;sta se hace d&aacute;ndole a un determinado enlace una acci&oacute;n. Por ejemplo:</p>
+<pre class="brush:xml;">&lt;h:commandButton label="Login" action="welcome"/&gt;</pre>
+<p>En la navegaci&oacute;n est&aacute;tica, y si no se provee un mapeo como veremos m&aacute;s adelante, la acci&oacute;n se transformar&aacute; en un identificador de vista de la siguiente manera:</p>
+<ul>
+  
+<li>Si el nombre no tiene una extensi&oacute;n, se le asigna la misma extensi&oacute;n que la vista actual.</li>
+  
+<li>Si el nombre no empieza por /, se pone como prefijo el mismo que la vista actual.</li>
+
+</ul>
+<p>Por ejemplo, la acci&oacute;n <span class="codefrag">welcome</span> en la vista <span class="codefrag">/index.xhtml</span> nos lleva al identificador de vista <span class="codefrag">/welcome.xhtml</span>, y en la vista <span class="codefrag">/user/index.xhtml</span> nos llevar&iacute;a a <span class="codefrag">/user/welcome.xhtml</span>
+</p>
+<a name="N102E8"></a><a name="Navegaci%C3%B3n+din%C3%A1mica"></a>
+<h4>Navegaci&oacute;n din&aacute;mica</h4>
+<p>&Eacute;sta es muy com&uacute;n en muchas aplicaciones web, donde el flujo no depende del bot&oacute;n que se pulse, 
+sino de los datos introducidos. Por ejemplo: hacer login lleva a dos p&aacute;ginas distintas en funci&oacute;n de si el 
+par usuario/password introducidos son correctos (la p&aacute;gina de login err&oacute;neo, o la p&aacute;gina de inicio de la parte privada).</p>
+<p>Para implementar esta navegaci&oacute;n dim&aacute;mica, el bot&oacute;n de login deber&iacute;a apuntara un m&eacute;todo:</p>
+<pre class="brush:xml;">&lt;h:commandButton label="Login" action="#{loginController.verificarUsuario}"/&gt;</pre>
+<p>Aqu&iacute;, se llamar&aacute; al m&eacute;todo verificarUsuario() del bean loginController (sea de la clase que sea), que puede tener cualquier tipo de retorno que pueda ser convertible a String.</p>
+<pre class="brush:java;">String verificarUsuario() {
+   if (...)
+      return "success";
+   else
+      return "failure";
+}</pre>
+<p>Este retorno "success"/"failure" ser&aacute; el que determine la siguiente vista.</p>
+<p>Este mapeo cadena-vista se realiza en un fichero de configuraci&oacute;n, permiti&eacute;ndonos separar 
+la presentaci&oacute;n de la l&oacute;gica de negocio. Porque, &iquest;para qu&eacute; tengo que decir que vaya a la p&aacute;gina /error.xhtml? 
+&iquest;Y si luego cambio mi estructura?. &Eacute;stas salidas l&oacute;gicas nos dan esta flexibilidad. 
+La configuraci&oacute;n se realiza mediante reglas de navegaci&oacute;n en el fichero faces-config.xml. Un ejemplo de reglas de navegaci&oacute;n ser&iacute;a:</p>
+<pre class="brush:xml;">&lt;navigation-rule&gt;
+   &lt;from-view-id&gt;/index.xhtml&lt;/from-view-id&gt;
+   &lt;navigation-case&gt;
+      &lt;from-outcome&gt;success&lt;/from-outcome&gt;
+      &lt;to-view-id&gt;/welcome.xhtml&lt;/to-view-id&gt;
+   &lt;/navigation-case&gt; 
+     &lt;navigation-case&gt;
+      &lt;from-outcome&gt;failure&lt;/from-outcome&gt;
+      &lt;to-view-id&gt;/index.xhtml&lt;/to-view-id&gt;
+   &lt;/navigation-case&gt; 
+&lt;/navigation-rule&gt;</pre>
+<p>Esta regla determina que la salida "success" nos llevar&aacute; de la vista /index.xhtml a la vista /welcome.xhtml. Si es "failure", llevar&aacute; de nuevo al /index.xhtml</p>
+<p>Si especificamos una regla sin incluir un from-view-id, &eacute;sta se aplicar&aacute; a todas las p&aacute;ginas de nuestra aplicaci&oacute;n.</p>
+<p>Tambi&eacute;n podemos a&ntilde;adir wildcards en el elemento from-view-id para que se aplique a ciertas vistas nada m&aacute;s. S&oacute;lo se permite un &uacute;nico *, que debe estar al final de la cadena</p>
+<pre class="brush:xml;">&lt;navigation-rule&gt;
+   &lt;from-view-id&gt;/secure/*&lt;/from-view-id&gt;
+   &lt;navigation-case&gt;
+      . . .
+   &lt;/navigation-case&gt;
+&lt;/navigation-rule&gt;</pre>
+<a name="N1031A"></a><a name="Otros+casos+de+navegaci%C3%B3n+din%C3%A1mica"></a>
+<h5>Otros casos de navegaci&oacute;n din&aacute;mica</h5>
+<a name="N10320"></a><a name="Seg%C3%BAn+acci%C3%B3n"></a>
+<h5>Seg&uacute;n acci&oacute;n</h5>
+<p>Otro caso de navegaci&oacute;n que podemos incluir es <span class="codefrag">from-action</span>, que combinado con el tag <span class="codefrag">from-outcome</span> permite tener cadenas iguales que desemboquen en diferentes destinos</p>
+<pre class="brush:xml;">&lt;navigation-case&gt;
+   &lt;from-action&gt;#{loginController.cerrarSesion}&lt;/from-action&gt;
+   &lt;from-outcome&gt;success&lt;/from-outcome&gt;
+   &lt;to-view-id&gt;/index.xhtml&lt;/to-view-id&gt;
+&lt;/navigation-case&gt;
+&lt;navigation-case&gt;
+   &lt;from-action&gt;#{entradaController.anyadirEntrada}&lt;/from-action&gt;
+   &lt;from-outcome&gt;success&lt;/from-outcome&gt;
+   &lt;to-view-id&gt;/verEntrada.xhtml&lt;/to-view-id&gt;
+&lt;/navigation-case&gt;</pre>
+<a name="N10335"></a><a name="Casos+de+navegaci%C3%B3n+condicionales"></a>
+<h5>Casos de navegaci&oacute;n condicionales</h5>
+<p>Estos casos de navegaci&oacute;n son exclusivos de JSF2, y nos permiten hacer comparaciones simples haciendo uso del lenguaje de expresiones para determinar la siguiente vista.</p>
+<pre class="brush:xml;">&lt;navigation-rule&gt;
+  &lt;from-view-id&gt;login.xhtml&lt;/from-view-id&gt;
+    &lt;navigation-case&gt;
+      &lt;from-outcome&gt;success&lt;/from-outcome&gt;
+      &lt;if&gt;#{user.powerUser}&lt;/if&gt;
+      &lt;to-view-id&gt;/index_power.xhtlm&lt;/to-view-id&gt;
+    &lt;/navigation-case&gt;
+    &lt;navigation-case&gt;
+      &lt;from-outcome&gt;success&lt;/from-outcome&gt;
+      &lt;if&gt;#{user.vipUser}&lt;/if&gt;
+      &lt;to-view-id&gt;/index_vip.xhtlm&lt;/to-view-id&gt;
+    &lt;/navigation-case&gt;
+    &lt;navigation-case&gt;
+      &lt;from-outcome&gt;success&lt;/from-outcome&gt;
+      &lt;to-view-id&gt;/index_user.xhtlm&lt;/to-view-id&gt;
+    &lt;/navigation-case&gt;
+&lt;/navigation-rule&gt;</pre>
+<p>Obviamente, ser&iacute;a equivalente al siguiente c&oacute;digo java:</p>
+<pre class="brush:java;">if(user.isPowerUser()){
+  return "powerUser";
+} else if(user.isVipUser()){
+  return "vipUser";
+}
+
+return "user"</pre>
+<p>Sin embargo, el empleo de reglas condicionales en este caso nos permite dotar al controlador de login de una &uacute;nica responsabilidad: validar al usuario.</p>
+<a name="N1034F"></a><a name="Dynamic+Target+View+IDs"></a>
+<h5>Dynamic Target View IDs</h5>
+<p>El elemento to-view-id puede ser una expresi&oacute;n EL, que se evaluar&aacute; en tiempo de ejecuci&oacute;n.</p>
+<pre class="brush:xml;">&lt;navigation-rule&gt;
+  &lt;from-view-id&gt;/main.xhtml&lt;/from-view-id&gt;
+  &lt;navigation-case&gt;
+    &lt;to-view-id&gt;#{quizBean.nextViewID}&lt;/to-view-id&gt;
+  &lt;/navigation-case&gt;
+&lt;/navigation-rule&gt;</pre>
+<p>Esta regla es exclusiva de JSF2</p>
+<a name="N10364"></a><a name="Controlador"></a>
+<h3 class="underlined_5">Controlador</h3>
+<p>Llegamos al &uacute;ltimo pilar del patr&oacute;n MVC aplicado a JSF. Hemos visto
+c&oacute;mo en JSF se define la vista de una aplicaci&oacute;n y c&oacute;mo se obtienen y
+se guardan los datos del modelo. Nos falta el controlador. &iquest;C&oacute;mo se
+define el c&oacute;digo que se debe ejecutar cu&aacute;ndo el usuario realiza alguna
+acci&oacute;n sobre alg&uacute;n componente?</p>
+<p>Debemos diferenciar dos tipos de acciones, las <em>acciones del
+componente</em> y las <em>acciones de la aplicaci&oacute;n</em>. En el primer
+tipo de acciones es el propio componente el que contiene el c&oacute;digo
+(HTML o JavaScript) que le permite reaccionar a la interacci&oacute;n del
+usuario. Es el caso, por ejemplo, de un men&uacute; que se despliega o un
+calendario que se abre. En este caso no hay ninguna petici&oacute;n al
+controlador de la aplicaci&oacute;n para obtener datos o modificar alg&uacute;n
+elemento, sino que toda la interacci&oacute;n la maneja el propio
+componente. Con RichFaces y JSF 2.0 es posible utilizar eventos
+JavaScript para configurar este comportamiento.</p>
+<p>Las acciones de la aplicaci&oacute;n son las que determinan las
+funcionalidades de negocio de la aplicaci&oacute;n. Se trata de c&oacute;digo que
+queremos que se ejecute en el servidor cuando el usuario pulsa un
+determinado bot&oacute;n o pincha en un determinado enlace. Este c&oacute;digo
+realizar&aacute; llamadas a la capa de negocio de la aplicaci&oacute;n y determinar&aacute;
+la siguiente vista a mostrar o modificar&aacute; la vista actual.</p>
+<p>Como hemos visto en la navegaci&oacute;n din&aacute;mica, las acciones se definen en beans gestionados de la p&aacute;gina JSF. Son
+m&eacute;todos del bean que se ligan al elemento <span class="codefrag">action</span> del
+componente que vaya a lanzar esa acci&oacute;n.</p>
+<p>Por ejemplo, en la p&aacute;gina <span class="codefrag">selec-curso</span> se define llama
+a la acci&oacute;n <span class="codefrag">grabarDatosCursos</span> del
+bean <span class="codefrag">selecCursosController</span> asoci&aacute;ndola a
+un <span class="codefrag">&lt;h:commandButton&gt;</span>:</p>
+<pre class="brush:xml;">&lt;h:commandButton value="Enviar"
+   action="#{selecCursosController.grabarDatosCursos}"/&gt;</pre>
+<p>El m&eacute;todo <span class="codefrag">grabarDatosCursos</span> se ejecuta, realizando la
+l&oacute;gica de negocio, y devuelve una cadena que determina en el
+fichero <span class="codefrag">faces-config.xml</span> la siguiente vista a
+mostrar.</p>
+<a name="N1039C"></a><a name="Llamadas+a+la+capa+de+negocio"></a>
+<h4>Llamadas a la capa de negocio</h4>
+<p>En el controlador se guarda la relaci&oacute;n con el bean en el que se
+recogen los datos de la forma que hemos visto antes y se define el
+m&eacute;todo que realiza la llamada a la capa de negocio (el
+m&eacute;todo <span class="codefrag">grabarDatosCursos</span>):</p>
+<p>Fichero <strong><span class="codefrag">jtech.jsf.controlador.SelecCursosController.java</span></strong>
+</p>
+<pre class="brush:java;">@ManagedBean
+@SessionScoped
+public class SelecCursosController {
+  @ManagedProperty(value="#{selecCursosBean}")
+  private SelecCursosBean datosCursos;
+
+  public SelecCursosBean getDatosCursos() {
+    return datosCursos;
+  }
+
+  public void setDatosCursos(SelecCursosBean datosCursos) {
+    this.datosCursos = datosCursos;
+  }
+
+  public String grabarDatosCursos() {
+    EstudianteBO estudianteBO = new EstudianteBO();
+    String email = datosCursos.getEmail();
+    String[] cursosId = datosCursos.getCursosId();
+    estudianteBO.grabarAsignaturas(email, cursosId);
+    return "OK";
+  }
+}</pre>
+<p>Vemos en el m&eacute;todo <span class="codefrag">grabarDatosCursos()</span> la forma t&iacute;pica
+de proceder del controlador. Se obtiene el objeto de negocio con el
+m&eacute;todo de negocio al que se quiere llamar y se realiza la llamada,
+pas&aacute;ndole los par&aacute;metros introducidos por el usuario. En nuestro caso,
+realizamos una llamada a un m&eacute;todo <span class="codefrag">grabarAsignaturas</span> que
+realiza la matr&iacute;cula del estudiante a esas asignaturas.</p>
+<p>El email y los cursos seleccionados han sido introducidos por el
+usuario y, como hemos visto, se encuentran en el
+bean <span class="codefrag">selecCursosBean</span>. </p>
+<a name="N103C3"></a><a name="Determinando+la+nueva+vista+de+la+aplicaci%C3%B3n"></a>
+<h4>Determinando la nueva vista de la aplicaci&oacute;n</h4>
+<p>Adem&aacute;s de lanzar la l&oacute;gica de negocio requerida por la selecci&oacute;n
+del usuario, el bean controlador debe definir tambi&eacute;n qu&eacute; sucede con
+la interfaz una vez realizada la acci&oacute;n.</p>
+<p>Recordemos que la definici&oacute;n de la acci&oacute;n en la p&aacute;gina JSF es:</p>
+<pre class="brush:xml;">&lt;h:commandButton value="Enviar"
+   action="#{selecCursosController.grabarDatosCursos}"/&gt;</pre>
+<p>JSF obliga a que todas las acciones devuelvan una cadena. Esa
+cadena es el valor que termina guard&aacute;ndose en el
+atributo <span class="codefrag">action</span> y ser&aacute; evaluado en las reglas de navegaci&oacute;n.</p>
+<a name="N103DC"></a><a name="Resumen+de+los+elementos+de+JSF"></a>
+<h3 class="underlined_5">Resumen de los elementos de JSF</h3>
+<p>Veamos un resumen r&aacute;pido de c&oacute;mo se relacionan los distintos
+elementos de JSF.</p>
+<p>En primer lugar, la <strong>vista</strong> se define mediante
+p&aacute;ginas con componentes JSF que utilizan <em>beans gestionados</em> para
+almacenar los datos. Los beans se declaran en el fichero de
+configuraci&oacute;n <span class="codefrag">faces-config.xml</span>. La siguiente figura
+muestra las relaciones entre ambos en nuestro ejemplo. Para acceder a
+los datos, JSF utiliza un <em>lenguaje de expresiones</em> (JSF EL)
+similar al de JSP. El lenguaje de expresiones se puede utilizar
+tambi&eacute;n en el fichero <span class="codefrag">faces-config.xml</span> para inicializar
+los valores de las propiedades de los beans. En este caso, se utiliza
+para poder acceder a un bean desde otro.</p>
+<p>
+<img alt="" content-width="12cm" src="imagenes/tema01/definicion-backing-beans.png" width="550"></p>
+<p>En segundo lugar, el <strong>modelo</strong> se define mediante los
+beans. Son beans Java normales con propiedades y
+m&eacute;todos <em>getters</em> y <em>setters</em>.</p>
+<p>
+<img alt="" content-width="12cm" src="imagenes/tema01/java-beans.png" width="550"></p>
+<p>Por &uacute;ltimo, el <strong>controlador</strong> se define mediante
+m&eacute;todos de los beans ligados a acciones de la vista. La acci&oacute;n a
+ejecutar se define en el c&oacute;digo del m&eacute;todo y la vista resultante
+depende de la cadena devuelta y del fichero de
+configuraci&oacute;n <span class="codefrag">faces-config.xml</span>.</p>
+<p>
+<img alt="" content-width="12cm" src="imagenes/tema01/controlador.png" width="550"></p>
+</div>
+
+
+<a name="N10423"></a><a name="Expresiones+EL"></a>
+<h2 class="underlined_10">Expresiones EL</h2>
+<div class="section">
+<p>Las expresiones JSF EL son muy similares a las vistas en JSP. Son
+expresiones evaluables utilizadas en los atributos de las etiquetas
+JSF, normalmente el atributo <span class="codefrag">value</span>. Su sintaxis
+es <span class="codefrag">#{...}</span>. Por ejemplo, la siguiente expresi&oacute;n se utiliza
+en el atributo <span class="codefrag">value</span> de
+un <span class="codefrag">&lt;h:outputText&gt;</span> para definir un valor que se
+mostrar&aacute; en la p&aacute;gina HTML:</p>
+<pre class="brush:xml;">&lt;h:outputText value="El resultado de 1+2+3 es #{1+2+3}"</pre>
+<p>La diferencia fundamental con JSP es que las expresiones JSF se
+incluyen tal cual en los componentes JSF. Cuando JSF obtiene el &aacute;rbol
+de componentes asociado a la petici&oacute;n, las expresiones EL no se
+eval&uacute;an, sino que se incluyen en los componentes. De hecho, JSF
+convierte el texto de la expresi&oacute;n EL en un objeto de
+tipo <span class="codefrag">javax.el.ValueExpression</span> que se asocia a la
+propiedad correspondiente del componente. En el caso anterior, la
+expresi&oacute;n <span class="codefrag">#{1+2+3}</span> se convertir&iacute;a en un objeto de
+tipo <span class="codefrag">ValueExpression</span> y se asociar&iacute;a al
+atributo <span class="codefrag">value</span> del <span class="codefrag">outputText</span>.</p>
+<p>Los m&eacute;todos del API JSF que se utilizan para definir y obtener la
+expresi&oacute;n EL asociada a un atributo de un componente se definen
+precisamente en la clase <span class="codefrag">UIComponent</span>. Esta es una clase
+abstracta a partir de la que se construyen todos los componentes
+espec&iacute;ficos. Son los siguientes m&eacute;todos:</p>
+<pre class="brush:java;">ValueExpression getValueExpression(String nombrePropiedad) 
+void setValueExpression(String nombrePropiedad, ValueExpression expresionEL) </pre>
+<p>La evaluaci&oacute;n de las expresiones se realiza en la fase <em>Apply
+request values</em> cuando JSF llama al m&eacute;todo <span class="codefrag">decode</span> del
+componente.</p>
+<p>El uso m&aacute;s frecuente de las expresiones EL es el <em>binding</em>
+de una propiedad de un bean a una propiedad del componente. Por
+ejemplo:</p>
+<pre class="brush:xml;">&lt;h:outputText 
+   value="El total del pedido es: #{pedido.importe}"
+   style="#{pedido.cssStyle}"</pre>
+<p>En esta expresi&oacute;n se est&aacute; ligando la propiedad <span class="codefrag">importe</span>
+del bean <span class="codefrag">pedido</span> con la propiedad <span class="codefrag">value</span>
+del <span class="codefrag">outputText</span>. Adem&aacute;s, se est&aacute; definiendo el estilo CSS
+del texto de salida de forma din&aacute;mica, ligando la
+propiedad <span class="codefrag">style</span> del componente con la
+propiedad <span class="codefrag">cssStyle</span> del bean.</p>
+<p>Cuando ligamos una propiedad de un bean a un componente, la
+expresi&oacute;n EL puede utilizarse para obtener el valor del bean y
+asignarlo al componente o, al rev&eacute;s, para obtener el valor del
+componente y asignarlo al bean. En el primer caso se dice que la
+expresi&oacute;n tiene una sem&aacute;ntica <em>getValue</em> y en el segundo caso
+una sem&aacute;ntica <em>setValue</em>.</p>
+<p>Ejemplos de expresiones JSF EL correctas:</p>
+<pre class="brush:text plain;">#{foo.bar}
+#{foo[bar]}
+#{foo["bar"]}
+#{foo[3]}
+#{foo[3].bar}
+#{foo.bar[3]}
+#{customer.status == 'VIP'}
+#{(page1.city.farenheitTemp - 32) * 5 / 9}</pre>
+<p>En el caso de las expresiones con sem&aacute;ntica <em>setValue</em>, la
+sintaxis est&aacute; restringida a expresiones del tipo:</p>
+<pre class="brush:text plain;">#{expr-a.value-b}
+#{expr-a[value-b]]
+#{value-b}</pre>
+<p>Siendo <span class="codefrag">expr-a</span> una expresi&oacute;n EL que se eval&uacute;a a un
+objeto de tipo <span class="codefrag">Map</span>, <span class="codefrag">List</span> o un JavaBean
+y <span class="codefrag">value-b</span> un identificador.</p>
+<p>En las expresiones EL es posible utilizar un conjunto de
+identificadores que denotan ciertos objetos impl&iacute;citos que podemos
+utilizar:</p>
+<ul>
+   
+<li>
+<span class="codefrag">requestScope</span>, <span class="codefrag">sessionScope</span>, <span class="codefrag">applicationScope</span>:
+   permite acceder a las variables definidas en el &aacute;mbito de la
+   petici&oacute;n, de la sesi&oacute;n y de la aplicaci&oacute;n Estas variables se pueden
+   actualizar desde c&oacute;digo en los beans utilizando la
+   clase <span class="codefrag">FacesContext</span>.</li>
+
+   
+<li>
+<span class="codefrag">param</span>: para acceder a los valores de los
+   par&aacute;metros de la petici&oacute;n.</li>
+
+   
+<li>
+<span class="codefrag">paramValues</span>: para acceder a los arrays de valores
+   de los par&aacute;metros de la petici&oacute;n.</li>
+
+   
+<li>
+<span class="codefrag">header</span>: para acceder a los valores de las
+   cabeceras de la petici&oacute;n.</li>
+
+   
+<li>
+<span class="codefrag">headerValues</span>:para acceder a los arrays de valores
+   de los par&aacute;metros de la petici&oacute;n.</li>
+
+   
+<li>
+<span class="codefrag">cookie</span>: para acceder a los valores almacenados en
+   las <em>cookies</em> en forma de
+   objetos <span class="codefrag">javax.servlet.http.Cookie</span>
+</li>
+
+   
+<li>
+<span class="codefrag">initParam</span>: para acceder a los valores de inicializaci&oacute;n de la aplicaci&oacute;n.</li>
+
+   
+<li>
+<span class="codefrag">facesContext</span>: para acceder al
+   objeto <span class="codefrag">javax.faces.context.FacesContext</span> asociado a la
+   aplicaci&oacute;n actual.</li>
+
+   
+<li>
+<span class="codefrag">view</span>: para acceder al
+   objeto <span class="codefrag">javax.faces.component.UIViewRoot</span> asociado a la
+   vista actual.</li>
+
+</ul>
+<p>Veamos algunos ejemplos de utilizaci&oacute;n de estas variables.</p>
+<pre class="code">#{view.children[0].children[0].valid}</pre>
+<p>Aqu&iacute; se accede a la propiedad <span class="codefrag">valid</span> del primer hijo,
+del primer hijo de la ra&iacute;z del &aacute;rbol de componentes.</p>
+<pre class="brush:java;">FacesContext.getCurrentInstance().getExternalContext()
+   .getSessionMap().put("variable Name", value);</pre>
+<p>Este c&oacute;digo se debe ejecutar en el bean (en un evento o una
+acci&oacute;n) para actualizar una determinada variable de la sesi&oacute;n JSF.</p>
+</div>
+
+
+
+<a name="N1050B"></a><a name="Componentes+est%C3%A1ndar+de+JSF"></a>
+<h2 class="underlined_10">Componentes est&aacute;ndar de JSF</h2>
+<div class="section">
+<p>En JSF se definen un n&uacute;mero de componentes est&aacute;ndar que implementan
+las interfaces definidas en el punto anterior. Cada clase est&aacute;
+asociada normalmente a una etiqueta JSP y se renderiza en c&oacute;digo
+HTML.</p>
+<p>Hay que notar que en JSF los componentes se definen en base a su
+funci&oacute;n, no a su aspecto. El aspecto se modifica mediante el render
+asociado al componente. As&iacute;, por ejemplo, un campo de entrada de texto
+y un campo de entrada de contrase&ntilde;as se representan por el mismo tipo
+de componente JSF pero tienen distintos Renders asociados.</p>
+<p>Normalmente, existe una relaci&oacute;n uno a uno entre componentes JSF y
+etiquetas.</p>
+<p>Referencias: </p>
+<ul>
+   
+<li>JavaDoc del API de JSF
+   2.0: <a href="http://javaserverfaces.java.net/nonav/docs/2.0/javadocs/">http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api</a>
+</li>
+   
+<li>Etiquetas de JSF: <a href="http://javaserverfaces.java.net/nonav/docs/2.0/vdldocs/facelets/index.html">http://java.sun.com/j2ee/javaserverfaces/1.2/docs/tlddocs</a>
+</li>
+
+</ul>
+<a name="N1052C"></a><a name="Un+ejemplo%3A+el+componente"></a>
+<h3 class="underlined_5">Un ejemplo: el componente &lt;h:dataTable&gt;</h3>
+<p>El componente <span class="codefrag">&lt;h:dataTable&gt;</span> permite
+generar una tabla HTML a partir de una lista o un array de objetos
+Java.</p>
+<p>La forma m&aacute;s sencilla de utilizarlo es la siguiente:</p>
+<pre class="brush:xml;">&lt;h:dataTable value="#{selecCursosBB.cursos}" var="curso"&gt;
+   &lt;h:column&gt;
+      &lt;h:outputText value="#{curso.nombre}" /&gt;
+   &lt;/h:column&gt;
+   &lt;h:column&gt;
+      &lt;h:outputText value="#{curso.profesor}"/&gt;
+   &lt;/h:column&gt;
+   &lt;h:column&gt;
+      &lt;h:outputText value="#{curso.creditos}"/&gt;
+   &lt;/h:column&gt;
+&lt;/h:dataTable&gt;</pre>
+<p>La propiedad <span class="codefrag">cursos</span> contiene una lista de cursos que
+se muestran en la tabla. La variable <span class="codefrag">curso</span> definida en el
+atributo <span class="codefrag">var</span> toma el valor de cada uno de los cursos de
+la lista y se utiliza para construir las filas de la tabla. La
+etiqueta <span class="codefrag">&lt;h:column&gt;</span> define cada una de las
+columnas de la tabla, y en ella se utiliza la
+variable <span class="codefrag">curso</span> para acceder a las distintas propiedades
+que queremos mostrar en la tabla.</p>
+<p>Supongamos que la lista <span class="codefrag">cursos</span> ha sido inicializada as&iacute;:</p>
+<pre class="brush:java;">cursos.add(new Curso("JSP","Miguel &Aacute;ngel Lozano",2));
+cursos.add(new Curso("JSF", "Domingo Gallardo", 1));
+cursos.add(new Curso("Struts", "Otto Colomina", 1)); </pre>
+<p>La tabla resultante ser&aacute;:</p>
+<pre class="code">   JSP     Miguel &Aacute;ngel Lozano  2
+   JSF     Domingo Gallardo     1
+   Struts  Otto Colomina        1</pre>
+<p>Para definir una cabecera en la tabla hay que utilizar la
+etiqueta <span class="codefrag">&lt;f:facet name="header"&gt;</span> en la
+columna, y generar el contenido de la cabecera con
+un <span class="codefrag">&lt;h:outputText/&gt;</span>:</p>
+<pre class="brush:xml;">&lt;h:dataTable value="#{selecCursosBB.cursos}" var="curso"&gt;
+   &lt;h:column&gt;
+      &lt;f:facet name="header"&gt;
+         &lt;h:outputText value="Curso"/&gt;
+      &lt;/f:facet&gt;
+      &lt;h:outputText value="#{curso.nombre}" /&gt;
+   &lt;/h:column&gt;
+   &lt;h:column&gt;
+      &lt;f:facet name="header"&gt;
+         &lt;h:outputText value="Profesor"/&gt;
+      &lt;/f:facet&gt;
+      &lt;h:outputText value="#{curso.profesor}"/&gt;
+   &lt;/h:column&gt;
+   &lt;h:column&gt;
+      &lt;f:facet name="header"&gt;
+         &lt;h:outputText value="Cr&eacute;ditos"/&gt;
+      &lt;/f:facet&gt;
+      &lt;h:outputText value="#{curso.creditos}"/&gt;
+   &lt;/h:column&gt;
+&lt;/h:dataTable&gt;</pre>
+<p>La tabla resultante ser&aacute;:</p>
+<pre class="code">   Curso   Profesor             Cr&eacute;ditos
+   JSP     Miguel &Aacute;ngel Lozano  2
+   JSF     Domingo Gallardo     1
+   Struts  Otto Colomina        1</pre>
+<p>En la etiqueta tambi&eacute;n se definen atributos para generar clases CSS
+que permiten definir el aspecto de las tablas, lo que da mucha
+versatilidad a la presentaci&oacute;n. Tambi&eacute;n es posible definir distintos
+tipos de elementos dentro de la tabla; no s&oacute;lo texto, sino tambi&eacute;n
+otros componentes como botones, campos de texto o men&uacute;s. De esta forma
+es posible definir formularios complejos.</p>
+<a name="N1057F"></a><a name="Otro+ejemplo%3A+el+componente"></a>
+<h3 class="underlined_5">Otro ejemplo: el componente ui:repeat</h3>
+<p>Una de las novedades de JSF 2 es el uso del tag <span class="codefrag">ui:repeat</span>, para ser usado en lugar de 
+  <span class="codefrag">h:dataTable</span>. El funcionamiento es similar en el sentido de que ambos iteran sobre un conjunto
+   de datos. La diferencia radica en que <span class="codefrag">ui:repeat</span> no genera una estructura de tabla, sino 
+   que tenemos que definirla nosotros:</p>
+<pre class="brush:xml;">&lt;table&gt;
+   &lt;ui:repeat value="#{tableData.names}" var="name"&gt;
+   &lt;tr&gt;
+      &lt;td&gt;#{name.last},&lt;/td&gt;
+      &lt;td&gt;#{name.first}&lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;/ui:repeat&gt;
+&lt;/table&gt;</pre>
+<p>Pese a que puede ser un poco m&aacute;s tedioso ya que tenemos que declarar nosotros las etiquetas 
+para darle un aspecto tabular, este tag nos permite que mostremos la informaci&oacute;n en la forma 
+que nosotros queramos con DIVs, listas o el aspecto que m&aacute;s nos interese.</p>
+<p>Adem&aacute;s, el tag <span class="codefrag">ui:repeat</span> expone algunos atributos que pueden ser muy interesantes si 
+quisi&eacute;ramos recorrer un subconjunto de la colecci&oacute;n:</p>
+<ul>
+
+<li>
+<span class="codefrag">offset</span> es el &iacute;ndice por el que empieza la iteraci&oacute;n (valor por defecto: 0)</li>
+
+<li>
+<span class="codefrag">step</span> es la diferencia entre sucesivos valores de &iacute;ndice (valor por defecto: 1)</li>
+
+<li>
+<span class="codefrag">size</span> es el n&uacute;mero de iteraciones (valor por defecto: (tama&ntilde;o de la colecci&oacute;n - <span class="codefrag">offset</span>) / <span class="codefrag">step</span>)</li>
+
+</ul>
+<p>As&iacute;, si quisi&eacute;ramos mostrar los elementos 10, 12, 14, 16, 18 de una colecci&oacute;n, usar&iacute;amos:</p>
+<pre class="brush:xml;">&lt;ui:repeat ... offset="10" step="2" size="5"&gt;</pre>
+<p>El atributo <span class="codefrag">varStatus</span> determina una variable con informaci&oacute;n del estado de la iteraci&oacute;n. La variable declarada tendr&aacute; las siguientes propiedades:</p>
+<ul>
+  
+<li>De tipo <span class="codefrag">Boolean</span>: <span class="codefrag">even, odd, first, last</span>, muy &uacute;tiles para determinar estilos.</li>
+  
+<li>De tipo <span class="codefrag">Integer</span>: <span class="codefrag">index, begin, step, end</span>, que dan el &iacute;ndice de la iteraci&oacute;n actual, el offset inicial, step, size y offset final. 
+  Fij&aacute;os que <span class="codefrag">begin = offset</span> y <span class="codefrag">end = offset + step &times; size</span>, siendo <span class="codefrag">offset</span> y <span class="codefrag">size</span> los valores de los atributos del tag <span class="codefrag">ui:repeat</span>
+</li>
+
+</ul>
+<p>La propiedad <span class="codefrag">index</span> puede usarse para numerar filas:</p>
+<pre class="brush:xml;">&lt;table&gt;
+   &lt;ui:repeat value="#{tableData.names}" var="name" varStatus="status"&gt;
+   &lt;tr&gt;
+      &lt;td&gt;#{status.index + 1}&lt;/td&gt;
+      &lt;td&gt;#{name.last},&lt;/td&gt;
+      &lt;td&gt;#{name.first}&lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;/ui:repeat&gt;
+&lt;/table&gt;</pre>
+<a name="N105F6"></a><a name="Componentes+HTML"></a>
+<h3 class="underlined_5">Componentes HTML &lt;h:&gt;</h3>
+<p>Veamos una r&aacute;pida descripci&oacute;n de todas las posibles etiquetas con
+el prefijo <span class="codefrag">&lt;h:&gt;</span>
+</p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+  
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th>
+  <th colspan="1" rowspan="1">Descripci&oacute;n</th>
+  <th colspan="1" rowspan="1"></th>
+</tr>
+
+  
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;h:column&gt;</span></strong></td>
+      <td colspan="2" rowspan="1">Se utiliza dentro de una etiqueta <span class="codefrag">&lt;h:dataTable&gt;</span> para representar una columna de datos tabulares. Podemos a&ntilde;adirle una etiqueta <span class="codefrag">&lt;f:facet name="header"&gt;</span> o <span class="codefrag">&lt;f:facet name="footer"&gt;</span>.</td>
+</tr>
+   
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;h:dataTable value="#{reportController.currentReports}" var="report"&gt;
+  &lt;h:column rendered="#{reportController.showDate}"&gt;
+    &lt;f:facet name="header"&gt;
+      &lt;h:outputText value="Date" /&gt;
+    &lt;/f:facet&gt;
+    &lt;h:outputText value="#{report.date}" /&gt;
+  &lt;/h:column&gt;
+  ...
+&lt;/h:dataTable&gt;
+</pre>
+</td>
+</tr>
+
+</table>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+   
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th> 
+   <th colspan="1" rowspan="1">Descripci&oacute;n</th> 
+   <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;h:commandButton&gt;</span></strong></td> 
+   <td colspan="2" rowspan="1">Representa un comando que se renderiza como un bot&oacute;n HTML de tipo entrada. Cuando el usuario cliquea el bot&oacute;n, se env&iacute;a el formulario al que pertenece y se lanza un evento <span class="codefrag">ActionEvent</span>.</td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;h:form&gt;
+  &lt;h:commandButton value="Save" action="#{formController.save}" /&gt;
+&lt;/h:form&gt;</pre>
+</td>
+</tr>
+
+</table>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+   
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th> 
+   <th colspan="1" rowspan="1">Descripci&oacute;n</th> 
+   <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;h:commandLink&gt;</span></strong></td>
+    <td colspan="2" rowspan="1">Representa un comando que se renderiza como un enlace. Cuando el usuario pincha en el enlace, se ejecuta un c&oacute;digo javascript que env&iacute;a el formulario al que pertenece y se lanza un evento <span class="codefrag">ActionEvent</span>.</td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;h:form&gt;
+  &lt;h:commandLink action="#{formController.save}"&gt;
+    &lt;hLoutputText value="Save" /&gt;
+  &lt;/h:commandLink&gt;
+&lt;/h:form&gt;</pre>
+</td>
+</tr>
+
+</table>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+   
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th> 
+   <th colspan="1" rowspan="1">Descripci&oacute;n</th> 
+   <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;h:dataTable&gt;</span></strong></td>
+    <td colspan="2" rowspan="1">Se renderiza en un elemento HTML <span class="codefrag">&lt;table&gt;</span>. Los elementos hijo <span class="codefrag">&lt;h:column&lt;</span> son los responsables de renderizar las columnas de la tabla. El atributo <span class="codefrag">value</span> debe ser un array de objetos y se define una variable que hace de iterador sobre ese array. Se puede indicar el primer objeto a mostrar y el n&uacute;mero de filas con los atributos <span class="codefrag">first="first"</span> y <span class="codefrag">rows="rows"</span>. Los componentes de la tabla pueden declarse con la faceta <span class="codefrag">header</span> y <span class="codefrag">footer</span>.</td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;h:dataTable value="#{reportController.currentReports}" var="report"&gt;
+  &lt;f:facet name="header"&gt;
+    &lt;h:outputText value="Expense Reports" /&gt;
+  &lt;/f:facet&gt;
+  &lt;h:column rendered="#{reportController.showDate}"&gt;
+    &lt;f:facet name="header"&gt;
+      &lt;h:outputText value="Date" /&gt;
+    &lt;/f:facet&gt;
+    &lt;h:outputText value="#{report.date}" /&gt;
+  &lt;/h:column&gt;
+  ...
+&lt;/h:dataTable&gt;</pre>
+</td>
+</tr>
+
+</table>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+   
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th> 
+   <th colspan="1" rowspan="1">Descripci&oacute;n</th> 
+   <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;h:form&gt;</span></strong></td>
+    <td colspan="2" rowspan="1">Se renderiza como un elemento <span class="codefrag">&lt;form&gt;</span> con un atributo de acci&oacute;n definido por una URL que identifica la vista contenida en el formulario. Cuando se env&iacute;a el formulario, s&oacute;lo se procesan los componentes hijos del formulario enviado.</td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;h:form&gt;
+  &lt;h:panelGrid columns="2"&gt;
+    &lt;h:outputText value="First name:" /&gt;
+    &lt;h:inputText value="#{user.firstName}" /&gt;
+    &lt;h:outputText value="Last name:" /&gt;
+    &lt;h:inputText value="#{user.lastName}" /&gt;
+  &lt;/h:panelGrid&gt;
+&lt;/h:form&gt;</pre>
+</td>
+</tr>
+
+</table>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+   
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th> 
+   <th colspan="1" rowspan="1">Descripci&oacute;n</th> 
+   <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;h:graphicImage&gt;</span></strong></td>
+    <td colspan="2" rowspan="1">Se renderiza como un elemento <span class="codefrag">&lt;img&gt;</span> con un atributo <span class="codefrag">src</span> que toma como valor el valor del atributo <span class="codefrag">value</span> de la etiqueta.</td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;h:graphicImage value="/images/folder-open.gif" /&gt;</pre>
+</td>
+</tr>
+
+</table>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+   
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th> 
+   <th colspan="1" rowspan="1">Descripci&oacute;n</th> 
+   <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;h:inputHidden&gt;</span></strong></td>
+    <td colspan="2" rowspan="1">Se renderiza como un elemento <span class="codefrag">&lt;input&gt;</span> con un atributo <span class="codefrag">type</span> definido como <span class="codefrag">hidden</span>.</td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;h:form&gt;
+  &lt;h:inputHidden value="#{user.type}" /&gt;
+&lt;/h:form&gt;</pre>
+</td>
+</tr>
+
+</table>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+   
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th> 
+   <th colspan="1" rowspan="1">Descripci&oacute;n</th> 
+   <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;h:inputSecret&gt;</span></strong></td>
+    <td colspan="2" rowspan="1">Se renderiza como un elemento <span class="codefrag">&lt;input&gt;</span> con un atributo <span class="codefrag">type</span> definido como <span class="codefrag">password</span>.</td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;h:form&gt;
+  &lt;h:inputSecret value="#{user.password}" /&gt;
+&lt;/h:form&gt;</pre>
+</td>
+</tr>
+
+</table>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+   
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th> 
+   <th colspan="1" rowspan="1">Descripci&oacute;n</th> 
+   <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;h:inputText&gt;</span></strong></td>
+    <td colspan="2" rowspan="1">Se renderiza como un elemento <span class="codefrag">&lt;input&gt;</span> con un atributo <span class="codefrag">type</span> definido como <span class="codefrag">text</span>.</td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;h:form&gt;
+  &lt;h:inputText value="#{user.email}" /&gt;
+&lt;/h:form&gt;</pre>
+</td>
+</tr>
+
+</table>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+   
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th> 
+   <th colspan="1" rowspan="1">Descripci&oacute;n</th> 
+   <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;h:inputTextarea&gt;</span></strong></td>
+    <td colspan="2" rowspan="1">Se renderiza como un elemento <span class="codefrag">&lt;textarea&gt;</span>.</td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;h:form&gt;
+  &lt;h:inputTextarea value="#{user.bio}" /&gt;
+&lt;/h:form&gt;</pre>
+</td>
+</tr>
+
+</table>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+   
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th> 
+   <th colspan="1" rowspan="1">Descripci&oacute;n</th> 
+   <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;h:message&gt;</span></strong></td>
+    <td colspan="2" rowspan="1">Este elemento obtiene el primer mensaje encolado para el componente identificado por el atributo <span class="codefrag">for</span>.</td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;h:form&gt;
+  &lt;h:inputText id="firstName" value="#{user.firstName}" /&gt;
+  &lt;h:message for="firstName" errorStyle="color: red" /&gt;
+&lt;/h:form&gt;</pre>
+</td>
+</tr>
+
+</table>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+   
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th> 
+   <th colspan="1" rowspan="1">Descripci&oacute;n</th> 
+   <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;h:messages&gt;</span></strong></td>
+    <td colspan="2" rowspan="1">Este elemento obtiene todos los mensajes encolados.</td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;h:messages/&gt;
+&lt;h:form&gt;
+  &lt;h:inputText id="firstName" value="#{user.firstName}" /&gt;
+  &lt;h:message for="firstName" errorStyle="color: red" /&gt;
+&lt;/h:form&gt;</pre>
+</td>
+</tr>
+
+</table>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+   
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th> 
+   <th colspan="1" rowspan="1">Descripci&oacute;n</th> 
+   <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;h:outputFormat&gt;</span></strong></td>
+    <td colspan="2" rowspan="1">Define un mensaje parametrizado que ser&aacute; rellenado por los elementos definidos en par&aacute;metros <span class="codefrag">&lt;f:param&gt;</span></td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;f:loadBundle basename="messages" var="msgs" /&gt;
+&lt;h:outputFormat value="#{msgs.sunRiseAndSetText}"&gt;
+  &lt;f:param value="#{city.sunRiseTime}" /&gt;
+  &lt;f:param value="#{city.sunSetTime}" /&gt;
+&lt;/h:outputFormat&gt;</pre>
+</td>
+</tr>
+
+</table>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+   
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th> 
+   <th colspan="1" rowspan="1">Descripci&oacute;n</th> 
+   <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;h:outputLabel&gt;</span></strong></td>
+    <td colspan="2" rowspan="1">Define un elemento HTML <span class="codefrag">&lt;label&gt;</span>.</td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;h:inputText id="firstName" value="#{user.firstName}" /&gt;
+&lt;h:outputLabel for="firstName" /&gt;</pre>
+</td>
+</tr>
+
+</table>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+   
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th> 
+   <th colspan="1" rowspan="1">Descripci&oacute;n</th> 
+   <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;h:outputLink&gt;</span></strong></td>
+    <td colspan="2" rowspan="1">Se renderiza como un elemento <span class="codefrag">&lt;a&gt;</span> con un atributo <span class="codefrag">href</span> definido como el valor del atributo <span class="codefrag">value</span>.</td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;h:outputLink value="../../logout.jsp" /&gt;</pre>
+</td>
+</tr>
+
+</table>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+   
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th> 
+   <th colspan="1" rowspan="1">Descripci&oacute;n</th> 
+   <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;h:outputText&gt;</span></strong></td>
+    <td colspan="2" rowspan="1">Se renderiza como texto.</td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;h:outputText value="#{user.name}" /&gt;</pre>
+</td>
+</tr>
+
+</table>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+   
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th> 
+   <th colspan="1" rowspan="1">Descripci&oacute;n</th> 
+   <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;h:panelGrid&gt;</span></strong></td>
+    <td colspan="2" rowspan="1">Se renderiza como una tabla de HTML, con el n&uacute;mero de columnas definido por el atributo <span class="codefrag">columns</span>. Los componentes del panel pueden tener las facetas <span class="codefrag">header</span> y <span class="codefrag">footer</span>.</td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;h:form&gt;
+  &lt;h:panelGrid columns="2"&gt;
+    &lt;h:outputText value="First name:" /&gt;
+    &lt;h:inputText value="#{user.firstName}" /&gt;
+    &lt;h:outputText value="Last name:" /&gt;
+    &lt;h:inputText value="#{user.lastName}" /&gt;
+  &lt;/h:panelGrid&gt;
+&lt;/h:form&gt;</pre>
+</td>
+</tr>
+
+</table>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+   
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th> 
+   <th colspan="1" rowspan="1">Descripci&oacute;n</th> 
+   <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;h:panelGroup&gt;</span></strong></td>
+    <td colspan="2" rowspan="1">El componente act&uacute;a como un contenedor de otros componentes en situaciones en las que s&oacute;lo se permite que exista un componente, por ejemplo cuando un grupo de componentes se usa como una faceta dentro de un <span class="codefrag">panelGroup</span>. Se renderizar&aacute; como un elemento <span class="codefrag">&lt;span&gt;</span>. Si le ponemos el atributo <span class="codefrag">layout="block"</span>, se renderizar&aacute; como un <span class="codefrag">&gt;div&lt;</span></td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;h:form&gt;
+  &lt;h:panelGrid columns="2"&gt;
+    &lt;f:facet name="header"&gt;
+      &lt;h:panelGroup&gt;
+        &lt;h:outputText value="Sales stats for " /&gt;
+        &lt;/h:outputText value="#{sales.region}" style="font-weight: bold" /&gt;
+      &lt;/h:panelGroup&gt;
+    &lt;/f:facet&gt;
+    &lt;h:outputText value="January" /&gt;
+    &lt;h:inputText value="#{sales.jan}" /&gt;
+    &lt;h:outputText value="February" /&gt;
+    &lt;h:inputText value="#{sales.feb}" /&gt;
+    ...
+  &lt;/h:panelGrid&gt;
+&lt;/h:form&gt;</pre>
+</td>
+</tr>
+
+</table>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+   
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th> 
+   <th colspan="1" rowspan="1">Descripci&oacute;n</th> 
+   <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;h:selectBooleanCheckbox&gt;</span></strong></td>
+    <td colspan="2" rowspan="1">Se renderiza como un elemento <span class="codefrag">&lt;input&gt;</span> con un atributo <span class="codefrag">type</span> definido como <span class="codefrag">checkbox</span>.</td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;h:form&gt;
+  &lt;h:selectBooleanCheckbox value="#{user.vip}" /&gt;
+&lt;/h:form&gt;</pre>
+</td>
+</tr>
+
+</table>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+   
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th> 
+   <th colspan="1" rowspan="1">Descripci&oacute;n</th> 
+   <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;h:selectManyCheckbox&gt;</span></strong></td>
+    <td colspan="2" rowspan="1">Se renderiza como un elemento HTML <span class="codefrag">&lt;table&gt;</span> con un elemento <span class="codefrag">input</span> por cada uno de sus hijos, componentes de tipo <span class="codefrag">&lt;f:selectItem&gt;</span> y <span class="codefrag">&lt;f:selectItems&gt;</span>.</td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;h:form&gt;
+  &lt;h:selectManyCheckbox value="#{user.projects}"&gt;
+    &lt;f:selectItems value="#{allProjects}" /&gt;
+  &lt;/h:selectManyCheckbox&gt;
+&lt;/h:form&gt;</pre>
+</td>
+</tr>
+
+</table>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+   
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th> 
+   <th colspan="1" rowspan="1">Descripci&oacute;n</th> 
+   <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;h:selectManyListbox&gt;</span></strong></td>
+    <td colspan="2" rowspan="1">Se renderiza como un elemento <span class="codefrag">&lt;select&gt;</span>. Las opciones se representan por los componentes hijos de tipo <span class="codefrag">&lt;f:selectItem&gt;</span> y <span class="codefrag">&lt;f:selectItems&gt;</span>.</td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;h:form&gt;
+  &lt;h:selectManyListbox value="#{user.projects}"&gt;
+    &lt;f:selectItems value="#{allProjects}" /&gt;
+  &lt;/h:selectManyListbox&gt;
+&lt;/h:form&gt;</pre>
+</td>
+</tr>
+
+</table>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+   
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th> 
+   <th colspan="1" rowspan="1">Descripci&oacute;n</th> 
+   <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;h:selectManyMenu&gt;</span></strong></td>
+    <td colspan="2" rowspan="1">Se renderiza como un elemento <span class="codefrag">&lt;select&gt;</span>. Las opciones se representan por los componentes hijos de tipo <span class="codefrag">&lt;f:selectItem&gt;</span> y <span class="codefrag">&lt;f:selectItems&gt;</span>.</td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;h:form&gt;
+  &lt;h:selectManyMenu value="#{user.projects}"&gt;
+    &lt;f:selectItems value="#{allProjects}" /&gt;
+  &lt;/h:selectManyMenu&gt;
+&lt;/h:form&gt;</pre>
+</td>
+</tr>
+
+</table>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+   
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th> 
+   <th colspan="1" rowspan="1">Descripci&oacute;n</th> 
+   <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;h:selectOneListbox&gt;</span></strong></td>
+    <td colspan="2" rowspan="1">Se renderiza como un elemento <span class="codefrag">&lt;select&gt;</span>. Las opciones se representan por los componentes hijos de tipo <span class="codefrag">&lt;f:selectItem&gt;</span> y <span class="codefrag">&lt;f:selectItems&gt;</span>.</td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;h:form&gt;
+  &lt;h:selectOneListbox value="#{user.country}"&gt;
+    &lt;f:selectItems value="#{allCountries}" /&gt;
+  &lt;/h:selectOneListbox&gt;
+&lt;/h:form&gt;</pre>
+</td>
+</tr>
+
+</table>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+   
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th> 
+   <th colspan="1" rowspan="1">Descripci&oacute;n</th> 
+   <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;h:selectOneMenu&gt;</span></strong></td>
+    <td colspan="2" rowspan="1">Se renderiza como un elemento <span class="codefrag">&lt;select&gt;</span>. Las opciones se representan por los componentes hijos de tipo <span class="codefrag">&lt;f:selectItem&gt;</span> y <span class="codefrag">&lt;f:selectItems&gt;</span>.</td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;h:form&gt;
+  &lt;h:selectOneMenu value="#{user.country}"&gt;
+    &lt;f:selectItems value="#{allCountries}" /&gt;
+  &lt;/h:selectOneMenu&gt;
+&lt;/h:form&gt;</pre>
+</td>
+</tr>
+
+</table>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+   
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th> 
+   <th colspan="1" rowspan="1">Descripci&oacute;n</th> 
+   <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;h:selectOneRadio&gt;</span></strong></td>
+    <td colspan="2" rowspan="1">Se renderiza como un elemento <span class="codefrag">&lt;input&gt;</span> con un atributo <span class="codefrag">type</span> definido como <span class="codefrag">radio</span>. Las opciones se representan por los componentes hijos de tipo <span class="codefrag">&lt;f:selectItem&gt;</span> y <span class="codefrag">&lt;f:selectItems&gt;</span>.</td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;h:form&gt;
+  &lt;h:selectOneRadio value="#{user.country}"&gt;
+    &lt;f:selectItems value="#{allCountries}" /&gt;
+  &lt;/h:selectOneRadio&gt;
+&lt;/h:form&gt;</pre>
+</td>
+</tr>
+
+</table>
+<a name="N10B09"></a><a name="Etiquetas+core"></a>
+<h3 class="underlined_5">Etiquetas core &lt;f:&gt;</h3>
+<p>Las otras etiquetas del n&uacute;cleo de JSF son las etiquetas <em>core
+custom actions</em> con el prefijo <span class="codefrag">&lt;f:&gt;</span>. Definen
+acciones asociadas a los componentes o las p&aacute;ginas JSF. Se procesan en
+el servidor, una vez creado el &aacute;rbol de componentes y modifican alguna
+caracter&iacute;stica del mismo. Por ejemplo, utilizando estas etiquetas es
+posible a&ntilde;adir elementos hijos, conversores o validadores a un
+componente. </p>
+<p>En el ejemplo anterior hemos utilizado la
+etiqueta <span class="codefrag">&lt;f:selectItem&gt;</span> para a&ntilde;adir elementos hijos
+al componente <span class="codefrag">&lt;h:selectManyCheckbox&gt;</span>. Cada hijo
+define una etiqueta y un valor. Las etiquetas se muestran en pantalla
+y el valor es la cadena que se guarda en el
+array <span class="codefrag">cursosId</span> del bean gestionado por el
+componente <span class="codefrag">selecCursosBean</span>.</p>
+<pre class="brush:xml;">&lt;h:selectManyCheckbox
+   value="#{selecCursosBean.cursoIds}"&gt;
+   &lt;f:selectItem itemValue="JSP" itemLabel="Servlets y JSP" /&gt;
+   &lt;f:selectItem itemValue="Struts" itemLabel="Struts" /&gt;
+   &lt;f:selectItem itemValue="JSF" itemLabel="JSF" /&gt;
+   &lt;f:selectItem itemValue="JPA" itemLabel="JPA" /&gt;
+&lt;/h:selectManyCheckbox&gt;</pre>
+<p>Otra etiqueta muy &uacute;til
+es <span class="codefrag">&lt;f:setPropertyActionListener&gt;</span>. Junto con las
+etiquetas <span class="codefrag">&lt;h:commandLink&gt;</span>
+y <span class="codefrag">&lt;h:commandButton&gt;</span> permite definir alguna
+propiedad del bean que ejecutar una acci&oacute;n antes de que la acci&oacute;n
+se lance. De esta forma podemos simular un paso de par&aacute;metros a la
+acci&oacute;n.</p>
+<p>Por ejemplo (tomado del blog
+de <a href="http://balusc.blogspot.com/2006/06/communication-in-jsf.html">BalusC</a>),
+si queremos definir las propiedades <span class="codefrag">propertyName1</span>
+y <span class="codefrag">propertyName2</span> en el bean antes de que se llame a la
+acci&oacute;n <span class="codefrag">action</span> podemos hacerlo de cualquiera de estas formas::</p>
+<pre class="brush:xml;">&lt;h:form&gt;
+   &lt;h:commandLink value="Click here" action="#{myBean.action}"&gt;
+      &lt;f:setPropertyActionListener target="#{myBean.propertyName1}" 
+                                   value="propertyValue1" /&gt;
+      &lt;f:setPropertyActionListener target="#{myBean.propertyName2}" 
+                                   value="propertyValue2" /&gt;
+   &lt;/h:commandLink&gt;
+
+   &lt;h:commandButton value="Press here" action="#{myBean.action}"&gt;
+      &lt;f:setPropertyActionListener target="#{myBean.propertyName1}" 
+                                   value="propertyValue1" /&gt;
+      &lt;f:setPropertyActionListener target="#{myBean.propertyName2}" 
+                                   value="propertyValue2" /&gt;
+   &lt;/h:commandButton&gt;
+&lt;/h:form&gt;</pre>
+<p>En el bean debemos definir las propiedades con al menos sus setters:</p>
+<pre class="brush:java;">public class MyBean {
+
+   private String propertyName1;
+   private String propertyName2;
+
+   // Actions
+
+   public void action() {
+      System.out.println("propertyName1: " + propertyName1);
+      System.out.println("propertyName2: " + propertyName2);
+   }
+
+   // Setters
+
+   public void setPropertyName1(String propertyName1) {
+      this.propertyName1 = propertyName1;
+   }
+
+   public void setPropertyName2(String propertyName2) {
+      this.propertyName2 = propertyName2;
+   }
+}</pre>
+<p>A continuaci&oacute;n vemos una r&aacute;pida descripci&oacute;n de otras etiquetas de
+la librer&iacute;a <em>Core custom actions</em> de JSF. Al igual que en las
+etiquetas HTML se incluyen ejemplos de su utilizaci&oacute;n.</p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th>
+    <th colspan="1" rowspan="1">Descripci&oacute;n</th>
+  <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;f:actionListener&gt;</span></strong></td>
+   <td colspan="2" rowspan="1">Crea una instancia de la clase definida en el atributo <span class="codefrag">type</span> y la a&ntilde;ade al componente padre de tipo <span class="codefrag">action</span> para manejar el evento relacionado con el disparo de la acci&oacute;n.</td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;h:form&gt;
+  &lt;h:commandButton value="Save"&gt;
+    &lt;f:actionListener type="com.mycompany.SaveListener" /&gt;
+  &lt;/h:commandButton&gt;
+&lt;/h:form&gt;</pre>
+</td>
+</tr>
+
+</table>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th>
+    <th colspan="1" rowspan="1">Descripci&oacute;n</th>
+  <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;f:attribute&gt;</span></strong></td>
+   <td colspan="2" rowspan="1">Define un atributo gen&eacute;rico para el componente padre.</td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;h:form&gt;
+  &lt;h:inputText id="from" value="#{filter.from}" /&gt;
+  &lt;h:inputText value="#{filter.to}"&gt;
+    &lt;f:validator validatorId="com.mycompany.laterThanValidator" /&gt;
+    &lt;f:attribute name="compareToComp" value="from" /&gt;
+  &lt;/h:inputText&gt;
+&lt;/h:form&gt;</pre>
+</td>
+</tr>
+
+</table>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th>
+    <th colspan="1" rowspan="1">Descripci&oacute;n</th>
+  <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;f:convertDateTime&gt;</span></strong></td>
+   <td colspan="2" rowspan="1">Crea una instancia de un conversor de tipo <span class="codefrag">DateTime</span> con los par&aacute;metros proporcionados y lo registra en el componente padre.</td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;h:form&gt;
+  &lt;h:inputText value="#{user.birthDate}"&gt;
+    &lt;f:convertDateTime dateStyle="short" /&gt;
+  &lt;/h:inputText&gt;
+&lt;/h:form&gt;</pre>
+</td>
+</tr>
+
+</table>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th>
+    <th colspan="1" rowspan="1">Descripci&oacute;n</th>
+  <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;f:convertNumber&gt;</span></strong></td>
+   <td colspan="2" rowspan="1">Crea una instancia de un conversor de tipo <span class="codefrag">Number</span> y lo registra en el componente padre.</td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;h:form&gt;
+  &lt;h:inputText value="#{user.salary}"&gt;
+    &lt;f:convertNumber integerOnly="true" /&gt;
+  &lt;/h:inputText&gt;
+&lt;/h:form&gt;</pre>
+</td>
+</tr>
+
+</table>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th>
+    <th colspan="1" rowspan="1">Descripci&oacute;n</th>
+  <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;f:converter&gt;</span></strong></td>
+   <td colspan="2" rowspan="1">Crea una instancia de un conversor definido por el usuario y registrado con un identificador determinado.</td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;h:form&gt;
+  &lt;h:inputText value="#{user.ssn}"&gt;
+    &lt;f:converter converterId="ssnConverter" /&gt;
+  &lt;/h:inputText&gt;
+&lt;/h:form&gt;</pre>
+</td>
+</tr>
+
+</table>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th>
+    <th colspan="1" rowspan="1">Descripci&oacute;n</th>
+  <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;f:facet&gt;</span></strong></td>
+   <td colspan="2" rowspan="1">A&ntilde;ade un componente con una faceta determinada al componente padre. Para que m&aacute;s de un componente pueda compartir la misma faceta, se deben agrupar con un elemento <span class="codefrag">&lt;h:panelGroup&gt;</span>.</td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">h:dataTable value="#{reportController.reports}" var="report"&gt;
+  &lt;f:facet name="header"&gt;
+    &lt;h:outputText value="Reports" /&gt;
+  &lt;/f:facet&gt;
+  ...
+&lt;/h:dataTable&gt;</pre>
+</td>
+</tr>
+
+</table>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th>
+    <th colspan="1" rowspan="1">Descripci&oacute;n</th>
+  <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;f:loadBundle&gt;</span></strong></td>
+   <td colspan="2" rowspan="1">Carga un fichero de recursos y lo hace disponible a trav&eacute;s de una variable. El path del fichero debe estar disponible en el classpath de la aplicaci&oacute;n web (esto es, en el directorio <span class="codefrag">WEB-INF/classses</span>).</td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;f:loadBundle basename="messages" var="msgs" /&gt;
+&lt;h:outputText value="#{msgs.title}" /&gt;</pre>
+</td>
+</tr>
+
+</table>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th>
+    <th colspan="1" rowspan="1">Descripci&oacute;n</th>
+  <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;f:param&gt;</span></strong></td>
+   <td colspan="2" rowspan="1">Define un par&aacute;metro de una expresi&oacute;n de texto.</td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;f:loadBundle basename="messages" var="msgs" /&gt;
+&lt;h:outputFormat value="#{msgs.sunRiseAndSetText}"&gt;
+  &lt;f:param value="#{city.sunRiseTime}" /&gt;
+  &lt;f:param value="#{city.sunSetTime}" /&gt;
+&lt;/h:outputFormat&gt;</pre>
+</td>
+</tr>
+
+</table>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th>
+    <th colspan="1" rowspan="1">Descripci&oacute;n</th>
+  <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;f:selectItem&gt;</span></strong></td>
+   <td colspan="2" rowspan="1">Crea una instancia de un &iacute;tem y se lo asigna al componente padre.</td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;h:form&gt;
+  &lt;h:selectManyCheckbox value="#{user.projects}"&gt;
+    &lt;f:selectItem itemValue="JSF" itemValue="1" /&gt;
+    &lt;f:selectItem itemValue="JSP" itemValue="2" /&gt;
+    &lt;f:selectItem itemValue="Servlets" itemValue="3" /&gt;
+  &lt;/h:selectManyCheckbox&gt;
+&lt;/h:form&gt;</pre>
+</td>
+</tr>
+
+</table>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th>
+    <th colspan="1" rowspan="1">Descripci&oacute;n</th>
+  <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;f:selectItems&gt;</span></strong></td>
+   <td colspan="2" rowspan="1">Crea m&uacute;ltiples instancias de &iacute;tems y los asigna al componente padre.</td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;h:form&gt;
+  &lt;h:selectManyCheckbox value="#{user.projects}"&gt;
+    &lt;f:selectItems value="#{allProjects}" /&gt;
+  &lt;/h:selectManyCheckbox&gt;
+&lt;/h:form&gt;</pre>
+</td>
+</tr>
+
+</table>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th>
+    <th colspan="1" rowspan="1">Descripci&oacute;n</th>
+  <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;f:subView&gt;</span></strong></td>
+   <td colspan="2" rowspan="1">Crea un grupo de componentes dentro de una vista.</td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;f:view&gt;
+  &lt;f:subview id="header"&gt;
+    &lt;jsp:include page="header.jsp" /&gt;
+  &lt;/f:subview&gt;
+  ...
+  &lt;f:subview id="footer"&gt;
+    &lt;jsp:include page="footer.jsp" /&gt;
+  &lt;/f:subview&gt;
+&lt;/f:view&gt;</pre>
+</td>
+</tr>
+
+</table>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th>
+    <th colspan="1" rowspan="1">Descripci&oacute;n</th>
+  <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;f:validateDoubleRange&gt;</span></strong></td>
+   <td colspan="2" rowspan="1">Crea una instancia de validador de rango doble y lo asigna al componente padre.</td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;h:inputText value="#{product.price}"&gt;
+  &lt;f:convertNumber type="currency" /&gt;
+  &lt;f:validateDoubleRange minimum="0.0" /&gt;
+&lt;/h:inputText&gt;</pre>
+</td>
+</tr>
+
+</table>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th>
+    <th colspan="1" rowspan="1">Descripci&oacute;n</th>
+  <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;f:validateLength&gt;</span></strong></td>
+   <td colspan="2" rowspan="1">Crea una instancia de validador de longitud de texto y lo asigna al componente padre.</td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;h:inputText value="#{user.zipCode}"&gt;
+  &lt;f:validateLength minimum="5" maximum="5" /&gt;
+&lt;/h:inputText&gt;</pre>
+</td>
+</tr>
+
+</table>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th>
+    <th colspan="1" rowspan="1">Descripci&oacute;n</th>
+  <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;f:validateLongRange&gt;</span></strong></td>
+   <td colspan="2" rowspan="1">Crea una instancia de validador de rango long y lo asigna al componente padre.</td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;h:inputText value="#{employee.salary}"&gt;
+  &lt;f:convertNumber type="currency" /&gt;
+  &lt;f:validateLongRange minimum="50000" maximum="150000" /&gt;
+&lt;/h:inputText&gt;</pre>
+</td>
+</tr>
+
+</table>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th>
+    <th colspan="1" rowspan="1">Descripci&oacute;n</th>
+  <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;f:validator&gt;</span></strong></td>
+   <td colspan="2" rowspan="1">Crea un validador definido por el usuario.</td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;h:form&gt;
+  &lt;h:inputText value="#{user.ssn}"&gt;
+    &lt;f:validator validatorId="ssnValidator" /&gt;
+  &lt;/h:inputText&gt;
+&lt;/h:form&gt;</pre>
+</td>
+</tr>
+
+</table>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th>
+    <th colspan="1" rowspan="1">Descripci&oacute;n</th>
+  <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;f:valueChangeListener&gt;</span></strong></td>
+   <td colspan="2" rowspan="1">Crea una instancia de la clase definida por el atributo <span class="codefrag">type</span> y la asigna al componente padre para ser llamada cuando sucede un evento de cambio de valor.</td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;h:form&gt;
+  &lt;h:selectBooleanCheckbox value="Details" immediate="true"&gt;
+    &lt;f:valueChangeListener type="com.mycompany.DescrLevelListener" /&gt;
+  &lt;/h:selectBooleanCheckbox&gt;
+&lt;/h:form&gt;</pre>
+</td>
+</tr>
+
+</table>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th>
+    <th colspan="1" rowspan="1">Descripci&oacute;n</th>
+  <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;f:verbatim&gt;</span></strong></td>
+   <td colspan="2" rowspan="1">Permite renderizar texto.</td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;f:subview id="header"&gt;
+  &lt;f:verbatim&gt;
+    &lt;html&gt;
+      &lt;head&gt;
+        &lt;title&gt;Welcome to my site!&lt;/title&gt;
+      &lt;/head&gt;
+  &lt;/f:verbatim&gt;
+&lt;/f:subview&gt;</pre>
+</td>
+</tr>
+
+</table>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th>
+    <th colspan="1" rowspan="1">Descripci&oacute;n</th>
+  <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;f:view&gt;</span></strong></td>
+   <td colspan="2" rowspan="1">Crea una vista JSF.</td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;f:view locale="#{user.locale}"&gt;
+  ...
+&lt;/f:view&gt;</pre>
+</td>
+</tr>
+
+</table>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th>
+    <th colspan="1" rowspan="1">Descripci&oacute;n</th>
+  <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;f:phaseListener&gt;</span></strong></td>
+   <td colspan="2" rowspan="1">A&ntilde;ade un phase listener a la vista padre. Esto nos permite realizar llamadas antes y despu&eacute;s de la fase que nosotros queramos dentro del ciclo de vida de JSF</td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;h:commandButton action="#{jsfBean.submit}" value="Submit"&gt;
+  &lt;f:phaseListener binding="#{jsfBean.phaseListenerImpl}" 
+    type="org.especialistajee.jsf.PhaseListenerImpl"/&gt;
+&lt;/h:commandButton&gt;</pre>
+</td>
+</tr>
+
+</table>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th>
+    <th colspan="1" rowspan="1">Descripci&oacute;n</th>
+  <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;f:event&gt;</span></strong></td>
+   <td colspan="2" rowspan="1">listener de eventos</td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;h:outputText id="beforeRenderTest1" &gt;
+    &lt;f:event type="javax.faces.event.beforeRender" 
+        action="#{eventTagBean.beforeEncode}" /&gt;
+&lt;/h:outputText&gt;</pre>
+</td>
+</tr>
+
+</table>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th>
+    <th colspan="1" rowspan="1">Descripci&oacute;n</th>
+  <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;f:validateRequired&gt;</span></strong></td>
+   <td colspan="2" rowspan="1">El valor es obligatorio</td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;h:inputSecret id="password" value="#{user.password}"&gt;
+    &lt;f:validateRequired /&gt;  
+&lt;/h:inputSecret&gt;</pre>
+</td>
+</tr>
+
+</table>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th>
+    <th colspan="1" rowspan="1">Descripci&oacute;n</th>
+  <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;f:validateRegex&gt;</span></strong></td>
+   <td colspan="2" rowspan="1">Valida un valor contra una expresi&oacute;n regular</td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;h:inputSecret id="password" value="#{user.password}"&gt;
+  &lt;f:validateRegex pattern="((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{6,20})" /&gt;
+&lt;/h:inputSecret&gt;</pre>
+</td>
+</tr>
+
+</table>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th>
+    <th colspan="1" rowspan="1">Descripci&oacute;n</th>
+  <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;f:validateBean&gt;</span></strong></td>
+   <td colspan="2" rowspan="1">Hace uso del API de validaci&oacute;n de beans (JSR 303) para realizar la validaci&oacute;n.</td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;h:inputText value="#{sampleBean.userName}"&gt;
+  &lt;f:validateBean disabled="true" /&gt;
+&lt;/h:inputText&gt;
+</pre>
+</td>
+</tr>
+
+</table>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th>
+    <th colspan="1" rowspan="1">Descripci&oacute;n</th>
+  <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;f:viewParam&gt;</span></strong></td>
+   <td colspan="2" rowspan="1">Define un par&aacute;metro en la vista que puede inicializarse a partir de cualquier par&aacute;metro de la petici&oacute;n.</td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;f:metadata&gt;
+    &lt;f:viewParam name="id" value="#{bean.id}" /&gt;
+&lt;/f:metadata&gt;
+</pre>
+</td>
+</tr>
+
+</table>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th>
+    <th colspan="1" rowspan="1">Descripci&oacute;n</th>
+  <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;f:metadata&gt;</span></strong></td>
+   <td colspan="2" rowspan="1">Agrupa viewParams.</td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;f:metadata&gt;
+    &lt;f:viewParam name="id" value="#{bean.id}" /&gt;
+&lt;/f:metadata&gt;
+</pre>
+</td>
+</tr>
+
+</table>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+<th colspan="1" rowspan="1">Etiqueta</th>
+    <th colspan="1" rowspan="1">Descripci&oacute;n</th>
+  <th colspan="1" rowspan="1"></th>
+</tr>
+
+<tr>
+<td colspan="1" rowspan="1"><strong><span class="codefrag">&lt;f:ajax&gt;</span></strong></td>
+   <td colspan="2" rowspan="1">Dota de comportamiento AJAX a los componentes.</td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="1"><strong>Ejemplo:</strong>
+
+<pre class="code">&lt;h:inputSecret id="passInput" value="#{loginController.password}"&gt;
+  &lt;f:ajax event="keyup" render="passError"/&gt;
+&lt;/h:inputSecret&gt;
+</pre>
+</td>
+</tr>
+
+</table>
+</div>
+
+
+
+
+
+
+<p class="pageBreakAfter"></p>
+
+</div>
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+        Copyright &copy;
+         2012-2013 Dept. Ciencia de la Computaci&oacute;n e IA</div>
+</div>
+<script type="text/javascript">
+     
+         SyntaxHighlighter.defaults['toolbar'] = false;
+         SyntaxHighlighter.autoloader(
+  		     'java                   skin/highlight/shBrushJava.js',
+  		     'xml xhtml xslt html    skin/highlight/shBrushXml.js',
+  		     'js jscript javascript  skin/highlight/shBrushJScript.js',
+  		     'groovy                 skin/highlight/shBrushGroovy.js',
+  		     'bash shell             skin/highlight/shBrushBash.js',
+  		     'php                    skin/highlight/shBrushPhp.js',
+  		     'css                    skin/highlight/shBrushCss.js',
+  		     'sql                    skin/highlight/shBrushSql.js',
+  		     'objc                   skin/highlight/shBrushObjC.js',
+  		     'cpp c                  skin/highlight/shBrushCpp.js',
+  		     'text plain             skin/highlight/shBrushPlain.js'
+         );
+         SyntaxHighlighter.all();
+     </script><a href="skin/highlight/shBrushJava.js"></a><a href="skin/highlight/shBrushXml.js"></a><a href="skin/highlight/shBrushJScript.js"></a><a href="skin/highlight/shBrushGroovy.js"></a><a href="skin/highlight/shBrushBash.js"></a><a href="skin/highlight/shBrushPhp.js"></a><a href="skin/highlight/shBrushCss.js"></a><a href="skin/highlight/shBrushSql.js"></a><a href="skin/highlight/shBrushObjC.js"></a><a href="skin/highlight/shBrushCpp.js"></a><a href="skin/highlight/shBrushPlain.js"></a>
+</body>
+</html>

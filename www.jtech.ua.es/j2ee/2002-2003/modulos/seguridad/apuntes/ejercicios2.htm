@@ -1,0 +1,37 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0052)http://www.dccia.ua.es/j2ee/seguridad/apuntes/ejercicios1.htm -->
+<HTML><HEAD><TITLE>Seguridad en Java</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=iso-8859-1">
+<META content=Sco name=Author><LINK href="../../../apuntes.css"
+type=text/css rel=stylesheet>
+<META content="MSHTML 5.50.4134.100" name=GENERATOR></HEAD>
+<BODY>
+<H1>Seguridad: Encriptación Asimétrica</H1>
+
+<P><B>3. Comunicación Encriptada </B>. El esquema asimétrico es especialmente útil para definir
+protocolos de comunicación encriptada entre cliente y servidor. Un ejemplo es el conocido esquema de
+<I>key agreement</I> (aceptación mútua de claves) que consiste en que el cliente y el servidor 
+intercambian sus clave públicas con objeto de construir un <I>secreto compartido</I> y luego usan 
+dicho secreto para encriptar el canal de comunicación (a partir de un cierto punto, la información 
+que el cliente envía al servidor está encriptada por un cifrador de stream.</P>
+<P>Pues bien, en las aplicaciones <I>Cliente.java</I> y <I>Servidor.java</I> hemos implementado un
+protocolo mucho más sencillo que consiste en los siguientes pasos:</P>
+<P>1. <I>Servidor</I> crea un par (clave pública y clave privada) y envía al cliente la parte pública.</P>
+<P>2. <I>Cliente</I> crea una clave secreta, utiliza la clave pública que llega del servidor para
+encriptarla y se la envía al servidor.</P>
+<P>3. <I>Servidor</I> recibe a clave secreta encriptada por la clave pública, y utiliza su clave
+privada para desencriptarla. Una vez desencriptada, la utiliza para inicializar un cifrador de
+stream de entrada. Por lo tanto crea un IV y se lo envía al cliente.</P>
+<P>4. <I>Cliente</I> recibe el IV u utiliza su clave secreta (la misma que ha utilizado el servidor) 
+para inicializar un cifrador de stream de salida. A partir de este punto todo lo que tecleemos en 
+la terminal del cliente se encripta y se transmite al servidor.</P>
+<P>5. <I>Servidor</I> desencripta todo lo que reciba y muestra el texto por pantalla.</P>
+
+<P>En este ejercicio se pide lo siguiente:</P>
+<P><B>a)</B> Modificar el servidor para que muestre directamente lo que le llega encriptado desde el
+cliente. El resultado será el programa <I>Ejercicio3aServidor.java</I>.</P>
+<P><B>b)</B> Modificar tanto el cliente como el servidor para que en lugar de utilizar el algoritmo
+de encriptación asimétrica utilicen el algoritmo de El Gamal. Los resultados serán los ficheros
+<I>Ejercicio3bServidor.java</I> y <I>Ejercicio3bCliente.java</I>.</P>
+
+</BODY></HTML>

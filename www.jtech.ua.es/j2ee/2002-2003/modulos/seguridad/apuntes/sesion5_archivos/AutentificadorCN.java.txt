@@ -1,0 +1,46 @@
+import javax.net.ssl.*;
+import javax.security.cert.*;
+
+/**
+ *      AutentificadorCN	
+ *
+ *      Implementación de la interfaz AutentificadorSSL, proporcionando
+ *      un mecanismo para comprobar que el certificado usado en la 
+ *      autentificación es un certificado con CN=sco.
+ *
+ */
+public class AutentificadorCN implements AutentificadorSSL
+ {
+
+	private SSLSession mSession;
+
+	public AutentificadorCN (SSLSession session) {
+		mSession = session;
+	}
+
+	public void comprobarPermiso() throws ExcepcionAutentificacion {
+
+	System.out.println(mSession.getCipherSuite());
+
+                // 1. Obtener la secuencia de certificados.
+		X509Certificate[] certChain = null;
+		try {
+			certChain = mSession.getPeerCertificateChain();
+		} catch (SSLPeerUnverifiedException spue) {
+			// No hay! 
+			throw new ExcepcionAutentificacion("Error cadena");
+		}
+                // 2. Obtener el certificado del cliente
+		X509Certificate clientCert = certChain[0];
+                // 3. Obtener el principal correspondiente al cliente
+		java.security.Principal client = clientCert.getSubjectDN();
+                // 4. Obtener el nombre del cliente
+		String name = client.getName();
+                // 5. Comprobar que CN=sco
+		if (name.indexOf("CN=sco,")!=0) {
+			throw new ExcepcionAutentificacion("Cliente no es sco");
+		}
+
+		//System.out.println("Nombre del cliente: " + name);
+	}
+}

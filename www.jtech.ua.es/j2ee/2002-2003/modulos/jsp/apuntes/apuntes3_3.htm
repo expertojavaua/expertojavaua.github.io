@@ -1,0 +1,695 @@
+<!-- saved from url=(0022)http://internet.e-mail -->
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+                                                            
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+                                                            
+  <meta name="Author" content="Nacho">
+                                                            
+  <meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+                                                        
+  <link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+  <title>Tema 3: Librer&iacute;as de Tags</title>
+</head>
+  <body>
+      <b>      
+<h2>3.6. Creación de librerías de tags</h2>
+      </b><p><b><br>
+      </b> Veremos en esta sesión cómo podemos definir nuestros propios tags y
+      formar con ellos una librería, tratando distintos tipos de tags (aunque
+      no todos) los que se pueden hacer. Para ello iremos incorporando tags a
+      una librería nueva, que llamaremos <b>pruebatags</b>.<b> </b>Antes de comenzar a ver cómo crear
+      tags, tendremos en cuenta las siguientes consideraciones: </p>
+           
+      <ul>
+        <li>Para definir los tags haremos clases Java, que contendrán el
+          código de cada tag. Luego desde las páginas JSP llamaremos a los
+          tags (con lo que se ejecutará el código de las clases Java que los
+          implementan). Colocaremos todas las clases de nuestra librería de tags en el
+          paquete <b>pruebatags</b>.</li>
+        <li>Utilizaremos los paquetes <b>javax.servlet.jsp </b>y <b>javax.servlet.jsp.tagext</b>
+          principalmente para definir las librerías de tags. Para poder acceder
+          a ellos deberemos tener en el classpath el fichero JAR correspondiente
+          (el fichero <b>j2ee.jar</b> que
+          viene con J2EE, o algún fichero específico del servidor que
+          incorpore estas librerías).</li>
+        <li>Emplearemos el servidor <b>Apache Tomcat</b> para probar los tags.
+          Crearemos un directorio <b>tags</b> a partir del raíz <i>webapps</i>,
+          y en él definiremos el directorio <i>WEB-INF</i>, con el fichero <b>web.xml</b>:</li>
+      </ul>
+           
+      <blockquote>
+           
+      <pre class="codigo">&lt;!DOCTYPE web-app PUBLIC 
+ &quot;-//Sun Microsystems, Inc.//
+ DTD Web Application 2.2//EN&quot; 
+ &quot;http://java.sun.com/j2ee/dtds/web-app_2_2.dtd&quot;&gt;
+
+&lt;web-app&gt;
+	&lt;display-name&gt;Pruebas de Tags&lt;/display-name&gt;
+	&lt;description&gt;
+		Ejemplos de Creacion de Tags
+	&lt;/description&gt;
+
+	&lt;taglib&gt;
+		&lt;taglib-uri&gt;pruebatags&lt;/taglib-uri&gt;
+		&lt;taglib-location&gt;
+		/WEB-INF/pruebatags.tld
+		&lt;/taglib-location&gt;
+	&lt;/taglib&gt;
+&lt;/web-app&gt;</pre>
+           
+        <p>donde indicamos que se va a utilizar la librería <i>pruebatags</i>,
+        cuyo fichero descriptor (<i>pruebatags.tld</i>) está en <i>WEB-INF</i>
+        (lo añadiremos más adelante).&nbsp;</p>
+      </blockquote>
+      <h4>3.6.1. Tags simples</h4>
+           
+      <p>Como ejemplo de tag simple haremos un tag que muestre la fecha actual.
+      Veremos los pasos que se siguen: </p>
+           
+      <p><b>1. Creación de la clase que implementa el tag</b> </p>
+           
+      <p>Llamaremos <b>FechaActual</b> a la clase que implementa al tag. </p>
+           
+      <pre class="codigo">package pruebatags;
+
+import javax.servlet.jsp.*;
+import javax.servlet.jsp.tagext.*;
+
+import java.util.Calendar;
+
+public class FechaActual implements Tag
+{
+	private PageContext contexto;	<b>// Contexto del tag</b>
+	private Tag padre; 		<b>// Tag padre del actual</b>
+	
+	<b>// Metodo llamado cuando se comienza el tag
+</b>	public int doStartTag() throws JspException 
+	{ 
+		return SKIP_BODY; 
+	} 
+	
+	<b>// Metodo llamado cuando se termina el tag
+</b>	public int doEndTag() throws JspException 
+	{
+		try
+		{
+	<b>		// Mostramos la fecha y hora actuales
+</b>		        Calendar c=Calendar.getInstance();
+			contexto.getOut().write(
+				c.get(Calendar.DAY_OF_MONTH) + 
+				&quot;/&quot; + 
+				(c.get(Calendar.MONTH)+1) + 
+				&quot;/&quot; + 
+				c.get(Calendar.YEAR) + 
+				&quot; - &quot; + 
+				c.get(Calendar.HOUR_OF_DAY) + 
+				&quot;:&quot; + 
+				c.get(Calendar.MINUTE) + 
+				&quot;:&quot; + 
+				c.get(Calendar.SECOND)); 
+		} catch(java.io.IOException e) {
+			throw new JspException(&quot;Error&quot;); 
+		}
+		return EVAL_PAGE;
+	} 
+	
+<b>	// Metodo de limpieza
+</b>	public void release() {}
+	
+	<b>// Metodo para asignar el contexto
+</b>	public void setPageContext(final PageContext contexto) 
+	{
+		this.contexto = contexto; 
+	} 
+	
+	<b>// Metodo para asignar el tag padre
+</b>	public void setParent(final Tag padre) 
+	{
+		this.padre = padre;
+	} 
+	
+	<b>// Metodo para obtener el padre
+</b>	public Tag getParent() 
+	{
+		return padre;
+	}
+}</pre>
+           
+      <ul>
+        <li>Primero colocamos el nombre del paquete, los paquetes que
+          necesitamos y definimos la clase. El paquete <b>java.util.Calendar</b>
+          lo utilizamos para obtener la fecha y hora actuales. Los otros dos
+          paquetes son los que se han dicho que se emplean para crear librerías
+          de tags. La clase implementa la interfaz <b>javax.servlet.jsp.tagext.Tag</b>,
+          con lo que hay que definir todos sus métodos.</li>
+        <li>Después creamos dos campos: uno para guardar el contexto del tag
+          (campo <i>contexto</i>), y otro para guardar el tag padre del actual
+          (campo <i>padre</i>).</li>
+        <li>El método <b>doStartTag() </b>se llama cuando se inicia el tag. En
+          este caso se devuelve <b>SKIP_BODY</b> para que no se evalúe el
+          cuerpo del tag. En caso de que queramos evaluarlo, se debe devolver <b>EVAL_BODY_INCLUDE</b>.</li>
+        <li>El método <b>doEndTag() </b>se llama cuando se termina el tag.
+          Aquí se muestra por la salida del contexto la fecha y hora actuales
+          (usando un objeto <i>java.util.Calendar</i>), y se devuelve <b>EVAL_PAGE</b>
+          para que se siga evaluando el resto de la página. Si no queremos que
+          se siga evaluando, se devuelve <b>SKIP_PAGE</b>.</li>
+        <li>El resto de métodos es necesario ponerlos, al formar parte de la
+          interfaz <i>Tag</i>. Con <b>release()</b><i> </i>se pueden liberar
+          recursos asociados al tag. Con <b>setPageContext()</b><i> </i>se
+          establece el contexto para el tag, y con <b>setParent()</b> y <b>getParent()</b>
+          se establece y obtiene el tag padre del actual. Estos métodos se
+          llaman cuando se utiliza el tag. No tenemos que preocuparnos de
+          llamarlos nosotros, sólo dejarlos definidos para que hagan lo
+          correcto (establezcan el contexto y el tag padre).</li>
+      </ul>
+      <p>Una vez que tengamos la clase definida, la <b>compilamos</b>. </p>
+           
+      <p><b>2. Crear el fichero TLD</b> </p>
+           
+      <p>Creamos un fichero de texto con extensión <b>.tld</b>, que llamaremos
+      por ejemplo <b>pruebatags.tld</b>, y que contendrá la descripción de la
+      librería de tags. Su contenido es: </p>
+           
+      <pre class="codigo">&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot; ?&gt;
+&lt;!DOCTYPE taglib PUBLIC &quot;-//Sun Microsystems, Inc.//
+ DTD JSP Tag Library 1.1//EN&quot; 
+ &quot;http://java.sun.com/j2ee/dtds/web-jsptaglibrary_1_1.dtd&quot;&gt; 
+
+&lt;taglib&gt; 
+
+	&lt;tlibversion&gt;1.0&lt;/tlibversion&gt; 
+	&lt;jspversion&gt;1.1&lt;/jspversion&gt;
+	&lt;shortname&gt;pt&lt;/shortname&gt;
+	&lt;uri&gt;pruebatags&lt;/uri&gt;
+	&lt;info&gt;Librería de prueba&lt;/info&gt; 
+
+	&lt;tag&gt; 
+		&lt;name&gt;fechaactual&lt;/name&gt; 
+		&lt;tagclass&gt;pruebatags.FechaActual&lt;/tagclass&gt;
+		&lt;bodycontent&gt;empty&lt;/bodycontent&gt;
+		&lt;info&gt;Muestra la fecha y hora actual&lt;/info&gt;
+	&lt;/tag&gt;
+
+&lt;/taglib&gt;</pre>
+           
+      La sintaxis del documento TLD se explicó anteriormente, viendo otras
+      librerías de tags. Hemos
+      creado una librería llamada <i>pruebatags</i>, donde tenemos un tag,
+      llamado <i>fechaactual</i>, implementado por la clase <i>pruebatags.FechaActual</i>.<p>La estructura de <i>tag</i> 
+      la iremos repitiendo luego para cada
+          tag de la librería que vayamos creando. Nos queda llevar este fichero TLD al directorio <i>WEB-INF </i>del directorio <i>tags</i>
+      donde estamos creando la librería. </p>
+           
+      <p><b>3. Crear un JAR con la librería</b> </p>
+           
+      <p>Podemos crear un fichero JAR (<b>pruebatags.jar</b> por ejemplo), que
+      contenga los ficheros <i>.class </i>con las clases que implementen los
+      tags (en este caso sólo está la clase <i>FechaActual</i>). Luego
+      copiamos dicho fichero JAR en el directorio <i>WEB-INF/lib </i>de nuestro
+      directorio <i>tags</i>. </p>
+           
+      <p>También podemos no crear el JAR, y colocar los ficheros <i>.class</i>
+      en el directorio <i>WEB-INF/classes</i> (quedando así en la carpeta <i>WEB-INF/classes/pruebatags</i>).
+      La primera opción es más recomendable si queremos llevar la librería a
+      otras máquinas. </p>
+           
+      <p><b>4. Probar el tag</b> </p>
+           
+      <p>Finalmente, probamos el funcionamiento del tag. Creamos una página <b>prueba.jsp</b>: </p>
+           
+      <pre class="codigo">&lt;%@ taglib uri=&quot;pruebatags&quot; prefix=&quot;pt&quot;%&gt;
+
+&lt;HTML&gt; 
+&lt;BODY &gt; 
+	La fecha actual es:
+	&lt;pt:fechaactual/&gt;
+&lt;/BODY&gt; 
+&lt;/HTML&gt; </pre>
+           
+      <p>La llamamos: </p>
+           
+      <pre class="codigo">http://localhost:8080/tags/prueba.jsp</pre>
+           
+      <h4>3.6.2. Tags con parámetros</h4>
+           
+      <p>Como ejemplo de tag parametrizado vamos a crear un tag que salude al
+      nombre que se le pase como parámetro: </p>
+           
+      <p><b>1. Creación de la clase que implementa el tag</b> </p>
+           
+      <p>Llamaremos <b>Saludo</b> a la clase que implementa al tag. </p>
+           
+      <pre class="codigo">package pruebatags;
+
+import javax.servlet.jsp.*;
+import javax.servlet.jsp.tagext.*;
+
+public class Saludo implements Tag
+{
+	private PageContext contexto;	<b>// Contexto del tag
+</b>	private Tag padre; 		<b>// Tag padre del actual
+</b>	String nombre = &quot;&quot;;		<b>/</b><b>/ Nombre a saludar</b>
+	
+<b>	// Metodo llamado cuando se comienza el tag
+</b>	public int doStartTag() throws JspException 
+	{ 
+		return SKIP_BODY; 
+	} 
+	
+<b>	// Metodo llamado cuando se termina el tag
+</b>	public int doEndTag() throws JspException 
+	{
+		try
+		{
+			// Mostramos el saludo
+			contexto.getOut().write(&quot;¡Hola &quot; + 
+						nombre + &quot;!&quot;); 
+		} catch(java.io.IOException e) {
+			throw new JspException(&quot;Error&quot;); 
+		}
+		return EVAL_PAGE;
+	} 
+	
+<b>	// Metodo de limpieza
+</b>	public void release() {}
+	
+<b>	// Metodo para asignar el contexto
+</b>	public void setPageContext(final PageContext contexto) 
+	{
+		this.contexto = contexto; 
+	} 
+	
+<b>	// Metodo para asignar el tag padre
+</b>	public void setParent(final Tag padre) 
+	{
+		this.padre = padre;
+	} 
+	
+<b>	// Metodo para obtener el padre
+</b>	public Tag getParent() 
+	{
+		return padre;
+	}
+
+<b>	// Establece el nombre al que saludar
+</b>	public void setNombre(String nombre) 
+	{
+		this.nombre = nombre; 
+	} 	
+}</pre>
+           
+      El código es muy similar al visto para <b>FechaActual</b>, con algún
+      cambio: se añade el campo <b>nombre</b>, que contendrá el nombre al que
+      se saluda. Luego, en <b>doEndTag()</b> se muestra el mensaje de saludo, en
+      lugar de la fecha. Finalmente, se tiene el método <b>setNombre()</b> que
+      establece el nombre al que saludar. Esto lo hará automáticamente JSP (de
+      forma similar a los beans), tomando el nombre del parámetro que se le
+      pase al tag.<p><b>2. Crear el fichero TLD</b> </p>
+           
+      <p>En este caso modificamos el fichero TLD anterior, añadiéndole una
+      nueva marca <i>tag</i> con los datos del nuevo tag: </p>
+           
+      <pre class="codigo">	&lt;tag&gt; 
+		&lt;name&gt;saludo&lt;/name&gt; 
+		&lt;tagclass&gt;pruebatags.Saludo&lt;/tagclass&gt;
+		&lt;bodycontent&gt;empty&lt;/bodycontent&gt;
+		&lt;info&gt;Muestra un saludo&lt;/info&gt;
+		&lt;attribute&gt; 
+			&lt;name&gt;nombre&lt;/name&gt;
+			&lt;required&gt;false&lt;/required&gt;
+			&lt;rtexprvalue&gt;false&lt;/rtexprvalue&gt;
+		&lt;/attribute&gt; 	
+	&lt;/tag&gt;</pre>
+           
+      <p>Llamamamos al tag <i>saludo</i> (el nombre que usaremos desde JSP). Al
+      igual que el anterior, no tiene cuerpo. Con la etiqueta <i>attribute</i>
+      le indicamos que tiene un atributo <i>nombre</i>, que es el nombre al que
+      saludar.</p>
+      <p><b>3. Crear un JAR con la librería</b> </p>
+           
+      <p>Actualizamos el fichero JAR anterior o el directorio <i>classes </i>añadiendo
+      la nueva clase creada. </p>
+           
+      <p><b>4. Probar el tag</b> </p>
+           
+      <p>Utilizamos la página <b>prueba.jsp</b> anterior: </p>
+           
+      <pre class="codigo">&lt;%@ taglib uri=&quot;pruebatags&quot; prefix=&quot;pt&quot;%&gt;
+
+&lt;HTML&gt; 
+&lt;BODY &gt; 
+	Saludo:
+	&lt;pt:saludo nombre=&quot;Pepe&quot;/&gt;
+&lt;/BODY&gt; 
+&lt;/HTML&gt; </pre>
+           
+      <h4>3.6.3. BodyTags</h4>
+           
+      <p>Con los BodyTags podemos reevaluar el
+      contenido del cuerpo del tag tantas veces como se quiera. Haremos con ello
+      un iterador, que repetirá un número determinado de veces (pasada como
+      parámetro) el contenido del cuerpo del tag: </p>
+           
+      <p><b>1. Creación de la clase que implementa el tag</b> </p>
+           
+      <p>Llamaremos <b>Iterador</b> a la clase que implementa al tag. </p>
+           
+      <pre class="codigo">package pruebatags;
+
+import javax.servlet.jsp.*;
+import javax.servlet.jsp.tagext.*;
+
+public class Iterador extends BodyTagSupport
+{
+	private PageContext contexto;	<b>// Contexto del tag
+</b>	private Tag padre; 		<b>// Tag padre del actual</b>
+	int veces = 10;			<b>// Num de iteraciones</b>
+	int valorActual = 0;		<b>// Valor del contador</b>
+	
+<b>	// Metodo llamado cuando se comienza el tag
+</b>	public int doStartTag() throws JspException 
+	{ 
+		if (valorActual &gt;= veces)
+			return SKIP_BODY;
+		else
+		{
+			valorActual++;
+			return EVAL_BODY_TAG;
+		}
+	} 
+
+<b>	// Metodo llamado tras cada evaluacion del tag
+</b>	public int doAfterBody() throws JspException 
+	{ 
+		if (valorActual &gt;= veces)
+			return SKIP_BODY;
+		else
+		{
+			valorActual++;
+			return EVAL_BODY_TAG;
+		}
+	} 
+	
+<b>	// Metodo llamado cuando se termina el tag
+</b>	public int doEndTag() throws JspException 
+	{
+		try
+		{ 
+			if(bodyContent != null)
+			       bodyContent.writeOut(
+			       bodyContent.getEnclosingWriter()); 
+		} catch(java.io.IOException e) { 
+			throw new JspException(&quot;IO Error&quot;); 
+		}		
+		return EVAL_PAGE;
+	} 
+	
+<b>	// Establece el numero de iteraciones
+</b>	public void setVeces(int veces) 
+	{
+		this.veces = veces; 
+	} 	
+}</pre>
+           
+      Se hereda de la clase <b>BodyTagSupport </b>que implementa la interfaz <i>BodyTag</i>,
+      con lo que sólo tendremos que sobreescribir los métodos que necesitemos.
+      En el campo <i>veces</i><b> </b>guardamos el número de iteraciones a
+      realizar. Luego con <i>valorActual </i>vamos incrementando el contador
+      hasta llegar a <i>veces</i>. El método <b>doStartTag()</b> se ejecuta al
+      empezar el tag, y luego es el método <b>doAfterBody() </b>quien permite
+      repetir el contenido del cuerpo mientras se cumpla la condición que se
+      quiera. Al terminar, en <b>doEndTag() </b>imprimimos el resultado de
+      procesar el cuerpo tras el número de iteraciones establecido. Con el método <b>setVeces()</b>
+      asignamos el número de iteraciones (como en el caso anterior, esto lo
+      hará automáticamente JSP tomando el número de iteraciones del
+      parámetro que se le pase al tag).<p><b>2. Crear el fichero TLD</b> </p>
+           
+      <p>Modificamos el fichero TLD anterior, añadiéndole una nueva marca <i>tag</i>
+      con los datos del nuevo tag: </p>
+           
+      <pre class="codigo">	&lt;tag&gt; 
+		&lt;name&gt;itera&lt;/name&gt; 
+		&lt;tagclass&gt;pruebatags.Iterador&lt;/tagclass&gt;
+		&lt;bodycontent&gt;JSP&lt;/bodycontent&gt;
+		&lt;info&gt;Muestra un saludo&lt;/info&gt;
+		&lt;attribute&gt; 
+			&lt;name&gt;veces&lt;/name&gt;
+			&lt;required&gt;true&lt;/required&gt;
+			&lt;rtexprvalue&gt;true&lt;/rtexprvalue&gt;
+		&lt;/attribute&gt; 	
+	&lt;/tag&gt;</pre>
+      <p>Llamamamos al tag <i>itera</i> (el nombre que usaremos desde JSP). En <i>bodycontent
+      </i>ponemos <i>JSP</i> para que sea JSP quien se encargue de evaluar el
+      cuerpo del tag. Como atributo le pasamos el número de iteraciones, con un
+      parámetro llamado <i>veces</i>. Dicho parámetro es requerido, y admite
+      expresiones JSP en su valor.</p>
+      <p><b>3. Crear un JAR con la librería</b> </p>
+           
+      <p>Actualizamos el fichero JAR anterior o el directorio <i>classes </i>añadiendo
+      la nueva clase creada. </p>
+           
+      <p><b>4. Probar el tag</b> </p>
+           
+      <p>Utilizamos la página <b>prueba.jsp</b> anterior: </p>
+           
+      <pre class="codigo">&lt;%@ taglib uri=&quot;pruebatags&quot; prefix=&quot;pt&quot;%&gt;
+
+&lt;HTML&gt; 
+&lt;BODY &gt; 
+	&lt;%int valor = 0;%&gt;
+	&lt;pt:itera veces=&quot;5&quot;&gt;
+		Valor = &lt;%=valor%&gt;
+		&lt;%valor+=10;%&gt;
+	&lt;/pt:itera&gt;
+&lt;/BODY&gt; 
+&lt;/HTML&gt; </pre>
+           
+      <h4>3.6.4. Tags anidados</h4>
+           
+      <p>Veremos por último cómo crear tags contenidos en otros tags. Como ejemplo haremos un tag
+      <i>switch</i>-<i>case </i>donde el tag padre contendrá el <i>switch </i>con
+      un valor global, y dentro podrá tener uno o varios tag <i>case</i> que se
+      ejecutarán en caso de que el valor global coincida con el suyo. </p>
+           
+      <p><b>1. Creación de la clase que implementa el Tag</b> </p>
+           
+      <p>En este caso tenemos 2 clases (porque tenemos 2 tags). El <i>switch </i>padre
+      lo implementamos en la clase <b>TagSwitch</b>: </p>
+           
+      <pre class="codigo">package pruebatags;
+
+import javax.servlet.jsp.*;
+import javax.servlet.jsp.tagext.*;
+
+public class TagSwitch implements Tag
+{
+	private PageContext contexto;	<b>// Contexto del tag
+</b>	private Tag padre; 		<b>// Tag padre del actual</b>
+	String valor;			<b>// Valor para comparar</b>
+	
+<b>	// Metodo llamado cuando se comienza el tag
+</b>	public int doStartTag() throws JspException 
+	{ 
+		return EVAL_BODY_INCLUDE; 
+	} 
+	
+<b>	// Metodo llamado cuando se termina el tag
+</b>	public int doEndTag() throws JspException 
+	{
+		return EVAL_PAGE;
+	} 
+	
+<b>	// Metodo de limpieza
+</b>	public void release() {}
+	
+<b>	// Metodo para asignar el contexto
+</b>	public void setPageContext(final PageContext contexto) 
+	{
+		this.contexto = contexto; 
+	} 
+	
+<b>	// Metodo para asignar el tag padre
+</b>	public void setParent(final Tag padre) 
+	{
+		this.padre = padre;
+	} 
+	
+<b>	// Metodo para obtener el padre
+</b>	public Tag getParent() 
+	{
+		return padre;
+	}
+	
+<b>	// Obtiene el valor con que comparar con los case
+</b>	public String getValor()
+	{
+		return valor;
+	}		
+
+<b>	// Establece el valor con que comparar con los case
+</b>	public void setValor(String valor)
+	{
+		this.valor = valor;
+	}		
+}</pre>
+           
+      <p>En el campo <i>valor</i> se guarda el valor con que se compararán
+      luego los <i>case</i> para ver cuál encaja. Con los métodos <b>getValor()
+      </b>y <b>setValor() </b>se puede obtener/establecer dicho valor. Observar
+      también que en <b>doStartTag()</b> se devuelve <b>EVAL_BODY_INCLUDE</b>
+      para que se evalúe el cuerpo del tag. El resto es muy parecido a los
+      primeros tags vistos. </p>
+           
+      <p>Definimos también el tag <i>case</i>, implementado en la clase <b>TagCase</b>: </p>
+           
+      <pre class="codigo">package pruebatags;
+
+import javax.servlet.jsp.*;
+import javax.servlet.jsp.tagext.*;
+
+public class TagCase implements Tag
+{
+	private PageContext contexto;	<b>// Contexto del tag</b>
+	private Tag padre; 		<b>// Tag padre del actual</b>
+	String valor;			<b>// Valor del case</b>
+	
+<b>	// Metodo llamado cuando se comienza el tag
+</b>	public int doStartTag() throws JspException 
+	{ 
+		TagSwitch miPadre = (TagSwitch)getParent();
+		
+		if(miPadre==null)
+			throw new JspException(&quot;case sin switch&quot;);
+
+		try
+		{
+			if(miPadre.getValor().equals(getValor()))
+				return EVAL_BODY_INCLUDE; 
+			else
+				return SKIP_BODY;
+		} catch(NullPointerException e) {
+
+			if(miPadre.getValor()==null || 
+			   getValor()==null)
+				return EVAL_BODY_INCLUDE;
+			else
+				return SKIP_BODY; 
+		} 	
+	} 
+	
+<b>	// Metodo llamado cuando se termina el tag
+</b>	public int doEndTag() throws JspException 
+	{
+		return EVAL_PAGE;
+	} 
+	
+<b>	// Metodo de limpieza
+</b>	public void release() {}
+	
+<b>	// Metodo para asignar el contexto
+</b>	public void setPageContext(final PageContext contexto) 
+	{
+		this.contexto = contexto; 
+	} 
+	
+<b>	// Metodo para asignar el tag padre
+</b>	public void setParent(final Tag padre) 
+	{
+		this.padre = padre;
+	} 
+	
+<b>	// Metodo para obtener el padre
+</b>	public Tag getParent() 
+	{
+		return padre;
+	}
+
+<b>	// Obtiene el valor del case
+</b>	public String getValor()
+	{
+		return valor;
+	}		
+
+<b>	// Establece el valor del case
+</b>	public void setValor(String valor)
+	{
+		this.valor = valor;
+	}			
+}</pre>
+           
+      <p>El campo <i>valor</i> aquí guarda el valor de cada <i>case</i>
+      concreto. En el método <b>doStartTag()</b> se obtiene el tag padre, y se
+      compara su valor con el del tag <i>case</i> actual. Si coinciden, se
+      evalúa el cuerpo del tag, y si no no se evalúa. </p>
+           
+      <p><b>2. Crear el fichero TLD</b> </p>
+           
+      <p>Modificamos el fichero TLD anterior, añadiéndole los dos tags: </p>
+           
+      <pre class="codigo">	&lt;tag&gt;
+		&lt;name&gt;switch&lt;/name&gt;
+		&lt;tagclass&gt;pruebatags.TagSwitch&lt;/tagclass&gt;
+		&lt;bodycontent&gt;JSP&lt;/bodycontent&gt;
+		&lt;info&gt;Tag switch&lt;/info&gt;
+		&lt;attribute&gt;
+			&lt;name&gt;valor&lt;/name&gt;
+			&lt;required&gt;true&lt;/required&gt;
+			&lt;rtexprvalue&gt;true&lt;/rtexprvalue&gt;
+		&lt;/attribute&gt;	
+	&lt;/tag&gt;
+
+	&lt;tag&gt;
+		&lt;name&gt;case&lt;/name&gt;
+		&lt;tagclass&gt;pruebatags.TagCase&lt;/tagclass&gt;
+		&lt;bodycontent&gt;JSP&lt;/bodycontent&gt;
+		&lt;info&gt;Tag case&lt;/info&gt;
+		&lt;attribute&gt;
+			&lt;name&gt;valor&lt;/name&gt;
+			&lt;required&gt;true&lt;/required&gt;
+			&lt;rtexprvalue&gt;true&lt;/rtexprvalue&gt;
+		&lt;/attribute&gt;
+	&lt;/tag&gt;</pre>
+      <p>Llamamamos a los tags <i>switch </i>y <i>case </i>respectivamente. Como
+      atributo le pasamos el valor de cada uno, con un parámetro llamado <i>valor</i>.</p>
+      <p><b>3. Crear un JAR con la librería</b> </p>
+           
+      <p>Actualizamos el fichero JAR anterior o el directorio <i>classes </i>añadiendo
+      las nuevas clases creadas. </p>
+           
+      <p><b>4. Probar el tag</b> </p>
+           
+      <p>Utilizamos la página <b>prueba.jsp</b> anterior: </p>
+           
+      <pre class="codigo">&lt;%@ taglib uri=&quot;pruebatags&quot; prefix=&quot;pt&quot;%&gt;
+
+&lt;HTML&gt; 
+&lt;BODY &gt; 
+	&lt;pt:switch valor=&quot;a&quot;&gt;
+		&lt;pt:case valor=&quot;b&quot;&gt;
+			Si sale esto es que el valor es b
+		&lt;/pt:case&gt;
+
+		&lt;pt:case valor=&quot;a&quot;&gt;
+			Si sale esto es que el valor es a
+		&lt;/pt:case&gt;
+
+		&lt;pt:case valor=&quot;c&quot;&gt;
+			Si sale esto es que el valor es c
+		&lt;/pt:case&gt;
+	&lt;/pt:switch&gt;
+&lt;/BODY&gt; 
+&lt;/HTML&gt; </pre>
+           
+      <p>&nbsp;</p>
+           
+      <p>Aquí tenéis un fichero <a href="ejemplos/taglibs/tags.war.zip">WAR</a> con la librería de
+      tags que hemos ido haciendo. Copiadlo en el directorio <i>webapps</i> de
+      Tomcat, reiniciar el servidor y probad los ejemplos con:</p>
+           
+      <pre class="codigo">http://localhost:8080/tags/prueba.jsp</pre>
+           
+        </body>
+        </html>

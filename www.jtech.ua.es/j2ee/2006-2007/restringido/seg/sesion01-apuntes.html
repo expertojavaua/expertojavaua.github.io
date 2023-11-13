@@ -1,0 +1,1557 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.7">
+<meta name="Forrest-skin-name" content="pelt">
+<title> PKI: Infraestructura de Clave P&uacute;blica</title>
+<link type="text/css" href="skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="skin/print.css" rel="stylesheet">
+<link type="text/css" href="skin/profile.css" rel="stylesheet">
+<script src="skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<div class="header">
+<div class="grouplogo">
+<a href="http://www.jtech.ua.es/j2ee"><img class="logoImage" alt="J2EE" src="images/baner_j2ee_izq.gif" title="Curso Especialista Universitario J2EE"></a>
+</div>
+<div class="projectlogoA1">
+<a href="http://www.dccia.ua.es/"><img class="logoImage" alt="Servidores Web" src="images/baner_j2ee_der.gif" title="Servidores Web"></a>
+</div>
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="../index.html">M&oacute;dulos</a>
+</li>
+<li class="current">
+<a class="base-selected" href="index.html">Servidores Web</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<div id="level2tabs"></div>
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<div id="menu">
+<div onclick="SwitchMenu('menu_selected_1.1', 'skin/')" id="menu_selected_1.1Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Seguridad en JEEE</div>
+<div id="menu_selected_1.1" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="index.html" title="Seguridad en JEE">&Iacute;ndice</a>
+</div>
+<div onclick="SwitchMenu('menu_selected_1.1.2', 'skin/')" id="menu_selected_1.1.2Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Teor&iacute;a</div>
+<div id="menu_selected_1.1.2" class="selectedmenuitemgroup" style="display: block;">
+<div class="menupage">
+<div class="menupagetitle">Sesion 1</div>
+</div>
+<div class="menuitem">
+<a href="sesion02-apuntes.html">Sesion 2</a>
+</div>
+<div class="menuitem">
+<a href="sesion03-apuntes.html">Sesion 3</a>
+</div>
+<div class="menuitem">
+<a href="sesion04-apuntes.html">Sesion 4</a>
+</div>
+<div class="menuitem">
+<a href="roadmap-apuntes.html">Roadmap</a>
+</div>
+</div>
+<div onclick="SwitchMenu('menu_1.1.3', 'skin/')" id="menu_1.1.3Title" class="menutitle">Ejercicios</div>
+<div id="menu_1.1.3" class="menuitemgroup">
+<div class="menuitem">
+<a href="sesion01-ejercicios.html">Sesion 1</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-ejercicios.html">Sesion 2</a>
+</div>
+<div class="menuitem">
+<a href="sesion03-ejercicios.html">Sesion 3</a>
+</div>
+<div class="menuitem">
+<a href="sesion04-ejercicios.html">Sesion 4</a>
+</div>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<div id="credit2"></div>
+</div>
+<div id="content">
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="sesion01-apuntes.pdf"><img alt="PDF -icon" src="skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1> PKI: Infraestructura de Clave P&uacute;blica</h1>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#JCA%3A+Java+Cryptography+Architecture">JCA: Java Cryptography Architecture</a>
+</li>
+<li>
+<a href="#JCE%3A+Java+Cryptography+Extension">JCE: Java Cryptography Extension</a>
+</li>
+<li>
+<a href="#Encriptaci%C3%B3n+Sim%C3%A9trica">Encriptaci&oacute;n Sim&eacute;trica</a>
+<ul class="minitoc">
+<li>
+<a href="#Estrategias+de+clave+secreta">Estrategias de clave secreta</a>
+</li>
+<li>
+<a href="#DESede+y+Blowfish+en+JCE">DESede y Blowfish en JCE</a>
+</li>
+<li>
+<a href="#Cifradores+de">Cifradores de Stream</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Encriptaci%C3%B3n+asim%C3%A9trica">Encriptaci&oacute;n asim&eacute;trica</a>
+<ul class="minitoc">
+<li>
+<a href="#Clave+P%C3%BAblica+y+Clave+Privada">Clave P&uacute;blica y Clave Privada</a>
+</li>
+<li>
+<a href="#Clases+e+Interfaces+en+Java">Clases e Interfaces en Java</a>
+</li>
+<li>
+<a href="#Encriptaci%C3%B3n+de+Clave-de-Sesi%C3%B3n">Encriptaci&oacute;n de Clave-de-Sesi&oacute;n</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Autentificaci%C3%B3n.+Firma+y+Certificado+Digital">Autentificaci&oacute;n. Firma y Certificado Digital</a>
+<ul class="minitoc">
+<li>
+<a href="#Autentificaci%C3%B3n+por+Firma+Digital">Autentificaci&oacute;n por Firma Digital</a>
+</li>
+<li>
+<a href="#Certificados+Digitales%3A+Contenidos">Certificados Digitales: Contenidos</a>
+</li>
+<li>
+<a href="#Generando+Certificados%3A+keystores+y+keytool">Generando Certificados: keystores y keytool</a>
+</li>
+<li>
+<a href="#Certificados+en+Java">Certificados en Java</a>
+</li>
+<li>
+<a href="#Listas+de+Revocaci%C3%B3n+de+Certificados+%28CRLs%29">Listas de Revocaci&oacute;n de Certificados (CRLs) </a>
+</li>
+<li>
+<a href="#PKI%3A+Creando+nuestra+propia+CA">PKI: Creando nuestra propia CA</a>
+<ul class="minitoc">
+<li>
+<a href="#Firmar+Certificados+con+sun.security.x509">Firmar Certificados con sun.security.x509</a>
+</li>
+<li>
+<a href="#Crear+CRLs+con+sun.security.x509">Crear CRLs con sun.security.x509</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+<a name="N1000C"></a><a name="JCA%3A+Java+Cryptography+Architecture"></a>
+<h2 class="underlined_10">JCA: Java Cryptography Architecture</h2>
+<div class="section">
+<p>Este es uno de los dos API que proporcionan facilidades
+criptogr&aacute;ficas en Java (firmas, certificados, etc). Se trata del
+conjunto de clases que forma el package <strong>java.security</strong>. Las
+clases principales son</p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>Provider</strong></td>
+<td colspan="1" rowspan="1">Interfaz al package de la implementaci&oacute;n de un determinado
+proveedor.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>Security</strong></td>
+<td colspan="1" rowspan="1">Manejo de proveedores instalados en la MV y de propiedades de
+seguridad (permisos).</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>MessageDigest</strong></td>
+<td colspan="1" rowspan="1">Manejo de <em>digests</em> con SHA-1 o con MD5.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>Signature</strong></td>
+<td colspan="1" rowspan="1">Manejo de firma digital con DSA o RSA (encriptaci&oacute;n) y MD5
+(<em>digests</em>).</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>AlgorithmParameter</strong></td>
+<td colspan="1" rowspan="1">Manejo de representaciones opacas (sin acceso directo) de los
+par&aacute;metros criptogr&aacute;ficos.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>AlgorithmParameterGenerator</strong></td>
+<td colspan="1" rowspan="1">Obtiene un conjunto de par&aacute;metros apropiados para un
+algoritmo.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>Key</strong></td>
+<td colspan="1" rowspan="1">Interfaz para manejo de claves representadas de forma
+opaca.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>KeySpec</strong></td>
+<td colspan="1" rowspan="1">Manejo de representaciones transparentes de las claves y (en
+este caso) comunes a todas ellas.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>KeyFactory</strong></td>
+<td colspan="1" rowspan="1">Convierte representaciones de claves opacas (claves) en
+transparentes (especificaciones). Es bidireccional.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>CertificateFactory</strong></td>
+<td colspan="1" rowspan="1">Genera certificados y listas de revocaci&oacute;n siguiendo una
+deterinada codificaci&oacute;n (p.e. X.509).</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>KeyPair</strong></td>
+<td colspan="1" rowspan="1">Par (p&uacute;blico, privado) para un esquema asim&eacute;trico.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>KeyPairGenerator</strong></td>
+<td colspan="1" rowspan="1">Obtiene un par (p&uacute;blico, privado).</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>KeyStore</strong></td>
+<td colspan="1" rowspan="1">Interfaz para el manejo de almacenes de claves.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>SecureRandom</strong></td>
+<td colspan="1" rowspan="1">Manejo de n&uacute;meros aleatorios.</td>
+
+</tr>
+
+</table>
+<p>Por ejemplo, como ya hemos dicho, una de estas facilidades es un
+<em>message digest</em> o <em>hash</em>, esto es una huella para
+comprobar, m&aacute;s tarde, que un determinado documento no ha sido
+alterado. Para crear un <em>digest</em> primero se crea una instancia
+de un algoritmo de <em>hashing</em> (MD5 o SHA-1), especificando
+opcionalmente el proveedor de la implementaci&oacute;n:</p>
+<pre class="code">
+MessageDigest md = MessageDigest.getInstance("<strong>MD5</strong>", "<strong>Sun</strong>");
+</pre>
+<p>A continuaci&oacute;n proporcionamos los datos sobre los que se debe
+crear el <em>digest</em>, suponiendo que estos se encuentran en un
+array de datos de tipo <strong>byte</strong>:</p>
+<pre class="code">
+md.update(datos);
+</pre>
+<p>Finalmente podemos almacenar el <em>digest</em> propiamente dicho
+en otro array:</p>
+<pre class="code">
+byte[] d = md.digest();
+</pre>
+</div>
+
+<a name="N10116"></a><a name="JCE%3A+Java+Cryptography+Extension"></a>
+<h2 class="underlined_10">JCE: Java Cryptography Extension</h2>
+<div class="section">
+<p>Este segundo API a&ntilde;ade facilidades de encriptaci&oacute;n y
+desencriptaci&oacute;n de datos a JCA y se corresponde con las clases del
+package <strong>javax.crypto</strong>. Las m&aacute;s importantes son:</p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>Cipher</strong></td>
+<td colspan="1" rowspan="1">Cifrador de un determinado algoritmo en modo
+encriptar/desencriptar.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>CipherInput{Output}Stream</strong></td>
+<td colspan="1" rowspan="1">Facilita el uso de cifradores de <em>stream</em> de salida
+(entrada).</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>KeyGenerator</strong></td>
+<td colspan="1" rowspan="1">Generador de claves secretas para esquemas sim&eacute;tricos.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>SecretKeyFactory</strong></td>
+<td colspan="1" rowspan="1">Convertir claves (opacas) en especificaciones (transparentes) y
+viceversa.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>KeyAgreement</strong></td>
+<td colspan="1" rowspan="1">Funcionalidad para el protocolo del mismo nombre para
+intercambiar mensajes de forma segura sin intercambiar una clave
+secreta.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>MAC</strong></td>
+<td colspan="1" rowspan="1">Manejo de <em>Message Authentication Codes</em>.</td>
+
+</tr>
+
+</table>
+<p>En general, lo primero que hay que hacer es crear un generador
+de claves, especificando el algoritmo de encriptaci&oacute;n (p.e.
+Blowfish):</p>
+<pre class="code">
+KeyGenerator kg = KeyGenerator.getInstance("<strong>Blowfish</strong>");
+</pre>
+<p>A partir de este generador podemos obtener una clave
+haciendo</p>
+<pre class="code">
+Key k = KeyGenerator.generateKey();
+</pre>
+<p>Una vez tenemos la clave, la encriptaci&oacute;n se hace creando un
+cifrador (<em>cipher</em>) especificando algoritmo, modo y padding, y
+despu&eacute;s se inicializa dicho cifrador con la clave que acabamos de
+crear:</p>
+<pre class="code">
+Cipher c = Cipher.getInstance("<strong>Blowfish/ECB/PKCS5Padding</strong>");
+c.init(Cipher.ENCRYPT_MODE, k);
+</pre>
+<p>Finalmente realizaremos la encriptaci&oacute;n propiamente dicha de los
+datos contenidos en un array de tipo <strong>byte</strong> y los devolveremos
+en otro array:</p>
+<pre class="code">
+byte[] cf = c.doFinal(datos);
+</pre>
+<p>Para poder usar JCE hay que instalar previamente una
+implementaci&oacute;n. Una de las mas completas (en t&eacute;rminos de la
+cantidad de algoritmos que incorpora) es la de BouncyCastle,
+disponible en <a href="http://www.bouncycastle.org">http://www.bouncycastle.org</a>
+(descargar JCE con proveedor y API). Una vez descargado lo m&aacute;s
+recomendable es instalarlo como una extensi&oacute;n, es decir copiar el
+fichero JAR correspondiente en el directorio
+<span class="codefrag">$JAVA_HOME/jre/lib/ext</span>. Una vez colocado el JAR como extensi&oacute;n se
+ha de modificar el fichero
+<span class="codefrag">$JAVA_HOME/jre/lib/security/java.security</span> en donde se definen los
+distintos proveedores criptogr&aacute;ficos para a&ntilde;adir el nuevo
+proveedor:</p>
+<pre class="code">
+# Nuevo proveedor de BouncyCastle
+security.provider.x=org.bouncycastle.jce.provider.BouncyCastleProvider
+</pre>
+<p>La m&aacute;quina virtual incorpora por defecto el
+SunJCE. Si alguna funcionalidad no se encuentra en un proveedor pasa a otro:</p>
+<p>
+
+<img alt="Proveedores de seguridad" content-width="8cm" src="imagenes/sesion1/proveedores.gif" width="400">
+</p>
+</div>
+
+<a name="N101C5"></a><a name="Encriptaci%C3%B3n+Sim%C3%A9trica"></a>
+<h2 class="underlined_10">Encriptaci&oacute;n Sim&eacute;trica</h2>
+<div class="section">
+<a name="N101CB"></a><a name="Estrategias+de+clave+secreta"></a>
+<h3 class="underlined_5">Estrategias de clave secreta</h3>
+<p>La forma m&aacute;s sencilla de realizar encriptaci&oacute;n-desencriptaci&oacute;n
+de datos es utilizar la misma clave en ambos procesos. Como
+acabamos de ver, podemos definir un cifrador para encriptar y luego
+utilizar el mismo cifrador para desencriptar. La encriptaci&oacute;n
+sim&eacute;trica es r&aacute;pida y por ello se recomienda en aquellas
+aplicaciones en donde se requiere proteger un gran segmento de
+datos. Sin embargo, al exigir que tanto emisor como receptor se
+pongan de acuerdo es muy sensible a ataques-a-mitad, por lo que la
+clave que ha de enviarse suele encriptarse de forma asim&eacute;trica como
+veremos m&aacute;s adelante. En todo caso cuanto mayor sea la longitud de
+la clave m&aacute;s segura ser&aacute; la encriptaci&oacute;n (lo habitual es manejar
+claves de entre 40 y 128 bits, recomend&aacute;ndose la longitud de 128
+bits).</p>
+<p>
+
+<img alt="Esquema de clave secreta" content-width="12cm" src="imagenes/sesion1/simetrica.gif" width="600">
+</p>
+<a name="N101DE"></a><a name="DESede+y+Blowfish+en+JCE"></a>
+<h3 class="underlined_5">DESede y Blowfish en JCE</h3>
+<p>Los algoritmos de encriptaci&oacute;n sim&eacute;trica m&aacute;s conocidos son
+<em>TripleDES</em> y <em>Blowfish</em>. El primero, tambi&eacute;n llamado
+<em>DESede</em>, es una versi&oacute;n evolucionada (y m&aacute;s segura) del
+algoritmo DES que utilizaba claves de solo 56 bits. En DESede
+producen tres rondas de DES (encriptaci&oacute;n, desencriptaci&oacute;n y otra
+vez encriptaci&oacute;n) en las que se utilizan 2 o 3 claves distintas de
+56 bits, obteni&eacute;ndose una clave combinada de 112 o de 168 bits. Por
+otro lado, <em>Blowfish</em> es otro algoritmo que permite claves de
+longitud mayor (448 bits). El ejemplo de test que vimos al final
+del cap&iacute;tulo anterior utilizaba Blowfish a la hora de generar la
+clave y el cifrador. Si queremos modificar dicho ejemplo para
+utilizar DESede simplemente tendremos que sustituir las l&iacute;neas que
+hacen referencia a Blowfish por</p>
+<pre class="code">
+...
+KeyGenerator generador = KeyGenerator.getInstance("DESede");
+...
+Cipher cifrador = Cipher.getInstance("DESede/ECB/PKCS5Padding");
+</pre>
+<p>La expresi&oacute;n "DESede/ECB/PCKCS5Padding" contiene el nombre del
+algoritmo, el <em>tipo de padding</em> (seg&uacute;n est&aacute;ndard PCKS5) y el
+<em>modo de encriptaci&oacute;n</em> (ECB, CBC, etc).</p>
+<p>En cuanto al tipo de padding, hay que tener en cuenta que los 
+llamados <em>cifradores de bloque</em> operan en trozos de 64 bits.
+Sin embargo el texto plano no es m&uacute;ltiplo de esa cantidad por lo que 
+antes de encriptar hay que a&ntilde;adir complementos para que sea m&uacute;ltiplo. 
+En PKCS#5 se a&ntilde;aden bytes codificando el n&uacute;mero de bytes necesarios 
+para completar el bloque </p>
+<p>
+
+<img alt="Padding en PKCS#5" content-width="8cm" src="imagenes/sesion1/pkcs5.gif" width="400">
+</p>
+<p>En cuanto al <em>modo de encriptaci&oacute;n</em>, en el modo ECB 
+(Electronic Code Book) cada s&iacute;mbolo se cifra siempre igual independientemente 
+del lugar que ocupe en el texto (ver figura adjunta). Esto es t&iacute;pico de 
+los <em>cifradores de bloque</em>. Alternativamente, en CBC (Cipher Block Chaining) 
+el cifrado de un s&iacute;mbolo depende, como veremos de su posici&oacute;n en el texto 
+(t&iacute;pico de los <em>cifradores de stream</em>).</p>
+<p>
+
+<img alt="Modo ECB" content-width="8cm" src="imagenes/sesion1/ECB.gif" width="400">
+</p>
+<p>El c&oacute;digo completo del ejemplo de encriptaci&oacute;n sim&eacute;trica est&aacute; en
+<a href="ejemplos/sesion1/Blowfish.java.txt">Blowfish.java</a>:</p>
+<pre class="code">
+import javax.crypto.*; 
+import java.security.*;
+
+public class Blowfish {
+
+  // Definimos cadena a encriptar
+  public static final String cadena = "Esto es un test.";
+
+  public static void main(String[] args) throws Exception {
+
+    System.out.println("El texto original es: " + cadena);
+    
+    // Generar una clave Blowfish
+    System.out.println("Intentando coger una clave Blowfish....");
+    // Forzando el proveedor de BouncyCastle
+    <strong>KeyGenerator generador = KeyGenerator.getInstance("Blowfish");
+    Provider provider=generador.getProvider(); 
+    System.out.println(String.valueOf(provider.getName())); 
+    generador.init(128);
+    SecretKey clave = generador.generateKey();</strong>
+    System.out.println("OK");
+
+    // Intentar encriptar texto
+    System.out.print("Intentando coger un cifrado y encriptar...");
+    <strong>Cipher cifrador = Cipher.getInstance("Blowfish/ECB/PKCS5Padding");
+    cifrador.init(Cipher.ENCRYPT_MODE, clave);
+    byte[] textoCifrado = cifrador.doFinal(cadena.getBytes("UTF8"));</strong>
+    System.out.println("Ok"); 
+    System.out.println("El texto cifrado es: " + textoCifrado);
+    
+    System.out.println("Test completado con exito");
+    }
+  }
+
+</pre>
+<a name="N10236"></a><a name="Cifradores+de"></a>
+<h3 class="underlined_5">Cifradores de Stream</h3>
+<p>Los cifradores que hemos visto hasta ahora son de <em>bloque</em>,
+es decir que se aplican sobre bloque de datos (usualmente 64 bits o
+incluso 128 bits) cada vez. Estos cifradores son adecuados para
+datos concretos como claves o mensajes concretos. Por el contrario,
+cuando se trata de encriptar flujos constantes de datos es m&aacute;s
+conveniente utilizar cifradores de <em>stream</em>, que encriptan bit
+a bit o byte a byte.</p>
+<p>Los cifradores de <em>stream</em> suelen funcionar bajo modo CBC.
+Este modo se diferencia de ECB en que a cada byte no se le asocia
+necesariamente el mismo c&oacute;digo sino que &eacute;ste c&oacute;digo depende de los
+anteriores y la inicializaci&oacute;n es aleatoria realiz&aacute;ndose con un
+<em>IV</em> o <em>Initialization Vector</em>. Dicho vector se obtiene a
+partir de un byte aleatorio de un determinado tama&ntilde;o usando la
+clase <strong>java.security.SecureRandom</strong>:</p>
+<pre class="code">
+byte[] bytesAleatorios = new byte[8];
+<strong>SecureRandom</strong> aleatorio = new SecureRandom();
+aleatorio.nextBytes(bytesAleatorios);
+</pre>
+<p>A continuaci&oacute;n se crea el IV propiamente dicho, usando la clase
+<strong>IVParameterSpec</strong>:</p>
+<pre class="code">
+
+<strong>IVParameterSpec</strong> iv = new IVParameterSpec(aleatorios);
+</pre>
+<p>Con el IV ya podemos crear e inicializar un cifrador CBC:</p>
+<pre class="code">
+Cipher cifrador = Cipher.getInstance("Blowfish/CBC/PKCS5Padding");
+cifrador.init(Cipher.ENCRYPT_MODE, clave, iv);
+</pre>
+<p>En cuanto al uso de este tipo de cifradores, el hecho de
+disponer de las clases <strong>CipherInputStream</strong> y
+<strong>CipherOutputStream</strong> en <strong>javax.crypto</strong> facilita su
+aplicaci&oacute;n a cualquier tipo de flujo de datos como un fichero. Por
+ejemplo, podemos encriptar un fichero con el siguiente fragmento de
+c&oacute;digo:</p>
+<pre class="code">
+FileInputStream entrada = new FileInputStream("fichero.txt");
+FileOutputStream salida = new FileOutputStream("fichero.enc");
+...
+<strong>CipherOutputStream</strong> salidaCifrador = new CipherOutputStream(salida, cifrador);
+int r = 0;
+while (r = entrada.read() != -1) {
+   salidaCifrador.write(r);
+}
+salidaCifrador.close();
+salida.close();
+entrada.close();
+</pre>
+<p>Un aspecto importante a tener en cuenta con los IV es que hay
+que utilizar para desencriptar el mismo IV que se us&oacute; para
+encriptar por lo que ser&aacute; necesario almacenarlo, por ejemplo al
+principio del fichero encriptado.</p>
+</div>
+
+<a name="N10289"></a><a name="Encriptaci%C3%B3n+asim%C3%A9trica"></a>
+<h2 class="underlined_10">Encriptaci&oacute;n asim&eacute;trica</h2>
+<div class="section">
+<a name="N1028E"></a><a name="Clave+P%C3%BAblica+y+Clave+Privada"></a>
+<h3 class="underlined_5">Clave P&uacute;blica y Clave Privada</h3>
+<p>El esquema asim&eacute;trico resuelve el problema de necesitar una
+clave pre-establecida. Se divide la clave en dos partes <em>par de
+claves</em>): la <em>clave p&uacute;blica</em> y la <em>clave privada</em>.
+Dichas claves son complementarias: Un mensaje encriptado con la
+clave p&uacute;blica s&oacute;lo puede ser desencriptado con la correspondiente
+clave privada. Por lo tanto, el conocimiento de la clave p&uacute;blica no
+implica capacidad de desencriptaci&oacute;n. As&iacute;, una persona podr&aacute;
+difundir su clave p&uacute;blica para que cualquiera pueda enviarle un
+mensaje cifrado que solamente podr&aacute; desencriptarse con la clave
+privada.</p>
+<p>
+
+<img alt="Esquema de clave secreta" content-width="12cm" src="imagenes/sesion1/asimetrica.gif" width="600">
+</p>
+<p>El algoritmo RSA es el m&aacute;s conocido para manejar esquemas
+asim&eacute;tricos. Una caracter&iacute;stica interesante de este m&eacute;todo es que
+las claves son intercambiables a efectos de figurar como p&uacute;blicas o
+privadas.</p>
+<p>En cuanto a la longitud de las claves, esta deber&aacute; ser mayor que
+en el caso sim&eacute;trco para proporcionar el mismo nivel de seguridad:
+una clave asim&eacute;trica de 1024 bits proporciona la misma seguridad
+que una sim&eacute;trica de 128 bits. Esto hace el esquema asim&eacute;trico 1000
+veces m&aacute;s lento que su hom&oacute;logo sim&eacute;trico.</p>
+<a name="N102B0"></a><a name="Clases+e+Interfaces+en+Java"></a>
+<h3 class="underlined_5">Clases e Interfaces en Java</h3>
+<p>Para aplicar encriptaci&oacute;n asim&eacute;trica usaremos b&aacute;sicamente las
+siguientes clases de <strong>java.security</strong>:</p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>KeyPair</strong></td>
+<td colspan="1" rowspan="1">Encapsula un par de claves. <strong>getPublic()</strong> devuelve la
+clave p&uacute;blica y <strong>getPrivate()</strong> la privada</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>PublicKey</strong></td>
+<td colspan="1" rowspan="1">Interface para claves p&uacute;blicas. En el package
+<strong>java.security.interfaces</strong> est&aacute; la sub-interface
+<strong>RSAPublicKey</strong> que define las claves para el algoritmo RSA y
+permite acceder a informaci&oacute;n de las claves RSA.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>PrivateKey</strong></td>
+<td colspan="1" rowspan="1">Similar a la anterior, para la clave privada. Hay que
+considerar las sub-interfaces <strong>RSAPrivateKey</strong> y
+<strong>RSAPrivateCrtKey</strong> que contienen m&eacute;todos extra para coger
+par&aacute;metros de estas claves.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>KeyPairGenerator</strong></td>
+<td colspan="1" rowspan="1">Las claves p&uacute;blica y privada siempre se generan juntas con el
+m&eacute;todo <strong>genKeyPair().</strong></td>
+
+</tr>
+
+</table>
+<a name="N1030C"></a><a name="Encriptaci%C3%B3n+de+Clave-de-Sesi%C3%B3n"></a>
+<h3 class="underlined_5">Encriptaci&oacute;n de Clave-de-Sesi&oacute;n</h3>
+<p>La encriptaci&oacute;n asim&eacute;trica, lenta por naturaleza, es
+especialmente &uacute;til para encriptar claves sim&eacute;tricas. En el modelo
+de clave-de-sesi&oacute;n (<em>session-key</em>) un mensaje se encripta con
+una clave secreta y &eacute;sta a su vez es encriptada con la clave con la
+clave p&uacute;blica del receptor del mensaje. Cuando &eacute;ste lo recibe solo
+tiene que utilizar su clave privada para desencriptar la clave
+secreta y &eacute;sta a su vez para desencriptar el mensaje.</p>
+<p>
+
+<img alt="Esquema de clave de sesi&oacute;n" content-width="12cm" src="imagenes/sesion1/SKenc.gif" width="600">
+</p>
+<p>Veamos como realizar este tipo de estrategia en el ejemplo
+<a href="ejemplos/sesion1/RSA.java.txt">RSA.java</a>. En primer lugar
+creamos una clave sim&eacute;trica, tipo Blowfish de 128 bits, para cifrar
+el texto.</p>
+<pre class="code">
+System.out.println("Generando clave Blowfish...");
+KeyGenerator generador = KeyGenerator.getInstance("Blowfish");
+generador.init(128);
+Key claveBlowfish = generador.generateKey();
+System.out.println("Formato: "+claveBlowfish.getFormat());
+</pre>
+<p>A continuaci&oacute;n generamos el par de claves RSA (publica y
+privada).</p>
+<pre class="code">
+System.out.println("Generando par de claves RSA...");
+<strong>KeyPairGenerator</strong> generadorRSA = KeyPairGenerator.getInstance("RSA");
+generadorRSA.initialize(1024);
+<strong>KeyPair</strong> claves = generadorRSA.genKeyPair();
+System.out.println("Generada la clave asim&eacute;trica.");
+</pre>
+<p>Ya podemos crear e inicializar el cifrador RSA que se va a
+encargar de encriptar la clave Blowfish con la parte p&uacute;blica del
+par RSA.</p>
+<pre class="code">
+Cipher cifradorRSA= Cipher.getInstance("RSA/ECB/PKCS1Padding");
+cifradorRSA.init(Cipher.ENCRYPT_MODE, claves.<strong>getPublic()</strong>);
+</pre>
+<p>Una vez tenemos este cifrador cogemos los byte de la clave
+Blowfish y los encriptamos</p>
+<pre class="code">
+byte[] bytesClaveBlowfish = claveBlowfish.<strong>getEncoded();</strong>
+byte[] claveBlowfishCifrada = cifradorRSA.<strong>doFinal(bytesClaveBlowfish);</strong>
+
+</pre>
+<p>Desencriptamos la clave Blowfish con la parte privada del par
+RSA.</p>
+<pre class="code">
+cifradorRSA.init(Cipher.DECRYPT_MODE, claves.<strong>getPrivate()</strong>);
+byte[] bytesClaveBlowfish2 = cifradorRSA.<strong>doFinal(claveBlowfishCifrada);</strong>
+
+</pre>
+<p>Finalmente recreamos la clave Blowfish.</p>
+<pre class="code">
+
+<strong>SecretKey</strong> nuevaClaveBlowfish = new <strong>SecretKeySpec(bytesClaveBlowfish2, "Blowfish");</strong>
+
+</pre>
+<p>
+
+<img alt="Esquema de clave sesion (2)" content-width="12cm" src="imagenes/sesion1/SKdes.gif" width="600">
+</p>
+</div>
+
+<a name="N10375"></a><a name="Autentificaci%C3%B3n.+Firma+y+Certificado+Digital"></a>
+<h2 class="underlined_10">Autentificaci&oacute;n. Firma y Certificado Digital</h2>
+<div class="section">
+<a name="N1037A"></a><a name="Autentificaci%C3%B3n+por+Firma+Digital"></a>
+<h3 class="underlined_5">Autentificaci&oacute;n por Firma Digital</h3>
+<p>Una firma digital asocia un individuo con unos datos. Por
+ejemplo para garantizar que yo he escrito un determinado e-mail
+&eacute;ste se firma digitalmente. Una firma digital se implementa como un
+<em>digest</em> (asociado al mensaje que se desea firmar) procesado
+por una clave privada (asociada al usuario que firma).</p>
+<p>Cuando el destinatario recibe el mensaje y su firma digital
+asociada se procede en tres pasos. (1)Obtener el digest del
+mensaje. (2) Usar la clave p&uacute;blica del remitente para extraer el
+digest de la firma digital. (3) Si ambos digests son iguales
+entonces validar.</p>
+<p>
+
+<img alt="Encriptaci&oacute;n con Firma" content-width="12cm" src="imagenes/sesion1/firmaenc.gif" width="600">
+</p>
+<p>
+
+<img alt="Desencriptaci&oacute;n con Firma" content-width="12cm" src="imagenes/sesion1/firmades.gif" width="600">
+</p>
+<p>En JCA, el proceso de crear el digest, firmar, extraer el digest
+y verificar la firma se lleva a cabo por clases del package
+<strong>java.security.Signature</strong>:</p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>getInstance()</strong></td>
+<td colspan="1" rowspan="1">Obtiene una instancia de un objeto <strong>Signature</strong>
+especificando algoritmo y opcionalmente el proveedor. P.e.
+<strong>MD5WithRSA</strong>,<strong>SHA1WithRSA</strong>,
+<strong>MD5WithDSA</strong>,<strong>SHA1WithDSA</strong></td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>initSign()</strong></td>
+<td colspan="1" rowspan="1">Inicializa un objeto <strong>Signature</strong> con una clave privada
+para firmarlo.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>initVerify()</strong></td>
+<td colspan="1" rowspan="1">Inicializa un objeto <strong>Signature</strong> con una clave p&uacute;blica
+para verificarlo.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>update()</strong></td>
+<td colspan="1" rowspan="1">Una vez que el objeto <strong>signature</strong> est&aacute; inicializado se le
+pasan los datos que se quieren firmar o verificar como array de
+bytes.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>sign()</strong></td>
+<td colspan="1" rowspan="1">Devuelve los bytes de la firma digital para los datos pasados a
+trav&eacute;s de <strong>update()</strong>.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>verify()</strong></td>
+<td colspan="1" rowspan="1">Tomando como argumento los bytes de una firma digital, devuelve
+un valor booleano indicando si la firma asociada a los datos
+pasados a <strong>update()</strong> es correcta.</td>
+
+</tr>
+
+</table>
+<p>Por ejemplo, si hemos generado un par de claves RSA y lo hemos
+guardado en la variable <strong>parClaves</strong> y tenemos un array de
+bytes llamado <strong>datos</strong> que contiene el texto a firmar,
+seguir&iacute;amos el siguiente proceso para firmarlo:</p>
+<pre class="code">
+// Obtener instancia del objeto Signature e inicializarlo con
+// la clave privada para firmarlo
+<strong>Signature</strong> firma = Signature.<strong>getInstance</strong>("MD5WithRSA");
+firma.<strong>initSign</strong>(parClaves.getPrivate());
+
+// Prepara la firma de los datos
+firma.<strong>update</strong>(datos);
+
+// Firmar los datos
+byte[] bytesFirma = firma.<strong>sign</strong>();
+
+// Mostrar en ASCII
+System.out.println("\nFirma:\n" + new BASE64Encoder().encode(bytesFirma));
+</pre>
+<p>Si posteriormente queremos realizar la verificaci&oacute;n deberemos
+inicializar el objeto <strong>Signature</strong> para verificaci&oacute;n y recoger
+un valor booleano o bien una <strong>SignatureException</strong> cuando la
+verificaci&oacute;n no tenga &eacute;xito:</p>
+<pre class="code">
+firma.<strong>initVerify</strong>(parClaves.getPublic());
+
+// Pasar los datos que fueron firmados
+firma.update(datos);
+
+// Verificar
+boolean verificado = false;
+try {
+  verificado = firma.<strong>verify</strong>(bytesFirma);
+} catch (<strong>SignatureException</strong> se) {
+      verificado = false;
+  }
+
+if (verificado) {
+  System.out.println("\nFirma verificada.");
+} else {
+  System.out.println("\nFirma incorrecta.");
+}
+</pre>
+<p>El ejemplo completo se encuentra en <a href="ejemplos/sesion1/FirmaDigital.java.txt">FirmaDigital.java</a>.</p>
+<a name="N1044F"></a><a name="Certificados+Digitales%3A+Contenidos"></a>
+<h3 class="underlined_5">Certificados Digitales: Contenidos</h3>
+<p>Uno de los problemas de las firmas digitales es que en el
+momento de la validaci&oacute;n no se tiene garant&iacute;a de que la clave
+p&uacute;blica que se utiliza sea la correcta. Los certificados digitales
+intentan a&ntilde;adir identidad a una clave p&uacute;blica para garantizar que
+el due&ntilde;o de dicha clave es quien dice ser. En definitiva, un
+certificado digital consiste en la clave p&uacute;blica m&aacute;s informaci&oacute;n
+firmada por la clave privada de una tercera parte denominada
+autoridad certificadora (<em>certificate authority</em> o CA) como
+Verisign o Thawte.</p>
+<p>Para codificar certificados en JDK se utiliza el est&aacute;ndar X.509.
+Hay tres versiones (v1, v2, v3) cada una de las cuales a&ntilde;ade
+ciertas caracter&iacute;sticas sobre la anterior. Por ejemplo un
+certificado <strong>X.509v1</strong> contiene la siguiente informaci&oacute;n:</p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+
+<td colspan="1" rowspan="1"><em>Version</em></td>
+<td colspan="1" rowspan="1">Campo que indica la versi&oacute;n del certificado: V1, V2 o V3.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><em>Serial Number</em></td>
+<td colspan="1" rowspan="1">Entero largo que es &uacute;nico para la CA que emite el
+certificado.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><em>Signature Algorithm</em></td>
+<td colspan="1" rowspan="1">Algoritmo que la CA utiliz&oacute; para firmar el certificado.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><em>Validity</em></td>
+<td colspan="1" rowspan="1">Intervalo de validez entre las fechas <em>from...</em> y
+<em>to...</em>.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><em>Subject</em></td>
+<td colspan="1" rowspan="1">Indica, en formato X.500 a qui&eacute;n se el emite el
+certificado.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><em>Key</em></td>
+<td colspan="1" rowspan="1">Clave p&uacute;blica del sujeto del certificado.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><em>Signature</em></td>
+<td colspan="1" rowspan="1">Firma de la CA que habr&aacute; de ser verificada contra la clave
+p&uacute;blica de la CA.</td>
+
+</tr>
+
+</table>
+<p>
+
+<img alt="Contenidos de un certificado" content-width="12cm" src="imagenes/sesion1/certificado.gif" width="600">
+</p>
+<a name="N104D6"></a><a name="Generando+Certificados%3A+keystores+y+keytool"></a>
+<h3 class="underlined_5">Generando Certificados: keystores y keytool</h3>
+<p>En Java un <em>keystore</em> o almac&eacute;n de claves es una colecci&oacute;n
+de certificados y claves. El <em>kestore</em> por defecto se
+encuentra en el fichero <em>$HOME/.keystore</em> y contiene dos tipos
+de entradas: certificados y claves. Los certificados son en efecto
+certificados activos v&aacute;lidos. Las claves son privadas o bien
+sim&eacute;tricas y deben estar asociadas a certificados que contienen los
+sujetos que poseen dichas claves. No obstante, por razones de
+seguridad no es recomendable almacenar claves sim&eacute;tricas en el
+almac&eacute;n. En cualquier caso el almac&eacute;n usa passwords para proteger
+el acceso a las claves privadas.</p>
+<p>La herramienta que maneja almacenes de claves y permite crear
+certificados es la aplicaci&oacute;n <em>keytool</em>. Algunas de las
+opciones de esta aplicaci&oacute;n son:</p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+
+<td colspan="1" rowspan="1"><em>-certreq</em></td>
+<td colspan="1" rowspan="1">Crea una petici&oacute;n de certificado por ejemplo para obtener un
+certificado de una CA, como Verisign, que est&eacute; contemplada en esta
+aplicaci&oacute;n.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><em>-delete</em></td>
+<td colspan="1" rowspan="1">Borra una entrada del <em>keystore</em>.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><em>-genkey</em></td>
+<td colspan="1" rowspan="1">Genera un par de claves para un certificado auto-firmado. Se
+puede especificar el algoritmo con <em>-keyalg</em>. Por ejemplo
+<em>-keyalg RSA</em></td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><em>-keyclone</em></td>
+<td colspan="1" rowspan="1">Copia una entrada en el almac&eacute;n.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><em>-keystore</em></td>
+<td colspan="1" rowspan="1">Especifica un fichero como almac&eacute;n.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><em>-printcert</em></td>
+<td colspan="1" rowspan="1">Muestra un certificado digital.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><em>-selfcert</em></td>
+<td colspan="1" rowspan="1">Genera un certificado digital auto-firmado.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><em>-storepasswd</em></td>
+<td colspan="1" rowspan="1">Cambia el password del almac&eacute;n.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><em>-export</em></td>
+<td colspan="1" rowspan="1">Exporta un certificado de un almac&eacute;n codifidado en DER. Si
+queremos codificaci&oacute;n BASE64 hay que a&ntilde;adir la opci&oacute;n
+<em>-rfc</em>.</td>
+
+</tr>
+
+</table>
+<p>Por ejemplo, con <em>keytool -v -list</em> listaremos las entradas
+del fichero <em>.keystore</em>. Si queremos a&ntilde;adir una entrada,
+identificada por un alias, haremos lo siguiente: <em>keytool -genkey
+-alias test</em> donde test es el alias. La aplicaci&oacute;n nos ir&aacute;
+pidiendo los datos para el certificado. Si estamos en windows y no tenemos 
+creado el .keystore en p.e. <em>C:\Documents and Setting/sco</em> hay que hacer lo siguiente:</p>
+<p>
+<em>keytool -genkey -alias test -kesytore .keystore</em>
+</p>
+<p>
+<em>keytool -export -alias test -file micertificado.cer</em>
+</p>
+<p>El contenido del certificado ser&aacute; algo parecido a <a href="ejemplos/sesion1/micertificado.cer">micertificado.cer</a> 
+una vez exportado a la codificaci&oacute;n DER.</p>
+<a name="N10599"></a><a name="Certificados+en+Java"></a>
+<h3 class="underlined_5">Certificados en Java</h3>
+<p>Las clases para el manejo de certificados en Java pertenencen al
+paquete <strong>java.security.cert</strong>:</p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>CertificateFactory</strong></td>
+<td colspan="1" rowspan="1">Se utiliza para generar instancias de objetos
+<strong>CertificateFactory</strong> a trav&eacute;s de <strong>getInstance()</strong>.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>Certificate</strong></td>
+<td colspan="1" rowspan="1">Clase abstracta que encapsula un certificado. Los m&eacute;todos m&aacute;s
+importantes de esta clase son: <strong>getPublicKey()</strong> (que devuelve
+la clave p&uacute;blica del sujeto del certificado) y <strong>verify()</strong> (que
+tomando como argumento la clave p&uacute;blica de la CA verifica la firma
+del certificado).</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>X509Certificate</strong></td>
+<td colspan="1" rowspan="1">Otra clase que proporciona m&eacute;todos para manejar certificados
+X.509.</td>
+
+</tr>
+
+</table>
+<p>Por ejemplo podemos leer un certificado *.cer de un fichero e
+imprimirlo con las siguientes instrucciones: (el c&oacute;digo completo se
+encuentra en <a href="ejemplos/sesion1/ImprimirCert.java.txt">ImprimirCert.java</a>)</p>
+<pre class="code">
+
+<strong>CertificateFactory</strong> factoria = CertificateFactory.<strong>getInstance</strong>("X.509");
+
+// Abrir el fichero
+FileInputStream fis = new FileInputStream (args[0]);
+
+// Generar certificado para el fichero
+<strong>Certificate</strong> cert = factoria.<strong>generateCertificate</strong>(fis);
+fis.close();
+
+// Imprimir informaci&oacute;n
+System.out.println(cert);
+</pre>
+<p>Si por el contrario queremos leer el certificado directamente
+del <em>keystore</em> debemos utilizar la clase
+<strong>java.security.KeyStore</strong>. El m&eacute;todo <strong>load()</strong> de esta
+clase permite cargar el almac&eacute;n si le pasamos el nombre del fichero
+de almac&eacute;n (p.e. <em>.keystore</em>) y el password correcto. A
+continuaci&oacute;n el m&eacute;todo <strong>getCertificate()</strong> permite obtener el
+certificado con un alias concreto (el c&oacute;digo completo se encuentra
+en <a href="ejemplos/sesion1/ImprimirCertKS.java.txt">ImprimirCertKS.java</a>):</p>
+<pre class="code">
+// Abrir el keystore
+FileInputStream fIn = new FileInputStream(fich_keystore);
+<strong>KeyStore</strong> keystore = KeyStore.<strong>getInstance</strong>("JKS");
+
+// Cargar el keystore
+keystore.<strong>load</strong>(fIn, password);
+
+// Obtener el certificado
+Certificate cert = keystore.<strong>getCertificate</strong>(alias);
+
+// Mostrar el certificado
+System.out.println(cert);
+</pre>
+<a name="N1061C"></a><a name="Listas+de+Revocaci%C3%B3n+de+Certificados+%28CRLs%29"></a>
+<h3 class="underlined_5">Listas de Revocaci&oacute;n de Certificados (CRLs) </h3>
+<p>Como hemos visto, un certificado est&aacute; firmado con la clave privada de una autoridad 
+certificadora (CA). Un elemento clave en la gesti&oacute;n de certificados es tener la 
+posibilidad de que una CA decida en un momento dado que uno de los certificados que 
+emiti&oacute; <em>ya no es v&aacute;lido</em> antes de que expire. P.e. es posible que la clave 
+privada haya sido comprometida o bien simplemente que el certificado corresponda a un 
+empleado que ha dejado la empresa.</p>
+<p>Un mecanismo declarativo para inutilizar certificados es que la CA haga p&uacute;blica una 
+lista negra, denominada <em>lista de revocaci&oacute;n</em> o CRL 
+(<em>Certificate Revocation List</em>) y que desde la m&aacute;quina virtual asociada a 
+nuestra empresa la descarguemos y comprobemos si los certificados de nuestro almac&eacute;n de 
+claves han sido revocados o no. Por ejemplo, desde 
+<a href="http://crl.verisign.com">http://crl.verisign.com</a> podemos descargar una serie 
+de ficheros *.crl conteniendo distintas listas de revocaci&oacute;n para distintas empresas y 
+diversos niveles de certificaci&oacute;n (ver p.e. el fichero
+<a href="ejemplos/sesion1/BTClass1Individual.crl">BTClass1Individual.crl</a>). </p>
+<p>Pues bien, una CRL no es m&aacute;s que una estructura de datos que consta de una 
+<strong>cabecera</strong> 
+(en la que consignamos datos de la CA adem&aacute;s de la fecha en la que se publica y c&uacute;ando 
+se publicar&aacute; una actualizaci&oacute;n) y un <strong>cuerpo</strong> (con tantas entradas como 
+certificados revocados y para cada una de ellas consta el n&uacute;mero de serie del certificado 
+y su fecha de revocaci&oacute;n). </p>
+<p>En java, la clase que implementa las CRLs es <span class="codefrag">java.security.cert.X509CRL</span> 
+mientras que la que implementa las entradas contenidas en el cuerpo de las mismas es 
+<span class="codefrag">java.security.cert.X509CRLEntry</span>. Por ejemplo, en  
+<a href="ejemplos/sesion1/VerCRL.java.txt">VerCRL.java</a> tenemos un programa ejemplo que imprime las CRLs que se le pasan 
+como argumento:</p>
+<pre class="code">
+import java.io.FileInputStream;
+import java.util.Set;
+import java.util.Iterator;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509CRL;
+import java.security.cert.X509CRLEntry;
+
+public
+class VerCRL
+{
+  public
+  static
+  void
+  main(String [] arstring)
+  {
+    try
+    {
+      // Coger la CertificateFactory
+      CertificateFactory certificatefactory =
+        CertificateFactory.getInstance("X.509");
+      // Cada fichero de la linea de comandos debe tener una &uacute;nica CRL codificada en DER
+      for (int i = 0; i &lt; arstring.length; i++)
+      {
+        // Abrir fichero.
+        FileInputStream fileinputstream = new FileInputStream(arstring[i]);
+        // Generar una X509CRL desde el fichero.
+        <strong>X509CRL</strong> x509crl =
+          (X509CRL)certificatefactory.generateCRL(fileinputstream);
+        // Imprimir info sobre la crl.
+        System.out.println("---CRL---");
+        System.out.println("tipo = " +
+          x509crl.<strong>getType()</strong>);
+        System.out.println("version = " +
+          x509crl.<strong>getVersion()</strong>);
+        System.out.println("emisor = " +
+          x509crl.<strong>getIssuerDN().getName()</strong>);
+        System.out.println("algoritmo de firma = " +
+          x509crl.<strong>getSigAlgName()</strong>);
+        System.out.println("OID firmante = " +
+          x509crl.<strong>getSigAlgOID()</strong>);
+        System.out.println("esta actualizacion = " +
+          x509crl.<strong>getThisUpdate()</strong>);
+        System.out.println("proxima actualizacion = " +
+          x509crl.<strong>getNextUpdate()</strong>);
+        System.out.println();
+	// Ahora imprimimos la info de las entradas (certificados revocados)
+        System.out.println("---Entradas---");
+        Set setEntries = x509crl.<strong>getRevokedCertificates()</strong>;
+        if (setEntries != null &amp;&amp; setEntries.isEmpty() == false)
+        {
+          for (Iterator iterator = setEntries.iterator();
+               iterator.hasNext(); )
+          {
+            <strong>X509CRLEntry</strong> x509crlentry = (X509CRLEntry)iterator.next();
+            System.out.println("numero de serie = " +
+              x509crlentry.<strong>getSerialNumber()</strong>);
+            System.out.println("fecha de revocacion = " +
+              x509crlentry.<strong>getRevocationDate()</strong>);
+            System.out.println("extensiones = " +
+              x509crlentry.<strong>hasExtensions()</strong>);
+            System.out.println();
+          }
+        }
+        // Hemos acabado.
+        System.out.println("---");
+        // Cerrar fichero.
+        fileinputstream.close();
+      }
+    }
+    catch (Exception exception)
+    {
+      exception.printStackTrace();
+    }
+  }
+}
+</pre>
+<p>Si ahora queremos comprobar que un determinado certificado ha sido revocado o no con respecto a una lista, 
+haremos uso del m&eacute;todo <span class="codefrag">java.security.cert.X509CRL.isRevoked()</span>. En el 
+<a href="ejemplos/sesion1/Revocado.java.txt">Revocado.java</a> podemos ver lo siguiente:</p>
+<pre class="code">
+// Generar objeto X09CRL
+
+X509CRL crl = (X509CRL) factoria.generateCRL(fis2); 
+
+fis2.close(); 
+
+// Testar si el certificado ha sido revocado 
+
+if (crl.isRevoked(cert)) {
+
+   System.out.println("Certificado ha sido revocado");
+} else {
+
+   System.out.println("Certificado est&aacute; OK"); 
+
+}
+</pre>
+<a name="N10689"></a><a name="PKI%3A+Creando+nuestra+propia+CA"></a>
+<h3 class="underlined_5">PKI: Creando nuestra propia CA</h3>
+<p>Una infraestructura de clave p&uacute;blica (Public Key Infraestructure - PKI) 
+consiste en un conjunto de software capaz de proporcionar los siguientes 
+servicios: creaci&oacute;n de certificados, revocaci&oacute;n de certificados, validaci&oacute;n 
+de certificados y proporcionar certificados a clientes. Si queremos implementar 
+una PKI propia usando Java tenemos que ser capaces de implementar los elementos 
+antes descritos. Idealmente, usaremos Java para crear una CA interna a nuestra 
+empresa. Desde esta CA podremos proporcionar los servicios necesarios. 
+A continuaci&oacute;n veremos 2 de esos servicios: firmar nuestros propios certificados y 
+crear listas de revocaci&oacute;n. Para implementarlos nos basaremos en el paquete 
+<span class="codefrag">sun.security.x509</span> que aunque no es totalmente Java nos ahorra el 
+tremendo trabajo de implementar estos servicios desde cero.</p>
+<a name="N10695"></a><a name="Firmar+Certificados+con+sun.security.x509"></a>
+<h4>Firmar Certificados con sun.security.x509</h4>
+<p>Supongamos que pretendemos constituirnos en CA para nuestra
+propia organizaci&oacute;n. Esto nos permite emitir nuestros propios
+certificados. As&iacute;, p.e., podremos emitir certificados de e-mail
+para que todos los miembros de nuestra organizaci&oacute;n puedan firmar
+sus correos electr&oacute;nicos o bien crear certificados para validar el
+acceso de los clientes a nuestras bases de datos, etc.</p>
+<p>Para ello podemos utilizar las clases del paquete
+<strong>sun.security.x509</strong>. Entre las m&aacute;s importantes tenemos las
+siguientes:</p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>X509CertImpl</strong></td>
+<td colspan="1" rowspan="1">Proporciona la implementaci&oacute;n del certificado X.509. Usaremos
+esta clase para crear un nuevo certificado y lo firmaremos con el
+m&eacute;todo <strong>sign()</strong>.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>X509CertInfo</strong></td>
+<td colspan="1" rowspan="1">Encapsula los atributos del certificado X.509 y nos permite
+instanciar dichos atributos en el momento de crearlo.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>X500Name</strong></td>
+<td colspan="1" rowspan="1">Nombre X500 <em>(CN=Common name, OU=Organizational Unit,
+O=Organization, L=Location, ST=State, C=Country)</em> del
+sujeto.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>AlgorithmId</strong></td>
+<td colspan="1" rowspan="1">Identificaci&oacute;n del algoritmo criptogr&aacute;fico.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>CertificateSubjectName</strong></td>
+<td colspan="1" rowspan="1">Nombre del sujeto del certificado.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>CertificateValidity</strong></td>
+<td colspan="1" rowspan="1">Per&iacute;odo de validez del certificado.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>CertificateSerialNumber</strong></td>
+<td colspan="1" rowspan="1">N&uacute;mero de serie del certificado. &Uacute;nico para una CA dada.</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>CertificateIssuerName</strong></td>
+<td colspan="1" rowspan="1">Nombre x.500 del emisor del certificado (cuando es auto-firmado
+coincide con el sujeto).</td>
+
+</tr>
+
+<tr>
+
+<td colspan="1" rowspan="1"><strong>CertificateAlgorithmID</strong></td>
+<td colspan="1" rowspan="1">Identificador del algoritmo usado para firmar el
+certificado.</td>
+
+</tr>
+
+</table>
+<p>Lo primero es crear un certificado y una clave privada para la
+CA. Para ello haremos lo siguiente:</p>
+<p>
+<em>keytool -genkey -v -alias CA -keyalg RSA -keystore
+almacen</em>
+</p>
+<p>A continuaci&oacute;n nos pediran informaci&oacute;n X.500 sobre la CA y nos
+preguntar&aacute;n la clave de la CA. Tenemos pu&eacute;s el certificado y la
+clave de la CA.</p>
+<p>El siguiente paso consiste en crear un certificado que queramos
+firmar con el certificado de la CA (encadenamiento de
+certificados):</p>
+<p>
+<em>keytool -genkey -v -alias miClave -keyalg RSA -keystore
+almacen</em>
+</p>
+<p>Y de nuevo contestaremos a las preguntas rellenando los
+atributos que deseemos. No obstante el certificado que obtenemos es
+auto-firmado. Lo interesante es reemplazarlo por uno firmado por la
+CA. Para ello usaremos el certificado y la clave privada de la CA.
+Una vez leido el almac&eacute;n (ver el c&oacute;digo completo en <a href="ejemplos/sesion1/FirmarCertificado.java.txt">FirmarCertificado.java</a>)
+seguiremos los pasos que se detallan a continuaci&oacute;n:</p>
+<p>1. Leer la clave privada y el certificado de la CA</p>
+<pre class="code">
+PrivateKey clavePrivadaCA = (PrivateKey)keystore.<strong>getKey</strong>(aliasCA, passwordCA);
+java.security.cert.Certificate certificadoCA = keystore.<strong>getCertificate</strong>(aliasCA);
+</pre>
+<p>2. Crear una implementaci&oacute;n X.509 para el certificado del
+CA</p>
+<pre class="code">
+byte[] codificado = certificadoCA.getEncoded();
+<strong>X509CertImpl</strong> implementacionCA = new X509CertImpl(codificado);
+<strong>X509CertInfo</strong> infoCA = (X509CertInfo)implementacionCA.<strong>get</strong>
+   (X509CertImpl.NAME + "." + X509CertImpl.INFO);
+<strong>X500Name</strong> emisorCA = (X500Name)infoCA.<strong>get</strong>
+   (X509CertInfo.SUBJECT + "." + CertificateIssuerName.DN_NAME);
+</pre>
+<p>3. Leer la clave privada y el certificado a firmar.</p>
+<pre class="code">
+java.security.cert.Certificate cert = keystore.<strong>getCertificate</strong>(aliasCert);
+PrivateKey clavePrivada = (PrivateKey)keystore.<strong>getKey</strong>(aliasCert, passwordCert);
+</pre>
+<p>4. Crear de nuevo otra implementaci&oacute;n X.509 para el
+certificado a firmar.</p>
+<pre class="code">
+codificado = cert.getEncoded();
+<strong>X509CertImpl</strong> implementacionCert = new X509CertImpl(codificado);
+<strong>X509CertInfo</strong> infoCert = (X509CertInfo)implementacionCert.<strong>get</strong>
+   (X509CertImpl.NAME + "." + X509CertImpl.INFO);
+</pre>
+<p>5.Especificar y almacenar el per&iacute;odo de validez.</p>
+<pre class="code">
+Date inicio = new Date();
+Date fin = new Date(inicio.getTime() + VALIDEZ*24*60*60*1000L);
+<strong>CertificateValidity</strong> intervalo = new <strong>CertificateValidity</strong>(inicio, fin);
+</pre>
+<p>6. Crear y almacenar un n&uacute;mero de serie.</p>
+<pre class="code">
+infoCert.<strong>set</strong>(X509CertInfo.SERIAL_NUMBER,
+   new <strong>CertificateSerialNumber</strong>((int)(inicio.getTime()/1000)));
+</pre>
+<p>7. Poner como emisor a la CA.</p>
+<pre class="code">
+infoCert.<strong>set</strong>(X509CertInfo.ISSUER +
+ "." + CertificateSubjectName.DN_NAME, emisorCA);
+</pre>
+<p>8. Fijar el algoritmo.</p>
+<pre class="code">
+
+<strong>AlgorithmId</strong> algoritmo = new <strong>AlgorithmId</strong>(AlgorithmId.md5WithRSAEncryption_oid);
+infoCert.<strong>set</strong>(CertificateAlgorithmId.NAME + "." +
+   CertificateAlgorithmId.ALGORITHM, algoritmo);
+</pre>
+<p>9. Crear el nuevo certificado a partir del info.</p>
+<pre class="code">
+
+<strong>X509CertImpl</strong> nuevoCert = new <strong>X509CertImpl</strong>(infoCert);
+</pre>
+<p>10. Firmar el nuevo certificado que acabamos de
+crear.</p>
+<pre class="code">
+nuevoCert.<strong>sign</strong>(clavePrivadaCA, ALG);
+</pre>
+<p>11. Almacenar en el keystore.</p>
+<pre class="code">
+keystore.<strong>setKeyEntry</strong>(aliasNuevo, clavePrivada, passwordCert,
+    new java.security.cert.Certificate[] { nuevoCert } );
+</pre>
+<p>12. Almacenar el keystore en el fichero.</p>
+<pre class="code">
+FileOutputStream output = new FileOutputStream(fich_keystore);
+keystore.<strong>store</strong>(output, password);
+output.close();
+</pre>
+<p>Para aplicar esta firma ejecutamos el siguiente comando:</p>
+<p>
+<em>java FirmarCertificado almacen CA miClave miClave2</em>
+</p>
+<p>As&iacute;, habremos a&ntilde;adido un nuevo certificado, llamado
+<em>miClave2</em>, al almac&eacute;n. Este certificado est&aacute; emitido por
+nuestra CA (ver el emisor o <em>issuer</em>).Para verlo haremos lo
+siguiente:</p>
+<p>
+<em>keytool -list -v -keystore almacen</em>
+</p>
+<p>Finalmente, podemos exportar este certificado codificado en DER
+o en BASE-64 para usarlo. Sin embargo, en la pr&aacute;ctica no se
+aceptar&aacute; por defecto, a no ser que importemos el certificado de la
+CA y lo instalemos en un navegador. Para exportar el certificado de
+la CA a un fichero de modo que podamos cargarlo en un navegador
+haremos lo siguiente:</p>
+<p>
+<em>keytool -export -alias CA -keystore almacen -file
+CA.crt</em>
+</p>
+<a name="N107FE"></a><a name="Crear+CRLs+con+sun.security.x509"></a>
+<h4>Crear CRLs con sun.security.x509</h4>
+<p>Las dos clases centrales en la construcci&oacute;n de CRLs en este paquete son
+<strong>X509CRLImpl</strong> y <strong>X509CRLEntryImpl</strong> que son las 
+implementaciones de las clases <strong>X509CRL</strong> y <strong>X509CRLEntry</strong> del paquete <span class="codefrag">java.security.cert</span>.</p>
+<p>Veamos c&oacute;mo leer un certificado del keystore para revocarlo, esto es, para construir una CRL en la que lo insertemos. Este es el motivo del ejemplo <a href="ejemplos/sesion1/RevocarCertificado.java.txt">RevocarCertificado.java</a> cuyo c&oacute;digo se muestra a continuaci&oacute;n: </p>
+<pre class="code">
+import java.math.*;
+import java.io.*;
+import java.security.*;
+import java.security.cert.*;
+import java.util.*;
+
+import sun.security.util.AuthResources;
+import sun.security.x509.*;
+
+public class RevocarCertificado {
+
+	private static final int VALIDEZ = 365;
+
+	public static void main(String[] args) throws Exception {
+
+		if (args.length != 3) {
+			System.err
+					.println("Uso: java RevocarCertificado keystore alias CRL");
+			System.exit(1);
+		}
+
+		String fich_keystore = args[0];
+		String aliasCert = args[1];
+		String fich_CRL = args[2];
+
+		// Obtener password
+		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+		System.out.print("Password del keystore: ");
+		char[] password = in.readLine().toCharArray();
+
+		// Leer el keystore
+		FileInputStream input = new FileInputStream(fich_keystore);
+		KeyStore keystore = KeyStore.getInstance("JKS");
+		keystore.load(input, password);
+		input.close();
+
+		// 1. Leer el certificado a revocar
+		java.security.cert.Certificate certificado = keystore
+				.getCertificate(aliasCert);
+
+		// 2. Crear una implementaci&oacute;n X.509 para el certificado
+		byte[] codificado = certificado.getEncoded();
+		X509CertImpl implementacion = new X509CertImpl(codificado);
+		X509CertInfo info = (X509CertInfo) implementacion.get(X509CertImpl.NAME
+				+ "." + X509CertImpl.INFO);
+
+		X500Name emisor = (X500Name) info.get(X509CertInfo.SUBJECT + "."
+				+ CertificateIssuerName.DN_NAME);
+
+		// 3. Construir una implementaci&oacute;n para la entrada X509CRLEntry
+		// en donde alojar el certificado.
+		BigInteger num = (BigInteger) implementacion.getSerialNumber();
+		System.out.println("N&uacute;mero de serie " + num.toString());
+		Date hoy = new Date();
+		<strong>X509CRLEntryImpl</strong> entrada = new X509CRLEntryImpl(num, hoy);
+		<strong>X509CRLEntryImpl[]</strong> entradas = new X509CRLEntryImpl[1];
+		entradas[0] = entrada;
+		System.out.println(entradas[0].toString());
+		if (entradas == null)
+			System.out.println("entradas es null");
+		System.out.println(emisor.toString());
+		System.out.println(hoy.toString());
+
+		// 4. Construir una implementacion para el X509CRL
+		// en donde alojar la X509CRLEntry
+		
+		Date siguiente = new Date(hoy.getTime() + VALIDEZ * 24 * 60 * 60
+				* 1000L);
+		System.out.println(siguiente.toString());
+		// X509CRLImpl lista = null;
+		// try {
+		<strong>X509CRLImpl</strong> lista = (X509CRLImpl) new X509CRLImpl((X500Name) emisor,
+				(Date) hoy, (Date) siguiente, (X509CRLEntryImpl[]) entradas);
+		// } catch (CRLException crle) { System.out.println("Excepcion " +
+		// crle);}
+		// Campos del X509CRLImpl
+		System.out.println("Next update:" + lista.<strong>getNextUpdate()</strong>);
+		System.out.println("Certificados revocados"
+				+ lista.<strong>getRevokedCertificates()</strong>);
+		
+		// 5. Firmar la CRL 
+		KeyPairGenerator generador = KeyPairGenerator.getInstance("RSA");
+		generador.initialize(1024);
+		KeyPair par = generador.genKeyPair();
+		PrivateKey clave = par.getPrivate(); 
+		lista.<strong>sign</strong>(clave, "SHA1withRSA", null); 
+
+		// 6. Codificar la CRL para guardarlo en fichero
+		byte[] listabyte = lista.<strong>getEncoded()</strong>;
+		
+		// 7. Almacenar la X509CRL en un fichero de salida
+		
+		FileOutputStream salida = new FileOutputStream(fich_CRL);
+		salida.write(listabyte);
+		salida.close();
+	}
+}
+</pre>
+<p>Sucintamente, tras leer el password y acceder al keystore tienen lugar los siguientes pasos:</p>
+<p>1. Obtener el certificado a revocar a partir de su alias en el keystore.</p>
+<p>2. Crear una implementaci&oacute;n X509 para dicho certificado. Dicha implementaci&oacute;n la necesitamos 
+para acceder al campo X500Name asociado al emisor (la CA), as&iacute; como al n&uacute;mero de serie del certificado.</p>
+<p>3. Con el campo X500 y el n&uacute;mero de serie ya podemos invocar a un constructor de entradas a la 
+CRL, un constructor de X509CRLEntryImpl. El resultado del constructor lo pondremos en un array ya que potencialmente puede haber m&aacute;s de un certificado a revocar en una CRL.</p>
+<p>4. Una vez que tenemos el array de X509CRLEntryImpl, aunque con una &uacute;nica entrada ya tenemos 
+el cuerpo de la CRL. Pero ahora necesitamos recopilar datos de la CA necesarios para la cabecera: concretamente las fechas de revocaci&oacute;n. Con esos datos ya podemos construir una CRL (objeto X509CRLImpl) y consultar algunos de sus campos.</p>
+<p>5. No obstante, antes de poder guardar la CRL en fichero hay que firmar la CRL con una clave 
+privada. Potencialmente se usar&iacute;a la clave privada de la CA due&ntilde;a de la lista. Esto permitir&aacute; verificar posibles alteraciones cuando se verifique esa lista con la clave p&uacute;blica (lo veremos 
+en un ejercicio).</p>
+<p>6. Codificaremos en bytes la CRL antes de guardarla en un fichero.</p>
+</div>
+
+<p class="pageBreakAfter"></p>
+
+</div>
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+        Copyright &copy;
+         2006 Depto. CCIA</div>
+</div>
+</body>
+</html>

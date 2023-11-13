@@ -1,0 +1,97 @@
+import java.math.*;
+import java.io.*;
+import java.security.*;
+import java.security.cert.*;
+import java.util.*;
+
+import sun.security.util.AuthResources;
+import sun.security.x509.*;
+
+public class RevocarCertificado {
+
+	private static final int VALIDEZ = 365;
+
+	public static void main(String[] args) throws Exception {
+
+		if (args.length != 3) {
+			System.err
+					.println("Uso: java RevocarCertificado keystore alias CRL");
+			System.exit(1);
+		}
+
+		String fich_keystore = args[0];
+		String aliasCert = args[1];
+		String fich_CRL = args[2];
+
+		// Obtener password
+		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+		System.out.print("Password del keystore: ");
+		char[] password = in.readLine().toCharArray();
+
+		// Leer el keystore
+		FileInputStream input = new FileInputStream(fich_keystore);
+		KeyStore keystore = KeyStore.getInstance("JKS");
+		keystore.load(input, password);
+		input.close();
+
+		// 1. Leer el certificado a revocar
+		java.security.cert.Certificate certificado = keystore
+				.getCertificate(aliasCert);
+
+		// 2. Crear una implementación X.509 para el certificado
+		byte[] codificado = certificado.getEncoded();
+		X509CertImpl implementacion = new X509CertImpl(codificado);
+		X509CertInfo info = (X509CertInfo) implementacion.get(X509CertImpl.NAME
+				+ "." + X509CertImpl.INFO);
+
+		X500Name emisor = (X500Name) info.get(X509CertInfo.SUBJECT + "."
+				+ CertificateIssuerName.DN_NAME);
+
+		// 3. Construir una implementación para la entrada X509CRLEntry
+		// en donde alojar el certificado.
+		BigInteger num = (BigInteger) implementacion.getSerialNumber();
+		System.out.println("Número de serie " + num.toString());
+		Date hoy = new Date();
+		X509CRLEntryImpl entrada = new X509CRLEntryImpl(num, hoy);
+		X509CRLEntryImpl[] entradas = new X509CRLEntryImpl[1];
+		entradas[0] = entrada;
+		System.out.println(entradas[0].toString());
+		if (entradas == null)
+			System.out.println("entradas es null");
+		System.out.println(emisor.toString());
+		System.out.println(hoy.toString());
+
+		// 4. Construir una implementacion para el X509CRL
+		// en donde alojar la X509CRLEntry
+		
+		Date siguiente = new Date(hoy.getTime() + VALIDEZ * 24 * 60 * 60
+				* 1000L);
+		System.out.println(siguiente.toString());
+		// X509CRLImpl lista = null;
+		// try {
+		X509CRLImpl lista = (X509CRLImpl) new X509CRLImpl((X500Name) emisor,
+				(Date) hoy, (Date) siguiente, (X509CRLEntryImpl[]) entradas);
+		// } catch (CRLException crle) { System.out.println("Excepcion " +
+		// crle);}
+		// Campos del X509CRLImpl
+		System.out.println("Next update:" + lista.getNextUpdate());
+		System.out.println("Certificados revocados"
+				+ lista.getRevokedCertificates());
+		
+		// 5. Firmar la CRL 
+		KeyPairGenerator generador = KeyPairGenerator.getInstance("RSA");
+		generador.initialize(1024);
+		KeyPair par = generador.genKeyPair();
+		PrivateKey clave = par.getPrivate(); 
+		lista.sign(clave, "SHA1withRSA", null); 
+
+		// 6. Codificar la CRL para guardarlo en fichero
+		byte[] listabyte = lista.getEncoded();
+		
+		// 7. Almacenar la X509CRL en un fichero de salida
+		
+		FileOutputStream salida = new FileOutputStream(fich_CRL);
+		salida.write(listabyte);
+		salida.close();
+	}
+}

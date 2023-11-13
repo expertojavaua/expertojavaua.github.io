@@ -1,0 +1,55 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0052)http://www.dccia.ua.es/j2ee/mensajes/apuntes/ejercicios3.htm -->
+<HTML><HEAD><TITLE>Mensajes en Java</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=iso-8859-1">
+<META content=Sco name=Author><LINK href="sesion1_archivos/apuntes.css"
+type=text/css rel=stylesheet>
+<META content="MSHTML 5.50.4134.100" name=GENERATOR></HEAD>
+<BODY>
+<H1>JMS (2)</H1>
+
+<P><B>5. XMLMessage en Pub/sub . </B> WebLogic icorpora como extensión la clase <B>XMLMessage</B>
+para el manejo de mensajes XML. En el fondo, esta es una clase de <B>TextMessage</B> con lo cual
+el envío y recepción de mensajes se realizan a través de <B>setText()</B> y <B>getText()</B> 
+respectivamente.</P>
+<P>El fichero <A href="sesion23_archivos/jms/xml.tgz.gz">xml.tgz</A> contiene el package
+<B>examples.jms.xml</B> en el que hemos desarrollado un cliente, codificado en el fichero
+<A href="sesion23_archivos/jms/xml/ClientSend.java.txt">ClientSend.java</A> que pide datos al usuario
+para construir un fichero XML con el siguiente formato:</P>
+<PRE class=codigo>
+&lt;order>
+   &lt;item>
+     &lt;id> CD-100 &lt;/id>
+     &lt;name> Making Movies &lt;/name>
+     &lt;price> 12 Euro &lt;/price>
+   &lt;/item>
+   &lt;item>
+     &lt;id> CD-120 &lt;/id>
+     &lt;name> Tubular Bells &lt;/name>
+     &lt;price> 20 Euro &lt;/price>
+   &lt;/item>
+   ...
+&lt;/order>
+</PRE>
+<P>Una vez construido el <B>XMLMessage</B>, lo envía a una cola (mecanismo PTP). El cliente
+<A href="sesion23_archivos/jms/xml/ClientReceive.java.txt">ClientReceive.java</A> lo recoge de la
+cola y llama al parser XML implementado
+<A href="sesion23_archivos/jms/xml/RequestHandler.java.txt">RequestHandler.java</A>, código que
+acaba extrayendo el contenido del mensaje XML en un objeto de la clase 
+<A href="sesion23_archivos/jms/xml/Item.java.txt">Item.java</A> que se muestra como salida del
+cliente.</P>
+<P>En este ejercicio se pide:</P>
+<P><B>a)</B> Permitir que un item del mensaje XML contenga un campo 
+&lt;description> ... &lt;description>. Esto implica modificar el cliente que construye el 
+mensaje y el cliente que lo recibe (incluído el parser), así como la clase que almacena items.</P>
+<P><B>b)</B> Modificar el mecanismo PTP para que sea Pub/sub en modo asíncrono.</P>
+<P>Los nuevos programas que formarán parte del package <B>examples.jms.xml</B> se llamarán:
+<I>ClientSend2.java</I>, <I>ClientReceive2.java</I> y
+<I>RequestHandler2.java</I> y se entregarán en el zip <I>Ejercicio5.java</I></P>
+
+<P><B>6. Ejemplo de Servlet. </B> Probar el ejemplo <B>examples.jms.sender.SenderServlet</B> que 
+muestra como enviar mensajes desde un servlet a clientes PTP o Pub/Sub. Para ello hay que 
+interaccionar con los ejemplos de WebLogic: <B>examples.jms.queue.QueueReceive</B> y  
+<B>examples.jms.topic.TopicReceive</B>.</P>
+
+</BODY></HTML>

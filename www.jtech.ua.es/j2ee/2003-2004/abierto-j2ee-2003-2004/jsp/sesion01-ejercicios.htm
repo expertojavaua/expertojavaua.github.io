@@ -1,0 +1,73 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+	<title>Ejercicios de JSP Básico</title>
+	<link rel="stylesheet" href="../apuntes.css" type="text/css">
+</head>
+
+<body>
+
+<h1>Ejercicios de JSP Básico</h1>
+<p>
+1. <b>Conversor JSP.</b> Crear una versión JSP de la aplicación conversor que teníais
+en el tema de servidores web. La aplicación será una única página JSP a la que:
+<ul>
+<li>Si se le llama sin que exista un parametro HTTP <code>numero</code>, mostrará
+el formulario para introducir la cantidad de euros</li>
+<li>Si se la llama con un parámetro  HTTP <code>numero</code> tomará el valor del
+parámetro, realizará la conversión euros/pesetas y la mostrará en pantalla.
+</ul>
+Una vez realizada la parte básica, añadirle tratamiento de errores, de manera
+que si se produce una excepción en la página <code>conversor.jsp</code> se salte a la
+página de error, <code>error.jsp</code> (que también debéis crear). En caso de que la cantidad que
+representa el parámetro <code>numero</code> sea negativa lanzar una excepcion
+con el mensaje de error deseado (<code>throw new Exception("La cantidad no es correcta")</code>). Imprimir dicho mensaje desde la página de error.
+<p></p>
+
+<p>
+2. <b>Contador de visitas.</b> crear un fragmento de código JSP que sirva 
+como contador de visitas. El objetivo es poder incluir este código 
+en otras páginas JSP, por lo que no es necesario (ni conveniente) 
+que sea una página web completa, sino solo el texto del contador. Este
+debe aparecer con texto HTML en negrita similar al siguiente
+<p>
+<b> Esta página ha sido visitada X veces </b>
+</p>
+<p>
+Valorar si sería más conveniente emplear la directiva <code>include</code> 
+o la acción del mismo nombre. El código debe poder incluirse en distintas páginas de
+forma que cada una tenga un contador propio.
+</p>
+<b>(OPCIONAL)</b> Una vez se tenga funcionando el contador básico, mejorarlo haciendo que 
+    el número de visitas se conserve, aunque el servidor se apague o se descargue 
+    el JSP de la memoria. Para ello, tener en cuenta que:
+  <ul>
+    <li>El n&uacute;mero de visitas se puede guardar en un fichero con el nombre 
+      de la p&aacute;gina. Para simplificar, se puede suponer que en la página principal
+	  se define una variable "nombrePag" de tipo String con el nombre del fichero.
+	  No obstante, este se podría obtener a partir del m&eacute;todo <code>getRequestURI()</code> 
+      del objeto impl&iacute;cito <code>request</code> (este m&eacute;todo devuelve 
+      la URI completa de la p&aacute;gina actual, de la que habr&aacute; que extraer 
+      el nombre del fichero).</li>
+    <li>Habrá que sobreescribir los métodos <code>public void jspInit()</code> 
+      y <code>public void jspDestroy()</code>, que se ejecutan, respectivamente, 
+      cuando la página se carga por primera vez y cuando se destruye por falta 
+      de memoria o porque se apaga el servidor. Al llamar a <code>jspDestroy</code> 
+      se debe guardar el n&uacute;mero de visitas en el fichero, y cargarlo cuando 
+      se realice el <code>jspInit</code>.</li>
+  </ul>
+<p></p> 
+<p> 3.<b> (OPCIONAL) Identificador del usuario</b>. desarrollar c&oacute;digo 
+  JSP (debe poderse incluir en cualquier p&aacute;gina) que muestre datos b&aacute;sicos 
+  del usuario: <b>IP</b> desde donde se conecta y <b>nombre</b> de usuario (si 
+  se ha autentificado en la aplicaci&oacute;n). El nombre de usuario se puede 
+  obtener del m&eacute;todo <code>getRemoteUser()</code> en el objeto impl&iacute;cito 
+  <code>request</code>. Se debe poder controlar de manera sencilla desde la p&aacute;gina 
+  principal el color en que aparece la informaci&oacute;n. Incluir este c&oacute;digo 
+  dentro de la p&aacute;gina <tt>restringida.html</tt> que ten&eacute;is en la 
+  aplicaci&oacute;n seguridad incluida en las plantillas de la sesi&oacute;n.</p>
+</body>
+</html>

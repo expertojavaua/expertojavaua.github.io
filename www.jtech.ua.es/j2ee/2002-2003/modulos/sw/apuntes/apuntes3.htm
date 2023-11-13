@@ -1,0 +1,1098 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+  <title>Tema 3: Creaci&oacute;n de Servicios Web</title>
+                                    
+  <meta content="text/html; charset=iso-8859-1"
+ http-equiv="Content-Type">
+                   
+  <link href="http://www.jtech.ua.es/j2ee/2002-2003/sw/apuntes/apuntes.css" rel="stylesheet" type="text/css">
+                     
+  <meta content="Microsoft FrontPage 4.0" name="GENERATOR">
+<link href="../../../apuntes.css" rel="stylesheet" type="text/css">
+</head>
+  <body bgcolor="#ffffff" text="#000000">
+ 
+<h1>3. Creaci&oacute;n de Servicios Web</h1>
+ 
+<p>Vamos a crear nuestros propios Servicios Web, que ofrecer&aacute;n una serie 
+  de m&eacute;todos a los que se podr&aacute; llamar mediante RPC desde cualquier 
+  lugar de Internet mediante protocolos est&aacute;ndar (mensajes SOAP).</p>
+<p>Deberemos por lo tanto ser capaces de interpretar en nuestras aplicaciones 
+  los mensajes SOAP entrantes de petici&oacute;n para la invocaci&oacute;n de 
+  un m&eacute;todo. Posteriormente, invocaremos el m&eacute;todo solicitado, y 
+  con el resultado que nos devuelva deberemos construir un mensaje SOAP de respuesta 
+  y devolv&eacute;rselo al cliente.</p>
+<p>Si tuvi&eacute;semos que introducir nosotros el c&oacute;digo para interpretar 
+  este mensaje de entrada, y generar manualmente el mensaje de respuesta, el desarrollo 
+  de Servicios Web ser&iacute;a una tarea altamente costosa.</p>
+<p>Es m&aacute;s, si se forzase al programador a componer el mensaje SOAP manualmente 
+  cada vez que desarrolle un Servicio Web, es muy probable que cometa alg&uacute;n 
+  error y no respete exactamente el est&aacute;ndar SOAP. Esto ser&iacute;a un 
+  grave problema para la interoperabilidad de los Servicios Web, que es una de 
+  las caracter&iacute;sticas que perseguimos con esta tecnolog&iacute;a.</p>
+<p>Para evitar estos problemas, utilizaremos librer&iacute;as que nos permitan 
+  leer o generar mensajes SOAP para la invocaci&oacute;n de m&eacute;todos remotos 
+  (RPC), como es el caso de la API JAX-RPC. </p>
+<p>Adem&aacute;s, para facilitar a&uacute;n m&aacute;s la tarea de desarrollar 
+  Servicios Web, normalmente contaremos con herramientas que a partir de las clases 
+  que implementan nuestro servicio generen autom&aacute;ticamente todo el c&oacute;digo 
+  necesario para leer el mensaje SOAP de entrada, invocar el m&eacute;todo, escribir 
+  el mensaje SOAP de salida, y devolverlo al cliente.</p>
+<p>Por lo tanto, nosotros deberemos centrarnos &uacute;nicamente en la tarea de 
+  programar la funcionalidad que implementan nuestros servicios, olvid&aacute;ndonos 
+  del mecanismo de invocaci&oacute;n de &eacute;stos.</p>
+<p>JAX-RPC es una especificaci&oacute;n est&aacute;ndar de Sun Microsystems, pero 
+  no todos los servidores de aplicaciones utilizan esta librer&iacute;a para gestionar 
+  los Servicios Web. Por ejemplo, es el caso de Weblogic, que define su propia 
+  API para implementar los Servicios Web.</p>
+<h2>3.1 Arquitectura de los Servicios Web orientados a RPC</h2>
+<p>En las aplicaciones basadas en JAX-RPC encontramos los siguientes elementos:</p>
+<ul>
+  <li><strong>Servicio</strong>: Elemento del servidor que implementa la funcionalidad 
+    de nuestro servicio. Normalmente utilizaremos una clase Java o un EJB.</li>
+  <li><strong>Cliente</strong>: Aplicaci&oacute;n cliente que invoca los m&eacute;todos 
+    del servicio remoto. La localizaci&oacute;n del servicio ser&aacute; transparente 
+    para el desarrollador de esta aplicaci&oacute;n, que invocar&aacute; los m&eacute;todos 
+    del servicio de la misma forma que si &eacute;ste fuese local.</li>
+  <li><strong>Stub</strong>: Capa en el cliente que implementa la interfaz del 
+    servicio, y utiliza internamente JAX-RPC para construir los mensajes SOAP 
+    necesarios para invocar cada m&eacute;todo de la interfaz, y para leer el 
+    mensaje de respuesta que recibamos. Este <em>stub</em> ser&aacute; el sustituto 
+    del servicio en el lado del cliente, la aplicaci&oacute;n cliente ejecutar&aacute; 
+    en &eacute;l los m&eacute;todos que ofrece el servicio, haciendo de esta forma 
+    transparente la localicaci&oacute;n del servicio para ella.</li>
+  <li><strong>Tie</strong>: Capa en el servidor que decodificar&aacute; los mensajes 
+    SOAP entrantes con destino a nuestro servicio, y leer&aacute; de ellos el 
+    m&eacute;todo que se quiere invocar y los par&aacute;metros de entrada que 
+    se proporcionan. Esta capa acceder&aacute; al componente (clase Java o EJB) 
+    que implementa nuestro servicio, ejecutando dicho m&eacute;todo en &eacute;l. 
+    Una vez obtenido el resultado, generar&aacute; un mensaje SOAP de respuesta 
+    y lo devolver&aacute; al cliente. </li>
+  <li><strong>JAX-RPC</strong>: Librer&iacute;a que nos permitir&aacute; analizar 
+    y componer mensajes SOAP orientados a RPC, y enviarlos a trav&eacute;s de 
+    protocolo HTTP. Adem&aacute;s proporciona <em>listeners</em> y <em>servlets</em> 
+    que permanecer&aacute;n a la escucha en el servidor para recibir mensajes 
+    entrantes de peticiones a los servicios. Una vez recibida una petici&oacute;n, 
+    utilizar&aacute; la capa <strong>Tie</strong> del servicio correspondiente 
+    para invocarlo, proporcion&aacute;ndole a esta capa el mensaje SOAP entrante. 
+    A diferencia de las capas anteriores, que son espec&iacute;ficas para un servicio 
+    concreto, la librer&iacute;a JAX-RPC es gen&eacute;rica, nos servir&aacute; 
+    para cualquier servicio orientado a RPC.</li>
+</ul>
+<center><img src="imagenes/jaxrpc.gif" width="259" height="115"></center>
+<p class="caption">Figura 1. Arquitectura de JAX-RPC</p>
+<p>Las &uacute;nicas capas que debemos implementar nosotros son el <strong>Cliente</strong> 
+  y el <strong>Servicio</strong>. En la implementaci&oacute;n de estos componentes 
+  el uso de la librer&iacute;a JAX-RPC ser&aacute; totalmente transparente para 
+  nosotros. No har&aacute; falta que introduzcamos c&oacute;digo JAX-RPC dentro 
+  de ellas. En el servicio simplemente implementaremos los m&eacute;todos que 
+  queremos que ofrezca nuestro servicio, como si se tratase de cualquier clase 
+  Java, y en el cliente podremos invocar los m&eacute;todos de este servicio como 
+  si invoc&aacute;semos directamente los m&eacute;todos de la clase Java.</p>
+<p>Las capas <strong>Stub</strong> y <strong>Tie</strong>, son capas construidas 
+  a medida para la interfaz de nuestro servicio. Est&aacute;s son las capas que 
+  utilizar&aacute;n JAX-RPC para generar y leer los mensajes SOAP que vamos a 
+  utilizar para invocar el servicio, y devolver la respuesta al cliente. Generar&aacute;n 
+  o ser&aacute;n capaces de leer los mensajes apropiados para el caso concreto 
+  de los m&eacute;todos que definimos en nuestro servicio, por lo que deberemos 
+  generar estas capas para cada servicio que desarrollemos. Afortunadamente, normalmente 
+  contaremos con herramientas que generen de forma autom&aacute;tica estas capas 
+  a partir de la interfaz de nuestro servicio, por lo que no ser&aacute; necesario 
+  que el desarrollador de servicios trate directamente con JAX-RPC en ning&uacute;n 
+  momento.</p>
+<h2>3.2 Tipos de datos compatibles</h2>
+<p>Vamos a ver los tipos de datos que podemos utilizar cuando trabajamos con JAX-RPC 
+  como tipo de los par&aacute;metros y del valor devuelto por los m&eacute;todos 
+  de nuestro servicio.</p>
+<p>Podremos utilizar cualquiera de los tipos b&aacute;sicos de Java:</p>
+<pre class="codigo">boolean
+byte
+double
+float
+int
+long
+short
+char</pre>
+<p>Adem&aacute;s, tambi&eacute;n podremos utilizar cualquiera de los <em>wrappers</em> 
+  de estos tipos b&aacute;sicos:</p>
+<pre class="codigo">java.lang.Boolean
+java.lang.Byte
+java.lang.Double
+java.lang.Float
+java.lang.Integer
+java.lang.Long
+java.lang.Short
+java.lang.Character</pre>
+<p>Las siguientes clases de Java tambi&eacute;n son aceptadas como tipos v&aacute;lidos 
+  por JAX-RPC:</p>
+<pre class="codigo">java.lang.String
+java.math.BigDecimal
+java.math.BigInteger
+java.util.Calendar
+java.util.Date </pre>
+<p>Podremos utilizar tambi&eacute;n gran parte de las clases pertenecientes al 
+  marco de colecciones de Java:</p>
+<pre class="codigo"><strong>Listas: List</strong> 
+ArrayList 
+LinkedList 
+Stack 
+Vector 
+<strong>Mapas: Map</strong> 
+HashMap 
+Hashtable 
+Properties 
+TreeMap 
+<strong>Conjuntos: Set</strong> 
+HashSet 
+TreeSet 
+</pre>
+<p>Adem&aacute;s de estos datos, se permitir&aacute; el uso de <em>arrays</em>, 
+  tanto unidimensionales como multidimensionales, cuyos elementos podr&aacute;n 
+  ser de cualquiera de los tipos admitidos.</p>
+<p>Las clases desarrolladas por nosotros tambi&eacute;n podr&aacute;n ser usadas 
+  si cumplen ciertas condiciones:</p>
+<ul>
+  <li>Debe tener un constructor <em>void</em> p&uacute;blico (sin par&aacute;metros).</li>
+  <li>No debe implementar la interfaz RMI <em>javax.rmi.Remote</em>.</li>
+  <li>Todos sus campos deben ser tipos soportados por JAX-RPC. Estos campos pueden 
+    ser p&uacute;blicos, protegidos o privados. Para que JAX-RPC sea capaz de 
+    leer o establecer los valores de estos campos deber&aacute; cumplirse que: 
+    <ul>
+      <li>Los campos p&uacute;blicos no deben ser ni <em>final</em> ni <em>transient</em>.</li>
+      <li>Los campos no p&uacute;blicos deben tener sus correspondientes m&eacute;todos 
+        <em>get*</em> y <em>set*</em>. </li>
+    </ul>
+  </li>
+</ul>
+<p>Si nuestros tipos de datos no cumplen estas caracter&iacute;sticas, o bien 
+  estamos trabajando con herramientas que no soportan estos tipos, deberemos construir 
+  manualmente serializadores y deserializadores para nuestras clases. Su funci&oacute;n 
+  ser&aacute; realizar la conversi&oacute;n entre nuestra clase Java y su correspondiente 
+  formato como documento XML.</p>
+<h2>3.3 Creaci&oacute;n de servicios con WSDP</h2>
+<p>Vamos a crear paso a paso un Servicio Web utilizando las herramientas que nos 
+  ofrece Java Web Services Developer Pack 1.1. </p>
+<h3>3.3.1 Implementaci&oacute;n del servicio</h3>
+<p>El primer paso ser&aacute; implementar nuestro servicio. Primero deberemos 
+  definir la interfaz de nuestro servicio. Utilizaremos para ello una interfaz 
+  remota (RMI) en la que se definen todos los m&eacute;todos que va a ofrecer 
+  nuestro servicio:</p>
+<pre class="codigo">package utils;
+
+
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+
+
+public interface <strong>ConversionIF</strong> extends Remote {
+  public int <strong>euro2ptas</strong>(double euro) throws RemoteException;
+  public double <strong>ptas2euro</strong>(int ptas) throws RemoteException;
+}</pre>
+<p>Una vez hecho esto, definiremos una clase Java que implemente dicha interfaz, 
+  con un constructor <em>void</em> (si no se especifica constructor, por defecto 
+  se crear&aacute; un constructor <em>void</em>), y con la implementaci&oacute;n 
+  de todos los m&eacute;todos p&uacute;blicos definidos en la interfaz:</p>
+<pre class="codigo">package utils;
+
+
+public class <strong>ConversionImpl</strong> implements <strong>ConversionIF</strong> {
+
+  public int <strong>euro2ptas</strong>(double euro) {
+    return (int) (euro * 166.386);
+  }
+
+  public double <strong>ptas2euro</strong>(int ptas) {
+    return ((double) ptas) / 166.386;
+  }
+}</pre>
+<p>Con esto ya habremos implementado el servicio. Ahora deberemos compilar estas 
+  clases de la misma forma que compilamos cualquier clase Java.</p>
+<h3>3.3.2 Crear el contexto</h3>
+<p>Una vez implementadas nuestras clases del servicio deberemos crear la estructura 
+  de directorios adecuada para Tomcat. Crearemos un directorio <em>WEB-INF</em>, 
+  y copiaremos las clases generadas al directorio <em>WEB-INF/classes</em>. En 
+  nuestro caso tendremos:</p>
+<pre class="codigo">WEB-INF/classes/utils/ConversionImpl.java
+WEB-INF/classes/utils/ConversionIF.java</pre>
+<p>Adem&aacute;s deberemos definir el descriptor de despliegue <em>WEB-INF/web.xml</em> 
+  de la misma forma que lo hac&iacute;amos para cualquier Aplicaci&oacute;n Web:</p>
+<pre class="codigo">&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot;?&gt;
+&lt;!DOCTYPE web-app
+  PUBLIC &quot;-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN&quot;
+  &quot;http://java.sun.com/dtd/web-app_2_3.dtd&quot;&gt;
+&lt;web-app&gt;
+  &lt;display-name&gt;Servicio Web de conversion&lt;/display-name&gt;
+  &lt;description&gt;
+    Servicio web para la conversion de Euros a Ptas
+  &lt;/description&gt;
+&lt;/web-app&gt;</pre>
+<p>Adem&aacute;s de este descriptor de despliegue perteneciente a la especificaci&oacute;n 
+  est&aacute;ndar de J2EE, deberemos generar un fichero de configuraci&oacute;n 
+  de nuestro Servicio Web perteneciente a nuestra implementaci&oacute;n concreta 
+  de las herramientas para la generaci&oacute;n de servicios. Este fichero no 
+  est&aacute;ndar es <em>WEB-INF/jaxrpc-ri.xml</em>, y tendr&aacute; la siguiente 
+  forma:</p>
+<pre class="codigo">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;webServices
+  xmlns=&quot;http://java.sun.com/xml/ns/jax-rpc/ri/dd&quot;
+  version=&quot;1.0&quot;
+  targetNamespaceBase=&quot;http://rvg.ua.es/wsdl&quot;
+  typeNamespaceBase=&quot;http://rvg.ua.es/types&quot;
+  urlPatternBase=&quot;/ws&quot;&gt;
+
+<span class="codigo">  &lt;endpoint
+<strong>    name</strong>=&quot;Conversion&quot;
+<strong>    displayName</strong>=&quot;Conversion Euro-Ptas&quot;
+<strong>    description</strong>=&quot;Servicio Web de conversion entre Euros y Ptas&quot; 
+<strong>    interface</strong>=&quot;utils.ConversionIF&quot; 
+<strong>    implementation</strong>=&quot;utils.ConversionImpl&quot;/&gt; 
+   
+  &lt;endpointMapping
+<strong>    endpointName</strong>=&quot;Conversion&quot;
+<strong>    urlPattern</strong>=&quot;/conversion&quot;/&gt;
+
+</span>&lt;/webServices&gt;</pre>
+<p>Dentro de la etiqueta <em>endpoint</em> especificaremos la informaci&oacute;n 
+  del servicio. Le podemos dar un nombre que lo identifique, un nombre para mostrar 
+  al usuario, una descripci&oacute;n detallada, y deberemos especificar tanto 
+  la interfaz del servicio como la clase que lo implementa.</p>
+<p>En la etiqueta <em>endpointMapping</em> le diremos a que URL mapear un determinado 
+  <em>endpoint</em> de los definidos anteriormente. Le diremos el nombre del <em>endpoint</em> 
+  (servicio), y la direcci&oacute;n a la que queremos mapearlo. En este caso le 
+  decimos que lo mapee a la ruta <em>/conversion</em>, por lo que para acceder 
+  a &eacute;l tendremos que especificar esta ruta dentro del contexto donde lo 
+  hayamos desplegado.</p>
+<p>Una vez hemos creado la estructura de directorios correcta y los ficheros necesarios, 
+  empaquetaremos este servicio en un fichero WAR:</p>
+<pre class="codigo">jar cvf conv.war *</pre>
+<h3>3.3.3 Generar la capa Tie y la descripci&oacute;n WSDL</h3>
+<p>En este fichero WAR que hemos creado, tenemos la implementaci&oacute;n de nuestro 
+  servicio, y un fichero <em>WEB-INF/jaxrpc-ri.xml</em> que describe dicho servicio, 
+  pero faltan componentes para que este servicio pueda funcionar. </p>
+<p>Necesitaremos una capa <strong>Tie</strong> que se encargue de invocar el servicio 
+  cuando llegue una petici&oacute;n SOAP al servidor, y que posteriormente genere 
+  una respuesta y la env&iacute;e de vuelta al cliente. Esta capa se generar&aacute; 
+  con la herramienta <em>wsdeploy</em>, que utilizar&aacute; el fichero de configuraci&oacute;n 
+  <em>WEB-INF/jaxrpc-ri.xml</em> para conocer los datos de nuestro servicio. Utilizaremos 
+  esta herramienta de la siguiente forma:</p>
+<pre class="codigo"><strong>wsdeploy</strong> -o conv-deploy.war conv.war</pre>
+<p>Con ello generaremos un nuevo fichero WAR, especificado mediante la opci&oacute;n 
+  <em>-o</em>, que ya estar&aacute; listo para deplegar, con todas las capas necesarias 
+  para invocar nuestro servicio. Adem&aacute;s, habr&aacute; generado un documento 
+  WSDL que podremos utilizar para invocar nuestro servicio desde otras plataformas. 
+  Podemos ver todo el contenido generado si desempaquetamos este nuevo WAR.</p>
+<h3>3.3.4 Despliegue del servicio</h3>
+<p>Una vez tenemos el fichero WAR con todos los componentes necesarios, podemos 
+  desplegarlo en Tomcat de la misma forma que cualquier otra Aplicaci&oacute;n 
+  Web. Podemos simplemente copiar el fichero WAR en el directorio de aplicaciones 
+  de Tomcat, que ser&aacute; <em>{jwsdp.home}/webapps</em>. Si el fichero WAR 
+  que hemos copiado se llama <em>conv-deploy.war</em>, entonces podremos acceder 
+  a informaci&oacute;n sobre nuestro servicio escribiendo la siguiente direcci&oacute;n 
+  en el navegador:</p>
+<pre class="codigo">http://localhost:8080/conv-deploy/<strong>conversion</strong></pre>
+<p>Desde esta p&aacute;gina podremos ver informaci&oacute;n sobre el <em>endpoint</em> 
+  y el puerto al que conectarnos, adem&aacute;s de proporcionarse un enlace al 
+  fichero WSDL que describe el servicio. A partir de este fichero otros desarrolladores 
+  podr&aacute;n construir aplicaciones sobre cualquier plataforma que utilicen 
+  nuestro servicio.</p>
+<h3>3.3.5 Elementos generados por wsdeploy</h3>
+<p>Con el paso anterior habremos terminado de desplegar nuestro servicio, pero 
+  podemos estar interesados en conocer qu&eacute; es lo que ha generado <em>wsdeploy</em> 
+  de forma transparente. Podemos ver esto si desempaquetamos el WAR, y vemos el 
+  contenido que tiene nuestro servicio, o bien en la invocaci&oacute;n de <em>wsdeploy</em> 
+  especificar las siguientes opciones:</p>
+<pre class="codigo">wsdeploy -o conv-deploy.war conv.war -<strong>tmpdir</strong> generado -<strong>keep</strong></pre>
+<p>De esta forma le estamos diciendo con <em>-tmpdir</em> que use como directorio 
+  temporal para guardar los elementos generados el directorio especificado, y 
+  con <em>-keep</em> le decimos que no borre este material una vez haya terminado.</p>
+<p>Si accedemos al directorio donde ha generado el c&oacute;digo vemos los siguientes 
+  elementos:</p>
+<ul>
+  <li><strong>Fichero WSDL</strong>: Fichero WSDL con una descripci&oacute;n independiente 
+    de la plataforma de nuestro servicio. En este fichero no se incluye la URL 
+    del <em>endpoint</em> de nuestro servicio, ya que esta informaci&oacute;n 
+    no se conocer&aacute; hasta que no se haya desplegado. Una vez desplegado, 
+    si lo consultamos desde la web si que aparecer&aacute; esta direcci&oacute;n, 
+    gener&aacute;ndola din&aacute;micamente el servidor.</li>
+</ul>
+<pre class="codigo">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+<span class="codigo">&lt;definitions name=&quot;Conversion&quot; 
+  targetNamespace=&quot;http://rvg.ua.es/wsdl/Conversion&quot;    
+  xmlns:tns=&quot;http://rvg.ua.es/wsdl/Conversion&quot; 
+  xmlns=&quot;http://schemas.xmlsoap.org/wsdl/&quot;    
+  xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot; 
+  xmlns:soap=&quot;http://schemas.xmlsoap.org/wsdl/soap/&quot;&gt;
+&lt;types/&gt;
+&lt;message name=&quot;ConversionIF_euro2ptas&quot;&gt;
+  &lt;part name=&quot;double_1&quot; type=&quot;xsd:double&quot;/&gt;&lt;/message&gt;
+&lt;message name=&quot;ConversionIF_euro2ptasResponse&quot;&gt;
+  &lt;part name=&quot;result&quot; type=&quot;xsd:int&quot;/&gt;&lt;/message&gt;
+&lt;message name=&quot;ConversionIF_ptas2euro&quot;&gt;
+  &lt;part name=&quot;int_1&quot; type=&quot;xsd:int&quot;/&gt;&lt;/message&gt;
+&lt;message name=&quot;ConversionIF_ptas2euroResponse&quot;&gt;
+  &lt;part name=&quot;result&quot; type=&quot;xsd:double&quot;/&gt;&lt;/message&gt;
+&lt;portType name=&quot;ConversionIF&quot;&gt;
+  &lt;operation name=&quot;euro2ptas&quot; parameterOrder=&quot;double_1&quot;&gt;
+    &lt;input message=&quot;tns:ConversionIF_euro2ptas&quot;/&gt;
+    &lt;output message=&quot;tns:ConversionIF_euro2ptasResponse&quot;/&gt;
+  &lt;/operation&gt;
+  &lt;operation name=&quot;ptas2euro&quot; parameterOrder=&quot;int_1&quot;&gt;
+    &lt;input message=&quot;tns:ConversionIF_ptas2euro&quot;/&gt;
+    &lt;output message=&quot;tns:ConversionIF_ptas2euroResponse&quot;/&gt;
+  &lt;/operation&gt;
+&lt;/portType&gt;
+&lt;binding name=&quot;ConversionIFBinding&quot; type=&quot;tns:ConversionIF&quot;&gt;
+  &lt;operation name=&quot;euro2ptas&quot;&gt;
+    &lt;input&gt;
+      &lt;soap:body 
+      encodingStyle=&quot;http://schemas.xmlsoap.org/soap/encoding/&quot;    
+      use=&quot;encoded&quot; namespace=&quot;http://rvg.ua.es/wsdl/Conversion&quot;/&gt;
+    &lt;/input&gt;
+    &lt;output&gt;
+      &lt;soap:body 
+      encodingStyle=&quot;http://schemas.xmlsoap.org/soap/encoding/&quot;    
+      use=&quot;encoded&quot; namespace=&quot;http://rvg.ua.es/wsdl/Conversion&quot;/&gt;
+    &lt;/output&gt;
+    &lt;soap:operation soapAction=&quot;&quot;/&gt;
+  &lt;/operation&gt;
+  &lt;operation name=&quot;ptas2euro&quot;&gt;
+    &lt;input&gt;
+      &lt;soap:body 
+      encodingStyle=&quot;http://schemas.xmlsoap.org/soap/encoding/&quot;
+      use=&quot;encoded&quot; namespace=&quot;http://rvg.ua.es/wsdl/Conversion&quot;/&gt;
+    &lt;/input&gt;
+    &lt;output&gt;
+    &lt;soap:body 
+      encodingStyle=&quot;http://schemas.xmlsoap.org/soap/encoding/&quot;    
+      use=&quot;encoded&quot; namespace=&quot;http://rvg.ua.es/wsdl/Conversion&quot;/&gt;
+    &lt;/output&gt;
+    &lt;soap:operation soapAction=&quot;&quot;/&gt;
+  &lt;/operation&gt;
+  &lt;soap:binding 
+    transport=&quot;http://schemas.xmlsoap.org/soap/http&quot; style=&quot;rpc&quot;/&gt;
+  &lt;/binding&gt;
+&lt;service name=&quot;Conversion&quot;&gt;
+  &lt;port name=&quot;ConversionIFPort&quot; binding=&quot;tns:ConversionIFBinding&quot;&gt;
+    &lt;soap:address location=&quot;REPLACE_WITH_ACTUAL_URL&quot;/&gt;
+  &lt;/port&gt;
+&lt;/service&gt;
+&lt;/definitions&gt;</span></pre>
+<ul>
+  <li><strong>Nuevo descriptor de despliegue</strong>: Se habr&aacute;n hecho 
+    cambios dentro del fichero <em>web.xml</em>. En &eacute;l se a&ntilde;ade 
+    un <em>listener</em> de contexto y un <em>servlet</em> que forman parte de 
+    las clases de JAX-RPC Runtime. Este <em>servlet</em> actuar&aacute; como <em>endpoint</em> 
+    de nuestro servicio, al que le llegar&aacute; el mensaje SOAP de petici&oacute;n 
+    de servicio. Cuando le llegue un mensaje entrante, este <em>servlet</em> utilizar&aacute; 
+    la capa <strong>Tie</strong> generada para invocar el servicio. Tambi&eacute;n 
+    ser&aacute; el encargado de mostrar la p&aacute;gina con informaci&oacute;n 
+    sobre el servicio y un enlace al documento WSDL cuando accedamos a esta URL 
+    desde un navegador. Podemos ver que est&aacute; mapeado a la direcci&oacute;n 
+    que hab&iacute;amos especificado como <em>endpoint</em>, de forma que al acceder 
+    a dicha direcci&oacute;n se acceda a &eacute;l. Este <em>servlet</em> leer&aacute; 
+    la configuraci&oacute;n del fichero <em>jaxrpc-ri-runtime.xml </em>para conocer 
+    los datos del servicio que debe invocar.</li>
+</ul>
+<pre class="codigo">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE web-app PUBLIC &quot;-//Sun Microsystems, Inc.//
+    DTD Web Application    2.3//EN&quot;
+    &quot;http://java.sun.com/dtd/web-app_2_3.dtd&quot;&gt;
+&lt;web-app&gt;
+  &lt;display-name&gt;Servicio Web de conversion&lt;/display-name&gt;
+  &lt;description&gt;
+    Servicio web para la conversion de Euros a Ptas
+  &lt;/description&gt;
+  &lt;listener&gt;
+    &lt;listener-class&gt;
+      <strong>com.sun.xml.rpc.server.http.JAXRPCContextListener</strong>
+    &lt;/listener-class&gt;
+  &lt;/listener&gt;
+  &lt;servlet&gt;
+    &lt;servlet-name&gt;<strong>Conversion</strong>&lt;/servlet-name&gt;
+    &lt;display-name&gt;Conversion&lt;/display-name&gt;
+    &lt;description&gt;JAX-RPC endpoint - Conversion&lt;/description&gt;
+    &lt;servlet-class&gt;
+      <strong>com.sun.xml.rpc.server.http.JAXRPCServlet</strong>
+    &lt;/servlet-class&gt;
+    &lt;load-on-startup&gt;1&lt;/load-on-startup&gt;
+  &lt;/servlet&gt;
+  &lt;servlet-mapping&gt;
+    &lt;servlet-name&gt;<strong>Conversion</strong>&lt;/servlet-name&gt;
+    &lt;url-pattern&gt;<strong>/conversion</strong>&lt;/url-pattern&gt;
+  &lt;/servlet-mapping&gt;
+&lt;/web-app&gt;</pre>
+<ul>
+  <li><strong>Fichero de configuraci&oacute;n del servicio</strong>: Se habr&aacute; 
+    generado un nuevo fichero<em> jaxrpc-ri-runtime.xml </em>donde tendremos la 
+    configuraci&oacute;n de nuestro servicio. En &eacute;l, adem&aacute;s de la 
+    informaci&oacute;n que especificamos en el fichero <em>jaxrpc-ri.xml</em>, 
+    tendremos informaci&oacute;n sobre la clase que implementa la capa <strong>Tie</strong> 
+    del servicio, la localizaci&oacute;n del documento WSDL, y el nombre y puerto 
+    de nuestro servicio.</li>
+</ul>
+<pre class="codigo">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;endpoints 
+  xmlns='http://java.sun.com/xml/ns/jax-rpc/ri/runtime' 
+  version='1.0'&gt;
+  &lt;endpoint
+    <strong>name</strong>='Conversion'
+    <strong>interface</strong>='utils.ConversionIF'
+    <strong>implementation</strong>='utils.ConversionImpl'
+    <strong>tie</strong>='utils.ConversionIF_Tie'
+    <strong>model</strong>='/WEB-INF/Conversion_model.xml.gz'
+    <strong>wsdl</strong>='/WEB-INF/Conversion.wsdl'
+    <strong>service</strong>='{http://rvg.ua.es/wsdl/Conversion}Conversion'
+    <strong>port</strong>='{http://rvg.ua.es/wsdl/Conversion}ConversionIFPort'
+    <strong>urlpattern</strong>='/conversion'/&gt;
+&lt;/endpoints&gt;</pre>
+<ul>
+  <li><strong>Capa Tie</strong>: En el directorio <em>classes</em> se habr&aacute;n 
+    generado una serie de clases que implementan la capa <strong>Tie</strong> 
+    que se encarga de invocar a nuestro servicio cuando llega una petici&oacute;n 
+    SOAP. De esta forma, en nuestro caso encontraremos una clase <em>ConversionIF_Tie</em>. 
+    Adem&aacute;s, podremos ver una serie de clases auxiliares utilizadas para 
+    encapsular los distintos mensajes que se utilizan en las invocaciones a nuestro 
+    servicio.</li>
+</ul>
+<h3>3.3.6 Trabajar con ant</h3>
+<p>Todo lo que hemos visto anteriormente, podemos automatizarlo utilizando la 
+  herramienta <em>ant</em>. Las nuevas versiones de Tomcat nos permiten desplegar 
+  una Aplicaci&oacute;n Web en tiempo de ejecuci&oacute;n utilizando tareas de 
+  <em>ant</em>.</p>
+<p>Estas tareas no son est&aacute;ndar de <em>ant</em>, sino que las incorpora 
+  el Tomcat para interactuar din&aacute;micamente con el servidor. Por lo tanto, 
+  para poder usarlas previamente debemos declararlas, indicando la clase que implementa 
+  dichas tareas: </p>
+<pre class="codigo">&lt;taskdef name=&quot;<strong>deploy</strong>&quot; 
+  classname=&quot;org.apache.catalina.ant.DeployTask&quot; /&gt;
+&lt;taskdef name=&quot;<strong>undeploy</strong>&quot; 
+  classname=&quot;org.apache.catalina.ant.UndeployTask&quot; /&gt;
+&lt;taskdef name=&quot;<strong>list</strong>&quot; 
+  classname=&quot;org.apache.catalina.ant.ListTask&quot; /&gt;
+&lt;taskdef name=&quot;<strong>start</strong>&quot; 
+  classname=&quot;org.apache.catalina.ant.StartTask&quot; /&gt;
+&lt;taskdef name=&quot;<strong>stop</strong>&quot; 
+  classname=&quot;org.apache.catalina.ant.StopTask&quot; /&gt;</pre>
+<p>Las tareas de Tomcat que podemos utilizar son las siguientes:</p>
+<ul>
+  <li><strong>deploy</strong>: Despliega una Aplicaci&oacute;n Web de forma autom&aacute;tica, 
+    sin tener que copiar el contexto al directorio de <em>webapps</em>, ni tener 
+    que reiniciar el servidor para que la aplicaci&oacute;n se ponga en marcha. 
+    La tarea tendr&aacute; la siguiente forma:</li>
+</ul>
+<pre class="codigo">&lt;<strong>deploy</strong> <strong>url</strong>=&quot;${url}&quot; <strong>username</strong>=&quot;${username}&quot; <strong>password</strong>=&quot;${password}&quot;    
+  <strong>path</strong>=&quot;/${context-path}&quot; <strong>war</strong>=&quot;file:${war-path}&quot; 
+/&gt;
+</pre>
+<ul>
+  <li><strong>undeploy</strong>: Desinstala una Aplicaci&oacute;n Web de Tomcat. 
+    Detiene la aplicaci&oacute;n y elimina el contexto.</li>
+</ul>
+<pre class="codigo">&lt;<strong>undeploy</strong> <strong>url</strong>=&quot;${url}&quot; <strong>username</strong>=&quot;${username}&quot; <strong>password</strong>=&quot;${password}&quot;
+  <strong>path</strong>=&quot;/${context-path}&quot; 
+/&gt;
+</pre>
+<ul>
+  <li><strong>list</strong>: Obtiene una lista de las aplicaciones desplegadas 
+    en Tomcat</li>
+</ul>
+<pre class="codigo">&lt;<strong>list</strong> <strong>url</strong>=&quot;${url}&quot; <strong>username</strong>=&quot;${username}&quot; <strong>password</strong>=&quot;${password}&quot; /&gt;
+</pre>
+<ul>
+  <li><strong>start</strong>: Pone en marcha una aplicaci&oacute;n desplegada 
+    en Tomcat, que en este momento estuviese detenida.</li>
+</ul>
+<pre class="codigo">&lt;<strong>start</strong> <strong>url</strong>=&quot;${url}&quot; <strong>username</strong>=&quot;${username}&quot; <strong>password</strong>=&quot;${password}&quot; 
+  <strong>path</strong>=&quot;/${context-path}&quot; 
+/&gt;</pre>
+<ul>
+  <li><strong>stop</strong>: Detiene el funcionamiento de una aplicaci&oacute;n 
+    Tomcat, hasta que se vuelva a poner en marcha con <em>start</em>. </li>
+</ul>
+<pre class="codigo">&lt;<strong>stop</strong> <strong>url</strong>=&quot;${url}&quot; <strong>username</strong>=&quot;${username}&quot; <strong>password</strong>=&quot;${password}&quot; 
+  <strong>path</strong>=&quot;/${context-path}&quot; 
+/&gt;
+</pre>
+<p> En todas las plantillas anteriores hemos utilizado como par&aacute;metros 
+  de las tareas una serie de propiedades a las que previamente deberemos dar valor. 
+  Estas propiedades son:</p>
+<ul>
+  <li><strong>url</strong>: URL donde el gestor de Tomcat est&aacute; escuchando. 
+    Este gestor es el que nos permite enviar comandos para gestionar las aplicaciones 
+    desplegadas en Tomcat. Si tenemos Tomcat instalado en nuestra m&aacute;quina 
+    local, escuchando en el puerto 8080, se encontrar&aacute; en la siguiente 
+    URL:</li>
+</ul>
+<pre class="codigo">http://localhost:8080/<strong>manager</strong></pre>
+<ul>
+  <li><strong>username</strong>: Nombre de usuario de Tomcat.</li>
+  <li><strong>password</strong>: Password del usuario de Tomcat.</li>
+  <li><strong>context-path</strong>: Contexto de la aplicaci&oacute;n sobre la 
+    que queremos actuar.</li>
+  <li><strong>war-path</strong>: Ruta donde se encuentra el fichero WAR que queremos 
+    desplegar en Tomcat. </li>
+</ul>
+<h2>3.4 Creaci&oacute;n de servicios con Weblogic</h2>
+<p>Weblogic tambi&eacute;n nos proporcionar&aacute; herramientas para generar 
+  las capas necesarias para construir y desplegar nuestros Servicios Web. En este 
+  caso, Weblogic no implementa estas capas mediante JAX-RPC, sino que utiliza 
+  su propia librer&iacute;a. Afortunadamente no tendremos que preocuparnos por 
+  esto, ya que todos los elementos necesarios ser&aacute;n generados autom&aacute;ticamente, 
+  y por lo tanto no ser&aacute; necesario que tratemos directamente con la implementaci&oacute;n 
+  que utiliza Weblogic para los Servicios Web. Para poder utilizar todas estas 
+  herramientas, deberemos haber establecido previamente las variables de entorno 
+  de Weblogic llamando al comando :</p>
+<pre class="codigo">setWLSenv.sh</pre>
+<p>En este caso, la implementaci&oacute;n de nuestro servicio, conocida como <em>backend</em> 
+  del servicio, podr&aacute; consistir en una clase Java, un EJB o un destino 
+  JMS. Tener un servicio implementado mediante un EJB nos dar&aacute; las ventajas 
+  que tiene la utilizaci&oacute;n de estos componentes. De esta forma podemos 
+  ver los Servicios Web como otra forma de acceder a los EJBs desde una aplicaci&oacute;n 
+  cliente.</p>
+<p>A continuaci&oacute;n veremos con m&aacute;s detalle la forma de crear un Servicio 
+  Web utilizando cada uno de los diferentes elementos que sirven como <em>backend</em> 
+  del servicio. </p>
+<h3>3.4.1 A partir de una clase Java</h3>
+<p>Esta es la forma m&aacute;s r&aacute;pida y sencilla de implementar Servicios 
+  Web, sin embargo tiene ciertas limitaciones. No podremos crear hilos desde esta 
+  clase. Adem&aacute;s, el c&oacute;digo de los m&eacute;todos del servicio no 
+  deber&aacute; presentar problemas de concurrencia, ya que s&oacute;lo se mantendr&aacute; 
+  una instancia de esta clase, y todas las peticiones de servicio se dirigir&aacute;n 
+  a esta misma instancia, por lo que podremos tener m&uacute;ltiples clientes 
+  ejecutando las operaciones del servicio de forma simult&aacute;nea.</p>
+<p>Para crear el <em>backend</em> del servicio, deberemos crear una clase con 
+  un constructor <em>void</em>. Los m&eacute;todos p&uacute;blicos que definamos 
+  en esta clase ser&aacute;n las operaciones que ofrecer&aacute; el servicio. 
+  Por ejemplo, podemos implementar nuestro servicio como:</p>
+<pre class="codigo">package utils;
+
+
+public class Conversion { 
+  public <strong>Conversion</strong>() {
+  }
+
+  public int <strong>euro2ptas</strong>(double euro) {	   
+    return (int) (euro * 166.386); 
+  } 
+
+  public double <strong>ptas2euro</strong>(int ptas) { 
+    return ((double) ptas) / 166.386; 
+  }
+}</pre>
+<p>Con esto habremos implementado la funcionalidad del servicio como una clase 
+  Java ordinaria, sin necesitar tener conocimientos de ninguna librer&iacute;a 
+  adicional. Podremos compilar esta clase como cualquier clase Java. Una vez compilada, 
+  podemos utilizar las herramientas que ofrece Weblogic para generar todas las 
+  capas necesarias para ofrecer esta clase como un Servicio Web. Utilizaremos 
+  la tarea <strong>servicegen</strong> de <em>ant</em> para este fin:</p>
+<pre class="codigo">&lt;<strong>servicegen</strong>
+  <strong>destEar</strong>=&quot;sw_conv.ear&quot;
+  <strong>warName</strong>=&quot;sw_conv.war&quot;&gt;
+  &lt;<strong>service</strong>
+    <strong>javaClassComponents</strong>=&quot;utils.Conversion&quot;
+    <strong>targetNamespace</strong>=&quot;http://rvg.ua.es/ws&quot;
+    <strong>serviceName</strong>=&quot;Conversion&quot;
+    <strong>serviceURI</strong>=&quot;/conv&quot;
+    <strong>generateTypes</strong>=&quot;True&quot;
+    <strong>expandMethods</strong>=&quot;True&quot;&gt;
+  &lt;/<strong>service</strong>&gt;
+&lt;/<strong>servicegen</strong>&gt;
+</pre>
+<p>Con esto se crear&aacute; un fichero EAR desplegable en Weblogic, que contendr&aacute; 
+  el fichero WAR con la Aplicaci&oacute;n Web que contiene los servicios. Adem&aacute;s 
+  de indicar el fichero EAR y WAR que crearemos, podremos introducir tantos elementos 
+  <strong>service</strong> como servicios queramos incluir. De cada servicio indicaremos 
+  la clase Java que implementa dicho servicio, el espacio de nombres en el que 
+  lo definimos, y el nombre del servicio. Adem&aacute;s deberemos proporcionar 
+  la URI relativa al contexto donde lo desplegamos donde estar&aacute; escuchando 
+  el servicio. El atributo <em>generateTypes</em> lo que har&aacute; ser&aacute; 
+  indicar que esta herramienta genere de forma autom&aacute;tica las clases para 
+  la serializaci&oacute;n y deserializaci&oacute;n de los tipos de datos que intervengan 
+  en los mensajes del servicio y no est&eacute;n soportados directamente por la 
+  librer&iacute;a. El atributo <em>expandMethods</em> indicar&aacute; que en la 
+  descripci&oacute;n del servicio se consider&eacute; la configuraci&oacute;n 
+  de cada operaci&oacute;n por separado.</p>
+<p>Podemos utilizar tambi&eacute;n esta herramienta desde l&iacute;nea de comando, 
+  en lugar de como tarea <em>ant</em>, ejecutando el siguiente comando:</p>
+<pre class="codigo">java <strong>weblogic.webservice.servicegen</strong></pre>
+<p>Esto nos habr&aacute; generado un fichero EAR con el Servicio Web listo para 
+  desplegar en Weblogic. Desplegaremos el servicio a trav&eacute;s de la consola 
+  de administraci&oacute;n, de la misma forma que desplegamos cualquier otra aplicaci&oacute;n.</p>
+<p>Una vez desplegado, podremos acceder al servicio mediante una interfaz HTML 
+  que nos genera de forma autom&aacute;tica. Podremos encontrar el servicio en 
+  la siguiente direcci&oacute;n:</p>
+<pre class="codigo">http://localhost:7001/&lt;contexto&gt;/&lt;URI servicio&gt;</pre>
+<p>Aqu&iacute; encontraremos una interfaz web para invocar los m&eacute;todos 
+  del servicio. Adem&aacute;s podremos acceder a la descripci&oacute;n WSDL del 
+  servicio en:</p>
+<pre class="codigo">http://localhost:7001/&lt;contexto&gt;/&lt;URI servicio&gt;?WSDL</pre>
+<p>En el caso concreto de nuestro ejemplo estas direcciones ser&iacute;an:</p>
+<pre class="codigo">http://localhost:7001/sw_conv/conv
+http://localhost:7001/sw_conv/conv?WSDL</pre>
+<h3>3.4.2 A partir de un EJB</h3>
+<p>Podemos utilizar un EJB como <em>backend</em> de los servicios. Esto nos dar&aacute; 
+  las ventajas que nos ofrecen estos componentes. Podremos crear Servicios Web 
+  utilizando EJBs de sesi&oacute;n sin estado.</p>
+<p>Si en nuestra aplicaci&oacute;n necesitamos que mantenga un estado, podemos 
+  hacer que el cliente deba proporcionar un identificador en las llamadas a los 
+  m&eacute;todos, de forma que el EJB pueda determinar en cada momento de que 
+  cliente se trata, y acceder a una base de datos o a un EJB de entidad para obtener 
+  los datos correspondientes al estado del cliente con dicho identificador.</p>
+<p>Las operaciones que ofrecer&aacute; el servicio ser&aacute;n los m&eacute;todos 
+  definidos en la interfaz remota del EJB. Por ejemplo, podemos definirla como:</p>
+<pre class="codigo">package utils;
+
+import java.rmi.RemoteException;
+import javax.ejb.EJBObject;
+
+
+public interface <strong>Conversion</strong> extends <strong>EJBObject</strong> {
+<span class="codigo">  int <strong>euro2ptas</strong>(double euro) throws RemoteException;
+  double <strong>ptas2euro</strong>(int ptas) throws RemoteException;
+}</span></pre>
+<p>Por otro lado deberemos definir la interfaz home del EJB, cuyos m&eacute;todos 
+  no se ofrecer&aacute;n como operaciones del servicio, sino que servir&aacute;n 
+  unicamente para la instanciaci&oacute;n del EJB, de la cu&aacute;l no tendremos 
+  que encargarnos nosotros:</p>
+<pre class="codigo">package utils;
+
+import java.rmi.RemoteException;
+import javax.ejb.CreateException;
+import javax.ejb.EJBHome;
+
+
+public interface <strong>ConversionHome</strong> extends <strong>EJBHome</strong> {
+<span class="codigo">  Conversion <strong>create</strong>() throws CreateException, RemoteException;
+}</span></pre>
+<p>Y por &uacute;ltimo definiremos la implementaci&oacute;n del EJB, que ser&aacute; 
+  la implementaci&oacute;n de nuestro servicio en este caso:</p>
+<pre class="codigo">package utils;
+
+
+import javax.ejb.CreateException;
+import javax.ejb.SessionBean;
+import javax.ejb.SessionContext;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+
+public class <strong>ConversionBean</strong> implements <strong>SessionBean</strong> {
+
+  private SessionContext ctx;
+
+  public void ejbActivate() { }
+  public void ejbRemove() { }
+  public void ejbPassivate() { }
+  public void setSessionContext(SessionContext ctx) {
+    this.ctx = ctx;
+  }
+  public void ejbCreate () throws CreateException { }
+
+  public int <strong>euro2ptas</strong>(double euro) {
+    return (int) (euro * 166.386);
+  }
+
+  public double <strong>ptas2euro</strong>(int ptas) {
+    return ((double) ptas) / 166.386;
+  }
+<span class="codigo">}
+</span> </pre>
+<p>Una vez tengamos definidas estas clases con el c&oacute;digo del EJB que vamos 
+  a utilizar, a&ntilde;adiremos a su estructura de directorios un fichero <em>META-INF/ejb-jar.xml</em> 
+  con la configuraci&oacute;n del EJB:</p>
+<pre class="codigo">&lt;!DOCTYPE ejb-jar PUBLIC '-//Sun Microsystems, Inc.//DTD Enterprise 
+   JavaBeans    2.0//EN' 'http://java.sun.com/dtd/ejb-jar_2_0.dtd'&gt;
+<span class="codigo">&lt;!-- Generated XML! --&gt;</span>
+
+&lt;ejb-jar&gt;
+  &lt;enterprise-beans&gt;
+    &lt;session&gt;
+      &lt;ejb-name&gt;<strong>Conversion</strong>&lt;/ejb-name&gt;
+      &lt;home&gt;<strong>utils.ConversionHome</strong>&lt;/home&gt;
+      &lt;remote&gt;<strong>utils.Conversion</strong>&lt;/remote&gt;
+      &lt;ejb-class&gt;<strong>utils.ConversionBean</strong>&lt;/ejb-class&gt;
+      &lt;session-type&gt;<strong>Stateless</strong>&lt;/session-type&gt;
+      &lt;transaction-type&gt;Container&lt;/transaction-type&gt;
+    &lt;/session&gt;
+  &lt;/enterprise-beans&gt;
+
+<span class="codigo">  &lt;assembly-descriptor&gt;
+    &lt;container-transaction&gt;
+      &lt;method&gt;
+        &lt;ejb-name&gt;Conversion&lt;/ejb-name&gt;
+        &lt;method-name&gt;*&lt;/method-name&gt;
+      &lt;/method&gt;
+      &lt;trans-attribute&gt;NotSupported&lt;/trans-attribute&gt;
+    &lt;/container-transaction&gt;
+  &lt;/assembly-descriptor&gt;
+</span><span class="codigo">&lt;/ejb-jar&gt;</span></pre>
+<p>Una vez tenemos ya todos los elementos necesarios para construir el EJB, compilaremos 
+  las clases y los empaquetamos en un fichero JAR, que contendr&aacute; los siguientes 
+  ficheros:</p>
+<pre class="codigo">META-INF/ejb-jar.xml
+utils/Conversion.class
+utils/ConversionBean.class
+utils/ConversionHome.class</pre>
+<p>Una vez generado este fichero, utilizaremos el compilador de EJBs de Weblogic 
+  para que genere dentro de este paquete la informaci&oacute;n necesaria:</p>
+<pre class="codigo">java <strong>weblogic.ejbc</strong> -noexit &lt;jar&gt;
+</pre>
+<p>Una vez tenemos el EJB creado, deberemos crear el servicio que lo utilice. 
+  Podremos hacerlo con la tarea <strong>servicegen</strong> del <em>ant</em> (o 
+  su correspondiente comando equivalente), proporcionando la siguiente configuraci&oacute;n:</p>
+<pre class="codigo">&lt;<strong>servicegen</strong>
+  <strong>destEar</strong>=&quot;sw_conv_ejb.ear&quot;
+  <strong>warName</strong>=&quot;sw_conv_ejb.war&quot;&gt;
+  &lt;<strong>service</strong>
+    <strong>ejbJar</strong>=&quot;conv-ejb.jar&quot;
+    <strong>targetNamespace</strong>=&quot;http://rvg.ua.es/ws&quot;
+    <strong>serviceName</strong>=&quot;Conversion&quot;
+    <strong>serviceURI</strong>=&quot;/conv&quot;
+    <strong>generateTypes</strong>=&quot;True&quot;
+    <strong>expandMethods</strong>=&quot;True&quot;&gt;
+  &lt;/<strong>service</strong>&gt;
+&lt;/<strong>servicegen</strong>&gt;</pre>
+<p>De esta forma generaremos un fichero EAR que contenga el fichero JAR con el 
+  EJB, y un fichero WAR con la Aplicaci&oacute;n Web que contiene los servicios 
+  generados. Igual que en el caso de la clase Java, podremos tener tantos elementos 
+  <strong> service</strong> como servicios queramos incluir en la Aplicaci&oacute;n 
+  Web. La configuraci&oacute;n proporcionada para cada servicio es la misma que 
+  en el caso anterior, con la diferencia de que en lugar de especificar el nombre 
+  de la clase Java que implementa el servicio, indicamos el fichero JAR que contiene 
+  el EJB que actuar&aacute; como <em>backend</em> del servicio.</p>
+<p>Una vez hayamos generado este fichero EAR, el &uacute;ltimo paso ser&aacute; 
+  desplegarlo en Weblogic mediante la consola de administraci&oacute;n. Una vez 
+  hecho esto podremos acceder al servicio de la misma forma que en el caso anterior.</p>
+<h3>3.4.3 A partir de un destino JMS</h3>
+<p>Como <em>backend</em> tambi&eacute;n podremos utilizar un determinado destino 
+  JMS, pudiendo ser o bien un productor o bien un consumidor de mensajes JMS. 
+  En este caso, la implementaci&oacute;n de este <em>backend</em> ser&aacute; 
+  normalmente un EJB dirigido por mensajes.</p>
+<p>Los servicios podr&aacute;n o bien enviar datos a un destino JMS, o bien recibirlos 
+  de &eacute;l, pero no puede hacer las dos cosas. Por lo tanto, si necesitamos 
+  enviar y recibir datos, deberemos crear dos servicios: uno para enviar los datos 
+  mediante JMS, y otro para recibirlos. </p>
+<p>Estos datos pueden ser enviados o recibidos a trav&eacute;s de una cola (mensajes 
+  punto-a-punto), o a trav&eacute;s de un t&oacute;pico (mensajes uno-a-muchos). 
+  Deberemos tambi&eacute;n decidir de cu&aacute;l de estos dos tipos de destinos 
+  vamos a recibir o vamos a mandar los datos.</p>
+<pre class="codigo">&lt;<strong>servicegen</strong> 
+  <strong>destEar</strong>=&quot;jms_enviar_ptp.ear&quot; 
+  <strong>contextURI</strong>=&quot;sw_jms&quot;&gt; 
+  &lt;<strong>service</strong> 
+    <strong>JMSDestination</strong>=&quot;jms.destination.cola1&quot; 
+    <strong>JMSAction</strong>=&quot;send&quot;    
+    <strong>JMSDestinationType</strong>=&quot;queue&quot; 
+    <strong>JMSConnectionFactory</strong>=&quot;jms.connectionFactory.queue&quot;    
+    <strong>JMSOperationName</strong>=&quot;envia&quot; 
+    <strong>JMSMessageType</strong>=&quot;datos.MisDatos&quot;    
+    <strong>generateTypes</strong>=&quot;True&quot; 
+    <strong>targetNamespace</strong>=&quot;http://rvg.ua.es/sw&quot;    
+    <strong>serviceName</strong>=&quot;EnvioJMS&quot; 
+    <strong>serviceURI</strong>=&quot;/enviaJMS&quot;<strong>
+    expandMethods</strong>=&quot;True&quot;&gt; 
+  &lt;/<strong>service</strong>&gt; 
+&lt;/<strong>servicegen</strong>&gt;</pre>
+<p>En este caso especificamos el contexto en el que se desplegar&aacute; el servicio. 
+  En los casos anteriores especific&aacute;bamos un fichero WAR para empaquetar 
+  la Aplicaci&oacute;n Web, por lo que el contexto tomaba por defecto el nombre 
+  de este fichero WAR, pero en este caso indicamos directamente el nombre del 
+  contexto.</p>
+<p>Dentro de cada elemento <strong>service</strong> debemos indicar en <strong>JMSConnectionFactory</strong> 
+  y en <strong>JMSDestination</strong> el nombre JNDI de la factor&iacute;a de 
+  conexiones y del destino JMS respectivamente. La acci&oacute;n a realizar por 
+  el servicio la indicaremos en <strong>JMSAction</strong> que podr&aacute; tomar 
+  dos valores: <em>send</em> o <em>receive</em>, seg&uacute;n si queramos que 
+  sea un servicio para enviar o recibir mensajes respectivamente. <strong>JMSDestinationType</strong> 
+  podr&aacute; ser <em>queue</em> o <em>topic</em>, seg&uacute;n si queremos que 
+  sea un mensaje uno-a-uno (cola) o uno-a-muchos (t&oacute;pico). </p>
+<p>En este caso los servicios s&oacute;lo definen una operaci&oacute;n, bien para 
+  enviar o bien para recibir datos. Podemos especificar manualmente este nombre 
+  en <strong>JMSOperationName</strong>. Si no lo especificamos, el nombre de la 
+  operaci&oacute;n por defecto ser&aacute; <em>send</em> o <em>receive</em>, seg&uacute;n 
+  la acci&oacute;n especificada. Mediante <strong>JMSMessageType</strong> especificaremos 
+  el tipo de datos que intercambiar&aacute;n los mensajes. Por defecto este tipo 
+  ser&aacute; el tipo cadena (<em>String</em>).</p>
+<h2>3.5 Handlers de mensajes</h2>
+<p>Los <em>handlers</em> de mensajes son un componente que podremos utilizar para 
+  interceptar los mensajes de petici&oacute;n y respuesta de un servicio. Su funci&oacute;n 
+  es similar a la funci&oacute;n de los filtros que interceptan las peticiones 
+  al servidor web, pero actuando sobre los mensajes SOAP que se utilizan para 
+  invocar y dar la respuestas de un servicio.</p>
+<p>Posibles usos de los <em>handlers</em> son:</p>
+<ul>
+  <li><em>Encriptaci&oacute;n de los mensajes</em>: Podemos escribir un <em>handler</em> 
+    que encripte los mensajes de salida, y que desencripte los mensajes de entrada. 
+    De esta forma los datos viajar&aacute;n seguros por la red, y esta encriptaci&oacute;n 
+    ser&aacute; transparente para JAX-RPC, que ser&aacute; capaz de leer sin problemas 
+    los mensajes que le lleguen.</li>
+  <li><em>Restricci&oacute;n de acceso</em>: Podemos escribir un <em>handler</em> 
+    que evite el paso de ciertos mensajes, como por ejemplo los de usuarios no 
+    registrados. En caso de que no queramos admitir un mensaje, podemos contestar 
+    directamente mediante un mensaje de error SOAP.</li>
+  <li><em>Inspecci&oacute;n de los mensajes</em>: En el momento en que interceptamos 
+    un mensaje, podemos acceder a su contenido y consultar el mensaje que se est&aacute; 
+    enviando realmente en cada caso.</li>
+  <li><em>Registro de mensajes</em>: Si tenemos acceso al mensaje, podremos registrarlos 
+    en alguna base de datos por si necesitamos tener un registro de las operaciones 
+    que se han invocado sobre nuestro servicio.</li>
+</ul>
+<p>Estos <em>handlers</em> van a poder ser instalados tanto en el cliente como 
+  en el servidor. Sin los <em>handlers</em> no ser&iacute;amos capaces de acceder 
+  al mensaje SOAP, ya que es JAX-RPC quien se encarga de componer y analizar el 
+  mensaje de forma transparente al usuario. Por lo tanto, necesitaremos utilizar 
+  <em>handlers</em> para interceptar este mensaje, ya que de otra forma no podr&iacute;amos 
+  acceder a &eacute;l y modificarlo si hiciese falta.</p>
+<h3>3.5.1 Creaci&oacute;n de un handler</h3>
+<p>Para crear un <em>handler</em> deberemos crear una clase que implemente la 
+  interfaz <strong>Handler</strong>. Esta interfaz nos obligar&aacute; a definir 
+  una serie de m&eacute;todos con los que interceptaremos los distintos mensajes:</p>
+<ul>
+  <li><strong>handleRequest(MessageContext)</strong>: Intercepta los mensajes 
+    de petici&oacute;n SOAP al servicio.</li>
+  <li><strong>handleResponse(MessageContext)</strong>: Intercepta los mensajes 
+    de respuesta SOAP del servicio.</li>
+  <li><strong>handleFault(MessageContext)</strong>: Intercepta los mensajes de 
+    error SOAP producidos por el servicio.</li>
+</ul>
+<p>Adem&aacute;s, deberemos implementar los m&eacute;todos de inicializaci&oacute;n 
+  y destrucci&oacute;n del componente, que controlan su ciclo de vida:</p>
+<ul>
+  <li><strong>init(HandlerInfo)</strong>: Inicializa el componente. Se proporciona 
+    un objeto <strong>HandlerInfo</strong> con configuraci&oacute;n que se le 
+    puede proporcionar a este componente. Este objeto contendr&aacute; informaci&oacute;n 
+    sobre la clase del <em>handler</em>, un mapa (<strong>Map</strong>) con propiedades 
+    de configuraci&oacute;n, y la lista con los elementos de la cabecera SOAP 
+    que procesa.</li>
+  <li><strong>destroy()</strong>: Se invoca cuando el ciclo de vida del componente 
+    termina y debe ser destruido, liberando todos los recursos que estuviese utilizando.</li>
+</ul>
+<p>Adem&aacute;s tendremos que definir el siguiente m&eacute;todo:</p>
+<ul>
+  <li><strong>getHeaders()</strong>: Devolver&aacute; un <em>array</em> de objetos 
+    <strong>QName</strong> indicando los distintos elementos contenidos en la 
+    cabecera de los mensajes SOAP (<em>header</em>) que procesar este <em>handler</em>.</li>
+</ul>
+<p>Existe una forma m&aacute;s sencilla de crear un <em>handler</em>, que es heredando 
+  de <strong>GenericHandler</strong>. Esta es una clase abstracta que implementa 
+  <strong>Handler</strong> y define la mayor&iacute;a de sus m&eacute;todos. De 
+  esta forma s&oacute;lo tendremos que redefinir los m&eacute;todos para los que 
+  queramos personalizar el comportamiento, sin tener que preocuparnos del resto.</p>
+<p>Los <em>handlers</em> est&aacute;n contenidos dentro de una cadena de handlers 
+  (<strong>HandlerChain</strong>). A cada <em>handler</em> de la cadena le llegar&aacute; 
+  el resultado producido por el anterior <em>handler</em>. Podremos establecer 
+  la ordenaci&oacute;n de <em>handlers</em> dentro de esta cadena en el fichero 
+  de configuraci&oacute;n de Servicios Web. El orden de invocaci&oacute;n de los 
+  <em>handlers</em> para capturar la respuesta ser&aacute; el inverso del orden 
+  en el que se captur&oacute; la petici&oacute;n:</p>
+<center><img src="imagenes/handler-srv.gif" width="538" height="85"></center>
+<p class="caption">Figura 2. Cadena de handlers en el servidor</p>
+<p>Los m&eacute;todos para interceptar la petici&oacute;n, respuesta o error devolver&aacute;n 
+  un valor <em>booleano</em>. Seg&uacute;n lo que devuelvan estos m&eacute;todos 
+  tendremos diferentes comportamientos de la cadena:</p>
+<ul>
+  <li><strong>true</strong>: El mensaje SOAP pasa al siguiente <em>handler</em> 
+    de la cadena.</li>
+  <li><strong>false</strong>: Se bloquea la cadena de <em>handlers</em> en este 
+    punto. Ser&aacute; el <em>handler</em> actual el responsable de dar manualmente 
+    una respuesta al mensaje que le haya llegado.</li>
+  <li><strong>SOAPFaultException</strong>: Si al interceptar la petici&oacute;n 
+    <em>handleRequest</em> lanza esta excepci&oacute;n, se indica que se devuelva 
+    al cliente un mensaje de error SOAP.</li>
+  <li><strong>JAXRPCException</strong>: Indica que ha ocurrido un error en el 
+    procesamiento del mensaje.</li>
+</ul>
+<p>A estos m&eacute;todos se les pasa un objeto <strong>MessageContext</strong> 
+  como par&aacute;metro. Este objeto contiene una serie de propiedades. Podemos 
+  hacer una conversi&oacute;n <em>cast</em> de este objeto a <strong>SOAPMessageContext</strong>, 
+  que es una superclase de <strong>MessageContext</strong>, y nos proporcionar&aacute; 
+  acceso a m&aacute;s informaci&oacute;n. En &eacute;l tendremos definidos los 
+  m&eacute;todos <strong>getMessage</strong> y <strong>setMessage</strong> con 
+  los que podremos obtener el mensaje interceptado, y sustituirlo en caso de que 
+  queramos que el <em>handler</em> modifique el mensaje.</p>
+<p>Un posible esqueleto para un <em>handler</em> es el siguiente:</p>
+<pre class="codigo">public class MiHandler implements <strong>Handler</strong><br>{<br>  private <strong>HandlerInfo</strong> handlerInfo;
+
+  public void <strong>init</strong>(<strong>HandlerInfo</strong> hi) {
+    handlerInfo = hi;
+  }
+
+  public void <strong>destroy</strong>() {}
+
+  public QName[] <strong>getHeaders</strong>() {
+    return handlerInfo.<strong>getHeaders</strong>();
+  }
+
+  public boolean <strong>handleRequest</strong>(<strong>MessageContext</strong> context) { 
+    try { 
+      // Accede al mensaje SOAP de peticion
+<strong>      SOAPMessageContext</strong> smc = (<strong>SOAPMessageContext</strong>)context;    
+<strong>      SOAPMessage</strong> msg = smc.<strong>getMessage</strong>(); 
+      // Procesar mensaje SOAP
+      ...
+      // Si hemos hecho cambios, enviamos el mensaje modificado
+      smc.<strong>setMessage</strong>(msg);
+    } catch(Exception ex) { } 
+
+    return true; 
+  } 
+
+  public boolean <strong>handleResponse</strong>(<strong>MessageContext</strong> context) { 
+    try { 
+      // Accede al mensaje SOAP de respuesta
+<strong>      SOAPMessageContext</strong> smc = (<strong>SOAPMessageContext</strong>)context;    
+<strong>      SOAPMessage</strong> msg = smc.<strong>getMessage</strong>(); 
+      // Procesar mensaje SOAP
+      ...
+      // Si hemos hecho cambios, enviamos el mensaje modificado
+      smc.<strong>setMessage</strong>(msg);
+    } catch(Exception ex) { } 
+
+    return true; 
+  } 
+
+  public boolean <strong>handleFault</strong>(<strong>MessageContext</strong> context) {
+    return true;
+  }
+}</pre>
+<p>Donde una vez obtenido el mensaje podemos leerlo y/o modificarlo, seg&uacute;n 
+  la funci&oacute;n que queremos que desempe&ntilde;e el <em>handler</em>. Los 
+  m&eacute;todos devuelven <em>true</em> para indicar que se siga procesando la 
+  cadena de <em>handlers</em> de forma normal.</p>
+<h3>3.5.2 Registro de handlers con WSDP</h3>
+<p>Una vez hemos creado el <em>handler</em>, deberemos registrarlo en el servidor, 
+  de forma que cuando llegue una petici&oacute;n de invocaci&oacute;n de un servicio, 
+  sea capturada por dicho <em>handler</em>. En el pr&oacute;ximo cap&iacute;tulo 
+  veremos como registrar los <em>handlers</em> para que sean capturados en el 
+  lado del cliente.</p>
+<p>En JWSDP, registraremos un <em>handler</em> desde el fichero de configuraci&oacute;n 
+  de despliegue de los servicios <em>jaxrpc-ri.xml</em>:</p>
+<pre class="codigo">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;webServices
+  xmlns=&quot;http://java.sun.com/xml/ns/jax-rpc/ri/dd&quot;
+  version=&quot;1.0&quot;
+  targetNamespaceBase=&quot;http://rvg.ua.es/wsdl&quot;
+  typeNamespaceBase=&quot;http://rvg.ua.es/types&quot;
+  urlPatternBase=&quot;/ws&quot;&gt;
+<span class="codigo">
+  &lt;endpoint
+    name=&quot;Conversion&quot;
+    displayName=&quot;Conversion Euro-Ptas&quot;
+    description=&quot;Servicio Web de conversion entre Euros y Ptas&quot; 
+    interface=&quot;utils.ConversionIF&quot; 
+    implementation=&quot;utils.ConversionImpl&quot;&gt;
+
+    &lt;<strong>handlerChains</strong>&gt;
+      &lt;<strong>chain</strong> runAt=&quot;server&quot;&gt;
+        &lt;<strong>handler</strong> className=&quot;handler.MiHandler&quot;/&gt;
+      &lt;/<strong>chain</strong>&gt;
+    &lt;/<strong>handlerChains</strong>&gt;
+</span><span class="codigo">  &lt;/endpoint&gt; 
+
+  &lt;endpointMapping
+    endpointName=&quot;Conversion&quot;
+    urlPattern=&quot;/conversion&quot;/&gt;
+</span>&lt;/webServices&gt;</pre>
+<p>En este fichero podemos registrar una cadena de <em>handlers</em> (<strong>handlerChain</strong>) 
+  para cada <em>endpoint</em>, de forma que los <em>handlers</em> de esa cadena 
+  intercepten las peticiones a dicho <em>endpoint</em>. Dentro de esta cadena 
+  podremos registrar una serie de <em>handlers</em> (elemento <strong>chain</strong>), 
+  especificando para cada uno de ellos el nombre de la clase donde se encuentra 
+  implementado.</p>
+<p>Ser&aacute; necesario copiar esta clase al directorio <em>WEB-INF/classes</em> 
+  de la aplicaci&oacute;n, de forma que JAX-RPC sea capaz de localizar la clase 
+  cuando necesite invocar los m&eacute;todos del <em>handler</em> para notificarle 
+  de la llegada de mensajes SOAP.</p>
+<h3>3.5.3 Registro de handlers en Weblogic</h3>
+<p>En Weblogic deberemos registrar los <em>handlers</em> que queramos que intercepten 
+  los mensajes en el servidor en el fichero <em>web-services.xml</em>. Este es 
+  un fichero con la configuraci&oacute;n de despliegue de los Servicios Web, propio 
+  de la implementaci&oacute;n de Weblogic (no se trata de un est&aacute;ndar).</p>
+<p>Este fichero lo habr&aacute; generado autom&aacute;ticamente la herramienta 
+  <strong>servicegen</strong>. Si una vez generado el servicio, desempaquetamos 
+  el archivo EAR y el archivo WAR que contiene, podremos ver y editar este fichero. 
+</p>
+<p>Para a&ntilde;adir una cadena de <em>handlers</em> deberemos incluir un elemento 
+  <strong>&lt;handler-chains&gt;</strong> dentro del bloque <strong>&lt;web-services&gt;</strong>:</p>
+<pre class="codigo">&lt;web-services&gt; 
+  &lt;<strong>handler-chains</strong>&gt; 
+    &lt;<strong>handler-chain</strong> name=&quot;nombre_cadena&quot;&gt;    
+      &lt;<strong>handler</strong> class-name=&quot;handler.MiHandler&quot;/&gt; 
+    &lt;/<strong>handler-chain</strong>&gt;    
+  &lt;/<strong>handler-chains</strong>&gt;
+  ...
+&lt;/web-services&gt;</pre>
+<p>Dentro de este elemento podremos definir varias cadenas de <em>handlers</em>, 
+  y dentro de cada una de ellas podemos incluir varios <em>handlers</em>, indicando 
+  para cada uno de ellos la clase que lo implementa, que deber&aacute; encontrarse 
+  entre las clases de la Aplicaci&oacute;n Web.</p>
+<p>Por &uacute;ltimo, deberemos asociar cada cadena de <em>handlers</em> a las 
+  operaciones sobre las que queremos que act&uacute;en. Esto lo haremos creando 
+  un elemento <strong>operation</strong> dentro de <strong>operations</strong>, 
+  para cada operaci&oacute;n para la que queremos registrar un <em>handler</em> 
+  que intercepte sus mensajes.</p>
+<pre class="codigo">&lt;web-service&gt; 
+  &lt;components&gt; 
+    &lt;stateless-ejb name=&quot;Conversion&quot;&gt;    
+    ... 
+    &lt;/stateless-ejb&gt; 
+  &lt;/components&gt; 
+  &lt;operations&gt; 
+    &lt;<strong>operation</strong>    
+      <strong>name</strong>=&quot;ptas2euro&quot; 
+      <strong>method</strong>=&quot;ptas2euro&quot; 
+      <strong>component</strong>=&quot;Conversion&quot;    
+      <strong>handler-chain</strong>=&quot;nombre_cadena&quot; /&gt; 
+  &lt;/operations&gt;
+&lt;/web-service&gt;</pre>
+<p>Aqu&iacute; indicamos el <em>backend</em> que implementa el servicio (<strong>component</strong>), 
+  y el m&eacute;todo dentro de ese servicio (<strong>method</strong>) sobre el 
+  que vamos a registrar la cadena de <em>handlers</em> (<strong>handler-chain</strong>).</p>
+<p>Podemos tambi&eacute;n registrar una cadena de <em>handlers</em> que funcione 
+  de forma independiente, sin especificar ning&uacute;n <em>backend</em> sobre 
+  el que actuar:</p>
+<pre class="codigo">&lt;web-service&gt;
+  &lt;operations&gt; 
+    &lt;<strong>operation</strong> <strong>name</strong>=&quot;servicio_cadena&quot;    
+      <strong>handler-chain</strong>=&quot;nombre_cadena&quot; /&gt; 
+  &lt;/operations&gt;
+&lt;/web-service&gt;</pre>
+<p>En este caso s&oacute;lo debemos especificar la cadena de <em>handlers</em> 
+  (<strong>handler-chain</strong>).</p>
+<h2>3.6 Servicios Web seguros</h2>
+<p>Dado que los Servicios Web se despliegan como una Aplicaci&oacute;n Web, podremos 
+  a&ntilde;adir seguridad pr&aacute;cticamente de la misma forma en la que lo 
+  hac&iacute;amos para la aplicaciones. </p>
+<p><strong>Autentificaci&oacute;n</strong></p>
+<p>Podremos restringir el acceso al servicio. Esto lo podremos hacer a&ntilde;adiendo 
+  restricciones de seguridad a la URL en la que escucha, o en el caso de tratarse 
+  de un servicio implementado mediante un EJB, a&ntilde;adiendo restricciones 
+  de seguridad al EJB. Para restringir el acceso podemos a&ntilde;adir estas restricciones 
+  directamente al fichero <em>web.xml </em>de la Aplicaci&oacute;n Web que contiene 
+  el servicio, de la misma forma que las a&ntilde;ad&iacute;amos a cualquier aplicaci&oacute;n.</p>
+<p><strong>SSL</strong></p>
+<p>Adem&aacute;s, podremos utilizar SSL para codificar las llamadas a los servicios. 
+  Para ello deberemos haber configurado previamente SSL en Weblogic. De esta forma, 
+  podremos invocar los servicios tanto mediante HTTP como HTTPS. Sin embargo, 
+  si s&oacute;lo queremos permitir la comunicaci&oacute;n mediante HTTPS, deberemos 
+  indicar este protocolo en la descripci&oacute;n del servicio:</p>
+<pre class="codigo">&lt;servicegen
+  destEar=&quot;sw_conv.ear&quot;
+  warName=&quot;sw_conv.war&quot;&gt;
+  &lt;service
+    javaClassComponents=&quot;utils.Conversion&quot;
+    targetNamespace=&quot;http://rvg.ua.es/ws&quot;
+    serviceName=&quot;Conversion&quot;
+    serviceURI=&quot;/conv&quot;
+    <strong>protocol</strong>=&quot;https&quot;
+    generateTypes=&quot;True&quot;
+    expandMethods=&quot;True&quot;&gt;
+  &lt;/service&gt;
+&lt;/servicegen&gt;
+</pre>
+<p>De esta forma, los clientes s&oacute;lo podr&aacute;n acceder al servicio mediante 
+  SSL. En el pr&oacute;ximo tema veremos como crear clientes que accedan a Servicios 
+  Web seguros.</p>
+</body>
+</html>

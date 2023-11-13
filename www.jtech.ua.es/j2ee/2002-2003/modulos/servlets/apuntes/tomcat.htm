@@ -1,0 +1,451 @@
+<!-- saved from url=(0022)http://internet.e-mail -->
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+                                                            
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+                                                            
+  <meta name="Author" content="Nacho">
+                                                            
+  <meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+                                                        
+  <link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+  <title>Conceptos Previos</title>
+</head>
+  <body>
+      <b>      
+<h1>D. TOMCAT</h1>
+<h2>&nbsp;</h2>
+<h2>D.1. Introducción a Tomcat</h2>
+      </b>
+           
+      <p>Tomcat es un servidor HTTP especializado en servlets y JSP. Realizado por el equipo de desarrollo del servidor Apache, es un
+      servidor <i>open source </i>y de libre distribución. Se puede encontrar
+      información detallada sobre Tomcat, Apache, y todo el llamado
+      &quot;proyecto Jakarta&quot; en: </p>
+           
+      <p align="center"><a href="http://jakarta.apache.org">http://jakarta.apache.org</a> </p>
+           
+      <p>Tomcat abarca muchos aspectos que no vamos a tratar en este curso,
+      sobre cuestiones específicas de configuración, y otros elementos. Nos
+      limitaremos a contar lo que se necesite saber sobre Tomcat. </p>
+           
+      <p>Durante el curso utilizaremos la versión 4 de Tomcat. Esta versión
+      soporta la especificación 2.3 de servlets, y la 1.2 de JSP. Veremos a
+      continuación cómo instalarla y ejecutarla, qué elementos importantes tiene, y cómo
+      configurar una aplicación web con Tomcat. </p>
+           
+      <h4>D.1.1. Instalación</h4>
+           
+      <p>Para poder instalar Tomcat tenemos que tener instalada previamente la
+      versión 1.2 o posterior de JDK. Una vez hecho esto, deberemos tener una
+      variable de entorno JAVA_HOME que apunte al directorio donde se ha
+      instalado JDK (algunas versiones de Tomcat ya la establecen
+      automáticamente). </p>
+           
+      <p>Una vez tengamos JDK instalado, ya podemos instalar Tomcat: </p>
+           
+      <ul>
+        <li>Para <b>Windows</b>, se tiene un programa autoinstalable, que al
+      ejecutarlo pide dónde queremos instalar Tomcat.</li>
+        <li>Para <b>Unix</b>, si se dispone de una distribución binaria, se
+          debe descomprimir en el directorio donde queramos que esté Tomcat.&nbsp;</li>
+      </ul>
+      <p>Tomcat necesita además otra variable de entorno, llamada CATALINA_HOME,
+      que apunte al directorio donde está instalado Tomcat. Si no se
+      autoestablece deberemos asignarla nosotros. </p>
+           
+      <h4>D.1.2. Ejecución</h4>
+           
+      <p>Una vez tenemos instalado Tomcat, dentro del subdirectorio <i>bin</i>
+      tenemos, entre otros, dos ejecutables (ficheros <b>.bat</b> para <i>Windows</i>
+      y <b>.sh </b>para <i>Unix</i>): </p>
+           
+      <ul>
+        <li><b>startup</b>: al ejecutar este comando se <b> arranca el
+          servidor</b>.&nbsp;</li>
+      </ul>
+           
+      <ul>
+        <li><b>shutdown</b>: al ejecutar este comando se <b> detiene el
+          servidor</b>.</li>
+      </ul>
+      <p>Si al ejecutar estos programas desde MS-DOS nos aparece un error del
+      tipo &quot;<i>Sin espacio en entorno</i>&quot;, vamos a la opción de <i>Propiedades
+      </i>dentro de esa ventana de MS-DOS, y en la pestaña <i>Memoria </i>colocamos
+      un valor para <i>Entorno inicial </i>de 4096. Luego cerramos las ventanas
+      de MS-DOS que tengamos y volvemos a abrir una, que ya tendrá dicha
+      configuración. </p>
+           
+      <p>Una vez tengamos el servidor arrancado podemos probarlo con la
+      dirección raíz:</p>
+           
+        <pre class="codigo">http://localhost:8080/</pre>
+           
+      <p>Que debería mostrar una página como:</p>
+           
+      <div align="center">
+      <img border="0" src="imagenes/auxiliar/tomcatini.jpg" width="380" height="255">
+      </div>
+	   <p class="caption">Figura 1. P&aacute;gina de inicio de Tomcat</p>           
+           
+      <p>NOTA: las pruebas que hagamos, generalmente las haremos sobre nuestra propia máquina, con lo que las direcciones que
+      tecleemos tendrán la forma: </p>
+           
+        <pre class="codigo">http://localhost:8080/...</pre>
+           
+      <p>donde luego la dirección <i>localhost</i> y el puerto <i>8080</i> se
+      sustituyen en la realidad por la dirección donde coloquemos el servidor y
+      el puerto por el que establezcamos que atienda peticiones.</p>
+           
+      <p>Con algunos tipos de cambios que hagamos en las aplicaciones web que
+      tengamos en Tomcat habrá que detener el servidor y volverlo a lanzar,
+      para que Tomcat recoja dichas actualizaciones.</p>
+           
+      <h4>D.1.3. Directorios relevantes</h4>
+           
+      <p>Dentro del directorio donde hayamos instalado Tomcat, nos serán de
+      utilidad los siguientes directorios: </p>
+           
+      <ul>
+        <li><b>bin</b>: donde se encuentran los comandos para arrancar / detener
+          el servidor, aparte de otros comandos.</li>
+        <li><b>conf</b>: aquí se encuentran los ficheros de configuración. La
+          configuración central se tiene en el fichero <b>server.xml</b> donde
+          por ejemplo podremos cambiar el puerto por el que escuche Tomcat, en
+          caso de que tengamos algún conflicto de puerto.</li>
+        <li><b>logs</b>: el registro de acciones en el servidor se almacena por
+          defecto en este directorio</li>
+        <li><b>webapps</b>: directorio donde colocar las aplicaciones Web que se
+          vayan realizando.</li>
+        <li><b>common</b>: ficheros que sean globales a todas las aplicaciones
+          Web (clases Java, ficheros JAR, etc)</li>
+        <li><b>work</b>: directorio para ficheros temporales y compilaciones. Si
+          alguna vez una página no actualiza su contenido posiblemente sea
+          porque el fichero compilado que se encuentre dentro de este directorio
+          no se actualice. Borrando dicho fichero compilado forzamos a
+          recompilarlo, y solucionamos el problema.</li>
+      </ul>
+           
+      <p>&nbsp;</p>
+           
+      <h2>D.2. Configuración de aplicaciones web en Tomcat</h2>
+           
+      <p>El directorio <b>webapps</b> de Tomcat es la raíz para las
+      aplicaciones web que se hagan. Dentro de él, distinguimos: </p>
+           
+      <ul>
+        <li>El subdirectorio <b>root</b>, que se emplea como raíz de
+          aplicaciones simples (páginas sueltas, que no compongan una
+          aplicación con otras páginas). Si tenemos una página en esta ruta,
+          la llamaremos escribiendo:</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo">http://localhost:8080/&lt;fichero_pagina&gt;</pre>
+           
+      </blockquote>
+      <ul>
+        <li>El resto de directorios, que serán las aplicaciones web complejas
+          (en cada uno tendremos, por tanto, un conjunto de páginas que
+          conforman una misma utilidad, siguiendo la estructura vista en la <a href="config.htm">configuración
+          de aplicaciones Web</a>). Si tenemos una página dentro del
+          directorio <i>webapps/ejemplo</i>, la llamamos con:</li>
+      </ul>
+      <blockquote>
+        <pre class="codigo">http://localhost:8080/ejemplo/&lt;fichero_pagina&gt;</pre>
+           
+        <p>Notar que para el directorio <i>root</i> no hace falta poner <i>root </i>en
+        la ruta, pero para el resto sí </p>
+           
+      </blockquote>
+           
+      <h4>D.2.1. Configurar Tomcat para desarrollar aplicaciones</h4>
+           
+      <p>Cuando iniciamos Tomcat, automáticamente carga en el CLASSPATH del
+      servidor lo necesario para trabajar con servlets y páginas JSP, y
+      también carga las clases que haya en los directorios <i>WEB-INF/classes</i>
+      y <i>WEB-INF/lib</i> de las aplicaciones, para que sepan dónde
+      encontrarlas. </p>
+           
+      <p>Sin embargo, para poder construir una aplicación (implementar y
+      compilar los servlets y páginas JSP que la componen), necesitaremos
+      también tener estos datos configurados, pues de lo contrario no
+      conseguiremos compilar. Veremos ahora qué pasos hay que seguir para esto. </p>
+           
+      <p><b>1. Crear un directorio de trabajo</b> </p>
+           
+      <p>Primero debemos crear un directorio de trabajo donde colocar nuestras
+      aplicaciones Web. Es recomendable que dicho directorio quede fuera del
+      directorio de instalación del servidor. </p>
+           
+      <p><b>2. Crear accesos directos a los comandos para iniciar/detener el
+      servidor</b> </p>
+           
+      <p>Este paso es recomendable si nos es muy costoso parar y reiniciar el
+      servidor, algo que se hace frecuentemente para corregir errores y realizar
+      nuevas pruebas. </p>
+           
+      <p><b>3. Establecer el CLASSPATH</b> </p>
+           
+      <p>Tenemos que añadir al CLASSPATH el lugar donde se encuentran las APIs
+      de servlets y JSP. Cada servidor proporciona mediante unos ficheros JAR
+      estas librerías, que deberemos añadir. En el caso de Tomcat, tenemos los
+      ficheros <b>servlet.jar</b> (para servlets), <b>jsp.jar</b>, <b>jspengine.jar</b>
+      y <b>jasper.jar</b> (para JSP). Todos estos ficheros se encuentran
+      localizados en el directorio <b>common/lib</b>. Normalmente sólo
+      necesitamos añadir el fichero <i>servlet</i>.jar, puesto que las
+      páginas JSP las compila automáticamente el servidor si no lo están, y
+      él ya encuentra solo los JAR. </p>
+           
+      <p>También deberemos añadir los directorios y ficheros JAR de otras
+      clases que necesitemos y no formen parte de la API de Java (incluyendo
+      librerías del directorio <i>WEB-INF/classes</i> o <i>WEB-INF/lib</i> de
+      la aplicación). </p>
+           
+      <p><b>4. Tener a mano la documentación de la API de servlets y JSP</b> </p>
+           
+      <p>En la web del curso tenéis un fichero ZIP con la documentación de
+      todo J2EE, y un enlace a una versión online. </p>
+           
+      <p><b>5. Disponer de un mecanismo para copiar la aplicación al servidor</b> </p>
+           
+      <p>Una vez tengamos hecha nuestra aplicación, el ir copiando los ficheros
+      al lugar correspondiente en el servidor puede ser una tarea pesada.
+      Podemos optar por algunas alternativas para facilitar el trabajo: </p>
+           
+      <ul>
+        <li>Utilizar un shellscript o algún acceso directo para facilitar la
+          copia</li>
+        <li>Utilizar la opción <i>-d</i> cuando compilamos las clases con <i>javac</i>,
+          para indicarle dónde queremos que se coloquen (poniéndolas
+          directamente en el lugar correspondiente del servidor).</li>
+        <li>Utilizar herramientas como <i>ant</i> o similares. Veremos más
+          adelante algo más sobre la herramienta <i>ant</i>.</li>
+      </ul>
+      <h4>D.2.2. Configurar Tomcat para utilizar SSL</h4>
+           
+      <p>La instalación por defecto de Tomcat no soporta SSL, y tenemos que
+      instalar algunos paquetes extra para dar esta funcionalidad. Los pasos a
+      seguir son: </p>
+           
+      <p><b>1. Descargar el Java Secure Socket Extension (JSSE)</b> </p>
+           
+      <p>Podemos obtenerlo en: </p>
+           
+      <p><a href="http://java.sun.com/products/jsse/index-102.html">http://java.sun.com/products/jsse/index-102.html</a> </p>
+           
+      <p>Este paso no es necesario si utilizamos JDK 1.4 o posterior, puesto que
+      JSSE ya está integrado ahí. </p>
+           
+      <p><b>2. Poner el fichero JAR de JSSE en el classpath de Tomcat</b> </p>
+           
+      <p>El JAR de JSSE consiste realmente en tres ficheros JAR: <b>jcert.jar</b>,
+      <b>jnet.jar</b> y <b>jsse.jar</b>. Una forma fácil de hacerlo es
+      colocarlos en el directorio <b>jre/lib/ext</b> del directorio donde
+      hayamos instalado JDK (si tenemos JDK 1.4 o posterior este paso no habría
+      que hacerlo, al estar ya integrado). </p>
+           
+      <p><b>3. Crear un certificado de clave pública auto-firmado</b> </p>
+           
+      <p>Los servidores basados en SSL utilizan certificados X509 para validar
+      que los usuarios son quienes dicen ser. En el mundo real, el certificado
+      necesita ser firmado por una autoridad de confianza, como por ejemplo
+      Verisign. Pero para realizar pruebas, un certificado auto-firmado es
+      suficiente. Para hacer esto ejecutamos: </p>
+           
+      <pre class="codigo">keytool -genkey -alias tomcat -keyalg RSA</pre>
+           
+      <p>El sistema preguntará luego alguna información: primero pedirá un
+      password (por defecto, podemos poner <i>changeit</i>). Este mismo password
+      lo deberemos indicar más adelante en el fichero <i>server.xml</i>.
+      Después se nos pedirá alguna información adicional,<i> </i>como nombre,&nbsp;
+      apellido (para un certificado del servidor, esto debe ser el nombre del
+      servidor, no el nuestro), organización,
+      localización, y finalmente otro password que debe ser el mismo que el
+      primero que pusimos. </p>
+           
+      <p>Con todo esto, el sistema crea un fichero llamado <b>.keystore</b> en
+      nuestro directorio por defecto (<i>/home/login</i> en Unix, o <i>C:\Documents
+      and Settings\login</i> en Windows 2000, por ejemplo). Podemos utilizar el
+      parámetro <i>-keystore</i> al generar el certificado para indicar dónde
+      guardar el fichero y con qué nombre. </p>
+           
+      <pre class="codigo">keytool -genkey -alias tomcat -keyalg RSA -keystore /dir/keystore</pre>
+           
+      <p>Para más información sobre la herramienta <i>keytool</i>, consultar: </p>
+           
+      <p><a href="http://java.sun.com/j2se/1.3/docs/tooldocs/win32/keytool.html">http://java.sun.com/j2se/1.3/docs/tooldocs/win32/keytool.html</a> </p>
+           
+      <p><b>4. Copiar el fichero generado en el directorio de
+      instalación de Tomcat</b> </p>
+           
+      <p>Opcionalmente, podemos copiar el certificado en el directorio inicial
+      de Tomcat. </p>
+           
+      <p><b>5. Descomentar la conexión SSL en el fichero de configuración</b> </p>
+           
+      <p>Tenemos finalmente que editar el fichero <b>conf/server.xml</b> de
+      Tomcat y buscar una entrada &quot;SSL HTTP/1.1 Connector&quot;, con un elemento <i>Connector</i> que estará comentado, y que
+      contiene un subelemento <i>Factory</i>, que se refiere a una clase <i>SSLServetSocketFactory</i>. </p>
+           
+      <p>Una vez localizado, descomentamos ese código. Luego, podemos necesitar
+      cambiar algunos atributos de configuración: </p>
+           
+      <ul>
+        <li>Cambiar el puerto de
+      8443 al valor por defecto para SSL, que es 443. Si cambiamos el puerto,
+          luego lo tendremos que cambiar también en el atributo <i>redirectPort</i>
+          de la conexión no SSL.</li>
+        <li> Luego, en el elemento <i>Factory </i>que hay dentro del <i>Connector</i>,
+          puede que necesitemos configurar los siguientes atributos:&nbsp;
+          <ul>
+            <li><b>className</b>: la clase que implementa el <i>SocketFactory</i>.</li>
+            <li><b>clientAuth</b>: dejar en <i>true</i> si queremos que todos
+              los clientes presenten un certificado para utilizar el socket.</li>
+            <li><b>keystoreFile</b>: indicando el
+      nombre del fichero &quot;keystore&quot; generado anteriormente (en caso de
+              que no se encuentre en el directorio por defecto del usuario).
+              Podemos indicar rutas absolutas, o relativas al directorio raíz
+              de Tomcat.</li>
+            <li> <b>keystorePass</b>: indicando el password que hayamos
+      especificado al crear el fichero &quot;keystore&quot;.</li>
+            <li><b>protocol</b>: protocolo de encriptado/desencriptado. Dejar el
+              valor por defecto.</li>
+          </ul>
+        </li>
+      </ul>
+           
+      <p>Un ejemplo de cómo quedaría: </p>
+           
+      <pre class="codigo">&lt;Connector className=&quot;...http.HttpConnector&quot;
+<b>	   port=&quot;8443&quot;</b> minProcessors=&quot;5&quot;
+	   maxProcessors=&quot;75&quot; enableLookups=&quot;true&quot;
+	   acceptCount=&quot;10&quot; debug=&quot;0&quot;
+	   scheme=&quot;https&quot; secure=&quot;true&quot;&gt;
+	&lt;Factory className=&quot;...net.SSLServerSocketFactory&quot;
+		 clientAuth=&quot;false&quot; protocol=&quot;TLS&quot;
+		 <b>keystoreFile=&quot;keystore&quot;</b>
+		 <b>keystorePass=&quot;changeit&quot;</b>/&gt;
+&lt;/Connector&gt;</pre>
+           
+      <p><b>6. Cambiar la entrada del conector principal en el fichero de
+      configuración para que utilice el puerto para redirecciones SSL</b> </p>
+           
+      <p>Como hemos dicho anteriormente, si hemos cambiado el puerto SSL,
+      deberemos reflejar ese cambio para las redirecciones SSL, en el conector
+      principal: </p>
+           
+      <pre class="codigo">&lt;Connector className=&quot;...http.HttpConnector&quot;
+<b>	   </b>port=&quot;80&quot; minProcessors=&quot;5&quot;
+	   maxProcessors=&quot;75&quot; enableLookups=&quot;true&quot;
+	   <b>redirectPort=&quot;8443&quot;</b> acceptCount=&quot;10&quot; debug=&quot;0&quot;
+	   connectionTimeout=&quot;60000&quot;/&gt;</pre>
+           
+      <p><b>7. Reiniciar y probar</b><b> el servidor</b> </p>
+           
+      <p>Para probar la conexión SSL accedemos a la página raíz de Tomcat
+      utilizando HTTPS (HTTP + SSL): </p>
+           
+      <pre class="codigo">https://localhost:8443/</pre>
+           
+      <p>Tras esto, tanto con Netscape como con Internet Explorer veremos
+      algunas pantallas iniciales de advertencia para aceptar la conexión, y
+      después ya veremos la página de arranque de Tomcat. </p>
+           
+      <p><b>EJEMPLO</b></p>
+      <p>Aquí tenéis un <a href="ejemplos/anexos/ssl.zip">ZIP</a> con un
+      fichero <i>server.xml</i> ejemplo configurado para utilizar SSL, y un
+      fichero <i>keystore</i>. Podemos probarlo copiando el fichero <i>keystore</i>
+      en el directorio inicial de Tomcat, y el fichero <i>server.xml</i> en el
+      directorio <i>conf</i> de Tomcat (asegurándonos de no perder el antiguo <i>server.xml
+      </i>que tuviéramos, para restaurarlo después en caso de fallo). </p>
+           
+      <p>&nbsp; </p>
+           
+      <h2>D.3. Ejemplos</h2>
+           
+      <p>Veremos ahora algún ejemplo de aplicación Web para probar el
+      funcionamiento y configuración de Tomcat. </p>
+           
+      <h4>D.3.1. Una aplicación simple</h4>
+           
+      <p>La primera aplicación que probaremos se trata de una simple página
+      HTML que queremos ver. Para ello, copiamos la <a href="ejemplos/anexos/pagina.html"> página</a> en el directorio <i>webapps/ROOT</i>,
+      luego lanzamos el servidor, y cuando esté listo, accedemos a ella con: </p>
+           
+      <pre class="codigo">http://localhost:8080/pagina.html</pre>
+           
+      <h4>D.3.2. Una aplicación compleja</h4>
+           
+      <p>En este fichero <a href="ejemplos/anexos/ejemplo.zip"> ZIP</a> tenéis una aplicación Web, con el formato visto
+      en la <a href="config.htm">configuración de aplicaciones Web</a>.
+      Descomprimid primero la aplicación en un directorio de trabajo (fuera del
+      directorio de instalación de Tomcat), y veréis que tiene la estructura: </p>
+           
+      <pre class="codigo">ejemplo/pagina.html
+ejemplo/WEB-INF/web.xml
+ejemplo/WEB-INF/classes/EjemploServlet.java</pre>
+           
+      <p>Para poder probar esta aplicación, seguiremos los pasos: </p>
+           
+      <p><b>1. Compilar el servlet</b> </p>
+           
+      <p>Para compilar el servlet, tenemos que añadir al CLASSPATH la librería
+      <i>servlet.jar</i>, que está en el directorio <i>common/lib</i> del
+      directorio donde esté instalado Tomcat. </p>
+           
+      <pre class="codigo">set CLASSPATH=%CLASSPATH%;&lt;dir-tomcat&gt;\common\lib\servlet.jar
+(Windows)</pre>
+           
+      <pre class="codigo">export CLASSPATH=$CLASSPATH:&lt;dir-tomcat&gt;/common/lib/servlet.jar
+(Unix)</pre>
+           
+      <p>Una vez establecido el nuevo classpath, nos colocamos en el directorio <i>WEB-INF/classes</i>
+      y compilamos el servlet: </p>
+           
+      <pre class="codigo">javac EjemploServlet.java</pre>
+           
+      <p><b>2. Copiar el directorio al lugar correspondiente en Tomcat</b> </p>
+           
+      <p>Una vez tengamos el servlet compilado, copiamos el directorio <i>ejemplo</i>
+      entero dentro del directorio <i>webapps</i> de Tomcat (quedando así <i>webapps/ejemplo/</i>,
+      y dentro de dicho directorio ya se tendría toda la estructura de la
+      aplicación web ejemplo). </p>
+           
+      <p><b>3. Reiniciar Tomcat</b> </p>
+           
+      <p>Si tenemos Tomcat en marcha, lo paramos. Luego lo ponemos en marcha de
+      nuevo, y cuando esté listo, probamos a acceder a la página <i>pagina.html</i>: </p>
+           
+      <pre class="codigo">http://localhost:8080/ejemplo/pagina.html</pre>
+           
+      <p>Y al servlet: </p>
+           
+      <pre class="codigo">http://localhost:8080/ejemplo/servlet/EjemploServlet</pre>
+           
+      <p><b>4. Probar con un fichero WAR</b> </p>
+           
+      <p>Finalmente, vamos a colocarnos en el directorio <i>ejemplo </i>donde
+      descomprimimos la aplicación al principio (fuera de Tomcat). Desde el
+      directorio donde nos hemos colocado, tenemos que tener la siguiente
+      estructura: </p>
+           
+      <pre class="codigo">pagina.html
+WEB-INF/web.xml
+WEB-INF/classes/EjemploServlet.java
+WEB-INF/classes/EjemploServlet.class</pre>
+           
+      <p>Vamos a crear un fichero WAR con la aplicación: </p>
+           
+        <pre class="codigo">jar cMvf ejemplo2.war *</pre>
+           
+      <p>Luego, copiamos el fichero WAR en el directorio <i>webapps</i> de
+      Tomcat, y reiniciamos el servidor. Vemos que se crea una carpeta <i>ejemplo2</i>
+      en <i>webapps</i>, y podemos probar la aplicación con: </p>
+           
+      <pre class="codigo">http://localhost:8080/ejemplo2/pagina.html</pre>
+           
+      <pre class="codigo">http://localhost:8080/ejemplo2/servlet/EjemploServlet</pre>
+           
+        </body>
+        </html>

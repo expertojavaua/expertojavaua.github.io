@@ -1,0 +1,819 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.7">
+<meta name="Forrest-skin-name" content="pelt">
+<title>Mensajes y Robustez</title>
+<link type="text/css" href="skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="skin/print.css" rel="stylesheet">
+<link type="text/css" href="skin/profile.css" rel="stylesheet">
+<script src="skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<div class="header">
+<div class="grouplogo">
+<a href="http://web.ua.es/especialistajava"><img class="logoImage" alt="jtech" src="images/baner_j2ee_izq.gif" title="Especialista Universitario Java Enterprise"></a>
+</div>
+<div class="projectlogoA1">
+<a href="http://www.dccia.ua.es/"><img class="logoImage" alt="Servicios de Mensajes con JMS" src="images/baner_j2ee_der.gif" title="Servicios de Mensajes con JMS"></a>
+</div>
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="javascript:location.href='../index.html'">Home</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../aplic-web.html'">Aplicaciones Web</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../aplic-ent.html'">Aplicaciones Enterprise</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../charlas.html'">Charlas</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../proy-int/index.html'">Proyecto</a>
+</li>
+<li class="current">
+<a class="base-selected" href="index.html">Servicios de Mensajes con JMS</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<div id="level2tabs"></div>
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<div id="menu">
+<div onclick="SwitchMenu('menu_selected_1.1', 'skin/')" id="menu_selected_1.1Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Servicios de Mensajes con JMS</div>
+<div id="menu_selected_1.1" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="index.html" title="Servicios de Mensajes con JMS">&Iacute;ndice</a>
+</div>
+<div onclick="SwitchMenu('menu_selected_1.1.2', 'skin/')" id="menu_selected_1.1.2Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Teor&iacute;a</div>
+<div id="menu_selected_1.1.2" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="sesion01-apuntes.html" title="1. Introducci&oacute;n a JMS">Sesi&oacute;n 1</a>
+</div>
+<div class="menupage">
+<div class="menupagetitle">Sesi&oacute;n 2</div>
+</div>
+<div class="menuitem">
+<a href="sesion03-apuntes.html" title="3. Durable Subscribers y Transacciones. JMS y JavaEE">Sesi&oacute;n 3</a>
+</div>
+<div class="menuitem">
+<a href="sesion04-apuntes.html" title="4. Message Driven Beans">Sesi&oacute;n 4</a>
+</div>
+</div>
+<div onclick="SwitchMenu('menu_1.1.3', 'skin/')" id="menu_1.1.3Title" class="menutitle">Ejercicios</div>
+<div id="menu_1.1.3" class="menuitemgroup">
+<div class="menuitem">
+<a href="sesion01-ejercicios.html" title="1. Introducci&oacute;n a JMS">Sesi&oacute;n 1</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-ejercicios.html" title="2. Mensajes. Robustez en JMS">Sesi&oacute;n 2</a>
+</div>
+<div class="menuitem">
+<a href="sesion03-ejercicios.html" title="3. Durable Subscribers y Transacciones. JMS y JavaEE">Sesi&oacute;n 3</a>
+</div>
+<div class="menuitem">
+<a href="sesion04-ejercicios.html" title="4. Message Driven Beans">Sesi&oacute;n 4</a>
+</div>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<div id="credit2"></div>
+</div>
+<div id="content">
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="sesion02-apuntes.pdf"><img alt="PDF -icon" src="skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1>Mensajes y Robustez</h1>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#Anatom%C3%ADa+de+un+Mensaje">Anatom&iacute;a de un Mensaje</a>
+<ul class="minitoc">
+<li>
+<a href="#Cabecera">Cabecera</a>
+</li>
+<li>
+<a href="#Propiedades">Propiedades</a>
+<ul class="minitoc">
+<li>
+<a href="#Propiedades+de+Aplicaci%C3%B3n">Propiedades de Aplicaci&oacute;n</a>
+</li>
+<li>
+<a href="#Propiedades+Definidas+por+JMS">Propiedades Definidas por JMS</a>
+</li>
+<li>
+<a href="#Propiedades+Espec%C3%ADficas+del+Proveedor">Propiedades Espec&iacute;ficas del Proveedor</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Cuerpo">Cuerpo</a>
+<ul class="minitoc">
+<li>
+<a href="#Creando+Mensajes">Creando Mensajes</a>
+</li>
+<li>
+<a href="#Recibiendo+Mensajes">Recibiendo Mensajes</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Filtrado+de+Mensajes">Filtrado de Mensajes</a>
+<ul class="minitoc">
+<li>
+<a href="#Selector+de+Mensajes">Selector de Mensajes</a>
+</li>
+<li>
+<a href="#Selectores+vs+M%C3%BAltiples+Destinos">Selectores vs M&uacute;ltiples Destinos</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Browser+de+Mensajes">Browser de Mensajes</a>
+</li>
+<li>
+<a href="#JMS+Robusto">JMS Robusto</a>
+<ul class="minitoc">
+<li>
+<a href="#Controlar+el+Acuse+de+Recibo+de+los+Mensajes">Controlar el Acuse de Recibo de los Mensajes</a>
+</li>
+<li>
+<a href="#Especificar+la+Persistencia+de+los+Mensajes">Especificar la Persistencia de los Mensajes</a>
+</li>
+<li>
+<a href="#Indicar+el+Nivel+de+Prioridad">Indicar el Nivel de Prioridad</a>
+</li>
+<li>
+<a href="#Permitir+la+Expiraci%C3%B3n+de+los+Mensajes">Permitir la Expiraci&oacute;n de los Mensajes</a>
+</li>
+<li>
+<a href="#Crear+Destinos+Temporales">Crear Destinos Temporales</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Simulando+Llamadas+S%C3%ADncronas+Mediante+Request%2FReply">Simulando Llamadas S&iacute;ncronas Mediante Request/Reply</a>
+</li>
+<li>
+<a href="#Subscripciones+Duraderas">Subscripciones Duraderas</a>
+<ul class="minitoc">
+<li>
+<a href="#Durable+vs+Non+Durable">Durable vs Non Durable</a>
+</li>
+<li>
+<a href="#Creaci%C3%B3n+y+Manejo">Creaci&oacute;n y Manejo</a>
+</li>
+<li>
+<a href="#Ejemplo">Ejemplo</a>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+
+
+<a name="N1000E"></a><a name="Anatom%C3%ADa+de+un+Mensaje"></a>
+<h2 class="underlined_10">Anatom&iacute;a de un Mensaje</h2>
+<div class="section">
+<p>El mensaje JMS es el concepto m&aacute;s importante de la especificaci&oacute;n JMS. Cada concepto de la especificaci&oacute;n est&aacute; relacionado con un mensaje porque es el medio mediante el cual los datos y eventos de negocio se transmiten a trav&eacute;s de un proveedor JMS.</p>
+<p>Debido a que los sistemas de mensajer&iacute;a han sido implementados sin seguir ning&uacute;n formato de mensaje est&aacute;ndar, existe un gran abanico de formatos de mensaje entre los MOMs. Esto es as&iacute;, y JMS no lo quiere cambiar. De hecho, JMS no define cual debe ser el formato de los mensajes, sino mediante un modelo de mensaje unificado y abstracto garantiza la portabilidad del c&oacute;digo. Esto es, en vez de dictar c&oacute;mo debe ser el formato de los mensajes, especifica el API a utilizar para construir el mensaje.</p>
+<p>El modelo de mensaje unificado bajo JMS especifica que todos los mensajes deben representarse mediante objetos que implementen el interfaz <span class="codefrag">javax.jms.Message</span>. Y este interfaz separa un mensaje JMS en tres partes:</p>
+<p>
+
+<img alt="Partes de un Mensaje" content-width="5cm" src="imagenes/sesion2/mensaje.jpg" width="160">
+</p>
+<p>Las cabeceras ofrecen metadatos sobre el mensaje utilizado por ambos clientes y el proveedor JMS. Las propiedades son campos opcionales dentro del mensaje para a&ntilde;adir informaci&oacute;n adicional al mensaje. El cuerpo puede contener tanto texto como datos binarios mediante los diferentes tipos de mensajes.</p>
+<a name="N1002C"></a><a name="Cabecera"></a>
+<h3 class="underlined_5">Cabecera</h3>
+<p>Todos los mensajes JMS soportan la misma lista est&aacute;ndar de cabeceras, y el API JMS ofrece m&eacute;todos (<em>getters y setters</em>) para trabajar con dichas cabeceras. Muchas de las cabeceras se asignan autom&aacute;ticamente, ya sea por el cliente o por el proveedor.</p>
+<p>Las cabeceras que autom&aacute;ticamente rellena el proveedor JMS al realizar la llamada al m&eacute;todo <span class="codefrag">send()</span> del cliente son:</p>
+<ul>
+	
+<li>
+<strong>JMSDestination</strong> - Destino al que se env&iacute;a el mensaje. En el caso de un modelo PTP especifica la cola, y el Pub/Sub el t&oacute;pico. Esta cabecera es muy &uacute;til para aquellos clientes que consumen mensajes de m&aacute;s de un destino.</li>
+	
+<li>
+<strong>JMSDeliveryMode</strong> - JMS soporta 2 tipos de modos de entrega: persistente y no-persistente. El modo de entrega por defecto es persistente. Cada modo de entrega incurre en su propia sobrecarga e implica un nivel particular de fiabilidad.
+	<ul>
+		
+<li>
+<strong>Persistent</strong> - Informa al proveedor que persista los mensajes para que no se pierdan en el caso de que caiga el proveedor. El proveedor debe entrar un mensaje persistente una &uacute;nica vez. Dicho de otro modo, si el proveedor JMS falla, el mensaje no se pierde y no se enviara dos veces. Los mensajes persistentes incurren en una sobrecarga debido a la necesidad de almacenar el mensaje, de modo que la fiabilidad prevalece sobre el rendimiento.</li>
+		
+<li>
+<strong>Non-Persistent</strong> - Informa al proveedor JMS que no persista los mensajes. Un proveedor JMS debe entregar un mensaje persistente como mucho una vez. Dicho de otro modo, si el proveedor JMS falla, el mensaje se puede haber perdido, pero no se entregar&aacute; dos veces. Los mensajes no persistentes incurren en una menor sobrecarga, de modo que el rendimiento prevalece sobre la fiabilidad.</li>
+	
+</ul>
+	El modo de entrega se asigna en el productor y se aplica a todos los mensajes enviados desde dicho productor:
+	<pre class="code">producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT)</pre>
+	De forma individual, el modo de entrega se puede sobrecarga para cada mensaje:
+	<pre class="code">message.setJMSDeliveryMode(DeliveryMode.NON_PERSISTENT)</pre>
+	
+</li>
+	
+<li>
+<strong>JMSExpiration</strong> - Previene la entrega una vez que el mensaje ha expirado. Se trata de una cabecera muy &uacute;til para los mensajes sensibles al tiempo. Los clientes deber&iacute;an tener en cuenta la expiraci&oacute;n para desechar los mensajes sin procesar que han expirado. Por defecto, el tiempo de vida es 0.</li>
+	
+<li>
+<strong>JMSMessageID</strong> - Una cadena que identifica un&iacute;vocamente a un mensaje, se asigna por el proveedor JMS y debe empezar con 'ID:'. Esta cabecera se puede utilizar para el procesamiento de mensajes o para prop&oacute;sito de hist&oacute;rico en un mecanismo de almacenamiento de mensajes.</li>
+	
+<li>
+<strong>JMSPriority</strong> - Se utiliza para asignar un nivel de importancia. Esta cabecera tambi&eacute;n la asigna el productor de mensajes. Una vez un productor le asigna la prioridad, se aplica a todos los mensajes enviados desde dicho productor. La prioridad se puede sobrecargar para mensajes individualizados. JMS define 10 niveles de prioridad de mensajes, siendo 0 el m&aacute;s bajo, 9 el m&aacute;s alto y la prioridad normal de nivel 5.<br>
+	Los proveedores JMS no est&aacute;n obligados a implementar la ordenaci&oacute;n de mensajes, aunque la mayor&iacute;a lo hace. Lo que tienen que hacer es entregar los mensajes con mayor prioridad antes que los de menor prioridad.</li>
+	
+<li>
+<strong>JMSTimestamp</strong> - Denota el instante en el que se envi&oacute; el mensaje. Esta cabecera se puede deshabilitar par reducir la carga de trabajo del proveedor JMS.</li>
+
+</ul>
+<p>Las cabeceras asignadas de forma opcional por el cliente son:</p>
+<ul>
+	
+<li>
+<strong>JMSCorrelationID</strong> - Se utiliza para asociar el mensaje actual con el anterior. Esta cabecera se suele utilizar en la entrega as&iacute;ncrona de mensajes, y en los mecanismos de <em>request/reply</em>.</li>
+	
+<li>
+<strong>JMSReplyTo</strong> - Se utiliza para especificar un destino al cual deber&iacute;a responder el cliente. Se suele utilizar para estilos de mensajer&iacute;a de <em>request/reply</em>.</li>
+	
+<li>
+<strong>JMSType</strong> - Utilizada para identificar sem&aacute;nticamente al mensaje, es decir, el tipo del cuerpo del mensaje. Esta cabecera la utilizan muy pocos proveedores.</li>
+
+</ul>
+<p>Las cabeceras asignadas de forma opcional por el proveedor:</p>
+<ul>
+<li>
+<strong>JMSRedelivered</strong> - Se utiliza para indicar que un mensaje ha sido reenviado. Esto puede suceder si un consumidor falla en el acuse de recibo o si el proveedor JMS no ha sido notificado del env&iacute;o.</li>
+</ul>
+<a name="N1009B"></a><a name="Propiedades"></a>
+<h3 class="underlined_5">Propiedades</h3>
+<p>Las propiedades son m&aacute;s o menos cabeceras adicionales que pueden especificarse en un mensaje. Al contrario que las cabeceras, son opcionales. Las propiedades son pares de {nombre, valor}, y JMS ofrece m&eacute;todos gen&eacute;ricos para trabajar con propiedades cuyo tipo de valor sea <span class="codefrag">boolean</span>, <span class="codefrag">byte</span>,
+<span class="codefrag">short</span>, <span class="codefrag">int</span>, <span class="codefrag">long</span>, <span class="codefrag">float</span>, <span class="codefrag">double</span>, o <span class="codefrag">String</span>. Las propiedades se inicializan cuando se env&iacute;a un mensaje, y al recibir pasan a ser de s&oacute;lo lectura.</p>
+<p>Existen tres tipos de propiedades: propiedades arbitrarias o de aplicaci&oacute;n, propiedades definidas por JMS y propiedades espec&iacute;ficas del proveedor.</p>
+<a name="N100BF"></a><a name="Propiedades+de+Aplicaci%C3%B3n"></a>
+<h4>Propiedades de Aplicaci&oacute;n</h4>
+<p>Estas propiedades son arbitrarias y las define una aplicaci&oacute;n JMS. Los desarrolladores de aplicaciones JMS pueden definir libremente cualquier propiedad que necesiten mediante los m&eacute;todos gen&eacute;ricos comentados anteriormente.</p>
+<p>Si queremos a&ntilde;adirle a un mensaje un propiedad Anyo e inicializarla a 2008, haremos:</p>
+<pre class="code">message.setIntProperty("Anyo", 2008);</pre>
+<a name="N100D0"></a><a name="Propiedades+Definidas+por+JMS"></a>
+<h4>Propiedades Definidas por JMS</h4>
+<p>La especificaci&oacute;n JMS reserva el prefijo de propiedades 'JMSX' para las propiedades definidas por JMS. El soporte de estas propiedades es opcional:</p>
+<ul>
+	
+<li>
+<strong>JMSXAppID</strong> - Identifica la aplicaci&oacute;n que env&iacute;a el mensaje.</li>
+	
+<li>
+<strong>JMSXConsumerTXID</strong> - Identificador de la transacci&oacute;n dentro de la cual el mensaje ha sido consumido.</li>
+	
+<li>
+<strong>JMSXDeliveryCount</strong> - N&uacute;mero de intentos de entrega del mensaje.</li>
+	
+<li>
+<strong>JMSXGroupID</strong> - Grupo del mensaje del cual forma parte el mensaje.</li>
+	
+<li>
+<strong>JMSXGroupSeq</strong> - N&uacute;mero de secuencia del mensaje dentro del grupo.</li>
+	
+<li>
+<strong>JMSXProducerTXID</strong> - Identificador de la transacci&oacute;n dentro de la cual el mensaje ha sido producido.</li>
+	
+<li>
+<strong>JMSXRcvTimestamp</strong> - Instante en el que el proveedor JMS entreg&oacute; el mensaje al consumidor.</li>
+	
+<li>
+<strong>JMSXState</strong> - Se utiliza para definir un estado espec&iacute;fico del proveedor.</li>
+	
+<li>
+<strong>JMSXUserID</strong> - Identifica al usuario que env&iacute;a el mensaje.</li>
+
+</ul>
+<p>La &uacute;nica recomendaci&oacute;n que ofrece la especificaci&oacute;n para el uso de estas propiedades es para las propiedades JMSXGroupID y JMSXGroupSeq, indicando que dichas propiedades deber&iacute;an utilizarse por los clientes cuando se agrupen mensajes.</p>
+<a name="N1010D"></a><a name="Propiedades+Espec%C3%ADficas+del+Proveedor"></a>
+<h4>Propiedades Espec&iacute;ficas del Proveedor</h4>
+<p>La especificaci&oacute;n JMS reserva el prefijo de propiedad 'JMS_vendor-name' para propiedades espec&iacute;ficas del proveedor. Cada proveedor define sus propios valores para sus propiedades. En su mayor&iacute;a las utilizan los clientes no-JMS, atados al proveedor, y por tanto, no deber&iacute;an utilizarse entre mensajer&iacute;as JMS.</p>
+<a name="N10118"></a><a name="Cuerpo"></a>
+<h3 class="underlined_5">Cuerpo</h3>
+<p>El cuerpo de los mensajes permite enviar y recibir datos e informaci&oacute;n con diferentes formatos, ofreciendo compatibilidad con los formatos de mensaje existentes. El cuerpo tambi&eacute;n se conoce como <strong>carga</strong> (<em>payload</em>).</p>
+<p>JMS define seis tipos de cuerpo para los mensajes, tambi&eacute;n conocidos tipos de mensajes:</p>
+<ul>
+	
+<li>
+<strong>Message</strong> - Tipo de mensaje base. Se utiliza para enviar un mensaje sin cuerpo, solo cabeceras y propiedades. Normalmente se utiliza para notificaci&oacute;n simple de eventos.</li>
+	
+<li>
+<strong>MapMessage</strong> - Compuesto de un conjunto de pares {nombre,valor}. El tipo de los nombres es <span class="codefrag">String</span>, y los valores tipos primitivos Java. A los nombres (que no est&aacute;n ordenados) podemos acceder de forma secuencial mediante un enumerador, o por acceso directo por nombre.</li>
+	
+<li>
+<strong>BytesMessage</strong> - Contiene un array de bytes sin interpretar. Se utiliza para hacer coincidir el cuerpo con un formato de mensaje existente (<em>legacy</em>).</li>
+	
+<li>
+<strong>StreamMessage</strong> - El cuerpo es un flujo de tipos primitivos Java, cuya lectura y escritura se realiza de modo secuencial.</li>
+	
+<li>
+<strong>TextMessage</strong> - Un mensaje cuya carga es un <span class="codefrag">String</span>. Se suele utilizar para enviar texto simple y datos XML.</li>
+	
+<li>
+<strong>ObjectMessage</strong> - La carga es un objeto Java <span class="codefrag">Serializable</span>. Normalmente se utiliza para trabajar con objetos Java complejos.</li>
+
+</ul>
+<p>
+
+<img alt="Diagrama de Clases UML con los diferentes tipos de Mensaje" content-width="16cm" src="imagenes/sesion2/tiposMensajeUML.jpg" width="721">
+</p>
+<a name="N10160"></a><a name="Creando+Mensajes"></a>
+<h4>Creando Mensajes</h4>
+<p>El API JMS ofrece diferentes m&eacute;todos para crear los mensajes de cada tipo (a partir de una <span class="codefrag">Session</span>, mediante los m&eacute;todos <span class="codefrag">createXXXMessage</span>, siendo XXX el tipo de mensaje), y para rellenar sus contenidos. Por ejemplo, para crear y enviar un mensaje de texto podr&iacute;amos hacer:</p>
+<pre class="code">TextMessage mensaje = session.<strong>createTextMessage()</strong>;
+mensaje.<strong>setText</strong>(miTexto);
+producer.send(mensaje);</pre>
+<p>Si lo que queremos es enviar un objeto, crearemos un mensaje del siguiente modo:</p>
+<pre class="code">ObjectMessage mensaje = session.<strong>createObjectMessage</strong>();
+mensaje.<strong>setObject</strong>(miLibroEntity);
+<em>// el objeto miLibroEntity debe ser Serializable !!!!</em>
+</pre>
+<p>As&iacute; pues, si al rellenar el mensaje de tipo objeto, el objeto no es <span class="codefrag">Serializable</span> obtendremos una excepci&oacute;n del tipo <span class="codefrag">MessageFormatException</span>.</p>
+<a name="N10192"></a><a name="Recibiendo+Mensajes"></a>
+<h4>Recibiendo Mensajes</h4>
+<p>En el destino, el mensaje llega como un objeto de <span class="codefrag">Message</span> gen&eacute;rico, y debemos hacer el <em>cast</em> al tipo de mensaje apropiado. Los diferentes tipos de mensaje ofrecen diversos m&eacute;todos para extraer el contenido del mensaje. Por ejemplo, el c&oacute;digo necesario para extraer el contenido de un mensaje de texto:</p>
+<pre class="code">Message m = consumer.receive();
+if (m instanceof TextMessage) {
+	TextMessage mensaje = (TextMessage) m;
+	System.out.println("Leyendo mensaje: " + mensaje.<strong>getText</strong>());
+} else {
+	<em>// Manejar el error</em>
+}
+</pre>
+</div> 
+
+
+<a name="N101B0"></a><a name="Filtrado+de+Mensajes"></a>
+<h2 class="underlined_10">Filtrado de Mensajes</h2>
+<div class="section">
+<p>En ocasiones necesitaremos ser m&aacute;s selectivos a la hora de recibir un mensaje de una determinada cola o t&oacute;pico. El filtrado de mensajes nos va a permitir elegir que mensajes consumir, de modo que no sea obligatorio consumir todos los mensajes de un destino.</p>
+<a name="N101B9"></a><a name="Selector+de+Mensajes"></a>
+<h3 class="underlined_5">Selector de Mensajes</h3>
+<p>Si queremos filtrar los mensajes que recibe la aplicaci&oacute;n lo podemos hacer mediante un selector de mensajes, ya que permite a un receptor definir en que mensajes esta interesado a trav&eacute;s del uso de las cabeceras y propiedades. Solo aquellos mensajes cuyas cabeceras o propiedades coincidan con el selector estar&aacute;n disponibles para su consumici&oacute;n (los selectores <strong>no pueden referenciar al cuerpo</strong> del mensaje).</p>
+<p>Un selector de mensajes es un <span class="codefrag">String</span> que contiene una expresi&oacute;n, definida mediante un subconjunto de la sintaxis de expresiones condicionales de SQL92. Por lo tanto, mediante una expresi&oacute;n condicional cuyos operandos son las cabeceras o las propiedades y el operador adecuado (operador l&oacute;gico, <span class="codefrag">between</span>, <span class="codefrag">like</span>, <span class="codefrag">in(...)</span>, <span class="codefrag">is null</span>), los clientes puede definir cuales son los mensajes permitidos. Por ejemplo, si nuestro mensaje define las propiedades <span class="codefrag">Anyo</span> y <span class="codefrag">Mes</span>, las siguientes son expresiones validas: <span class="codefrag">Anyo = 2011</span>, <span class="codefrag">Mes = 'Diciembre'</span>, <span class="codefrag">Mes LIKE '%BRE'</span>, <span class="codefrag">Anyo BETWEEN 2000 AND 2011</span>, etc...</p>
+<p>Podemos encontrar m&aacute;s informaci&oacute;n sobre los operadores y las cabeceras aplicables dentro de un selector en el javadoc de la interfaz <span class="codefrag">Message</span>: <a href="http://java.sun.com/javaee/5/docs/api/javax/jms/Message.html">java.sun.com/javaee/5/docs/api/javax/jms/Message.html</a>
+</p>
+<p>El selector de mensajes se utiliza a la hora de crear el consumidor de mensajes (o subscriptor durable), mediante los m&eacute;todos <span class="codefrag">createConsumer(Destination destino, String selectorMensaje)</span> ( y su respectivo <span class="codefrag">createDurableSubscriber</span>) del interfaz <span class="codefrag">Session</span>. Si el selector no es correcto, al crear el consumidor de mensajes obtendremos una excepci&oacute;n del tipo <span class="codefrag">javax.jms.InvalidSelectorException</span>. Una vez hemos creado el consumidor de mensajes, podemos consultar cual es su selector mediante el m&eacute;todo <span class="codefrag">getMessageSelector()</span>. As&iacute; pues, por ejemplo, podriamos hacer:</p>
+<pre class="code">MessageConsumer consumer = session.createConsumer(queue, "Anyo = 2011");
+String selectorAnyo2008 = consumer.getMessageSelector();
+</pre>
+<p>Aquellos mensajes que no cumplen las expresiones del selector no se entregan al cliente. Esto significa que aquellos mensajes no entregados depender&aacute;n del <span class="codefrag">MessageConsumer</span> utilizado. Una vez se establece el selector de mensajes, no puede cambiarse. Tenemos que cerrar el consumidor (o borrarlo si es un subscriptor durable) y crear un nuevo consumidor con su nuevo selector de mensajes.</p>
+<div class="frame note">
+<div class="label">Mucho cuidado</div>
+<div class="content">
+Es muy importante que el selector de mensajes abarque toda la casu&iacute;stica posible.<br>
+Si tenemos un selector que hace "Anyo &lt; 2010" y su complementario "Anyo &gt; 2010", &iquest;Qu&eacute; pasar&aacute; con los mensajes cuyo a&ntilde;o sea 2010?
+</div>
+</div>
+<a name="N10215"></a><a name="Selectores+vs+M%C3%BAltiples+Destinos"></a>
+<h3 class="underlined_5">Selectores vs M&uacute;ltiples Destinos</h3>
+<p>Existen 2 enfoques a la hora de considerar una soluci&oacute;n basada en mensajes. Podemos enviar todos los mensajes a un &uacute;nico destino JMS y utilizar filtrado de mensajes para consumir los mensajes espec&iacute;ficos (enfoque de <strong>Filtrado de Mensajes</strong>), o podemos utilizar m&uacute;ltiples destinos JMS que contienen los mensajes ya filtrados (enfoque de <strong>M&uacute;ltiples Destinos</strong>).</p>
+<p>Gr&aacute;ficamente, podemos observar m&aacute;s facilmente los diferentes planteamientos:</p>
+<p>
+
+<img alt="Enfoque de Filtrado de Mensajes" content-width="12cm" src="imagenes/sesion2/enfoqueFiltradoMensajes.jpg" width="474">
+</p>
+<p>Claramente, se observa que el consumidor del mensaje el que tiene el control sobre el filtrado  y sobre los mensajes que quiere recibir. Este enfoque dota de un alto nivel de desacoplamiento entre los componentes que producen mensajes respecto a los consumidores, ya que el productor necesita menos informacion sobre como se van a procesar los mensajes.</p>
+<p>En cambio, con el enfoque de m&uacute;ltiples destino, el filtrado se realiza antes de enviar el mensaje al destino adecuado, ya que cada destino contiene los mensajes espec&iacute;ficos que se utilizar&aacute;n. Este filtrado se realiza mediante c&oacute;digo Java para determinar a que destino se debe enviar el mensaje.</p>
+<p>
+
+<img alt="Enfoque de M&uacute;ltiples Destinos" content-width="12cm" src="imagenes/sesion2/enfoqueMultiplesDestinos.jpg" width="474">
+</p>
+<p>Podemos observar que ahora es el productor de mensajes el que tiene el control sobre el filtrado y decide a que destinos llegaran los mensajes apropiados. Un factor clave a la hora de considerar este enfoque es saber si el productor tiene suficiente informaci&oacute;n refecto a como se procesan los mensajes para tomar la decisi&oacute;n sobre a que destino enrutar el mensaje. Cuanto m&aacute;s informaci&oacute;n necesita el productor sobre la consumici&oacute;n del mensaje, mayor ser&aacute; el acoplamiento entre productor y consumidor.</p>
+<p>Por &uacute;ltimo, para beneficiarnos de &aacute;mbos enfoques, tambi&eacute;n se puede hacer un uso de un enfoque combinado:</p>
+<p>
+
+<img alt="Enfoque de M&uacute;ltiples Destinos" content-width="13cm" src="imagenes/sesion2/enfoqueCombinado.jpg" width="540">
+</p>
+</div> 
+
+
+
+<a name="N10252"></a><a name="Browser+de+Mensajes"></a>
+<h2 class="underlined_10">Browser de Mensajes</h2>
+<div class="section">
+<p>En la sesi&oacute;n anterior vimos como recibir mensajes de una cola, pero supongamos que solo queremos consultar el contenido de la cola sin <em>consumir los mensajes</em>. Para este prop&oacute;sito, en vez de utilizar un <span class="codefrag">MessageConsumer</span>, crearemos un <span class="codefrag">QueueBrowser</span>.</p>
+<p>Para crear un objeto de este tipo, utilizaremos el m&eacute;todo <span class="codefrag">createBrowser</span> de la <span class="codefrag">Session</span>, indic&aacute;ndole la cola a inspeccionar:</p>
+<pre class="code">QueueBrowser browser = session.createBrowser(queue);
+</pre>
+<p>Tambi&eacute;n podemos crear un <em>browser</em> que filtre los mensajes en los que estamos interesados, pas&aacute;ndole como segundo argumento el selector de mensajes:</p>
+<pre class="code">QueueBrowser browser = session.createBrowser(queue, "provincia = 'Alicante'");
+</pre>
+<div class="frame note">
+<div class="label">Browser en PTP</div>
+<div class="content">
+Destacar que el <em>browser</em> de mensajes <strong>solo</strong> se puede aplicar sobre <strong>colas</strong>, no sobre t&oacute;picos, ya que los mensajes en los t&oacute;picos desaparecen tan pronto como aparecen: si no hay ningun subscriptor para consumir el mensaje, el proveedor JMS lo elimina.
+</div>
+</div>
+<p>La interfaz <span class="codefrag">QueueBrowser</span> contempla unos cuantos m&eacute;todos a destacar:</p>
+<ul>
+	
+<li>
+<span class="codefrag">getEnumeration()</span> para obtener los mensajes</li>
+	
+<li>
+<span class="codefrag">getMessageSelector()</span> para obtener el <span class="codefrag">String</span> que act&uacute;a como filtro de mensajes (si es que hay alguno para ese consumidor)</li>
+	
+<li>
+<span class="codefrag">getQueue()</span> que devuelve la cola asociada al browser.</li>
+
+</ul>
+<p>As&iacute; pues, una vez creado el <em>browser</em>, obtenemos una enumeraci&oacute;n para iterar sobre ella e ir obteniendo las propiedades del mensaje, tales como la prioridad, el identificador, etc...</p>
+<pre class="code">Enumeration iter = browser.getEnumeration();
+if (!iter.hasMoreElements()) {
+	System.out.println("No hay mensajes en la cola");
+} else {
+	while (iter.hasMoreElements()) {
+		Message tempMsg = (Message) iter.nextElement();
+		System.out.println("Mensaje: " + tempMsg);
+	}
+}
+</pre>
+<p>Con el <em>browser</em> obtenemos el estado actual de una cola y nos permite visualizar aquellos mensajes que no han sido recogidos por una mala sincronizaci&oacute;n. El resultado de una consulta como la anterior ser&iacute;a algo as&iacute;:</p>
+<pre class="code">Mensaje: 
+Text:        Hola Mundo
+Class:                        com.sun.messaging.jmq.jmsclient.TextMessageImpl
+getJMSMessageID():        ID:41-172.18.33.103(d6:f1:b9:3e:e:4f)-52900-1229023964087
+getJMSTimestamp():        1229023964087
+getJMSCorrelationID():        null
+JMSReplyTo:                null
+JMSDestination:                jmsQueue
+getJMSDeliveryMode():        PERSISTENT
+getJMSRedelivered():        false
+getJMSType():                null
+getJMSExpiration():        0
+getJMSPriority():        4
+Properties:                {Anyo=2008}
+</pre>
+<p>Podemos observar como se muestra el contenido del cuerpo, el tipo de mensajes, todas las cabeceras, as&iacute; como aquellas cabeceras con valor asignado. Por ejemplo, podemos ver como aparece la propiedad que hemos a&ntilde;adido en la secci&oacute;n anterior.</p>
+</div>
+
+
+
+<a name="N102BB"></a><a name="JMS+Robusto"></a>
+<h2 class="underlined_10">JMS Robusto</h2>
+<div class="section">
+<p>El API de JMS est&aacute; destinado a garantizar la robustez, y al mismo tiempo (si se puede) eficiencia de nuestras aplicaciones distribuidas. En este sentido, es esencial no tolerar situaciones en donde los mensajes no llegan o bien llegan duplicados, lo que incide muy negativamente en la sincronizaci&oacute;n de la componentes software.</p>
+<p>Por eso, JMS garantiza que:</p>
+<ul>
+	
+<li>El mensaje ser&aacute; recibido</li>
+	
+<li>Y solamente ser&aacute; recibido una vez</li>
+
+</ul>
+<p>Implementar esta funcionalidad por parte del servidor de aplicaciones implica, por ejemplo, dotar la infraestructura JMS con una capa de persistencia. De hecho, la forma m&aacute;s fiable de <strong>producir</strong> un mensaje es enviar un mensaje <strong>PERSISTENT</strong> (el modo de creaci&oacute;n de mensajes por defecto) dentro de una transacci&oacute;n. Tambi&eacute;n, la forma m&aacute;s robusta de <strong>consumir</strong> un mensaje es dentro de una <strong>transacci&oacute;n</strong> y a partir de una cola o de un <em>Durable Subscriber</em> a un t&oacute;pico.
+</p>
+<p>Sin embargo, tomar las medidas anteriores supone un elevado consumo de recursos y por lo tanto una ca&iacute;da del rendimiento. As&iacute;, y como veremos a continuaci&oacute;n, se pueden conseguir soluciones menos robustas manipulando el nivel de prioridad de los mensajes (JMS intenta transmitir primero los mensajes con mayor prioridad aunque eso no se garantiza en la pr&aacute;ctica) o controlar el tiempo de vida de los mensajes (si se fija a cero eso indica que no caduca nunca). En un caso extremo, para aliviar la carga de la capa de persistencia se pueden enviar mensajes NON_PERSISTENT lo cual libera a JMS de garantizar dicha persistencia si el proveedor de mensajes falla. Por &uacute;ltimo, tambi&eacute;n podemos crear colas temporales, que se mantienen mientras dura la conexi&oacute;n, pero con ellas se corre el riesgo de perder los mensajes si hay fallos. Todas estas medidas deber&aacute;n tomarse solo si la aplicaci&oacute;n puede permit&iacute;rselas mientras garantiza su funcionalidad.</p>
+<p>A continuaci&oacute;n estudiaremos los diferentes mecanismos para conseguir o que afectan a la entrega fiable de los mensajes.</p>
+<a name="N102E8"></a><a name="Controlar+el+Acuse+de+Recibo+de+los+Mensajes"></a>
+<h3 class="underlined_5">Controlar el Acuse de Recibo de los Mensajes</h3>
+<p>Hasta que no se recibe un acuse de recibo de un mensaje, &eacute;ste no se considera consumido exitosamente. La consumici&oacute;n exitosa de un mensaje se lleva a cargo en tres fases:</p>
+<ol>
+	
+<li>El cliente recibe el mensaje</li>
+	
+<li>El cliente procesa mensaje</li>
+	
+<li>Se acusa el recibo del mensaje. Este acuse se inicia por parte del proveedor JMS o por el cliente, dependiendo del modo de acuse de la sesi&oacute;n.</li>
+
+</ol>
+<p>En las sesiones transaccionales (mediante las transacciones locales), el acuse ocurre autom&aacute;ticamente cuando se hace el <em>commit</em> de la transacci&oacute;n. Si se produce un <em>rollback</em> de la transacci&oacute;n, todo los mensajes consumidos se vuelven a re-entregar.</p>
+<p>En las sesiones no transaccionales, el cuando y el c&oacute;mo se acusa depende del valor especificado como segundo argumento del m&eacute;todo <span class="codefrag">createSession</span>. Los tres posibles valores para este argumento son:</p>
+<ul>
+	
+<li>
+<strong>Session.AUTO_ACKNOWLEDGE</strong>: La sesi&oacute;n autom&aacute;ticamente realiza el acuse al mensaje de cliente tanto si el cliente ha retornado exitosamente  de una llamada <span class="codefrag">MessageConsumer.receive()</span>, o cuando el listener de mensaje llamado para procesar el mensaje, <span class="codefrag">MessageListener.onMessage()</span>, retorna exitosamente.<br>
+	Una recepci&oacute;n s&iacute;ncrona en una sesi&oacute;n AUTO_ACKNOWLEDGE es la excepci&oacute;n a la regla que la consumici&oacute;n del mensaje  es un proceso de tres fases como anteriormente comentado.<br>
+	En este caso, la recepci&oacute;n y el acuse tienen lugar en un &uacute;nico paso, seguido por el procesamiento del mensaje.</li>
+	
+<li>
+<strong>Session.CLIENT_ACKNOWLEDGE</strong>: Un cliente acusa un mensaje mediante la llamada al m&eacute;todo <span class="codefrag">acknowledge()</span> del mensaje. En este modo, el acuse se realiza a nivel de sesi&oacute;n: El acuse de un mensaje consumido autom&aacute;ticamente implica el acuse de la recepci&oacute;n de <strong>todos</strong> los mensajes que se han consumido por dicha sesi&oacute;n.<br>
+	Por ejemplo, si un consumidor de mensajes consume diez mensajes y a continuaci&oacute;n acusa el quinto mensaje entregado, los diez mensajes son acusados.</li>
+	
+<li>
+<strong>Session.DUPS_OK_ACKNOWLEDGE</strong>: Esta opci&oacute;n instruye a la sesi&oacute;n a realizar el acuse de recibo de los mensajes de un modo tard&iacute;o (<em><strong>lazy</strong></em>). Esto supone la entrega de mensajes duplicados en el caso de que el proveedor JMS falle, por lo tanto solo deber&iacute;a utilizarse por aquellos consumidores que puede tolerar mensajes duplicados (si el proveedor JMS reenvia un mensaje, debe poner el valor de la cabecera <span class="codefrag">JMSRedelivered</span> a <span class="codefrag">true</span>).<br>
+	Esta opci&oacute;n puede reducir la sobrecarga de la sesi&oacute;n minimizando la cantidad de trabajo que &eacute;sta realiza para prevenir duplicados.</li>
+
+</ul>
+<p>Como hemos comentado, especificaremos el tipo de acuse al crear la sesi&oacute;n mediante el <em>flag</em> apropiado:</p>
+<pre class="code">
+TopicSession session = topicConnection.createTopicSeccion(false, Session.CLIENT_ACKNOWLEDGE);
+</pre>
+<p>Si se ha recibido un mensaje de una cola pero no se ha realizado el acuse al terminar la sesi&oacute;n, el proveedor JMS los retiene y los re-entrega cuando el consumidor vuelve a acceder a la cola. El proveedor tambi&eacute;n retiene aquellos mensajes que no han sido acusados para aquellas sesiones realizadas por un <span class="codefrag">TopicSubscriber</span>.</p>
+<p>En el caso de utilizar una cola o una subscripci&oacute;n duradera, se puede utilizar el m&eacute;todo <span class="codefrag">Session.recover()</span> para detener una sesi&oacute;n no transaccional y reiniciarla con su primer mensaje sin acuse de recibo realizado. En efecto, las series de sesiones de los mensajes enviados se resetean hasta el punto posterior al &uacute;ltimo mensaje acusado. El mensaje que ahora se env&iacute;a puede ser diferente de aquellos que originalmente fueron enviados, si los mensajes han expirado o si han llegado mensajes con una prioridad mayor. Para un <span class="codefrag">TopicSubscriber</span> no durable, el proveedor puede perder mensajes sin acusar cuando se recupera su sesi&oacute;n.</p>
+<a name="N10356"></a><a name="Especificar+la+Persistencia+de+los+Mensajes"></a>
+<h3 class="underlined_5">Especificar la Persistencia de los Mensajes</h3>
+<p>JMS soporta dos modos de entrega de mensajes para especificar si los mensajes se pierden al caerse el proveedor. Estos modos de entrega se definen como campos del interfaz <span class="codefrag">DeliveryMode</span>:</p>
+<ul>
+	
+<li>El modo <strong>PERSISTENT</strong>, el cual es el modo por defecto, le indica al proveedor JMS a tomar un cuidado extra para asegurar que no se pierde ning&uacute;n mensaje en el hipot&eacute;tico caso de que fallase el proveedor JMS. Un mensaje enviado con este modo de entrega se almacena es un almacenamiento estable al enviarse.</li>
+	
+<li>El modo <strong>NON_PERSISTENT</strong> no obliga al proveedor a almacenar el mensaje, y por tanto, no garantiza que no se pierda el mensaje en el caso de que falle el proveedor.</li>
+
+</ul>
+<p>Podemos especificar el modo de entrega de dos maneras:</p>
+<ul>
+	
+<li>Mediante el m&eacute;todo <span class="codefrag">MessageProducer.setDeliveryMode()</span> para indicar el modo de entrega para todos los mensajes enviados por dicho productor. Por ejemplo:
+	<pre class="code">producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);</pre>
+</li>
+	
+<li>Mediante el modo largo del m&eacute;todo <span class="codefrag">send()</span> o <span class="codefrag">publish()</span> para cada mensaje de forma individual. El segundo par&aacute;metro indica el modo de entrega. Por ejemplo:
+	<pre class="code">producer.send(message, DeliveryMode.NON_PERSISTENT, 3, 10000);</pre>
+	El tercer y cuarto par&aacute;metro indican el nivel de prioridad y el periodo de expiraci&oacute;n, los cuales explicaremos en los siguientes apartados.</li>
+
+</ul>
+<p>Como hemos dicho, si no especificamos nada, el modo por defecto es <span class="codefrag">DeliveryMode.PERSISTENT</span>. Mediante el modo <span class="codefrag">DeliveryMode.NON_PERSISTENT</span> podemos mejorar el rendimiento y reducir la sobrecarga por almacenamiento, pero deberemos cuidarnos de utilizarlo solo en aquellas aplicaciones que puedan permitirse la p&eacute;rdida de mensajes.</p>
+<a name="N10397"></a><a name="Indicar+el+Nivel+de+Prioridad"></a>
+<h3 class="underlined_5">Indicar el Nivel de Prioridad</h3>
+<p>Podemos utilizar diferentes niveles de prioridad para que el proveedor JMS env&iacute;e primero los mensajes m&aacute;s urgentes. Podemos indicar este nivel de dos maneras:</p>
+<ul>
+	
+<li>Mediante el m&eacute;todo <span class="codefrag">MessageProducer.setPriority()</span> para indicar el nivel de prioridad de todos los mensajes enviados por dicho productor. Por ejemplo:
+	<pre class="code">producer.setPriority(7);</pre>
+</li>
+	
+<li>Mediante el modo largo del m&eacute;todo <span class="codefrag">send()</span> o <span class="codefrag">publish()</span> para cada mensaje de forma individual. El tercer par&aacute;metro indica el nivel de prioridad de entrega. Por ejemplo:
+	<pre class="code">producer.send(message, DeliveryMode.NON_PERSISTENT, 3, 10000);</pre>
+</li>
+
+</ul>
+<p>Los diez niveles de prioridad van desde el 0 (el m&aacute;s bajo) al 9 (el m&aacute;s alto). Si no se especifica ning&uacute;n nivel, el nivel por defecto es 4. El proveedor JMS deber&iacute;a entregar los mensajes de mayor prioridad antes que los de menor prioridad, pero esto no implica que lo tenga que entregar en el orden exacto de prioridad.</p>
+<a name="N103BC"></a><a name="Permitir+la+Expiraci%C3%B3n+de+los+Mensajes"></a>
+<h3 class="underlined_5">Permitir la Expiraci&oacute;n de los Mensajes</h3>
+<p>Por defecto, un mensaje nunca expira. En el caso de necesitar que un mensaje se vuelva obsoleto tras pasar un cierto periodo de tiempo, podemos indicar un periodo de expiraci&oacute;n. Podemos hacerlo de dos maneras:</p>
+<ul>
+	
+<li>Mediante el m&eacute;todo <span class="codefrag">MessageProducer.setTimeToLive()</span> para indicar un periodo de expiraci&oacute;n por defecto para todos los mensajes enviados por dicho productor. Por ejemplo:
+	<pre class="code">producer.setTimeToLive(60000); // 1 min</pre>
+</li>
+	
+<li>Mediante el modo largo del m&eacute;todo <span class="codefrag">send()</span> o <span class="codefrag">publish()</span> para cada mensaje de forma individual. El cuarto par&aacute;metro indica el tiempo de vida (<span class="codefrag">timeToLive</span>) en milisegundos. Por ejemplo:
+	<pre class="code">producer.send(message, DeliveryMode.NON_PERSISTENT, 3, 10000); // 10 seg</pre>
+</li>
+
+</ul>
+<p>Si el valor especificado como <span class="codefrag">timeToLive</span> es 0, el mensaje nunca expira.</p>
+<p>Cuando se env&iacute;a el mensaje, el periodo especificado como <span class="codefrag">timeToLive</span> se a&ntilde;ade al tiempo actual para calcular el periodo de expiraci&oacute;n. Cualquier mensaje que no se ha enviado antes del periodo de expiraci&oacute;n especificado ser&aacute; destruido. La destrucci&oacute;n de los mensajes obsoletos preserva el almacenamiento y los recursos computaciones.</p>
+<a name="N103ED"></a><a name="Crear+Destinos+Temporales"></a>
+<h3 class="underlined_5">Crear Destinos Temporales</h3>
+<p>Por norma general, crearemos los destinos JMS (colas y t&oacute;picos) de modo administrativo m&aacute;s que programativo. Todo proveedor JMS incluye una herramienta de administraci&oacute;n para crear y eliminar destinos, y estos destinos, una vez creados, no suelen borrarse.</p>
+<p>JMS tambi&eacute;n permite crear destinos (<span class="codefrag">TemporaryQueue</span> y <span class="codefrag">TemporaryTopic</span>) que duran lo que dura la conexi&oacute;n que los ha creado. As&iacute; pues, crearemos estos destinos de forma din&aacute;mica mediante los m&eacute;todos <span class="codefrag">Session.createTemporaryQueue()</span> y <span class="codefrag">Session.createTemporaryTopic()</span>.</p>
+<p>Los &uacute;nicos consumidores de mensajes que pueden consumir de un destino temporal son aquellos creados por la misma conexi&oacute;n que cre&oacute; los destinos. Cualquier productor de mensajes puede enviar a un destino temporal. Si cerramos la conexi&oacute;n a la que pertenece un destino temporal, el destino se cierra y se pierden sus contenidos.</p>
+<p>Podemos utilizar destinos temporales para implementar un mecanismo sencillo de <em>request/reply</em>.</p>
+</div>
+
+
+<a name="N10410"></a><a name="Simulando+Llamadas+S%C3%ADncronas+Mediante+Request%2FReply"></a>
+<h2 class="underlined_10">Simulando Llamadas S&iacute;ncronas Mediante Request/Reply</h2>
+<div class="section">
+<p>En ciertos casos puede venirnos bien implementar un mecanismo de <em>petici&oacute;n y respuesta</em> de tal forma que quedemos a la espera de que la petici&oacute;n se satisfaga. As&iacute; pues, mediante este mecanismo simulamos una comunicaci&oacute;n s&iacute;ncrona mediante un sistema as&iacute;ncrono.</p>
+<p>Los pasos que necesita un cliente para simular una comunicaci&oacute;n s&iacute;ncrona con un dominio punto a punto son:</p>
+<ol>
+	
+<li>Crear una cola temporal mediante el m&eacute;todo <span class="codefrag">createTemporaryQueue()</span> de la sesi&oacute;n de la cola</li>
+	
+<li>Asignar a la cabecera <span class="codefrag">JMSReplyTo</span> esta cola temporal (de este modo, el consumidor del mensaje utilizar&aacute; este cabecera para conocer el destino al que enviar la respuesta).</li>
+	
+<li>Enviar el mensaje.</li>
+	
+<li>Ejecutar un receive con bloqueo en la cola temporal, mediante una llamada al m&eacute;todo <span class="codefrag">receive</span> en la cola del receptor para esta cola temporal</li>
+
+</ol>
+<p>El consumidor tambi&eacute;n puede referenciar a la petici&oacute;n original asignando a la cabecera <span class="codefrag">JMSCorrelationID</span> del mensaje de respuesta con el valor de la cabecera <span class="codefrag">JMSMessageID</span> de la petici&oacute;n.</p>
+<p>A continuaci&oacute;n se muestra un diagrama del mecanismo <em>request/reply</em> con el dominio Pub/Sub:</p>
+<p>
+
+<img alt="Request/Reply con Pub/Sub" content-width="13cm" src="imagenes/sesion2/requestReply.gif" width="562">
+</p>
+<p>Para reducir la cantidad de trabajo que tienen que hacer los clientes, JMS ofrece una pareja de clases auxiliares (<span class="codefrag">QueueRequestor</span> and <span class="codefrag">TopicRequestor</span>) que gestionan toda la configuraci&oacute;n requerida por los anteriores pasos. Un <em>requestor</em> es un objeto que convierte un intercambio de mensajes en una especie de llamada a procedimiento remoto. Existen tanto <span class="codefrag">QueueRequestor</span> como <span class="codefrag">TopicRequestor</span> aunque este tipo de objetos se usan fundamentalmente en el modelo punto-a-punto, esto es con colas, en donde existe un solo receptor de la petici&oacute;n, que responde al <em>request</em>. Si se utilizase el modelo de subscripci&oacute;n solo la respuesta del primer subscriptor que responde se tendr&iacute;a en cuenta por el <em>requestor</em> y el resto de ellas se perder&iacute;a.</p>
+</div>
+
+
+
+<a name="N10468"></a><a name="Subscripciones+Duraderas"></a>
+<h2 class="underlined_10">Subscripciones Duraderas</h2>
+<div class="section">
+<p>Para estar seguro de que una aplicaci&oacute;n Pub/sub recibe todos los mensajes publicados, debe usarse el modo de env&iacute;o <span class="codefrag">PERSISTENT</span> en la construcci&oacute;n del mensaje. Pero adicionalmente, en este caso puede usarse un <em>durable subscriber</em> para los subscriptores.</p>
+<p>La idea b&aacute;sica de un subscriptor duradero es que una subscripci&oacute;n de este tipo permanece activa a pesar de que el subscriptor cierre su conexi&oacute;n, de modo que recibir&aacute; los mensajes publicados cuando el subscriptor no estaba activo. Este mecanismo ofrece la fiabilidad de las colas dentro del dominio pub/sub.</p>
+<a name="N1047A"></a><a name="Durable+vs+Non+Durable"></a>
+<h3 class="underlined_5">Durable vs Non Durable</h3>
+<p>Mediante un subscriptor ordinario, no duradero, tanto el subscriptor como la subscripci&oacute;n comienzan y finalizan al mismo tiempo, y por tanto, su vida es id&eacute;ntica. Al cerrar un subscriptor, la subscripci&oacute;n tambi&eacute;n finaliza. En el gr&aacute;fico, <em>create</em> referencia una llamada a <span class="codefrag">Session.createConsumer()</span> pas&aacute;ndole un t&oacute;pico como par&aacute;metro, y <em>close</em> a una llamada a <span class="codefrag">MessageConsumer.close()</span>. Cualquier mensaje publicado al t&oacute;pico entre el primer <em>close</em> y el segundo <em>create</em> no llega a consumirse por ning&uacute;n subscriptor, de modo que los mensajes M3 y M4 se pierden.</p>
+<p>
+    
+<img alt="Non-durable Subscribers" content-width="9cm" src="imagenes/sesion3/jms-nondurableSubscriber.gif" width="308">
+</p>
+<p>Con una subscripci&oacute;n duradera, el subscriptor puede cerrarse y recrearse, pero la subscripci&oacute;n sigue existiendo y mantiene los mensajes hasta que la aplicaci&oacute;n realiza una llamada al m&eacute;todo <em>unsubscribe</em>. En el gr&aacute;fico, <em>create</em> referencia una llamada a <span class="codefrag">Session.createDurableSubscriber()</span>, <em>close</em> a una llamada a <span class="codefrag">MessageConsumer.close()</span> y <em>unsubscribe</em> a <span class="codefrag">Session.unsubscribe()</span>. Los mensajes publicados mientras el subscriptor esta inactivo se reciben al volver a crear el subscriptor. De este modo, incluso los mensajes M2, M4 y M5 llegan al destino, y por tanto no se pierden.</p>
+<p>
+    
+<img alt="Durable Subscribers" content-width="11cm" src="imagenes/sesion3/jms-durableSubscriber.gif" width="440">
+</p>
+<a name="N104C0"></a><a name="Creaci%C3%B3n+y+Manejo"></a>
+<h3 class="underlined_5">Creaci&oacute;n y Manejo</h3>
+<p>A coste de incrementar la carga del servidor, podemos utilizar el m&eacute;todo <span class="codefrag">Session.createDurableSubscriber</span> para crear un subscriptor durable, con la restricci&oacute;n de que una subscripci&oacute;n de este tipo solo puede tener un subscriptor activo a la vez.</p>
+<p>Un subscritor duradero registra una subscripci&oacute;n duradera especificando una identidad &uacute;nica la cual retiene el proveedor JMS. Los siguientes subscriptores que tengan la misma identidad contin&uacute;an con la subscripci&oacute;n en el mismo estado en el que qued&oacute; la subscripci&oacute;n una vez finaliz&oacute; el subscritor previo. Si una subscripci&oacute;n duradera no tiene ning&uacute;n subscriptor activo, el proveedor JMS retiene los mensajes hasta que alguien los consume o que expiran.</p>
+<p>Para establecer la identidad &uacute;nica de un subscriptor indicaremos:</p>
+<ul>
+    
+<li>Un ID de cliente para la conexi&oacute;n</li>
+    
+<li>Un nombre de t&oacute;pico y de subscripci&oacute;n para el subscriptor</li> 
+
+</ul>
+<p>Para indicar el ID de cliente, lo podemos hacerde forma administrativa para una factor&iacute;a de conexiones espec&iacute;fica de un cliente. Supongamos que llamamos a esa <em>factor&iacute;a especial</em> <span class="codefrag">jms/DurableConnectionFactory</span>. La crearemos de la forma habitual desde el servidor de aplicaciones asign&aacute;ndole como tipo <span class="codefrag">TopicConnectionFactory</span> y a&ntilde;adiendo en la parte inferior de la ventana una <em>propiedad</em> llamada <span class="codefrag">ClientID</span> con valor <span class="codefrag">myID</span>. Dicha propiedad define la identidad:  
+</p>
+<p>
+
+<img alt="Definici&oacute;n de la factor&iacute;a" content-width="14cm" src="imagenes/sesion3/durableConnectionFactory700up.jpg" width="701">
+</p>
+<p>
+
+<img alt="Definici&oacute;n de la identidad del cliente" content-width="14cm" src="imagenes/sesion3/durableConnectionFactory700down.jpg" width="703">
+</p>
+<p>Tras crear la factor&iacute;a de conexiones para crear la conexi&oacute;n y la sesi&oacute;n, utilizaremos el m&eacute;todo <span class="codefrag">createDurableSubscriber()</span> con dos par&aacute;metros, el t&oacute;pico y el nombre de la subscripci&oacute;n:</p>
+<pre class="code">String nombreSub = "MiSub";
+MessageConsumer topicSubscriber = session.createDurableSubscriber(topic, nombreSub);
+</pre>
+<p>El subscriptor se activa tras iniciar la conexi&oacute;n. Si queremos cerrar el subscriptor, llamaremos a:</p>
+<pre class="code">topicSubscriber.close();</pre>
+<p>Para eliminar una subscripci&oacute;n duradera, primero cerraremos el subscriptor, y posteriormente mediante el m&eacute;todo <span class="codefrag">unsuscribe()</span> (pas&aacute;ndole como par&aacute;metro el nombre de la subscripci&oacute;n) eliminamos la subscripci&oacute;n y el estado que mantiene el proveedor para el subscriptor:</p>
+<pre class="code">topicSubscriber.close();
+session.unsubscribe(nombreSub);
+</pre>
+<a name="N1051E"></a><a name="Ejemplo"></a>
+<h3 class="underlined_5">Ejemplo</h3>
+<p>
+Veamos como funciona el mecanismo de la subscripci&oacute;n duradera en siguiente ejemplo. El c&oacute;digo del ejemplo se encuentra en <a href="ejemplos/sesion3/DurableSubscriberExample.java.txt">DurableSubscriberExample.java</a>.
+</p>
+<p>
+Desde el <span class="codefrag">main()</span> se invoca ya al m&eacute;todo <span class="codefrag">runProgram()</span> que crea, por un lado, un objeto llamado <span class="codefrag">DurableSubscriber</span> que se encarga de la gesti&oacute;n del subscriptor duradero (creaci&oacute;n, inicio, finalizaci&oacute;n y sincronizaci&oacute;n) y, por otro lado, un objeto <span class="codefrag">MultiplePublisher</span> que publica varios mensajes en un t&oacute;pico, pero para ello usa la factor&iacute;a no duradera. Sin embargo, en ese t&oacute;pico estar&aacute; escuchando un durable subscriber. La secuencia es la siguiente:</p>
+<pre class="code">public void runProgram() {
+    <em>// Instanciamos el subscriptor y el publicador</em>
+    DurableSubscriber durableSubscriber = new DurableSubscriber();
+    MultiplePublisher multiplePublisher = new MultiplePublisher();
+    <em>// Iniciamos el subscriptor, publicamos mensajes, y cerramos el subscriptor</em>
+    durableSubscriber.startSubscriber();
+    multiplePublisher.publishMessages();
+    durableSubscriber.closeSubscriber();
+    <em>// Mientras que el subscriptor esta cerrado, el publicador publica algunos mensajes m&aacute;s</em>
+    multiplePublisher.publishMessages();
+    <em>// Reiniciamos el subscriptor y recoge estos mensajes</em>
+    durableSubscriber.startSubscriber();
+    <em>// Cerramos las conexiones</em>
+    durableSubscriber.closeSubscriber();
+    multiplePublisher.finish();
+    durableSubscriber.finish();
+}
+</pre>
+<p>El constructor de <span class="codefrag">DurableSubscriber()</span> se encarga de establecer la conexi&oacute;n con la factor&iacute;a duradera y de iniciar la sesi&oacute;n. Lo mismo ocurre con el constructor de <span class="codefrag">MultiplePublisher</span> a trav&eacute;s de una factor&iacute;a normal.</p>
+<p>Posteriormente, <span class="codefrag">startSubscriber()</span> detiene la conexi&oacute;n, crea un <em>durable subscriber</em>, indicando como segundo argumento el nombre de la subscripci&oacute;n duradera (en nuestro ejemplo <em>'MiSubscripcionDuradera'</em>). Este nombre se concatena internamente con el identificador del cliente del siguiente modo: <span class="codefrag">ClientID + "##" + nombreSubscripcion</span>. A continuaci&oacute;n se crea un listener de mensajes de texto y se vincula a dicho listener (recordad que el m&eacute;todo <span class="codefrag">onMessage()</span> del listener captura de forma as&iacute;ncrona los mensajes que se env&iacute;en al t&oacute;pico). Finalmente se reanuda la conexi&oacute;n.</p>
+<pre class="code">public void startSubscriber() {
+    try {
+        System.out.println("Iniciando subscriptor con MiSubscripcionDuradera");
+        connection.stop();
+        <strong>subscriber = session.createDurableSubscriber(topic, "MiSubscripcionDuradera");</strong>
+        listener = new TextListener();
+        subscriber.setMessageListener(listener);
+        connection.start();
+    } catch (JMSException e) {
+        System.err.println("startSubscriber -&gt; Exception: " + e.toString());
+    }
+}
+</pre>
+<p>
+Posteriormente, el m&eacute;todo <span class="codefrag">publishMessages()</span> publica tres mensajes en 
+el t&oacute;pico en que est&aacute; escuchando el subscriptor duradero.</p>
+<pre class="code">public void publishMessages() {
+    TextMessage message = null;
+    int i;
+    final int NUMMSGS = 3;
+    final String MSG_TEXT = "Este es el mensaje num";
+
+    try {
+        <strong>message = session.createTextMessage();</strong>
+
+        for (i = startindex; i &lt; (startindex + NUMMSGS); i++) {
+            message.setText(MSG_TEXT + " " + (i + 1));
+            System.out.println(" <strong>PUBLICADOR</strong> -&gt; Publicando mensaje: "
+                + message.getText());
+            <strong>producer.send(message);</strong>
+        }
+
+        /<em>/ Envia un mensaje de control indicando el fin de los mensajes</em>
+        <strong>producer.send(session.createMessage());</strong>
+        startindex = i;
+    } catch (JMSException e) {
+        System.err.println("publishMessages -&gt; Exception : " + e.toString());
+    }
+}
+</pre>
+<p>Esos mensajes son le&iacute;dos por dicho subscriptor, mediante el listener comentado anteriormente:</p>
+<pre class="code">public void onMessage(Message message) {
+    if (message instanceof TextMessage) {
+        TextMessage msg = (TextMessage) message;
+
+        try {
+            System.out.println(" <strong>SUBSCRIPTOR</strong> -&gt; Leyendo mensaje: " + msg.getText());
+        } catch (JMSException e) {
+            System.err.println("Exception en onMessage(): " + e.toString());
+        }
+    } else {
+        monitor.allDone();
+    }
+}
+</pre>
+<p>Posteriormente el subscriptor se cierra con el m&eacute;todo <span class="codefrag">closeSubscriber()</span>:
+</p>
+<pre class="code">public void closeSubscriber() {
+    try {
+        listener.monitor.waitTillDone();
+        System.out.println("Cerrando subscriptor");
+        subscriber.close();
+    } catch (JMSException e) {
+        System.err.println("closeSubscriber -&gt; Exception: " + e.toString());
+    }
+}
+</pre>
+<p>
+Mientras el subscriptor duradero est&aacute; cerrado, el productor env&iacute;a 3 mensajes m&aacute;s. Dichos mensajes son recogidos por el subscriptor cuando vuelve a lanzar el m&eacute;todo <span class="codefrag">startSubscriber()</span>. Despu&eacute;s se vuelve a cerrar y finalmente el publicador cierra la conexi&oacute;n en su m&eacute;todo <span class="codefrag">finish()</span> y el subscriptor duradero cierra en su <span class="codefrag">finish()</span> la conexi&oacute;n y luego abandona la subscripci&oacute;n (debemos especificar su nombre):
+</p>
+<pre class="code">
+<em>// Finish del Durable Subscriber</em>
+public void finish() {
+    if (connection != null) {
+        try {
+            System.out.println("Unsuscribe de la subscripcion duradera");
+            session.unsubscribe("MiSubscripcionDuradera");
+            connection.close();
+        } catch (JMSException ee) {}
+    }
+}
+</pre>
+<p>El resultado de la ejecuci&oacute;n es el siguiente:</p>
+<pre class="code">Factoria de conexiones con ID Cliente es jms/DurableConnectionFactory
+Nombre del topico es jms/Topic
+-------------------------------------
+Iniciando subscriptor con MiSubscripcionDuradera
+ PUBLICADOR -&gt; Publicando mensaje: Este es el mensaje num 1
+ PUBLICADOR -&gt; Publicando mensaje: Este es el mensaje num 2
+ SUBSCRIPTOR -&gt; Leyendo mensaje: Este es el mensaje num 1
+ PUBLICADOR -&gt; Publicando mensaje: Este es el mensaje num 3
+ SUBSCRIPTOR -&gt; Leyendo mensaje: Este es el mensaje num 2
+ SUBSCRIPTOR -&gt; Leyendo mensaje: Este es el mensaje num 3
+Cerrando subscriptor
+ PUBLICADOR -&gt; Publicando mensaje: Este es el mensaje num 4
+ PUBLICADOR -&gt; Publicando mensaje: Este es el mensaje num 5
+ PUBLICADOR -&gt; Publicando mensaje: Este es el mensaje num 6
+Iniciando subscriptor con MiSubscripcionDuradera
+ SUBSCRIPTOR -&gt; Leyendo mensaje: Este es el mensaje num 4
+ SUBSCRIPTOR -&gt; Leyendo mensaje: Este es el mensaje num 5
+ SUBSCRIPTOR -&gt; Leyendo mensaje: Este es el mensaje num 6
+Cerrando subscriptor
+Unsuscribe de la subscripcion duradera</pre>
+</div>
+
+
+
+<p class="pageBreakAfter"></p>
+
+
+</div>
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+        Copyright &copy;
+         2010-2011 Dept. Ciencia de la Computaci&oacute;n e IA</div>
+</div>
+</body>
+</html>

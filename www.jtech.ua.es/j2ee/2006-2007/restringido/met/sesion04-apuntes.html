@@ -1,0 +1,931 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.7">
+<meta name="Forrest-skin-name" content="pelt">
+<title>Pr&aacute;cticas &Aacute;giles</title>
+<link type="text/css" href="skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="skin/print.css" rel="stylesheet">
+<link type="text/css" href="skin/profile.css" rel="stylesheet">
+<script src="skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<div class="header">
+<div class="grouplogo">
+<a href="http://www.jtech.ua.es/j2ee"><img class="logoImage" alt="J2EE" src="images/baner_j2ee_izq.gif" title="Curso Especialista Universitario en Java Enterprise"></a>
+</div>
+<div class="projectlogoA1">
+<a href="http://www.dccia.ua.es/"><img class="logoImage" alt="Metodologias de Desarrollo" src="images/baner_j2ee_der.gif" title="Metodologias de Desarrollo"></a>
+</div>
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="../index.html">M&oacute;dulos</a>
+</li>
+<li class="current">
+<a class="base-selected" href="index.html">Metodolog&iacute;as de Desarrollo</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<div id="level2tabs"></div>
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<div id="menu">
+<div onclick="SwitchMenu('menu_selected_1.1', 'skin/')" id="menu_selected_1.1Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Metodolog&iacute;as de Desarrollo</div>
+<div id="menu_selected_1.1" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="index.html" title="Metodolog&iacute;as de Desarrollo">&Iacute;ndice</a>
+</div>
+<div onclick="SwitchMenu('menu_selected_1.1.2', 'skin/')" id="menu_selected_1.1.2Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Teor&iacute;a</div>
+<div id="menu_selected_1.1.2" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="sesion01-apuntes.html" title="Sesi&oacute;n 1: Metodolog&iacute;as &Aacute;giles">Sesi&oacute;n 1</a>
+</div>
+<div class="menuitem">
+<a href="sesion02-apuntes.html" title="Sesi&oacute;n 2: Programaci&oacute;n eXtrema">Sesi&oacute;n 2</a>
+</div>
+<div class="menuitem">
+<a href="sesion03-apuntes.html" title="Sesi&oacute;n 3: Modelado &Aacute;gil">Sesi&oacute;n 3</a>
+</div>
+<div class="menupage">
+<div class="menupagetitle">Sesi&oacute;n 4</div>
+</div>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<div id="credit2"></div>
+</div>
+<div id="content">
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="sesion04-apuntes.pdf"><img alt="PDF -icon" src="skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1>Pr&aacute;cticas &Aacute;giles</h1>
+<h3>Desarrollo Dirigido por las Pruebas &amp; Integraciones Continuas</h3>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#Automatizaci%C3%B3n">Automatizaci&oacute;n</a>
+<ul class="minitoc">
+<li>
+<a href="#%C2%BFPor+Qu%C3%A9+Automatizar%3F">&iquest;Por Qu&eacute; Automatizar?</a>
+</li>
+<li>
+<a href="#%C2%BFCuando+Automatizar%3F">&iquest;Cuando Automatizar?</a>
+</li>
+<li>
+<a href="#%C2%BFCuando+Ejecutamos+Procesos+Autom%C3%A1ticos%3F">&iquest;Cuando Ejecutamos Procesos Autom&aacute;ticos?</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Desarrollo+Dirigido+por+las+Pruebas+%28TDD%29">Desarrollo Dirigido por las Pruebas (TDD)</a>
+<ul class="minitoc">
+<li>
+<a href="#Beneficios">Beneficios</a>
+</li>
+<li>
+<a href="#Costes">Costes</a>
+</li>
+<li>
+<a href="#Automatizaci%C3%B3n+de+las+Pruebas">Automatizaci&oacute;n de las Pruebas</a>
+<ul class="minitoc">
+<li>
+<a href="#El+Reto+de+las+Pruebas+JavaEE">El Reto de las Pruebas JavaEE</a>
+</li>
+<li>
+<a href="#Herramientas+de+Automatizaci%C3%B3n+de+Pruebas">Herramientas de Automatizaci&oacute;n de Pruebas</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#%C2%BFDentro+o+Fuera+del+Contenedor%3F">&iquest;Dentro o Fuera del Contenedor?</a>
+<ul class="minitoc">
+<li>
+<a href="#Mocks">Mocks</a>
+</li>
+<li>
+<a href="#Pruebas+Dentro+del+Contenedor">Pruebas Dentro del Contenedor</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#C%C3%B3mo+Escribir+las+Pruebas">C&oacute;mo Escribir las Pruebas</a>
+</li>
+<li>
+<a href="#%C2%BFQu%C3%A9+Tengo+Que+Probar%3F">&iquest;Qu&eacute; Tengo Que Probar?</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Integraciones+Continuas+%28CI%29">Integraciones Continuas (CI)</a>
+<ul class="minitoc">
+<li>
+<a href="#Pr%C3%A1cticas">Pr&aacute;cticas</a>
+</li>
+<li>
+<a href="#Construcciones+Planificadas">Construcciones Planificadas</a>
+</li>
+<li>
+<a href="#CruiseControl">CruiseControl</a>
+<ul class="minitoc">
+<li>
+<a href="#Configuraci%C3%B3n">Configuraci&oacute;n</a>
+</li>
+<li>
+<a href="#En+Marcha">En Marcha</a>
+</li>
+<li>
+<a href="#Componentes">Componentes</a>
+</li>
+<li>
+<a href="#Ciclo+de+Vida">Ciclo de Vida</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Para+Saber+M%C3%A1s">Para Saber M&aacute;s</a>
+<ul class="minitoc">
+<li>
+<a href="#Bibliograf%C3%ADa">Bibliograf&iacute;a</a>
+</li>
+<li>
+<a href="#Enlaces">Enlaces</a>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+
+<p>Una de las t&eacute;cnicas m&aacute;s b&aacute;sicas y que aportan mayor valor al desarrollo de proyectos es el uso de un proceso autom&aacute;tico de construcci&oacute;n y pruebas que permita al equipo construir y probar su sistema muchas veces a lo largo de la jornada laboral.</p>
+
+
+
+<a name="N10014"></a><a name="Automatizaci%C3%B3n"></a>
+<h2 class="underlined_10">Automatizaci&oacute;n</h2>
+<div class="section">
+<p>Durante el desarrollo de un proyecto, son innumerables las ocasiones en que tenemos la necesidad de construir el proyecto para comprobar si los cambios realizados son correctos, si las pruebas implementadas son efectivas, si el sistema sigue funcionando como lo hacia hasta ahora.</p>
+<a name="N1001D"></a><a name="%C2%BFPor+Qu%C3%A9+Automatizar%3F"></a>
+<h3 class="underlined_5">&iquest;Por Qu&eacute; Automatizar?</h3>
+<p>Por que <em>el tiempo es oro</em>. Los procesos autom&aacute;ticos son m&aacute;s r&aacute;pidos que los manuales. Adem&aacute;s, la automatizaci&oacute;n ofrece precisi&oacute;n, consistencia y repetici&oacute;n.</p>
+<p>Cuando un ser humano realiza una tarea repetitiva acaba por aburrirse, pero el ordenador realiza estas tareas una vez tras otra sin quejarse ;)</p>
+<p>El hecho de tener un proceso de construcci&oacute;n autom&aacute;tico nos permite producir software al presionar un bot&oacute;n. Este proceso de construcci&oacute;n sigue las instrucciones de nuestra cuidada receta. Tomando los ingredientes como entrada, y tras unos ciclos de reloj, ya tenemos un poco de software listo para consumir. Este proceso nos va a permitir disponer de m&aacute;s tiempo para desarrollar software, que al fin y al cabo, es lo que m&aacute;s nos interesa.</p>
+<p>Adem&aacute;s, la automatizaci&oacute;n reduce la documentaci&oacute;n, ya que no es necesario explicar al resto de componentes (o futuros compa&ntilde;eros) del equipo de trabajo los pasos a seguir para realizar un determinado proceso, sino que se le ense&ntilde;a donde esta el script y como se ejecuta (y si est&aacute; interesado, el script estar&aacute; documentado explicando todas las tareas que realiza).</p>
+<p>As&iacute; pues, la automatizaci&oacute;n cambia el modo de trabajar, ya que no solo hace el trabajo m&aacute;s f&aacute;cil, sino que permite ejecutar los procesos cr&iacute;ticos del proyecto tantas veces como deseemos.</p>
+<a name="N10036"></a><a name="%C2%BFCuando+Automatizar%3F"></a>
+<h3 class="underlined_5">&iquest;Cuando Automatizar?</h3>
+<p>Cuando ejecutes el mismo proceso por segunda vez, &eacute;ste deber&iacute;a ser autom&aacute;tico. Raro ser&iacute;a que no hubiera una tercera vez.</p>
+<p>Los errores normalmente aparecen debido al aburrimiento, por lo tanto, si un proceso debe ser fiable y consistente, debe estar automatizado. S&oacute;lo una cosa a tener en cuenta, nunca emplees m&aacute;s tiempo desarrollando una soluci&oacute;n autom&aacute;tica que el tiempo que te ahorrar&iacute;as.</p>
+<a name="N10043"></a><a name="%C2%BFCuando+Ejecutamos+Procesos+Autom%C3%A1ticos%3F"></a>
+<h3 class="underlined_5">&iquest;Cuando Ejecutamos Procesos Autom&aacute;ticos?</h3>
+<p>
+    
+<img alt="&iquest;Cuando ejecutamos procesos autom&aacute;ticos?" content-width="14cm" src="imagenes/s4/automatizacion.jpg" width="559">
+</p>
+<p>Los diferentes tipos de automatizaci&oacute;n, respecto a su tipo de inicio, pueden ser:</p>
+<ul>
+    
+<li>
+<strong>Comandos</strong>: cuando ejecutamos un comando y el ordenador realiza una serie de tareas de un modo consistente y repetible.</li>
+    
+<li>
+<strong>Planificadas</strong>: una vez un comando automatiza un proceso, podemos incluirlo dentro de un sistema planificador, de modo que nadie tenga que ejecutar el comando de forma manual.</li>
+    
+<li>
+<strong>Basada en Eventos</strong>: los comandos tambi&eacute;n se pueden ejecutar autom&aacute;ticamente cuando ocurre alg&uacute;n evento importante, por ejemplo, al subir un archivo al CVS.</li>
+
+</ul>
+<p>&iquest;Y qu&eacute; necesitamos para automatizar?</p>
+<ul>
+    
+<li>
+<strong>Control de Versiones</strong> (<em>CVS</em>, <em>Subversion</em>): Repositorio central con el c&oacute;digo y documentaci&oacute;n del proyecto, de modo que tenemos un &uacute;nico punto desde el cual construir el proyecto.</li>
+    
+<li>
+<strong>Pruebas Autom&aacute;ticas</strong> (<em>JUnit</em>, <em>Cactus</em>):  las pruebas que comprueban sus propios resultados incrementan la confianza del equipo en la aplicaci&oacute;n.</li>
+    
+<li>
+<strong>Scripts</strong> (Shell scripts, <em>Ant</em>, <em>Maven</em>): para ense&ntilde;arle al ordenador c&oacute;mo automatizar los procesos.</li>
+    
+<li>
+<strong>Dispositivos de Comunicaci&oacute;n</strong> (Email, Wiki, Tel&eacute;fono m&oacute;vil): la automatizaci&oacute;n tambi&eacute;n ofrece retroalimentaci&oacute;n sobre los resultados de la construcci&oacute;n y las pruebas, pudi&eacute;ndose realizar en m&uacute;ltiples y diversos dispositivos.</li>
+
+</ul>
+</div> 
+
+
+<p class="pageBreakAfter"></p>
+
+
+<a name="tdd"></a>
+<a name="N1009D"></a><a name="Desarrollo+Dirigido+por+las+Pruebas+%28TDD%29"></a>
+<h2 class="underlined_10">Desarrollo Dirigido por las Pruebas (TDD)</h2>
+<div class="section">
+<p>Los ingenieros del software, por lo general, han relacionado las pruebas con un mal necesario. Mientras todos los desarrolladores afirman la importancia que tienen las pruebas dentro de la producci&oacute;n de software de calidad, a casi nadie le hace gracia tener que probar su propio c&oacute;digo, e incluso menos si lo tiene que hacer otra persona.</p>
+<p>El Desarrollo Dirigido por las Pruebas, tambi&eacute;n conocido como <em>Test Driven Development (TDD)</em>, es una de las t&eacute;cnicas &aacute;giles m&aacute;s utilizadas, ya que protege al proyecto de los cambios mediante un escudo de pruebas unitarias.</p>
+<p>XP ha cambiado la percepci&oacute;n que la comunidad tiene del proceso de pruebas, dando un nuevo aire al "<em>arte de las pruebas</em>". Para ello, plantea que la escritura y ejecuci&oacute;n de las pruebas deben ser el elemento central de los esfuerzos de desarrollo.</p>
+<p>Para la gran mayor&iacute;a de desarrolladores, la realizaci&oacute;n de pruebas antes de XP era un proceso muy laborioso y pesado. Se deb&iacute;a escribir un caso de prueba, preparar los datos a probar, documentar los resultados esperados antes de que cualquier prueba pudiera ejecutarse. Para hacer el proceso de las pruebas m&aacute;s "comestible", XP aprovech&oacute; la automatizaci&oacute;n de los scripts para todas las pruebas relacionadas con el desarrollo. Mediante XP, los desarrolladores escriben c&oacute;digo para probar c&oacute;digo, y como todos sabemos, a los desarrolladores lo que nos gusta es escribir c&oacute;digo y no documentos.</p>
+<p>El enfoque XP para las pruebas difiere de los procesos tradicionales en que las pruebas se escriben antes de producir el c&oacute;digo de la implementaci&oacute;n. Una vez escrita la prueba, se debe escribir el menor y m&aacute;s simple trozo de c&oacute;digo para pasar la prueba (ni m&aacute;s, ni menos). El escribir c&oacute;digo que pasa la prueba hace que la prueba dirija el proceso de desarrollo, de ah&iacute; el t&eacute;rmino.</p>
+<p>As&iacute; pues, la regla es <strong>2x1</strong> "probar dos veces, codificar una", mediante los 3 pasos:</p>
+<ol>
+    
+<li>Escribir una prueba para el nuevo c&oacute;digo y comprobar como falla</li>
+    
+<li>Implementar el nuevo c&oacute;digo, haciendo "<em>la soluci&oacute;n m&aacute;s simple que pueda funcionar</em>"</li>
+    
+<li>Comprobar que la prueba es exitosa, y refactorizar el c&oacute;digo.</li>
+
+</ol>
+<p>Este enfoque de TDD traslada el proceso de pruebas a la primera plana de la atenci&oacute;n del ingeniero. El resultado de este &eacute;nfasis en las pruebas es que las pruebas que validan la implementaci&oacute;n cumplen los requisitos, y el c&oacute;digo escrito, por consiguiente, pasa las pruebas.</p>
+<p>TDD exist&iacute;a antes de XP. No obstante, XP populariz&oacute; la pr&aacute;ctica y ayud&oacute; a su extendida aceptaci&oacute;n.</p>
+<p>El hecho de adoptar esta t&eacute;cnica no requiere que se utilice el proceso XP. Como ya hemos visto, XP adopta un conjunto de pr&aacute;cticas, de las cuales TDD es s&oacute;lo una. De hecho, TDD es una de las m&aacute;s valiosas incorporaciones que se puede hacer a cualquier metodolog&iacute;a (por ello este apartado), y se anima activamente a su uso como parte del Proceso Unificado de Rational (RUP).</p>
+<a name="N100D6"></a><a name="Beneficios"></a>
+<h3 class="underlined_5">Beneficios</h3>
+<p>Seguir un enfoque de TDD permite la producci&oacute;n de un conjunto compresible de pruebas autom&aacute;ticas a lo largo del proyecto, las cuales se puede ejecutar de forma r&aacute;pida y f&aacute;cil. Al incluir las pruebas en el proceso de construcci&oacute;n, el impacto de un cambio en el c&oacute;digo de la aplicaci&oacute;n se puede evaluar inmediatamente. El coste de identificar errores de implementaci&oacute;n durante la fase de construcci&oacute;n es menor que descubrirlos a posteriori mediante un proceso separado realizado por un equipo de control de calidad.</p>
+<p>De forma breve, los beneficios que puede ofrecer TDD son:</p>
+<ul>
+    
+<li>Los requisitos de las pruebas se consideran al principio.</li>
+    
+<li>No se omiten las pruebas, ya que se escriben primero.</li>
+    
+<li>El acto de escribir las pruebas sirve para aclarar los requisitos.</li>
+    
+<li>Escribir c&oacute;digo de pruebas tiende a producir software mejor organizado.</li>
+    
+<li>Se mejora la usabilidad de los interfaces ya que los desarrolladores se ven obligados a trabajar con el interfaz a probar.</li>
+    
+<li>Validaci&oacute;n de los cambios sobre el c&oacute;digo de forma inmediata, formando parte del proceso de construcci&oacute;n.</li>
+    
+<li>Ofrece soporte a la refactorizaci&oacute;n.</li>
+    
+<li>Se entrega un producto de mayor calidad al equipo de control de calidad, ya que las pruebas unitarias han eliminado gran parte de los defectos.</li>
+    
+<li>Se incrementa la confianza de los desarrolladores sobre la estabilidad de la aplicaci&oacute;n.</li>
+
+</ul>
+<p>Por todo esto, TDD ofrece al proyecto la agilidad necesaria para incorporar los cambios dentro de su estructura. Se pueden realizar cambios de forma r&aacute;pida y precisa. Adem&aacute;s, el tener un conjunto comprensivo de pruebas permite la refactorizaci&oacute;n de un modo seguro. De este modo, los ingenieros pueden realizar cambios en el c&oacute;digo, de una forma segura, ya que cualquier error introducido en &eacute;l se detectar&aacute; autom&aacute;ticamente.</p>
+<a name="N10104"></a><a name="Costes"></a>
+<h3 class="underlined_5">Costes</h3>
+<p>Un enfoque de TDD puede incrementar de forma significativa la calidad del software entregado. No obstante, mientras la teor&iacute;a de TDD es muy atractiva, la pr&aacute;ctica tiene sus inconvenientes.</p>
+<p>La escritura del c&oacute;digo, tanto para a&ntilde;adir funcionalidad como para escribir pruebas, consume recursos muy valiosos para el proyecto, ll&aacute;mese tiempo de un desarrollador. Adem&aacute;s, la implementaci&oacute;n de un conjunto efectivo de pruebas autom&aacute;ticas no es una tarea trivial.</p>
+<p>A continuaci&oacute;n se detallan algunos de los factores a considerar:</p>
+<ul>
+    
+<li>
+<strong>Complejidad</strong>: Cada prueba, que forma parte de un conjunto de pruebas mayor, debe operar de forma aislada. Es decir, no debe exhibir efectos laterales que tengan un impacto sobre el comportamiento de otras pruebas dentro del mismo conjunto.<br>
+    El hecho de alcanzar este nivel de aislamiento entre las pruebas es uno de los retos t&eacute;cnicos, ya que el uso de recursos comunes, especialmente la base de datos, incrementa el acoplamiento entre las pruebas.</li>
+    
+    
+<li>
+<strong>Cobertura de las Pruebas</strong>: Debe existir una estrategia de pruebas para definir el &aacute;mbito y la distribuci&oacute;n de &eacute;stas. Un proyecto con una estructura pobre tiende a generar un conjunto de pruebas "hinchado", en el cual los desarrolladores implementan un volumen excesivo de pruebas unitarias cuya cobertura se solapa.<br>
+    Para evitar esta duplicaci&oacute;n de pruebas, debemos definir una estrategia de pruebas en los inicios del proyecto y comunicarla a todos los integrantes del equipo. </li>
+    
+    
+<li>
+<strong>Mantenimiento</strong>: Conforme crece el c&oacute;digo de la aplicaci&oacute;n, tambi&eacute;n lo hace el n&uacute;mero de pruebas unitarias. Los cambios en los requisitos y dise&ntilde;o de la aplicaci&oacute;n implican, a su vez, actualizar un conjunto numeroso de casos de pruebas.<br>Aunque los beneficios de las pruebas autom&aacute;ticas pueden justificar esta sobrecarga de mantenimiento, el coste y el tiempo adicional necesarios para esta tarea deben tomarse en cuenta a la hora de planificar el proyecto.</li>
+    
+    
+<li>
+<strong>Proceso de Construcci&oacute;n</strong>: Para ser realmente efectivo, un proceso autom&aacute;tico y regular de construcci&oacute;n debe ejecutar todas las pruebas unitarias como parte del proceso de construcci&oacute;n. El proceso debe ser capaz de ejecutar todas las pruebas y reportar los errores de forma adecuada. <br>El esfuerzo requerido para establecer y mantener las pruebas unitarias como parte del proceso de construcci&oacute;n tambi&eacute;n debe tenerse en cuenta en los tiempos del proyecto. </li>
+
+
+</ul>
+<p>A modo de conclusi&oacute;n, podemos decir que TDD se puede asumir de forma efectiva mediante la aplicaci&oacute;n de una correcta estrategia de inclusi&oacute;n de pruebas y el uso de un framework adecuado para las mismas (JUnit, Cactus, Mock Objects, etc...) </p>
+<a name="N10138"></a><a name="Automatizaci%C3%B3n+de+las+Pruebas"></a>
+<h3 class="underlined_5">Automatizaci&oacute;n de las Pruebas</h3>
+<div class="frame note">
+<div class="label">Importante</div>
+<div class="content">Para que una prueba sea efectiva y repetible, debe ser autom&aacute;tica</div>
+</div>
+<p>Al adoptar t&eacute;cnicas autom&aacute;ticas, no solo se reducen los tiempos del proyecto, sino tambi&eacute;n se aplican las mejores pr&aacute;cticas a la hora de las pruebas.</p>
+<p>Los argumentos a favor de automatizar las pruebas son:</p>
+<ul>
+    
+<li>
+<strong>Precisi&oacute;n y Repetitividad</strong>: Los scripts de pruebas se ejecutan normalmente m&aacute;s de una vez a lo largo de un proyecto. Incluso el mejor programador se equivoca, de modo que siempre se producen errores en el sistema. Aunque el objetivo de la prueba sea ejecutarla una &uacute;nica vez para comprobar que todo funciona bien, normalmente se requieren varios ciclos de prueba-codificaci&oacute;n.<br>
+    Un sistema preciso se basa en la repetici&oacute;n de las pruebas entre los diferentes ciclos. La repetitividad es m&aacute;s f&aacute;cil de lograr cuando utilizamos pruebas autom&aacute;ticas.<br>
+    Adem&aacute;s, las pruebas manuales requieren de mucho tiempo, y est&aacute;n sujetas a los errores humanos. Una estrategia de prueba basada en procedimientos manuales conlleva el riesgo de introducir nuevos errores entre los diferentes ciclos de pruebas, los cuales no ser&iacute;an detectados. Por lo tanto, una prueba autom&aacute;tica que es 100% repetible evita este peligro.
+    </li>
+    
+    
+<li>
+<strong>Reducci&oacute;n de Tiempo de Entrega</strong>: El tiempo disponible para probar un sistema empresarial complejo, con numerosos sistemas interconectados e incontables puntos de integraci&oacute;n entre componentes que colaboran, puede ser tan peque&ntilde;o que la &uacute;nica soluci&oacute;n factible, para los tiempos de entrega del cliente, sea la automatizaci&oacute;n de las pruebas de forma progresiva.</li>
+    
+    
+<li>
+<strong>Mejora de la Efectividad de las Pruebas</strong>: Ciertos tipos de pruebas, como las pruebas de carga y stress, son muy dif&iacute;ciles de conseguir si no se realizan mediante herramientas autom&aacute;ticas. A no ser que el presupuesto del proyecto haya tenido en cuenta la contrataci&oacute;n de miles de probadores, la &uacute;nica soluci&oacute;n posible para comprobar el rendimiento de la aplicaci&oacute;n frente a un gran n&uacute;mero de usuarios concurrentes sea mediante herramientas autom&aacute;ticas.</li>
+    
+<li>
+<strong>Desaparici&oacute;n de Tareas Rutinarias</strong>: Los probadores, como los desarrolladores, se aburren si realizan la misma tarea de forma repetida. Con la ayuda de los generadores de c&oacute;digo y los asistentes apropiados, libera a los especialistas de QA de realizar estas tareas y centrarse en otros aspectos del sistema.</li>
+
+</ul>
+<div class="frame note">
+<div class="label">Ojo...</div>
+<div class="content">
+La adopci&oacute;n de pruebas autom&aacute;ticas no elimina completamente la necesidad de procesos manuales de pruebas. Los expertos en pruebas pueden, y deben, continuar realizando pruebas manuales invasivas, realizando un esfuerzo para romper el sistema. As&iacute; pues, una estrategia efectiva de pruebas es aquella que combina las pruebas autom&aacute;ticas con las manuales de modo que de forma conjunta comprueban el sistema antes de entregarlo al cliente.</div>
+</div>
+<p>La pregunta que debemos realizarnos ahora es si el tiempo necesario para escribir las pruebas autom&aacute;ticas justifica el esfuerzo que ahorremos mediante la ejecuci&oacute;n autom&aacute;tica de &eacute;stas. A pesar de los beneficios, la automatizaci&oacute;n de las pruebas consume esfuerzos del proyecto, y por lo tanto, incurre en los costes econ&oacute;micos del mismo. Sin embargo, estos costes normalmente se recuperan  dentro de 2 o 3 ciclos de pruebas, especialmente cuando incluimos los beneficios de la precisi&oacute;n y el consecuente incremento de la calidad. Adem&aacute;s, a largo plazo el mismo script de prueba se realiza en las fases de mantenimiento del proyecto.
+</p>
+<a name="N1016A"></a><a name="El+Reto+de+las+Pruebas+JavaEE"></a>
+<h4>El Reto de las Pruebas JavaEE</h4>
+<p>Una aplicaci&oacute;n empresarial distribuida JavaEE presenta varios retos para el probador, y sin tener en cuenta si se va a realizar pruebas manuales o autom&aacute;ticas, el proceso de probar una aplicaci&oacute;n distribuida implica un proceso complejo.</p>
+<p>Adem&aacute;s de las caracter&iacute;sticas distribuidas de una aplicaci&oacute;n JavaEE, posiblemente en diferentes capas f&iacute;sicas en un entorno multi-m&aacute;quina con sus  problemas relativos a la red, como pueden ser firewalls o pol&iacute;ticas de seguridad de la empresa, una aplicaci&oacute;n JavaEE tambi&eacute;n puede interactuar con arquitecturas que utilicen mensajes s&iacute;ncronos entre sistemas, transacciones de negocio de larga duraci&oacute;n que se ejecutan en sistemas heterog&eacute;neos, o funcionalidades cr&iacute;ticas para el negocio que se ofrecen a sistemas externos a trav&eacute;s de una arquitectura orientada a servicios web.</p>
+<p>Adem&aacute;s, hemos de tener en cuenta otros atributos operacionales, como pueden ser la seguridad, el rendimiento, la escalabilidad o la robustez.</p>
+<p>Por todo esto, la tarea de probar un sistema empresarial es tan complejo para el probador como lo es la tarea de desarrollar para el programador.</p>
+<a name="N1017D"></a><a name="Herramientas+de+Automatizaci%C3%B3n+de+Pruebas"></a>
+<h4>Herramientas de Automatizaci&oacute;n de Pruebas</h4>
+<p>Afortunadamente, existen diversas herramientas de pruebas autom&aacute;ticas que nos ayudar&aacute;n a afrontar estos retos. El objetivo de estas herramientas es por un lado simplificar el proceso de pruebas y por otro incrementar la calidad de las pruebas realizadas.</p>
+<p>Las herramientas que dan soporte al proceso de pruebas se pueden clasificar en las siguientes categor&iacute;as:</p>
+<ul>
+    
+<li>
+<strong>Cobertura de C&oacute;digo</strong>: Estas herramientas analizan el c&oacute;digo base e informan de la profundidad y el alcance de los casos de prueba existentes.</li>
+    
+<li>
+<strong>Medida de la Calidad</strong>: Estas herramientas se ejecutan tanto de forma est&aacute;tica, analizando el c&oacute;digo fuente y el modelo de objetos, como de forma din&aacute;mica, mediante la inspecci&oacute;n en tiempo de ejecuci&oacute;n del sistema a probar. El resultado de estos productos permiten obtener informaci&oacute;n acerca de la complejidad, mantenibilidad, rendimiento y uso de la memoria del aplicativo.</li>
+    
+<li>
+<strong>Generadores de Datos de Prueba</strong>: Uno de los aspectos m&aacute;s pesados y dif&iacute;ciles es la generaci&oacute;n de un conjunto de datos de prueba apropiado. Esto es especialmente dificultoso cuando se implementa una aplicaci&oacute;n desde cero y no existe ning&uacute;n sistema externo (tipo legacy) para probar el sistema. Estas herramientas generan los datos a partir del modelo de dise&ntilde;o, el esquema de la base de datos, esquemas XML y el c&oacute;digo fuente de la aplicaci&oacute;n.</li>
+    
+<li>
+<strong>Herramientas de Automatizaci&oacute;n de Pruebas</strong>: Esta categor&iacute;a general engloba las herramientas que ejecutan los script de prueba de una forma autom&aacute;tica. Existen productos para la automatizaci&oacute;n de las pruebas, tanto unitarias como de integraci&oacute;n, funcionales, de carga, stress, etc...</li>
+
+</ul>
+<p>Existen muchas herramientas disponibles para las pruebas de forma gratuita, como productos <em>open source</em>, aunque pocas ofrecen el mismo nivel de funcionalidad que los productos comerciales. A continuaci&oacute;n se muestra un listado de algunas herramientas gratuitas.</p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr>
+    
+<th colspan="1" rowspan="1">Nombre</th><th colspan="1" rowspan="1">Descripci&oacute;n</th><th colspan="1" rowspan="1">Tipo</th><th colspan="1" rowspan="1">Referencia</th>
+
+</tr>
+
+<tr>
+    
+<td colspan="1" rowspan="1"><strong>Cactus</strong></td>
+    <td colspan="1" rowspan="1">Framework de pruebas Unitarias y de Integraci&oacute;n de la fundaci&oacute;n Apache. Se utiliza para las pruebas de c&oacute;digo Java de servidor, ofreciendo un modo de realizar pruebas de componentes J2EE dentro del contenedor.</td>
+    <td colspan="1" rowspan="1">Unitarias / Integraci&oacute;n</td>
+    <td colspan="1" rowspan="1"><a class="external" href="http://jakarta.apache.org/cactus">jakarta.apache.org/cactus</a></td>
+
+</tr>
+
+<tr>
+    
+<td colspan="1" rowspan="1"><strong>HttpUnit</strong></td>
+    <td colspan="1" rowspan="1">Ofrece una API Java para desarrollar un conjunto de pruebas funcionales para aplicaciones Web.</td>
+    <td colspan="1" rowspan="1">Unitarias / Funcionales</td>
+    <td colspan="1" rowspan="1"><a class="external" href="http://sourceforge.net/projects/httpunit">sourceforge.net/projects/httpunit</a></td>
+
+</tr>
+
+<tr>
+    
+<td colspan="1" rowspan="1"><strong>JMeter</strong></td>
+    <td colspan="1" rowspan="1">Apache JMeter es una aplicaci&oacute;n cliente dise&ntilde;ada para comprobar la carga y el comportamiento de las pruebas.</td>
+    <td colspan="1" rowspan="1">Carga / Stress</td>
+    <td colspan="1" rowspan="1"><a class="external" href="http://jakarta.apache.org/jmeter">jakarta.apache.org/jmeter</a></td>
+
+</tr>
+
+<tr>
+    
+<td colspan="1" rowspan="1"><strong>Grinder</strong></td>
+    <td colspan="1" rowspan="1">Dirige las actividades de un script de pruebas en m&uacute;ltiples procesos y en diversas m&aacute;quinas, mediante una consola gr&aacute;fica.</td>
+    <td colspan="1" rowspan="1">Carga / Stress</td>
+    <td colspan="1" rowspan="1"><a class="external" href="http://grinder.sourceforge.net">grinder.sourceforge.net</a></td>
+
+</tr>
+
+<tr>
+    
+<td colspan="1" rowspan="1"><strong>Emma</strong></td>
+    <td colspan="1" rowspan="1">Librer&iacute;a de cobertura de c&oacute;digo basado en consola/Ant que inspecciona el c&oacute;digo y genera informes sobre el c&oacute;digo probado y pendiente de probar. </td>
+    <td colspan="1" rowspan="1">Cobertura de c&oacute;digo</td>
+    <td colspan="1" rowspan="1"><a class="external" href="http://emma.sourceforge.net">emma.sourceforge.net</a></td>
+
+</tr>
+
+</table>
+<a name="N10241"></a><a name="%C2%BFDentro+o+Fuera+del+Contenedor%3F"></a>
+<h3 class="underlined_5">&iquest;Dentro o Fuera del Contenedor?</h3>
+<p>&iquest; Es necesario un framework como <em>Cactus</em> para probar c&oacute;digo Java Enterprise?. JavaEE mantiene una fuerte relaci&oacute;n -servlets, JSPs, EJBs, etc...- con el contenedor. Naturalmente, las pruebas unitarias se centran en unidades de c&oacute;digo de programaci&oacute;n. Sin embargo, el c&oacute;digo no existe aislado. Incluso el programa m&aacute;s sencillo depende de otras unidades de c&oacute;digo (del mismo modo que cualquier programa Java depende de la JVM). Uno de los mayores retos dentro de las pruebas unitarias consiste en c&oacute;mo "enga&ntilde;ar" al c&oacute;digo para que su comportamiento se eval&uacute;e de manera independiente al contexto.</p>
+<a name="N1024D"></a><a name="Mocks"></a>
+<h4>Mocks</h4>
+<p>Un objeto mock es un objeto falso que simula el comportamiento de un objeto verdadero.</p>
+<p>La idea que existe tras las pruebas mocks es definir "objetos mock" que los casos de prueba pueden "pasar" como par&aacute;metros al c&oacute;digo de negocio a probar. Estos objetos suplantan a los objetos de negocio (implementan el mismo interfaz) y tienen un comportamiento simulado que los casos de prueba pueden configurar en tiempo de ejecuci&oacute;n. Podr&iacute;amos denominarlos como "maniqu&iacute;s de objetos" (<em>dummy objects</em>).</p>
+<p>Los objetos mocks permiten refinar la pr&aacute;ctica de las pruebas unitarias, ya que aseguramos una total independencia del c&oacute;digo respecto al contenedor. La realidad es que la creaci&oacute;n de estados de aplicaci&oacute;n independientes de la aplicaci&oacute;n, en algunos casos, es casi imposible, o puede llevar demasiado tiempo.</p>
+<p>En la actualidad existen varios proyectos dedicados a la creaci&oacute;n de objetos mock como pueden ser EasyMock (<a class="external" href="http://www.easymock.org/">www.easymock.org</a>), DynaMock (<a class="external" href="http://www.mockobjects.com">www.mockobjects.com</a>) o MockMaker (<a class="external" href="http://mockmaker.sourceforge.net">mockmaker.sourceforge.net</a>).</p>
+<a name="N1026F"></a><a name="Pruebas+Dentro+del+Contenedor"></a>
+<h4>Pruebas Dentro del Contenedor</h4>
+<p>Las pruebas integradoras, o dentro del contenedor J2EE, eliminan el problema de aislar las pruebas del contenedor y lo que hace es apoyarse en &eacute;l. Por lo tanto, las pruebas integradoras van a probar el c&oacute;digo del dominio desde dentro del contexto que ofrece el contenedor.</p>
+<p>Dicho de otro modo, vamos a probar:</p>
+<ul>
+    
+<li>los accesos a la BBDD utilizando el pool de conexiones que nos ofrece el servidor de aplicaciones.</li>
+    
+<li>el c&oacute;digo de negocio de un bean de sesi&oacute;n a partir del contenedor EJB, pudiendo gestionar las transacciones.</li>
+    
+<li>los par&aacute;metros de entrada y salida que recibe un Servlet, as&iacute; como los atributos que se almacenan tanto en la petici&oacute;n como en la respuesta.</li>
+    
+<li>etc...</li>
+
+</ul>
+<a name="N1028C"></a><a name="C%C3%B3mo+Escribir+las+Pruebas"></a>
+<h3 class="underlined_5">C&oacute;mo Escribir las Pruebas</h3>
+<p>&iquest;C&oacute;mo cambiar el enfoque de un desarrollador para que escriba primero las pruebas? Como siempre, no hay una respuesta &uacute;nica, pero un posible enfoque ser&iacute;a:</p>
+<ol>
+    
+<li>Piensa en lo que deber&iacute;a realizar el c&oacute;digo a probar, y de momento, ignora como hacerlo. Esto puede ser dif&iacute;cil para los programadores, porque se tiene la tendencia en pensar siempre en el "c&oacute;mo". Sin embargo, si se hace un esfuerzo, y se piensa primero en el qu&eacute; y luego en el c&oacute;mo.</li>
+    
+    
+<li>Ahora implementa un prueba que utilice las clases y m&eacute;todos que &iexcl;todav&iacute;a no se han implementado! Esto tambi&eacute;n parece raro, pero funciona. &iquest;C&oacute;mo escribir una prueba utilizando c&oacute;digo que todav&iacute;a no existe? Una vez determinadas las clases involucradas, la firma de los m&eacute;todos y los valores de los par&aacute;metros, podemos escribir la prueba. 
+    
+    <div class="frame note">
+<div class="label">Ejemplo</div>
+<div class="content">
+    Vamos a seguir el supuesto del proyecto de integraci&oacute;n, y vamos a desarrollar la persistencia de una reserva de un libro.<br>
+    Para ello, las entradas ser&aacute;n los identificadores de usuario y de libro, as&iacute; como las fechas de inicio y fin de la reserva.<br>
+    Como salida, deberemos obtener un identificador de la reserva, as&iacute; como comprobar que el estado del usuario ha cambiado a reserva.
+    </div>
+</div>
+    
+    
+<p>
+<img alt="Preparando la prueba" content-width="14cm" src="imagenes/s4/tdd1.jpg" width="655"></p>
+    
+<br>
+    
+<p>La prueba no compilar&aacute;, pero lo har&aacute; en breve. Mediante herramientas c&oacute;mo Eclipse, este proceso es sencillo. Primero generaremos la firma del m&eacute;todo deseada en la clase o interfaz declarada.</p>
+    
+<br>
+    
+<p>
+<img alt="Creando el esqueleto del m&eacute;todo a probar" content-width="14cm" src="imagenes/s4/tdd2.jpg" width="690"></p>
+    
+<br>
+    
+<p>Podemos observar c&oacute;mo ha generado la firma del m&eacute;todo en el interfaz del objeto, ya que <span class="codefrag">opDao</span> es un interfaz.</p>
+    
+<br>
+    
+<p>
+<img alt="Esqueleto del m&eacute;todo en la interfaz" content-width="14cm" src="imagenes/s4/tdd3.jpg" width="740"></p>
+    
+<br>
+    
+<p>Ahora lo que queremos hacer es que la clase que implementa dicho interfaz tambi&eacute;n propague la firma del m&eacute;todo para rellenar el c&oacute;digo en la implementaci&oacute;n, mediante la implementaci&oacute;n de los m&eacute;todos que existan en la interfaz (<span class="codefrag">IOperacionDAO</span>) y no en la implementaci&oacute;n (<span class="codefrag">OperacionJDBCDAO</span>). En el caso de tener varias clases que implementasen el interfaz, mediante la Jerarqu&iacute;a de Tipos (F4), obtendr&iacute;amos que clases son.</p>
+    
+<br>
+    
+<p>
+<img alt="Creando la firma en la implementaci&oacute;n" content-width="14cm" src="imagenes/s4/tdd4.jpg" width="649"></p>    
+    
+<br>
+    
+<p>Finalmente, obtenemos el esqueleto del m&eacute;todo listo para implementar.</p>
+    
+<br>
+    
+<p>
+<img alt="Esqueleto del m&eacute;todo en la implementaci&oacute;n" content-width="15cm" src="imagenes/s4/tdd5.jpg" width="747"></p>
+    
+<br>
+    
+</li>
+    
+    
+<li>
+    
+<p>Ahora la prueba ya compila, y la podemos ejecutar. Por supuesto, el resultado debe ser una prueba fallida, ya que todav&iacute;a no hemos implementado nada. Este es un paso importante, ya que aunque parezca redundante, realiza 2 funciones, primero valida que la prueba se ejecuta, y segundo que la prueba falla. Si la prueba no hubiese fallado, entonces nuestro caso de prueba estar&iacute;a mal y tendr&iacute;amos que replante&aacute;rnoslo. Recuerda, que nuestro objetivo final es que la prueba sea <strong>verde</strong>.</p>
+    
+<br>
+    
+<p>
+<img alt="Ejecutando la prueba" content-width="15cm" src="imagenes/s4/tdd6.jpg" width="705"></p>
+<br> 
+    
+</li>
+    
+    
+<li>C&oacute;mo ya tenemos la prueba preparada, llega el momento de escribir el c&oacute;digo del m&eacute;todo a probar. Partiendo del esqueleto generado, sabemos cuales son las entradas y las salidas. Nuestro objetivo actual es escribir la menor cantidad de c&oacute;digo que pase la prueba. No es necesario que sea la soluci&oacute;n definitiva, ya que una vez pasada la prueba, podremos refactorizar. Resumiendo, hemos de buscar la soluci&oacute;n m&aacute;s simple, sin pensar en posibles necesidades futuras.
+    <br>
+    Conforme implementamos la soluci&oacute;n, pensando en el <strong>c&oacute;mo</strong>, nos damos cuenta que no hemos lanzado la excepci&oacute;n DAOException en la firma del m&eacute;todo, ya que nuestra prueba no estaba captur&aacute;ndola. As&iacute; pues, a&ntilde;adimos la excepci&oacute;n tanto en el interfaz como en la implementaci&oacute;n.
+    <pre class="code">
+public int realizaReserva(String idUsuario, String idLibro, Date ahora,	Date ffin) throws DAOException {
+    int result = 0;
+    Connection conn = null;
+    PreparedStatement st = null, stUsu = null;
+
+    String sqlInsertOperacion = "insert into operacion(login, "
+            + "isbn, tipoOperacion, finicio, ffin) values (?, ?, ?, ?, ?)";
+
+    String sqlUpdateUsuario = "update usuario set estadoUsuario=? where login=? ";
+
+    try {
+        conn = FactoriaFuenteDatos.getInstance().createConnection();
+        conn.setAutoCommit(false);
+
+        st = conn.prepareStatement(sqlInsertOperacion);
+        st.setString(1, idUsuario);
+        st.setString(2, idLibro);
+        st.setString(3, TipoOperacion.reserva.toString());
+        st.setDate(4, new java.sql.Date(ahora.getTime()));
+        st.setDate(5, new java.sql.Date(ffin.getTime()));
+        st.executeUpdate();
+        
+        ResultSet rs = st.getGeneratedKeys(); 
+        if (rs.next()) {
+            result = rs.getInt(1); // Obtenemos el id de la operaci&oacute;n
+        }
+        rs.close();
+        
+        stUsu = conn.prepareStatement(sqlUpdateUsuario);
+        stUsu.setString(1, EstadoUsuario.reserva.toString());
+        stUsu.setString(2, idUsuario);
+        stUsu.executeUpdate();
+
+        conn.commit();
+    } catch (SQLException sqle) {
+        try {
+            conn.rollback();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error haciendo rollback", e);
+        }
+        throw new DAOException("Error en el update de operacion", sqle);
+    } finally {
+        try {
+            if (st != null) {
+                st.close();
+                st = null;
+            }
+            if (stUsu != null) {
+                stUsu.close();
+                stUsu = null;
+            }
+            if (conn != null) {
+                conn.close();
+                conn = null;
+            }
+        } catch (SQLException sqlError) {
+            throw new RuntimeException("Error cerrando las conexiones",
+                    sqlError);
+        }
+    }
+
+    return result;
+}
+    </pre>
+    
+</li>
+    
+    
+<li>
+<p>A continuaci&oacute;n, volvemos a ejecutar la prueba, con un resultado exitoso. En el caso de que la prueba no fuera verde, debemos revisar nuestra implementaci&oacute;n</p>
+<br>
+    
+<p>
+<img alt="&Eacute;xito de la prueba" content-width="13cm" src="imagenes/s4/tdd7.jpg" width="573"></p>
+<br>
+    
+</li>
+    
+    
+<li>
+<p>Para comprobar que todo nuestro sistema sigue funcionando, ahora es el momento de ejecutar toda la suite de pruebas de la aplicaci&oacute;n, incluyendo la prueba reci&eacute;n implementada. De este modo, comprobamos que todo el sistema sigue funcionando. En el caso de encontrar alguna prueba fallida, deberemos volver al paso 4.</p>
+    
+<div class="frame note">
+<div class="label">Cuidado</div>
+<div class="content">
+    En ocasiones, una prueba exitosa puede sacar a relucir una prueba mal dise&ntilde;ada o incompleta, de modo que el sistema falle en otra parte, pero no porque la prueba exitosa sea mala, sino porque exist&iacute;an pruebas que no comprobaban todos los posibles valores de entrada y/o salida.</div>
+</div>
+    
+</li>
+    
+<li>Finalmente, llega el momento de refactorizar. Despu&eacute;s de refactorizar, volveremos al paso 5 para ejecutar de nuevo las pruebas del m&eacute;todo en cuesti&oacute;n y luego toda la suite.</li>    
+
+</ol>
+<p>Puede que parezca pesado tener que ejecutar las pruebas una y otra vez, pero hemos de ser constantes y no dejar este h&aacute;bito, ya que la filosof&iacute;a de "hacer un cambio y ejecutar una prueba" nos conducir&aacute; a un producto estable.</p>
+<a name="N1032D"></a><a name="%C2%BFQu%C3%A9+Tengo+Que+Probar%3F"></a>
+<h3 class="underlined_5">&iquest;Qu&eacute; Tengo Que Probar?</h3>
+<p>Ya sabemos que las pruebas son buenas, y que escribir las pruebas antes que el c&oacute;digo es aun mejor. Pero, &iquest;qu&eacute; tenemos que probar? &iquest;cada m&eacute;todo de cada clase tiene que tener su prueba?</p>
+<p>Un posible enfoque es:</p>
+<ol>
+    
+<li>Escribe pruebas por cada tarea a implementar, ya que "<em>el c&oacute;digo es culpable hasta que se prueba su inocencia</em>".</li>
+    
+<li>Escribe pruebas por cada clase o combinaciones de clases que no sean triviales y que pueden provocar problemas. Es decir, prueba todo lo que pueda romperse.</li>
+    
+<li>Escribe pruebas para el c&oacute;digo que se ha roto o que no funciona como se espera de &eacute;l.</li>
+    
+<li>Evita las pruebas de m&eacute;todo que s&oacute;lo llaman a otro m&eacute;todo (m&eacute;todos delegadores) si el destino ya tiene su prueba.</li>
+    
+<li>Asume que muchas pruebas es mejor que pocas, y que nadie se quejar&aacute; de que existan demasiadas pruebas. En cambio, si faltan pruebas seguro que alguien se enfada.</li>
+    
+<li>Escribe pruebas que inculquen confianza en el sistema. Aquellas &aacute;reas de c&oacute;digo que sean m&aacute;s utilizadas, deber&aacute;n ser las que tengan m&aacute;s pruebas.</li>
+    
+<li>A&ntilde;ade pruebas a las &aacute;reas que acaben de ser modificadas. Tras refactorizar, comprueba que existen pruebas que comprueban que todo lo redise&ntilde;ado sigue funcionando.</li>
+    
+<li>Vigila que las suites de pruebas abarquen todos los subsistemas que dependan de ellas.</li>
+
+</ol>
+<p>De lo anterior podemos concluir que no se espera hacer todas las pruebas de una sola vez, y que conforme crezca el c&oacute;digo de aplicaci&oacute;n, crecer&aacute; el c&oacute;digo de pruebas.</p>
+<div class="frame note">
+<div class="label">Recuerda</div>
+<div class="content">
+Una vez identificada la necesidad de una prueba, hay que codificarla y ejecutarla. Si la prueba falla, bien la prueba es incorrecta, bien el c&oacute;digo a probar tiene un error. En ambos casos, debemos corregir el problema y volver a probar. 
+</div>
+</div>
+<p>Pues ahora ya s&oacute;lo nos queda cambiar el chip, y aplicar TDD en todos nuestros desarrollos. Como le dir&iacute;an a <em>Luke TDD Skywalker</em>, "<strong>que las pruebas te acompa&ntilde;en</strong>".</p>
+</div> 
+
+
+<p class="pageBreakAfter"></p>
+
+
+<a name="ci"></a>
+<a name="N10371"></a><a name="Integraciones+Continuas+%28CI%29"></a>
+<h2 class="underlined_10">Integraciones Continuas (CI)</h2>
+<div class="section">
+<p>El t&eacute;rmino de Integraciones Continuas (<em>Continous Integration</em>) proviene de una de las pr&aacute;cticas de XP (<em>Programaci&oacute;n eXtrema</em>), lo que no quiere decir que no existiera antes, ya que se utiliza desde mucho antes (incluso Microsoft mediante el trabajo de McConnell lo utiliza en sus desarrollos).</p>
+<p>Sin embargo, pese a provenir de XP podemos utilizarlo sin hacer lo mismo con otras t&eacute;cnicas que promueve XP, ya que se trata de una t&eacute;cnica aut&oacute;noma y esencial dentro de la actividad de cualquier equipo de desarrollo competente.</p>
+<p>Las CI consisten en integrar el c&oacute;digo del proyecto de forma ininterrumpida (en ciclo de 15 a 30 minutos) en una m&aacute;quina aparte a la de cada desarrollador, normalmente llamada entorno de desarrollo/integraci&oacute;n, la cual debe estar funcionando 24/7. Esta m&aacute;quina descargar&aacute; el c&oacute;digo del proyecto del repositorio de control de versiones, construir&aacute; y probar&aacute; el proyecto, para finalmente mostrar los datos obtenidos (fallos de construcci&oacute;n, pruebas fallidas) v&iacute;a web o email a los integrantes del proyecto.</p>
+<a name="N10386"></a><a name="Pr%C3%A1cticas"></a>
+<h3 class="underlined_5">Pr&aacute;cticas</h3>
+<p>El autor que m&aacute;s defiende las Integraciones Continuas es <em>Martin Fowler</em>, el cual recomienda una serie de pr&aacute;cticas:</p>
+<ul>
+    
+<li>
+<strong>Mantener un &uacute;nico repositorio centralizado</strong>. Incluso en los proyectos m&aacute;s sencillos, es imprescindible el uso de un sistema de gestor de versiones, donde almacenar las diferentes revisiones de toda informaci&oacute;n relevante para el proyecto (archivos de c&oacute;digo fuente, im&aacute;genes, documentos, etc...) Lo &uacute;nico que no se "suele" guardar en el repositorio es todo aquello que puede ser generado a partir de la informaci&oacute;n del repositorio, es decir, ejecutables, war/ear del proyecto, etc... Siendo CVS la herramienta m&aacute;s utilizada, la mejor elecci&oacute;n actual es Subversion.</li>
+    
+<li>
+<strong>Automatizar la construcci&oacute;n</strong>. Independientemente de utilizar un IDE, el cual construya el proyecto de forma autom&aacute;tica y permita la generaci&oacute;n de un desplegable, siempre hemos de tener un script independiente de la herramienta el cual se pueda ejecutar en otra m&aacute;quina (por ejemplo, en el servidor), sin necesidad de tener instalado ning&uacute;n IDE.</li>
+    
+<li>
+<strong>Hacer que el proceso de construcci&oacute;n se auto-pruebe</strong>. El propio script de construcci&oacute;n, adem&aacute;s de compilar y crear un desplegable, debe ejecutar las pruebas, tanto unitarias, como a poder ser, de aceptaci&oacute;n.</li>
+    
+<li>
+<strong>Todo el mundo realiza commits a diario</strong>. Ya que las integraciones comunican los cambios de los integrantes, la frecuente integraci&oacute;n implica una buena comunicaci&oacute;n. A mayor de frecuencia de commit, menor es el margen de error, ya que todo el equipo comparte las &uacute;ltimas modificaciones del c&oacute;digo. Adem&aacute;s, fomentamos que los desarrolladores implementen el c&oacute;digo mediante peque&ntilde;as funcionalidades. Por ultimo, respecto a la interacci&oacute;n repositorio&lt;-&gt;IDE, siempre recordar el ciclo de update, build y commit.</li>
+    
+<li>
+<strong>Cada commit debe construir el proyecto completo en una m&aacute;quina de integraci&oacute;n</strong>. Mediante los commits diarios, aseguramos que las construcciones est&aacute;n continuamente probadas e integradas, pero en las m&aacute;quinas locales. No todos los entornos son iguales, y las diferencias entre la m&aacute;quina de desarrollo y el de integraci&oacute;n/producci&oacute;n, en numerosas ocasiones provoca errores no descubiertos previamente. Para poder probar la aplicaci&oacute;n en una m&aacute;quina aparte de integraci&oacute;n, bien creamos un script manual de modo que cada cierto tiempo (idealmente cada vez que subamos un cambio al repositorio) descarguemos todo el c&oacute;digo del repositorio y realicemos la integraci&oacute;n, construcci&oacute;n y pruebas en un entorno completamente igual (tanto a nivel de hardware como de sistema operativo) al de producci&oacute;n; o bien instalamos un servidor de Integraciones Continuas. No confundir la integraci&oacute;n continua con ejecutar un script nocturno que realice las tareas anteriores. La diferencia estriba en que con CI al producirse el error, inmediatamente se procede a su resoluci&oacute;n.</li>
+    
+<li>
+<strong>Mantener el proceso construcci&oacute;n r&aacute;pido</strong>. Si el objetivo de CI es obtener una r&aacute;pida retroalimentaci&oacute;n, esta impl&iacute;cito que el proceso de construcci&oacute;n sea veloz. Lo normal son procesos de construcci&oacute;n del orden de minutos (5-10), donde las pruebas absorben la mayor&iacute;a del tiempo. Cuando la duraci&oacute;n del proceso sea del orden de horas, lo conveniente es dividir el proceso en 2 partes, de modo que cada desarrollador en local realice una construcci&oacute;n b&aacute;sica con las pruebas r&aacute;pidas y que est&aacute;n directamente relacionadas con la parte actual de desarrollo, y luego un segundo proceso de construcci&oacute;n completo que pruebe toda la aplicaci&oacute;n. En ocasiones, las pruebas no tienen porque ejecutarse todas de modo secuencial, de modo que podemos crear procesos de construcci&oacute;n paralelos que disminuyan los tiempos de construcci&oacute;n.</li>
+    
+<li>
+<strong>Probar en un clon del entorno de producci&oacute;n</strong>. Ya lo hemos comentado antes, mismo hardware y sistema operativo, pero incluso misma ip, mismo puerto, etc... Actualmente, es uso de la virtualizaci&oacute;n (por ejemplo, v&iacute;a VmWare, VirtualPC) est&aacute; facilitando la clonaci&oacute;n de los entornos de producci&oacute;n. </li>
+    
+<li>
+<strong>Facilitar la obtenci&oacute;n de la &uacute;ltima versi&oacute;n desplegable</strong>. Todo el mundo relacionado con el equipo debe ser capaz de poner en funcionamiento al &uacute;ltima versi&oacute;n de la aplicaci&oacute;n. Para ello, debe haber un lugar conocido donde residir&aacute; la &uacute;ltima versi&oacute;n del desplegable. </li>
+    
+<li>
+<strong>Todo el mundo puede ver lo que esta pasando</strong>. En todo momento, la informaci&oacute;n del proyecto es p&uacute;blica, tanto los resultados de la construcci&oacute;n, como las pruebas. A parte de la publicaci&oacute;n en la web/wiki del proyecto, ya existen en el mercado diferentes aparatos para visualizar los resultados (sem&aacute;foros, l&aacute;mparas de lava, etc...) de forma explicita.<br>
+<br>
+    
+<p>
+<img alt="Lava verde" content-width="6cm" src="imagenes/s4/green_bubbles.jpg" width="240">&nbsp;
+    <img alt="Lava roja" content-width="5cm" src="imagenes/s4/red_bubbles.jpg" width="195"></p>
+    
+</li>
+    
+<li>
+<strong>Despliegue automatizado</strong>. Ya hemos resaltado la importancia de automatizar el despliegue, tanto la construcci&oacute;n como las pruebas. &Uacute;ltimamente tambi&eacute;n se le esta dando importancia a la posibilidad de hacer un rollback autom&aacute;tico de un despliegue, de modo que si ponemos una aplicaci&oacute;n en producci&oacute;n, y comienza a fallar, el tiempo necesario para dejar la aplicaci&oacute;n en un estado anterior estable sea m&iacute;nimo.</li>
+
+</ul>
+<a name="N103D8"></a><a name="Construcciones+Planificadas"></a>
+<h3 class="underlined_5">Construcciones Planificadas</h3>
+<p>Las construcciones planificadas toman el fichero de construcci&oacute;n de la aplicaci&oacute;n, por ejemplo, el fichero Ant,  y lo ejecutan por nosotros tantas veces como queramos y con la frecuencia que deseemos, sin necesidad de mover ni un dedo. Adem&aacute;s, si queremos, podemos forzar la ejecuci&oacute;n de modo manual.</p>
+<p>Las construcciones planificadas encuentran los problemas de integraci&oacute;n (<em>tiempo de compilaci&oacute;n</em>) y los fallos de pruebas (<em>tiempo de
+ejecuci&oacute;n</em>) de forma r&aacute;pida, ya que se est&aacute;n ejecutando a intervalos regulares. Por ejemplo, si el planificador dice que tiene que ejecutar una construcci&oacute;n al inicio de cada hora, entonces nosotros sabremos cada 60 minutos si nuestra construcci&oacute;n funciona o no. Esto hace que la b&uacute;squeda de errores sea m&aacute;s f&aacute;cil, ya que solo hemos de mirar en los cambios que han ocurrido durante dicho intervalo. Adem&aacute;s, estos problemas ser&aacute;n f&aacute;ciles de resolver, porque en una hora no hemos tenido la oportunidad de realizar grandes cambios que se habr&iacute;an convertido en grandes problemas.</p>
+<p>&iquest;Qu&eacute; diferencia hay entre una construcci&oacute;n planificada y, digamos, todos los programadores ejecutando el fichero de construcci&oacute;n cada pocos minutos?</p>
+<p>La verdad es que no existen muchos programadores que quisieran hacerlo, normalmente tienen mejores cosas que hacer. El ciclo de construcci&oacute;n puede llevar desde unos pocos minutos a unas pocas horas, y la ejecuci&oacute;n de la construcci&oacute;n interfiere con su trabajo. Incluso si alguien del equipo de desarrollo pudiera ejecutar la construcci&oacute;n de un modo &aacute;gil y r&aacute;pido, en alg&uacute;n momento dejar&iacute;a de hacerlo, porque siempre hay una fecha de entrega pr&oacute;xima y el hecho de incluir un cambio en su sistema puede provocarles conflictos que causen retrasos en la entrega. Los programadores normalmente solo construyen las partes del sistema en las que est&aacute;n trabajando y no el sistema entero e integrado.</p>
+<p>Una construcci&oacute;n planificada no tiene otra cosa mejor que hacer que construir el sistema y probarlo. Una vez tenemos un proceso de construcci&oacute;n automatizado (por ejemplo, v&iacute;a <em>Ant</em>), al poner este proceso en un planificador para que un ordenador lo ejecute de forma autom&aacute;tico todo van a ser ventajas. Y con todo, el coste de estas planificaciones s&oacute;lo se centran en el ordenador integrador y la preparaci&oacute;n/configuraci&oacute;n/arranque del sistema en los primeros d&iacute;as del proyecto (iteraci&oacute;n 1). Acabar&aacute; costando <em>mucho mucho mucho</em> m&aacute;s al final si no empezamos a planificar las construcciones al principio del proyecto.</p>
+<p>Finalmente, para facilitarnos el trabajo, existen multitud de herramientas que nos ayudan en el proceso de Integraciones Continuas. Las m&aacute;s conocidas son <em>CruiseControl</em>, que estudiaremos a continuaci&oacute;n, y <em>Continuum</em> (<a class="external" href="http://maven.apache.org/continuum/">maven.apache.org/continuum/</a>)</p>
+<a name="N10407"></a><a name="CruiseControl"></a>
+<h3 class="underlined_5">CruiseControl</h3>
+<p>
+<em>CruiseControl</em> (CC) (<a class="external" href="http://cruisecontrol.sourceforge.net">http://cruisecontrol.sourceforge.net</a>) asiste al desarrollador en las Integraciones Continuas. As&iacute; pues, se trata de una herramienta Java Open Source de construcci&oacute;n autom&aacute;tica que mediante los scripts <em>Ant</em> y el sistema de Control de Versiones, asegura que el proyecto est&aacute; en continua integraci&oacute;n.
+</p>
+<p>
+<em>CruiseControl</em> se basa en un concepto muy sencillo. Una vez arrancada una instancia de CC, &eacute;sta comprueba el repositorio de control de versiones, y detecta cualquier cambio en el mismo. Al detectar un cambio, CC actualiza la copia local del proyecto, e invoca al script de construcci&oacute;n del mismo. Tras completar la construcci&oacute;n, CC publica una serie de artefactos (incluyendo el log de construcci&oacute;n) e informa a los miembros del proyecto del &eacute;xito o fallo de la construcci&oacute;n.</p>
+<p>
+<img alt="Arquitectura de CruiseControl" content-width="14cm" src="imagenes/s4/cc-arch-resize.gif" width="547"></p>
+<p>Esta herramienta ofrece gran flexibilidad para realizar estas tareas. Soporta m&uacute;ltiples tipos de repositorios de control de versiones, como <em>CVS</em>, <em>Subversion</em>, <em>ClearCase</em> o <em>Visual SourceSafe</em>. La monitorizaci&oacute;n de estos repositorios se realiza bien en intervalos regulares u horas fijas. Aunque en un principio, CC se pens&oacute; para utilizarse con scripts <em>Ant</em>, tambi&eacute;n ofrece soporte para <em>Maven</em>. Los resultados se pueden publicar en un sitio web, enviarse v&iacute;a email y/o copiar a otra m&aacute;quina. Finalmente, CC ofrece una web de ejemplo completamente funcional para visualizar los logs de construcci&oacute;n.</p>
+<a name="N1043A"></a><a name="Configuraci%C3%B3n"></a>
+<h4>Configuraci&oacute;n</h4>
+<p>Antes de montar CruiseControl, hemos de pensar donde montarlo. CruiseControl no necesita una m&aacute;quina muy potente (ni mucho menos), solo se va a encargar de compilar y ejecutar las pruebas. Por lo tanto, cualquier ordenador de sobremesa o incluso el entorno de desarrollo/integraci&oacute;n son buenas decisiones.</p>
+<p>Una forma c&oacute;moda de montar este entorno es crear un proyecto Eclipse con la configuraci&oacute;n de CruiseControl de modo que orqueste la creaci&oacute;n y ejecuci&oacute;n de las pruebas del resto de proyecto.</p>
+<p>En nuestro caso, hemos creado un proyecto sencillo en Eclipse, denominado <span class="codefrag">proy-int-cc</span>.</p>
+<p>
+<img alt="Proyecto Eclipse para CruiseControl" content-width="6cm" src="imagenes/s4/proy-int-cc.jpg" width="225"></p>
+<p>Ambos proyectos de desarrollo, en la m&aacute;quina de integraci&oacute;n har&aacute;n las labores de workspaces locales, para que CC compruebe si la copia local est&aacute; sincronizada con la informaci&oacute;n almacenada en el repositorio.</p>
+<p>Para poner CruiseControl en funcionamiento hemos de crear:</p>
+<ul>
+    
+<li>una carpeta <span class="codefrag">logs</span> para almacenar los logs que posteriormente mostrar&aacute; CC</li>
+    
+<li>un fichero de construcci&oacute;n (<span class="codefrag">build.xml</span>) Ant encargado de preparaci&oacute;n de la copia local, descargando el contenido existente en el repositorio y posteriormente realizando una llamada a la tarea de construcci&oacute;n del proyecto.
+    <br>
+    
+<pre class="code">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;project name="proy-int-cc" default="buildCC" basedir=".."&gt;
+
+&lt;target name="buildCC"&gt;
+    &lt;cvs cvsroot=":extssh:USUARIO@www.jtech.ua.es:\usr\local\cvs-jtech\USUARIO"
+        quiet="true" command="co proy-int-comun" /&gt;
+    &lt;cvs cvsroot=":extssh:USUARIO@www.jtech.ua.es:\usr\local\cvs-jtech\USUARIO"
+        quiet="true" command="co proy-int-web" /&gt;
+    &lt;ant antfile="proy-int-web/build.xml"
+        inheritall="false" target="test" /&gt;
+&lt;/target&gt;
+
+&lt;/project&gt;
+    </pre>
+    
+</li>
+    
+<li>Un archivo de CC (<span class="codefrag">config.xml</span>) donde configuraremos los componentes adecuados para comprobar la copia local, indicar la frecuencia con la que debe buscar los cambios en el repositorio, indicar donde situar los ficheros de log y finalmente configurar los diferentes artefactos a generar.
+
+<pre class="code">&lt;cruisecontrol&gt;
+    &lt;project name="proy-int-cc" buildafterfailed="false"&gt;
+        &lt;!-- Comprueba los cambios en el CVS
+            modificationset: donde mirar para ver si ha habido cambios
+        --&gt;
+        &lt;modificationset quietperiod="30"&gt;
+            &lt;cvs localWorkingCopy="../proy-int-comun" /&gt;
+            &lt;cvs localWorkingCopy="../proy-int-web" /&gt;
+        &lt;/modificationset&gt;
+    
+        &lt;!-- Frecuencia de b&uacute;squeda de cambios --&gt;
+        &lt;schedule interval="30"&gt;
+            &lt;ant buildfile="build.xml" target="buildCC" /&gt;
+            &lt;!-- &lt;pause startTime="2100" endTime="0300" /&gt;  --&gt;
+        &lt;/schedule&gt;
+    
+        &lt;!-- Obtenemos la ultima versi&oacute;n
+            bootstrappers: cosas que hacer antes del ciclo de construcci&oacute;n
+        --&gt;
+        &lt;bootstrappers&gt;
+            &lt;currentbuildstatusbootstrapper file="logs/currenbuild.txt" /&gt;
+        &lt;/bootstrappers&gt;
+    
+        &lt;!-- Guardamos los ficheros de log --&gt;
+        &lt;log dir="logs"&gt;
+            &lt;merge dir="../proy-int-web/build/test-results" /&gt;
+        &lt;/log&gt;
+    
+        &lt;publishers&gt;
+            &lt;currentbuildstatuspublisher
+                file="logs/currentbuildstatus.txt" /&gt;
+        &lt;/publishers&gt;
+    
+    &lt;/project&gt;
+&lt;/cruisecontrol&gt;
+</pre>    
+    
+</li>
+
+</ul>
+<p>Adem&aacute;s, para poder visualizar los resultados de los logs de una forma c&oacute;moda y mediante gr&aacute;ficos, copiaremos la aplicaci&oacute;n web que viene con la distribuci&oacute;n de la herramienta.</p>
+<a name="N1047C"></a><a name="En+Marcha"></a>
+<h4>En Marcha</h4>
+<p>Una vez configurado el proyecto, llega el momento de arrancar CruiseControl y que se generen las integraciones continuas (sin parar).</p>
+<p>Para ello, hemos de ejecutar el comando de CC desde nuestra carpeta de CruiseControl (en nuestro caso, desde dentro del proyecto <span class="codefrag">proy-int-cc</span>). En Eclipse, la mejor forma de realizar esto es configurar la ejecuci&oacute;n de una herramienta externa.</p>
+<p>Para ellos, la crearemos desde <span class="codefrag">Run --&gt; External Tools</span>, referenciando a la ruta donde tenemos instalada la herramienta.</p>
+<p>
+<img alt="Proyecto Eclipse para CruiseControl" content-width="16cm" src="imagenes/s4/externalTools.jpg" width="672"></p>
+<p>Una vez ejecutado el comando, arrancar&aacute; CruiseControl y en el caso de ser necesario, construir&aacute; el proyecto.</p>
+<p>Si queremos visualizar los resultados, podemos acceder a <a class="external" href="http://localhost:8080/cruisecontrol/">http://localhost:8080/cruisecontrol/</a>, donde podemos obtener estos resultados:</p>
+<ul>
+    
+<li>Si la &uacute;ltima construcci&oacute;n ha ido bien<br>
+<br>
+        
+<img alt="Resumen CC OK" content-width="14cm" src="imagenes/s4/cc-ok.gif" width="589">
+    </li>
+    
+<li>En cambio si ha ido mal<br>
+<br>
+        
+<img alt="Resumen CC KO" content-width="14cm" src="imagenes/s4/cc-ko.gif" width="589"></li>
+
+</ul>
+<p>Tanto si la &uacute;ltima construcci&oacute;n fue exitosa o no, podremos acceder al detalle de la construcci&oacute;n pulsando sobre el nombre del proyecto. En esta ventana podremos navegar entre las diferentes construcciones del proyecto (las exitosas marcadas con un n&uacute;mero de construcci&oacute;n), as&iacute; como visualizar diferentes estad&iacute;sticas.</p>
+<p>
+<img alt="Detalle del build en CC" content-width="15cm" src="imagenes/s4/cc-build-small.gif" width="570"></p>
+<p>Si pulsamos sobre "<em>Test Results</em>" obtendremos un informe con las pruebas ejecutadas, el estado de la prueba (exitosa, fallida) y el tiempo empleado en ejecutar cada una de las diferentes pruebas.</p>
+<p>
+<img alt="Pruebas ejecutadas en CC" content-width="17cm" src="imagenes/s4/cc-test.gif" width="745"></p>
+<p>Finalmente, en "<em>Metrics</em>", tambi&eacute;n podemos visualizar un par de gr&aacute;ficos que muestran el estado de construcci&oacute;n exitosas <em>vs</em> fallidas, as&iacute; como un gr&aacute;fico de dispersi&oacute;n que muestra la evoluci&oacute;n a lo largo del tiempo de las construcciones.</p>
+<p>
+<img alt="Pruebas ejecutadas en CC" content-width="13cm" src="imagenes/s4/cc-metricas.gif" width="505"></p>
+<p>Una vez visto como configurar CruiseControl y los resultados que obtenemos de las integraciones continuas, comentaremos brevemente cuales son los componentes con los que trabaja CC.</p>
+<a name="N104E7"></a><a name="Componentes"></a>
+<h4>Componentes</h4>
+<p>En esta secci&oacute;n, vamos a comentar brevemente los componentes standard que ofrece CC. Las intrucciones de c&oacute;mo configurar cada uno de estos componentes vienen incluidas en la <a class="external" href="http://cruisecontrol.sourceforge.net/main/configxml.html">documentaci&oacute;n de la herramienta</a>.</p>
+<a name="N104F4"></a><a name="Sistemas+de+Control+de+Versiones"></a>
+<h5>Sistemas de Control de Versiones</h5>
+<p>CC utiliza estos sistemas para detectar los cambios en los proyectos. Estos componentes se fijan en el elemento <span class="codefrag">&lt;modificacionset&gt;</span> del fichero de configuraci&oacute;n CC.</p>
+<p>Por ejemplo: BuildStatus, ClearCase, CVS, FileSystem, SVN, ...</p>
+<a name="N10504"></a><a name="Bootstrappers"></a>
+<h5>Bootstrappers</h5>
+<p>Dentro de la inform&aacute;tica, el termino "<em>bootstrapper</em>" se utiliza para describir un proceso que se realiza para permitir la ejecuci&oacute;n de otro proceso.</p>
+<p>As&iacute; pues, estos componentes actualizan todo o parte del proyecto antes de que comience de forma oficial la construcci&oacute;n del mismo. Se crear&oacute;n para resolver un problema muy concreto: Si se utiliza el script de construcci&oacute;n para obtener la &uacute;ltima versi&oacute;n del proyecto, &iquest;qu&eacute; pasa si modificamos ese script de construcci&oacute;n ?</p>
+<p>Por lo tanto, utilizaremos este componente para actualizar, al menos, el script de construcci&oacute;n. <em>Bootstrappers</em> tambi&eacute;n ofrecen un modo eficaz de realizar cualquier otra actividad de "pre-construcci&oacute;n".</p>
+<p>Ejemplos de <em>bootstrappers</em> ser&aacute;n: ClearCaseBootStrapper, CVSBootStrapper, SVNBootStrapper, ...</p>
+<a name="N10520"></a><a name="Builders"></a>
+<h5>Builders</h5>
+<p>Estos son los componentes que utiliza CC para construir realmente el proyecto. Adem&aacute;s de construir el sistema en intervalos regulares, podemos ejecutar los builders en tiempos y fechas concretas, mediante el uso de los atributos <span class="codefrag">multiple</span>, <span class="codefrag">time</span> y <span class="codefrag">day</span>.</p>
+<pre class="code">&lt;schedule interval="30" &gt;
+    &lt;ant antscript="build.xml" target="cruise-build" multiple="1" /&gt;
+    &lt;ant antscript="build.xml" target="full-cruise-build" multiple="5" /&gt;
+    &lt;ant antscript="build.xml" target="nightly-cruise-build" time="0830" /&gt;
+    &lt;ant antscript="build.xml" target="weekly-cruise-build" time="0305" day="Saturday" /&gt;
+    &lt;pause startTime="2100" endTime="0300" /&gt;
+&lt;/schedule&gt;</pre>
+<p>En este ejemplo, cada 5 construcciones se ejecutar&aacute; la tarea <span class="codefrag">full-cruise-build</span>. Las tareas de <span class="codefrag">nightly</span> y <span class="codefrag">weekly</span> ofrecen todav&iacute;a m&aacute;s flexibilidad. Estas tareas son adecuadas para procesos que no se desea ejecutar en cada construcci&oacute;n (probablemente porque tardan mucho en completarse).</p>
+<a name="N10543"></a><a name="Publishers"></a>
+<h5>Publishers</h5>
+<p>Los publicadores se ejecutan una vez finalizada la construcci&oacute;n, y tras haber escrito en el log de resultados. La intenci&oacute;n de estos componentes es publicar los resultados de la construcci&oacute;n.</p>
+<p>Ejemplos de publishers son: ArtifactsPublishers, Email, Execute, HTMLEmail, SCP, XSLTLogPublisher, FTPPublisher, ...</p>
+<p></p>
+<a name="N10553"></a><a name="Ciclo+de+Vida"></a>
+<h4>Ciclo de Vida</h4>
+<p>Al arrancar, CC analizar los proyectos configurados, y almacena la informaci&oacute;n de estado de cada proyecto. Entonces, determina cuando ser&aacute; la pr&oacute;xima construcci&oacute;n y entra en un ciclo de espera.</p>
+<p>Cuando un proyecto se planifica para ser construido (determinado por la informaci&oacute;n contenida en el elemento <span class="codefrag">&lt;schedule&gt;</span>), el proyecto se colocar en una <em>cola de construcci&oacute;n</em>. Un hilo separado monitoriza esta cola y se responsabiliza de construir realmente los proyectos. Una vez el proyecto esta construido, se vuelve a planificar la siguiente construcci&oacute;n.</p>
+<p>Aunque CruiseControl solo soporta que un hilo acceda a la cola en un determinado momento, futuras versiones (se est&aacute;n desarrollando) permitir&aacute;n configurar un n&uacute;mero de hilos de construcci&oacute;n.</p>
+<p>Cuando el hilo de construcci&oacute;n empieza a construir el proyecto, el primer paso es preparar el proyecto, mediante la invocaci&oacute;n de los <em>bootstrapers</em> asociados. Tras esto, el proyecto busca las modificaciones mediante los componentes de control de versiones. Asumiendo que encuentra modificaciones, se invocar&aacute; a los <em>builders</em> para su construcci&oacute;n.</p>
+<p>Tras la construcci&oacute;n del proyecto, se crea el log. El estado del proyecto se almacena en disco (por si CC debe recuperarse al reiniciar el servicio ante una ca&iacute;da/apagado inesperad@), y finalmente publicar&aacute; los resultados del proyecto. En este momento el proyecto se queda en modo de espera hasta que le llegue el turno de volver a construirse.</p>
+<p>Ya s&oacute;lo queda animarte a incluir una herramienta de integraciones continuas en tu proyecto. Como hemos dicho, se trata de un elemento fundamental para evitar problemas en el futuro. Ahora est&aacute; en tus manos !!!</p>
+</div> 
+
+
+<a name="N1057C"></a><a name="Para+Saber+M%C3%A1s"></a>
+<h2 class="underlined_10">Para Saber M&aacute;s</h2>
+<div class="section">
+<a name="N10582"></a><a name="Bibliograf%C3%ADa"></a>
+<h3 class="underlined_5">Bibliograf&iacute;a</h3>
+<ul>
+    
+<li>
+<strong>Pragmatic Project Automation</strong>, de <em>Mike Clark</em>. Libro desenfadado que habla sobre la automatizaci&oacute;n de proyectos, mediante  <em>Ant</em> y <em>CruiseControl</em>, con gran cantidad de consejos.</li>
+    
+<li>
+<strong>JUnit in Action</strong>, de <em>Vincent Massol y Ted Husted</em>. Libro completo sobre JUnit, Cactus y DBUnit.</li>
+    
+<li>
+<strong>JUnit Recipes</strong>, de <em>J. B. Rainsberger</em>. Conjunto valioso de recetas, con soluciones a problemas frecuentes, y explicaci&oacute;n de extensiones como HttpUnit, EasyMock, etc...</li>
+
+</ul>
+<a name="N105AA"></a><a name="Enlaces"></a>
+<h3 class="underlined_5">Enlaces</h3>
+<ul>
+    
+<li>Articulo dogma de <em>Martin Fowler</em> sobre las Integraciones Continuas: <a class="external" href="http://www.martinfowler.com/articles/continuousIntegration.html">www.martinfowler.com/articles/continuousIntegration.html</a>
+</li>
+    
+<li>TDD y Modelado &Aacute;gil: <a class="external" href="http://www.agiledata.org/essays/tdd.html">www.agiledata.org/essays/tdd.html</a>
+</li>
+
+</ul>
+</div>
+
+
+<p class="pageBreakAfter"></p>
+
+
+</div>
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+        Copyright &copy;
+         2006-2007 Depto. CCIA</div>
+</div>
+</body>
+</html>

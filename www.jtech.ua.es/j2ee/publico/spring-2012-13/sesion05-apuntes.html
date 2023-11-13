@@ -1,0 +1,360 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.7">
+<meta name="Forrest-skin-name" content="pelt">
+<title>Validaci&oacute;n e internacionalizaci&oacute;n con Spring MVC</title>
+<link type="text/css" href="skin/highlight/shCore.css" rel="stylesheet">
+<link type="text/css" href="skin/highlight/shThemeEclipse.css" rel="stylesheet">
+<script src="skin/highlight/shCore.js" type="text/javascript"></script><script src="skin/highlight/shAutoloader.js" type="text/javascript"></script>
+<link type="text/css" href="skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="skin/print.css" rel="stylesheet">
+<link type="text/css" href="skin/profile.css" rel="stylesheet">
+<script src="skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<div class="header">
+<div class="grouplogo">
+<a href="http://web.ua.es/especialistajava"><img class="logoImage" alt="jtech" src="images/baner_j2ee_izq.gif" title="Experto Universitario Java Enterprise"></a>
+</div>
+<div class="projectlogoA1">
+<a href="http://www.dccia.ua.es/"><img class="logoImage" alt="Spring" src="images/baner_j2ee_der.gif" title="Spring"></a>
+</div>
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="javascript:location.href='../index.html'">Home</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../aplic-web.html'">Aplicaciones Web</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../aplic-ent.html'">Aplicaciones Enterprise</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../charlas.html'">Charlas</a>
+</li>
+<li>
+<a class="base-not-selected" href="javascript:location.href='../proy-int/index.html'">Proyecto</a>
+</li>
+<li>
+<a class="base-not-selected" href="index.html">Spring</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<div id="level2tabs"></div>
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<div id="menu">
+<div onclick="SwitchMenu('menu_1.1', 'skin/')" id="menu_1.1Title" class="menutitle">Spring</div>
+<div id="menu_1.1" class="menuitemgroup">
+<div class="menuitem">
+<a href="index.html" title="Spring">Indice</a>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<div id="credit2"></div>
+</div>
+<div id="content">
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="sesion05-apuntes.pdf"><img alt="PDF -icon" src="skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1>Validaci&oacute;n e internacionalizaci&oacute;n con Spring MVC</h1>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#Validaci%C3%B3n+en+Spring">Validaci&oacute;n en Spring</a>
+<ul class="minitoc">
+<li>
+<a href="#JSR+303+-+Bean+Validation">JSR 303 - Bean Validation</a>
+</li>
+<li>
+<a href="#Validaci%C3%B3n+en+Spring+MVC">Validaci&oacute;n en Spring MVC</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Internacionalizaci%C3%B3n+y+formateo+de+datos">Internacionalizaci&oacute;n y formateo de datos</a>
+<ul class="minitoc">
+<li>
+<a href="#Internacionalizaci%C3%B3n+de+los+textos">Internacionalizaci&oacute;n de los textos</a>
+</li>
+<li>
+<a href="#Cambio+del+locale">Cambio del locale</a>
+</li>
+<li>
+<a href="#Formateo+de+datos">Formateo de datos</a>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+<a name="N1000C"></a><a name="Validaci%C3%B3n+en+Spring"></a>
+<h2 class="underlined_10">Validaci&oacute;n en Spring</h2>
+<div class="section">
+<p>Desde la versi&oacute;n 3, Spring ha simplificado y potenciado en gran medida la validaci&oacute;n de datos, gracias a la adopci&oacute;n de la especificaci&oacute;n JSR 303. Este API permite validar los datos de manera declarativa, con el uso de anotaciones.  Esto nos facilita la validaci&oacute;n de los datos introducidos en formularios HMTL antes de llegar al controlador. Nosotros veremos aqu&iacute; la validaci&oacute;n en el m&oacute;dulo MVC, que es lo que nos interesa, aunque &eacute;sta se puede aplicar a cualquier capa de nuestra aplicaci&oacute;n Spring.</p>
+<a name="N10015"></a><a name="JSR+303+-+Bean+Validation"></a>
+<h3 class="underlined_5">JSR 303 - Bean Validation</h3>
+<p>Como ya hemos comentado, la especificaci&oacute;n JSR 303 permite especificar la validaci&oacute;n de datos de manera declarativa, usando anotaciones. La implementaci&oacute;n de referencia de este JSR es Hibernate Validator, de la que recomendamos consultar <a href="http://docs.jboss.org/hibernate/validator/4.1/reference/en-US/html_single/">su documentaci&oacute;n</a> .  No obstante, en nuestra discusi&oacute;n vamos a restringirnos al est&aacute;ndar, as&iacute; que todo lo que vamos a ver es v&aacute;lido para cualquier otra implementaci&oacute;n.</p>
+<p>Veamos un ejemplo que nos mostrar&aacute; lo sencillo y potente que es este API. Siguiendo con las ofertas de hoteles del tema anterior, la siguiente clase representar&iacute;a una reserva de habitaci&oacute;n hecha por un cliente, expresando las restricciones que debe cumplir cada campo con JSR 303:</p>
+<pre class="brush:java;highlight:[9,11,13,15,17]">
+package es.ua.jtech.spring.modelo;
+import java.util.Date;
+import javax.validation.Valid;
+import javax.validation.constraints.Future;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
+public class Reserva {
+    @Future
+    private Date entrada;
+    @Range(min=1,max=15)
+    private int noches;
+    @Min(10)
+    private BigDecimal pagoAnticipado;
+    @NotNull
+    private TipoHabitacion tipohabitacion;
+    @NotNull
+    private Cliente cliente;
+    //ahora vendr&iacute;an getters y setters
+    ...
+</pre>
+<p>Aqu&iacute; hemos especificado que la fecha de entrada en el hotel debe ser posterior a la fecha actual (la del sistema), se puede reservar entre 1 y 15 noches de estancia, por anticipado se debe pagar un m&iacute;nimo de 10 euros y que el cliente y el tipo de habitaci&oacute;n no pueden ser nulos. N&oacute;tese que especificar una restricci&oacute;n no implica que el objeto la deba cumplir siempre (evidentemente en los hist&oacute;ricos habr&aacute; reservas con fecha de entrada en el pasado). Simplemente, la especificaci&oacute;n nos proporciona una manera sencilla de expresar las restricciones y de comprobar si se cumplen en el momento que nos interese, llamando a un m&eacute;todo del API. Normalmente dispararemos la validaci&oacute;n al dar de alta o editar el objeto. Aunque disparar la validaci&oacute;n es muy sencillo usando directamente el API del JSR (solamente hay que llamar a <span class="codefrag">Validator.validate()</span> sobre el objeto a validar) veremos que en Spring es todav&iacute;a m&aacute;s simple, gracias a su integraci&oacute;n con dicho API.</p>
+<p>Aunque como se ha visto se pueden anotar las propiedades, tambi&eacute;n se pueden anotar los getters para obtener el mismo efecto (pero NO se deben anotar los setters).</p>
+<p>La especificaci&oacute;n ofrece un amplio conjunto de restricciones predefinidas. Hibernate Validator proporciona algunas adicionales, y adem&aacute;s el usuario puede definirse las suyas propias. Aunque no es excesivamente complicado esto queda fuera del alcance de este tema. Se recomienda consultar la documentaci&oacute;n de Hibernate Validator para ver la lista de las <a href="http://docs.jboss.org/hibernate/validator/4.1/reference/en-US/html_single/#validator-defineconstraints-builtin">restricciones predefinidas</a> y si lo deseas, sobre la definici&oacute;n de <a href="http://docs.jboss.org/hibernate/validator/4.1/reference/en-US/html_single/#validator-customconstraints">restricciones propias del usuario</a>.</p>
+<p>Por defecto, si un objeto referencia a otros, al validarlo no se comprobar&aacute;n las restricciones de los referenciados. Aunque en algunos casos nos puede interesar lo contrario, por ejemplo validar al <span class="codefrag">Cliente</span> que ha hecho la reserva. Para esto se usa la anotaci&oacute;n <span class="codefrag">@Valid</span>:</p>
+<pre class="brush:java;">
+public class Reserva {
+    ...
+    @NotNull
+    @Valid
+    private Cliente cliente;
+    //ahora vendr&iacute;an getters y setters
+    ...
+</pre>
+<p>Esta "validaci&oacute;n recursiva" se puede aplicar tambi&eacute;n a colecciones de objetos, de modo que se validar&aacute;n todos los objetos de la colecci&oacute;n. Por ejemplo, si en una misma reserva se pudieran reservar varias habitaciones a la vez, podr&iacute;amos tener algo como:</p>
+<pre class="brush:java;">
+public class Reserva {
+    ...
+    @NotNull
+    @NotEmpty
+    @Valid
+    private List&lt;TipoHabitacion&gt; habitaciones;
+    ...
+</pre>
+<p>Donde la anotaci&oacute;n <span class="codefrag">@NotEmpty</span> significa que la colecci&oacute;n no puede estar vac&iacute;a.</p>
+<a name="N1005C"></a><a name="Validaci%C3%B3n+en+Spring+MVC"></a>
+<h3 class="underlined_5">Validaci&oacute;n en Spring MVC</h3>
+<p>La activaci&oacute;n de la validaci&oacute;n JSR 303 en Spring MVC es muy sencilla. Simplemente hay que asegurarse de que tenemos en el classpath una implementaci&oacute;n del JSR. (la m&aacute;s t&iacute;pica es Hibernate Validator, como ya hemos comentado) y poner en el XML de definici&oacute;n de beans de la capa web la etiqueta <span class="codefrag">&lt;mvc:annotation-driven/&gt;</span>.</p>
+<p>En la capa MVC el caso de uso m&aacute;s t&iacute;pico es validar el objeto cuando el usuario haya rellenado sus propiedades a trav&eacute;s de un formulario. Normalmente en Spring MVC ese objeto nos llegar&aacute; como par&aacute;metro del m&eacute;todo del controller que procese los datos del formulario. Para validar el objeto antes de pas&aacute;rselo al m&eacute;todo lo &uacute;nico que hay que hacer es anotar el par&aacute;metro con <span class="codefrag">@Valid</span>. Por ejemplo:</p>
+<pre class="brush:java;">
+package es.ua.jtech.spring.mvc;
+
+import es.ua.jtech.spring.modelo.Reserva;
+import javax.validation.Valid;
+import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+@Controller
+@RequestMapping("/reserva")
+public class ReservaController {
+
+    @RequestMapping(method=RequestMethod.POST)
+    public String efectuarReserva(@Valid Reserva reserva, 
+                                  BindingResult result) {
+        if (result.hasErrors())
+           return "rellenarReserva";
+    }
+}
+</pre>
+<p>Como vemos, la validaci&oacute;n declarativa se integra con el API de Spring de manejo de errores. Los posibles errores de validaci&oacute;n se almacenar&aacute;n en el par&aacute;metro de tipo
+<span class="codefrag">BindingResult</span>, d&aacute;ndonos la posibilidad de examinarlos con el API de Spring, o saltar de nuevo al formulario y mostrarlos con la etiqueta <span class="codefrag">&lt;form:error&gt;</span>, como ya vimos en el tema anterior.</p>
+<p>Los mensajes de error se buscar&aacute;n en un fichero .properties, al igual que en el tema anterior. La clave bajo la que se buscar&aacute; el mensaje es generalmente el nombre de la restricci&oacute;n. El primer par&aacute;metro que se suele pasar es este nombre, y a partir de aqu&iacute; los par&aacute;metros de la anotaci&oacute;n. Por ejemplo, en el caso de la restricci&oacute;n <span class="codefrag">@Min(1)</span> para las noches de estancia podr&iacute;amos hacer en el .properties</p>
+<pre class="brush:java;">
+Min.noches = hay un m&iacute;nimo de {1} noche de estancia
+</pre>
+<p>Cuidado, el <span class="codefrag">{1}</span> no significa literalmente un 1, sino que hay que sustituir por el segundo argumento (recordemos que empiezan en 0). En este caso la sustituci&oacute;n ser&iacute;a por el valor 1, pero as&iacute; podemos cambiar la restricci&oacute;n para forzar m&aacute;s de una noche de estancia sin cambiar el c&oacute;digo del mensaje de error.</p>
+<p>Aunque por defecto la clave bajo la que se busca el mensaje en el properties es el nombre de la restricci&oacute;n, podemos cambiarla en la propia anotaci&oacute;n, por ejemplo:</p>
+<pre class="brush:java;">
+public class Reserva {
+   ...
+   @Min(value=1,message="minimoNoches")
+   private int noches;
+   ...
+} 
+</pre>
+<p>Podemos efectuar la validaci&oacute;n llamando directamente al API JSR303. Esto puede ser &uacute;til en los casos en que
+ no podamos usar la anotaci&oacute;n @Valid en nuestro c&oacute;digo. Por ejemplo, @Valid no funciona en la versi&oacute;n 3.0 (aunque s&iacute; a partir de la 3.1 inclusive) cuando
+ los datos de entrada vienen el cuerpo de la petici&oacute;n como JSON o XML en lugar de ser par&aacute;metros HTTP
+ (t&iacute;pico de REST). Aun en ese caso no hay mucho problema, ya que el API JSR303 es bastante sencillo:</p>
+<pre class="brush:java;">
+ ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+ Validator validator = factory.getValidator();
+ Set&lt;ConstraintViolation&lt;Oferta&gt;&gt; errores = validator.validate(oferta);
+ for (ConstraintViolation&lt;Oferta&gt; cv : errores) {
+       System.out.println(cv.getMessage());
+ }
+
+</pre>
+<p>Para aplicar la validaci&oacute;n solo hay que construir un <span class="codefrag">Validator</span> a trav&eacute;s de una <span class="codefrag">ValidatorFactory</span> y llamar al m&eacute;todo <span class="codefrag">validate</span> sobre el objeto a validar. La aplicaci&oacute;n de la validaci&oacute;n produce por cada error detectado un <span class="codefrag">ConstraintViolation</span>, parametrizado al tipo que se est&aacute; validando. Este objeto contiene informaci&oacute;n sobre el error que se ha producido. Para m&aacute;s informaci&oacute;n se recomienda consultar la documentaci&oacute;n del API.</p>
+</div>
+
+
+
+<a name="N100AE"></a><a name="Internacionalizaci%C3%B3n+y+formateo+de+datos"></a>
+<h2 class="underlined_10">Internacionalizaci&oacute;n y formateo de datos</h2>
+<div class="section">
+<p>Veremos en esta secci&oacute;n c&oacute;mo preparar nuestra aplicaci&oacute;n para que est&eacute; adaptada al idioma del usuario. A este proceso se le denomina <strong>internacionalizaci&oacute;n</strong> o <em>i18n</em> para abreviar (ya que en la palabra hay 18 letras entre la 'i' inicial y la 'n' final).</p>
+<a name="N100BD"></a><a name="Internacionalizaci%C3%B3n+de+los+textos"></a>
+<h3 class="underlined_5">Internacionalizaci&oacute;n de los textos</h3>
+<p>La parte m&aacute;s tediosa de la i18n de una aplicaci&oacute;n suele ser la traducci&oacute;n y adaptaci&oacute;n de los mensajes del interfaz de usuario. En aplicaciones Java internacionalizadas casi siempre los mensajes se suelen almacenar en ficheros <em>properties</em> para no tener que modificar el c&oacute;digo Java si hay que cambiar/a&ntilde;adir alguna traducci&oacute;n. La convenci&oacute;n habitual es que los mensajes para cada idioma se almacenan en un fichero .properties separado, pero de modo que todos los ficheros comienzan por el mismo nombre aunque como sufijo del mismo se usa el <em>locale</em> del idioma en cuesti&oacute;n.</p>
+<p>Un <em>locale</em> es una combinaci&oacute;n de idioma y pa&iacute;s (y opcionalmente, aunque la mayor&iacute;a de veces no se usa, una variante o dialecto). Tanto el pa&iacute;s como el idioma se especifican con c&oacute;digos ISO (est&aacute;ndares ISO-3166 e ISO-639). Aunque el locale en Java exige especificar tanto idioma como pa&iacute;s, en Spring y en casi todos los frameworks podemos usar solamente el c&oacute;digo de idioma si no deseamos especificar m&aacute;s. De este modo, los mensajes internacionalizados se podr&iacute;an guardar en archivos como:</p>
+<pre class="brush:java;">
+mensajes_es_ES.properties   //Espa&ntilde;ol de Espa&ntilde;a
+mensajes_es_AR.properties   //Espa&ntilde;ol de Argentina
+mensajes_es.properties      //Espa&ntilde;ol gen&eacute;rico a usar en otro caso
+mensajes_en.properties      //Ingl&eacute;s
+mensajes.properties         //fallback, o fichero a usar si no hay otro apropiado
+</pre>
+<p>As&iacute;, el fichero mensajes_es_ES.properties, con los mensajes en idioma espa&ntilde;ol (es) para Espa&ntilde;a (ES), podr&iacute;a contener algo como lo siguiente:</p>
+<pre class="brush:java;">
+saludo = Hola, bienvenido a la aplicaci&oacute;n
+error= lo sentimos, se ha producido un error
+</pre>
+<p>El <em>framework</em> usar&aacute; autom&aacute;ticamente el fichero apropiado al locale actual. En caso de poder usar varios se elegir&aacute; el que mejor encaje. As&iacute;, si en el ejemplo anterior el locale actual fuera idioma espa&ntilde;ol y pa&iacute;s Espa&ntilde;a se usar&iacute;a el primer archivo en lugar del espa&ntilde;ol gen&eacute;rico (que se seleccionar&iacute;a por ejemplo si el locale actual fuera idioma espa&ntilde;ol y pa&iacute;s M&eacute;xico). Si no hay ninguno que encaje se usar&aacute; el que no tiene sufijo de locale (en nuestro ejemplo, el &uacute;ltimo de los archivos).</p>
+<p>Como hemos visto en la sesi&oacute;n anterior, los mensajes de error en Spring se almacenan tambi&eacute;n en ficheros .properties y su localizaci&oacute;n se define habitualmente con un bean de tipo <span class="codefrag">ResourceBundleMessageSource</span>. Para los textos de la interfaz web se usa el mismo mecanismo. En realidad los mensajes de error tambi&eacute;n se pueden internacionalizar  autom&aacute;ticamente de la misma forma que los dem&aacute;s mensajes, simplemente generando los .properties adecuados. </p>
+<pre class="brush:xml;">
+&lt;bean id="messageSource"
+     class="org.springframework.context.support.ResourceBundleMessageSource"&gt;
+     &lt;property name="basename" value="es/ua/jtech/spring/mvc/mensajes"/&gt;
+&lt;/bean&gt;
+</pre>
+<p>Solo nos falta colocar los mensajes internacionalizados en la interfaz web. Suponiendo, como hemos hecho hasta ahora, que usamos JSP para la interfaz, podemos emplear la etiqueta <span class="codefrag">&lt;spring:message/&gt;</span>. Esta etiqueta tiene como atributo principal <span class="codefrag">code</span>, que representa la clave del properties bajo la que est&aacute; almacenado el mensaje. Por ejemplo:</p>
+<pre class="brush:xml;">
+&lt;%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%&gt;
+...
+&lt;spring:message code="saludo"/&gt;
+
+</pre>
+<p>de modo que en ese punto del JSP aparecer&iacute;a el mensaje que en el .properties del locale actual estuviera almacenado bajo la clave "saludo".</p>
+<a name="N10102"></a><a name="Cambio+del+locale"></a>
+<h3 class="underlined_5">Cambio del locale</h3>
+<p>Para que una aplicaci&oacute;n pueda estar internacionalizada se tiene que guardar de alguna manera cu&aacute;l es el locale con el que desea verla el usuario. El sitio m&aacute;s habitual para guardar el locale es la sesi&oacute;n o una cookie en el navegador, consiguiendo as&iacute; que cada usuario pueda mantener el suyo propio. Adem&aacute;s tiene que haber alg&uacute;n mecanismo para consultar cu&aacute;l es el locale actual y cambiarlo. Spring da soporte a todo esto: ofrece interceptores que nos permitir&aacute;n cambiar el locale sin m&aacute;s que llamar a determinada URL y tiene clases propias que guardan el locale del usuario actual. Veamos c&oacute;mo funciona todo esto.</p>
+<p>Por defecto Spring toma el locale de las cabeceras HTTP que env&iacute;a el navegador con cada petici&oacute;n. Por tanto, si el usuario tiene configurado el navegador en el idioma deseado, la aplicaci&oacute;n aparecer&aacute; autom&aacute;ticamente en el mismo idioma. No obstante, es posible que el usuario tenga instalado el navegador en un idioma pero prefiera ver las p&aacute;ginas en uno distinto. En ese caso tenemos que cambiar el lugar de donde toma Spring el locale, pasando a guardarlo en una cookie o en la sesi&oacute;n, seg&uacute;n la implementaci&oacute;n elegida de la clase que  guarda el locale. Adem&aacute;s, podemos configurar un interceptor que permitir&aacute; cambiar el locale de manera sencilla. Esto lo configuraremos en el XML de la capa web (t&iacute;picamente <span class="codefrag">dispatcher-servlet.xml</span>)</p>
+<pre class="brush:xml;">
+...
+&lt;!-- el id debe ser "localeResolver --&gt;
+&lt;bean id="localeResolver" 
+           class="org.springframework.web.servlet.i18n.CookieLocaleResolver"/&gt;
+
+&lt;mvc:interceptors&gt;
+   &lt;bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor"/&gt;
+&lt;/mvc:interceptors&gt;
+...
+</pre>
+<p>En el fragmento de XML anterior, el <span class="codefrag">localeResolver</span> es el bean encargado de guardar el locale del usuario. La implementaci&oacute;n elegida en este caso lo guarda en una cookie, como puede deducirse del nombre de la clase. Para guardarlo en la sesi&oacute;n usar&iacute;amos en su lugar la clase <span class="codefrag">SessionLocaleResolver</span>. Como dec&iacute;amos antes, por defecto en Spring el <span class="codefrag">localeResolver</span> usa la cabecera <span class="codefrag">Accept-language</span> de las peticiones del navegador, pero este tiene el problema de que no podemos cambiar el locale (si lo intentamos se generar&aacute; un error).</p>
+<p>Por otro lado, la clase <span class="codefrag">LocaleChangeInterceptor</span> es un interceptor. Es decir, es una clase que intercepta las peticiones HTTP antes de que lleguen a los controllers. Esta clase cambia el locale si la petici&oacute;n HTTP actual tiene un par&aacute;metro <span class="codefrag">locale</span> igual al locale deseado. Por ejemplo, la petici&oacute;n
+<span class="codefrag">index.do?locale=en</span> cambiar&iacute;a el locale actual a ingl&eacute;s, adem&aacute;s de hacer lo que haga normalmente el controller asociado a <span class="codefrag">index.do</span>. N&oacute;tese que esto lo podr&iacute;amos hacer "a mano", obteniendo una referencia al <span class="codefrag">localeResolver</span> actual y llamando a un m&eacute;todo en &eacute;l para cambiar el locale, pero es mucho m&aacute;s c&oacute;modo hacerlo con el interceptor. </p>
+<a name="N10138"></a><a name="Formateo+de+datos"></a>
+<h3 class="underlined_5">Formateo de datos</h3>
+<p>Seg&uacute;n el locale, existen convenciones distintas en el formato para mostrar fechas y n&uacute;meros. Sin Spring esto lo har&iacute;amos con etiquetas JSTL (por ejemplo . Sin embargo, para introducir datos en formularios hay que hacer la conversi&oacute;n inversa: de String a Date o a n&uacute;mero, cosa que no podemos solucionar con JSTL. En Spring 3 se introducen varias anotaciones para expresar el formato de los campos, que internamente usan clases ("formatters") capaces de convertir a y desde String a otros tipos. Ya hay anotaciones definidas para formatear fechas y n&uacute;meros, aunque podr&iacute;amos hacer nuestros propios "formateadores".</p>
+<p>Veamos c&oacute;mo podr&iacute;amos formatear los campos de la clase <span class="codefrag">Reserva</span>:</p>
+<pre class="brush:java;highlight:[3,8]">
+public class Reserva {
+    @Future
+    @DateTimeFormat(style="S-")
+    private Date entrada;
+    @Range(min=1,max=15)
+    private int noches;
+    @Min(10)
+    @NumberFormat(style=NumberFormat.Style.CURRENCY)
+    private BigDecimal pagoAnticipado;
+    @NotNull
+    private TipoHabitacion tipohabitacion;
+    @NotNull
+    private Cliente cliente;
+    //ahora vendr&iacute;an getters y setters
+    ...
+</pre>
+<p>La anotaci&oacute;n <span class="codefrag">@DateTimeFormat</span> formatea fechas. El atributo <span class="codefrag">style</span> indica el estilo de formateo con dos caracteres. El primer car&aacute;cter es para el estilo de la fecha y el segundo para el de la hora. Se admiten los caracteres "S" (short), "M", (medium), "L" (long), "F" (full) y el gui&oacute;n que indica que no nos interesa mostrar esa parte. As&iacute;, en el ejemplo, <span class="codefrag">@DateTimeFormat(style="S-")</span> indica que queremos ver la fecha en formato corto, sin hora. En el locale espa&ntilde;ol, por ejemplo el 28 de diciembre de 2009  a las 12:00 se mostrar&iacute;a como 28/12/09 (recordemos que no nos interesaba la hora), mientras que en el locale ingl&eacute;s ser&iacute;a 12/28/09. Se recomienda consultar el javadoc del API de Spring para m&aacute;s informaci&oacute;n sobre otros modos de formatear fechas. </p>
+<div class="frame warning">
+<div class="label">La librer&iacute;a JodaTime</div>
+<div class="content">Hasta la versi&oacute;n 3.1 de Spring incluida, la anotaci&oacute;n <span class="codefrag">@DateTimeFormat</span> requer&iacute;a que la librer&iacute;a JodaTime estuviera presente
+ en el classpath. Esta librer&iacute;a <em>open source</em> no es parte de Spring, pero se puede obtener, junto con las dem&aacute;s dependencias de Spring, de la web de SpringSource, o bien de <a href="http://joda-time.sourceforge.net/">su propia web</a>. JodaTime es una implementaci&oacute;n alternativa al <span class="codefrag">Date</span> y <span class="codefrag">Time</span> del API de Java. Si has usado alguna vez fechas en Java habr&aacute;s visto que su API es potente y flexible, pero tambi&eacute;n...digamos...algo retorcido. JodaTime simplifica considerablemente el manejo de fechas, manteniendo la flexibilidad si es necesaria. A partir de la versi&oacute;n 3.2, ya no es obligatorio el uso de JodaTime para esta anotaci&oacute;n, pero si est&aacute; disponible se usar&aacute; en lugar de la librer&iacute;a est&aacute;ndar.</div>
+</div>
+<p>Como habr&aacute;s "adivinado", la anotaci&oacute;n <span class="codefrag">@NumberFormat</span> formatea n&uacute;meros. El par&aacute;metro style puede tener valores distintos indicando si queremos mostrar un n&uacute;mero (con coma decimal en el locale espa&ntilde;ol, o punto decimal en el ingles, por ejemplo), una moneda (aparecer&aacute; el s&iacute;mbolo de la moneda del locale actual) o un porcentaje.</p>
+<p>Con esto podemos leer y convertir datos de entrada en formularios. O sea, de String al tipo deseado. Para el caso contrario, en el que queremos 
+mostrar un dato y que aparezca formateado (de objeto a String), podemos usar la etiqueta <span class="codefrag">&lt;spring-eval/&gt;</span>
+</p>
+<pre class="brush:xml;">
+Fecha de entrada: &lt;spring:eval expression="reserva.entrada" /&gt;
+</pre>
+<p>Igual que se usan para convertir datos introducidos en formularios, estas anotaciones tambi&eacute;n se pueden usar para convertir par&aacute;metros HTTP al tipo
+deseado, por ejemplo:</p>
+<pre class="brush:java;">
+public class TareasController {
+  @RequestMapping("tareas/crear")
+  public int nuevaTarea(@RequestParam
+                        @DateTimeFormat(style="S-") Date fecha, ...) {
+    ...
+  }
+}
+</pre>
+</div>
+
+<p class="pageBreakAfter"> 
+</p>
+
+</div>
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+        Copyright &copy;
+         2012-2013 Depto. Ciencia de la computaci&oacute;n e IA</div>
+</div>
+<script type="text/javascript">
+     
+         SyntaxHighlighter.defaults['toolbar'] = false;
+         SyntaxHighlighter.autoloader(
+  		     'java                   skin/highlight/shBrushJava.js',
+  		     'xml xhtml xslt html    skin/highlight/shBrushXml.js',
+  		     'js jscript javascript  skin/highlight/shBrushJScript.js',
+  		     'groovy                 skin/highlight/shBrushGroovy.js',
+  		     'bash shell             skin/highlight/shBrushBash.js',
+  		     'php                    skin/highlight/shBrushPhp.js',
+  		     'css                    skin/highlight/shBrushCss.js',
+  		     'sql                    skin/highlight/shBrushSql.js',
+  		     'objc                   skin/highlight/shBrushObjC.js',
+  		     'cpp c                  skin/highlight/shBrushCpp.js',
+  		     'text plain             skin/highlight/shBrushPlain.js'
+         );
+         SyntaxHighlighter.all();
+     </script><a href="skin/highlight/shBrushJava.js"></a><a href="skin/highlight/shBrushXml.js"></a><a href="skin/highlight/shBrushJScript.js"></a><a href="skin/highlight/shBrushGroovy.js"></a><a href="skin/highlight/shBrushBash.js"></a><a href="skin/highlight/shBrushPhp.js"></a><a href="skin/highlight/shBrushCss.js"></a><a href="skin/highlight/shBrushSql.js"></a><a href="skin/highlight/shBrushObjC.js"></a><a href="skin/highlight/shBrushCpp.js"></a><a href="skin/highlight/shBrushPlain.js"></a>
+</body>
+</html>

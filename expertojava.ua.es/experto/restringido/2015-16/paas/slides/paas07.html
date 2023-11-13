@@ -1,0 +1,696 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Características IaaS+ de OpenShift</title>
+
+		<meta name="description" content="Experto en desarrollo de aplicaciones web con JavaEE y Javascript">
+		<meta name="author" content="José Luis Zamora Sánchez">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/experto.css" id="theme">
+		
+    	<!-- coloreado de sintaxis con highlight.js -->
+    	<link rel="stylesheet" type="text/css" href="lib/css/github.css">
+
+		<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+		<script>
+			if( window.location.search.match( /print-pdf/gi ) ) {
+				var link = document.createElement( 'link' );
+				link.rel = 'stylesheet';
+				link.type = 'text/css';
+				link.href = 'css/print/pdf.css';
+				document.getElementsByTagName( 'head' )[0].appendChild( link );
+			}
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+		
+		<style type="text/css">.slides .header{
+			position:absolute;
+			top: -50%;
+			left: -50%;
+			width: 100%;
+			display: table;
+		}
+
+		.slides .logo {
+			display: table-cell;
+			vertical-align: middle;
+		}
+
+		.slides .bar {
+			background-color: rgb(18,64,128);
+			font-size: 20px;
+			padding-top: 5px;
+			padding-bottom: 5px;
+			color: white;
+			border-top-left-radius:10px;
+			border-bottom-left-radius:10px;
+			display: table-cell;
+			vertical-align: middle;
+			text-align: center;
+		}
+
+		.slides .footer{
+			position:absolute;
+			bottom: 50%;
+			left: -50%;
+			width: 100%;
+			font-size: 15px;
+			color: gray;
+			display: table;
+		}  
+		.slides .left {
+			display: table-cell;
+			text-align: left;
+		}
+		.slides .right {
+			display: table-cell;
+			text-align: right;
+		}
+		.slides .center {
+			display: table-cell;
+			text-align: center;
+		}
+
+</style>
+
+	</head>
+
+<body>
+	<div class="reveal">
+	<div class="slides">
+		<!-- todo lo que se ponga aqui (que no sea un <section>) aparecerá
+		en todas las diapositivas -->
+		<div class="header">
+			<div class="logo">
+			 <img src="css/images/logo_small.png">
+			</div>
+			<div class="bar">Experto en desarrollo de aplicaciones web con JavaEE y Javascript</div>
+		</div>
+		<div class="footer">
+			<div class="left">
+				Servidores Web y PaaS
+			</div>
+			<div class="center">
+				&copy; 2015-16 Dpto. Ciencia de la Computación e I.A.
+			</div>
+			<div class="right">
+				Sesión 7
+			</div>	
+		</div>	
+		<!-- Cada <section> es una slide -->	
+		
+		<section>
+			<!-- al poner el <h1> automáticamente aparece el logo del curso-->
+			<h1>Servidores Web y PaaS</h1>
+			<h2>Sesión 7: Características IaaS+ de OpenShift</h2>
+		</section>
+		
+		<section>
+			<h2>Índice</h2>
+			<ul>
+				<li>Acceso SSH</li>				
+				<li>Configuración específica OpenShift</li>
+				<ul>
+					<li>Variables de entorno</li>
+					<li>Markers</li>
+					<li>Action Hook Scripts</li>
+				</ul>
+				</li>
+				<li>Transferencia de ficheros</li>
+				<li>Tareas planificadas</li>
+				<li>Almacenamiento y copias de seguridad</li>				
+				<li>Procedimientos</li>				
+			</ul>
+		</section>
+		
+		<section>
+			<h2>»Acceso SSH</h2>		
+		</section>
+					
+		<section>			
+			<br>
+			<ul>
+					<li>Permite el acceso a los gears y trabajar como si fuera una máquina "propia".</li>
+					<li>Acceso mediante un cliente ssh estándar:</li>
+					<p  align=center><img style="border: 0;" src="imagenes/paas07/ssh1.png"></p>
+					<li>rhc simplifica el acceso:</li>
+					<pre><code   class="bash" data-trim  style="font-size: 18px;">
+					rhc ssh [app]
+					</code></pre>							
+					<li>Para usar Putty (Windows) es necesario convertir la clave privada.</li>
+			</ul>			
+		</section>		
+
+		<section>
+			<br>
+			<h2>Acceso SSH</h2>
+			<p  align=center><img style="border: 0;" height="500" src="imagenes/paas06/openshift4.png"></p>	
+		</section>
+		
+		<section>
+			<br>
+			<h2>Acceso SSH</h2>
+			<ul>
+				<li>Además existirá una carpeta por cada cartridge instalado con su configuración.</li>
+				<li>Desde la sesión SSH podremos:
+					<ul>
+						<li>Modificar ficheros de configuración.</li>
+						<li>Reiniciar la aplicación o uno de sus cartridges.</li>
+						<li>Cargar datos en la BD.</li>
+						<li>Crear y ejecutar scripts.</li>
+						<li>...</li>
+					</ul>					
+				</li>								
+			</ul>
+		</section>
+		
+		<section>
+			<br>
+			<h2>Acceso SSH</h2>
+			<ul>				
+				<li>Comandos Unix más comandos propios
+					<ul>
+						<li><strong>help</strong>: muestra un cuadro resumen con los comandos básicos de OpenShift.</li>
+						<li><strong>gear</strong>: permite controlar la aplicación (iniciarla, pararla, reiniciarla, etc.)</li>
+						<li><strong>tail_all</strong>: similar al tail de Unix pero vuelca todos los logs de los servicios.</li>
+						<li><strong>quota</strong>: muestra el espacio utilizado y los límites definidos para el gear.</li>
+						<li><strong>mysql</strong>: lanza el cliente de MySQL si tenemos desplegado el cartridge.</li>
+						<li><strong>psql</strong>: cliente de PostgreSQL. </li>
+						<li><strong>mongo</strong>: cliente de MongoDB.</li>					
+					</ul>					
+				</li>								
+			</ul>
+		</section>
+		
+		<section>
+			<br>
+			<h2>Acceso SSH</h2>
+			<p>Si la configuración está en el repositorio Git, cualquier cambio que apliquemos directamente sobre el gear se acabará perdiendo.</p>	
+		</section>
+		
+		<section>
+			<h2>»Variables de entorno</h2>
+		</section>
+		
+		<section>
+			<p align=left>Variables de entorno:</p>
+			<ul>
+				<li>Configuración de una aplicación:
+					<ul>
+						<li>Configuración dependiente de la instancia concreta: usuario de acceso a base de datos, puertos, credenciales.</li>
+						<li>Configuración independiente de la instancia: Recursos desplegados, configuración de seguridad, políticas de backups. </li>
+					</ul>
+				</li>
+				<li>OpenShift utiliza las variables de entorno para desacoplar la configuración independiente del entorno de la dependiente. →  Escalabilidad y mantenimiento simplificado.</li>
+			</ul>
+		</section>
+		
+		<section>
+			<p align=left>Variables de entorno:</p>
+			<ul>
+				<li>Predefinidas
+					<ul>
+						<li>Propias de OpenShift (generales)</li>
+						<li>Específicas de un cartridge</li>
+					</ul>
+				</li>
+				<li>Definidas por el usuario.</li>
+			</ul>
+		</section>		
+		
+		<section>
+			<br>
+			<p align=left>Comando <em>env</em></p>
+			<p  align=center><img style="border: 0;" height="500" src="imagenes/paas07/env1.png"></p>	
+		</section>
+		
+		<section>
+			<p align=left>Variables más importantes:</p>
+			<ul>
+				<li>OPENSHIFT_APP_NAME Nombre de la aplicación.</li>								
+				<li>OPENSHIFT_APP_DNS Nombre DNS completo (aplicación y dominio)</li>				
+				<li>OPENSHIFT_DATA_DIR Ruta de datos de la aplicación.
+				<li>OPENSHIFT_LOG_DIR Ruta de logs.</li>				
+				<li>OPENSHIFT_REPO_DIR Ruta del repositorio Git</li>
+				<li>OPENSHIFT_TMP_DIR Directorio temporal de trabajo (/tmp).</li>			
+			</ul>
+		</section>
+		
+		<section>
+		<p align=left>Crear/modificar variables</p>		
+<pre><code   class="bash" data-trim  style="font-size: 18px;">		
+// Establecer variables de entorno				
+$ rhc env set  VARIABLE1=valor1 ... VARIABLEN=valorn -a [app]	
+// Muestra todas las variables de entorno definidas por el usuario
+$ rhc env list -a [app] 
+// Eliminar variables de usuario
+$ rhc env unset VARIABLE1=valor1 ... VARIABLEN=valorn -a [app] 
+// Mostrar el valor de las variables especificadas.
+$ rhc env show VARIABLE1... VARIABLEN -a [app] 
+</code></pre>	
+		<p align=left>Las variables predefinidas son casi todas de sólo lectura.</p>
+		</section>
+		
+		<section>
+			<h2>»Markers</h2>
+		</section>
+		
+		<section>
+			<ul>
+				<li>Son ficheros "cebo" cuya presencia modifica aspectos de la configuración de un cartridge.</li>
+				<li>Similares a los que utiliza WildFly para gestionar los despliegues</li>
+				<li>Ejemplo, activación de Hot Deploy</em>:
+<pre><code   class="bash" data-trim  style="font-size: 18px;">		
+$ touch .openshift/markers/hot_deploy
+$ git add .openshift/markers/hot_deploy
+$ git commit -m "Changing application to hot deploy"
+$ git push origin
+</code></pre>	
+				</li>
+			</ul>
+		</section>
+		
+		<section>
+			<br>
+			<h2>Otros markers destacados</h2>
+			<ul>
+<li>disable_auto_scaling<br>
+Desactiva autoescalado de gears en función de la carga.</li>
+<li>force_clean_build<br>
+Fuerza a eliminar todos los artefactos previamente construidos</li>
+<li>skip_maven_build<br>
+Desactiva la compilación Maven al hacer un push al repositorio</li>
+<li>enable_jpda<br>
+Activa la depuración remota del servidor de aplicaciones</li>
+<li>java7/java8<br>
+Fuerza a utilizar el JRE de Java 7/8 (por defecto Java 6)</li>
+			</ul>
+		</section>
+		
+		<section>
+			<h2>»Action Hook Scripts</h2>
+		</section>
+		
+		<section>
+			<br>
+			<ul>
+				<li>Son scripts que se ejecutan ante determinados eventos.</li>
+				<li>Cada cartridge puede disparar diferentes eventos. Los estándar son:
+					<ul>
+						<li><em>pre_build, build, deploy, post_deploy </em>(en tiempo de compilación)</li>
+						<li><em>pre_start, post_start, pre_stop, post_stop, pre_reload, post_reload, pre_restart, post_restart, pre_tidy, post_tidy </em>(en tiempo de ejecución)</li>
+					</ul>
+				</li>
+				<li>El nombre del fichero debe coincidir con el evento y ubicarse en <em>.openshift/action_hooks</em>.</li>
+				<li>Puede estar implementado en cualquier lenguaje de script que admita OpenShift (shellscript, Python, PHP, Ruby...)</li>
+				<li>Deben tener permisos de ejecución !!</li>
+			</ul>
+		</section>
+		
+		<section>
+		<br>
+		<ul>
+			<li>Especificar un cartridge concreto para un script de control (en tiempo de ejecución)
+<pre><code   class="bash" data-trim  style="font-size: 18px;">					
+pre_start_{cartridge}
+</code></pre>				
+			</li>
+			<li>Ejemplo script <em>openshift/action_hooks/build</em>
+<pre><code   class="bash" data-trim  style="font-size: 18px;">								
+#!/bin/bash
+curl -o $OPENSHIFT_DATA_DIR/cartel.png http://web.ua.es/es/expertojava/imagenes/cartel300.png
+</code></pre>	
+			<li>Subida al repositorio:
+<pre><code   class="bash" data-trim  style="font-size: 18px;">											
+$ git add .openshift
+$ git commit -m "Adding a build hook"
+$ git push			
+</code></pre>	
+				<li>Durante el "push" se muestra la salida  estándar de cualquier script que se ejecute.</li>
+			</li>
+		</ul>
+		</section>
+	
+		<section>
+			<h2>»Transferencia de ficheros</h2>
+		</section>
+		
+		<section>
+			<ul>
+				<li>Comando scp (secure copy de Unix):
+<pre><code   class="bash" data-trim  style="font-size: 18px;">											
+$ scp [origen] [destino]
+$ scp miscript.sql 541f1deb500446885d000683@wildfly8-djbyte.rhcloud.com:~/app-root/data
+</code></pre>
+					<ul>
+						<li>El usuario y la máquina se pueden obtener con el comando:
+<pre><code   class="bash" data-trim  style="font-size: 18px;">																	
+$ rhc app show [app]						
+
+SSH:             541f1deb500446885d000683@wildfly8-djbyte.rhcloud.com
+</code></pre>
+						</li>
+					</ul>
+				</li>
+				<li>Comando rhc scp:
+<pre><code   class="bash" data-trim  style="font-size: 18px;">											
+rhc scp [app] [accion] [origen] [destino]
+rhc scp paas upload miscript.sql app-root/data				
+</code></pre>									
+			</ul>
+		</section>
+		
+		<section>
+			<p align=left>Comando rsync</p>			
+			<ul>
+				<li>Transmite únicamente las diferencias entre los ficheros/carpetas de origen y destino.</li>
+			</ul>
+<pre><code   class="bash" data-trim  style="font-size: 18px;">
+$ rsync [origen] [destino]
+$ rsync -avz -e ssh 542ab14750044656c70000a0@wildfly8-jlzamora.rhcloud.com:~/app-root/data/prueba.png .
+$ # a: archive v: verbose z: compress
+</code></pre>									
+		</section>
+		
+		<section>
+			<h2>»Tareas planificadas</h2>
+		</section>
+		
+		<section>
+			<ul>
+				<li>Cartridge <em>cron</em> permite ejecutar tareas planificadas.</li>
+				<li>Funcionamiento similar a los <em>action hook scripts</em></li>
+				<li>Estructura de carpetas en <em>.openshift/cron/ </em> según periodicidad:
+<pre><code   class="bash" data-trim  style="font-size: 18px;">				
+daily
+hourly
+minutely
+monthly
+weekly		
+</code></pre>	
+				</li>
+				<li>Los scripts pueden tener cualquier nombre y lenguaje pero deben tener permisos de ejecución.</li>
+			</ul>
+		</section>
+		
+		<section>		
+			<p align=left>Mayor precisión en la planificación:</p>
+<pre><code   class="bash" data-trim  style="font-size: 18px;">							
+#!/bin/bash
+
+minute=$(date '+%M')
+if [ $minute != 12 ]; then
+    exit
+fi
+# rest of the script
+</code></pre>				
+		</section>
+		
+		<section>
+			<h2>»Almacenamiento en disco</h2>
+		</section>
+		
+		<section>
+			<ul>
+				<li>Carpetas con permisos de L/E:
+					<ul>
+						<li>OPENSHIFT_HOME_DIR: Carpeta raíz del gear</li>
+						<li>OPENSHIFT_TMP_DIR: Carpeta para datos temporales</li>
+					</ul>
+				</li>
+				<br>
+				<li>OPENSHIFT_DATA_DIR ($OPENSHIFT_HOMEDIR/app-root/data)
+						<ul>
+							<li>Única carpeta de almacenamiento de datos permantente.</li>
+							<li>Espacio propio de cada gear, <strong>no compartido</strong> en aplicaciones escalables.</li>
+						</ul>
+				</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Cuota de almacenamiento</h2>
+			<br>
+			<p align=left>Carpetas:</p>
+			<ul>
+				<li>La carpeta de datos (OPENSHIFT_DATA_DIR)</li>
+				<li>La carpeta temporal (OPENSHIFT_TMP_DIR)</li>
+				<li>El repositorio Git y repositorio de versiones </li>
+				<li>Las carpetas de logs</li>
+				<li>Los ficheros de datos de las BBDD</li>
+			</ul>
+			<p align=left><br>Cuota inicial de todos los gears 1Gb ampliable hasta 30Gb.</p>
+		</section>
+		
+		<section>
+			<br>
+			<h2>Cuota de almacenamiento</h2>
+					
+			<p align=left><br>Consulta del espacio utilizado y disponible para todos los gear:</p>			
+<pre><code   class="bash" data-trim  style="font-size: 18px;">										
+rhc app show [app] --gears quota			
+</code></pre>	
+				<p  align=center><img style="border: 0;"src="imagenes/paas07/quota1.png"></p>	
+		</section>
+				
+		<section>
+			<br>
+			<h2>Cuota de almacenamiento</h2>
+			
+			<ul>
+				<li>OpenShift mostrará avisos si se supera el 90% de uso</li>
+				<li>Si se llega al 100%:
+<pre><code   class="bash" data-trim  style="font-size: 18px;">										
+remote: error: unable to create temporary file: Disk quota exceeded
+</code></pre>	
+				</li>
+				<li>Soluciones:
+				<ul>
+					<li>Comando <em>rhc tidy</em></li>
+					<li>Ampliar espacio (solo en modalidad de pago):
+<pre><code   class="bash" data-trim  style="font-size: 18px;">										
+$ rhc cartridge storage [cartridge] -a [app] --set  capacidad(GB)
+
+$ rhc cartridge storage php-5 -a racer --set 5gb
+</code></pre>						
+				</ul>
+					</li>
+				</li>
+			</ul>		
+		</section>
+		
+		<section>
+			<h2>»Copias de seguridad</h2>		
+		</section>
+		
+		<section>
+			<ul>
+				<li>Aunque trabajemos en una plataforma cloud es conveniente utilizar algún tipo de backup</li>.
+				<li>Recursos:
+					<ul>
+						<li>Procedimiento manual, factible con lo que ya sabemos de OpenShift</li>
+						<li>Deployment Historiy</li>
+						<li>Application snapshots</li>
+					</ul>
+				</li>
+			</ul>
+		</section>
+		
+		<section>
+			<br>
+			<h2>Deployment History:</h2>			
+			<p align=left>Especificar la profundidad del histórico:</p>
+<pre><code   class="bash" data-trim  style="font-size: 18px;">										
+$ rhc app-configure --keep-deployments [num]
+</code></pre>						
+			<p align=left>Almacenamiento en la carpeta <em>app-deployments</em> por timestamp e id. Repositorio y dependencias.</p>
+<pre><code   class="bash" data-trim  style="font-size: 18px;">													
+[wildfly8-jlzamora.rhcloud.com app-deployments]\> ls
+2014-10-03_11-32-48.438  2014-10-03_11-51-38.310  by-id  current
+[wildfly8-jlzamora.rhcloud.com app-deployments]\> ls by-id
+88410fa9  b901caed
+[wildfly8-jlzamora.rhcloud.com app-deployments]\>
+</code></pre>						
+<pre><code   class="bash" data-trim  style="font-size: 18px;">
+# rhc deployment activate [id despliegue] -app [app]
+$ rhc deployment activate b901caed -app wildfly8
+
+Activating deployment 'b901caed' on application wildfly8 ...			
+</code></pre>						
+		</section>
+		
+		<section>
+			<br>
+			<h2>Application Snapshots</h2>
+			<ul>
+				<li>Se genera un backup completo de los datos del gear (informacion catalogada como exportable).</li>
+				<li>Tanto el backup como el restore son procedimientos lentos e implican una parada.</li>
+				<li>El backup se genera en la máquina cliente, no en el gear.</li>				
+			</ul>
+			<p align=left><br>Backup</p>
+<pre><code   class="bash" data-trim  style="font-size: 18px;">			
+& rhc snapshot-save [app]
+Pulling down a snapshot of application 'wildfly8' to wildfly8.tar.gz ... done			
+</code></pre>						
+			<p align=left>Restore</p>
+<pre><code   class="bash" data-trim  style="font-size: 18px;">			
+& rhc snapshot-restore [app]
+</code></pre>									
+		</section>
+		
+		<section>
+			<h2>»Procedimientos</h2>
+		</section>
+		
+		<section>
+			<br>
+			<h2>Depuración de aplicaciones en remoto</h2>
+			<ol>
+				<li>Añadir el marker <em>enable_jpda</em>.</li>
+				<li>Activar el port-forwarding.</li>
+				<li>Abrir el proyecto en IntelliJ y crear una nueva configuración de depuración (transporte <em>socket</em>).</li>
+			</ol>
+			<p  align=center><img style="border: 0;" height="350" src="imagenes/paas07/debug2.png"></p>	
+		</section>
+		
+		<section>
+			<br>
+			<h2>Volcado de threads</h2>
+<pre><code   class="bash" data-trim  style="font-size: 18px;">										
+$ rhc threaddump -a [app]
+</code></pre>						
+			<p align=left>Para WildFly8 el volcado está en <em>server.log</em></p>
+		</section>
+		
+		<section>
+			<br>
+			<h2>Despliegue manual de aplicaciones (I)</h2>
+			<p align=left>Configuración de despliegue:</p>
+<pre><code   class="bash" data-trim  style="font-size: 18px;">										
+$ rhc app-configure
+
+wildfly8 @ http://wildfly8-jlzamora.rhcloud.com/ (uuid: 542ab14750044656c70000a0)
+---------------------------------------------------------------------------------
+  Deployment:        auto (on git push)
+  Keep Deployments:  1
+  Deployment Type:   git
+  Deployment Branch: master
+</code></pre>						
+<p align=left>--[no-]auto-deploy
+Activar/desactivar autodeploy.</p>
+
+<p align=left>--keep-deployments 
+Profundidad del histórico.</p>
+
+<p align=left>--deployment-branch 
+Rama de compilación/despliegue.</p>
+
+<p align=left>--deployment-type (git|binary) binario o a partir de compilación.</p>
+			</ul>
+		</section>
+		
+		<section>
+			<br>
+			<h2>Despliegue manual de aplicaciones (II)</h2>
+			<p align=left>Desactivando auto-deploy podemos controlar el despliegue con el comando:</p>
+<pre><code   class="bash" data-trim  style="font-size: 18px;">										
+rhc app-deploy [ref] --app [app]
+</code></pre>
+		<p align=left>ref: etiqueta, rama o commit de Git</p>
+		<p align=left>Parámetros que se superponen a la configuración de markers:</p>
+		<ul>
+			<li>--[no-]hot-deploy Desplegar (o no ) sin reiniciar el servidor.</li>
+			<li>--[no-]force-clean-build Recompila todo el proyecto (o no) antes de desplegar.</li>
+		</ul>
+		</section>
+		
+		<section>
+			<h2>Compilar proyectos con dependencias precompiladas</h2>
+			<ol>
+				<li>Añadir el jar/war a la raíz del repositorio Git.</li>
+				<li>Crear un script pre_build que ejecute un <em>maven install</em>
+<pre><code   class="bash" data-trim  style="font-size: 18px;">														
+#Ejemplo para ficheros jar
+
+mvn install:install-file -Dfile=$OPENSHIFT_REPO_DIR/fichero.jar -DgroupId=[grupo] \
+	-DartifactId=[artefacto] -Dversion=[versión] -Dpackaging=jar					
+</code></pre>
+				</li>
+				<li>Referenciar a la dependencia en el pom del proyecto con scope <em>compile</em>.</li>
+			</ol>		
+		</section>
+		
+		<section>
+			<h2>Desplegar una aplicación precompilada</h2>
+			<ol>
+				<li>Crear una nueva aplicación con los cartridges necesarios.</li>
+				<li>Eliminar el código fuente previo:</li>
+<pre><code   class="bash" data-trim  style="font-size: 18px;">														
+& git rm -r src/ pom.xml
+</code></pre>
+				</li>
+				<li>Copiar el binario a la carpeta <em>deployments</em> del repositorio y darle el nombre ROOT.war.</li>
+				<li>Hacer commit y push</li>
+				<li>Limpiar logs anteriores y el repositorio Git mediante:
+<pre><code   class="bash" data-trim  style="font-size: 18px;">														
+& rhc [app] tidy
+</code></pre>				
+				</li>
+			</ol>		
+		</section>
+		
+		<section>
+			<h1>¿Preguntas...?</h1>
+		</section>
+	
+	</div>
+</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+				slideNumber: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
+
+		
+		</section>

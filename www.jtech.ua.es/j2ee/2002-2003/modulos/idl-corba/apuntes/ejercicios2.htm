@@ -1,0 +1,79 @@
+<html>
+<head>
+<title>Temas 3-4: IDL-CORBA (Ejercicios)</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<h1>Ejercicios de IDL-CORBA: <b>IDL y ORB</b></h1>
+<h1>&nbsp;</h1>
+<ol>
+  <li>Construir el c&oacute;digo IDL correspondiente a una aplicaci&oacute;n distribuida 
+    denominada &quot;<b>Secretaria digita</b>l&quot;, que permite mantener un 
+    diario personal de citas. Los usuarios pueden visualizar sus citas diarias, 
+    as&iacute; como crear, editar o borrar citas. Dichas citas pueden incluir 
+    reuniones con otros usuarios en lugares espec&iacute;ficos, lo cual implica 
+    reservar una sala disponible para un d&iacute;a y hora especificadas. Una 
+    reuni&oacute;n queda determinada indicando la hora de comienzo (asumiremos 
+    que las reuniones durar&aacute;n una hora m&aacute;ximo), la persona con la 
+    que nos vamos a citar, la sala en la que nos vamos a reunir, y el prop&oacute;sito 
+    de la reuni&oacute;n. Los nombres de las personas con las que es posible tener 
+    una cita se obtienen del servicio de nombres CORBA cuando comienza la aplicaci&oacute;n. 
+    Cada usuario de la &quot;Secretaria digital&quot; es registrado en el servicio 
+    de nombres para que otros usuarios puedan contactar con &eacute;l. <br>
+    <br>
+    Las salas disponibles se obtienen de un proceso servidor separado denominado 
+    &quot;<b>Servidor salas</b>&quot; que tiene acceso a todas las salas de un 
+    edificio, permitiendo la adici&oacute;n de nuevas salas, as&iacute; como comprobar 
+    las reservas de dicha sala. Cada Servidor de salas registra en el servicio 
+    de nombres las salas disponibles en su edificio.<br>
+    <br>
+    Finalmente se dispone de un &quot;<b>Servicio de citas</b>&quot; que crea 
+    y almacena informaci&oacute;n sobre las citas. Sus operaciones son accedidas 
+    a trav&eacute;s de la Secretaria digital. <br>
+    <br>
+    Se deben incluir definiciones b&aacute;sicas para el d&iacute;a, hora, meses, 
+    a&ntilde;os, y fechas (formadas por a&ntilde;o, mes, d&iacute;a y hora).<br>
+    <br>
+    La interfaz <b><i>Meeting</i></b> describe el &quot;Servicio de citas&quot;, 
+    y debe contener el prop&oacute;sito de la cita, el organizador de la cita, 
+    la sala en la que se realiza la cita, y la fecha. Adem&aacute;s debe especificar 
+    m&eacute;todos para: <br>
+    <br>
+    <ul>
+      <li>listar los participantes de la cita, devuelve una lista de participantes 
+        y puede lanzar la excepci&oacute;n &quot;Cita cancelada&quot;, exponiendo 
+        los motivos de la cancelaci&oacute;n</li>
+      <li>a&ntilde;adir participantes a una cita, puede lanzar la excepci&oacute;n 
+        &quot;Cita cancelada&quot;</li>
+      <li>eliminar a un participante de una cita, puede lanzar la excepci&oacute;n 
+        &quot;Cita cancelada&quot;</li>
+      <li>cancelar la cita, indicando la raz&oacute;n de la cancelaci&oacute;n, 
+        puede lanzar la excepci&oacute;n &quot;Cita cancelada&quot;</li>
+      <li>cambiar la sala y/o la fecha de una cita, puede lanzar las excepciones 
+        &quot;Cita cancelada&quot;, &quot;Fecha ya ocupada&quot;</li>
+    </ul>
+    <br>
+    La interfaz <b><i>Room</i></b> proporcionar&aacute; operaciones para visualizar, 
+    realizar y cancelar citas. La realizaci&oacute;n de citas puede lanzar la 
+    excepci&oacute;n &quot;Fecha ya ocupada&quot;, y la cancelaci&oacute;n de 
+    citas puede provocar la excepci&oacute;n &quot;No hay cita en esta fecha&quot;. 
+    <br>
+    <br>
+    La interfaz <b><i>Building</i></b> contiene el nombre del edificio y los m&eacute;todos 
+    para crear nuevas salas con un nombre dado, y otra para obtener un listado 
+    de salas existentes en el edificio.<br>
+    <br>
+    La interfaz <b><i>DigitalSecretary</i></b> representa a los usuarios del sistema. 
+    Contiene el nombre del usuario, la operacion notificar, que env&iacute;a un 
+    mensaje a un usuario, y la operaci&oacute;n invitar, para proponer una cita 
+    (el receptor de esta petici&oacute;n puede o no aceptar la cita), puede provocar 
+    la excepci&oacute;n &quot;Ya estoy ocupado&quot;.<br>
+    <br>
+    <br>
+    <br>
+  </li>
+</ol>
+</body>
+</html>

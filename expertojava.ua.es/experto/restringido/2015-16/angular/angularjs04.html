@@ -1,0 +1,1411 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 1.5.2">
+<meta name="author" content="Alejandro Such">
+<title>AngularJS</title>
+<style>/*! normalize.css v2.1.2 | MIT License | git.io/normalize */
+/* ========================================================================== HTML5 display definitions ========================================================================== */
+/** Correct `block` display not defined in IE 8/9. */
+article, aside, details, figcaption, figure, footer, header, hgroup, main, nav, section, summary { display: block; }
+
+/** Correct `inline-block` display not defined in IE 8/9. */
+audio, canvas, video { display: inline-block; }
+
+/** Prevent modern browsers from displaying `audio` without controls. Remove excess height in iOS 5 devices. */
+audio:not([controls]) { display: none; height: 0; }
+
+/** Address `[hidden]` styling not present in IE 8/9. Hide the `template` element in IE, Safari, and Firefox < 22. */
+[hidden], template { display: none; }
+
+script { display: none !important; }
+
+/* ========================================================================== Base ========================================================================== */
+/** 1. Set default font family to sans-serif. 2. Prevent iOS text size adjust after orientation change, without disabling user zoom. */
+html { font-family: sans-serif; /* 1 */ -ms-text-size-adjust: 100%; /* 2 */ -webkit-text-size-adjust: 100%; /* 2 */ }
+
+/** Remove default margin. */
+body { margin: 0; }
+
+/* ========================================================================== Links ========================================================================== */
+/** Remove the gray background color from active links in IE 10. */
+a { background: transparent; }
+
+/** Address `outline` inconsistency between Chrome and other browsers. */
+a:focus { outline: thin dotted; }
+
+/** Improve readability when focused and also mouse hovered in all browsers. */
+a:active, a:hover { outline: 0; }
+
+/* ========================================================================== Typography ========================================================================== */
+/** Address variable `h1` font-size and margin within `section` and `article` contexts in Firefox 4+, Safari 5, and Chrome. */
+h1 { font-size: 2em; margin: 0.67em 0; }
+
+/** Address styling not present in IE 8/9, Safari 5, and Chrome. */
+abbr[title] { border-bottom: 1px dotted; }
+
+/** Address style set to `bolder` in Firefox 4+, Safari 5, and Chrome. */
+b, strong { font-weight: bold; }
+
+/** Address styling not present in Safari 5 and Chrome. */
+dfn { font-style: italic; }
+
+/** Address differences between Firefox and other browsers. */
+hr { -moz-box-sizing: content-box; box-sizing: content-box; height: 0; }
+
+/** Address styling not present in IE 8/9. */
+mark { background: #ff0; color: #000; }
+
+/** Correct font family set oddly in Safari 5 and Chrome. */
+code, kbd, pre, samp { font-family: monospace, serif; font-size: 1em; }
+
+/** Improve readability of pre-formatted text in all browsers. */
+pre { white-space: pre-wrap; }
+
+/** Set consistent quote types. */
+q { quotes: "\201C" "\201D" "\2018" "\2019"; }
+
+/** Address inconsistent and variable font size in all browsers. */
+small { font-size: 80%; }
+
+/** Prevent `sub` and `sup` affecting `line-height` in all browsers. */
+sub, sup { font-size: 75%; line-height: 0; position: relative; vertical-align: baseline; }
+
+sup { top: -0.5em; }
+
+sub { bottom: -0.25em; }
+
+/* ========================================================================== Embedded content ========================================================================== */
+/** Remove border when inside `a` element in IE 8/9. */
+img { border: 0; }
+
+/** Correct overflow displayed oddly in IE 9. */
+svg:not(:root) { overflow: hidden; }
+
+/* ========================================================================== Figures ========================================================================== */
+/** Address margin not present in IE 8/9 and Safari 5. */
+figure { margin: 0; }
+
+/* ========================================================================== Forms ========================================================================== */
+/** Define consistent border, margin, and padding. */
+fieldset { border: 1px solid #c0c0c0; margin: 0 2px; padding: 0.35em 0.625em 0.75em; }
+
+/** 1. Correct `color` not being inherited in IE 8/9. 2. Remove padding so people aren't caught out if they zero out fieldsets. */
+legend { border: 0; /* 1 */ padding: 0; /* 2 */ }
+
+/** 1. Correct font family not being inherited in all browsers. 2. Correct font size not being inherited in all browsers. 3. Address margins set differently in Firefox 4+, Safari 5, and Chrome. */
+button, input, select, textarea { font-family: inherit; /* 1 */ font-size: 100%; /* 2 */ margin: 0; /* 3 */ }
+
+/** Address Firefox 4+ setting `line-height` on `input` using `!important` in the UA stylesheet. */
+button, input { line-height: normal; }
+
+/** Address inconsistent `text-transform` inheritance for `button` and `select`. All other form control elements do not inherit `text-transform` values. Correct `button` style inheritance in Chrome, Safari 5+, and IE 8+. Correct `select` style inheritance in Firefox 4+ and Opera. */
+button, select { text-transform: none; }
+
+/** 1. Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio` and `video` controls. 2. Correct inability to style clickable `input` types in iOS. 3. Improve usability and consistency of cursor style between image-type `input` and others. */
+button, html input[type="button"], input[type="reset"], input[type="submit"] { -webkit-appearance: button; /* 2 */ cursor: pointer; /* 3 */ }
+
+/** Re-set default cursor for disabled elements. */
+button[disabled], html input[disabled] { cursor: default; }
+
+/** 1. Address box sizing set to `content-box` in IE 8/9. 2. Remove excess padding in IE 8/9. */
+input[type="checkbox"], input[type="radio"] { box-sizing: border-box; /* 1 */ padding: 0; /* 2 */ }
+
+/** 1. Address `appearance` set to `searchfield` in Safari 5 and Chrome. 2. Address `box-sizing` set to `border-box` in Safari 5 and Chrome (include `-moz` to future-proof). */
+input[type="search"] { -webkit-appearance: textfield; /* 1 */ -moz-box-sizing: content-box; -webkit-box-sizing: content-box; /* 2 */ box-sizing: content-box; }
+
+/** Remove inner padding and search cancel button in Safari 5 and Chrome on OS X. */
+input[type="search"]::-webkit-search-cancel-button, input[type="search"]::-webkit-search-decoration { -webkit-appearance: none; }
+
+/** Remove inner padding and border in Firefox 4+. */
+button::-moz-focus-inner, input::-moz-focus-inner { border: 0; padding: 0; }
+
+/** 1. Remove default vertical scrollbar in IE 8/9. 2. Improve readability and alignment in all browsers. */
+textarea { overflow: auto; /* 1 */ vertical-align: top; /* 2 */ }
+
+/* ========================================================================== Tables ========================================================================== */
+/** Remove most spacing between table cells. */
+table { border-collapse: collapse; border-spacing: 0; }
+
+meta.foundation-mq-small { font-family: "only screen and (min-width: 768px)"; width: 768px; }
+
+meta.foundation-mq-medium { font-family: "only screen and (min-width:1280px)"; width: 1280px; }
+
+meta.foundation-mq-large { font-family: "only screen and (min-width:1440px)"; width: 1440px; }
+
+*, *:before, *:after { -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
+
+html, body { font-size: 97%; }
+
+body { background: white; color: #222222; padding: 0; margin: 0; font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif; font-weight: normal; font-style: normal; line-height: 1; position: relative; cursor: auto; }
+
+a:hover { cursor: pointer; }
+
+img, object, embed { max-width: 100%; height: auto; }
+
+object, embed { height: 100%; }
+
+img { -ms-interpolation-mode: bicubic; }
+
+#map_canvas img, #map_canvas embed, #map_canvas object, .map_canvas img, .map_canvas embed, .map_canvas object { max-width: none !important; }
+
+.left { float: left !important; }
+
+.right { float: right !important; }
+
+.text-left { text-align: left !important; }
+
+.text-right { text-align: right !important; }
+
+.text-center { text-align: center !important; }
+
+.text-justify { text-align: justify !important; }
+
+.hide { display: none; }
+
+.antialiased, body { -webkit-font-smoothing: antialiased; }
+
+img { display: inline-block; vertical-align: middle; }
+
+textarea { height: auto; min-height: 50px; }
+
+select { width: 100%; }
+
+p.lead, .paragraph.lead > p, #preamble > .sectionbody > .paragraph:first-of-type p { font-size: 1.21875em; line-height: 1.6; }
+
+.subheader, .admonitionblock td.content > .title, .audioblock > .title, .exampleblock > .title, .imageblock > .title, .listingblock > .title, .literalblock > .title, .stemblock > .title, .openblock > .title, .paragraph > .title, .quoteblock > .title, table.tableblock > .title, .verseblock > .title, .videoblock > .title, .dlist > .title, .olist > .title, .ulist > .title, .qlist > .title, .hdlist > .title { line-height: 1.4; color: #6f6f6f; font-weight: 300; margin-top: 0.2em; margin-bottom: 0.5em; }
+
+/* Typography resets */
+div, dl, dt, dd, ul, ol, li, h1, h2, h3, #toctitle, .sidebarblock > .content > .title, h4, h5, h6, pre, form, p, blockquote, th, td { margin: 0; padding: 0; direction: ltr; }
+
+/* Default Link Styles */
+a { color: #1164be; text-decoration: none; line-height: inherit; }
+a img { border: none; }
+
+/* Default paragraph styles */
+p { font-family: inherit; font-weight: normal; font-size: 1em; line-height: 1.4; margin-bottom: 1em; text-rendering: optimizeLegibility; }
+p aside { font-size: 0.875em; line-height: 1.35; font-style: italic; }
+
+/* Default header styles */
+h1, h2, h3, #toctitle, .sidebarblock > .content > .title, h4, h5, h6 { font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif; font-weight: bold; font-style: normal; color: #1c355e; text-rendering: optimizeLegibility; margin-top: 1em; margin-bottom: 0.5em; line-height: 1.2125em; }
+h1 small, h2 small, h3 small, #toctitle small, .sidebarblock > .content > .title small, h4 small, h5 small, h6 small { font-size: 60%; color: #6f6f6f; line-height: 0; }
+
+h1 { font-size: 2.125em; }
+
+h2 { font-size: 1.6875em; }
+
+h3, #toctitle, .sidebarblock > .content > .title { font-size: 1.375em; }
+
+h4 { font-size: 1.125em; }
+
+h5 { font-size: 1.125em; }
+
+h6 { font-size: 1em; }
+
+hr { border: solid #dddddd; border-width: 1px 0 0; clear: both; margin: 1.25em 0 1.1875em; height: 0; }
+
+/* Helpful Typography Defaults */
+em, i { font-style: italic; line-height: inherit; }
+
+strong, b { font-weight: bold; line-height: inherit; }
+
+small { font-size: 60%; line-height: inherit; }
+
+code { font-family: Consolas, "Liberation Mono", Courier, monospace; font-weight: bold; }
+
+/* Lists */
+ul, ol, dl { font-size: 1em; line-height: 1.4; margin-bottom: 1.25em; list-style-position: outside; font-family: inherit; }
+
+ul, ol { margin-left: 2.5em; }
+ul.no-bullet, ol.no-bullet { margin-left: 1.5em; }
+
+/* Unordered Lists */
+ul li ul, ul li ol { margin-left: 1.25em; margin-bottom: 0; font-size: 1em; /* Override nested font-size change */ }
+ul.square li ul, ul.circle li ul, ul.disc li ul { list-style: inherit; }
+ul.square { list-style-type: square; }
+ul.circle { list-style-type: circle; }
+ul.disc { list-style-type: disc; }
+ul.no-bullet { list-style: none; }
+
+/* Ordered Lists */
+ol li ul, ol li ol { margin-left: 1.25em; margin-bottom: 0; }
+
+/* Definition Lists */
+dl dt { margin-bottom: 0.3125em; font-weight: bold; }
+dl dd { margin-bottom: 1.25em; }
+
+/* Abbreviations */
+abbr, acronym { text-transform: uppercase; font-size: 90%; color: #222222; border-bottom: 1px dotted #dddddd; cursor: help; }
+
+abbr { text-transform: none; }
+
+/* Blockquotes */
+blockquote { margin: 0 0 1.25em; padding: 0.5625em 1.25em 0 1.1875em; border-left: 1px solid #dddddd; }
+blockquote cite { display: block; font-size: 0.8125em; color: #555555; }
+blockquote cite:before { content: "\2014 \0020"; }
+blockquote cite a, blockquote cite a:visited { color: #555555; }
+
+blockquote, blockquote p { line-height: 1.6; color: #6f6f6f; }
+
+/* Microformats */
+.vcard { display: inline-block; margin: 0 0 1.25em 0; border: 1px solid #dddddd; padding: 0.625em 0.75em; }
+.vcard li { margin: 0; display: block; }
+.vcard .fn { font-weight: bold; font-size: 0.9375em; }
+
+.vevent .summary { font-weight: bold; }
+.vevent abbr { cursor: auto; text-decoration: none; font-weight: bold; border: none; padding: 0 0.0625em; }
+
+/*@media only screen and (min-width: 768px) { h1, h2, h3, #toctitle, .sidebarblock > .content > .title, h4, h5, h6 { line-height: 1.4; }
+  h1 { font-size: 2.75em; }
+  h2 { font-size: 2.3125em; }
+  h3, #toctitle, .sidebarblock > .content > .title { font-size: 1.6875em; }
+  h4 { font-size: 1.4375em; } }*/
+/* Tables */
+table { background: white; margin-bottom: 1.25em; border: solid 1px #dddddd; }
+table thead, table tfoot { background: whitesmoke; font-weight: bold; }
+table thead tr th, table thead tr td, table tfoot tr th, table tfoot tr td { padding: 0.5em 0.625em 0.625em; font-size: inherit; color: #222222; text-align: left; }
+table tr th, table tr td { padding: 0.5625em 0.625em; font-size: inherit; color: #222222; }
+table tr.even, table tr.alt, table tr:nth-of-type(even) { background: #f9f9f9; }
+table thead tr th, table tfoot tr th, table tbody tr td, table tr td, table tfoot tr td { display: table-cell; line-height: 1.4; }
+
+h1, h2, h3, #toctitle, .sidebarblock > .content > .title, h4, h5, h6 { line-height: 1.4; border-bottom: 1px solid #dddddd }
+
+.clearfix:before, .clearfix:after, .float-group:before, .float-group:after { content: " "; display: table; }
+.clearfix:after, .float-group:after { clear: both; }
+
+*:not(pre) > code { font-size: inherit; font-style: normal !important; letter-spacing: 0; padding: 3px 2px 1px 2px; background-color: #eeeeee; border: 1px solid #dddddd; -webkit-border-radius: 0; border-radius: 0; line-height: inherit; font-weight: normal; }
+
+pre, pre > code { line-height: 1.4; color: black; font-family: monospace, serif; font-weight: normal; }
+
+.keyseq { color: #555555; }
+
+kbd { display: inline-block; color: #222222; font-size: 0.75em; line-height: 1.4; background-color: #f7f7f7; border: 1px solid #ccc; -webkit-border-radius: 3px; border-radius: 3px; -webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 0 0 0.1em white inset; box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 0 0 0.1em white inset; margin: -0.15em 0.15em 0 0.15em; padding: 0.2em 0.6em 0.2em 0.5em; vertical-align: middle; white-space: nowrap; }
+
+.keyseq kbd:first-child { margin-left: 0; }
+
+.keyseq kbd:last-child { margin-right: 0; }
+
+.menuseq, .menu { color: #090909; }
+
+b.button:before, b.button:after { position: relative; top: -1px; font-weight: normal; }
+
+b.button:before { content: "["; padding: 0 3px 0 2px; }
+
+b.button:after { content: "]"; padding: 0 2px 0 3px; }
+
+#header, #content, #footnotes, #footer { width: 100%; margin-left: auto; margin-right: auto; margin-top: 0; margin-bottom: 0; max-width: 62.5em; *zoom: 1; position: relative; padding-left: 0.9375em; padding-right: 0.9375em; }
+#header:before, #header:after, #content:before, #content:after, #footnotes:before, #footnotes:after, #footer:before, #footer:after { content: " "; display: table; }
+#header:after, #content:after, #footnotes:after, #footer:after { clear: both; }
+
+#content { margin-top: 1.25em; }
+
+#content:before { content: none; }
+
+#header > h1:first-child { color: black; margin-top: 2.25rem; margin-bottom: 0; }
+#header > h1:first-child + #toc { margin-top: 8px; border-top: 1px solid #dddddd; }
+#header > h1:only-child, body.toc2 #header > h1:nth-last-child(2) { border-bottom: 1px solid #dddddd; padding-bottom: 8px; }
+#header .details { border-bottom: 1px solid #dddddd; line-height: 1.45; padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; color: #555555; display: -ms-flexbox; display: -webkit-flex; display: flex; -ms-flex-flow: row wrap; -webkit-flex-flow: row wrap; flex-flow: row wrap; }
+#header .details span:first-child { margin-left: -0.125em; }
+#header .details span.email a { color: #6f6f6f; }
+#header .details br { display: none; }
+#header .details br + span:before { content: "\00a0\2013\00a0"; }
+#header .details br + span.author:before { content: "\00a0\22c5\00a0"; color: #6f6f6f; }
+#header .details br + span#revremark:before { content: "\00a0|\00a0"; }
+#header #revnumber { text-transform: capitalize; }
+#header #revnumber:after { content: "\00a0"; }
+
+#content > h1:first-child:not([class]) { color: black; border-bottom: 1px solid #dddddd; padding-bottom: 8px; margin-top: 0; padding-top: 1rem; margin-bottom: 1.25rem; }
+
+#floating {
+  position: fixed;
+  z-index: 1000;
+  padding: 0.5em;
+  right: 0;
+  top: 0;
+  background: white;
+  box-shadow: 0 0 1em #777777;
+  -webkit-box-shadow: 0 0 1em #777777;
+  -moz-box-shadow: 0 0 1em #777777;
+  -webkit-border-bottom-left-radius: 5px;
+  -moz-border-radius-bottomleft: 5px;
+  max-height: 80%;
+  overflow: auto;
+}
+
+#floating #full { display: none; } /* Hide the full TOC by default */
+
+#floating:hover #full{
+  display: block; /* Show it on hover */
+}
+
+
+#toc { border-bottom: 1px solid #dddddd; padding-bottom: 0.5em; }
+#toc > ul { margin-left: 0.125em; }
+#toc ul.sectlevel0 > li > a { font-style: italic; }
+#toc ul.sectlevel0 ul.sectlevel1 { margin: 0.5em 0; }
+#toc ul { font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif; list-style-type: none; }
+#toc a { text-decoration: none; }
+#toc a:active { text-decoration: underline; }
+
+#toctitle { color: #6f6f6f; font-size: 1.2em; }
+
+@media only screen and (min-width: 768px) { #toctitle { font-size: 1.375em; }
+  body.toc2 { padding-left: 15em; padding-right: 0; }
+  #toc.toc2 { margin-top: 0 !important; background-color: #f2f2f2; position: fixed; width: 15em; left: 0; top: 0; border-right: 1px solid #dddddd; border-top-width: 0 !important; border-bottom-width: 0 !important; z-index: 1000; padding: 1.25em 1em; height: 100%; overflow: auto; }
+  #toc.toc2 #toctitle { margin-top: 0; font-size: 1.2em; }
+  #toc.toc2 > ul { font-size: 0.9em; margin-bottom: 0; }
+  #toc.toc2 ul ul { margin-left: 0; padding-left: 1em; }
+  #toc.toc2 ul.sectlevel0 ul.sectlevel1 { padding-left: 0; margin-top: 0.5em; margin-bottom: 0.5em; }
+  body.toc2.toc-right { padding-left: 0; padding-right: 15em; }
+  body.toc2.toc-right #toc.toc2 { border-right-width: 0; border-left: 1px solid #dddddd; left: auto; right: 0; } }
+@media only screen and (min-width: 1280px) { body.toc2 { padding-left: 20em; padding-right: 0; }
+  #toc.toc2 { width: 20em; }
+  #toc.toc2 #toctitle { font-size: 1.375em; }
+  #toc.toc2 > ul { font-size: 0.95em; }
+  #toc.toc2 ul ul { padding-left: 1.25em; }
+  body.toc2.toc-right { padding-left: 0; padding-right: 20em; } }
+#content #toc { border-style: solid; border-width: 1px; border-color: #d9d9d9; margin-bottom: 1.25em; padding: 1.25em; background: #f2f2f2; -webkit-border-radius: 0; border-radius: 0; }
+#content #toc > :first-child { margin-top: 0; }
+#content #toc > :last-child { margin-bottom: 0; }
+
+#footer { max-width: 100%; background-color: #222222; padding: 1.25em; }
+
+#footer-text { color: #dddddd; line-height: 1.44; }
+
+.sect1 { padding-bottom: 0.625em; }
+
+@media only screen and (min-width: 768px) { .sect1 { padding-bottom: 1.25em; } }
+.sect1 + .sect1 { border-top: 1px solid #dddddd; }
+
+#content h1 > a.anchor, h2 > a.anchor, h3 > a.anchor, #toctitle > a.anchor, .sidebarblock > .content > .title > a.anchor, h4 > a.anchor, h5 > a.anchor, h6 > a.anchor { position: absolute; z-index: 1001; width: 1.5ex; margin-left: -1.5ex; display: block; text-decoration: none !important; visibility: hidden; text-align: center; font-weight: normal; }
+#content h1 > a.anchor:before, h2 > a.anchor:before, h3 > a.anchor:before, #toctitle > a.anchor:before, .sidebarblock > .content > .title > a.anchor:before, h4 > a.anchor:before, h5 > a.anchor:before, h6 > a.anchor:before { content: "\00A7"; font-size: 0.85em; display: block; padding-top: 0.1em; }
+#content h1:hover > a.anchor, #content h1 > a.anchor:hover, h2:hover > a.anchor, h2 > a.anchor:hover, h3:hover > a.anchor, #toctitle:hover > a.anchor, .sidebarblock > .content > .title:hover > a.anchor, h3 > a.anchor:hover, #toctitle > a.anchor:hover, .sidebarblock > .content > .title > a.anchor:hover, h4:hover > a.anchor, h4 > a.anchor:hover, h5:hover > a.anchor, h5 > a.anchor:hover, h6:hover > a.anchor, h6 > a.anchor:hover { visibility: visible; }
+#content h1 > a.link, h2 > a.link, h3 > a.link, #toctitle > a.link, .sidebarblock > .content > .title > a.link, h4 > a.link, h5 > a.link, h6 > a.link { color: #222222; text-decoration: none; }
+#content h1 > a.link:hover, h2 > a.link:hover, h3 > a.link:hover, #toctitle > a.link:hover, .sidebarblock > .content > .title > a.link:hover, h4 > a.link:hover, h5 > a.link:hover, h6 > a.link:hover { color: #151515; }
+
+.audioblock, .imageblock, .literalblock, .listingblock, .stemblock, .videoblock { margin-bottom: 1.25em; }
+
+.admonitionblock td.content > .title, .audioblock > .title, .exampleblock > .title, .imageblock > .title, .listingblock > .title, .literalblock > .title, .stemblock > .title, .openblock > .title, .paragraph > .title, .quoteblock > .title, table.tableblock > .title, .verseblock > .title, .videoblock > .title, .dlist > .title, .olist > .title, .ulist > .title, .qlist > .title, .hdlist > .title { text-rendering: optimizeLegibility; text-align: left; }
+
+table.tableblock > caption.title { white-space: nowrap; overflow: visible; max-width: 0; }
+
+.paragraph.lead > p, #preamble > .sectionbody > .paragraph:first-of-type p { color: black; }
+
+table.tableblock #preamble > .sectionbody > .paragraph:first-of-type p { font-size: inherit; }
+
+.admonitionblock > table { border-collapse: separate; border: 0; background: none; width: 100%; }
+.admonitionblock > table td.icon { text-align: center; width: 80px; }
+.admonitionblock > table td.icon img { max-width: none; }
+.admonitionblock > table td.icon .title { font-weight: bold; font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif; text-transform: uppercase; }
+.admonitionblock > table td.content { padding-left: 1.125em; padding-right: 1.25em; border-left: 1px solid #dddddd; color: #555555; }
+.admonitionblock > table td.content > :last-child > :last-child { margin-bottom: 0; }
+
+.exampleblock > .content { border-style: solid; border-width: 1px; border-color: #e6e6e6; margin-bottom: 1.25em; padding: 1.25em; background: white; -webkit-border-radius: 0; border-radius: 0; }
+.exampleblock > .content > :first-child { margin-top: 0; }
+.exampleblock > .content > :last-child { margin-bottom: 0; }
+
+.sidebarblock { border-style: solid; border-width: 1px; border-color: #d9d9d9; margin-bottom: 1.25em; padding: 1.25em; background: #f2f2f2; -webkit-border-radius: 0; border-radius: 0; }
+.sidebarblock > :first-child { margin-top: 0; }
+.sidebarblock > :last-child { margin-bottom: 0; }
+.sidebarblock > .content > .title { color: #6f6f6f; margin-top: 0; }
+
+.exampleblock > .content > :last-child > :last-child, .exampleblock > .content .olist > ol > li:last-child > :last-child, .exampleblock > .content .ulist > ul > li:last-child > :last-child, .exampleblock > .content .qlist > ol > li:last-child > :last-child, .sidebarblock > .content > :last-child > :last-child, .sidebarblock > .content .olist > ol > li:last-child > :last-child, .sidebarblock > .content .ulist > ul > li:last-child > :last-child, .sidebarblock > .content .qlist > ol > li:last-child > :last-child { margin-bottom: 0; }
+
+.literalblock pre, .listingblock pre:not(.highlight), .listingblock pre[class="highlight"], .listingblock pre[class^="highlight "], .listingblock pre.CodeRay, .listingblock pre.prettyprint { background: #eeeeee; }
+.sidebarblock .literalblock pre, .sidebarblock .listingblock pre:not(.highlight), .sidebarblock .listingblock pre[class="highlight"], .sidebarblock .listingblock pre[class^="highlight "], .sidebarblock .listingblock pre.CodeRay, .sidebarblock .listingblock pre.prettyprint { background: #f2f1f1; }
+
+.literalblock pre, .literalblock pre[class], .listingblock pre, .listingblock pre[class] { border: 1px solid #cccccc; -webkit-border-radius: 0; border-radius: 0; word-wrap: break-word; padding: 0.8em 0.8em 0.65em 0.8em; font-size: 0.8125em; }
+.literalblock pre.nowrap, .literalblock pre[class].nowrap, .listingblock pre.nowrap, .listingblock pre[class].nowrap { overflow-x: auto; white-space: pre; word-wrap: normal; }
+@media only screen and (min-width: 768px) { .literalblock pre, .literalblock pre[class], .listingblock pre, .listingblock pre[class] { font-size: 0.90625em; } }
+@media only screen and (min-width: 1280px) { .literalblock pre, .literalblock pre[class], .listingblock pre, .listingblock pre[class] { font-size: 1em; } }
+
+.literalblock.output pre { color: #eeeeee; background-color: black; }
+
+.listingblock pre.highlightjs { padding: 0; }
+.listingblock pre.highlightjs > code { padding: 0.8em 0.8em 0.65em 0.8em; -webkit-border-radius: 0; border-radius: 0; }
+
+.listingblock > .content { position: relative; }
+
+.listingblock code[data-lang]:before { display: none; content: attr(data-lang); position: absolute; font-size: 0.75em; top: 0.425rem; right: 0.5rem; line-height: 1; text-transform: uppercase; color: #999; }
+
+.listingblock:hover code[data-lang]:before { display: block; }
+
+.listingblock.terminal pre .command:before { content: attr(data-prompt); padding-right: 0.5em; color: #999; }
+
+.listingblock.terminal pre .command:not([data-prompt]):before { content: "$"; }
+
+table.pyhltable { border-collapse: separate; border: 0; margin-bottom: 0; background: none; }
+
+table.pyhltable td { vertical-align: top; padding-top: 0; padding-bottom: 0; }
+
+table.pyhltable td.code { padding-left: .75em; padding-right: 0; }
+
+pre.pygments .lineno, table.pyhltable td:not(.code) { color: #999; padding-left: 0; padding-right: .5em; border-right: 1px solid #dddddd; }
+
+pre.pygments .lineno { display: inline-block; margin-right: .25em; }
+
+table.pyhltable .linenodiv { background: none !important; padding-right: 0 !important; }
+
+.quoteblock { margin: 0 1em 1.25em 1.5em; display: table; }
+.quoteblock > .title { margin-left: -1.5em; margin-bottom: 0.75em; }
+.quoteblock blockquote, .quoteblock blockquote p { color: #6f6f6f; font-size: 1.15rem; line-height: 1.75; word-spacing: 0.1em; letter-spacing: 0; font-style: italic; text-align: justify; }
+.quoteblock blockquote { margin: 0; padding: 0; border: 0; }
+.quoteblock blockquote:before { content: "\201c"; float: left; font-size: 2.75em; font-weight: bold; line-height: 0.6em; margin-left: -0.6em; color: #6f6f6f; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); }
+.quoteblock blockquote > .paragraph:last-child p { margin-bottom: 0; }
+.quoteblock .attribution { margin-top: 0.5em; margin-right: 0.5ex; text-align: right; }
+.quoteblock .quoteblock { margin-left: 0; margin-right: 0; padding: 0.5em 0; border-left: 3px solid #555555; }
+.quoteblock .quoteblock blockquote { padding: 0 0 0 0.75em; }
+.quoteblock .quoteblock blockquote:before { display: none; }
+
+.verseblock { margin: 0 1em 1.25em 1em; }
+.verseblock pre { font-family: "Open Sans", "DejaVu Sans", sans; font-size: 1.15rem; color: #6f6f6f; font-weight: 300; text-rendering: optimizeLegibility; }
+.verseblock pre strong { font-weight: 400; }
+.verseblock .attribution { margin-top: 1.25rem; margin-left: 0.5ex; }
+
+.quoteblock .attribution, .verseblock .attribution { font-size: 0.8125em; line-height: 1.45; font-style: italic; }
+.quoteblock .attribution br, .verseblock .attribution br { display: none; }
+.quoteblock .attribution cite, .verseblock .attribution cite { display: block; letter-spacing: -0.05em; color: #555555; }
+
+.quoteblock.abstract { margin: 0 0 1.25em 0; display: block; }
+.quoteblock.abstract blockquote, .quoteblock.abstract blockquote p { text-align: left; word-spacing: 0; }
+.quoteblock.abstract blockquote:before, .quoteblock.abstract blockquote p:first-of-type:before { display: none; }
+
+table.tableblock { max-width: 100%; border-collapse: separate; }
+table.tableblock td > .paragraph:last-child p > p:last-child, table.tableblock th > p:last-child, table.tableblock td > p:last-child { margin-bottom: 0; }
+
+table.spread { width: 100%; }
+
+table.tableblock, th.tableblock, td.tableblock { border: 0 solid #dddddd; }
+
+table.grid-all th.tableblock, table.grid-all td.tableblock { border-width: 0 1px 1px 0; }
+
+table.grid-all tfoot > tr > th.tableblock, table.grid-all tfoot > tr > td.tableblock { border-width: 1px 1px 0 0; }
+
+table.grid-cols th.tableblock, table.grid-cols td.tableblock { border-width: 0 1px 0 0; }
+
+table.grid-all * > tr > .tableblock:last-child, table.grid-cols * > tr > .tableblock:last-child { border-right-width: 0; }
+
+table.grid-rows th.tableblock, table.grid-rows td.tableblock { border-width: 0 0 1px 0; }
+
+table.grid-all tbody > tr:last-child > th.tableblock, table.grid-all tbody > tr:last-child > td.tableblock, table.grid-all thead:last-child > tr > th.tableblock, table.grid-rows tbody > tr:last-child > th.tableblock, table.grid-rows tbody > tr:last-child > td.tableblock, table.grid-rows thead:last-child > tr > th.tableblock { border-bottom-width: 0; }
+
+table.grid-rows tfoot > tr > th.tableblock, table.grid-rows tfoot > tr > td.tableblock { border-width: 1px 0 0 0; }
+
+table.frame-all { border-width: 1px; }
+
+table.frame-sides { border-width: 0 1px; }
+
+table.frame-topbot { border-width: 1px 0; }
+
+th.halign-left, td.halign-left { text-align: left; }
+
+th.halign-right, td.halign-right { text-align: right; }
+
+th.halign-center, td.halign-center { text-align: center; }
+
+th.valign-top, td.valign-top { vertical-align: top; }
+
+th.valign-bottom, td.valign-bottom { vertical-align: bottom; }
+
+th.valign-middle, td.valign-middle { vertical-align: middle; }
+
+table thead th, table tfoot th { font-weight: bold; }
+
+tbody tr th { display: table-cell; line-height: 1.4; background: whitesmoke; }
+
+tbody tr th, tbody tr th p, tfoot tr th, tfoot tr th p { color: #222222; font-weight: bold; }
+
+p.tableblock > code:only-child { background: none; padding: 0; }
+
+p.tableblock { font-size: 1em; }
+
+td > div.verse { white-space: pre; }
+
+ol { margin-left: 2.5em; }
+
+ul li ol { margin-left: 1.5em; }
+
+dl dd { margin-left: 1.125em; }
+
+dl dd:last-child, dl dd:last-child > :last-child { margin-bottom: 0; }
+
+ol > li p, ul > li p, ul dd, ol dd, .olist .olist, .ulist .ulist, .ulist .olist, .olist .ulist { margin-bottom: 0.625em; }
+
+ul.unstyled, ol.unnumbered, ul.checklist, ul.none { list-style-type: none; }
+
+ul.unstyled, ol.unnumbered, ul.checklist { margin-left: 0.625em; }
+
+ul.checklist li > p:first-child > .fa-check-square-o:first-child, ul.checklist li > p:first-child > input[type="checkbox"]:first-child { margin-right: 0.25em; }
+
+ul.checklist li > p:first-child > input[type="checkbox"]:first-child { position: relative; top: 1px; }
+
+ul.inline { margin: 0 auto 0.625em auto; margin-left: -1.375em; margin-right: 0; padding: 0; list-style: none; overflow: hidden; }
+ul.inline > li { list-style: none; float: left; margin-left: 1.375em; display: block; }
+ul.inline > li > * { display: block; }
+
+.unstyled dl dt { font-weight: normal; font-style: normal; }
+
+ol.arabic { list-style-type: decimal; }
+
+ol.decimal { list-style-type: decimal-leading-zero; }
+
+ol.loweralpha { list-style-type: lower-alpha; }
+
+ol.upperalpha { list-style-type: upper-alpha; }
+
+ol.lowerroman { list-style-type: lower-roman; }
+
+ol.upperroman { list-style-type: upper-roman; }
+
+ol.lowergreek { list-style-type: lower-greek; }
+
+.hdlist > table, .colist > table { border: 0; background: none; }
+.hdlist > table > tbody > tr, .colist > table > tbody > tr { background: none; }
+
+td.hdlist1 { padding-right: .75em; font-weight: bold; }
+
+td.hdlist1, td.hdlist2 { vertical-align: top; }
+
+.literalblock + .colist, .listingblock + .colist { margin-top: -0.5em; }
+
+.colist > table tr > td:first-of-type { padding: 0 0.75em; line-height: 1; }
+.colist > table tr > td:last-of-type { padding: 0.25em 0; }
+
+.thumb, .th { line-height: 0; display: inline-block; border: solid 4px white; -webkit-box-shadow: 0 0 0 1px #dddddd; box-shadow: 0 0 0 1px #dddddd; }
+
+.imageblock.left, .imageblock[style*="float: left"] { margin: 0.25em 0.625em 1.25em 0; }
+.imageblock.right, .imageblock[style*="float: right"] { margin: 0.25em 0 1.25em 0.625em; }
+.imageblock > .title { margin-bottom: 0; }
+.imageblock.thumb, .imageblock.th { border-width: 6px; }
+.imageblock.thumb > .title, .imageblock.th > .title { padding: 0 0.125em; }
+
+.image.left, .image.right { margin-top: 0.25em; margin-bottom: 0.25em; display: inline-block; line-height: 0; }
+.image.left { margin-right: 0.625em; }
+.image.right { margin-left: 0.625em; }
+
+a.image { text-decoration: none; }
+
+span.footnote, span.footnoteref { vertical-align: super; font-size: 0.875em; }
+span.footnote a, span.footnoteref a { text-decoration: none; }
+span.footnote a:active, span.footnoteref a:active { text-decoration: underline; }
+
+#footnotes { padding-top: 0.75em; padding-bottom: 0.75em; margin-bottom: 0.625em; }
+#footnotes hr { width: 20%; min-width: 6.25em; margin: -.25em 0 .75em 0; border-width: 1px 0 0 0; }
+#footnotes .footnote { padding: 0 0.375em; line-height: 1.3; font-size: 0.875em; margin-left: 1.2em; text-indent: -1.2em; margin-bottom: .2em; }
+#footnotes .footnote a:first-of-type { font-weight: bold; text-decoration: none; }
+#footnotes .footnote:last-of-type { margin-bottom: 0; }
+
+#content #footnotes { margin-top: -0.625em; margin-bottom: 0; padding: 0.75em 0; }
+
+.gist .file-data > table { border: 0; background: #fff; width: 100%; margin-bottom: 0; }
+.gist .file-data > table td.line-data { width: 99%; }
+
+div.unbreakable { page-break-inside: avoid; }
+
+.big { font-size: larger; }
+
+.small { font-size: smaller; }
+
+.underline { text-decoration: underline; }
+
+.overline { text-decoration: overline; }
+
+.line-through { text-decoration: line-through; }
+
+.aqua { color: #00bfbf; }
+
+.aqua-background { background-color: #00fafa; }
+
+.black { color: black; }
+
+.black-background { background-color: black; }
+
+.blue { color: #0000bf; }
+
+.blue-background { background-color: #0000fa; }
+
+.fuchsia { color: #bf00bf; }
+
+.fuchsia-background { background-color: #fa00fa; }
+
+.gray { color: #606060; }
+
+.gray-background { background-color: #7d7d7d; }
+
+.green { color: #006000; }
+
+.green-background { background-color: #007d00; }
+
+.lime { color: #00bf00; }
+
+.lime-background { background-color: #00fa00; }
+
+.maroon { color: #600000; }
+
+.maroon-background { background-color: #7d0000; }
+
+.navy { color: #000060; }
+
+.navy-background { background-color: #00007d; }
+
+.olive { color: #606000; }
+
+.olive-background { background-color: #7d7d00; }
+
+.purple { color: #600060; }
+
+.purple-background { background-color: #7d007d; }
+
+.red { color: #bf0000; }
+
+.red-background { background-color: #fa0000; }
+
+.silver { color: #909090; }
+
+.silver-background { background-color: #bcbcbc; }
+
+.teal { color: #006060; }
+
+.teal-background { background-color: #007d7d; }
+
+.white { color: #bfbfbf; }
+
+.white-background { background-color: #fafafa; }
+
+.yellow { color: #bfbf00; }
+
+.yellow-background { background-color: #fafa00; }
+
+span.icon > .fa { cursor: default; }
+
+.admonitionblock td.icon [class^="fa icon-"] { font-size: 2.5em; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); cursor: default; }
+.admonitionblock td.icon .icon-note:before { content: "\f05a"; color: #207c98; }
+.admonitionblock td.icon .icon-tip:before { content: "\f0eb"; text-shadow: 1px 1px 2px rgba(155, 155, 0, 0.8); color: #111; }
+.admonitionblock td.icon .icon-warning:before { content: "\f071"; color: #bf6900; }
+.admonitionblock td.icon .icon-caution:before { content: "\f06d"; color: #bf3400; }
+.admonitionblock td.icon .icon-important:before { content: "\f06a"; color: #bf0000; }
+
+.conum[data-value] { display: inline-block; color: #fff !important; background-color: #222222; -webkit-border-radius: 100px; border-radius: 100px; text-align: center; font-size: 0.75em; width: 1.67em; height: 1.67em; line-height: 1.67em; font-family: "Open Sans", "DejaVu Sans", sans-serif; font-style: normal; font-weight: bold; }
+.conum[data-value] * { color: #fff !important; }
+.conum[data-value] + b { display: none; }
+.conum[data-value]:after { content: attr(data-value); }
+pre .conum[data-value] { position: relative; top: -0.125em; }
+
+b.conum * { color: inherit !important; }
+
+.conum:not([data-value]):empty { display: none; }
+
+.literalblock pre, .listingblock pre { background: #eeeeee; }
+
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css">
+<style>.listingblock .pygments .hll { background-color: #ffffcc }
+.listingblock .pygments  { background: #f8f8f8; }
+.listingblock .pygments .tok-c { color: #408080; font-style: italic } /* Comment */
+.listingblock .pygments .tok-err { border: 1px solid #FF0000 } /* Error */
+.listingblock .pygments .tok-k { color: #008000; font-weight: bold } /* Keyword */
+.listingblock .pygments .tok-o { color: #666666 } /* Operator */
+.listingblock .pygments .tok-cm { color: #408080; font-style: italic } /* Comment.Multiline */
+.listingblock .pygments .tok-cp { color: #BC7A00 } /* Comment.Preproc */
+.listingblock .pygments .tok-c1 { color: #408080; font-style: italic } /* Comment.Single */
+.listingblock .pygments .tok-cs { color: #408080; font-style: italic } /* Comment.Special */
+.listingblock .pygments .tok-gd { color: #A00000 } /* Generic.Deleted */
+.listingblock .pygments .tok-ge { font-style: italic } /* Generic.Emph */
+.listingblock .pygments .tok-gr { color: #FF0000 } /* Generic.Error */
+.listingblock .pygments .tok-gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.listingblock .pygments .tok-gi { color: #00A000 } /* Generic.Inserted */
+.listingblock .pygments .tok-go { color: #888888 } /* Generic.Output */
+.listingblock .pygments .tok-gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.listingblock .pygments .tok-gs { font-weight: bold } /* Generic.Strong */
+.listingblock .pygments .tok-gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.listingblock .pygments .tok-gt { color: #0044DD } /* Generic.Traceback */
+.listingblock .pygments .tok-kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.listingblock .pygments .tok-kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.listingblock .pygments .tok-kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.listingblock .pygments .tok-kp { color: #008000 } /* Keyword.Pseudo */
+.listingblock .pygments .tok-kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.listingblock .pygments .tok-kt { color: #B00040 } /* Keyword.Type */
+.listingblock .pygments .tok-m { color: #666666 } /* Literal.Number */
+.listingblock .pygments .tok-s { color: #BA2121 } /* Literal.String */
+.listingblock .pygments .tok-na { color: #7D9029 } /* Name.Attribute */
+.listingblock .pygments .tok-nb { color: #008000 } /* Name.Builtin */
+.listingblock .pygments .tok-nc { color: #0000FF; font-weight: bold } /* Name.Class */
+.listingblock .pygments .tok-no { color: #880000 } /* Name.Constant */
+.listingblock .pygments .tok-nd { color: #AA22FF } /* Name.Decorator */
+.listingblock .pygments .tok-ni { color: #999999; font-weight: bold } /* Name.Entity */
+.listingblock .pygments .tok-ne { color: #D2413A; font-weight: bold } /* Name.Exception */
+.listingblock .pygments .tok-nf { color: #0000FF } /* Name.Function */
+.listingblock .pygments .tok-nl { color: #A0A000 } /* Name.Label */
+.listingblock .pygments .tok-nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+.listingblock .pygments .tok-nt { color: #008000; font-weight: bold } /* Name.Tag */
+.listingblock .pygments .tok-nv { color: #19177C } /* Name.Variable */
+.listingblock .pygments .tok-ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
+.listingblock .pygments .tok-w { color: #bbbbbb } /* Text.Whitespace */
+.listingblock .pygments .tok-mb { color: #666666 } /* Literal.Number.Bin */
+.listingblock .pygments .tok-mf { color: #666666 } /* Literal.Number.Float */
+.listingblock .pygments .tok-mh { color: #666666 } /* Literal.Number.Hex */
+.listingblock .pygments .tok-mi { color: #666666 } /* Literal.Number.Integer */
+.listingblock .pygments .tok-mo { color: #666666 } /* Literal.Number.Oct */
+.listingblock .pygments .tok-sb { color: #BA2121 } /* Literal.String.Backtick */
+.listingblock .pygments .tok-sc { color: #BA2121 } /* Literal.String.Char */
+.listingblock .pygments .tok-sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.listingblock .pygments .tok-s2 { color: #BA2121 } /* Literal.String.Double */
+.listingblock .pygments .tok-se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
+.listingblock .pygments .tok-sh { color: #BA2121 } /* Literal.String.Heredoc */
+.listingblock .pygments .tok-si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
+.listingblock .pygments .tok-sx { color: #008000 } /* Literal.String.Other */
+.listingblock .pygments .tok-sr { color: #BB6688 } /* Literal.String.Regex */
+.listingblock .pygments .tok-s1 { color: #BA2121 } /* Literal.String.Single */
+.listingblock .pygments .tok-ss { color: #19177C } /* Literal.String.Symbol */
+.listingblock .pygments .tok-bp { color: #008000 } /* Name.Builtin.Pseudo */
+.listingblock .pygments .tok-vc { color: #19177C } /* Name.Variable.Class */
+.listingblock .pygments .tok-vg { color: #19177C } /* Name.Variable.Global */
+.listingblock .pygments .tok-vi { color: #19177C } /* Name.Variable.Instance */
+.listingblock .pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
+</style>
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>AngularJS</h1>
+<div class="details">
+<span id="author" class="author">Alejandro Such</span><br>
+<span id="email" class="email"><a href="mailto:alejandro.such@ua.es">alejandro.such@ua.es</a></span><br>
+</div>
+<div id="toc" class="toc2">
+<div id="toctitle">Índice de contenidos</div>
+<ul class="sectlevel1">
+<li><a href="#sesion04">4. Módulos y servicios</a>
+<ul class="sectlevel2">
+<li><a href="#_module">4.1. Module</a></li>
+<li><a href="#_servicios">4.2. Servicios</a>
+<ul class="sectlevel3">
+<li><a href="#_value">4.2.1. Value</a></li>
+<li><a href="#_factory">4.2.2. Factory</a></li>
+<li><a href="#_service">4.2.3. Service</a></li>
+<li><a href="#_provider">4.2.4. Provider</a></li>
+<li><a href="#_constant">4.2.5. Constant</a></li>
+</ul>
+</li>
+<li><a href="#_objetos_de_prop%C3%B3sito_especial">4.3. Objetos de propósito especial</a></li>
+<li><a href="#_en_resumen">4.4. En resumen</a></li>
+<li><a href="#_ejercicios">4.5. Ejercicios</a>
+<ul class="sectlevel3">
+<li><a href="#_creaci%C3%B3n_de_una_factor%C3%ADa_0_67_puntos">4.5.1. Creación de una factoría (0,67 puntos)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div style="page-break-after: always;"></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="sesion04">4. Módulos y servicios</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Como hemos visto en la sesión de introducción, para definir cualquier elemento dentro de AngularJS tenemos que declarar, en primer lugar, un módulo:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><table class="pyhltable"><tr><td class="linenos"><div class="linenodiv">1
+2
+3
+4
+5</div></td><td class="code"><span class="tok-nx">angular</span>
+  <span class="tok-p">.</span><span class="tok-nx">module</span><span class="tok-p">(</span><span class="tok-s1">&#39;helloApp&#39;</span><span class="tok-p">,</span> <span class="tok-p">[])</span>
+  <span class="tok-p">.</span><span class="tok-nx">controller</span> <span class="tok-p">(</span><span class="tok-s1">&#39;HelloCtrl&#39;</span><span class="tok-p">,</span> <span class="tok-kd">function</span><span class="tok-p">(</span><span class="tok-nx">$scope</span><span class="tok-p">){</span>
+    <span class="tok-nx">$scope</span><span class="tok-p">.</span><span class="tok-nx">name</span> <span class="tok-o">=</span> <span class="tok-s1">&#39;World&#39;</span><span class="tok-p">;</span>
+  <span class="tok-p">});</span>
+</td></tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>El objeto angular define una serie de utilidades. Una de ellas es module, que
+permite definir módulos. Un módulo es como una especie de contenedor de objetos
+gestionados por AngularJS, como por ejemplo los controladores.</p>
+</div>
+<div class="sect2">
+<h3 id="_module">4.1. Module</h3>
+<div class="paragraph">
+<p>Para que el inyector de AngularJS sepa cómo crear y conectar todos estos objetos,
+neceista un registro de <em>recetas</em>. Cada <em>receta</em> tiene un identificador del objeto
+y la descripción de cómo crearlo.</p>
+</div>
+<div class="paragraph">
+<p>Una <em>receta</em> debe pertenecer a un módulo de AngularJS, que es un saco que contiene
+una o más <em>recetas</em>. Y además, un módulo también puede contener información sobre otros módulos.</p>
+</div>
+<div class="paragraph">
+<p>Cuando se inicia una aplicación de AngularJS con un módulo, AngularJS crea una instancia de un injector, que es quien crea el registro
+de las <em>recetas</em> como una unión de las existentes en el <em>core</em>, el módulo de la aplicación y sus
+dependencias El inyector consulta al registro de <em>recetas</em> cuando ve que tiene que crear un objeto para la aplicación.</p>
+</div>
+<div class="paragraph">
+<p>Para definir un módulo, indicamos su nombre como primer argumento. El segundo argumento
+es un <em>array</em>, en el que incluiremos otros módulos, en caso de tener alguna dependencia.
+Ya vimos algo de esto en la sesión de introducción cuando introdujimos las rutas.</p>
+</div>
+<div class="paragraph">
+<p>La llamada a angular.module('helloApp', []) devuelve una instancia de un módulo recién creado.
+Una vez tenemos la instancia, podemos definir controladores. Como hemos visto en el
+ejemplo, ésto se hace llamando a la función controller(controllerName, controllerConstructor).</p>
+</div>
+<div class="paragraph">
+<p>Una vez hemos definido un módulo, tenemos que informar a AngularJS de su existencia,
+cosa que haremos dando un valor a la directiva ng-app:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="html"><table class="pyhltable"><tr><td class="linenos"><div class="linenodiv">1</div></td><td class="code"><span class="tok-nt">&lt;body</span> <span class="tok-na">ng-app=</span><span class="tok-s">&quot;helloApp&quot;</span><span class="tok-nt">&gt;</span>
+</td></tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>La directiva ngApp designa el elemento raíz de nuestra aplicación, y habitualmente
+se coloca cerca del elemento raíz de la página, como las etiquetas &lt;body&gt; o &lt;html&gt;.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_servicios">4.2. Servicios</h3>
+<div class="paragraph">
+<p>Una vez hemos declarado un módulo, hemos dicho que podemos usarlo para
+registrar una serie de <em>recetas</em>
+para la creación de objetos de diversa índole.</p>
+</div>
+<div class="paragraph">
+<p>Pero aunque sean de diversa índole, podríamos categorizar estos objetos en
+dos grandes grupos: <strong>servicios</strong> y <strong>objetos especializados</strong>.</p>
+</div>
+<div class="paragraph">
+<p>Un servicio es un objeto cuya API está definida por el desarrollador que escribe dicho servicio.</p>
+</div>
+<div class="paragraph">
+<p>Por su parte, un objeto especializado se ajusta a una API específica de AngularJS.
+Estos objetos pueden ser: controladores, directivas, filtros o animaciones.</p>
+</div>
+<div class="paragraph">
+<p>El inyector de AngularJS necesita saber cómo crear estos objetos, y se lo decimos
+tipificando nuestro objeto a la hora de crearlo. Hay cinco tipos de <em>recetas</em>.</p>
+</div>
+<div class="paragraph">
+<p>La más verbosa, pero también la más comprensible, es la del Provider. El resto
+(Value, factory, Service y constant) son sólo <em>azúcar sintáctico</em> sobre
+la definición de un Provider.</p>
+</div>
+<div class="paragraph">
+<p>Veamos los diferentes escenarios para crear y usar servicios.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Todos los servicios en AngularJS son <em>singletons</em> <span class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnote_1" title="View footnote.">1</a>]</span>.
+Esto significa que el inyector usará las <em>recetas</em> como mucho una vez para crear
+el objeto. Posteriormente, éste se cacheará para la próxima vez que pueda hacer
+falta.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Como veremos, los creadores de AngularJS llamaron Service a una de estas <em>recetas</em>
+que designan servicios. De manera que cuando veamos su término en inglés nos estaremos
+refiriendo a la <em>receta</em> en concreto, mientras que cuando hagamos referencia al término
+<em>servicio</em> nos estaremos refiriendo a cualquiera de ellos.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_value">4.2.1. Value</h4>
+<div class="paragraph">
+<p>Digamos que queremos un servicio muy sencillo, llamado clientId, que nos devuelve
+un String que representa el identificador de usuario que usamos para alguna API
+remota. Lo podríamos definir de esta manera</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><table class="pyhltable"><tr><td class="linenos"><div class="linenodiv">1
+2</div></td><td class="code"><span class="tok-kd">var</span> <span class="tok-nx">myApp</span> <span class="tok-o">=</span> <span class="tok-nx">angular</span><span class="tok-p">.</span><span class="tok-nx">module</span><span class="tok-p">(</span><span class="tok-s1">&#39;myApp&#39;</span><span class="tok-p">,</span> <span class="tok-p">[]);</span>
+<span class="tok-nx">myApp</span><span class="tok-p">.</span><span class="tok-nx">value</span><span class="tok-p">(</span><span class="tok-s1">&#39;clientId&#39;</span><span class="tok-p">,</span> <span class="tok-s1">&#39;a123456le54321x&#39;</span><span class="tok-p">);</span>
+</td></tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Hemos creado un módulo de AngularJS llamado myApp. Posteriormente, hemoss dicho
+que este módulo contiene la <em>receta</em> para construir el servicio clientId, que
+en este caso únicamente devuelve una cadena.</p>
+</div>
+<div class="paragraph">
+<p>Si quisiéramos mostrarlo vía <em>two-way data binding</em> lo haríamos de la siguiente manera:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><table class="pyhltable"><tr><td class="linenos"><div class="linenodiv">1
+2
+3</div></td><td class="code"><span class="tok-nx">myApp</span><span class="tok-p">.</span><span class="tok-nx">controller</span><span class="tok-p">(</span><span class="tok-s1">&#39;DemoController&#39;</span><span class="tok-p">,</span> <span class="tok-p">[</span><span class="tok-s1">&#39;clientId&#39;</span><span class="tok-p">,</span> <span class="tok-s1">&#39;$scope&#39;</span><span class="tok-p">,</span> <span class="tok-kd">function</span> <span class="tok-nx">DemoController</span><span class="tok-p">(</span><span class="tok-nx">clientId</span><span class="tok-p">,</span> <span class="tok-nx">$scope</span><span class="tok-p">)</span> <span class="tok-p">{</span>
+  <span class="tok-nx">$scope</span><span class="tok-p">.</span><span class="tok-nx">clientId</span> <span class="tok-o">=</span> <span class="tok-nx">clientId</span><span class="tok-p">;</span>
+<span class="tok-p">}]);</span>
+</td></tr></table></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="html"><table class="pyhltable"><tr><td class="linenos"><div class="linenodiv">1
+2
+3
+4
+5</div></td><td class="code"><span class="tok-nt">&lt;html</span> <span class="tok-na">ng-app=</span><span class="tok-s">&quot;myApp&quot;</span><span class="tok-nt">&gt;</span>
+  <span class="tok-nt">&lt;body</span> <span class="tok-na">ng-controller=</span><span class="tok-s">&quot;DemoController&quot;</span><span class="tok-nt">&gt;</span>
+    Client ID: {{clientId}}
+  <span class="tok-nt">&lt;/body&gt;</span>
+<span class="tok-nt">&lt;/html&gt;</span>
+</td></tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>En este ejemplo, hemos usado la <em>receta</em> Value para dársela a DemoCtrl cuando
+invoca al servicio <code>clientId</code>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_factory">4.2.2. Factory</h4>
+<div class="paragraph">
+<p>Un Value es fácil de escribir, pero se echan de menos unos elementos importantes
+que necesitamos a menudo a la hora de escribir servicios. Así, pasaremos a conocer
+un elemento más complejo, llamado factory. Una factory nos permite:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>tener dependencias con otros servicios</p>
+</li>
+<li>
+<p>inicializar el servicio</p>
+</li>
+<li>
+<p>inicialización perezosa</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Una factory construye un nuevo servicio mediante una función con cero o más argumentos.
+Estos argumentos son dependencias con otros servicios, que se inyectarán en tiempo de creación.</p>
+</div>
+<div class="paragraph">
+<p>Una factory no es más que una versión más potente de un Value, de manera que
+podemos reescribir el servicio clientId de la siguiente manera:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><table class="pyhltable"><tr><td class="linenos"><div class="linenodiv">1
+2
+3</div></td><td class="code"><span class="tok-nx">myApp</span><span class="tok-p">.</span><span class="tok-nx">factory</span><span class="tok-p">(</span><span class="tok-s1">&#39;clientId&#39;</span><span class="tok-p">,</span> <span class="tok-kd">function</span> <span class="tok-nx">clientIdFactory</span><span class="tok-p">()</span> <span class="tok-p">{</span>
+  <span class="tok-k">return</span> <span class="tok-s1">&#39;a12345654321x&#39;</span><span class="tok-p">;</span>
+<span class="tok-p">});</span>
+</td></tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Pero dado que el token no es más que un a cadena, quizá crear un Value sería más
+apropiado en este caso, y el código sería además más sencillo de interpretar.</p>
+</div>
+<div class="paragraph">
+<p>Digamos que, por ejemplo, queremos crear un servicio encargado de calcular un <em>token</em>
+para autenticarse contra una API remota. Este <em>token</em> se llamará apiToken y
+se calculará en función del valor de clientId, y de una clave secreta guardada
+en el almacenamiento local del navegador:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><table class="pyhltable"><tr><td class="linenos"><div class="linenodiv"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</div></td><td class="code"><span class="tok-nx">myApp</span><span class="tok-p">.</span><span class="tok-nx">factory</span><span class="tok-p">(</span><span class="tok-s1">&#39;apiToken&#39;</span><span class="tok-p">,</span> <span class="tok-p">[</span><span class="tok-s1">&#39;clientId&#39;</span><span class="tok-p">,</span> <span class="tok-kd">function</span> <span class="tok-nx">apiTokenFactory</span><span class="tok-p">(</span><span class="tok-nx">clientId</span><span class="tok-p">)</span> <span class="tok-p">{</span>
+  <span class="tok-kd">var</span> <span class="tok-nx">encrypt</span> <span class="tok-o">=</span> <span class="tok-kd">function</span><span class="tok-p">(</span><span class="tok-nx">data1</span><span class="tok-p">,</span> <span class="tok-nx">data2</span><span class="tok-p">)</span> <span class="tok-p">{</span>
+    <span class="tok-c1">// NSA-proof encryption algorithm:</span>
+    <span class="tok-k">return</span> <span class="tok-p">(</span><span class="tok-nx">data1</span> <span class="tok-o">+</span> <span class="tok-s1">&#39;:&#39;</span> <span class="tok-o">+</span> <span class="tok-nx">data2</span><span class="tok-p">).</span><span class="tok-nx">toUpperCase</span><span class="tok-p">();</span>
+  <span class="tok-p">};</span>
+
+  <span class="tok-kd">var</span> <span class="tok-nx">secret</span> <span class="tok-o">=</span> <span class="tok-nb">window</span><span class="tok-p">.</span><span class="tok-nx">localStorage</span><span class="tok-p">.</span><span class="tok-nx">getItem</span><span class="tok-p">(</span><span class="tok-s1">&#39;myApp.secret&#39;</span><span class="tok-p">);</span>
+  <span class="tok-kd">var</span> <span class="tok-nx">apiToken</span> <span class="tok-o">=</span> <span class="tok-nx">encrypt</span><span class="tok-p">(</span><span class="tok-nx">clientId</span><span class="tok-p">,</span> <span class="tok-nx">secret</span><span class="tok-p">);</span>
+
+  <span class="tok-k">return</span> <span class="tok-nx">apiToken</span><span class="tok-p">;</span>
+<span class="tok-p">}]);</span>
+</td></tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>En el código anterior, vemos cómo se define el servicio apiToken con la <em>receta</em>
+de una factory que depende del servicio clientId. Entonces crea un token de
+autenticación a través de una encriptación hiperpotente indescifrable por la NSA <span class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnote_2" title="View footnote.">2</a>]</span>.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Entre las <em>best practices</em> se recomienda nombrar una factory de la forma &lt;nombreDelServicio&gt;Factory.
+Aunque nadie lo requiere, ayuda a la hora de revisar código, o bien a la hora de <em>debuggear</em>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>De igual manera que un Value una factory puede crear un servicio de cualquier
+tipo, ya sea una primitiva, un objeto, una función o una instancia de un tipo de dato propio.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_service">4.2.3. Service</h4>
+<div class="paragraph">
+<p>Los desarrolladores JavaScript usan tipos de datos <em>custom</em> para escribir código OO.
+Veamos cómo podríamos lanzar un Unicornio <span class="footnote">[<a id="_footnoteref_3" class="footnote" href="#_footnote_3" title="View footnote.">3</a>]</span>
+al espacio mediante un servicio unicornLauncher, que es una instancia del siguiente
+objeto:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><table class="pyhltable"><tr><td class="linenos"><div class="linenodiv">1
+2
+3
+4
+5
+6
+7
+8
+9</div></td><td class="code"><span class="tok-kd">function</span> <span class="tok-nx">UnicornLauncher</span><span class="tok-p">(</span><span class="tok-nx">apiToken</span><span class="tok-p">)</span> <span class="tok-p">{</span>
+
+  <span class="tok-k">this</span><span class="tok-p">.</span><span class="tok-nx">launchedCount</span> <span class="tok-o">=</span> <span class="tok-mi">0</span><span class="tok-p">;</span>
+  <span class="tok-k">this</span><span class="tok-p">.</span><span class="tok-nx">launch</span> <span class="tok-o">=</span> <span class="tok-kd">function</span><span class="tok-p">()</span> <span class="tok-p">{</span>
+    <span class="tok-c1">// make a request to the remote api and include the apiToken</span>
+    <span class="tok-p">...</span>
+    <span class="tok-k">this</span><span class="tok-p">.</span><span class="tok-nx">launchedCount</span><span class="tok-o">++</span><span class="tok-p">;</span>
+  <span class="tok-p">}</span>
+<span class="tok-p">}</span>
+</td></tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Ya podemos lanzar unicornios al espacio, pero démonos cuenta que nuestro lanzador
+requiere un apiToken. Lo bueno es que ya habíamos creado una factory que resolvía
+este problema.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><table class="pyhltable"><tr><td class="linenos"><div class="linenodiv">1
+2
+3</div></td><td class="code"><span class="tok-nx">myApp</span><span class="tok-p">.</span><span class="tok-nx">factory</span><span class="tok-p">(</span><span class="tok-s1">&#39;unicornLauncher&#39;</span><span class="tok-p">,</span> <span class="tok-p">[</span><span class="tok-s2">&quot;apiToken&quot;</span><span class="tok-p">,</span> <span class="tok-kd">function</span><span class="tok-p">(</span><span class="tok-nx">apiToken</span><span class="tok-p">)</span> <span class="tok-p">{</span>
+  <span class="tok-k">return</span> <span class="tok-k">new</span> <span class="tok-nx">UnicornLauncher</span><span class="tok-p">(</span><span class="tok-nx">apiToken</span><span class="tok-p">);</span>
+<span class="tok-p">}]);</span>
+</td></tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Éste es, precisamente, el caso de uso más adecuado para un Service.</p>
+</div>
+<div class="paragraph">
+<p>La <em>receta</em> de un Service produce un servicio, de igual manera que habíamos visto
+con Value y factory, pero lo hace invocando un constructor mediante el operador
+new. El constructor puede recibir cero o más argumentos, que representan dependencias
+que necesita la instancia de este tipo.</p>
+</div>
+<div class="paragraph">
+<p>Además, un Service sigue un patrón de diseño llamado <em>constructor injection</em>.
+De manera que es el propio AngularJS quien se encarga de instanciar un nuevo objeto
+de la clase dada. Como nuestro UnicornLauncher tiene un constructor, podemos
+reemplazar la factory por un Service, de la siguiente manera:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><table class="pyhltable"><tr><td class="linenos"><div class="linenodiv">1</div></td><td class="code"><span class="tok-nx">myApp</span><span class="tok-p">.</span><span class="tok-nx">service</span><span class="tok-p">(</span><span class="tok-s1">&#39;unicornLauncher&#39;</span><span class="tok-p">,</span> <span class="tok-p">[</span><span class="tok-s2">&quot;apiToken&quot;</span><span class="tok-p">,</span> <span class="tok-nx">UnicornLauncher</span><span class="tok-p">]);</span>
+</td></tr></table></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_provider">4.2.4. Provider</h4>
+<div class="paragraph">
+<p>Como se ha dicho anteriormente, el Provider es la base sobre la que se crean el
+resto de servicios que hemos visto en los apartados anteriores. Precisamente porque
+es la base sobre la que se asientan el resto, no será difícil comprender que es la que
+nos ofrece mayores posibilidades. Pero en la mayoría de los casos todo lo que ofrece
+es excesivo, y será recomendable hacer uso de los otros servicios.</p>
+</div>
+<div class="paragraph">
+<p>La receta de un Provider se define como un tipo propio que implementa un método
+$get. Este método es una función factoría <span class="footnote">[<a id="_footnoteref_4" class="footnote" href="#_footnote_4" title="View footnote.">4</a>]</span>,
+como el que se usa en una factory. De hecho, si definimos una factory, lo que
+se hace es crear un Provider vacío cuyo método $get apunta directamente a nuestra función.</p>
+</div>
+<div class="paragraph">
+<p>Deberíamos usar un Provider cuando queremos introducir cierta configuración que esté
+disponible a para toda la aplicación. Para asegurar esto, esto debe hacerse antes
+de que se ejecute la aplicación, en una fase llamada <em>fase de configuración</em>. De
+esta manera, podemos crear servicios reutilizables cuyo comportamiento podría cambiar
+ligeramente entre aplicaciones.</p>
+</div>
+<div class="paragraph">
+<p>Por ejemplo, nuestro lanzador de unicornios es tan potente y útil que lo van a usar
+muchas de las aplicaciones del parque de aplicaciones de nuestra empresa. Por defecto,
+el lanzador de unicornios los proyecta al espacio sin ningún tipo de protección ni escudo.
+Pero en algunos planetas, la atmósfera es tan pesada que debemos proteger a nuestros
+unicornios con papel de plata para evitar que se incineren al atravesar la atmósfera
+y así evitar su extinción. Estaría muy bien que pudiéramos configurar esto nuestro
+lanzador, y usarlo en la app que haga falta. Lo haríamos configurable de la siguiente
+manera:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><table class="pyhltable"><tr><td class="linenos"><div class="linenodiv"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14</div></td><td class="code"><span class="tok-nx">myApp</span><span class="tok-p">.</span><span class="tok-nx">provider</span><span class="tok-p">(</span><span class="tok-s1">&#39;unicornLauncher&#39;</span><span class="tok-p">,</span> <span class="tok-kd">function</span> <span class="tok-nx">UnicornLauncherProvider</span><span class="tok-p">()</span> <span class="tok-p">{</span>
+  <span class="tok-kd">var</span> <span class="tok-nx">useTinfoilShielding</span> <span class="tok-o">=</span> <span class="tok-kc">false</span><span class="tok-p">;</span>
+
+  <span class="tok-k">this</span><span class="tok-p">.</span><span class="tok-nx">useTinfoilShielding</span> <span class="tok-o">=</span> <span class="tok-kd">function</span><span class="tok-p">(</span><span class="tok-nx">value</span><span class="tok-p">)</span> <span class="tok-p">{</span>
+    <span class="tok-nx">useTinfoilShielding</span> <span class="tok-o">=</span> <span class="tok-o">!!</span><span class="tok-nx">value</span><span class="tok-p">;</span>
+  <span class="tok-p">};</span>
+
+  <span class="tok-k">this</span><span class="tok-p">.</span><span class="tok-nx">$get</span> <span class="tok-o">=</span> <span class="tok-p">[</span><span class="tok-s2">&quot;apiToken&quot;</span><span class="tok-p">,</span> <span class="tok-kd">function</span> <span class="tok-nx">unicornLauncherFactory</span><span class="tok-p">(</span><span class="tok-nx">apiToken</span><span class="tok-p">)</span> <span class="tok-p">{</span>
+
+    <span class="tok-c1">// let&#39;s assume that the UnicornLauncher constructor was also changed to</span>
+    <span class="tok-c1">// accept and use the useTinfoilShielding argument</span>
+    <span class="tok-k">return</span> <span class="tok-k">new</span> <span class="tok-nx">UnicornLauncher</span><span class="tok-p">(</span><span class="tok-nx">apiToken</span><span class="tok-p">,</span> <span class="tok-nx">useTinfoilShielding</span><span class="tok-p">);</span>
+  <span class="tok-p">}];</span>
+<span class="tok-p">});</span>
+</td></tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Para activar el traje espacial de papel de plata, necesitamos crear una función
+config en la API de nuestro módulo, e inyectar en ella el unicornLauncherProvider:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><table class="pyhltable"><tr><td class="linenos"><div class="linenodiv">1
+2
+3</div></td><td class="code"><span class="tok-nx">myApp</span><span class="tok-p">.</span><span class="tok-nx">config</span><span class="tok-p">([</span><span class="tok-s2">&quot;unicornLauncherProvider&quot;</span><span class="tok-p">,</span> <span class="tok-kd">function</span><span class="tok-p">(</span><span class="tok-nx">unicornLauncherProvider</span><span class="tok-p">)</span> <span class="tok-p">{</span>
+  <span class="tok-nx">unicornLauncherProvider</span><span class="tok-p">.</span><span class="tok-nx">useTinfoilShielding</span><span class="tok-p">(</span><span class="tok-kc">true</span><span class="tok-p">);</span>
+<span class="tok-p">}]);</span>
+</td></tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Observemos que el Provider ha sido inyectado en la función de configuración. Esta
+inyección la hace in <em>provider injector</em>, que es distinto del inyector de instancias
+habitual que usaremos en el resto de nuestra aplicación. Este inyector únicamente
+trabaja con <em>providers</em>, ya que el resto de objetos no se crean en la fase de configuración.</p>
+</div>
+<div class="paragraph">
+<p>Durante la inicialización de la aplicación, antes de que AngularJS haya creado ningún
+servicio, configura e instancia los <em>providers</em>. A esto lo llamamos la <strong>fase de configuración</strong>
+del ciclo de vida de la aplicación. Durante esta fase, como hemos dicho, los servicios
+no son accesibles porque aún no se han creado.</p>
+</div>
+<div class="paragraph">
+<p>Una vez se ha finalizado la fase de configuración, ya no se puede interactuar con un
+Provider y empieza el proceso de crear servicios. A esta parte del ciclo de vida
+de la aplicación se le conoce como <strong>fase de ejecución</strong>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_constant">4.2.5. Constant</h4>
+<div class="paragraph">
+<p>Hemos visto cómo AngularJS divide el ciclo de vida de una aplicación en las fases
+de configuración y ejecución, y cómo se puede dotar de configuración a la aplicación
+a través de la función config. Dado que la función config se ejecuta en una fase
+en la que no tenemos servicios disponibles, no se tiene acceso ni siquiera a objetos
+sencillos creados con la utilidad Value.</p>
+</div>
+<div class="paragraph">
+<p>Sin embargo, podemos tener valores tan simples como un prefijo de una url, que no necesiten
+dependencias o configuración, y que sean útiles en las fases de configuración y ejecución.
+Para esto sirve la utilidad constant.</p>
+</div>
+<div class="paragraph">
+<p>Supongamos que nuestro servicio unicornLauncher puede estampar, en un unicornio,
+el nombre del planeta contra el que está siendo lanzado en la fase de configuración.
+El nombre del planeta es específico para cada aplicación, y también lo usan muchos
+controladores en tiempo de ejecución. Podemos definir entonces el nombre del planeta
+como una constante:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><table class="pyhltable"><tr><td class="linenos"><div class="linenodiv">1</div></td><td class="code"><span class="tok-nx">myApp</span><span class="tok-p">.</span><span class="tok-nx">constant</span><span class="tok-p">(</span><span class="tok-s1">&#39;planetName&#39;</span><span class="tok-p">,</span> <span class="tok-s1">&#39;Greasy Giant&#39;</span><span class="tok-p">);</span>
+</td></tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Ahora, podemos configurar nuestro unicornLauncherProvider de la siguiente manera:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><table class="pyhltable"><tr><td class="linenos"><div class="linenodiv">1
+2
+3
+4</div></td><td class="code"><span class="tok-nx">myApp</span><span class="tok-p">.</span><span class="tok-nx">config</span><span class="tok-p">([</span><span class="tok-s1">&#39;unicornLauncherProvider&#39;</span><span class="tok-p">,</span> <span class="tok-s1">&#39;planetName&#39;</span><span class="tok-p">,</span> <span class="tok-kd">function</span><span class="tok-p">(</span><span class="tok-nx">unicornLauncherProvider</span><span class="tok-p">,</span> <span class="tok-nx">planetName</span><span class="tok-p">)</span> <span class="tok-p">{</span>
+  <span class="tok-nx">unicornLauncherProvider</span><span class="tok-p">.</span><span class="tok-nx">useTinfoilShielding</span><span class="tok-p">(</span><span class="tok-kc">true</span><span class="tok-p">);</span>
+  <span class="tok-nx">unicornLauncherProvider</span><span class="tok-p">.</span><span class="tok-nx">stampText</span><span class="tok-p">(</span><span class="tok-nx">planetName</span><span class="tok-p">);</span>
+<span class="tok-p">}]);</span>
+</td></tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Y dado que una constant hace que el valor también esté disponible en la fase de
+ejecución, podemos usarla también en nuestros controladores:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><table class="pyhltable"><tr><td class="linenos"><div class="linenodiv">1
+2
+3
+4</div></td><td class="code"><span class="tok-nx">myApp</span><span class="tok-p">.</span><span class="tok-nx">controller</span><span class="tok-p">(</span><span class="tok-s1">&#39;DemoController&#39;</span><span class="tok-p">,</span> <span class="tok-p">[</span><span class="tok-s2">&quot;clientId&quot;</span><span class="tok-p">,</span> <span class="tok-s2">&quot;planetName&quot;</span><span class="tok-p">,</span> <span class="tok-kd">function</span> <span class="tok-nx">DemoController</span><span class="tok-p">(</span><span class="tok-nx">clientId</span><span class="tok-p">,</span> <span class="tok-nx">planetName</span><span class="tok-p">)</span> <span class="tok-p">{</span>
+  <span class="tok-k">this</span><span class="tok-p">.</span><span class="tok-nx">clientId</span> <span class="tok-o">=</span> <span class="tok-nx">clientId</span><span class="tok-p">;</span>
+  <span class="tok-k">this</span><span class="tok-p">.</span><span class="tok-nx">planetName</span> <span class="tok-o">=</span> <span class="tok-nx">planetName</span><span class="tok-p">;</span>
+<span class="tok-p">}]);</span>
+</td></tr></table></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="html"><table class="pyhltable"><tr><td class="linenos"><div class="linenodiv">1
+2
+3
+4
+5
+6
+7</div></td><td class="code"><span class="tok-nt">&lt;html</span> <span class="tok-na">ng-app=</span><span class="tok-s">&quot;myApp&quot;</span><span class="tok-nt">&gt;</span>
+  <span class="tok-nt">&lt;body</span> <span class="tok-na">ng-controller=</span><span class="tok-s">&quot;DemoController as demo&quot;</span><span class="tok-nt">&gt;</span>
+   Client ID: {{demo.clientId}}
+   <span class="tok-nt">&lt;br&gt;</span>
+   Planet Name: {{demo.planetName}}
+  <span class="tok-nt">&lt;/body&gt;</span>
+<span class="tok-nt">&lt;/html&gt;</span>
+</td></tr></table></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_objetos_de_propósito_especial">4.3. Objetos de propósito especial</h3>
+<div class="paragraph">
+<p>Anteriormente, hemos mencionado que tenemos objetos de propósito especial, cuya
+funcionalidad es diferente de la que ofrece un servicio. Estos objetos extienden
+el framework como <em>plugins</em>, implementando interfaces definidas por AngularJs. Estas
+interfaces son: controller, directive, filter y animation.</p>
+</div>
+<div class="paragraph">
+<p>A excepción del objeto controller, el inyector usa la <em>receta</em> de una factory
+para crear estos objetos.</p>
+</div>
+<div class="paragraph">
+<p>Ya hemos visto algo de estos objetos en las sesiones anteriores, y profundizaremos
+más en los siguietnes capítulos.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_en_resumen">4.4. En resumen</h3>
+<div class="paragraph">
+<p>Un inyector usa una serie de <em>recetas</em> para crear dos tipos de objetos: servicios y
+objetos de propósito especial. Para crear servicios, usamos cinco tipos de <em>receta</em>
+dinstintos: Value, factory, Service, Provider y constant.</p>
+</div>
+<div class="paragraph">
+<p>De ellos, los más comunes son factory y Service, y sólo se distinguen en que los
+Service funcionan mejor con tipos de objetos ya definidos, y una factory devuelve
+funciones y primitivas JavaScript. Un Provider es la receta "padre" de todos ellos,
+que no son más que <em>azúcar sintáctico</em> de un Provider. Un Provider es la <em>receta</em>
+más potente, pero no es necesaria a menos que necesitemos un componente reutilizable
+que requiera de algún tipo de configuración a nivel de aplicación, y es por esto
+que es el único elemento disponible en la fase de configuración de un aplicación.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_ejercicios">4.5. Ejercicios</h3>
+<div class="paragraph">
+<p>Aplica el <em>tag</em> modules a la versión que quieres que se corrija.</p>
+</div>
+<div class="paragraph">
+<p>Los ejercicios se realizarán sobre el carrito de la compra de la sesión anterior.</p>
+</div>
+<div class="sect3">
+<h4 id="_creación_de_una_factoría_0_67_puntos">4.5.1. Creación de una factoría (0,67 puntos)</h4>
+<div class="paragraph">
+<p>En nuestro módulo, debemos crear una factoría. La llamaremos <code>productsFactory</code> y expondrá un único método, llamado <code>getProducts()</code>, que devolverá el listado de productos que teníamos en el controlador. Inyectaremos la factoría en el controlador, y ahora el listado de productos será <code>$scope.products = productsFactory.getProducts()</code>.</p>
+</div>
+<div class="sect4">
+<h5 id="_creación_de_un_servicio_0_67_puntos">Creación de un servicio (0,67 puntos)</h5>
+<div class="paragraph">
+<p>En nuestro módulo, también crearemos un servicio al que llamaremos <code>shoppingCartService</code>. Dicho servicio tendrá tres métodos: <code>addToCart(product)</code>, <code>getCart()</code> y <code>getTotal()</code>. Inyectaremos el servicio en nuestro controlador, donde refactorizaremos nuestra lógica: <code>$scope.addToCart = shoppingCartService.addToCart</code>, <code>$scope.total = shoppingCartService.getTotal()</code> y <code>$scope.cart = shoppingCartService.getCart()</code>.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<hr>
+<div class="footnote" id="_footnote_1">
+<a href="#_footnoteref_1">1</a>. <a href="http://en.wikipedia.org/wiki/Singleton_pattern" class="bare">http://en.wikipedia.org/wiki/Singleton_pattern</a>
+</div>
+<div class="footnote" id="_footnote_2">
+<a href="#_footnoteref_2">2</a>. <a href="http://en.wikipedia.org/wiki/National_Security_Agency" class="bare">http://en.wikipedia.org/wiki/National_Security_Agency</a>
+</div>
+<div class="footnote" id="_footnote_3">
+<a href="#_footnoteref_3">3</a>. <a href="http://en.wikipedia.org/wiki/Unicorn" class="bare">http://en.wikipedia.org/wiki/Unicorn</a>
+</div>
+<div class="footnote" id="_footnote_4">
+<a href="#_footnoteref_4">4</a>. <a href="http://en.wikipedia.org/wiki/Factory_method_pattern" class="bare">http://en.wikipedia.org/wiki/Factory_method_pattern</a>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2015-10-05 18:57:19 CEST
+</div>
+</div>
+</body>
+</html>

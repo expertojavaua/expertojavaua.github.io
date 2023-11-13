@@ -1,0 +1,994 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.7">
+<meta name="Forrest-skin-name" content="pelt">
+<title>Arquitectura orientada a servicios (SOA)</title>
+<link type="text/css" href="skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="skin/print.css" rel="stylesheet">
+<link type="text/css" href="skin/profile.css" rel="stylesheet">
+<script src="skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<div class="header">
+<div class="grouplogo">
+<a href="http://www.jtech.ua.es/j2ee"><img class="logoImage" alt="J2EE" src="images/baner_j2ee_izq.gif" title="Curso Especialista Universitario J2EE"></a>
+</div>
+<div class="projectlogoA1">
+<a href="http://www.dccia.ua.es/"><img class="logoImage" alt="Integraci&oacute;n de aplicaciones con SOA" src="images/baner_j2ee_der.gif" title="Integraci&oacute;n de aplicaciones con SOA"></a>
+</div>
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="../index.html">M&oacute;dulos</a>
+</li>
+<li class="current">
+<a class="base-selected" href="index.html">Integraci&oacute;n de aplicaciones con SOA</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<div id="level2tabs"></div>
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<div id="menu">
+<div onclick="SwitchMenu('menu_selected_1.1', 'skin/')" id="menu_selected_1.1Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Integraci&oacute;n de aplicaciones con SOA</div>
+<div id="menu_selected_1.1" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="index.html" title="Integraci&oacute;n de aplicaciones con SOA">&Iacute;ndice</a>
+</div>
+<div onclick="SwitchMenu('menu_selected_1.1.2', 'skin/')" id="menu_selected_1.1.2Title" class="menutitle" style="background-image: url('skin/images/chapter_open.gif');">Teor&iacute;a</div>
+<div id="menu_selected_1.1.2" class="selectedmenuitemgroup" style="display: block;">
+<div class="menuitem">
+<a href="sesion01-apuntes.html" title="Sesi&oacute;n 1: Integraci&oacute;n de Aplicaciones">Sesi&oacute;n 1</a>
+</div>
+<div class="menupage">
+<div class="menupagetitle">Sesi&oacute;n 2</div>
+</div>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<div id="credit2"></div>
+</div>
+<div id="content">
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="sesion02-apuntes.pdf"><img alt="PDF -icon" src="skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1>Arquitectura orientada a servicios (SOA)</h1>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#Razones+para+introducir+SOA">Razones para introducir SOA</a>
+</li>
+<li>
+<a href="#El+concepto+de+servicio">El concepto de servicio</a>
+</li>
+<li>
+<a href="#Definici%C3%B3n+de+SOA.+Elementos+que+la+componen.">Definici&oacute;n de SOA. Elementos que la componen.</a>
+</li>
+<li>
+<a href="#Capas+en+aplicaciones+orientadas+a+servicios">Capas en aplicaciones orientadas a servicios</a>
+</li>
+<li>
+<a href="#El+gobierno+SOA+%28SOA">El gobierno SOA (SOA governance)</a>
+<ul class="minitoc">
+<li>
+<a href="#La+importancia+de+las+IT+y+el+gobierno+SOA">La importancia de las IT y el gobierno SOA</a>
+</li>
+<li>
+<a href="#Responsabilidades+de+gobierno">Responsabilidades de gobierno</a>
+</li>
+<li>
+<a href="#Implementaci%C3%B3n+del+gobierno">Implementaci&oacute;n del gobierno</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#SOA+y+JBI">SOA y JBI</a>
+</li>
+<li>
+<a href="#SOA+y+Servicios+Web">SOA y Servicios Web</a>
+</li>
+<li>
+<a href="#SOA+y+BPM">SOA y BPM</a>
+</li>
+</ul>
+</div>
+
+
+<p>Muchas empresas han dedicado grandes inversiones en los recursos de sus sistemas software a lo largo
+  de los a&ntilde;os. Dichas empresas tienen una enorme cantidad de datos almacenados en sistemas de informaci&oacute;n
+   (EIS) <em>legacy</em>, de forma que no resulta pr&aacute;ctico descartar dichos sistemas existentes. Es mucho
+   m&aacute;s efectivo evulucionar y mejorar los EIS. &iquest;Pero c&oacute;mo hacer &eacute;sto? La arquitectura orientada a servicios 
+   (<em>Service Oriented Architecture</em>) proporciona una soluci&oacute;n con unos costes aceptables. 
+   Si bien la arquitectura a servicios no es nueva, se est&aacute; convirtiendo en el principal <em>framework</em>
+   para la integraci&oacute;n de entornos heterog&eacute;neos y complejos.
+   En esta charla, explicaremos con detalle qu&eacute; es la arquitectura orientada a servicios.
+</p>   
+
+
+<a name="N10018"></a><a name="Razones+para+introducir+SOA"></a>
+<h2 class="underlined_10">Razones para introducir SOA</h2>
+<div class="section">
+<p>El software de empresa est&aacute; estrechamente relacionado con su organizaci&oacute;n interna, con los procesos
+  que la forman, y con el modelo de negocio de dicha empresa. El software de empresa est&aacute; condicionado  
+  tanto por las dependencias entre sus departamentos, como por las relaciones con negocios externos.
+  Consecuentemente, una arquitectura para software de empresas debe contemplar un gran n&uacute;mero de requerimientos
+  diferentes. Muchos de estos requerimientos entran en conflicto, mientras que otros no est&aacute;n claros.
+  En casi todos los casos, los requerimientos cambian constantemente debido al cambio permanente de los
+  mercados, cambios en la organizaci&oacute;n de la empresa, as&iacute; como en sus objetivos de negocio. Esta implicaci&oacute;n
+  en todos los aspectos de la empresa y del negocio lo que hace que el software de empresa sea altamente
+  complejo. Como dice <em>Dirk Krafzig</em>: <em>"El software de empresa es un animal diferente"</em>. 
+  El software de empresa es &uacute;nico en muchos aspectos, y por lo tanto, requiere medidas &uacute;nicas para asegurar
+  la eficiencia de su desarrollo y mantenimiento.
+</p>
+<p>En el software de empresa, el arquitecto adquiere el rol de un influenciador y controlador externo. Tiene 
+  la responsabilidad de dirigir proyectos software individuales tanto desde el punto de vista estrat&eacute;gico de 
+  la organizaci&oacute;n en su totalidad, como desde el punto de vista t&aacute;ctico (punto de vista de la meta a alcanzar
+  con el proyecto individual). Tiene que equilibrar diferentes requerimientos a la vez que intentar crear un 
+  orden perdurable dentro del &aacute;mbito del software de empresa. La arquitectura del software de empresa es una 
+  de las herramientas m&aacute;s importantes con las que cuenta el arquitecto. &Eacute;ste tiene que enfrentarse constantemente
+  con cambios y adiciones de funcionalidades que incrementan la complejidad del sistema y reducen su eficiencia.
+  Mediante la refactorizaci&oacute;n de las soluciones actuales, los arquitectos luchan para intentar reducir la
+  complejidad e incrementar la agilidad del sistema.
+</p>
+<p>Para mejorar la eficiencia y agilidad del sistema, una arquitectura de software de empresa debe proporcionar
+  las siguientes caracter&iacute;sticas:</p>
+<ul>
+  
+<li>
+<strong>Simplicidad</strong>: A pesar de la cantidad de gente implicada, todos deben ser capaces de comprender
+     y gestionar la arquitectura en sus niveles respectivos (por ejemplo, especificar nuevas funcionalidades a nivel de
+     negocio, implementarlas y mantenerlas).</li>
+  
+<li>
+<strong>Flexibilidad y mantenibilidad</strong>: La arquitectura debe definir diferentes componentes que puedan
+     reordenarse y reconfigurarse de una forma flexible. No se debe permitir que cambios locales tengan un efecto 
+     sobre el sistema global.</li>
+  
+<li>
+<strong>Reusabilidad</strong>: Uno de los aspectos m&aacute;s importantes de la reusabilidad es la de compartir 
+     datos en tiempo real, as&iacute; como el compartir funcionalidades comunes.</li>
+  
+<li>
+<strong>Desacoplamiento entre funcionalidad y tecnolog&iacute;a</strong>: La arquitectura debe hacer que la organizaci&oacute;n
+     de la empresa sea independiente de la tecnolog&iacute;a. En particular, la arquitectura deber&iacute;a evitar dependencias de
+     productos y vendedores espec&iacute;ficos.</li>      
+
+</ul>
+<p>Una arquitectura orientada a servicios posee las caracter&iacute;sticas que acabamos de comentar.</p>
+<p>La meta &uacute;ltima de la reusabilidad y flexibilidad proporcionada por una arquitectura orientada a
+  servicios es el de conseguir una <strong>empresa &aacute;gil</strong>, en la que todos los procesos y servicios son completamente
+  flexibles y pueden crearse, configurarse y reordenarse r&aacute;pidamente cuando as&iacute; sea requerido por los 
+  expertos en el negocio, sin la necesidad de personal t&eacute;cnico. Entre otras cosas, se facilita el dedicar m&aacute;s tiempo al mercado para conseguir nuevas 
+  iniciativas de negocio. Esta visi&oacute;n de una empresa &aacute;gil reconcilia la demanda cada vez m&aacute;s creciente
+  de entornos de negocio r&aacute;pidamente cambiantes, con las limitaciones de las teconolog&iacute;as e
+  infraestructuras organizacionales actuales. Otras ventajas que se derivan de la agilidad de la
+  empresa son el ahorro de costes, independencia de la tecnolog&iacute;a, un proceso de desarrollo m&aacute;s eficiente,
+  y mitigaci&oacute;n de riesgos.
+</p>
+</div>
+
+
+<a name="N10054"></a><a name="El+concepto+de+servicio"></a>
+<h2 class="underlined_10">El concepto de servicio</h2>
+<div class="section">
+<p>El t&eacute;rmino "servicio" se ha venido utilizando desde hace bastante tiempo y de muchas formas diferentes.
+  Hoy, por ejemplo, encontramos grandes compa&ntilde;&iacute;as, como por ejemplo IBM, que promocionan el concepto de
+  "servicios bajo demanda". Con la llegada del siglo 21, el t&eacute;rmino "servicios Web" se ha convertido 
+  extremadamente popular, si bien ha sido utilizado a menudo para hacer referencia a diferentes conceptos
+  de computaci&oacute;n. Por ejemplo, algunos lo utilizan para refererirse a servicios de aplicaciones que se
+  ofrecen a los usuarios a trav&eacute;s de la Web, como la aplicaci&oacute;n <em>salesforce.com</em>. Otros utilizan
+  el t&eacute;rmino "servicios Web" como m&oacute;dulos de aplicaciones que son accesibles para otras aplicaciones a
+  trav&eacute;s de Internet, mediante protocolos basados en XML. Hay que decir que servicios Web y SOA <strong>NO</strong> son
+  equivalentes, sin embargo, como veremos m&aacute;s adelante, se pueden utilizar servicios Web para implementar
+  una arquitectura SOA.
+</p>
+<p>Para nosotros, el t&eacute;rmino servicio har&aacute; referencia a alguna actividad significativa que un programa
+  de ordenador realiza o solicita a otro programa de ordenador. O, en t&eacute;rminos m&aacute;s t&eacute;cnicos, un servicio
+  es un m&oacute;dulo de aplicaci&oacute;n autocontenido que es remotamente accesible. Los <em>frontends</em> de las 
+  aplicaciones proporcionan accesibilidad a los servicios. A veces, los t&eacute;rminos "cliente" y "servidor"
+  se utilizan como sin&oacute;nimos de "consumidor de un servicio" y "proveedor de un servicio", respectivamente.
+</p>
+<p>Ademas, los servicios proporcionan un nivel de abstracci&oacute;n que oculta muchos detalles t&eacute;cnicos, 
+  incluyendo la localizaci&oacute;n y b&uacute;squeda del servicio. T&iacute;picamente, los servicios proporcionan funcionalidad
+  de negocio, en lugar de funcionalidades t&eacute;cnicas. Otra caracter&iacute;stica de los servicios es que no se dise&ntilde;an
+  para un cliente espec&iacute;fico, en su lugar constituyen una facilidad que contribuye a satisfacer alguna
+  demanda p&uacute;blica. Es decir, proporcionan una funcionalidad que puede reutilizarse en diferentes aplicaciones.
+  La "rentabilidad" del servicio depender&aacute; del n&uacute;mero de clientes diferentes que utilicen el servicio, o lo
+  que es lo mismo, del nivel de reutilizaci&oacute;n conseguido.
+</p>
+<p>Una implementaci&oacute;n concreta de una arquitectura de servicios proporciona un acceso uniforme para todos los
+  servicios disponibles. As&iacute;, si hacemos una analog&iacute;a con la telefon&iacute;a, despu&eacute;s de que un consumidor de un servicio es "dirigido" hasta una instancia de 
+  una arquitectura de servcios, y, despu&eacute;s de que "suene el tono de llamada", el uso de los servicios es 
+  transparente para los usuarios. Sin embargo, y como luego veremos, una arquitectura de servicios es una 
+  arquitectura en s&iacute; misma, y por lo tanto, &uacute;nicamente describe la estructura y no las tecnolog&iacute;as concretas.
+  Consecuentemente, las instancias de SOA podr&iacute;an utilizar diferentes tecnolog&iacute;as en diferentes empresas.
+</p>
+<p>Destacar tambi&eacute;n que los principios en los que se basa SOA son significativamente diferentes de los principios
+  y paradigmas orientados a objetos. La diferencia clave est&aacute; en que las interacciones entre los servicios se
+  definen utilizando interfaces que est&aacute;n m&aacute;s orientadas hacia los datos que al comportamiento. Un servicio
+  aislado puede ser implementado utilizando principios y t&eacute;cnicas orientadas a objetos, sin embargo, las 
+  interacciones entre estas interfaces se orientan m&aacute;s hacia intercambios basados en documentos. Mientras que
+  la orientaci&oacute;n a objetos mantiene el comportamiento "cerca" de los datos (un objeto encapsula datos y comportamiento), 
+  la orientaci&oacute;n a servicios desacopla los datos del comportamiento. Pongamos un ejemplo sencillo: imaginemos un CD
+  que queremos escuchar. Para poder oirlo necesitamos introducir el CD en un reproductor de CD y dicho reproductor
+  realiza la tarea de reproducci&oacute;n. El reproductor de CD ofrece un servicio de reproducci&oacute;n de CDs. &Eacute;sto resulta
+  muy &uacute;til ya que podemos reemplazar un reproductor de CD por otro: podemos ejecutar el mismo CD sobre un reproductor
+  port&aacute;til o sobre un sofisticado equipo est&eacute;reo. Ambos aparatos ofrecen el mismo servicio, pero la calidad del
+  mismo es diferente. Ahora consideremos el mismo ejemplo seg&uacute;n la perspectiva orientada a objetos: en un estilo
+  de programaci&oacute;n orientado a objetos, cada CD deber&iacute;a contener su propio reproductor de forma no separada. Esto 
+  suena raro, pero esta es la forma en la que est&aacute;n construidos muchos sistemas software actuales. 
+</p>
+<p>El resultado de un servicio lleva consigo normalmente un cambio de estado para el consumidor, o para el cliente,
+  o para ambos. Siguiendo con el ejemplo anterior, despu&eacute;s de escuchar el CD en el reproductor, nuestro humor 
+  habr&aacute; cambiado, por ejemplo, de "triste" a "animado". 
+</p>
+</div>
+
+
+
+
+<a name="N10084"></a><a name="Definici%C3%B3n+de+SOA.+Elementos+que+la+componen."></a>
+<h2 class="underlined_10">Definici&oacute;n de SOA. Elementos que la componen.</h2>
+<div class="section">
+<p>Una arquitectura orientada a servicios est&aacute; basada en cuatro elementos clave: <em>frontend</em> de la
+  aplicaci&oacute;n, servicio, repositorio y bus de servicios (ver Figura 1). 
+</p>
+<p>
+	
+<img alt="Figura 1. Elementos que componen SOA." content-width="8cm" src="imagenes/charla2/soa.gif" width="420"> 
+</p>
+<p>Si bien el <strong><em>frontend</em></strong> de la 
+  aplicaci&oacute;n es el propietario del proceso del negocio, los servicios proporcionan la funcionalidad del
+  negocio que los <em>frontends</em> de las aplicaciones y otros servicios pueden utilizar. 
+</p>
+<p>Un <strong>servicio</strong> consiste en: (a) una implementaci&oacute;n que proporciona l&oacute;gica del negocio y datos, 
+(b) un contrato del servicio que
+  especifica la funcionalidad, uso, y restricciones para el cliente (que puede ser un <em>frontend</em> de
+  una aplicaci&oacute;n u otro servicio), y (c) una interfaz del servicio que f&iacute;sicamente expone la funcionalidad.
+</p>
+<p>El <strong>repositorio de servicios</strong> almacena los contratos del servicio de los servicios individuales de una SOA, y
+  el <strong>bus de servicios</strong> interconecta los <em>frontends</em> de las aplicaciones y los servicios.
+</p>
+<div class="frame note">
+<div class="label">Definici&oacute;n de SOA</div>
+<div class="content">
+Una arquitectura orientada a servicios (SOA) es una arquitectura software basada en los conceptos clave de
+<em>frontend</em> de aplicaciones, servicio, repositorio de servicios, y bus de servicios. Un servicio
+est&aacute; formado por un contrato, uno o m&aacute;s interfaces y una implementaci&oacute;n. Los bloques de construcci&oacute;n de SOA son
+los servicios, los cuales est&aacute;n d&eacute;bilmente acoplados para favorecer su reutilizaci&oacute;n y son altamente interoperables 
+a trav&eacute;s de sus contratos. Los servicios en s&iacute; mismos son "ajenos" a las interacciones requeridas a nivel de transporte
+para hacer posible la comunicaci&oacute;n entre el suministrador del servicio y el consumidor del servicio. 
+</div>
+</div>
+<p>El concepto de una SOA se centra en la definici&oacute;n de una infraestructura de negocio. Cuando utilizamos el t&eacute;rmino "servicio"
+  tenemos en mente un servicio de negocio tal como <em>realizar una reserva de un vuelo</em>, o <em>acceder a una base de datos de clientes</em> de
+  una compa&ntilde;&iacute;a. Estos servicios proporcionan operaciones de negocio tales como <em>hacer una reserva</em>, <em>cancelar un billete</em>,
+  u <em>obtener el perfil de un usuario</em>. A diferencia de los servicios de negocio, los servicios de infraestructura t&eacute;cnica, 
+  tales como un servicio de persistencia o de transacciones, proporcionan operaciones tales como <em>inicio de transacci&oacute;n</em>, <em>
+  actualizaci&oacute;n de datos</em>, o <em>abrir cursor</em>. Si bien este tipo de funcionalidad t&eacute;cnica es bastante &uacute;til cuando vamos a
+  implementar una operaci&oacute;n de negocio, tiene poca relevancia estrat&eacute;gica desde el punto de vista de SOA. De forma m&aacute;s general, la
+  tecnolog&iacute;a no debe tener ning&uacute;n impacto sobre la estructura de alto nivel de la aplicaci&oacute;n, ni debe provocar dependencias entre componentes.
+  Realmente, la arquitectura orientada a servicios debe desacoplar las aplicaciones de negocio de los servicios t&eacute;cnicos y hacer
+  que la empresa sea independiente de la implementaci&oacute;n o infraestructura t&eacute;cnicas espec&iacute;ficas.
+</p>
+<p>Vamos a comentar con m&aacute;s detalle los elementos que componen la arquitectura SOA.</p>
+<p>
+<strong><em>FRONTENDS</em> de las aplicaciones</strong>
+</p>
+<p>Los <em>frontends</em> de las aplicaciones son los elementos activos de la arquitectura SOA. &Eacute;stos inician y controlan
+   todas las actividades de los sistemas corporativos. Hay diferentes tipos de <em>frontends</em>. Un <em>frontend</em> 
+   de una aplicaci&oacute;n puede presentar una interfaz gr&aacute;fica de usuario, como por ejemplo una aplicaci&oacute;n Web o un cliente rico 
+   que interact&uacute;a directamente con los usuarios finales. Los <em>frontends</em> no tienen que interactuar necesariamente 
+   de forma directa con los usuarios finales. Los programas por lotes o los procesos de larga duraci&oacute;n que invocan a las 
+   funcionalidades de forma peri&oacute;dica o como resultado de eventos espec&iacute;ficos son tambi&eacute;n ejemplos v&aacute;lidos de <em>frontends</em>.
+</p>
+<p>En &uacute;ltima instancia, siempre es un <em>frontend</em> de una aplicaci&oacute;n qui&eacute;n inicia un proceso de negocio y recibe los
+  resultados. Los <em>frontends</em> de aplicaciones son similares a las capas de nivel m&aacute;s alto en las arquitecturas multi-capa
+  tradicionales.</p>
+<p>
+<strong>SERVICIOS</strong>
+</p>
+<p>Un servicio es un componente software con un significado funcional que lo distinque de otros, y que
+  t&iacute;picamente encapsula un concepto de negocio de alto nivel. La Figura 2 muestra los elementos que
+  forman parte de un servicio.</p>
+<p>
+	
+<img alt="Figura 2. Elementos que componen un servicio SOA." content-width="10cm" src="imagenes/charla2/servicio.gif" width="410"> 
+</p>
+<p>El <strong>contrato</strong> del servicio proporciona una especificaci&oacute;n informal sobre el prop&oacute;sito,
+  funcionalidad, restricciones, y uso del servicio. La forma de dicha especificaci&oacute;n puede variar dependiendo
+  del tipo de servicio. La definici&oacute;n formal de la interfaz basada en lenguajes tales como IDL y WSDL no es 
+  obligatoria. Si bien a&ntilde;ade un beneficio significativo: proporciona una abstracci&oacute;n e independencia de la 
+  tecnolog&iacute;a, incluyendo al lenguaje de programaci&oacute;n, protocolo de red y entorno de ejecuci&oacute;n. Es importante comprender
+  que un contrato de un servicio proporciona m&aacute;s informaci&oacute;n que una especificaci&oacute;n formal. El contrato puede
+  imponer una determinada sem&aacute;ntica sobre la funcionalidad o el uso de par&aacute;metros que no est&aacute;n sujetos a 
+  especificaciones IDL o WSDL. En realidad, muchos proyectos deben tratar con servicios que no pueden 
+  proporcionar una descripci&oacute;n formal de las interfaces de dichos servicios. No debemos olvidar que la tarea
+  clave en un proyecto que pretende introducir SOA a nivel de empresa es a menudo, no implementar nuevas
+  funcionalidades, sino identificar m&oacute;dulos existentes de aplicaciones y componentes y "envolverlos" con
+  interfaces con el nivel adecuado de funcionalidad y granularidad, haciendo que &eacute;stos est&eacute;n disponibles en
+  forma de servicios f&aacute;cilmente utilizables y mejor documentados. En los casos en los que no se disponga de una
+  descripci&oacute;n formal de los servicios en forma de interfaces, el servicio puede proporcionar acceso a librer&iacute;as,
+  o bien una descripci&oacute;n t&eacute;cnica detallada a nivel de protocolo de red.
+</p>
+<p>La <strong>interfaz</strong> expone la funcionalidad del servicio a los clientes que est&aacute;n conectados a dicho
+  servicio a trav&eacute;s de la red. Si bien la descripci&oacute;n de la interfaz forma parte del contrato del servicio, la
+  implementaci&oacute;n f&iacute;sica de la misma consiste en unos <em>stubs</em> de servicio, que se incorporan en los
+  clientes de un servicio.
+</p>
+<p>La <strong>implementaci&oacute;n</strong> del servicio proporciona la l&oacute;gica del proceso as&iacute; como los datos requeridos.
+  Es la realizaci&oacute;n t&eacute;cnica que satisface el contrato del servicio. La implementaci&oacute;n del servicio consiste en uno
+  o m&aacute;s artefactos tales como programas, datos de configuraci&oacute;n y bases de datos.
+</p>
+<p>Los servicios son el coraz&oacute;n de una arquitectura SOA y deben ser: d&eacute;bilmente acoplados, de grano grueso (<em>coarse-grained</em>:
+  implementan funcionalidades de alto nivel), 
+  centrados en el negocio y reutilizables.
+</p>
+<p>El t&eacute;rmino acoplamiento hace referencia al grado en el que los componentes software dependen unos de otros.
+  El acoplamiento puede tener lugar a diferentes niveles. Los procesos de negocio requieren un alto nivel de 
+  flexibilidad, y por lo tanto una arquitectura con un bajo acoplamiento para as&iacute; poder reducir la complejidad
+  total y las dependencias, y en consecuencia facilitar cambios m&aacute;s r&aacute;pidos y con menores riesgos. En la siguiente
+  tabla mostramos las diferencias fundamentales entre acoplamiento d&eacute;bil (<em>loose coupling</em>) y fuerte
+  (<em>tight coupling</em>), considerando diferentes niveles.
+</p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+
+<tr> 
+    
+<th colspan="1" rowspan="1">Nivel</th>
+    <th colspan="1" rowspan="1">Tight coupling</th>
+    <th colspan="1" rowspan="1">Loose coupling</th>
+
+</tr>
+
+<tr> 
+    
+<td colspan="1" rowspan="1">Acoplamiento f&iacute;sico</td>
+    <td colspan="1" rowspan="1">Requiere conexi&oacute;n f&iacute;sica directa</td>
+    <td colspan="1" rowspan="1">Utiliza un intermediario f&iacute;sico</td>
+
+</tr>
+
+<tr> 
+    
+<td colspan="1" rowspan="1">Estilo de comunicaci&oacute;n</td>
+    <td colspan="1" rowspan="1">S&iacute;ncrono</td>
+    <td colspan="1" rowspan="1">As&iacute;ncrono</td>
+
+</tr>
+
+<tr> 
+    
+<td colspan="1" rowspan="1">Sistema de tipos</td>
+    <td colspan="1" rowspan="1">Interfaz expl&iacute;cita con nombres de operaciones y argumentos fuertemente tipados</td>
+    <td colspan="1" rowspan="1">Formato de mensajes flexible</td>
+
+</tr>
+
+<tr> 
+    
+<td colspan="1" rowspan="1">Patr&oacute;n de interacci&oacute;n</td>
+    <td colspan="1" rowspan="1">Navegaci&oacute;n a trav&eacute;s de complejos &aacute;rboles de objetos</td>
+    <td colspan="1" rowspan="1">Centrado en los datos, mensajes autocontenidos</td>
+
+</tr>
+
+<tr> 
+    
+<td colspan="1" rowspan="1">Control de la l&oacute;gica del proceso</td>
+    <td colspan="1" rowspan="1">Centralizado</td>
+    <td colspan="1" rowspan="1">Componentes distribuidos l&oacute;gicamente</td>
+
+</tr>
+
+<tr> 
+    
+<td colspan="1" rowspan="1">Descubrimento y enlazado de servicios</td>
+    <td colspan="1" rowspan="1">Est&aacute;tico</td>
+    <td colspan="1" rowspan="1">Din&aacute;mico</td>
+
+</tr>
+
+<tr> 
+    
+<td colspan="1" rowspan="1">Dependencia de la plataforma</td>
+    <td colspan="1" rowspan="1">Dependencia fuerte del sistema operativo y lenguaje de programaci&oacute;n</td>
+    
+    <td colspan="1" rowspan="1">Independencia del sistema operativo y lenguaje de programaci&oacute;n</td>
+
+</tr>
+
+</table>
+<p>
+<strong>REPOSITORIO de servicios</strong>
+</p>
+<p>El repositorio de servicios proporciona facilidades para encontrar servicios y adquirir toda la informaci&oacute;n para
+  utilizar los servicios, particularmente si estos servicios deben encontrarse fuera del &aacute;mbito funcional y temporal
+  del proyecto que los cre&oacute;. Si bien mucha de la informaci&oacute;n requerida forma parte del contrato del servicio, el 
+  repositorio de servicio puede proporcionar informaci&oacute;n adicional, tal como la localizaci&oacute;n f&iacute;sica, informaci&oacute;n 
+  sobre el proveedor, personas de contacto, tasas de uso, restricciones t&eacute;cnicas, cuestiones sobre seguridad, y niveles
+  de servicio disponibles. 
+</p>
+<p>Estamos considerando repositorios de servicios utilizados principalmente dentro de los l&iacute;mites de una &uacute;nica empresa.
+  Los repositorios que se utilizan para integraci&oacute;n de servicios entre empresas t&iacute;picamente tienen diferentes 
+  requerimientos. En particular, aquellos repositorios p&uacute;blicos a trav&eacute;s de Internet pueden requerir cuestiones legales
+  (t&eacute;rminos y condiciones de uso), estilo de presentaci&oacute;n, niveles de seguridad, registro de usuarios, suscripci&oacute;n a
+  servicios, tarifas de uso, y versi&oacute;n utilizada).
+</p>
+<p>Obviamente, un repositorio de servicios es un elemento muy &uacute;til de una SOA. Si bien no es indispensable disponer
+  de un repositorio de servicios, &eacute;ste resultar&aacute; indispensable a largo plazo. Una arquitectura puede evitar el uso de 
+  un repositorio si el &aacute;mbito de un servicio es justamente un proyecto, si tiene muy pocos servicios, o si todos los
+  proyectos son llevados a cabo por el mismo equipo de personas. En un escenario real, la mayor&iacute;a de las veces habr&aacute;
+  m&uacute;ltiples proyectos concurrentes, grupos de trabajo cambiantes, y una gran variedad de servicios.
+</p>
+<p>Un repositorio de servicios puede ser arbitrariamente simple; en un extremo, podr&iacute;amos no requerir usar ninguna
+  tecnolog&iacute;a. Un lote de contratos de servicio impresos localizados en una oficina y accesible por todos los
+  proyectos es un repositorio de servicios v&aacute;lido. Sin embargo, hay mejores formas de proporcionar esta informaci&oacute;n,
+  manteniendo la simplicidad del repositorio, como por ejemplo utilizar alguna base de datos propietaria que contiene
+  datos administrativos y contratos de servicios m&aacute;s o menos formales para cada versi&oacute;n de un servicio.
+</p>
+<p>En algunos casos, algunas compa&ntilde;&iacute;as han desarrollado sus propias herramientas que autom&aacute;ticamente generan la
+  descripci&oacute;n del servicio a partir de las definiciones formales de los servicios (por ejemplo un generador de HTML
+  que toma un WSDL como entrada, similar al generador JavaDoc). Esto resulta particularmente &uacute;til si la definici&oacute;n
+  formal del servicio se anota con informaci&oacute;n adicional sobre el servicio.
+</p>
+<p>Es importante distinguir entre enlazado de servicios (<em>binding of services</em>) en tiempo de desarrollo y en
+  tiempo de ejecuci&oacute;n. El <em>binding</em> (utilizaremos los t&eacute;rminos <em>binding</em> o enlazado indistintamente) hace
+  referencia a la forma en la que las definiciones de los servicios y las instancias de los servicios son encontradas,
+  incorporadas en la aplicaci&oacute;n del cliente, y finalmente enlazadas a nivel de red.
+</p>
+<p>Si los servicios son encontrados y enlazados en <strong>tiempo de desarrollo</strong>, las signaturas de las operaciones del servicio
+  son conocidas con antelaci&oacute;n, as&iacute; como el protocolo de servicio y su localizaci&oacute;n f&iacute;sica (o al menos el nombre exacto
+  del servicio en un servicio de directorios). La Figura 3 describe un proceso en el que los servicios se encuentran en
+  tiempo de desarrollo. En este caso, el desarrollador es responsable de localizar toda la informaci&oacute;n requerida en el
+  repositorio de servicios para crear un cliente que interact&uacute;e correctamente con la instancia del servicio.
+</p>
+<p>
+	
+<img alt="Figura 3. Descubrimiento de servicios en tiempo de desarrollo." content-width="10cm" src="imagenes/charla2/repositorio.gif" width="457"> 
+</p>
+<p>Si bien el enlazado en tiempo de desarrollo es un modelo bastante simple, es suficiente la mayor&iacute;a de las veces. Permite a los
+  proyectos identificar la funcionalidad que ha sido creada por proyectos anteriores y reutilizar sus servicios.
+</p>
+<p>El enlazado en <strong>tiempo de ejecuci&oacute;n</strong> es mucho m&aacute;s complejo. Podemos diferenciar entre varios niveles de
+  enlazado:
+</p>
+<ul>
+  
+<li>B&uacute;squeda del servicio <strong>por nombre</strong>. Este es el caso m&aacute;s sencillo, y el usado m&aacute;s comunmente. La definici&oacute;n del servicio se 
+    conoce en tiempo dde desarrollo, y la l&oacute;gica del cliente se desarrolla en consecuencia. El cliente puede enlazar de forma
+    din&aacute;mica con diferentes instancias de un servicio buscandolas con nombres espec&iacute;ficos dentro de un directorio. Por ejemplo,
+    una aplicaci&oacute;n cliente busca servicios de impresi&oacute;n con diferentes nombres, dependiendo del nombre de impresora seleccionado
+    por el usuario.</li>
+  
+<li>B&uacute;squeda del servicio <strong>por propiedades</strong>. Es similar al anterior, excepto que los servicios se encuentran por propiedades. 
+    Por ejemplo, un servicio de impresi&oacute;n puede buscar en el repositorio impresoras a trav&eacute;s de propiedades como la planta en la
+    que se encuentran (p.ej. "planta ==2") y el tipo de documentos que es capaz de imprimir (p.ej. "doctype==PostScript").</li>
+  
+<li>B&uacute;squeda del servicio <strong>basada en <em>reflection</em></strong>. En este caso, la especificaci&oacute;n real del servicio no se conoce en tiempo
+    de desarrollo. Supongamos que un cliente encuentra un servcio con las propiedades del ejemplo anterior, pero con una interfaz
+    del servicio desconocida. En este caso, en el cliente se debe implementar alg&uacute;n mecanismo de <em>reflection</em>, que permita
+    al cliente descubrir de forma din&aacute;mica la sem&aacute;ntica del servicio y el formato de peticiones v&aacute;lidas. Este tipo de enlazado  es
+    bastante poco usual y limitado a algunos pocos dominios de aplicaciones. Un ejemplo de un dominio que realmente requiere un
+    enlazado de servicios altamente din&aacute;mico es una aplicaci&oacute;n <em>Bluetooth</em>: los clientes <em>Bluetooth</em> descubren
+    los servicios de forma din&aacute;mica bas&aacute;ndose en la localizaci&oacute;n y otras propiedades. Pero de nuevo, incluso en este escenario, los
+    clientes <em>Bluetooth</em> soportan un conjunto limitado de servicios predefinidos.</li>    
+
+</ul>
+<p>En general, es recomendable tener un enlazado de servicios lo m&aacute;s simple posible debido a que el nivel de complejidad y riesgo
+  crece exponencialmente con el nivel de dinamismo resultante. La b&uacute;squeda de servicios por nombre con interfaces de servicio 
+  predefinidas suele ser la opci&oacute;n que mejor equilibra las necesidades de flexibilidad y complejidad de implementaci&oacute;n en la mayor
+  parte de los casos.
+</p>
+<p>
+<strong>BUS de servicios (ESB)</strong>
+</p>
+<p>Un bus de servicios (ESB: <em>Enterprise Service Bus</em>) 
+  conecta a todos los participantes de una SOA (tanto servicios como <em>frontends</em>). El bus de servicios
+  es similar al concepto de bus <em>software</em> definido en el contexto de CORBA. Aunque existen diferencias significativas, entre
+  ellas la m&aacute;s importante es que el bus de servicios no necesariamente debe estar formado por una &uacute;nica tecnolog&iacute;a, sino que puede 
+  comprender varios productos y conceptos.
+</p>
+<p>Las principales caracter&iacute;sticas de un bus de servicios son:</p>
+<ul>
+  
+<li>
+<strong>Conectividad</strong>: el objetivo principal de un bus de servicios es del de interconectar a los participantes de una SOA. Por lo
+     tanto debe proporcionar facilidades para permitir a los participantes de una SOA invocar las funcionalidades de los servicios.</li>
+  
+<li>
+<strong>Heterogeneidad de tecnolog&iacute;a</strong>: puesto que la realidad de las empresas se caracteriza por tecnolog&iacute;as heterog&eacute;neas, el bus de
+     servicios debe ser capaz de conectar participantes basados en diferentes lenguajes de programaci&oacute;n, sistemas operativos o
+     soporte de ejecuci&oacute;n. Adem&aacute;s, normalmente encontraremos muchos productos <em>middleware</em> y protocolos de comunicaci&oacute;n en la
+     empresa, todas las cuales deben ser soportadas por el bus de servicios.</li>
+  
+<li>
+<strong>Heterogeneidad de conceptos de comunicaci&oacute;n</strong>: es similiar a lo expuesto anteriormente pero aplicado a las comunicaciones. 
+     Obviamente, el bus de servicios debe permitir comunicaciones s&iacute;ncronas y as&iacute;ncronas.</li>
+  
+<li>
+<strong>Servicios t&eacute;cnicos</strong>: si bien el prop&oacute;sito del bus de servicios es fundamentalmente la comunicaci&oacute;n, tambi&eacute;n debe proporcionar
+     servicios t&eacute;cnicos tales como <em>logging</em>, auditor&iacute;as, seguridad, transformaci&oacute;n de mensajes o transacciones.</li>   
+
+</ul>
+</div>
+
+
+<a name="N10259"></a><a name="Capas+en+aplicaciones+orientadas+a+servicios"></a>
+<h2 class="underlined_10">Capas en aplicaciones orientadas a servicios</h2>
+<div class="section">
+<p>Al igual que en cualquier aplicaci&oacute;n distribuida, las aplicaciones orientadas a servicios son aplicaciones multicapa
+  y tienen capas de presentaci&oacute;n, l&oacute;gica de negocio y persistencia. La Figura 4 muestra una arquitectura t&iacute;pica
+  de una aplicaci&oacute;n orientada a servicios.</p>
+<p>
+	
+<img alt="Figura 4. Capas en aplicaciones orientadas a servicios." content-width="11cm" src="imagenes/charla2/SOALayer.gif" width="495"> 
+</p>
+<p>Las dos capas clave en una aplicaci&oacute;n orientada a servicios son la de servicios y la de la l&oacute;gica de negocio.</p>
+<p>
+<strong>Capa de servicios</strong>
+</p>
+<p>Como ya hemos dicho, los servicios son los bloques de construcci&oacute;n de las aplicaciones orientadas a servicios.
+  Los servicios con auto-contenidos, mantienen su propio estado, y proporcionan una interfaz con bajo acoplamiento.
+</p>
+<p>El mayor reto cuando construimos una aplicaci&oacute;n orientada a servicios es crear una interfaz con el nivel adecuado
+  de abstracci&oacute;n. Cuando analizamos los requerimientos del negocio, tenemos que considerar cuidadosamente qu&eacute; componentes
+  software queremos construir como servicios. Generalmente, los servicios deber&iacute;an proporcionar una funcionalidad con
+  un alto nivel de abstracci&oacute;n (<em>coarse-grained</em>). Por ejemplo, un componente software que procesa una orden de 
+  compra es un buen candidato para ser publicado como un servicio, en contraposici&oacute;n con un componente que solamente
+  actualiza un atributo de una orden de compra.
+</p>
+<p>Tenemos dos posibilidades a la hora de construir un servicio: la aproximaci&oacute;n <em>top-down</em> o <em>bottom-up</em>.
+  La aproximaci&oacute;n <em>top-down</em> requiere que identifiquemos y describamos los mensajes y las operaciones que proporciona
+  nuestro servicio y a continuaci&oacute;n implementemos dicho servicio. Esta aproximaci&oacute;n es recomendable cuando estamos
+  construyendo un servicio completamente nuevo, puesto que somos totalmente libres de elegir la tecnolog&iacute;a de 
+  implementaci&oacute;n que prefiramos. Esta aproximaci&oacute;n tambi&eacute;n promueve servicios m&aacute;s interoperables, ya que podemos
+  evitar artefactos de implementaci&oacute;n que imposibiliten la interoperabilidad (por ejemplo, tipos de datos que pueden
+  tener una representaci&oacute;n interoperable).
+</p>
+<p>La aproximaci&oacute;n <em>bottom-up</em> es bastante popular debido a que nos permite reutilizar la inversi&oacute;n realizada
+  en los componentes de negocio. Por ejemplo, los vendedores proporcionan las herramientas que nos permiten exponer
+  procedimientos almacenados PL/SQL que comprueban si a un cliente se le puede aplicar un descuento como un servicio.
+</p>
+<p>El aspecto m&aacute;s importante de un servicio es su descripci&oacute;n. Cuando utilizamos servicios Web como tecnolog&iacute;a de 
+  implementaci&oacute;n para una SOA, el <em>Web Service Description Language</em> (WSDL) describe los mensajes, tipos y
+  operaciones del servicio Web, que constituyen el contrato de dichos servicios.
+</p>
+<p>
+<strong>Capa de l&oacute;gica de negocio</strong>
+</p>
+<p>Otra "promesa" de SOA es que podemos construir nuevas aplicaciones a partir de servicios existentes. El principal
+  beneficio que proporciona SOA es la estandarizaci&oacute;n del modelado de procesos de negocio, a menudo referido como
+  orquestaci&oacute;n de servicios. Podemos construir una capa de abstracci&oacute;n basada en servicios Web sobre sistemas <em>legacy</em>
+  y posteriormente beneficiarnos de este hecho para ensamblar procesos de negocio. Adicionalmente, los vendedores de
+  plataformas SOA proporcionan herramientas y servidores para dise&ntilde;ar y ejecutar estos procesos de negocio. Este 
+  esfuerzo se ha materializado en un est&aacute;ndar en OASIS denominado <em>Business Process Execution Language</em> (BPEL);
+  la mayor&iacute;a de vendedores de plataformas se est&aacute;n adhiriendo a este est&aacute;ndar. BPEL es esencialmente un lenguaje de
+  programaci&oacute;n pero su representaci&oacute;n es XML.
+</p>
+<p>Si bien la sintaxis BPEL es bastante sencilla, es preferible una representaci&oacute;n gr&aacute;fica de un proceso de negocio, de
+  esta forma nos beneficiaremos de una herramienta de dise&ntilde;o GUI para ensamblar nuevos procesos de negocio a partir de
+  servicios existentes.
+</p>
+</div>
+
+
+<a name="N102A6"></a><a name="El+gobierno+SOA+%28SOA"></a>
+<h2 class="underlined_10">El gobierno SOA (SOA governance)</h2>
+<div class="section">
+<p>La definici&oacute;n de la palabra "gobierno" (<em>governance</em>) implica la acci&oacute;n o forma de gobernar. Dentro del contexto de las IT 
+  (<em>Information Technology</em>), adem&aacute;s, representa un marco de toma de decisiones y responsabilidades que fomenta un comportamiento
+  deseable en las IT. Los participantes en el gobierno deciden pol&iacute;ticas sobre diferentes categor&iacute;as de decisiones que deben realizarse.
+  Dichos participantes tambi&eacute;n llevan a cabo la identificaci&oacute;n de roles entre la gente que conforma la empresa. Los
+  miembros del grupo de gobierno tambi&eacute;n identifican a los expertos en diferentes materias de quienes se espera que
+  proporcionen las "entradas" para acordar decisiones, as&iacute; como identifican al grupo de gente que debe tener ejercer
+  sus responsabilidades (basadas en sus roles). Un equipo de gobierno de IT debe tratar tres cuestiones:
+</p>
+<ul>
+  
+<li>&iquest;Qu&eacute; decisiones debemos tomar para asegurar una gesti&oacute;n y uso efectivos de la IT?</li>
+  
+<li>&iquest;Qui&eacute;n debe tomar dichas decisiones?</li>
+  
+<li>&iquest;C&oacute;mo se van a tomar dichas decisiones y c&oacute;mo pueden monitorizarse?</li>
+
+</ul>
+<a name="N102C8"></a><a name="La+importancia+de+las+IT+y+el+gobierno+SOA"></a>
+<h3 class="underlined_5">La importancia de las IT y el gobierno SOA</h3>
+<p>Actualmente, las IT son el elemento m&aacute;s omnipresente dentro de una empresa. Una organizaci&oacute;n que posee algo tan
+  importante para el crecimiento y &eacute;xito del negocio debe considerarlo como uno de los elementos clave de la empresa.
+  Un bien tan valioso debe ser entendido completamente, no s&oacute;lo para maximizar los beneficios que pueden derivarse de
+  &eacute;l, sino para poderlo gestionar de forma adecuada y, consecuentemente, mitigar los riesgos asociados con &eacute;l. Todo 
+  ello plantea la necesidad de establecer una forma de gobierno para formular, controlar y vigilar el mantenimiento
+  y creciemiento adecuados de dicha posesi&oacute;n valiosa para la empresa, es decir es necesario establecer un gobierno para
+  las IT.
+</p>
+<p>SOA es como un vino viejo en una botella nueva. Los conceptos de SOA ya existen desde hace bastante tiempo en 
+  la industria de las IT. Pero es s&oacute;lo recientemente que ha captado la atenci&oacute;n como forma de alinear la estrategia
+  del negocio y los imperativos de una empresa con sus iniciativas de IT. Lo que hace que una empresa que hace uso
+  de SOA necesite tomarse en serio el gobierno es la naturaleza distribuida de los servicios entro varios LOBs (<em>
+  Lines of Business</em>). La proliferaci&oacute;n de m&aacute;s partes "movibles" (es decir, los bloques de construcci&oacute;n en
+  forma de servicios) que necesitan ser mantenidos por las diferentes organizaciones hace que la atividad que
+  hemos denominado como gobierno se plantee como un reto. La naturaleza inter-organizacional de los servicios de
+  negocio y la potencial composici&oacute;n de servicios a trav&eacute;s de las "fronteras" de las organizaciones puede funcionar
+  correctamente si y s&oacute;lo si los servicios son gobernados eficientemente para que as&iacute; est&eacute;n conforme a los 
+  requerimientos dictados por un determinado nivel de satisfacci&oacute;n requerido para factores tales como la
+  seguridad, fiabilidad, rendimiento, etc. El proceso de identificar, especificar, crear, y finalmente desplegar
+  los servicios de la empresa, por lo tanto requiere de un gobierno SOA a trav&eacute;s de un grupo "fuerte" y eficiente
+  que vigile el ciclo de vida en su totalidad de una cartera de servicios de una empresa.
+</p>
+<a name="N102DA"></a><a name="Responsabilidades+de+gobierno"></a>
+<h3 class="underlined_5">Responsabilidades de gobierno</h3>
+<p>El rol de las IT en la empresa deber ser comprendido en su totalidad y monitorizado cuidadosamente. Para ello
+  los <em>stakeholders</em> de la compa&ntilde;ia necesitan asegurar que las inversiones en IT de sus organizaciones soportan
+  la estrategia del negocio en su totalidad, as&iacute; como mitigar sus riesgos potenciales. Las responsabilidades m&aacute;s 
+  importantes de un cuerpo de gobierno se muestran en la Figura 5.
+</p>
+<p>
+	
+<img alt="Figura 5. Responsabilidades de gobierno." content-width="10cm" src="imagenes/charla2/gov_resp.gif" width="600"> 
+</p>
+<p>Las principales &aacute;reas de gobierno incluyen las siguientes:</p>
+<ul>
+  
+<li>El alineamiento estrat&eacute;gico se centra en la necesidad de alinear la visi&oacute;n del negocio, los objetivos y
+    las necesidades con los esfuerzos en IT.</li>
+  
+<li>El valor de la entrega hace referncia a c&oacute;mo el valor de una IT puede medirse a trav&eacute;s de los resultados 
+    como por ejemplo el aprovechamiento, la reducci&oacute;n de gastos, la reducci&oacute;n de errores, la mejora de imagen
+    de la compa&ntilde;ia, etc.</li>
+  
+<li>La gesti&oacute;n de riesgos se centra en la continuidad del negocio y las medidas a tomar para proteger los
+    bienes referentes a las IT.</li>
+  
+<li>La gesti&oacute;n de recursos se centra en optimizar los servicios de infraestructura que soportan los servicios
+    de las aplicaciones.</li>
+  
+<li>La gesti&oacute;n del rendimiento se centra principalmente en monitorizar los servicios que se ejecutan en
+    el entorno de infraestructura de la empresa u otros entornos de infraestructura.</li>    
+
+</ul>
+<p>Un metamodelo de gobierno que ilustra la interrelaci&oacute;n entre las cinco decisiones m&aacute;s importantes a las que
+  hacen referencia las &aacute;reas que acabamos de mencionar, se muestra en la Figura 6.
+</p>
+<p>
+	
+<img alt="Figura 6. Metamodelo de gobierno." content-width="10cm" src="imagenes/charla2/gov_metamodel.gif" width="600"> 
+</p>
+<p>La Figura 5 muestra los principales elementos de gobierno y sus relaciones entre ellos. Los principios de IT y 
+  SOA gu&iacute;an la arquitectura de las IT y el modelo de servicios, los cuales, a su vez, determinan c&oacute;mo deben
+  definirse los servicios de infraestructura de las IT de la empresa. Las necesidades de las aplicaciones de
+  negocio requeridas pueden evaluarse bas&aacute;ndonos en la capacidad del marco de infraestructuras de las IT. La
+  madurez de la arquitectura de las IT y el modelo de servicios, as&iacute; como los servicios de infraestructura de las
+  IT condicionan la decisi&oacute;n de qu&eacute; partes de de las aplicaciones de negocio requeridas pueden priorizarse para 
+  realizar inversiones de IT sobre ellas.
+</p>
+<a name="N10318"></a><a name="Implementaci%C3%B3n+del+gobierno"></a>
+<h3 class="underlined_5">Implementaci&oacute;n del gobierno</h3>
+<p>Cualquier implementaci&oacute;n del gobierno deber&iacute;a centrarse en los cuatro pilares de una arquitectura de 
+  empresa: la gente, los procesos, la tecnolog&iacute;a, y los servicios. Una implementaci&oacute;n de gobierno SOA necesita
+  ser soportada por una organizaci&oacute;n jer&aacute;rquica, como por ejemplo la mostrada en la Figura 7.
+</p>
+<p>
+	
+<img alt="Figura 7. Ejemplo de estructura de organizaci&oacute;n de gobierno." content-width="10cm" src="imagenes/charla2/gov_org_structure.gif" width="600"> 
+</p>
+<p>El nivel de direcci&oacute;n. Est&aacute; formado por miembros del comit&eacute; de direcci&oacute;n. El comit&eacute; de direcci&oacute;n articula 
+la estrategia de negocio y los objetivos de la empresa.
+  Los participantes en este nivel deciden c&oacute;mo se deben realizar las inversiones en IT y c&oacute;mo deben canalizarse a
+  &aacute;reas espec&iacute;ficas del negocio que necesitan mejoras, o bien necesitan implementar nuevas aplicaciones que puedan
+  marcar la diferencia en el mercado y hacer que la empresa se m&aacute;s competitiva.
+</p>
+<p>El nivel de liderazgo. Est&aacute; formado por los l&iacute;deres del gobierno y de cada uno de los dominios del negocio.
+  Este grupo crea la arquitectura IT de la empresa y los principios SOA que deben seguirse.</p>
+<p>El nivel de gesti&oacute;n de oportunidades. En este nivel se forman grupos separados. Cada uno de ellos se centra en una
+  o m&aacute;s necesidades del negocio y son responsables de proporcionar definiciones claras de las aplicaciones del 
+  negocio que cubren algunas de las necesidades de la empresa.
+</p>
+<p>El nivel de gesti&oacute;n de proyectos. Los grupos en este nivel gestionan el ciclo de vida en su totalidad de una
+  aplicaci&oacute;n (dise&ntilde;o, desarrollo, construcci&oacute;n, pruebas y despliegue).     
+</p>
+</div>
+
+ 
+
+
+<a name="N1033C"></a><a name="SOA+y+JBI"></a>
+<h2 class="underlined_10">SOA y JBI</h2>
+<div class="section">
+<p>JBI (<em>Java Business Integration</em> es un est&aacute;ndar basado en Java que aborda las cuestiones principales sobre EAI y B2B, y que est&aacute; basado en
+  los paradigmas y principios que defiende SOA. La versi&oacute;n actual (1.0) lleva el nombre de JSR (<em>Java Specification Request</em>) 208. Tanto
+  los vendedores comerciales como los <em>open source</em> han comenzado ya a utilizar JBI como un est&aacute;ndar de integraci&oacute;n en sus productos ESB.
+</p>
+<p>JBI define una arquitectura basada en <em>plug-ins</em> en la que los servicios pueden ser <em>plugged</em> en el entorno de ejecuci&oacute;n de JBI.
+  JBI proporciona interfaces bien definidas para los servicios que interact&uacute;an con el entorno de ejecuci&oacute;n JBI. Los servicios necesitan exponer sus
+  interfaces al entorno JBI para que &eacute;ste pueda enrutar los mensajes hacia los servicios. El entorno de ejecuci&oacute;n JBI act&uacute;a como un mediador entre los
+  servicios que est&aacute;n desplegados en dicho entorno (ver Figura 8)
+</p>
+<p>
+	
+<img alt="Figura 8. Entorno de ejecuci&oacute;n JBI." content-width="10cm" src="imagenes/charla2/jbi.gif" width="476"> 
+</p>
+<p>El n&uacute;cleo (<em>core</em>) del entorno de ejecuci&oacute;n JBI est&aacute; formado por los siguientes componentes dentro de la misma m&aacute;quina virtual Java (JVM):
+</p>
+<ul>
+  
+<li>
+<em>Framework</em> de componentes: permite el despliegue de diferentes tipos de componentes en el entorno de ejecui&oacute;n JBI.</li>
+  
+<li>
+<em>Router</em> de mensajes normalizado: permite un mecanismo est&aacute;ndar de intercambio de mensajes entre los servicios.</li>
+  
+<li>
+<em>Framework</em> de gesti&oacute;n: est&aacute; basado en JMX y permite el despliegue, gesti&oacute;n y monitorizaci&oacute;n de componentes en el entorno JBI</li>
+
+</ul>
+<p>JBI adopta SOA para maximizar el desacoplamiento entre componentes, y crear una sem&aacute;ntica de interoperaci&oacute;n bien
+  definida basada en mensajer&iacute;a est&aacute;ndar. JSR 208 describe las interfaces proveedoras de servicios (SPI: <em>Service Provider
+  Interfaces</em>), que las m&aacute;quinas de servicios (no definidas por JSR 208) y los <em>bindigns</em> incorporan, as&iacute; como el servicio de mensajes
+  normalizado que utilizan para comunicarse entre ellos. JSR 208 tiene las siguientes ventajas de negocio:</p>
+<ul>
+  
+<li>Es en s&iacute; misma una arquitectura orientada a servicios, y por lo tanto altamente flexible, extensible y escalable</li>
+  
+<li>Las m&aacute;quinas de servicios podr&iacute;an implementarse en cualquier lenguaje siempre y cuando soporten la definici&oacute;n SPI
+    implementada por los sistemas que cumplen JSR 208.</li>
+  
+<li>Pueden a&ntilde;adirse nuevas m&aacute;quinas en el contenedor definiendo los mensajes que utilizar&aacute;n para interactuar con
+    el resto del sistema.</li>
+  
+<li>Las interfaces abiertas permiten una competencia gratuita y abierta alrededor de la implementaci&oacute;n de estas
+    m&aacute;quinas. ESto significa que los clientes son libres de elegir la mejor soluci&oacute;n disponible, y su c&oacute;digo de
+    integraci&oacute;n puede migrarse entre las implementaciones.</li>
+
+</ul>
+<p>En la Figura 9 se muestra un ejemplo de arquitectura JSR 208:</p>
+<p>
+	
+<img alt="Figura 9. Ejemplo de arquitectura basada en JSR." content-width="10cm" src="imagenes/charla2/arqBasadaEnJSR208.gif" width="715"> 
+</p>
+<p>Como se puede observar, JBI proporciona un entorno en el que residen los componentes <em>plug-in</em>. La 
+  interacci&oacute;n entre los componentes <em>plug-in</em> se lleva a cabo mediante la invocaci&oacute;n de servicios basada
+  en mensajes. Los servicios producidos y consumidos por los componentes <em>plug-in</em> se modelan utilizando
+  WSDL 2.0. Un mensaje normalizado est&aacute; formado por dos partes: el mensaje abstracto XML, y los metadatos del
+  mensaje (o datos del contexto del mensaje), lo cual permite la asociaci&oacute;n de informaci&oacute;n extra con un mensaje
+  particular ya que &eacute;ste es procesado por los componentes del sistema y los componentes <em>plug-in</em>.
+</p>
+<p>Los elementos clave de un entorno JBI (mostrados en la Figura 10) son:</p>
+<ul>
+  
+<li>M&aacute;quinas de servicios (SE: <em>Service Engines</em>), son componentes JBI que permiten una l&oacute;gica de 
+    negocio <em>pluggable</em>.</li>
+  
+<li>Componentes de enlazado (BC: <em>Binding Components</em>), son componentes JBI que permiten una conectividad
+    externa <em>pluggable</em>.</li>
+  
+<li>El enrutador normalizado de mensajes (NMR: <em>Normalized Message Router</em>), direcciona los mensajes normalizados
+    desde los componentes de origen hasta sus destinatarios de acuerdo a pol&iacute;ticas especificadas.</li>
+  
+<li>El entorno de ejecuci&oacute;n JBI (<em>JBI Runtime Environment</em>, contiene a los componentes JBI y al NMR. Debido
+    a sus caracter&iacute;sticas como contenedor, a menudo se le conoce con el nombre de meta-contenedor JBI.</li>  
+
+</ul>
+<p>
+	
+<img alt="Figura 10. El entorno JBI." content-width="10cm" src="imagenes/charla2/jbi-environment.gif" width="697"> 
+</p>
+<p>
+<strong>Modelo de componentes JBI</strong>
+</p>
+<p>JBI define dos tipos de componentes:</p>
+<ul>
+  
+<li>Componentes de la m&aacute;quina de servicios (SE: <em>Service Engine</em>): se trata de componentes responsables de la implementaci&oacute;n de la l&oacute;gica 
+    del negocio y otros servicios. Los componentes SE pueden ser implementados internamente utilizando varias tecnolog&iacute;as y principios de dise&ntilde;o.
+    Los componentes SE pueden ser tan simples como un componente que porporciona servicios de bajo nivel tales como transformaci&oacute;n y traslaci&oacute;n de
+    datos o algo m&aacute;s complejos como una instancia WS-BPEL que modela un intrincado proceso de negocio.</li>
+  
+<li>Componentes de enlazado (<em>BC: Binding components</em>): se utilizan principalmente para proporcionar enlaces a nivel de transporte para los
+    servicios desplegados. Los BC pueden ser de varios tipos, incluyendo: (a)los que permiten la comunicaci&oacute;n remota con sistemas externos utilizando
+    protocolos de transporte est&aacute;ndar; (b) los que permiten una invocaci&oacute;n dentro de la m&aacute;quina virtual entre dos servicios desplegados en la misma JMV;
+    y (c) los que permite la comunicaci&oacute;n entre servicios utilizando ficheros de configuraci&oacute;n WS-I (Web Services Interoperability).</li>     
+
+</ul>
+<p>El aspecto clave de JBI es el desacoplamiento de la m&aacute;quina de servicios y los componentes de enlazado para que la l&oacute;gica de negocio no se "infeste" 
+  con los detalles de infraestructura requeridos para invocar y consumir servicios. Esto promueve una arquitectura flexible y extensible. Tanto los
+  componentes BC como los SE pueden actuar como proveedores y/o consumidores de servicios, as&iacute; como aceptar/enviar mensajes desde/hasta el entorno de 
+  ejecuci&oacute;n JBI.
+</p>
+<p>
+<strong>Modelo de mensajes JBI</strong>
+</p>
+<p>JBI utiliza un modelo de mensajes que desacopla los consumidores de servicios de los proveedores de servicios. El modelo de mensajes se define utilizando
+  WSDL. WSDL se utiliza para describir las operaciones expuestas por los componentes SC y BC. WSDL tambi&eacute;n se utiliza para
+  defnir los <em>bindings</em> a nivel de transporte para las operaciones abstractas de los servicios.
+</p>
+<p>NMR (<em>Normalized Message Router</em> es otro de los componente fundamentales utilizado en la arquitectura de JBI. NMR proprciona la espina dorsal
+  construida alrededor de WSDL, quien proporciona el intercambio de mensajes d&eacute;bilemete acoplados entre los compoentes SE y BC
+  desplegados dentro de JBI. Se requiere que los servicios tengan interfaces, formados por un conjunto de operaciones. Cada operaci&oacute;n est&aacute; formada
+  por uno o m&aacute;s mensajes. Un interfaz puede tener uno o m&aacute;s <em>bindings</em> a nivel de transporte.
+</p>
+</div>  
+
+   
+
+
+<a name="N1040D"></a><a name="SOA+y+Servicios+Web"></a>
+<h2 class="underlined_10">SOA y Servicios Web</h2>
+<div class="section">
+<p>Muchos desarrolladores piensan a menudo que los servicios Web y SOA son sin&oacute;nimos. Muchos tambi&eacute;n piensan que no es posible
+  construir aplicaciones orientadas a servicios sin utilizar servicios Web. Para clarificar las diferencias diremos que SOA es un principio de
+  dise&ntilde;o, mientras que los servicios Web son una tecnolog&iacute;a de implementaci&oacute;n. Por lo tanto, podemos construir una SOA utilizando 
+  otras tecnolog&iacute;as tradicionales, como por ejemplo RMI.
+</p>
+<p>Tenemos que destacar que el precursor de SOA es <em>Jini</em>: un entorno de computaci&oacute;n distribuida basada en Java y desarrollada por <em>Sun</em>
+  a finales de los 90, en la que los dispositivos (como por ejemplo impresoras, port&aacute;tiles y PDAs) pueden 
+  ser <em>plugged</em> en una red y autom&aacute;ticamente ofrecer 
+  sus servicios y hacer uso de otros servicios en dicha red. Posteriormente los servicios Web utilizan est&aacute;ndares independientes de la plataforma
+  tales como HTTP, XML, SOAP, y UDDI, permitiendo la interoperabilidad entre tecnolog&iacute;as heterog&eacute;neas tales como 
+  J2EE y .NET.
+</p>
+<p>En 2003, SOA entra al fin por completo en el mundo de las tecnolog&iacute;as de la informaci&oacute;n empresariales, a trav&eacute;s de los
+  servicios Web, y gracias a:
+</p>
+<ul>
+  
+<li>Al contrario que CORBA y DCE, los est&aacute;ndares de servicios web no tienen detractores entre los fabricantes.</li>
+  
+<li>Los servicios Web tienen flexibilidad para soportar aplicaciones multicanal.</li>
+  
+<li>La capacidad de SOAP de atravesar los <em>firewalls</em>, aprovechando la ubicuidad del HTTP.</li>
+  
+<li>El soporte de servicios Web en servidores de aplicaciones que albergan l&oacute;gica empresarial.</li>
+  
+<li>Los ESBs, que combinan servicios Web con <em>middleware</em> orientado a mensajes (MOM), m&aacute;s algunas capacidades
+     de transformaci&oacute;n y enrutado.</li>
+
+</ul>
+<p>SOA est&aacute; emergiendo como el principal marco de integraci&oacute;n en entornos de computaci&oacute;n complejos y heterog&eacute;neos.
+  Los intentos anteriores no permiten soluciones interoperables abiertas, ya que recaen sobre APIs propietarios y
+  requieren un alto nivel de coordinaci&oacute;n entre grupos de trabajo. SOA puede ayudar a las organizaciones a 
+  modernizar sus procesos para que sus negocios sean m&aacute;s eficientes, as&iacute; como adaptarlos a las necesidades de 
+  cambio y ser m&aacute;s competitivos, gracias al concepto de servicio. <em>eBay</em>, por ejemplo, ha "abierto" los APIs de
+  sus servicios Web de sus subastas <em>online</em>. El objetivo es permitir a los desarrolladores ganar dinero
+  a trav&eacute;s de la plataforma <em>eBay</em>. Utilizando los nuevos APIs, los desarrolladores pueden construir
+  aplicaciones cliente que enlacen con el sitio <em>online</em> y permitir que las aplicaciones acepten &iacute;tems
+  que se pondr&aacute;n a la venta. Tales aplicaciones suelen interesar a vendedores, ya que los compradores todav&iacute;a
+  utilizan <em>ebay.com</em> para pujar sobre los items. Este tipo de estrategia, por lo tanto, incrementar&aacute;
+  la base de clientes de <em>eBay</em>.
+</p>
+<p>Aunque una SOA se podr&iacute;a implementar sin servicios Web, siendo realistas, cualquier proyecto SOA realizado en los &uacute;ltimos 
+  a&ntilde;os est&aacute; plagado de ellos. Es m&aacute;s, la mayor&iacute;a de los clientes empiezan a practicar con SOA creando un servicio Web, muchas veces
+  sobre l&oacute;gica de negocio ya existente.
+</p>
+<p>Una de las principales ventajas de implementar una SOA con servicios Web es que los servicios Web est&aacute;n muy 
+  extendidos y constituyen una plataforma sencilla y sobre todo neutral.</p>
+<p>La arquitectura b&aacute;sica de los servicios Web (mostrada en la Figura 11), consiste en especificaciones (SOAP, WSDL,
+  y UDDI) que soportan la interacci&oacute;n de un servicio Web que realiza una solicitud (servicio Web cliente) con un
+  servicio Web que suministra el servicio requerido y con un registro de servicios (directorio de servicios Web).
+  El suministrador publica una descripci&oacute;n WSDL de su servicio Web, y el solicitante accede a dicha descripci&oacute;n
+  utilizando UDDI u otro tipo de registro, y solicia la ejecuci&oacute;n del servicio del suministrador enviandole un
+  mensaje SOAP.  
+</p>
+<p>
+	
+<img alt="Figura 11. Arquitectura b&aacute;sica de servicios Web." content-width="7cm" src="imagenes/charla2/WSModel.gif" width="424"> 
+</p>
+<p>La combinaci&oacute;n de servicios Web y SOA proporciona una integraci&oacute;n r&aacute;pida. Consideremos un ejemplo con tres
+  aplicaciones de bases de datos de la industria de las finanzas que soportan pr&eacute;stamos bancarios, operaciones
+  comerciales y operaciones de inversiones bancarias. Supongamos que dichas aplicaciones se han desarrollado
+  utilizando una arquitectura cl&aacute;sica de tres capas, separando la l&oacute;gica de la presentcai&oacute;n, la l&oacute;gica del 
+  negocio, y la l&oacute;gica de la base de datos.
+</p>
+<p>Tal y como se muestra en la Figura 12, es posible reutilizar una aplicaci&oacute;n tradicional de tres capas como una aplicaci&oacute;n orientada a servicios
+  creando servicios a nivel de la capa de l&oacute;gica de negocio e integrando dicha aplicaci&oacute;n con otras aplicaciones 
+  utilizando el bus de servicios. Otro beneficio de la orientaci&oacute;n a servicios es que es m&aacute;s f&aacute;cil separar la
+  l&oacute;gica de presentaci&oacute;n de la l&oacute;gica del negocio cuando la capa de l&oacute;gica de negocio est&aacute; preparada para 
+  soportar servicios. Tambi&eacute;n es m&aacute;s f&aacute;cil conectar varios tipos de GUIs y dispositivos m&oacute;viles con la 
+  aplicaci&oacute;n cuando la capa de l&oacute;gica de negocio soporta servicios. En lugar de ejecutar la l&oacute;gica de la capa 
+  presentaci&oacute;n como una interfaz altamente acoplada sobre el mismo servidor, la l&oacute;gica de presentaci&oacute;n puede
+  situarse sobre un dispositivo separado, y la comunicaci&oacute;n con la aplicaci&oacute;n puede realizarse a trav&eacute;s del bus 
+  de servicios.
+</p>
+<p>
+	
+<img alt="Figura 12. Dise&ntilde;o que facilita una integraci&oacute;n orientada a servicios." content-width="9cm" src="imagenes/charla2/SOAyWS.gif" width="583"> 
+</p>
+<p>Otro aspecto importante es que las apliaciones pueden intercambiar datos m&aacute;s f&aacute;cilmente utilizando un servicio Web definido en la  
+  capa de l&oacute;gica de negocio que utilizando otra tecnolog&iacute;a de integraci&oacute;n diferente debido a que los servicios
+  Web representan un est&aacute;ndar com&uacute;n entre todos los tipos de software. XML puede utilizarse independientemente
+  de la definci&oacute;n de los tipos de datos y estructuras. Finalmente, el desarrollo de puntos de entrada orientados
+  a servicios en la capa de l&oacute;gica de negocio permiten a una m&aacute;quina de gesti&oacute;n de procesos de negocio 
+  llevar a cabo un flujo autom&aacute;tico de ejecuci&oacute;n a trav&eacute;s de los m&uacute;ltiples servicios.
+</p>
+</div>
+
+
+<a name="N10483"></a><a name="SOA+y+BPM"></a>
+<h2 class="underlined_10">SOA y BPM</h2>
+<div class="section">
+<p>Un proceso de negocio es una actividad del mundo real consistente en un conjunto de tareas l&oacute;gicamente relacionadas
+  que, cuando se ejecutan en la secuencia adecuada, y de acuerdo con unas correctas reglas de negocio, produce una
+  salida para el negocio. Los procesos de negocio pueden durar minutos u horas, o incluso semanas, meses o a&ntilde;os.
+</p>
+<p> La gesti&oacute;n de procesos de negocio (BPM: <em>Business Process Management</em>) aborda el problema de c&oacute;mo las
+  organizaciones pueden identificar, modelar, desarrollar, desplegar y gestionar sus procesos de negocio, incluyendo
+  a los procesos que implican a los sistemas de IT e interacciones humanas. BMP es un concepto que se utiliza desde
+  hace mucho tiempo, que comenz&oacute; inicialmente con sistemas workflow y que ha derivado de forma progresiva en los
+  modernos sistemas de orquestaci&oacute;n y coreograf&iacute;a de servicios Web.
+</p>
+<p>Los principales objetivos y beneficios de un BPM incluyen:</p>
+<ul>
+  
+<li>Reducen las diferencias entre los requerimientos del negocio y los requerimientos de los sistemas IT permitiendo
+    que los usuarios del negocio modelen los procesos de negocio, y dejando que el departamento de IT proporcione la
+    infraestructura para ejecutar y controlar estos procesos de negocio.</li>
+  
+<li>Incrementan la productividad de los empleados y reducen los costes operacionales automatizando y modernizando
+    los procesos de negocio.</li>
+  
+<li>Incrementan la agilidad y flexibilidad de la empresa separando expl&iacute;citamente la l&oacute;gica del proceso de otras
+    reglas de negocio y representan los procesos de negocio de forma que es f&aacute;cil cambiarlos a medida que los
+    requerimientos del negocio cambian. Esto permite que las organizaciones sean m&aacute;s &aacute;giles, ya que permiten
+    responder r&aacute;pidamente a los cambios del mercado y conseguir r&aacute;pidamente un mayor poder competitivo.</li>
+  
+<li>Reduce los costes de desarrollo y el esfuerzo usando un lenguaje de programaci&oacute;n gr&aacute;fico, de alto nivel,
+    que permite a los analistas del negocio y a los desarrolladores construir de forma r&aacute;pida y actualizar los
+    sistemas IT dentro de un dominio particular del problema.</li>
+
+</ul>
+<p>Obviamente, todos los sistemas IT soportan e implementan procesos de negocio de una forma u otra. Sin embargo,
+  lo que hace &uacute;nico a la gesti&oacute;n de los procesos de negocio es que expl&iacute;citamente separa la l&oacute;gica de dichos 
+  procesos de negocio de otras reglas de negocio. De esta forma, la l&oacute;gica del proceso se mantiene separada
+  de las aplicaciones subyacentes y no est&aacute; incluida en dichas aplicaciones, por lo tanto, resulta sencillo
+  y r&aacute;pido modificar los procesos de negocio a medida que los requermientos y las necesidades del negocio 
+  cambien.</p>
+<p>Los primeros sistemas BPM definieron formatos propietarios para representar los procesos de negocio. Actualmente
+   WS-BPEL proporciona una forma est&aacute;ndar para la composici&oacute;n de servicios, as&iacute; como la orquestaci&oacute;n y coreograf&iacute;a
+   de servicios. Un proceso de negocio puede estar formado por una composici&oacute;n de servicios, y la composici&oacute;n de 
+   servicios es una tarea importante en SOA para proporcionar funcionalidades de negocio de grano grueso 
+   (<em>coarse-grained</em>).
+</p>
+<p>La Figura 13 muestra la relaci&oacute;n entre BMP y SOA:</p>
+<p>
+	
+<img alt="Figura 13. Relaci&oacute;n entre BMP y SOA." content-width="10cm" src="imagenes/charla2/SOAyBMP.gif" width="676"> 
+</p>
+</div>
+
+
+<p class="pageBreakAfter"></p>
+
+</div>
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("<text>Last Published:</text> " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+        Copyright &copy;
+         2006 Depto. CCIA</div>
+</div>
+</body>
+</html>

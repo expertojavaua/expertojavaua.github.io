@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Servidores de aplicaciones</title>
+                                                   
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=iso-8859-1">
+                             
+  <meta name="Author" content="Miguel">
+                             
+  <link rel="stylesheet" href="../../../apuntes.css" type="text/css">
+</head>
+  <body>
+               
+<h1>Creaci&oacute;n de un cluster</h1>
+               
+<p>Este ejercicio ser&aacute; el m&aacute;s completo de los realizados hasta el 
+  momento. Vais a trabajar por parejas, utilizando dos m&aacute;quinas para definir 
+  un sistema lo m&aacute;s real posible. El sistema a crear tendr&aacute; la siguiente 
+  estructura:<br>
+      </p>
+          
+  <center><img src="tercera.jpg">
+  </center>
+           
+<p>&nbsp;</p>
+<p>La m&aacute;quina donde se defina el dominio ser&aacute; la que contenga el 
+  servidor de administraci&oacute;n y un servidor adicional. La otra m&aacute;quina 
+  contendr&aacute; el servidor proxy y dos servidores m&aacute;s. El servidor 
+  de administraci&oacute;n y el proxy estar&aacute;n fuera del cluster. Tened 
+  en cuenta que s&oacute;lo se define un dominio, en la m&aacute;quina donde tengamos 
+  el servidor de administraci&oacute;n. Dentro de ese dominio se definen todos 
+  los servidores. Los servidores a definir son los siguientes:<br>
+</p>
+Dominio: <b>Desarrollo</b> 
+<table cellpadding="2" cellspacing="0" border="1">
+  <tbody> 
+  <tr> 
+    <td valign="top" bgcolor="#cccccc" width="91"><b>Nombre del servidor</b><br>
+    </td>
+    <td valign="top" bgcolor="#cccccc" width="96"><b>Direcci&oacute;n de escucha</b><br>
+    </td>
+    <td valign="top" bgcolor="#cccccc" width="90"><b>Puerto de escucha</b><br>
+    </td>
+    <td valign="top" width="130" bgcolor="#cccccc"><b>Nombre DNS</b><br>
+    </td>
+    <td valign="top" width="73" bgcolor="#cccccc"><b>Grupo primario</b></td>
+    <td valign="top" width="88" bgcolor="#cccccc"><b>Grupo secundario</b></td>
+  </tr>
+  <tr> 
+    <td valign="top" width="91">admin</td>
+    <td valign="top" width="96"><br>
+    </td>
+    <td valign="top" width="90">7001</td>
+    <td valign="top" width="130"> 
+      <p>Compa&ntilde;ero1<br>
+      </p>
+    </td>
+    <td valign="top" width="73">&nbsp;</td>
+    <td valign="top" width="88">&nbsp;</td>
+  </tr>
+  <tr> 
+    <td valign="top" width="91">serva<br>
+    </td>
+    <td valign="top" width="96"><br>
+    </td>
+    <td valign="top" width="90">4001<br>
+    </td>
+    <td valign="top" width="130">Compa&ntilde;ero1<br>
+      <br>
+    </td>
+    <td valign="top" width="73">grupo1</td>
+    <td valign="top" width="88">grupo2</td>
+  </tr>
+  <tr> 
+    <td valign="top" width="91">proxy<br>
+    </td>
+    <td valign="top" width="96"><br>
+    </td>
+    <td valign="top" width="90">7001<br>
+    </td>
+    <td valign="top" width="130">Compa&ntilde;ero2<br>
+      <br>
+    </td>
+    <td valign="top" width="73">&nbsp;</td>
+    <td valign="top" width="88">&nbsp;</td>
+  </tr>
+  <tr> 
+    <td valign="top" width="91">servb<br>
+    </td>
+    <td valign="top" width="96"><br>
+    </td>
+    <td valign="top" width="90">4001<br>
+    </td>
+    <td valign="top" width="130">Compa&ntilde;ero2<br>
+      <br>
+    </td>
+    <td valign="top" width="73">grupo2</td>
+    <td valign="top" width="88">grupo1</td>
+  </tr>
+  <tr> 
+    <td valign="top" width="91">servc<br>
+    </td>
+    <td valign="top" width="96"><br>
+    </td>
+    <td valign="top" width="90">5001<br>
+    </td>
+    <td valign="top" width="130">Compa&ntilde;ero2<br>
+      <br>
+    </td>
+    <td valign="top" width="73">grupo2</td>
+    <td valign="top" width="88">grupo1</td>
+  </tr>
+  </tbody> 
+</table>
+           
+<p>&nbsp;</p>
+<p>Configurad el NodeManager en las dos m&aacute;quinas para poder arrancar los 
+  servidores desde la consola de administraci&oacute;n. Por defecto el Node Manager 
+  escucha en <i>localhost</i>. Para indicar que est&aacute; escuchando en otra 
+  direcci&oacute;n, debemos editar el ejecutable que lo arranca. Debemos ir al 
+  final del fichero e incluir la opci&oacute;n <i>-Dweblogic.ListenAddress=direccion</i> 
+  Definid la aplicaci&oacute;n proxyApp tal como se explica en teor&iacute;a, 
+  desplegadla y asignarla por defecto al servidor proxy. Definid la replicaci&oacute;n 
+  de memoria, con los grupos definidos en la tabla anterior. </p>
+<p>Para probar la tolerancia a fallos v&aacute;is a utilizar la siguiente aplicaci&oacute;n 
+  <a href="shoppingcart.war.zip">shoppingcart.war</a>. Esta aplicaci&oacute;n mantiene 
+  un carrito de la compra en memoria. Desplegad la aplicaci&oacute;n en el cluster. 
+  Ahora probad el funcionamiento de la aplicaci&oacute;n. Para ello dejad &uacute;nicamente 
+  un servidor en el cluster y el servidor proxy. Indicad la direcci&oacute;n del 
+  servidor proxy y llam&aacute;is a la aplicaci&oacute;n <i>shoppingcart </i>(por 
+  ejemplo, http://miguel.dccia.ua.es:4001/shoppingcart). Almacenad varios elementos 
+  en el carrito de la compra. Llamad ahora a la direcci&oacute;n del servidor 
+  que est&aacute; funcionando en el cluster y comprobad que el carrito de la compra 
+  es el mismo. Arrancad otro de los servidores del cluster e introducid alg&uacute;n 
+  elemento m&aacute;s en el carro. Por &uacute;ltimo parad el primer servidor 
+  y comprobad que el carro sigue siendo el mismo en el &uacute;ltimo servidor 
+  arrancado. </p>
+<p>Entregad el fichero <i>config.xml</i>. Adjuntar un fichero <i>leeme.txt</i> 
+  con el nombre de los dos miembros del grupo.</p>
+<p><br>
+</p>
+<h2>&nbsp;</h2>
+           
+</body>
+</html>

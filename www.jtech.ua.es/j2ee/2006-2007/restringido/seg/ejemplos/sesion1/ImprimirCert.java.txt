@@ -1,0 +1,29 @@
+import java.io.*;
+import java.security.cert.CertificateFactory;
+import java.security.cert.Certificate;
+
+// Crea un objecto Certificate a partir de un certificado codificado en 
+// DER almacenado en un fichero e imprime información básica
+public class ImprimirCert {
+
+	public static void main (String[] args) throws Exception {
+
+		if (args.length != 1) {
+			System.err.println("Uso: java ImprimirCert fichero");
+			System.exit(1);
+		}
+
+		CertificateFactory factoria = CertificateFactory.getInstance("X.509");
+
+		// Abrir el fichero 
+		FileInputStream fis = new FileInputStream (args[0]);
+
+		// Generar certificado para el fichero 
+		Certificate cert = factoria.generateCertificate(fis);
+		fis.close();
+
+		// Imprimir información 
+		System.out.println(cert);
+	}
+}
+
